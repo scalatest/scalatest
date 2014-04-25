@@ -149,7 +149,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -262,7 +262,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "theyCannotAppearInsideAnotherThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -351,7 +351,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", sourceFileName, "ignore", 6, -2, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 6, -2, None, testTags: _*)
   }
 
   /**
@@ -373,7 +373,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def ignore(specText: String)(testFun: FixtureParam => Any) {
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideAnIt"), getStackDepthFun(sourceFileName, "ignore"))
+      throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideAnItOrAThey"), getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
   }
 

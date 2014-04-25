@@ -121,7 +121,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit) {
-    engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -1603,7 +1603,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**

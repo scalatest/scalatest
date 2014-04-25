@@ -140,7 +140,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), "itCannotAppearInsideAnotherIt", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), "itCannotAppearInsideAnotherItOrThey", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
     }
     
     /**
@@ -252,7 +252,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), "theyCannotAppearInsideAnotherThey", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), "theyCannotAppearInsideAnotherItOrThey", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
     }
  
     /**
@@ -338,7 +338,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnIt", "FunSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnItOrAThey", "FunSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
   }
   
   /**

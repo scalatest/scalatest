@@ -13,9 +13,14 @@ object GenTheyWord {
     try {
       val itLines = Source.fromFile(new File(srcFileDir, srcClassName + ".scala")).getLines().toList // for 2.8
       for (itLine <- itLines) {
+        //.replaceAll("\"An it clause", "\"A they clause")
+        //.replaceAll("an it clause", "a they clause")
         val theyLine = itLine.replaceAll("\\sit\\(", " they\\(")
                              .replaceAll("\\sit\\s", " they ")
                              .replaceAll("\"it\\s", "\"they ")
+                             .replaceAll("they or they clause.\"", "it or they clause.\"")
+                             .replaceAll("\"An they clause", "\"A they clause")
+                             .replaceAll("an they or a they clause.\"", "an it or a they clause.\"")
                              .replaceAll(srcClassName, targetClassName)
         writer.write(theyLine)
         writer.newLine() // add for 2.8
@@ -27,26 +32,6 @@ object GenTheyWord {
   }
   
   def main(args: Array[String]) {
-    generateFile("src/test/scala/org/scalatest", 
-                 "FunSpecSuite", 
-                 "target/generated/src/test/scala/org/scalatest", 
-                 "FunSpecSuiteUsingThey")
-    generateFile("src/test/scala/org/scalatest", 
-                 "FunSpecSpec", 
-                 "target/generated/src/test/scala/org/scalatest", 
-                 "FunSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest", 
-                 "FlatSpecSpec", 
-                 "target/generated/src/test/scala/org/scalatest", 
-                 "FlatSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest/path", 
-                 "FunSpecSpec", 
-                 "target/generated/src/test/scala/org/scalatest/path", 
-                 "FunSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest/fixture", 
-                 "FunSpecSpec", 
-                 "target/generated/src/test/scala/org/scalatest/fixture", 
-                 "FunSpecSpecUsingThey")
   }
   
   def genTest(dir: File, scalaVersion: String) {
@@ -65,10 +50,14 @@ object GenTheyWord {
     generateFile("src/test/scala/org/scalatest/path", 
                  "FunSpecSpec", 
                  dir.getAbsolutePath, 
-                 "FunSpecSpecUsingThey")
+                 "PathFunSpecSpecUsingThey")
     generateFile("src/test/scala/org/scalatest/fixture", 
                  "FunSpecSpec", 
                  dir.getAbsolutePath, 
-                 "FunSpecSpecUsingThey")
+                 "FixtureFunSpecSpecUsingThey")
+    generateFile("src/test/scala/org/scalatest/fixture",
+                 "FlatSpecSpec",
+                 dir.getAbsolutePath,
+                 "FixtureFlatSpecSpecUsingThey")
   }
 }

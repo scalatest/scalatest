@@ -848,7 +848,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FunSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 15)
-      assert(trce.message == Some("An it clause may not appear inside another it clause."))
+      assert(trce.message == Some("An it clause may not appear inside another it or they clause."))
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a it" in {
@@ -871,7 +871,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FunSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 15)
-      assert(trce.message == Some("An ignore clause may not appear inside an it clause."))
+      assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a they nested inside a they" in {
@@ -894,7 +894,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FunSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 15)
-      assert(trce.message == Some("A they clause may not appear inside another they clause."))
+      assert(trce.message == Some("A they clause may not appear inside another it or they clause."))
     }
 
     "should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a they" in {
@@ -917,7 +917,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FunSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 15)
-      assert(trce.message == Some("An ignore clause may not appear inside an it clause."))
+      assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
   }
 }

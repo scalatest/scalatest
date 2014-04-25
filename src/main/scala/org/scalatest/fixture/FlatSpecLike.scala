@@ -126,7 +126,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
 
     // TODO: This is what was being used before but it is wrong
-    engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherInOrIs", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -2039,7 +2039,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnInOrAnIs", sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   /**
