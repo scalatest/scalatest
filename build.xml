@@ -97,7 +97,6 @@
           <pom file="${build}/pom.xml"/>
         </artifact:dependencies>
 	
-<!-- Needed for the 2.11.0-RC3 build
         <macrodef name="readProperty">
           <attribute name="name" />
           <attribute name="property" />
@@ -113,7 +112,6 @@
             <pathelement location="${scala-xml}" />
             <pathelement location="${scala-parser-combinators}" />
         </path>
--->
 
         <path id="build.class.path">
             <pathelement location="${classes}" />
@@ -155,10 +153,8 @@
             	<pathelement location="${org.scala-lang:scala-library:jar}" />
             	<pathelement location="${org.scala-lang:scala-compiler:jar}" />
             	<pathelement location="${org.scala-lang:scala-reflect:jar}" /> <!-- needed for 2.10 build -->
-<!-- Needed for 2.11.0-RC3 build
                 <pathelement location="${scala-xml}" />
                 <pathelement location="${scala-parser-combinators}" />
--->
             </classpath>
         </taskdef>
 
@@ -1572,8 +1568,8 @@
         </scalatest>
     </target>
 
-    <!-- Note: For 2.11.0-RC3 I deleted the osgi.test dependency, because it fails. Need to figure that out. -->
-    <target name="jar" depends="dist,osgi.test"></target>
+    <!-- Note: For 2.11.0 I deleted the osgi.test dependency, because it fails. This is fixed in master and works for 2.10. -->
+    <target name="jar" depends="dist"></target>
 
     <!-- creates jars of scalatest and scalautils source files -->
     <target name="jarsrc">
