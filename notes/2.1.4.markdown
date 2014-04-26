@@ -1,0 +1,15 @@
+***ScalaTest/ScalaUtils 2.1.4***
+
+ScalaTest 2.1.4 is a maintenance release for the 2.1.x series that includes one enhancement--new tags to identify tests that use Selenium browser drivers--and a fix for an oversight in the 2.11 pom file for ScalaTest 2.1.3. No source code using ScalaTest 2.0+ should break, but you will likely need to do a clean build to upgrade from 2.0. However, 2.1.4 is binary compatible with 2.1.0, 2.1.1, and 2.1.2, and 2.1.3, so you can just change the version number in your build to upgrade from earlier 2.1.x releases.
+
+The list of enhancements and bug fixes below includes changes since 2.1.3:
+
+### Enhancements
+
+* Added tags [`ChromeBrowser`](http://doc.scalatest.org/2.1.4/index.html#org.scalatest.tags.ChromeBrowser), [`FirefoxBrowser`](http://doc.scalatest.org/2.1.4/index.html#org.scalatest.tags.FirefoxBrowser), [`HtmlUnitBrowser`](http://doc.scalatest.org/2.1.4/index.html#org.scalatest.tags.HtmlUnitBrowser), [`InternetExplorerBrowser`](http://doc.scalatest.org/2.1.4/index.html#org.scalatest.tags.InternetExplorerBrowser), and [`SafariBrowser`](http://doc.scalatest.org/2.1.4/index.html#org.scalatest.tags.SafariBrowser) to facilitate tagging Selenium tests by the browser they use, so that test suites using Selenium can be configured to run on specified browsers only.
+
+### Bug fixes
+
+* Added dependencies to `scala-xml` and `scala-parser-combinators` artifacts of group Id `org.scala-lang.modules`, which were accidentally left out of the 2.11 pom file for ScalaTest 2.1.3.
+
+
