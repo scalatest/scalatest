@@ -421,6 +421,11 @@
     		<include name="org/scalatest/tags/Disk.java" />
     		<include name="org/scalatest/tags/Network.java" />
     		<include name="org/scalatest/tags/Retryable.java" />
+                <include name="org/scalatest/tags/ChromeBrowser.java" />
+                <include name="org/scalatest/tags/FirefoxBrowser.java" />
+                <include name="org/scalatest/tags/HtmlUnitBrowser.java" />
+                <include name="org/scalatest/tags/InternetExplorerBrowser.java" />
+                <include name="org/scalatest/tags/SafariBrowser.java" />
     	    <include name="org/scalatest/DoNotDiscover.java" />
     	    <include name="org/scalatest/tools/ScalaTestTask.java" />
     	    <include name="org/scalatest/WrapWith.java" />
