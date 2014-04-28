@@ -23,8 +23,14 @@ package object scalautils {
   @deprecated("Please use org.scalactic.Accumulation instead.")
   type Accumulation = org.scalactic.Accumulation
 
+  @deprecated("Please use org.scalactic.Accumulation instead.")
+  val Accumulation = org.scalactic.Accumulation
+
   @deprecated("Please use org.scalactic.TypeCheckedTripleEquals instead.")
   type TypeCheckedTripleEquals = org.scalactic.TypeCheckedTripleEquals
+
+  @deprecated("Please use org.scalactic.TypeCheckedTripleEquals instead.")
+  val TypeCheckedTripleEquals = org.scalactic.TypeCheckedTripleEquals
 
   @deprecated("Please use org.scalactic.Or instead.")
   type Or[+G,+B] = org.scalactic.Or[G, B]
