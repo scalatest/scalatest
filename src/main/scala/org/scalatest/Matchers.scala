@@ -7124,6 +7124,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
+
+  /**
+   * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
+   */
+  val matchPatternHelper = new MatchPatternHelper
 }
 
 /**
@@ -7134,4 +7139,3 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  * @author Bill Venners
  */
 object Matchers extends Matchers
-

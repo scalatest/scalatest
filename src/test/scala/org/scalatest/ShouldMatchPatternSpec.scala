@@ -21,12 +21,11 @@ import org.scalactic.Prettifier
 
 class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
-  case class Person(name: String, age: Int)
-  case class Ball(weight: Int)
+  case class Person(firstName: String, lastName: String)
 
   describe("should matchPattern syntax") {
 
-    val result = Person("Bob", 30)
+    val result = Person("Bob", "Mc")
 
     it("should do nothing when checking the right pattern") {
       result should matchPattern { case Person("Bob", _) => }
@@ -34,11 +33,16 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
     it("should throw TestFailedException with correct error message when checking wrong pattern") {
       val e = intercept[TestFailedException] {
-        result should matchPattern { case Ball(weight) => }
+        result should matchPattern { case Person("Alice", _) => }
       }
-      e.message.value should startWith (Prettifier.default(result) + " did not pattern match ")
+      e.message.value should startWith (Prettifier.default(result) + " did not match the given pattern")
     }
 
+    it("should fail to compile when RHS of case definition is not empty") {
+      ("result should matchPattern { case Person(\"Bob\", last) =>\n" +
+      "  last should startWith(\"Mc\")\n" +
+      "}") shouldNot compile
+    }
   }
 
 }

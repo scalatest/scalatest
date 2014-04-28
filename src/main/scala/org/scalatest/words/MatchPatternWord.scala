@@ -16,22 +16,13 @@
 package org.scalatest.words
 
 import org.scalatest.matchers.{MatchResult, Matcher}
-import org.scalatest.Resources
+import org.scalatest.MatchPatternMacro
 import org.scalactic.Prettifier
 
 final class MatchPatternWord {
 
-  def apply[L](right: PartialFunction[Any, _]) =
-    new Matcher[L] {
-      def apply(left: L): MatchResult = {
-        MatchResult(
-          right.isDefinedAt(left),
-          Resources("didNotPatternMatch"),
-          Resources("patternMatched"),
-          Vector(left, right)
-        )
-      }
-      override def toString: String = "patternMatch " + Prettifier.default(right)
-    }
+  import scala.language.experimental.macros
+
+  def apply[L](right: PartialFunction[Any, _]) = macro MatchPatternMacro.matchPattern
 
 }

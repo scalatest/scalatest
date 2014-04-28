@@ -232,6 +232,15 @@ trait MatcherWords {
    */
   val compile = new CompileWord
 
+  /**
+   * This field enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   *
+   * result should matchPattern { case Person("Bob", _) => }
+   *               ^
+   * </pre>
+   */
   val matchPattern = new MatchPatternWord
 
   /**
