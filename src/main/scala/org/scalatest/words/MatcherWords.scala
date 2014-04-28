@@ -232,6 +232,8 @@ trait MatcherWords {
    */
   val compile = new CompileWord
 
+  val matchPattern = new MatchPatternWord
+
   /**
    * This method enables the following syntax: 
    *
