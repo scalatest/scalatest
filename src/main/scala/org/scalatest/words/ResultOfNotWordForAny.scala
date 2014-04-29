@@ -37,7 +37,7 @@ import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-import org.scalatest.{MatchPatternMacro, FailureMessages, UnquotedString}
+import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups

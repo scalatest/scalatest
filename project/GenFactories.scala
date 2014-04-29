@@ -82,7 +82,6 @@ import org.scalatest.words.ReadableWord
 import org.scalatest.words.WritableWord
 import org.scalatest.words.EmptyWord
 import org.scalatest.words.DefinedWord
-import org.scalatest.MatchPatternMacro
 
 import scala.language.higherKinds
 

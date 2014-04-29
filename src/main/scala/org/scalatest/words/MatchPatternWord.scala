@@ -15,8 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers.{MatchResult, Matcher}
-import org.scalatest.MatchPatternMacro
+import org.scalatest.matchers.{MatchPatternMacro, MatchResult, Matcher}
 import org.scalactic.Prettifier
 
 /**
