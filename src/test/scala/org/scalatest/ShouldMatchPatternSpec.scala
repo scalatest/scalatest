@@ -47,11 +47,32 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
   describe("should not matchPattern syntax") {
 
-    it("should do nothing when checking the right pattern") {
+    it("should do nothing when checking the wrong pattern") {
       result should not matchPattern { case Person("Alice", _) => }
     }
 
-    it("should throw TestFailedException with correct error message when checking wrong pattern") {
+    it("should throw TestFailedException with correct error message when checking right pattern") {
+      val e = intercept[TestFailedException] {
+        result should not matchPattern { case Person("Bob", _) => }
+      }
+      e.message.value should startWith (Prettifier.default(result) + " matched the given pattern")
+    }
+
+    it("should fail to compile when RHS of case definition is not empty") {
+      ("result should not matchPattern { case Person(\"Bob\", last) =>\n" +
+        "  last should startWith(\"Mc\")\n" +
+        "}") shouldNot compile
+    }
+
+  }
+
+  describe("shouldNot matchPattern syntax") {
+
+    it("should do nothing when checking the wrong pattern") {
+      result shouldNot matchPattern { case Person("Alice", _) => }
+    }
+
+    it("should throw TestFailedException with correct error message when checking right pattern") {
       val e = intercept[TestFailedException] {
         result should not matchPattern { case Person("Bob", _) => }
       }
