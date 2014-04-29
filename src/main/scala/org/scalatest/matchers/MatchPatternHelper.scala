@@ -15,16 +15,13 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.Resources
+import org.scalatest.{FailureMessages, Resources}
 import org.scalactic.Prettifier
+import org.scalatest.MatchersHelper._
+import org.scalatest.words.ResultOfNotWordForAny
 
 /**
  * <code>MatchPatternHelper</code> is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
- *
- * <pre class="stHighlight">
- * result should matchPattern { case Person("Bob", _) => }
- *               ^
- * </pre>
  */
 class MatchPatternHelper {
 
@@ -36,7 +33,7 @@ class MatchPatternHelper {
    *               ^
    * </pre>
    */
-  def checkMatchPattern(right: PartialFunction[Any, _]): Matcher[Any] =
+  def matchPatternMatcher(right: PartialFunction[Any, _]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         MatchResult(
@@ -48,5 +45,23 @@ class MatchPatternHelper {
       }
       override def toString: String = "patternMatch " + Prettifier.default(right)
     }
+
+  /**
+   * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should not matchPattern { case Person("Bob", _) => }
+   *                   ^
+   * </pre>
+   */
+  def checkPatternMatcher(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
+    if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (resultOfNoWordForAny.shouldBeTrue) "didNotMatchTheGivenPattern" else "matchedTheGivenPattern",
+          resultOfNoWordForAny.left
+        )
+      )
+  }
 
 }

@@ -23,9 +23,9 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
   case class Person(firstName: String, lastName: String)
 
-  describe("should matchPattern syntax") {
+  val result = Person("Bob", "Mc")
 
-    val result = Person("Bob", "Mc")
+  describe("should matchPattern syntax") {
 
     it("should do nothing when checking the right pattern") {
       result should matchPattern { case Person("Bob", _) => }
@@ -43,6 +43,27 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
       "  last should startWith(\"Mc\")\n" +
       "}") shouldNot compile
     }
+  }
+
+  describe("should not matchPattern syntax") {
+
+    it("should do nothing when checking the right pattern") {
+      result should not matchPattern { case Person("Alice", _) => }
+    }
+
+    it("should throw TestFailedException with correct error message when checking wrong pattern") {
+      val e = intercept[TestFailedException] {
+        result should not matchPattern { case Person("Bob", _) => }
+      }
+      e.message.value should startWith (Prettifier.default(result) + " matched the given pattern")
+    }
+
+    it("should fail to compile when RHS of case definition is not empty") {
+      ("result should not matchPattern { case Person(\"Bob\", last) =>\n" +
+        "  last should startWith(\"Mc\")\n" +
+        "}") shouldNot compile
+    }
+
   }
 
 }

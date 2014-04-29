@@ -19,7 +19,7 @@ import reflect.macros.Context
 
 private[scalatest] object MatchPatternMacro {
 
-  def matchPattern(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[_] = {
+  def checkCaseDefinitions(context: Context)(tree: context.Tree) {
     import context.universe._
 
     def defaultCase(t: Tree): Boolean =
@@ -27,8 +27,6 @@ private[scalatest] object MatchPatternMacro {
         case Bind(TermName("defaultCase$"), Ident(termNames.WILDCARD)) => true
         case _ => false
       }
-
-    val tree = right.tree
 
     tree match {
       case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, TermName("applyOrElse"), _, _, _, Match(_, caseDefList)), _)))), _), _) =>
@@ -44,15 +42,46 @@ private[scalatest] object MatchPatternMacro {
 
       case _ =>
     }
+  }
+
+  def matchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[_] = {
+    import context.universe._
+
+    val tree = right.tree
+
+    checkCaseDefinitions(context)(tree)
 
     val callHelper =
       Apply(
         Select(
           Ident(newTermName("matchPatternHelper")),
-          newTermName("checkMatchPattern")
+          newTermName("matchPatternMatcher")
         ),
         List(tree)
       )
+
+    context.Expr(callHelper)
+  }
+
+  def matchPattern(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[_] = {
+    import context.universe._
+
+    val tree = right.tree
+
+    checkCaseDefinitions(context)(tree)
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Ident(newTermName("matchPatternHelper")),
+              newTermName("checkPatternMatcher")
+            ),
+            List(qualifier, tree)
+          )
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with should not syntax only.")
+      }
 
     context.Expr(callHelper)
   }

@@ -37,8 +37,7 @@ import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
+import org.scalatest.{MatchPatternMacro, FailureMessages, UnquotedString}
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
@@ -53,7 +52,7 @@ import org.scalactic.Every
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
+sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
   /**
    * This method enables the following syntax:
@@ -1078,6 +1077,18 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
+
+  import scala.language.experimental.macros
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should not matchPattern { case Person("Bob", _) => }
+   *                   ^
+   * </pre>
+   */
+  def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.matchPattern
   
   /**
    * Overrides toString to return pretty text.
