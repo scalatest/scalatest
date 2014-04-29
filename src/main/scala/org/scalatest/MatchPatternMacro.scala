@@ -16,6 +16,7 @@
 package org.scalatest
 
 import reflect.macros.Context
+import matchers.Matcher
 
 private[scalatest] object MatchPatternMacro {
 
@@ -44,7 +45,7 @@ private[scalatest] object MatchPatternMacro {
     }
   }
 
-  def matchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[_] = {
+  def matchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[Matcher[Any]] = {
     import context.universe._
 
     val tree = right.tree
@@ -54,11 +55,136 @@ private[scalatest] object MatchPatternMacro {
     val callHelper =
       Apply(
         Select(
-          Ident(newTermName("matchPatternHelper")),
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("MatchPatternHelper")
+          ),
           newTermName("matchPatternMatcher")
         ),
         List(tree)
       )
+
+    context.Expr(callHelper)
+  }
+
+  def notMatchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[Matcher[Any]] = {
+    import context.universe._
+
+    val tree = right.tree
+
+    checkCaseDefinitions(context)(tree)
+
+    val callHelper =
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("MatchPatternHelper")
+          ),
+          newTermName("notMatchPatternMatcher")
+        ),
+        List(tree)
+      )
+
+    context.Expr(callHelper)
+  }
+
+  def andNotMatchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[Matcher[Any]] = {
+    import context.universe._
+
+    val tree = right.tree
+
+    checkCaseDefinitions(context)(tree)
+
+    val notMatcher =
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("MatchPatternHelper")
+          ),
+          newTermName("notMatchPatternMatcher")
+        ),
+        List(tree)
+      )
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("and")
+            ),
+            List(notMatcher)
+          )
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'and not' syntax only.")
+      }
+
+    context.Expr(callHelper)
+  }
+
+  def orNotMatchPatternMatcher(context: Context)(right: context.Expr[PartialFunction[Any, _]]): context.Expr[Matcher[Any]] = {
+    import context.universe._
+
+    val tree = right.tree
+
+    checkCaseDefinitions(context)(tree)
+
+    val notMatcher =
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("MatchPatternHelper")
+          ),
+          newTermName("notMatchPatternMatcher")
+        ),
+        List(tree)
+      )
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("or")
+            ),
+            List(notMatcher)
+          )
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'or not' syntax only.")
+      }
 
     context.Expr(callHelper)
   }
@@ -75,11 +201,21 @@ private[scalatest] object MatchPatternMacro {
         case Apply(Select(qualifier, _), _) =>
           Apply(
             Select(
-              Ident(newTermName("matchPatternHelper")),
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("MatchPatternHelper")
+              ),
               newTermName("checkPatternMatcher")
             ),
             List(qualifier, tree)
           )
+
         case _ => context.abort(context.macroApplication.pos, "This macro should be used with should not syntax only.")
       }
 

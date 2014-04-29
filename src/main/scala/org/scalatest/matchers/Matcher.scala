@@ -73,6 +73,7 @@ import org.scalatest.words.ReadableWord
 import org.scalatest.words.WritableWord
 import org.scalatest.words.EmptyWord
 import org.scalatest.words.DefinedWord
+import org.scalatest.MatchPatternMacro
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1743,6 +1744,23 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[T, ValueMapping] =
       outerInstance.and(MatcherWords.not.contain(resultOfValueWordApplication))
+
+    /**
+     * Get the <code>Matcher</code> instance, currently used by <code>MatchPatternMacro only</code>.
+     */
+    val owner = outerInstance
+
+    import scala.language.experimental.macros
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not matchPattern { case Person("Bob", _) =>}
+     *                  ^
+     * </pre>
+     */
+    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.andNotMatchPatternMatcher
   }
 
   /**
@@ -2871,6 +2889,23 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[T, ValueMapping] =
       outerInstance.or(MatcherWords.not.contain(resultOfValueWordApplication))
+
+    /**
+     * Get the <code>Matcher</code> instance, currently used by <code>MatchPatternMacro only</code>.
+     */
+    val owner = outerInstance
+
+    import scala.language.experimental.macros
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not matchPattern { case Person("Bob", _) =>}
+     *                 ^
+     * </pre>
+     */
+    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.orNotMatchPatternMatcher
   }
 
   /**

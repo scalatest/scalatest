@@ -82,6 +82,7 @@ import org.scalatest.words.ReadableWord
 import org.scalatest.words.WritableWord
 import org.scalatest.words.EmptyWord
 import org.scalatest.words.DefinedWord
+import org.scalatest.MatchPatternMacro
 
 import scala.language.higherKinds
 
@@ -278,7 +279,7 @@ $endif$
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] = and(MatcherWords.have.size(expectedSize))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -339,7 +340,7 @@ $endif$
      * </pre>
      */
     def value(expectedValue: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] = thisMatcherFactory.and(MatcherWords.contain.value(expectedValue))
-    
+
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
     /**
@@ -352,7 +353,7 @@ $endif$
      */
     def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsAs(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -363,7 +364,7 @@ $endif$
      */
     def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsInOrderAs(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -374,7 +375,7 @@ $endif$
      */
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -385,7 +386,7 @@ $endif$
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -396,7 +397,7 @@ $endif$
      */
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -407,7 +408,7 @@ $endif$
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -418,7 +419,7 @@ $endif$
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -429,7 +430,7 @@ $endif$
      */
     def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
       thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -440,7 +441,7 @@ $endif$
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -452,7 +453,7 @@ $endif$
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
   }
-    
+
   /**
    * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
    *
@@ -462,7 +463,7 @@ $endif$
    * </pre>
    */
   def and(containWord: ContainWord): AndContainWord = new AndContainWord
-    
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -500,7 +501,7 @@ $endif$
      * </pre>
      */
     def a[U](aMatcher: AMatcher[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = and(MatcherWords.be.a(aMatcher))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -520,7 +521,7 @@ $endif$
      * </pre>
      */
     def an[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = and(MatcherWords.be.an(bePropertyMatcher))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>integerNumber</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
@@ -540,7 +541,7 @@ $endif$
      * </pre>
      */
     def theSameInstanceAs(anyRef: AnyRef): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.theSameInstanceAs(anyRef))
-    
+
     /**
      * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
      *
@@ -579,7 +580,7 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.fullyMatch.regex(regexString))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -628,7 +629,7 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.include.regex(regexString))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -677,7 +678,7 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.startWith.regex(regexString))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -726,7 +727,7 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.endWith.regex(regexString))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -846,7 +847,7 @@ $endif$
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] =
       thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize)))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -983,7 +984,7 @@ $endif$
      * </pre>
      */
     def be[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAWordApplication))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
@@ -1023,7 +1024,7 @@ $endif$
      * </pre>
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAnWordApplication))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1033,7 +1034,7 @@ $endif$
      * </pre>
      */
     def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(aType))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1043,7 +1044,7 @@ $endif$
      * </pre>
      */
     def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(anType))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1063,7 +1064,7 @@ $endif$
      * </pre>
      */
     def be[U](spread: Spread[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(spread))
-    
+
     /**
      * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
      *
@@ -1085,7 +1086,7 @@ $endif$
      */
     def be(sortedWord: SortedWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(sortedWord))
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -1096,7 +1097,7 @@ $endif$
      */
     def be(readableWord: ReadableWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(readableWord))
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -1107,7 +1108,7 @@ $endif$
      */
     def be(writableWord: WritableWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(writableWord))
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -1118,7 +1119,7 @@ $endif$
      */
     def be(emptyWord: EmptyWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(emptyWord))
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -1129,7 +1130,7 @@ $endif$
      */
     def be(definedWord: DefinedWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(definedWord))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1239,7 +1240,7 @@ $endif$
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
       thisMatcherFactory.and(MatcherWords.not.contain(resultOfValueWordApplication))
-      
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1250,7 +1251,7 @@ $endif$
      */
     def contain(right: ResultOfOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1261,7 +1262,7 @@ $endif$
      */
     def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1272,7 +1273,7 @@ $endif$
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1283,7 +1284,7 @@ $endif$
      */
     def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1294,7 +1295,7 @@ $endif$
      */
     def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1305,7 +1306,7 @@ $endif$
      */
     def contain(right: ResultOfOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1316,7 +1317,7 @@ $endif$
      */
     def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-      
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1327,7 +1328,7 @@ $endif$
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1338,7 +1339,7 @@ $endif$
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-    
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1349,8 +1350,25 @@ $endif$
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
+
+    /**
+     * Get the <code>MatcherFactory</code> instance, currently used by <code>MatchPatternMacro only</code>.
+     */
+    val owner = thisMatcherFactory
+
+    import scala.language.experimental.macros
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory and not matchPattern { case Person("Bob", _) =>}
+     *                         ^
+     * </pre>
+     */
+     def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.andNotMatchPatternMatcher
   }
-"""
+                    """
 
   val bottomPart2 = """
 
@@ -2480,6 +2498,23 @@ $endif$
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
+
+    /**
+     * Get the <code>MatcherFactory</code> instance, currently used by <code>MatchPatternMacro only</code>.
+     */
+    val owner = thisMatcherFactory
+
+    import scala.language.experimental.macros
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or not matchPattern { case Person("Bob", _) =>}
+     *                        ^
+     * </pre>
+     */
+    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.orNotMatchPatternMatcher
   }
 
   /**

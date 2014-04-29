@@ -23,7 +23,7 @@ import org.scalatest.words.ResultOfNotWordForAny
 /**
  * <code>MatchPatternHelper</code> is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
  */
-class MatchPatternHelper {
+object MatchPatternHelper {
 
   /**
    * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
@@ -44,6 +44,27 @@ class MatchPatternHelper {
         )
       }
       override def toString: String = "patternMatch " + Prettifier.default(right)
+    }
+
+  /**
+   * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should (not matchPattern { case Person("Alice", _) => } and (equal (result)))
+   *                    ^
+   * </pre>
+   */
+  def notMatchPatternMatcher(right: PartialFunction[Any, _]): Matcher[Any] =
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        MatchResult(
+          !right.isDefinedAt(left),
+          Resources("matchedTheGivenPattern"),
+          Resources("didNotMatchTheGivenPattern"),
+          Vector(left)
+        )
+      }
+      override def toString: String = "not patternMatch " + Prettifier.default(right)
     }
 
   /**
