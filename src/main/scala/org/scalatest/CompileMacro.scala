@@ -47,117 +47,167 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
+  def notCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Unit] = {
     import c.universe._
 
-    c.macroApplication match {
-      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
-        val code = codeStr.toString
-
-        try {
-          c.typeCheck(c.parse("{ " + code + " }"))
-          val messageExpr = c.literal("Expected a type error, but got none for: " + code)
-          reify {
-            throw new exceptions.TestFailedException(messageExpr.splice, 0)
-          }
-        } catch {
-          case e: TypecheckException =>
-            reify {
-              // Do nothing
-            }
-          case e: ParseException =>
-            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
-            reify {
-              throw new TestFailedException(messageExpr.splice, 0)
-            }
+    def checkNotCompile(code: String): c.Expr[Unit] = {
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))
+        val messageExpr = c.literal("Expected a type error, but got none for: " + code)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
-      case _ => c.abort(c.enclosingPosition, "The 'shouldNot compile' syntax only works with String literal only.")
-    }
-  }
-
-  def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
-    import c.universe._
-
-    c.macroApplication match {
-      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
-        //val codeStr = c.macroApplication.asInstanceOf[Apply].fun.asInstanceOf[Select].qualifier.asInstanceOf[Apply].args(0).toString
-        val code = codeStr.toString
-
-        try {
-          c.typeCheck(c.parse("{ " + code + " }"))
-          val messageExpr = c.literal("Expected a type error, but got none for: " + code)
-          reify {
-            throw new exceptions.TestFailedException(messageExpr.splice, 0)
-          }
-        } catch {
-          case e: TypecheckException =>
-            reify {
-              // Do nothing
-            }
-          case e: ParseException =>
-            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
-            reify {
-              throw new TestFailedException(messageExpr.splice, 0)
-            }
-        }
-      case _ => c.abort(c.enclosingPosition, "The 'mustNot compile' syntax only works with String literal only.")
-    }
-  }
-
-  def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
-    import c.universe._
-
-    c.macroApplication match {
-      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
-        val code = codeStr.toString
-
-        try {
-          c.typeCheck(c.parse("{ " + code + " }"))
+      } catch {
+        case e: TypecheckException =>
           reify {
             // Do nothing
           }
-        } catch {
-          case e: TypecheckException =>
-            val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
-            reify {
-              throw new exceptions.TestFailedException(messageExpr.splice, 0)
-            }
-          case e: ParseException =>
-            val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
-            reify {
-              throw new exceptions.TestFailedException(messageExpr.splice, 0)
-            }
-        }
-      case _ => c.abort(c.enclosingPosition, "The 'should compile' syntax only works with String literal only.")
+        case e: ParseException =>
+          val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
+          reify {
+            throw new TestFailedException(messageExpr.splice, 0)
+          }
+      }
     }
-  }
 
-  def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
-    import c.universe._
+    val methodName = shouldOrMust + "Not"
 
     c.macroApplication match {
-      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
-        val code = codeStr.toString
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Literal(Constant(code))
+                 )
+               ),
+               TermName(methodName)
+             ),
+             _
+           ) =>
 
-        try {
-          c.typeCheck(c.parse("{ " + code + " }"))
-          reify {
-            // Do nothing
-          }
-        } catch {
-          case e: TypecheckException =>
-            val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
-            reify {
-              throw new exceptions.TestFailedException(messageExpr.splice, 0)
-            }
-          case e: ParseException =>
-            val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
-            reify {
-              throw new exceptions.TestFailedException(messageExpr.splice, 0)
-            }
-        }
-      case _ => c.abort(c.enclosingPosition, "The 'must compile' syntax only works with String literal only.")
+        val codeStr = code.toString
+        checkNotCompile(codeStr)
+
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Select(
+                     Apply(
+                       Select(
+                         _,
+                         TermName("augmentString")
+                       ),
+                       List(
+                         Literal(
+                           Constant(code)
+                         )
+                       )
+                     ),
+                     TermName("stripMargin")
+                   )
+                 )
+               ),
+               TermName(methodName)
+             ),
+             _
+           ) =>
+
+        val codeStr = code.toString.stripMargin
+        checkNotCompile(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not compile' syntax only works with String literal only.")
     }
   }
+
+  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] =
+    notCompileImpl(c)(compileWord)("should")
+
+  def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] =
+    notCompileImpl(c)(compileWord)("must")
+
+  def compileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Unit] = {
+    import c.universe._
+
+    def checkCompile(code: String): c.Expr[Unit] = {
+      import c.universe._
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))
+        reify {
+          // Do nothing
+        }
+      } catch {
+        case e: TypecheckException =>
+          val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
+          reify {
+            throw new exceptions.TestFailedException(messageExpr.splice, 0)
+          }
+        case e: ParseException =>
+          val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
+          reify {
+            throw new exceptions.TestFailedException(messageExpr.splice, 0)
+          }
+      }
+    }
+
+    c.macroApplication match {
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Literal(
+                     Constant(code)
+                   )
+                 )
+               ),
+             TermName(shouldOrMust)
+             ),
+             _
+           ) =>
+
+        val codeStr = code.toString
+        checkCompile(codeStr)
+
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Select(
+                     Apply(
+                       Select(
+                         _,
+                         TermName("augmentString")
+                       ),
+                       List(
+                         Literal(
+                           Constant(code)
+                         )
+                       )
+                     ),
+                     TermName("stripMargin")
+                   )
+                 )
+               ),
+               TermName(shouldOrMust)
+             ),
+             _
+           ) =>
+
+        val codeStr = code.toString.stripMargin
+        checkCompile(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + " compile' syntax only works with String literal only.")
+    }
+  }
+
+  def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] =
+    compileImpl(c)(compileWord)("should")
+
+  def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] =
+    compileImpl(c)(compileWord)("must")
 
 }
