@@ -24,26 +24,68 @@ class ShouldCompileSpec extends FunSpec {
 
   describe("Compile matcher") {
 
-    it("should do nothing when type check passed") {
-      "val a = 1" should compile
+    describe("when work with string literal") {
+
+      it("should do nothing when type check passed") {
+        "val a = 1" should compile
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check failed") {
+        val e = intercept[TestFailedException] {
+          "val a: String = 2" should compile
+        }
+        assert(e.message.get.startsWith("val a: String = 2 encountered a type error:"))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          "println(\"test)" should compile
+        }
+        assert(e.message.get.startsWith("println(\"test) encountered a parse error:"))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
     }
 
-    it("should throw TestFailedException with correct message and stack depth when type check failed") {
-      val e = intercept[TestFailedException] {
-        "val a: String = 2" should compile
-      }
-      assert(e.message.get.startsWith("val a: String = 2 encountered a type error:"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
+    describe("when work with triple quotes string literal with stripMargin") {
 
-    it("should throw TestFailedException with correct message and stack depth when parse failed") {
-      val e = intercept[TestFailedException] {
-        "println(\"test)" should compile
+      it("should do nothing when type check passed") {
+        """
+          |val a = 1
+          |""".stripMargin should compile
       }
-      assert(e.message.get.startsWith("println(\"test) encountered a parse error:"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+
+      it("should throw TestFailedException with correct message and stack depth when type check failed") {
+        val e = intercept[TestFailedException] {
+          """
+            |val a: String = 2
+            |""".stripMargin should compile
+        }
+        assert(e.message.get.startsWith(
+          """
+            |val a: String = 2
+            | encountered a type error:""".stripMargin))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          """
+            |println(\"test)
+            |""".stripMargin should compile
+        }
+        assert(e.message.get.startsWith(
+          """
+            |println(\"test)
+            | encountered a parse error:""".stripMargin))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+      }
+
     }
 
   }
