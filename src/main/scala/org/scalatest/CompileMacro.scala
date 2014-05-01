@@ -81,10 +81,10 @@ private[scalatest] object CompileMacro {
                    Literal(Constant(code))
                  )
                ),
-               TermName(methodName)
+               methodNameTermName
              ),
              _
-           ) =>
+           ) if methodNameTermName.decoded == methodName =>
 
         val codeStr = code.toString
         checkNotCompile(codeStr)
@@ -98,7 +98,7 @@ private[scalatest] object CompileMacro {
                      Apply(
                        Select(
                          _,
-                         TermName("augmentString")
+                         augmentStringTermName
                        ),
                        List(
                          Literal(
@@ -106,14 +106,14 @@ private[scalatest] object CompileMacro {
                          )
                        )
                      ),
-                     TermName("stripMargin")
+                     stripMarginTermName
                    )
                  )
                ),
-               TermName(methodName)
+               methodNameTermName
              ),
              _
-           ) =>
+           ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
 
         val codeStr = code.toString.stripMargin
         checkNotCompile(codeStr)
@@ -163,10 +163,10 @@ private[scalatest] object CompileMacro {
                    )
                  )
                ),
-             TermName(shouldOrMust)
+               shouldOrMustTermName
              ),
              _
-           ) =>
+           ) if shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString
         checkCompile(codeStr)
@@ -180,7 +180,7 @@ private[scalatest] object CompileMacro {
                      Apply(
                        Select(
                          _,
-                         TermName("augmentString")
+                       augmentStringTermName
                        ),
                        List(
                          Literal(
@@ -188,14 +188,14 @@ private[scalatest] object CompileMacro {
                          )
                        )
                      ),
-                     TermName("stripMargin")
+                   stripMarginTermName
                    )
                  )
                ),
-               TermName(shouldOrMust)
+               shouldOrMustTermName
              ),
              _
-           ) =>
+           ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)
