@@ -49,7 +49,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   private final val engine = PathEngine.getEngine()
   import engine._
 
-  override def newInstance: FunSpec = this.getClass.newInstance.asInstanceOf[FunSpec]
+  override def newInstance: FunSpecLike = this.getClass.newInstance.asInstanceOf[FunSpecLike]
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
