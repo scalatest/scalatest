@@ -47,7 +47,33 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  def assertNoTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+    import c.universe._
+
+    val Expr(Literal(Constant(codeStr: String))) = code
+
+    try {
+      c.typeCheck(c.parse("{ "+codeStr+" }"))
+      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
+      reify {
+        // Do nothing
+      }
+    } catch {
+      case e: TypecheckException =>
+        val messageExpr = c.literal(codeStr + " encountered a type error: " + e.getMessage)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal(codeStr + " encountered a parse error: " + e.getMessage)
+        reify {
+          throw new TestFailedException(messageExpr.splice, 0)
+        }
+    }
+  }
+
   def notCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Unit] = {
+
     import c.universe._
 
     def checkNotCompile(code: String): c.Expr[Unit] = {
