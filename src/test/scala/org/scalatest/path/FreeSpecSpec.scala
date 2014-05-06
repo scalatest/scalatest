@@ -223,6 +223,11 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       }
     }
 
+    it("should create new instance as FreeSpecLike") {
+      val spec = new ExampleFreeSpecLike
+      assert(spec.newInstance.isInstanceOf[FreeSpecLike])
+    }
+
     describe("(with info calls)") {
       class InfoInsideTestSpec extends PathFreeSpec {
         val msg = "hi there, dude"
