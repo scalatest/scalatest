@@ -48,7 +48,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
   private final val engine = PathEngine.getEngine()
   import engine._
 
-  override def newInstance: FreeSpec = this.getClass.newInstance.asInstanceOf[FreeSpec]
+  override def newInstance: FreeSpecLike = this.getClass.newInstance.asInstanceOf[FreeSpecLike]
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
