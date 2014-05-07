@@ -9,7 +9,7 @@
     <!-- set global properties for this build -->
     <property name="scala.version.range" value="[2.10.0, 2.10.99]" /> <!-- not using this currently because of what it does to sbt -->
 
-    <property name="release" value="2.1.5" />
+    <property name="release" value="2.1.6" />
 
 <!--
     <property name="scala.version" value="2.10.3" />
@@ -21,7 +21,7 @@
     <property name="scala.version" value="2.11.0" />
     <property name="deploy.scala.version" value="2.11" />
 	<property name="for.scala" value="2.11" />
-    <property name="github.tag" value="release-2.1.5-for-scala-2.11" />
+    <property name="github.tag" value="release-2.1.6-for-scala-2.11" />
 
     <property name="scala-xml.version.number"                value="1.0.1" />
     <property name="scala-parser-combinators.version.number" value="1.0.1" />
