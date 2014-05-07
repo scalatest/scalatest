@@ -23,10 +23,30 @@ import org.scalatest.words.CompileWord
 
 private[scalatest] object CompileMacro {
 
+  def getCodeStringFromCodeExpression(c: Context)(methodName: String, code: c.Expr[String]): String = {
+    import c.universe._
+    code.tree match {
+      case Literal(Constant(codeStr)) => codeStr.toString
+      case Select(
+        Apply(
+          Select(
+            _,
+            augmentStringTermName
+          ),
+          List(
+            Literal(Constant(codeStr))
+          )
+        ),
+        stripMarginTermName
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" => codeStr.toString.stripMargin
+      case _ => c.abort(c.enclosingPosition, methodName + " only works with String literal only.")
+    }
+  }
+
   def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
-    val Expr(Literal(Constant(codeStr: String))) = code
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
@@ -50,11 +70,9 @@ private[scalatest] object CompileMacro {
   def assertNoTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
-    val Expr(Literal(Constant(codeStr: String))) = code
-
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
     try {
-      c.typeCheck(c.parse("{ "+codeStr+" }"))
-      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
+      c.typeCheck(c.parse("{ " + codeStr + " }"))
       reify {
         // Do nothing
       }
@@ -67,7 +85,7 @@ private[scalatest] object CompileMacro {
       case e: ParseException =>
         val messageExpr = c.literal(codeStr + " encountered a parse error: " + e.getMessage)
         reify {
-          throw new TestFailedException(messageExpr.splice, 0)
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
     }
   }
