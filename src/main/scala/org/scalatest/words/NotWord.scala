@@ -21,10 +21,7 @@ import scala.collection.GenTraversable
 import org.scalactic._
 import org.scalactic.TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
-import org.scalatest.Suite
-import org.scalatest.Resources
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
+import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
@@ -34,6 +31,11 @@ import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
 import org.scalatest.Suite.getObjectsForFailureMessage
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
+import org.scalatest.Resources
+import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -279,6 +281,19 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(beMatcher)
     }
   }
+
+  import scala.language.experimental.macros
+
+  /**
+   * This method enables the following syntax, where, for example, <code>num</code> is an <code>Int</code> and <code>odd</code>
+   * of type <code>BeMatcher[Int]</code>:
+   *
+   * <pre class="stHighlight">
+   * result should (not matchPattern { case Person("Bob", _)} and equal (result2))
+   *                    ^
+   * </pre>
+   */
+  def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.notMatchPatternMatcher
 
   /**
    * This method enables the following syntax: 
