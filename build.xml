@@ -414,23 +414,7 @@
         </scalac>
 
     	<!-- Compile the Java code from ${javasrc} into ${classes} -->
-    	<javac srcdir="${javasrc}" destdir="${classes}" compiler="javac1.5" memoryMaximumSize="1500M" fork="true" classpathref="build.class.path" debug="yes">
-    	    <include name="org/scalatest/Ignore.java" />
-    	    <include name="org/scalatest/tags/Slow.java" />
-	        <include name="org/scalatest/tags/CPU.java" />
-    		<include name="org/scalatest/tags/Disk.java" />
-    		<include name="org/scalatest/tags/Network.java" />
-    		<include name="org/scalatest/tags/Retryable.java" />
-                <include name="org/scalatest/tags/ChromeBrowser.java" />
-                <include name="org/scalatest/tags/FirefoxBrowser.java" />
-                <include name="org/scalatest/tags/HtmlUnitBrowser.java" />
-                <include name="org/scalatest/tags/InternetExplorerBrowser.java" />
-                <include name="org/scalatest/tags/SafariBrowser.java" />
-    	    <include name="org/scalatest/DoNotDiscover.java" />
-    	    <include name="org/scalatest/tools/ScalaTestTask.java" />
-    	    <include name="org/scalatest/WrapWith.java" />
-    	    <include name="org/scalatest/Finders.java" />
-    	</javac>
+    	<javac srcdir="${javasrc}" destdir="${classes}" compiler="javac1.5" memoryMaximumSize="1500M" fork="true" classpathref="build.class.path" debug="yes" />
     	
        <!-- copy these here not in dist because sometimes I like to do -cp target/jar_contents things, such as REPL sessions -->
        <antcall target="copy-resources"/>
