@@ -48,7 +48,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
   // Checking for a specific size
   object `The be a [Type] syntax` {
 
-    /*def `should do nothing if the LHS is an instance of specified RHS` {
+    def `should do nothing if the LHS is an instance of specified RHS` {
       aTaleOfTwoCities should be (a [Book])
       aTaleOfTwoCities shouldBe a [Book]
     }
@@ -443,11 +443,11 @@ class ShouldBeATypeSpec extends Spec with Matchers {
     def `should do nothing if the LHS is an instance of specified RHS with _ type parameter` {
       List(Book("Book 1"), Book("Book 2")) should be (a [List[_]])
       List(Book("Book 1"), Book("Book 2")) shouldBe a [List[_]]
-    }*/
+    }
 
     def `should not compile when specified RHS contains type parameter` {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should be (a [List[Book]])" shouldNot compile
-      //"List(Book(\"Book 1\"), Book(\"Book 2\")) shouldBe a [List[Book]]" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) shouldBe a [List[Book]]" shouldNot compile
     }
   }
 }

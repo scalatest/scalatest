@@ -632,7 +632,7 @@ final class BeWord {
    *               ^
    * </pre>
    */
-  def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.beResultOfATypeInvocation
+  def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.aTypeMatcherImpl
     /*new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         val clazz = aType.clazz
