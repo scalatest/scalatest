@@ -621,6 +621,8 @@ final class BeWord {
         )
       override def toString: String = "be definedAt " + Prettifier.default(resultOfDefinedAt.right)
     }
+
+  import language.experimental.macros
   
   /**
    * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
@@ -630,8 +632,8 @@ final class BeWord {
    *               ^
    * </pre>
    */
-  def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = 
-    new Matcher[Any] {
+  def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.beResultOfATypeInvocation
+    /*new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         val clazz = aType.clazz
         MatchResult(
@@ -642,7 +644,7 @@ final class BeWord {
         )
       }
       override def toString: String = "be (" + Prettifier.default(aType) + ")"
-    }
+    }*/
   
   /**
    * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
