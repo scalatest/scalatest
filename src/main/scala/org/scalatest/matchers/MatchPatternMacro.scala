@@ -24,12 +24,12 @@ private[scalatest] object MatchPatternMacro {
 
     def defaultCase(t: Tree): Boolean =
       t match {
-        case Bind(TermName("defaultCase$"), Ident(termNames.WILDCARD)) => true
+        case Bind(defaultCaseTermName, Ident(nme.WILDCARD)) if defaultCaseTermName.decoded == "defaultCase$" => true
         case _ => false
       }
 
     tree match {
-      case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, TermName("applyOrElse"), _, _, _, Match(_, caseDefList)), _)))), _), _) =>
+      case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, applyOrElseTermName, _, _, _, Match(_, caseDefList)), _)))), _), _) if applyOrElseTermName.decoded == "applyOrElse" =>
         caseDefList.foreach {
           case CaseDef(pat, _, body) if !defaultCase(pat) =>
             body match {
