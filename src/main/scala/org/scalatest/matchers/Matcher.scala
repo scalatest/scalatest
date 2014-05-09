@@ -1752,13 +1752,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
       outerInstance.and(MatcherWords.not.contain(resultOfValueWordApplication))
 
     /**
-     * Get the <code>Matcher</code> instance, currently used by <code>MatchPatternMacro only</code>.
-     */
-    val owner = outerInstance
-
-    import scala.language.experimental.macros
-
-    /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
@@ -2903,13 +2896,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[T, ValueMapping] =
       outerInstance.or(MatcherWords.not.contain(resultOfValueWordApplication))
-
-    /**
-     * Get the <code>Matcher</code> instance, currently used by <code>MatchPatternMacro only</code>.
-     */
-    val owner = outerInstance
-
-    import scala.language.experimental.macros
 
     /**
      * This method enables the following syntax:
