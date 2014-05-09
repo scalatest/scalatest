@@ -23,10 +23,30 @@ import org.scalatest.words.CompileWord
 
 private[scalatest] object CompileMacro {
 
+  def getCodeStringFromCodeExpression(c: Context)(methodName: String, code: c.Expr[String]): String = {
+    import c.universe._
+    code.tree match {
+      case Literal(Constant(codeStr)) => codeStr.toString
+      case Select(
+        Apply(
+          Select(
+            _,
+            augmentStringTermName
+          ),
+          List(
+            Literal(Constant(codeStr))
+          )
+        ),
+        stripMarginTermName
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" => codeStr.toString.stripMargin
+      case _ => c.abort(c.enclosingPosition, methodName + " only works with String literal only.")
+    }
+  }
+
   def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
-    val Expr(Literal(Constant(codeStr: String))) = code
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
@@ -47,7 +67,31 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  def assertNoTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+    import c.universe._
+
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
+    try {
+      c.typeCheck(c.parse("{ " + codeStr + " }"))
+      reify {
+        // Do nothing
+      }
+    } catch {
+      case e: TypecheckException =>
+        val messageExpr = c.literal(codeStr + " encountered a type error: " + e.getMessage)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal(codeStr + " encountered a parse error: " + e.getMessage)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+    }
+  }
+
   def notCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Unit] = {
+
     import c.universe._
 
     def checkNotCompile(code: String): c.Expr[Unit] = {
