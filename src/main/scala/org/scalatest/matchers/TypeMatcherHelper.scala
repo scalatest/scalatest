@@ -61,5 +61,18 @@ object TypeMatcherHelper {
     }
   }
 
+  def checkATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean) {
+    val clazz = aType.clazz
+    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
+          left,
+          UnquotedString(clazz.getName)
+        )
+      )
+    }
+  }
+
 
 }

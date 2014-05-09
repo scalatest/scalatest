@@ -263,6 +263,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+
+  import scala.language.experimental.macros
   
   /**
    * This method enables the following syntax:
@@ -272,18 +274,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be(aType: ResultOfATypeInvocation[_]) {
-    val clazz = aType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
-          left,
-          UnquotedString(clazz.getName)
-        )
-      )
-    }
-  }
+  def be(aType: ResultOfATypeInvocation[_]) = macro TypeMatcherMacro.checkATypeShouldBeTrueImpl
   
   /**
    * This method enables the following syntax:

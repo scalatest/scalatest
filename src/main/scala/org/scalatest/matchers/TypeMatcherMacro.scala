@@ -232,4 +232,43 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  def checkATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
+
+    import context.universe._
+
+    import context.universe._
+
+    val tree = aType.tree
+
+    checkNoTypeParameter(context)(tree)
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName("checkATypeShouldBeTrue")
+            ),
+            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+          )
+
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with should not be a [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+
+  }
+
+
+
 }
