@@ -16,6 +16,7 @@
 package org.scalatest.matchers
 
 import reflect.macros.Context
+import org.scalatest.Resources
 
 private[scalatest] object MatchPatternMacro {
 
@@ -34,7 +35,7 @@ private[scalatest] object MatchPatternMacro {
           case CaseDef(pat, _, body) if !defaultCase(pat) =>
             body match {
               case Literal(Constant(())) => // ok, empty body
-              case _ => context.abort(body.pos, "case definition must contain empty body.")
+              case _ => context.abort(body.pos, Resources("nonEmptyMatchPatternCase"))
             }
 
           case _ =>
