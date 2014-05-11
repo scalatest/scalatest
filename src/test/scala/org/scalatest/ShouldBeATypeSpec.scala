@@ -455,9 +455,127 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       Book("Book 1") shouldNot be (a [List[_]])
     }
 
-    def `should not compile when LHS is not an instance of specified RHS with _ type parameter ` {
+    def `should not compile when LHS is not an instance of specified RHS with type parameter ` {
       "Book(\"Book 1\") should not be a [List[Book]]" shouldNot compile
       "Book(\"Book 1\") shouldNot be (a [List[Book]])" shouldNot compile
     }
+
+    def `should do nothing if LHS true for both specified RHS with _ type parameter, when used in a logical-and expression` {
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (List(Book("Book 1"), Book("Book 2"))) and be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and be (List(Book("Book 1"), Book("Book 2"))))
+      List(Book("Book 1"), Book("Book 2")) should (equal (List(Book("Book 1"), Book("Book 2"))) and be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and equal (List(Book("Book 1"), Book("Book 2"))))
+    }
+
+    def `should not compile when LHS is true for both specified RHS with type parameter` {
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (List(Book(\"Book 1\"), Book(\"Book 2\"))) and be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and be (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (equal (List(Book(\"Book 1\"), Book(\"Book 2\"))) and be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and equal (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
+    }
+
+    def `should do nothing if LHS is true for either specified RHS with _ type parameter, when used in a logical-or expression` {
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [String]) or be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (a [String]))
+
+      List(Book("Book 1"), Book("Book 2")) should (be (List(Book("Book 1"), Book("Book 2"))) or be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (be (aTaleOfThreeCities) or be (a [List[_]]))
+
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (List(Book("Book 1"), Book("Book 2"))))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (aTaleOfThreeCities))
+
+      List(Book("Book 1"), Book("Book 2")) should (equal (List(Book("Book 1"), Book("Book 2"))) or be (a [List[_]]))
+      List(Book("Book 1"), Book("Book 2")) should (equal (aTaleOfThreeCities) or be (a [List[_]]))
+
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or equal (List(Book("Book 1"), Book("Book 2"))))
+      List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or equal (aTaleOfThreeCities))
+    }
+
+    def `should not compile if LHS is true for either specified RHS with type parameter, when used in a logical-or expression` {
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [String]) or be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (a [String]))" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (List(Book(\"Book 1\"), Book(\"Book 2\"))) or be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (aTaleOfThreeCities) or be (a [List[Book]]))" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (aTaleOfThreeCities))" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (equal (List(Book(\"Book 1\"), Book(\"Book 2\"))) or be (a [List[Book]]))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (equal (aTaleOfThreeCities) or be (a [List[Book]]))" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or equal (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or equal (aTaleOfThreeCities))" shouldNot compile
+    }
+
+    def `should do nothing if LHS is false for both specified RHS with _ type parameter, when used in a logical-and expression with not` {
+
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] and not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be aTaleOfThreeCities and not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] and not be aTaleOfThreeCities)
+      List(Book("Book 1"), Book("Book 2")) should (not equal aTaleOfThreeCities and not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] and not equal aTaleOfThreeCities)
+
+    }
+
+    def `should not compile if LHS is false for both specified RHS with type parameter, when used in a logical-and expression with not` {
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] and not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be aTaleOfThreeCities and not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] and not be aTaleOfThreeCities)" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not equal aTaleOfThreeCities and not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] and not equal aTaleOfThreeCities)" shouldNot compile
+
+    }
+
+    def `should do nothing if LHS is false for either specified RHS with _ type parameter, when used in a logical-or expression with not` {
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be a [List[_]] or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be a [List[_]])
+
+      List(Book("Book 1"), Book("Book 2")) should (not be aTaleOfThreeCities or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be List(Book("Book 1"), Book("Book 2")) or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not be aTaleOfThreeCities or not be a [List[_]])
+
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be aTaleOfThreeCities)
+      List(Book("Book 1"), Book("Book 2")) should (not be a [List[_]] or not be aTaleOfThreeCities)
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be List(Book("Book 1"), Book("Book 2")))
+
+      List(Book("Book 1"), Book("Book 2")) should (not equal aTaleOfThreeCities or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not equal List(Book("Book 1"), Book("Book 2")) or not be a [Vector[_]])
+      List(Book("Book 1"), Book("Book 2")) should (not equal aTaleOfThreeCities or not be a [List[_]])
+
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not equal aTaleOfThreeCities)
+      List(Book("Book 1"), Book("Book 2")) should (not be a [List[_]] or not equal aTaleOfThreeCities)
+      List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not equal (List(Book("Book 1"), Book("Book 2"))))
+    }
+
+    def `should not compile if LHS is false for either specified RHS with type parameter, when used in a logical-or expression with not` {
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [List[Book]] or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be a [List[Book]])" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be aTaleOfThreeCities or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be List(Book(\"Book 1\"), Book(\"Book 2\")) or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be aTaleOfThreeCities or not be a [List[Book]])" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be aTaleOfThreeCities)" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [List[Book]] or not be aTaleOfThreeCities)" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be List(Book(\"Book 1\"), Book(\"Book 2\")))" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not equal aTaleOfThreeCities or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not equal List(Book(\"Book 1\"), Book(\"Book 2\")) or not be a [Vector[Book]])" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not equal aTaleOfThreeCities or not be a [List[Book]])" shouldNot compile
+
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not equal aTaleOfThreeCities)" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [List[Book]] or not equal aTaleOfThreeCities)" shouldNot compile
+      "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not equal (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
+    }
+
+
   }
 }

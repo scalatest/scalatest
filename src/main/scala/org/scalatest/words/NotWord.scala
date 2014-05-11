@@ -801,19 +801,7 @@ final class NotWord {
    *                    ^
    * </pre>
    */
-  def be(aType: ResultOfATypeInvocation[_]) =
-    new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        val clazz = aType.clazz
-        MatchResult(
-          !clazz.isAssignableFrom(left.getClass),
-          Resources("wasAnInstanceOf"),
-          Resources("wasNotAnInstanceOf"), 
-          Vector(left, UnquotedString(clazz.getName))
-        )
-      }
-      override def toString: String = "not be " + Prettifier.default(aType)
-    }
+  def be(aType: ResultOfATypeInvocation[_]) = macro TypeMatcherMacro.notATypeMatcher
   
   /**
    * This method enables the following syntax:

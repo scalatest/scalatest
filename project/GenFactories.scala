@@ -767,6 +767,11 @@ $endif$
   final class AndNotWord {
 
     /**
+     * Get the <code>MatcherFactory</code> instance, currently used by macro only.
+     */
+     val owner = thisMatcherFactory
+
+    /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
@@ -1024,6 +1029,8 @@ $endif$
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAnWordApplication))
 
+    import scala.language.experimental.macros
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1032,7 +1039,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(aType))
+    def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = macro MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1349,13 +1356,6 @@ $endif$
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-
-    /**
-     * Get the <code>MatcherFactory</code> instance, currently used by <code>MatchPatternMacro only</code>.
-     */
-    val owner = thisMatcherFactory
-
-    import scala.language.experimental.macros
 
     /**
      * This method enables the following syntax:
@@ -1915,6 +1915,11 @@ $endif$
   final class OrNotWord {
 
     /**
+     * Get the <code>MatcherFactory</code> instance, currently used by macro.
+     */
+    val owner = thisMatcherFactory
+
+    /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
@@ -2172,6 +2177,8 @@ $endif$
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAnWordApplication))
 
+    import scala.language.experimental.macros
+
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2180,7 +2187,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(aType))
+    def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = macro MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2499,13 +2506,6 @@ $endif$
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
-     * Get the <code>MatcherFactory</code> instance, currently used by <code>MatchPatternMacro only</code>.
-     */
-    val owner = thisMatcherFactory
-
-    import scala.language.experimental.macros
-
-    /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
@@ -2566,7 +2566,68 @@ object MatcherFactory$arity$ {
    */
   implicit def produceMatcher[SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
     matcherFactory.matcher
+
+  import scala.reflect.macros.Context
+
+  def andNotATypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
+    new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].andNotATypeMatcherFactory$arity$(context)(aType)
+
+  def orNotATypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
+    new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].orNotATypeMatcherFactory$arity$(context)(aType)
 }
+
+class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
+
+  import scala.reflect.macros.Context
+
+  def andNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    import context.universe._
+
+    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("and")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'and not' syntax only.")
+    }
+  }
+
+  def orNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    import context.universe._
+
+    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("or")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'or not' syntax only.")
+    }
+  }
+
+}
+
                     """
 
 // For some reason that I don't understand, I need to leave off the stars before the <pre> when 
