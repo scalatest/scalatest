@@ -633,18 +633,6 @@ final class BeWord {
    * </pre>
    */
   def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.aTypeMatcherImpl
-    /*new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        val clazz = aType.clazz
-        MatchResult(
-          clazz.isAssignableFrom(left.getClass),
-          Resources("wasNotAnInstanceOf"), 
-          Resources("wasAnInstanceOf"), 
-          Vector(left, UnquotedString(clazz.getName))
-        )
-      }
-      override def toString: String = "be (" + Prettifier.default(aType) + ")"
-    }*/
   
   /**
    * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:

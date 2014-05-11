@@ -2569,14 +2569,20 @@ object MatcherFactory$arity$ {
 
   import scala.reflect.macros.Context
 
+  /**
+   * This method is called by macro that supports 'and not a [Type]' syntax.
+   */
   def andNotATypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
     new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].andNotATypeMatcherFactory$arity$(context)(aType)
 
+  /**
+   * This method is called by macro that supports 'or not a [Type]' syntax.
+   */
   def orNotATypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
     new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].orNotATypeMatcherFactory$arity$(context)(aType)
 }
 
-class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
+private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 
   import scala.reflect.macros.Context
 
