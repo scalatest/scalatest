@@ -25,6 +25,12 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
  */
 object TypeMatcherHelper {
 
+  /**
+   * Create a type matcher for the given <code>ResultOfATypeInvocation</code>.
+   *
+   * @param aType an instance of <code>ResultOfATypeInvocation</code>
+   * @return a type <code>Matcher</code>
+   */
   def aTypeMatcher(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -39,6 +45,12 @@ object TypeMatcherHelper {
       override def toString: String = "be (" + Prettifier.default(aType) + ")"
     }
 
+  /**
+   * Create a type matcher for the given <code>ResultOfAnTypeInvocation</code>.
+   *
+   * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
+   * @return a type <code>Matcher</code>
+   */
   def anTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -53,6 +65,12 @@ object TypeMatcherHelper {
       override def toString: String = "be (" + Prettifier.default(anType) + ")"
     }
 
+  /**
+   * Create a negated type matcher for the given <code>ResultOfATypeInvocation</code>.
+   *
+   * @param aType an instance of <code>ResultOfATypeInvocation</code>
+   * @return a negated type <code>Matcher</code>
+   */
   def notATypeMatcher(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -67,6 +85,12 @@ object TypeMatcherHelper {
       override def toString: String = "not be " + Prettifier.default(aType)
     }
 
+  /**
+   * Create a negated type matcher for the given <code>ResultOfAnTypeInvocation</code>.
+   *
+   * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
+   * @return a negated type <code>Matcher</code>
+   */
   def notAnTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -81,6 +105,13 @@ object TypeMatcherHelper {
       override def toString: String = "not be " + Prettifier.default(anType)
     }
 
+  /**
+   * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
+   * A <code>TestFailedException</code> will be thrown if <code>left</code> is not an instance of the type given by <code>ResultOfATypeInvocation</code>.
+   *
+   * @param left the left-hand-side (LHS) to be checked for the type
+   * @param aType an instance of <code>ResultOfATypeInvocation</code>
+   */
   def checkAType(left: Any, aType: ResultOfATypeInvocation[_]) {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
@@ -89,6 +120,13 @@ object TypeMatcherHelper {
     }
   }
 
+  /**
+   * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
+   * A <code>TestFailedException</code> will be thrown if <code>left</code> is not an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
+   *
+   * @param left the left-hand-side (LHS) to be checked for the type
+   * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
+   */
   def checkAnType(left: Any, anType: ResultOfAnTypeInvocation[_]) {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
@@ -97,6 +135,14 @@ object TypeMatcherHelper {
     }
   }
 
+  /**
+   * Based on <code>shouldBeTrue</code> value, check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
+   * If <code>shouldBeTrue</code> is true, a <code>TestFailedException</code> will be thrown if <code>left</code> is not an instance of the type given by <code>ResultOfATypeInvocation</code>.
+   * If <code>shouldBeTrue</code> is false, a <code>TestFailedException</code> will be thrown if <code>left</code> is an instance of the type given by <code>ResultOfATypeInvocation</code>.
+   *
+   * @param left the left-hand-side (LHS) to be checked for the type
+   * @param aType an instance of <code>ResultOfATypeInvocation</code>
+   */
   def checkATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean) {
     val clazz = aType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
@@ -110,6 +156,14 @@ object TypeMatcherHelper {
     }
   }
 
+  /**
+   * Based on <code>shouldBeTrue</code> value, check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
+   * If <code>shouldBeTrue</code> is true, a <code>TestFailedException</code> will be thrown if <code>left</code> is not an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
+   * If <code>shouldBeTrue</code> is false, a <code>TestFailedException</code> will be thrown if <code>left</code> is an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
+   *
+   * @param left the left-hand-side (LHS) to be checked for the type
+   * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
+   */
   def checkAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean) {
     val clazz = anType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
