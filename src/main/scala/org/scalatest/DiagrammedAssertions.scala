@@ -23,6 +23,133 @@ import collection.immutable.TreeMap
  * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include
  * a diagram showing the values of expression in the error message when the assertion or assumption fails.
  *
+ * Here are some examples:
+ *
+ * <pre class="stREPL">
+ * scala&gt; import DiagrammedAssertions._
+ * import DiagrammedAssertions._
+ * 
+ * scala&gt; assert(a == b || c &gt;= d)
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(a == b || c &gt;= d)
+ *        | |  | |  | |  |
+ *        1 |  2 |  3 |  4
+ *          |    |    false
+ *          |    false
+ *          false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(xs.exists(_ == 4))
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(xs.exists(_ == 4))
+ *        |  |
+ *        |  false
+ *        List(1, 2, 3)
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert("hello".startsWith("h") &amp;&amp; "goodbye".endsWith("y"))
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert("hello".startsWith("h") &amp;&amp; "goodbye".endsWith("y"))
+ *        |       |          |    |  |         |        |
+ *        "hello" true       "h"  |  "goodbye" false    "y"
+ *                                false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(num.isInstanceOf[Int])
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(num.isInstanceOf[Int])
+ *        |   |
+ *        1.0 false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(Some(2).isEmpty)
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(Some(2).isEmpty)
+ *        |    |  |
+ *        |    2  false
+ *        Some(2)
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(None.isDefined)
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(None.isDefined)
+ *        |    |
+ *        None false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(xs.exists(i =&gt; i &gt; 10))
+ * org.scalatest.exceptions.TestFailedException:
+ * 
+ * assert(xs.exists(i =&gt; i &gt; 10))
+ *        |  |
+ *        |  false
+ *        List(1, 2, 3)
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * </pre>
+ *
+ * <p>
+ * If the expression passed to <code>assert</code> or <code>assume</code> spans more than one line, <code>DiagrammedAssertions</code> falls
+ * back to the default style of error message, since drawing a diagram would be difficult. Here's an example showing how
+ * <code>DiagrammedAssertions</code> will treat a multi-line assertion (<em>i.e.</em>, you don't get a diagram):
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; assert("hello".startsWith("h") &amp;&amp;
+ *      |   "goodbye".endsWith("y"))
+ * org.scalatest.exceptions.TestFailedException: "hello" started with "h", but "goodbye" did not end with "y"
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * </pre>
+ * 
+ * <p>
+ * Also, since an expression diagram essentially represents multi-line ascii art, if a clue string is provided, it appears <em>above</em> the diagram, not after it. It will often also show up in the diagram:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; assert(None.isDefined, "Don't do this at home")
+ * org.scalatest.exceptions.TestFailedException: Don't do this at home
+ * 
+ * assert(None.isDefined, "Don't do this at home")
+ *        |    |
+ *        None false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * 
+ * scala&gt; assert(None.isDefined,
+ *      |   "Don't do this at home")
+ * org.scalatest.exceptions.TestFailedException: Don't do this at home
+ * 
+ * assert(None.isDefined,
+ *        |    |
+ *        None false
+ * 
+ *         at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
+ *         ...
+ * </pre>
+ *
+ * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
 trait DiagrammedAssertions extends Assertions {
 
