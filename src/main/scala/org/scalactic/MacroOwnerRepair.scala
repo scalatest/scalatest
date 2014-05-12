@@ -17,7 +17,7 @@ package org.scalactic
 
 // This is needed to repair owner chain as encountered in the following issue:
 // https://github.com/scalatest/scalatest/issues/276
-private[scalactic] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](val c: C) {
+private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](val c: C) {
   /**
    * If macro arguments are spliced into underneath DefTree that introduces
    * an entry into the symbol ownership chain, any symbols defined in the
