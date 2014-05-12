@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest
 
 private[org] case class AnchorValue(anchor: Int, value: Any)
 
@@ -32,7 +32,7 @@ trait DiagrammedExpr[T] {
   def anchorValues: List[AnchorValue]
   def value: T
 
-  protected[scalactic] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
+  protected[scalatest] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
     (anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
       group.last
     }).toList
@@ -76,11 +76,11 @@ object DiagrammedExpr {
     new DiagrammedSelectExpr(qualifier, value, anchor)
 }
 
-private[scalactic] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[scalatest] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = List(AnchorValue(anchor, value))
 }
 
-private[scalactic] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[scalatest] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
 
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
@@ -94,7 +94,7 @@ private[scalactic] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], ar
   }
 }
 
-private[scalactic] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[scalatest] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
 

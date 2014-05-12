@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{AnchorValue, DiagrammedExpr, Prettifier}
+import org.scalactic.Prettifier
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 
