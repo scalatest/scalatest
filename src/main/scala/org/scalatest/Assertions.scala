@@ -78,7 +78,45 @@ import org.scalactic.{Prettifier, Bool}
  * </p>
  *
  * <p>
- * You can provide an alternate error message by providing a <code>String</code> as a second argument
+ * ScalaTest's <code>assert</code> macro works by recognizing patterns in the AST of the expression passed to <code>assert</code> and,
+ * for a finite set of common expressions, giving an error message that an equivalent ScalaTest matcher
+ * expression would give. Here are some examples, where <code>a</code> is 1, <code>b</code> is 2, <code>c</code> is 3, <code>d</code>
+ * is 4, <code>xs</code> is <code>List(a, b, c)</code>, and <code>num</code> is 1.0:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * assert(a == b || c &gt;= d)
+ * // Error message: 1 did not equal 2, and 3 was not greater than or equal to 4
+ *
+ * assert(xs.exists(_ == 4))
+ * // Error message: List(1, 2, 3) did not contain 4
+ *
+ * assert("hello".startsWith("h") &amp;&amp; "goodbye".endsWith("y"))
+ * // Error message: "hello" started with "h", but "goodbye" did not end with "y"
+ *
+ * assert(num.isInstanceOf[Int])
+ * // Error message: 1.0 was not instance of scala.Int
+ *
+ * assert(Some(2).isEmpty)
+ * // Error message: Some(2) was not empty
+ * </pre>
+ * 
+ * <p>
+ * For expressions that are not recognized, the macro currently prints out a string
+ * representation of the (desugared) AST and adds <code>"was false"</code>. Here are some examples of
+ * error messages for unrecognized expressions:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * assert(None.isDefined)
+ * // Error message: scala.None.isDefined was false
+ *
+ * assert(xs.exists(i =&gt; i &gt; 10))
+ * // Error message: xs.exists(((i: Int) =&gt; i.&gt;(10))) was false
+ * </pre>
+ * 
+ * <p>
+ * You can augment the standard error message by providing a <code>String</code> as a second argument
  * to <code>assert</code>, like this:
  * </p>
  *
@@ -230,8 +268,8 @@ import org.scalactic.{Prettifier, Bool}
  * <code>assert</code> methods throw <code>TestFailedException</code>. As with <code>assert</code>,
  * <code>assume</code> hides a Scala method in <code>Predef</code> that performs a similar
  * function, but throws <code>AssertionError</code>. And just as you can with <code>assert</code>,
- * you can optionally provide a clue string, or use <code>===</code> to get a more detailed
- * error message. Here are some examples:
+ * you will get an error message extracted by a macro from the AST passed to <code>assume</code>, and can
+ * optionally provide a clue string to augment this error message. Here are some examples:
  * </p>
  *
  * <pre class="stHighlight">
