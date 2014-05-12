@@ -7134,4 +7134,3 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  * @author Bill Venners
  */
 object Matchers extends Matchers
-
