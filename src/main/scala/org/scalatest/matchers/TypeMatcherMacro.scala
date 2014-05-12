@@ -16,13 +16,13 @@
 package org.scalatest.matchers
 
 import scala.reflect.macros.Context
-import org.scalatest.words.{MatcherWords, ResultOfATypeInvocation}
+import org.scalatest.words.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation}
 import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 import org.scalactic.Prettifier
 
 private[scalatest] object TypeMatcherMacro {
 
-  def checkNoTypeParameter(context: Context)(tree: context.Tree) {
+  def checkNoTypeParameter(context: Context)(tree: context.Tree, methodName: String) {
 
     import context.universe._
 
@@ -44,7 +44,7 @@ private[scalatest] object TypeMatcherMacro {
                typeList: List[TypeTree]
              ),
              _
-           ) if methodNameTermName.decoded == "a" && containsTypeParameter(typeList) =>
+           ) if methodNameTermName.decoded == methodName && containsTypeParameter(typeList) =>
         context.abort(context.macroApplication.pos, "Type parameter is not allowed because it will be erased at runtime, please use _ instead.")
 
       case _ =>
@@ -58,7 +58,7 @@ private[scalatest] object TypeMatcherMacro {
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree)
+    checkNoTypeParameter(context)(tree, "a")
 
     context.Expr(
       Apply(
@@ -81,12 +81,41 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  def anTypeMatcherImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
+
+    import context.universe._
+
+    val tree = anType.tree
+
+    checkNoTypeParameter(context)(tree, "an")
+
+    context.Expr(
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("TypeMatcherHelper")
+          ),
+          newTermName("anTypeMatcher")
+        ),
+        List(tree)
+      )
+    )
+
+  }
+
   def notATypeMatcher(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree)
+    checkNoTypeParameter(context)(tree, "a")
 
     context.Expr(
       Apply(
@@ -108,11 +137,63 @@ private[scalatest] object TypeMatcherMacro {
     )
   }
 
+  def notAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
+    import context.universe._
+
+    val tree = anType.tree
+
+    checkNoTypeParameter(context)(tree, "an")
+
+    context.Expr(
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("org")),
+                newTermName("scalatest")
+              ),
+              newTermName("matchers")
+            ),
+            newTermName("TypeMatcherHelper")
+          ),
+          newTermName("notAnTypeMatcher")
+        ),
+        List(tree)
+      )
+    )
+  }
+
   def andNotATypeMatcher(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
     val rhs = notATypeMatcher(context)(aType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("and")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'and not' syntax only.")
+    }
+
+  }
+
+  def andNotAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
+
+    import context.universe._
+
+    val rhs = notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -158,6 +239,31 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  def orNotAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
+
+    import context.universe._
+
+    val rhs = notAnTypeMatcher(context)(anType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("or")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'or not' syntax only.")
+    }
+
+  }
+
   def shouldBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
 
     import context.universe._
@@ -166,7 +272,7 @@ private[scalatest] object TypeMatcherMacro {
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree)
+    checkNoTypeParameter(context)(tree, "a")
 
     val callHelper =
       context.macroApplication match {
@@ -203,7 +309,7 @@ private[scalatest] object TypeMatcherMacro {
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree)
+    checkNoTypeParameter(context)(tree, "a")
 
     val callHelper =
       context.macroApplication match {
@@ -232,6 +338,80 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  def shouldBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
+
+    import context.universe._
+
+    import context.universe._
+
+    val tree = anType.tree
+
+    checkNoTypeParameter(context)(tree, "an")
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName("checkAnType")
+            ),
+            List(Select(qualifier, newTermName("leftSideValue")), tree)
+          )
+
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with shouldBe an [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+
+  }
+
+  def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
+
+    import context.universe._
+
+    import context.universe._
+
+    val tree = anType.tree
+
+    checkNoTypeParameter(context)(tree, "an")
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName("checkAnType")
+            ),
+            List(Select(qualifier, newTermName("leftSideValue")), tree)
+          )
+
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with mustBe an [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+
+  }
+
   def checkATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
 
     import context.universe._
@@ -240,7 +420,7 @@ private[scalatest] object TypeMatcherMacro {
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree)
+    checkNoTypeParameter(context)(tree, "a")
 
     val callHelper =
       context.macroApplication match {
@@ -269,6 +449,41 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  def checkAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
 
+    import context.universe._
+
+    import context.universe._
+
+    val tree = anType.tree
+
+    checkNoTypeParameter(context)(tree, "an")
+
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName("checkAnTypeShouldBeTrue")
+            ),
+            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+          )
+
+        case _ => context.abort(context.macroApplication.pos, "This macro should be used with should not be an [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+
+  }
 
 }

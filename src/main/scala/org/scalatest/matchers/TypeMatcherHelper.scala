@@ -18,7 +18,7 @@ package org.scalatest.matchers
 import org.scalatest.{UnquotedString, Suite, FailureMessages, Resources}
 import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
-import org.scalatest.words.{ResultOfATypeInvocation}
+import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
 
 /**
  * <code>TypeMatcherHelper</code> is called by <code>TypeMatcherMacro</code> to support <code>a [Type]</code> and <code>an [Type]</code> syntax.
@@ -39,6 +39,20 @@ object TypeMatcherHelper {
       override def toString: String = "be (" + Prettifier.default(aType) + ")"
     }
 
+  def anTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = anType.clazz
+        MatchResult(
+          clazz.isAssignableFrom(left.getClass),
+          Resources("wasNotAnInstanceOf"),
+          Resources("wasAnInstanceOf"),
+          Vector(left, UnquotedString(clazz.getName))
+        )
+      }
+      override def toString: String = "be (" + Prettifier.default(anType) + ")"
+    }
+
   def notATypeMatcher(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -53,8 +67,30 @@ object TypeMatcherHelper {
       override def toString: String = "not be " + Prettifier.default(aType)
     }
 
+  def notAnTypeMatcher(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = anType.clazz
+        MatchResult(
+          !clazz.isAssignableFrom(left.getClass),
+          Resources("wasAnInstanceOf"),
+          Resources("wasNotAnInstanceOf"),
+          Vector(left, UnquotedString(clazz.getName))
+        )
+      }
+      override def toString: String = "not be " + Prettifier.default(anType)
+    }
+
   def checkAType(left: Any, aType: ResultOfATypeInvocation[_]) {
     val clazz = aType.clazz
+    if (!clazz.isAssignableFrom(left.getClass)) {
+      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
+      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+    }
+  }
+
+  def checkAnType(left: Any, anType: ResultOfAnTypeInvocation[_]) {
+    val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
@@ -74,5 +110,17 @@ object TypeMatcherHelper {
     }
   }
 
+  def checkAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean) {
+    val clazz = anType.clazz
+    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
+          left,
+          UnquotedString(clazz.getName)
+        )
+      )
+    }
+  }
 
 }

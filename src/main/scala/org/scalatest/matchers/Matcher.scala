@@ -1440,8 +1440,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
-      outerInstance.and(MatcherWords.not.apply(MatcherWords.be(anType)))
+    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] = macro TypeMatcherMacro.andNotAnTypeMatcher
     
     /**
      * This method enables the following syntax:
@@ -2587,7 +2586,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      */
-    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] = outerInstance.or(MatcherWords.not.apply(MatcherWords.be(anType)))
+    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] = macro TypeMatcherMacro.orNotAnTypeMatcher
     
     /**
      * This method enables the following syntax:

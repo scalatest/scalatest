@@ -6458,13 +6458,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
-      val clazz = anType.clazz
-      if (!clazz.isAssignableFrom(leftSideValue.getClass)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, clazz.getName)
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(clazz.getName)))
-      }
-    }
+    def shouldBe(anType: ResultOfAnTypeInvocation[_]) = macro TypeMatcherMacro.shouldBeAnTypeImpl
     
     /**
      * This method enables syntax such as the following:

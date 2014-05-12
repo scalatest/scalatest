@@ -1049,7 +1049,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(anType))
+    def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = macro MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2197,7 +2197,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(anType))
+    def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = macro MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2580,6 +2580,18 @@ object MatcherFactory$arity$ {
    */
   def orNotATypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
     new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].orNotATypeMatcherFactory$arity$(context)(aType)
+
+  /**
+   * This method is called by macro that supports 'and not a [Type]' syntax.
+   */
+  def andNotAnTypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
+    new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].andNotAnTypeMatcherFactory$arity$(context)(anType)
+
+  /**
+   * This method is called by macro that supports 'or not a [Type]' syntax.
+   */
+  def orNotAnTypeMatcherFactory$arity$[SC, $typeConstructors$](context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] =
+    new MatcherFactory$arity$Macro[SC, $commaSeparatedTCNs$].orNotAnTypeMatcherFactory$arity$(context)(anType)
 }
 
 private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
@@ -2613,6 +2625,52 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     import context.universe._
 
     val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("or")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'or not' syntax only.")
+    }
+  }
+
+  def andNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    import context.universe._
+
+    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
+
+    context.macroApplication match {
+      case Apply(Select(qualifier, _), _) =>
+        context.Expr(
+          Apply(
+            Select(
+              Select(
+                qualifier,
+                "owner"
+              ),
+              newTermName("and")
+            ),
+            List(rhs.tree)
+          )
+        )
+      case _ => context.abort(context.macroApplication.pos, "This macro should be used with 'and not' syntax only.")
+    }
+  }
+
+  def orNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    import context.universe._
+
+    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>

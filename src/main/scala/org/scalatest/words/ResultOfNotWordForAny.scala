@@ -284,18 +284,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be(anType: ResultOfAnTypeInvocation[_]) {
-    val clazz = anType.clazz
-    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
-          left,
-          UnquotedString(clazz.getName)
-        )
-      )
-    }
-  }
+  def be(anType: ResultOfAnTypeInvocation[_]) = macro TypeMatcherMacro.checkAnTypeShouldBeTrueImpl
 
   /**
    * This method enables the following syntax: 
