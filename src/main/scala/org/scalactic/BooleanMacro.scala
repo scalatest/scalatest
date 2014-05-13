@@ -97,6 +97,10 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
 
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
+  /**
+   * Get text of the expression, current it'll try to look for RangePosition (only available when -Yrange.pos is enabled),
+   * else it will just call show to get the text.
+   */
   def getText(expr: Tree): String = {
     expr match {
       case literal: Literal =>
@@ -108,6 +112,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     }
   }
 
+  /**
+   * For binary method call, for example left.aMethodCall(right), it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.binaryMacroBool($org_scalatest_assert_macro_left, "aMethodCall", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_left.aMethodCall($org_scalatest_assert_macro_right))
+   */
   def binaryMacroBool(select: Select): Apply =
     Apply(
       Select(
@@ -134,35 +143,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
-  def typedBinaryMacroBool(select: Select, typeArgs: List[Tree]): Apply =
-    Apply(
-      Select(
-        Select(
-          Select(
-            Ident(newTermName("org")),
-            newTermName("scalactic")
-          ),
-          newTermName("Bool")
-        ),
-        newTermName("binaryMacroBool")
-      ),
-      List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
-        Apply(
-          TypeApply(
-            Select(
-              Ident(newTermName("$org_scalatest_assert_macro_left")),
-              select.name
-            ),
-            typeArgs
-          ),
-          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
-        )
-      )
-    )
-
+  /**
+   * For === and !== method call that takes Equality, for example left === right, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.binaryMacroBool($org_scalatest_assert_macro_left, "===", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_left.===($org_scalatest_assert_macro_right)(defaultEquality))
+   */
   def binaryMacroBool(select: Select, secondArg: Tree): Apply =
     Apply(
       Select(
@@ -192,6 +177,45 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * For === and !== method call that takes Equality and uses TypeCheckedTripleEquals , for example left === right, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.binaryMacroBool($org_scalatest_assert_macro_left, "===", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_left.===[R]($org_scalatest_assert_macro_right)(defaultEquality))
+   */
+  def typedBinaryMacroBool(select: Select, typeArgs: List[Tree]): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalactic")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("binaryMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          TypeApply(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              select.name
+            ),
+            typeArgs
+          ),
+          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+        )
+      )
+    )
+
+  /**
+   * For unrecognized expression, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.simpleMacroBool(expression, expressionText)  // expressionText is currently the text returned from 'show'
+   */
   def simpleMacroBool(expression: Tree, expressionText: String): Apply =
     Apply(
       Select(
@@ -210,6 +234,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * For !a unary_! call, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.notBool(a)
+   */
   def notBool(target: Tree): Apply =
     Apply(
       Select(
@@ -227,6 +256,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * For a.isEmpty and method call that does not has any argument, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.unaryMacroBool($org_scalatest_assert_macro_left, "isEmpty", $org_scalatest_assert_macro_left.isEmpty)
+   */
   def unaryMacroBool(select: Select): Apply =
     Apply(
       Select(
@@ -249,6 +283,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * For a.isInstanceOf[String] == 1, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.lengthSizeMacroBool($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_left.length, 1)
+   */
   def isInstanceOfMacroBool(select: Select, className: String, typeArg: Tree): Apply =
     Apply(
       Select(
@@ -275,6 +314,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * For a.length == 1, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.lengthSizeMacroBool($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_left.length, 1)
+   */
   def lengthSizeMacroBool(select: Select): Apply =
     Apply(
       Select(
@@ -298,6 +342,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  /**
+   * generate the AST for the following code:
+   *
+   * org.scalactic.Bool.existsMacroBool($org_scalatest_assert_macro_left, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_left.exists(func))
+   */
   def existsMacroBool(select: Select, func: Function): Apply =
     Apply(
       Select(
@@ -325,10 +374,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  // traverse the given Select, both qualifier and the right expression.
   def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
     val operator = select.name.decoded
     if (logicOperators.contains(operator)) {
-      val leftTree =
+      val leftTree = // traverse the qualifier
         select.qualifier match {
           case selectApply: Apply => transformAst(selectApply.duplicate)
           case selectSelect: Select => transformAst(selectSelect.duplicate)
@@ -370,12 +420,16 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       (select.qualifier.duplicate, rightExpr.duplicate)
   }
 
+  // helper method to check if the given tree represent a place holder syntax
   private def isPlaceHolder(tree: Tree): Boolean =
     tree match {
       case valDef: ValDef => valDef.rhs == EmptyTree
       case _ => false
     }
 
+  /**
+   * Transform the passed in boolean expression, see comment in different case for details
+   */
   def transformAst(tree: Tree): Tree = {
     tree match {
       case apply: Apply if apply.args.size == 1 =>
@@ -388,13 +442,33 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 leftTree match {
                   case leftApply: Apply =>
                     leftApply.fun match {
-                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.size == 0 => // support for a.length == xxx, a.size == xxxx
+                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.size == 0 =>
+                        /**
+                         * support for a.length() == xxx, a.size() == xxxx
+                         *
+                         * generate AST for the following code:
+                         *
+                         * {
+                         *   val $org_scalatest_assert_macro_left = {qualifier of the method call}
+                         *   val $org_scalatest_assert_macro_right = {first argument}
+                         *   [code generated from lengthSizeMacroBool]
+                         * }
+                         */
                         Block(
                           valDef("$org_scalatest_assert_macro_left", leftApplySelect.qualifier.duplicate),
                           valDef("$org_scalatest_assert_macro_right", rightTree),
                           lengthSizeMacroBool(leftApplySelect.duplicate)
                         )
                       case _ =>
+                        /**
+                         * something else but still a binary macro bool, generate AST for the following code:
+                         *
+                         * {
+                         *   val $org_scalatest_assert_macro_left = {qualifier of the method call}
+                         *   val $org_scalatest_assert_macro_right = {first argument}
+                         *   [code generated from binaryMacroBool]
+                         * }
+                         */
                         Block(
                           valDef("$org_scalatest_assert_macro_left", leftTree),
                           valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -402,7 +476,18 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                         )
                     }
 
-                  case leftSelect: Select if isSupportedLengthSizeOperator(leftSelect.name.decoded) => // support for a.length == xxx, a.size == xxxx
+                  case leftSelect: Select if isSupportedLengthSizeOperator(leftSelect.name.decoded) =>
+                    /**
+                     * support for a.length == xxx, a.size == xxxx
+                     *
+                     * generate AST for the following code:
+                     *
+                     * {
+                     *   val $org_scalatest_assert_macro_left = {qualifier of the method call}
+                     *   val $org_scalatest_assert_macro_right = {first argument}
+                     *   [code generated from binaryMacroBool]
+                     * }
+                     */
                     Block(
                       valDef("$org_scalatest_assert_macro_left", leftSelect.qualifier.duplicate),
                       valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -410,6 +495,15 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                     )
 
                   case _ =>
+                    /**
+                     * something else but still a binary macro bool, generate AST for the following code:
+                     *
+                     * {
+                     *   val $org_scalatest_assert_macro_left = {qualifier of the method call}
+                     *   val $org_scalatest_assert_macro_right = {first argument}
+                     *   [code generated from binaryMacroBool]
+                     * }
+                     */
                     Block(
                       valDef("$org_scalatest_assert_macro_left", leftTree),
                       valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -425,20 +519,38 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                       case boolExprApply: Apply if boolExprApply.args.size == 1 =>
                         boolExprApply.fun match {
                           case boolExprApplySelect: Select if boolExprApplySelect.name.decoded == "==" =>
+                            /**
+                             * support for a.exists(_ == 2), generate AST for the following code:
+                             *
+                             * {
+                             *   val $org_scalatest_assert_macro_left = a
+                             *   val $org_scalatest_assert_macro_right = _ == 2  // after desugar
+                             *   [code generated from existsMacroBool]
+                             * }
+                             */
                             Block(
                               valDef("$org_scalatest_assert_macro_left", leftTree),
                               valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
                               existsMacroBool(select.duplicate, func.duplicate)
                             )
-                          case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                          case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
                         }
-                      case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                      case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
                     }
 
-                  case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                  case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
                 }
 
               case _ =>
+                /**
+                 * something else but still a binary macro bool, generate AST for the following code:
+                 *
+                 * {
+                 *   val $org_scalatest_assert_macro_left = {qualifier of the method call}
+                 *   val $org_scalatest_assert_macro_right = {first argument}
+                 *   [code generated from binaryMacroBool]
+                 * }
+                 */
                 Block(
                   valDef("$org_scalatest_assert_macro_left", leftTree),
                   valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -446,10 +558,21 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 )
             }
 
-          case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
+          case funApply: Apply if funApply.args.size == 1 =>
             funApply.fun match {
               case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
                 val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                /**
+                 * For === and !== that takes Equality, for example a === b
+                 *
+                 * will generate AST for the following code:
+                 *
+                 * {
+                 *   val $org_scalatest_assert_macro_left = a
+                 *   val $org_scalatest_assert_macro_right = b
+                 *   [code generated from binaryMacroBool]
+                 * }
+                 */
                 Block(
                   valDef("$org_scalatest_assert_macro_left", leftTree),
                   valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -457,7 +580,18 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 )
               case typeApply: TypeApply =>
                 typeApply.fun match {
-                  case select: Select if typeApply.args.size == 1 => // For TypeCheckedTripleEquals
+                  case select: Select if typeApply.args.size == 1 =>
+                    /**
+                     * For === and !== that takes Equality and uses TypeCheckedTripleEquals, for example a === b
+                     *
+                     * will generate AST for the following code:
+                     *
+                     * {
+                     *   val $org_scalatest_assert_macro_left = a
+                     *   val $org_scalatest_assert_macro_right = b
+                     *   [code generated from binaryMacroBool]
+                     * }
+                     */
                     val operator: String = select.name.decoded
                     if (operator == "===" || operator == "!==") {
                       val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
@@ -468,13 +602,24 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                       )
                     }
                     else
-                      simpleMacroBool(tree.duplicate, getText(tree))
-                  case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                      simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
+                  case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
                 }
-              case _ => simpleMacroBool(tree.duplicate, getText(tree))
+              case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
             }
 
           case funTypeApply: TypeApply =>
+            /**
+             * For binary bool expression that takes typed parameter, for example the contains method in scala 2.11, a.contains(b)
+             *
+             * will generate AST for the following code:
+             *
+             * {
+             *   val $org_scalatest_assert_macro_left = a
+             *   val $org_scalatest_assert_macro_right = b
+             *   [code generated from typedBinaryMacroBool]
+             * }
+             */
             funTypeApply.fun match {
               case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
                 val (leftTree, rightTree) = traverseSelect(select, apply.args(0))
@@ -484,12 +629,22 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                   typedBinaryMacroBool(select.duplicate, funTypeApply.args)
                 )
 
-              case _ => simpleMacroBool(tree.duplicate, getText(tree))
+              case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
             }
 
-          case _ => simpleMacroBool(tree.duplicate, getText(tree))
+          case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
         }
-      case apply: Apply if apply.args.size == 0 => // for unary operation that takes 0 arguments
+      case apply: Apply if apply.args.size == 0 =>
+        /**
+         * For unary operation that takes 0 arguments, for example a.isEmpty
+         *
+         * will generate AST for the following code:
+         *
+         * {
+         *   val $org_scalatest_assert_macro_left = a
+         *   [code generated from unaryMacroBool]
+         * }
+         */
         apply.fun match {
           case select: Select if isSupportedUnaryOperator(select.name.decoded) =>
             Block(
@@ -498,26 +653,46 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             )
           case _ => simpleMacroBool(tree.duplicate, getText(tree))
         }
-      case typeApply: TypeApply if typeApply.args.length == 1 => // for isInstanceOf
+      case typeApply: TypeApply if typeApply.args.length == 1 =>
         typeApply.fun match {
           case select: Select =>
             val operator = select.name.decoded
             if (operator == "isInstanceOf") {
+              /**
+               * For isInstanceOf support, for example a.isInstanceOf[String]
+               *
+               * will generate AST for the following code:
+               *
+               * {
+               *   val $org_scalatest_assert_macro_left = a
+               *   [code generated from isInstanceOfMacroBool]
+               * }
+               */
               typeApply.args(0).tpe match {
                 case typeRef: TypeRef =>
                   Block(
                     valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
                     isInstanceOfMacroBool(select.duplicate, typeRef.sym.fullName, typeApply.args(0).duplicate)
                   )
-                case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
               }
             }
             else
-              simpleMacroBool(tree.duplicate, getText(tree))
-          case _ => simpleMacroBool(tree.duplicate, getText(tree))
+              simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
+          case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
         }
       case select: Select if supportedUnaryOperations.contains(select.name.decoded) => // for ! and unary operation that does not take any arguments
           if (select.name.decoded == "unary_!") {
+            /**
+             * For unary_! operation, for example !a
+             *
+             * will generate AST for the following code:
+             *
+             * {
+             *   val $org_scalatest_assert_macro_left = a
+             *   [code generated from notBool]
+             * }
+             */
             val leftTree =
               select.qualifier match {
                 case selectApply: Apply => transformAst(selectApply.duplicate)
@@ -528,18 +703,31 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             notBool(leftTree.duplicate)
           }
           else {
+            /**
+             * For unary operation that does not take any arguments, for example a.isEmpty
+             *
+             * will generate AST for the following code:
+             *
+             * {
+             *   val $org_scalatest_assert_macro_left = a
+             *   [code generated from unaryMacroBool]
+             * }
+             */
             Block(
               valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
               unaryMacroBool(select.duplicate)
             )
           }
       case _ =>
-        simpleMacroBool(tree.duplicate, getText(tree))
+        simpleMacroBool(tree.duplicate, getText(tree))// something else, just call simpleMacroBool
     }
   }
 
-  // Generate AST for:
-  // helper.methodName(expression, clue)
+  /**
+   * Generate AST for the following code:
+   *
+   * {helperName}.{methodName}($org_scalatest_assert_macro_expr, clue)
+   */
   def callHelper(methodName: String, clueTree: Tree): Apply =
     Apply(
       Select(
@@ -549,6 +737,14 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
+  /**
+   * Generate AST for the following code:
+   *
+   * {
+   *   val $org_scalatest_assert_macro_expr = [code generated from transformAst]
+   *   [code generated from callHelper]
+   * }
+   */
   def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
