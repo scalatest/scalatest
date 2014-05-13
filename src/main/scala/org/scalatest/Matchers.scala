@@ -113,6 +113,7 @@ import scala.language.higherKinds
  * <li><a href="#workingWithOptions">Working with <code>Option</code>s</a></li>
  * <li><a href="#checkingArbitraryProperties">Checking arbitrary properties with <code>have</code></a></li>
  * <li><a href="#lengthSizeHavePropertyMatchers">Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</a></li>
+ * <li><a href="#matchingAPattern">Checking that an expression matches a pattern</a></li>
  * <li><a href="#usingCustomMatchers">Using custom matchers</a></li>
  * <li><a href="#checkingForExpectedExceptions">Checking for expected exceptions</a></li>
  * <li><a href="#thosePeskyParens">Those pesky parens</a></li>
@@ -1536,6 +1537,34 @@ import scala.language.higherKinds
  * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. The <code>(of [&lt;type&gt;])</code> syntax converts the
  * the <code>MatcherFactory1[Any, Length]</code> to a <code>HavePropertyMatcher[&lt;type&gt;, Int]</code>.
  * </p>
+ *
+ * <a name="matchingAPattern"></a>
+ * <h2>Checking that an expression matches a pattern</h2>
+ *
+ * <p>
+ * ScalaTest's <a href="Inside.html"><code>Inside</code></a> trait allows you to make assertions after a pattern match.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * case class Name(first: String, middle: String, last: String)
+ *
+ * val name = Name("Jane", "Q", "Programmer")
+ *
+ * inside(name) { case Name(first, _, _) =&gt;
+ *   first should startWith ("S")
+ * }
+ * </pre>
+ * 
+ * <p>
+ * You can use <code>inside</code> to just ensure a pattern is matched, without making any further assertions, but a better
+ * alternative for that kind of assertion is <code>matchPattern</code>. The <code>matchPattern</code> syntax allows you
+ * to express that you expect a value to match a particular pattern, no more and no less:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * name should matchPattern { case Name("Sarah", _, _) =&gt; }
+ * </pre>
  *
  * <a name="usingCustomMatchers"></a>
  * <h2>Using custom matchers</h2>
