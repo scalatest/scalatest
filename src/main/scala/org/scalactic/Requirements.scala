@@ -18,7 +18,108 @@ package org.scalactic
 import reflect.macros.Context
 
 /**
- * Trait that contains <code>require</code> and <code>requireState</code> to check for requirements.
+ * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions
+ * that give descriptive error messages extracted via a macro.
+ * 
+ * <p>These methods of trait <code>Requirements</code> aim to improve error messages provided when a pre-condition check fails at runtime in
+ * production code. Although it is recommended practice to supply helpful error messages when doing pre-condition checks, often people
+ * don't. Instead of this:
+ * 
+ * <pre class="stREPL">
+ * scala&gt; val length = 5
+ * length: Int = 5
+ * 
+ * scala&gt; val idx = 6
+ * idx: Int = 6
+ * 
+ * scala&gt; require(idx &gt;= 0 &amp;&amp; idx &lt;= length, "index, " + idx + ", was less than zero or greater than or equal to length, " + length)
+ * java.lang.IllegalArgumentException: <strong>requirement failed: index, 6, was less than zero or greater than or equal to length, 5</strong>
+ * 	at scala.Predef$.require(Predef.scala:233)
+ * 	...
+ * </pre>
+ * 
+ * <p>
+ * People write simply:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; require(idx &gt;= 0 &amp;&amp; idx &lt;= length)
+ * java.lang.IllegalArgumentException: <strong>requirement failed</strong>
+ * 	at scala.Predef$.require(Predef.scala:221)
+ * 	...
+ * </pre>
+ * 
+ * <p>
+ * Note that the detail message of the <code>IllegalArgumentException</code> thrown by the previous line of code is simply, <code>"requirement failed"</code>.
+ * Such messages often end up in a log file or bug report, where a better error message can save time in debugging the problem.
+ * By importing the members of <code>Requirements</code> (or mixing in its companion trait), you'll get a more helpful error message
+ * extracted by a macro, whether or not a clue message is provided:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; import org.scalactic._
+ * import org.scalactic._
+ * 
+ * scala&gt; import Requirements._
+ * import Requirements._
+ * 
+ * scala&gt; require(idx &gt;= 0 &amp;&amp; idx &lt;= length)
+ * java.lang.IllegalArgumentException: <strong>6 was greater than or equal to 0, but 6 was not less than or equal to 5</strong>
+ * 	at org.scalactic.Requirements$RequirementsHelper.macroRequire(Requirements.scala:56)
+ * 	...
+ * 
+ * scala&gt; require(idx &gt;= 0 &amp;&amp; idx &lt;= length, "(hopefully that helps)")
+ * java.lang.IllegalArgumentException: <strong>6 was greater than or equal to 0, but 6 was not less than or equal to 5 (hopefully that helps)</strong>
+ * 	at org.scalactic.Requirements$RequirementsHelper.macroRequire(Requirements.scala:56)
+ * 	...
+ * </pre>
+ * 
+ * <p>
+ * The <code>requireState</code> method provides identical error messages to <code>require</code>, but throws
+ * <code>IllegalStateException</code> instead of <code>IllegalArgumentException</code>:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; val connectionOpen = false
+ * connectionOpen: Boolean = false
+ * 
+ * scala&gt; requireState(connectionOpen)
+ * java.lang.IllegalStateException: <strong>connectionOpen was false</strong>
+ * 	at org.scalactic.Requirements$RequirementsHelper.macroRequireState(Requirements.scala:71)
+ * 	...
+ * </pre>
+ * 
+ * <p>
+ * Thus, whereas the <code>require</code> methods throw the Java platform's standard exception indicating a passed argument
+ * violated a precondition, <code>IllegalArgumentException</code>, the <code>requireState</code> methods throw the standard
+ * exception indicating an object's method was invoked when the object was in an inappropriate state for that method,
+ * <code>IllegalStateException</code>.
+ * </p>
+ * 
+ * <p>
+ * The <code>requireNonNull</code> method takes one or more variables as arguments and throws <code>NullPointerException</code>
+ * with an error messages that includes the variable names if any are <code>null</code>. Here's an example:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; val e: String = null
+ * e: String = null
+ * 
+ * scala&gt; val f: java.util.Date = null
+ * f: java.util.Date = null
+ * 
+ * scala&gt; requireNonNull(a, b, c, d, e, f)
+ * java.lang.NullPointerException: <strong>e and f were null</strong>
+ * 	at org.scalactic.Requirements$RequirementsHelper.macroRequireNonNull(Requirements.scala:101)
+ * 	...
+ * </pre>
+ * 
+ * <p>
+ * Although trait <code>Requirements</code> can help you debug problems that occur in production, bear in mind that a much
+ * better alternative is to make it impossible for such events to occur at all. Use the type system to ensure that all
+ * pre-conditions are met so that the compiler can find broken pre-conditions and point them out with compiler error messages.
+ * When this is not possible or practical, however, trait <code>Requirements</code> is helpful.
+ * </p>
  */
 trait Requirements {
 
@@ -73,13 +174,13 @@ trait Requirements {
     }
 
     /**
-     * Require that all of the passed in elements are not <code>null</code>, else fail with <code>NullPointerException</code>.
+     * Require that all of the passed in arguments are not <code>null</code>, else fail with <code>NullPointerException</code>.
      *
      * @param variableNames names of variable passed as appear in source
-     * @param elements elements to check for <code>null</code> value
+     * @param arguments arguments to check for <code>null</code> value
      */
-    def macroRequireNonNull(variableNames: Array[String], elements: Array[Any]) {
-      val nullList = elements.zipWithIndex.filter { case (e, idx) =>
+    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any]) {
+      val nullList = arguments.zipWithIndex.filter { case (e, idx) =>
         e == null
       }
       val nullCount = nullList.size
@@ -110,29 +211,16 @@ trait Requirements {
   val requirementsHelper = new RequirementsHelper
 
   /**
-   * Require that a boolean condition is true.
+   * Require that a boolean condition is true about an argument passed to a method, function, or constructor.
+   *
+   * <p>
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>IllegalArgumentException</code>.
-   *
-   * <p>
-   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
    * </p>
    *
-   * <ul>
-   * <li>require(a == b)</li>
-   * <li>require(a != b)</li>
-   * <li>require(a === b)</li>
-   * <li>require(a !== b)</li>
-   * </ul>
-   *
    * <p>
-   * Any other form of expression will just get a plain-old <code>IllegalArgumentException</code> at this time. In the future,
-   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.x, however, this behavior
-   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
-   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
-   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
-   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * This method is implemented in terms of a Scala macro that will generate an error message.
+   * See the main documentation for this trait for examples.
    * </p>
    *
    * @param condition the boolean condition to check as requirement
@@ -141,44 +229,32 @@ trait Requirements {
   def require(condition: Boolean): Unit = macro RequirementsMacro.require
 
   /**
-   * Require that a boolean condition, described in <code>String</code>
-   * <code>message</code>, is true.
+   * Require that a boolean condition about an argument passed to a method, function, or constructor,
+   * and described in the given <code>clue</code>, is true.
+   *
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>IllegalArgumentException</code> with the
    * <code>String</code> obtained by invoking <code>toString</code> on the
-   * specified <code>clue</code> as the exception's detail message.
+   * specified <code>clue</code> and appending that to the macro-generated
+   * error message as the exception's detail message.
    *
    * @param condition the boolean condition to check as requirement
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue an objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   def require(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireWithClue
 
   /**
-   * Require that a boolean condition is true.
+   * Require that a boolean condition is true about the state of an object on which a method has been invoked.
+   *
+   * <p>
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>IllegalStateException</code>.
-   *
-   * <p>
-   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
    * </p>
    *
-   * <ul>
-   * <li>requireState(a == b)</li>
-   * <li>requireState(a != b)</li>
-   * <li>requireState(a === b)</li>
-   * <li>requireState(a !== b)</li>
-   * </ul>
-   *
    * <p>
-   * Any other form of expression will just get a plain-old <code>IllegalStateException</code> at this time. In the future,
-   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.x, however, this behavior
-   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
-   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
-   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
-   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * This method is implemented in terms of a Scala macro that will generate an error message.
    * </p>
    *
    * @param condition the boolean condition to check as requirement
@@ -187,30 +263,37 @@ trait Requirements {
   def requireState(condition: Boolean): Unit = macro RequirementsMacro.requireState
 
   /**
-   * Require that a boolean condition, described in <code>String</code>
-   * <code>message</code>, is true.
+   * Require that a boolean condition about the state of an object on which a method has been
+   * invoked, and described in the given <code>clue</code>, is true.
+   *
+   * <p>
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>IllegalStateException</code> with the
    * <code>String</code> obtained by invoking <code>toString</code> on the
-   * specified <code>clue</code> as the exception's detail message.
+   * specified <code>clue</code> appended to the macro-generated error message
+   * as the exception's detail message.
+   * </p>
    *
-   * @param condition the boolean condition to check as requirement
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param condition the boolean condition to check as a requirement
+   * @param clue an object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws IllegalStateException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   def requireState(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireStateWithClue
 
   /**
-   * Require that all passed in elements to be non-null.
-   * If none of the passed in elements is <code>null</code>, this method returns normally.
-   * Else, it throws <code>NullPointerException</code> with error message that includes the name(s)
-   * (as appeared in source) of the element(s) that holds <code>null</code> value.
+   * Require that all passed arguments are non-null.
    *
-   * @param elements elements to check for <code>null</code> value
-   * @throws NullPointerException if any of the passed in elements is <code>null</code>.
+   * <p>
+   * If none of the passed arguments are <code>null</code>, this method returns normally.
+   * Else, it throws <code>NullPointerException</code> with an error message that includes the name
+   * (as it appeared in the source) of each argument that was <code>null</code>.
+   * </p>
+   *
+   * @param arguments arguments to check for <code>null</code> value
+   * @throws NullPointerException if any of the arguments are <code>null</code>.
    */
-  def requireNonNull(elements: Any*): Unit = macro RequirementsMacro.requireNonNull
+  def requireNonNull(arguments: Any*): Unit = macro RequirementsMacro.requireNonNull
 }
 
 /**
@@ -261,13 +344,13 @@ private[scalactic] object RequirementsMacro {
     new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue)
 
   /**
-   * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.
+   * Provides requirement implementation for <code>Requirements.requireNonNull(arguments: Any*)</code>, with rich error message.
    *
    * @param context macro context
-   * @param elements original elements expression(s)
+   * @param arguments original arguments expression(s)
    * @return transformed expression that performs the requirement check and throw <code>NullPointerException</code> with rich error message if requirement failed
    */
-  def requireNonNull(context: Context)(elements: context.Expr[Any]*): context.Expr[Unit] = {
+  def requireNonNull(context: Context)(arguments: context.Expr[Any]*): context.Expr[Unit] = {
     import context.universe._
 
     val variablesNamesArray =
@@ -276,16 +359,16 @@ private[scalactic] object RequirementsMacro {
           Ident("Array"),
           newTermName("apply")
         ),
-        List(elements.map(e => context.literal(show(e.tree)).tree): _*)
+        List(arguments.map(e => context.literal(show(e.tree)).tree): _*)
       )
 
-    val elementsArray =
+    val argumentsArray =
       Apply(
         Select(
           Ident("Array"),
           newTermName("apply")
         ),
-        List(elements.map(e => e.tree): _*)
+        List(arguments.map(e => e.tree): _*)
       )
 
     context.Expr(
@@ -294,7 +377,7 @@ private[scalactic] object RequirementsMacro {
           Ident("requirementsHelper"),
           newTermName("macroRequireNonNull")
         ),
-        List(variablesNamesArray, elementsArray)
+        List(variablesNamesArray, argumentsArray)
       )
     )
   }
