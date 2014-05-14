@@ -107,9 +107,8 @@ private[scalatest] object CompileMacro {
             // Do nothing
           }
         case e: ParseException =>
-          val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
           reify {
-            throw new TestFailedException(messageExpr.splice, 0)
+            // Do nothing
           }
       }
     }

@@ -39,14 +39,8 @@ class ShouldNotCompileSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when parse failed") {
-        val e = intercept[TestFailedException] {
-          "println(\"test)" shouldNot compile
-        }
-        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
-        assert(e.message.get.endsWith("\nfor: println(\"test)"))
-        assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
+      it("should do nothing when parse failed") {
+        "println(\"test)" shouldNot compile
       }
     }
 
@@ -72,19 +66,10 @@ class ShouldNotCompileSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when parse failed ") {
-        val e = intercept[TestFailedException] {
-          """
-            |println(\"test)
-            |""".stripMargin shouldNot compile
-        }
-        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
-        assert(e.message.get.endsWith(
-          """for: 
-            |println(\"test)
-            |""".stripMargin))
-        assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
+      it("should do nothing when parse failed") {
+        """
+          |println(\"test)
+          |""".stripMargin shouldNot compile
       }
     }
 
