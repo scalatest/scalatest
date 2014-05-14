@@ -105,18 +105,17 @@ import PatienceConfiguration._
  * <pre class="stHighlight">
  * import org.scalatest._
  * import concurrent.AsyncAssertions
- * import matchers.ShouldMatchers
  * import scala.actors.Actor
  *
- * class ExampleSuite extends FunSuite with ShouldMatchers with AsyncAssertions {
+ * class ExampleSuite extends FunSuite with Matchers with AsyncAssertions {
  *
  *   case class Message(text: String)
  *
  *   class Publisher extends Actor {
  *
- *     @volatile private var handle: Message => Unit = { (msg) => }
+ *     @volatile private var handle: Message =&gt; Unit = { (msg) =&gt; }
  *
- *     def registerHandler(f: Message => Unit) {
+ *     def registerHandler(f: Message =&gt; Unit) {
  *       handle = f
  *     }
  *
@@ -124,8 +123,8 @@ import PatienceConfiguration._
  *       var done = false
  *       while (!done) {
  *         react {
- *           case msg: Message => handle(msg)
- *           case "Exit" => done = true
+ *           case msg: Message =&gt; handle(msg)
+ *           case "Exit" =&gt; done = true
  *         }
  *       }
  *     }
@@ -139,7 +138,7 @@ import PatienceConfiguration._
  *
  *     publisher.start()
  *
- *     publisher.registerHandler { msg =>
+ *     publisher.registerHandler { msg =&gt;
  *       w { msg should equal (message) }
  *       w.dismiss()
  *     }
@@ -251,18 +250,17 @@ trait AsyncAssertions extends PatienceConfiguration {
    * <pre class="stHighlight">
    * import org.scalatest._
    * import concurrent.AsyncAssertions
-   * import matchers.ShouldMatchers
    * import scala.actors.Actor
    *
-   * class ExampleSuite extends FunSuite with ShouldMatchers with AsyncAssertions {
+   * class ExampleSuite extends FunSuite with Matchers with AsyncAssertions {
    *
    *   case class Message(text: String)
    *
    *   class Publisher extends Actor {
    *
-   *     @volatile private var handle: Message => Unit = { (msg) => }
+   *     @volatile private var handle: Message =&gt; Unit = { (msg) =&gt; }
    *
-   *     def registerHandler(f: Message => Unit) {
+   *     def registerHandler(f: Message =&gt; Unit) {
    *       handle = f
    *     }
    *
@@ -270,8 +268,8 @@ trait AsyncAssertions extends PatienceConfiguration {
    *       var done = false
    *       while (!done) {
    *         react {
-   *           case msg: Message => handle(msg)
-   *           case "Exit" => done = true
+   *           case msg: Message =&gt; handle(msg)
+   *           case "Exit" =&gt; done = true
    *         }
    *       }
    *     }
@@ -285,7 +283,7 @@ trait AsyncAssertions extends PatienceConfiguration {
    *
    *     publisher.start()
    *
-   *     publisher.registerHandler { msg =>
+   *     publisher.registerHandler { msg =&gt;
    *       w { msg should equal (message) }
    *       w.dismiss()
    *     }
@@ -387,17 +385,18 @@ trait AsyncAssertions extends PatienceConfiguration {
           }
           wait(timeLeft.millisPart, timeLeft.nanosPart)
         }
+        // it should never be the case that we get all the expected dismissals and still throw 
+        // a timeout failure - clients trying to debug code would find that very surprising.
+        // Calls to timedOut subsequent to while loop exit constitute a kind of "double jeopardy".
+        // This if-else must be in the synchronized block because it accesses and assigns dismissalsCount.
+        if (thrown.isDefined)
+          throw thrown.get
+        else if (dismissedCount >= dismissals)
+          dismissedCount = 0 // reset the dismissed count to support multiple await calls        
+        else if (timedOut)
+          throw new TestFailedException(Resources("awaitTimedOut"), 2)
+        else throw new Exception("Should never happen: thrown was not defined; dismissedCount was not greater than dismissals; and timedOut was false")
       }
-      // it should never be the case that we get all the expected dismissals and still throw 
-      // a timeout failure - clients trying to debug code would find that very surprising.
-      // Calls to timedOut subsequent to while loop exit constitute a kind of "double jepardy".
-      if (thrown.isDefined)
-        throw thrown.get
-      else if (dismissedCount == dismissals)
-        dismissedCount = 0 // reset the dismissed count to support multiple await calls        
-      else if (timedOut)
-        throw new TestFailedException(Resources("awaitTimedOut"), 2)
-      else Predef.assert(false, "unreachable condition - maybe time went backwards?!")
     }
 
     /**

@@ -17,15 +17,17 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import SharedHelpers._
-import matchers.ShouldMatchers
 import SharedHelpers.thisLineNumber
 import time.{Span, Millis}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits._
 
-class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with ConductorFixture with
+
+class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFixture with
     OptionValues with AsyncAssertions {
 
   override def withFixture(test: NoArgTest) = {
@@ -281,6 +283,14 @@ class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with Condu
       }
 
       con.conduct()
+    }
+    it("should allow more dismissals than expected") { () =>
+      val w = new Waiter
+      Future {
+        w.dismiss()
+        w.dismiss()
+      }
+      w.await(dismissals(1))
     }
   }
 }
