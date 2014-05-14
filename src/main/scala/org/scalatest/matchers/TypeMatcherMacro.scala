@@ -45,7 +45,7 @@ private[scalatest] object TypeMatcherMacro {
              ),
              _
            ) if methodNameTermName.decoded == methodName && containsTypeParameter(typeList) =>
-        context.abort(context.macroApplication.pos, "Type parameter is not allowed because it will be erased at runtime, please use _ instead.")
+        context.warning(context.macroApplication.pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
 
       case _ =>
     }
