@@ -35,18 +35,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
   // this is taken from expecty
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
-  def getText(expr: Tree): String = {
-    expr match {
-      case literal: Literal =>
-        getPosition(expr) match {
-          case p: scala.reflect.internal.util.RangePosition => p.lineContent.slice(p.start, p.end).trim // this only available when -Yrangepos is enabled
-          case p: reflect.internal.util.Position => ""
-        }
-      case _ => show(expr)
-    }
-  }
-
-  // this is taken from expecty and modified
+  // this is taken from expecty and modified, the purpose is to get the anchor for the given expression
   private[this] def getAnchor(expr: Tree): Int = expr match {
     case Apply(x, ys) => getAnchor(x) + 0
     case TypeApply(x, ys) => getAnchor(x) + 0
@@ -58,6 +47,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     }
   }
 
+  /**
+   * This generates AST for a List constructions, like the following code:
+   *
+   * scala.collection.immutable.List.apply(a, b, c)
+   */
   def list(elements: List[Tree]): Tree =
     Apply(
       Select(
@@ -76,6 +70,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       elements
     )
 
+  /**
+   * For a given expression (passed in as tree), generate AST for the following code:
+   *
+   * org.scalatest.DiagrammedExpr.simpleExpr(expr, anchorOfExpr)
+   */
   def simpleExpr(tree: Tree): Apply =
     Apply(
       Select(
@@ -94,14 +93,19 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       )
     )
 
+  // A data holder for result of traverseApply
   case class ApplyInfo(select: Select, applyList: List[GenericApply])
 
+  // Traverse a GenericApply until it finds a Select that contains the qualifier
   private def traverseApply(apply: GenericApply, accApplyList: List[GenericApply] = List.empty): ApplyInfo =
     apply.fun match {
       case select: Select => ApplyInfo(select, apply :: accApplyList)
       case funApply: GenericApply => traverseApply(funApply, apply :: accApplyList)
     }
 
+  // Rebuild the value expression by going backward the list of GenericApply (tail of applyList traverseApply),
+  // our aim is to extract the qualifier and assign it to a val, and rebuild the invocation using by referring
+  // to the val.
   private def recursiveValueApply(applyList: List[GenericApply], currentApply: GenericApply): GenericApply =
     applyList match {
       case TypeApply(fun, args) :: tail =>
@@ -111,6 +115,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case Nil => currentApply
     }
 
+  /**
+   * Given a Select, e.g. a.isEmpty generate AST for the following code:
+   *
+   * {
+   *   val $org_scalatest_macro_qualifier = a
+   *   org.scalatest.DiagrammedExpr.selectExpr($org_scalatest_macro_qualifier, $org_scalatest_macro_qualifier.value.isEmpty, anchorOfSelect)
+   * }
+   */
   def selectExpr(select: Select): Tree = {
     val qualifierValDef: Tree = valDef("$org_scalatest_macro_qualifier", transformAst(select.qualifier))
 
@@ -144,10 +156,24 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  /**
+   * Given a Apply, e.g. a == b, generate AST for the following code:
+   *
+   * {
+   *   val $org_scalatest_macro_qualifier = a
+   *   val $org_scalatest_macro_arg_0 = b
+   *   org.scalatest.DiagrammedExpr.applyExpr($org_scalatest_macro_qualifier, List($org_scalatest_macro_arg_0), $org_scalatest_macro_qualifier.==($org_scalatest_macro_arg_0), anchorOfApply)
+   * }
+   */
   private def applyExpr(apply: GenericApply): Tree = {
     val applyInfo = traverseApply(apply)
+
+    // val $org_scalatest_macro_qualifier = a
     val qualifierValDef: Tree = valDef("$org_scalatest_macro_qualifier", transformAst(applyInfo.select.qualifier))
 
+    // Build up the arguments val
+    // In the above example, it will generate:
+    // val $org_scalatest_macro_arg_0 = b
     val argsValDefList: List[ValDef] =
       applyInfo.applyList.zipWithIndex.flatMap { case (currentApply, i) =>
         val base = i * 100  // should be ok as maximum function arguments is 22
@@ -164,6 +190,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         }
       }
 
+    // Build up the List($org_scalatest_macro_arg_0) in the above example
     val substitutedArgsList: List[List[Tree]] =
       applyInfo.applyList.zipWithIndex.map { case (currentApply, i) =>
         val base = i * 100  // should be ok as maximum function arguments is 22
@@ -181,6 +208,8 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
 
       }
 
+    // and this is:
+    // $org_scalatest_macro_qualifier.==($org_scalatest_macro_arg_0)
     val currentValueApply =
       applyInfo.applyList.head match {
         case typeApply: TypeApply =>
@@ -208,6 +237,8 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Ident(valDef.name)
       }
 
+    // and now the final result:
+    // org.scalatest.DiagrammedExpr.applyExpr($org_scalatest_macro_qualifier, List($org_scalatest_macro_arg_0), $org_scalatest_macro_qualifier.==($org_scalatest_macro_arg_0), anchorOfApply)
     val resultExpr: Tree =
       Apply(
         Select(
@@ -228,10 +259,20 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         )
       )
 
+    // Special handle if the method invocation is logical expression &&, &, || and |
     val exprList: List[Tree] = {
       val funcName = applyInfo.select.name.decoded
       if ((funcName == "&&" || funcName == "&") && argIdents.length == 1) {
-        // &&, try to be lazy
+        /**
+         * If it is && or &, try to be lazy by doing:
+         *
+         * if ($org_scalatest_macro_qualifier.value) { // only evaluate the right when the left/qualifier is true
+         *   val $org_scalatest_macro_arg_0 = ...
+         *   org.scalatest.DiagrammedExpr.applyExpr(...)
+         * }
+         * else
+         *   $org_scalatest_macro_qualifier
+         */
         val ifCheck =
           If(
             Select(
@@ -245,6 +286,16 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       }
       else if ((funcName == "||" || funcName == "|") && argIdents.length == 1) {
         // ||, try to be lazy
+        /**
+         * If it is || or |, ry to be lazy by doing:
+         *
+         * if ($org_scalatest_macro_qualifier.value)
+         *   $org_scalatest_macro_qualifier
+         * else { // only evaluate the right when left/qualifier is false
+         *   val $org_scalatest_macro_arg_0 = ...
+         *   org.scalatest.DiagrammedExpr.applyExpr(...)
+         * }
+         */
         val ifCheck =
           If(
             Select(
@@ -263,19 +314,20 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def transformAst(tree: Tree): Tree = {
     tree match {
-      case apply: GenericApply => applyExpr(apply)
-      case Select(This(_), _) => simpleExpr(tree)
+      case apply: GenericApply => applyExpr(apply) // delegate to applyExpr if it is Apply
+      case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
       case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
-      case select: Select => selectExpr(select)
-      case Block(stats, expr) => transformAst(expr)
-      case other => simpleExpr(other)
+      case select: Select => selectExpr(select) // delegate to selectExpr if it is a Select
+      case Block(stats, expr) => transformAst(expr) // call transformAst recursively using the expr argument if it is a block
+      case other => simpleExpr(other) // for others, just delegate to simpleExpr
     }
   }
 
   // Generate AST for:
-  // helper.methodName(expression, clue)
+  // helper.methodName($org_scalatest_assert_macro_expr, clue, sourceText)
   def callHelper(methodName: String, clueTree: Tree, sourceText: String): Apply =
     Apply(
       Select(
@@ -285,6 +337,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, Literal(Constant(sourceText)))
     )
 
+  /**
+   * Generate macro code that does:
+   *
+   * {
+   *   val $org_scalatest_assert_macro_expr = [code generated from transformAst]
+   *   [code generated from callHelper]
+   * }
+   */
   def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String): Expr[Unit] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =

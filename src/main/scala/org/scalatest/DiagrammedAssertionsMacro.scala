@@ -20,33 +20,43 @@ import reflect.macros.Context
 
 private[scalatest] object DiagrammedAssertionsMacro {
 
+  /**
+   * Get first line number of the given expression.
+   */
   private[this] def getFirstLine(context: Context)(expr: context.Tree): Int = {
     import context.universe._
     expr match {
-      case apply: Apply => getFirstLine(context)(apply.fun)
-      case typeApply: TypeApply => getFirstLine(context)(typeApply.fun)
-      case select: Select => getFirstLine(context)(select.qualifier)
-      case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line
+      case apply: Apply => getFirstLine(context)(apply.fun) // If it is a Apply, we'll look into its apply.fun, which contains the qualifier (looking for the left-most).
+      case typeApply: TypeApply => getFirstLine(context)(typeApply.fun) // If it is a TypedApply, we'll look into its apply.fun, which contains the qualifier (looking for the left-most)
+      case select: Select => getFirstLine(context)(select.qualifier) // If it is a Select, we'll look at its qualifier (looking for the left)
+      case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line // For others, just the position line number
     }
   }
 
+  /**
+   * Get last line number of the given expression.
+   */
   private def getLastLine(context: Context)(tree: context.Tree): Int = {
     import context.universe._
     tree match {
       case apply: Apply =>
-        if (apply.args.length > 0)
+        if (apply.args.length > 0) // If it is a Apply, we'll look into its last argument, which is the right-most expression.
           getLastLine(context)(apply.args.last)
-        else
+        else // If there's no argument, then we look at the apply.fun then.
           getLastLine(context)(apply.fun)
       case typeApply: TypeApply =>
-        if (typeApply.args.length > 0)
+        if (typeApply.args.length > 0) // If it is a TypeApply, we'll look into its last argument, which is the right-most expression.
           getLastLine(context)(typeApply.args.last)
-        else
+        else // If there's no argument, then we look at the apply.fun then.
           getLastLine(context)(typeApply.fun)
-      case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line
+      case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line // For others, just the position line number
     }
   }
 
+  /**
+   * Get source text of the expression, current it'll try to look for RangePosition (only available when -Yrange.pos is enabled),
+   * else it will just get the line content.
+   */
   private[this] def getSourceText(context: Context)(tree: context.Tree): String = {
     import context.universe._
     tree.pos.asInstanceOf[scala.reflect.internal.util.Position] match {
@@ -55,15 +65,19 @@ private[scalatest] object DiagrammedAssertionsMacro {
     }
   }
 
+  /**
+   * The macro implementation, it'll try to detect if it is a multiline expression, if it is, it'll just fallback to use BooleanMacro.
+   *
+   */
   private def macroImpl(context: Context)(methodName: String, condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
     import context.universe._
 
-    val startLine = getFirstLine(context)(condition.tree)
-    val endLine = getLastLine(context)(condition.tree)
+    val startLine = getFirstLine(context)(condition.tree) // Get the expression first line number
+    val endLine = getLastLine(context)(condition.tree) // Get the expression last line number
 
-    if (startLine == endLine) // Only use diagram macro if it is one line
+    if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
       new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, methodName, clue, getSourceText(context)(condition.tree))
-    else
+    else // otherwise we'll just fallback to use BooleanMacro
       new BooleanMacro[context.type](context, "assertionsHelper").genMacro(condition, methodName, clue)
   }
 
