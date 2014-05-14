@@ -46,7 +46,7 @@ private[scalatest] object CompileMacro {
   def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
-    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeError", code)
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
@@ -70,7 +70,30 @@ private[scalatest] object CompileMacro {
   def assertNoTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
-    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeErrorImpl", code)
+    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeError", code)
+    try {
+      c.typeCheck(c.parse("{ " + codeStr + " }"))
+      reify {
+        // Do nothing
+      }
+    } catch {
+      case e: TypecheckException =>
+        val messageExpr = c.literal(codeStr + " encountered a type error: " + e.getMessage)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal(codeStr + " encountered a parse error: " + e.getMessage)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+    }
+  }
+
+  def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+    import c.universe._
+
+    val codeStr = getCodeStringFromCodeExpression(c)("assertCompiles", code)
     try {
       c.typeCheck(c.parse("{ " + codeStr + " }"))
       reify {

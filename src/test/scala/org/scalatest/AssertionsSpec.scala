@@ -5375,6 +5375,79 @@ class AssertionsSpec extends FunSpec {
 
   }
 
+  describe("assertCompiles method") {
+
+    describe("when work with string literal") {
+
+      it("should do nothing when type check passed") {
+        assertCompiles("val a = 1")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check failed") {
+        val e = intercept[TestFailedException] {
+          assertCompiles("val a: String = 2")
+        }
+        assert(e.message.get.startsWith("val a: String = 2 encountered a type error:"))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          assertCompiles("println(\"test)")
+        }
+        assert(e.message.get.startsWith("println(\"test) encountered a parse error:"))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+    }
+
+    describe("when used with triple quotes string literal with stripMargin") {
+
+      it("should do nothing when type check passed") {
+        assertCompiles(
+          """
+            |val a = 1
+            |""".stripMargin
+        )
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check failed") {
+        val e = intercept[TestFailedException] {
+          assertCompiles(
+            """
+              |val a: String = 2
+              |""".stripMargin
+          )
+        }
+        assert(e.message.get.startsWith(
+          """
+            |val a: String = 2
+            | encountered a type error:""".stripMargin))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          assertCompiles(
+            """
+              |println(\"test)
+              |""".stripMargin
+          )
+        }
+        assert(e.message.get.startsWith(
+          """
+            |println(\"test)
+            | encountered a parse error:""".stripMargin))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+      }
+
+    }
+
+  }
+
   describe("The assertResult method") {
     it("should be usable when the left expression results in null") {
       val npe = new NullPointerException
