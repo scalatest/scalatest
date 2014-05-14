@@ -279,47 +279,47 @@ private[scalatest] object CompileMacro {
 
     c.macroApplication match {
       case Apply(
-      Select(
-      Apply(
-      _,
-      List(
-      Literal(
-      Constant(code)
-      )
-      )
-      ),
-      shouldOrMustTermName
-      ),
-      _
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Literal(
+                     Constant(code)
+                   )
+                 )
+               ),
+               shouldOrMustTermName
+             ),
+             _
       ) if shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString
         checkCompile(codeStr)
 
       case Apply(
-      Select(
-      Apply(
-      _,
-      List(
-      Select(
-      Apply(
-      Select(
-      _,
-      augmentStringTermName
-      ),
-      List(
-      Literal(
-      Constant(code)
-      )
-      )
-      ),
-      stripMarginTermName
-      )
-      )
-      ),
-      shouldOrMustTermName
-      ),
-      _
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Select(
+                     Apply(
+                       Select(
+                         _,
+                         augmentStringTermName
+                       ),
+                       List(
+                         Literal(
+                           Constant(code)
+                         )
+                       )
+                     ),
+                     stripMarginTermName
+                   )
+                 )
+               ),
+               shouldOrMustTermName
+             ),
+             _
       ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString.stripMargin
