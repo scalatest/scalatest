@@ -26,14 +26,6 @@ private[scalatest] object TypeMatcherMacro {
 
     import context.universe._
 
-    def containsTypeParameter(typeList: List[TypeTree]): Boolean =
-      typeList.exists { t =>
-        t.original match {
-          case AppliedTypeTree(_, _) => true
-          case _ => false
-        }
-      }
-
     tree match {
       case Apply(
              TypeApply(
@@ -44,8 +36,15 @@ private[scalatest] object TypeMatcherMacro {
                typeList: List[TypeTree]
              ),
              _
-           ) if methodNameTermName.decoded == methodName && containsTypeParameter(typeList) =>
-        context.warning(context.macroApplication.pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
+           ) if methodNameTermName.decoded == methodName =>
+        typeList.foreach { t =>
+          t.original match {
+            case AppliedTypeTree(tpt, args) =>
+              context.warning(args(0).pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
+
+            case _ =>
+          }
+        }
 
       case _ =>
     }
