@@ -402,12 +402,12 @@
               unless="jvm.ok"/>-->
 
         <!-- If ever want to see the typer output, add -Xprint:typer to the addparams like this: -->
-        <!--<scalac srcdir="${scalasrc}:${build.generated.src}:${javasrc}" destdir="${classes}" target="jvm-1.5" classpathref="build.class.path" addparams="-no-specialization -Xprint:typer" fork="true" jvmargs="${jvmargs}" />-->
+        <!--<scalac srcdir="${scalasrc}:${build.generated.src}:${javasrc}" destdir="${classes}" target="jvm-1.5" classpathref="build.class.path" addparams="-Xprint:typer" fork="true" jvmargs="${jvmargs}" />-->
 
         <!-- Compile the Scala code from ${scalasrc} into ${classes}. Scalac will parse the referenced .java files. -->
         <!-- Compile the Scala code from ${build.generated.src} into ${classes}. Scalac will parse any referenced .java files. -->
         <scalac destdir="${classes}" target="jvm-1.5" deprecation="no"
-                classpathref="build.class.path" addparams="-no-specialization -feature"
+                classpathref="build.class.path" addparams="-feature"
                 fork="true" jvmargs="${jvmargs}" >
           <src path="${scalasrc}:${build.generated.src}:${javasrc}"/>
           <excludesfile name="${build}/scalac_excludes"/>
@@ -440,7 +440,7 @@
     <target name="compile-tests" depends="compile-main,write-excludes-file">
       <scalac destdir="${build.tests}" target="jvm-1.5"
               classpathref="build.test.class.path" deprecation="yes"
-              addparams="-no-specialization -feature" fork="true" 
+              addparams="-feature" fork="true"
               jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
         <src path="${scalasrc.test}:${javasrc.test}"/>
         <excludesfile name="${build}/scalac_excludes"/>
@@ -482,7 +482,7 @@
     <target name="compile-gentests" depends="compile-main, geninspectors, geninspectorsshorthands, gencontain, gensorted, genloneelement, genempty, gentestshelper">
       <scalac destdir="${build.generated.tests.bin}" target="jvm-1.5"
               classpathref="build.test.class.path" deprecation="yes"
-              addparams="-no-specialization -feature" fork="true"
+              addparams="-feature" fork="true"
               jvmargs="-Xmx5120M -Xss1M -XX:+UseConcMarkSweepGC">
         <src path="${build.generated.tests.src}:${build.generated.tests.javasrc}"/>
       </scalac>
@@ -513,8 +513,7 @@
 
       <exec executable="support/docjavatags.scala"/>
 
-      <scaladoc addparams="-no-specialization"
-                srcdir="${build}/docsrc"
+      <scaladoc srcdir="${build}/docsrc"
                 sourcepath="${build}/docsrc"
                 docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${doc}"
@@ -575,8 +574,7 @@
         </fileset>
       </replaceregexp>
 
-      <scaladoc addparams="-no-specialization"
-                srcdir="${build}/docsrc"
+      <scaladoc srcdir="${build}/docsrc"
                 sourcepath="${build}/docsrc"
                 docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
@@ -990,7 +988,7 @@
     </target>
 
     <target name="osgi.compile" depends="compile">
-        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC"/>
+        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC"/>
     </target>
 
     <target name="osgi.test" depends="osgi.compile,taskdefscalatest,dist">
@@ -1463,7 +1461,7 @@
   <target name="compile-examples" depends="init">
     <mkdir dir="${build}/examples"/>
     <scalac destdir="${build}/examples" target="jvm-1.5" deprecation="no"
-            classpathref="build.class.path" addparams="-no-specialization -feature"
+            classpathref="build.class.path" addparams="-feature"
             fork="true" jvmargs="${jvmargs}" >
       <src path="examples/src/main/java:examples/src/main/scala"/>
     </scalac>
