@@ -13,7 +13,7 @@ object ScalatestBuild extends Build {
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+     scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalautils._
                                       |import Matchers._""".stripMargin,
@@ -71,7 +71,7 @@ object ScalatestBuild extends Build {
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
+     scalacOptions ++= Seq("-feature"),
      libraryDependencies ++= simpledependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
