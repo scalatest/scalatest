@@ -237,6 +237,17 @@ trait MatcherWords {
    *
    * <pre class="stHighlight">
    *
+   * "val a: String = 1" shouldNot typeCheck
+   *                               ^
+   * </pre>
+   */
+  val typeCheck = new TypeCheckWord
+
+  /**
+   * This field enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   *
    * result should matchPattern { case Person("Bob", _) => }
    *               ^
    * </pre>

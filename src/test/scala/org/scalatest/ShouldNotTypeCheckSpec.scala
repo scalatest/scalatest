@@ -18,29 +18,35 @@ package org.scalatest
 import Matchers._
 import SharedHelpers.thisLineNumber
 
-class ShouldNotCompileSpec extends FunSpec {
+class ShouldNotTypeCheckSpec extends FunSpec {
 
-  val fileName = "ShouldNotCompileSpec.scala"
+  val fileName = "ShouldNotTypeCheckSpec.scala"
 
-  describe("Compile matcher") {
+  describe("TypeCheck matcher") {
 
     describe("when work with string literal") {
 
       it("should do nothing when type check failed") {
-        "val a: String = 2" shouldNot compile
+        "val a: String = 2" shouldNot typeCheck
       }
 
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
-          "val a = 1" shouldNot compile
+          "val a = 1" shouldNot typeCheck
         }
         assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      it("should do nothing when parse failed") {
-        "println(\"test)" shouldNot compile
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          "println(\"test)" shouldNot typeCheck
+        }
+        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
+        assert(e.message.get.endsWith("\nfor: println(\"test)"))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
       }
     }
 
@@ -49,14 +55,14 @@ class ShouldNotCompileSpec extends FunSpec {
       it("should do nothing when type check failed") {
         """
           |val a: String = 2
-          |""".stripMargin shouldNot compile
+          |""".stripMargin shouldNot typeCheck
       }
 
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           """
             |val a = 1
-            |""".stripMargin shouldNot compile
+            |""".stripMargin shouldNot typeCheck
         }
         assert(e.message == Some(
           """Expected a type error, but got none for: 
@@ -66,10 +72,19 @@ class ShouldNotCompileSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
       }
 
-      it("should do nothing when parse failed") {
-        """
-          |println(\"test)
-          |""".stripMargin shouldNot compile
+      it("should throw TestFailedException with correct message and stack depth when parse failed ") {
+        val e = intercept[TestFailedException] {
+          """
+            |println(\"test)
+            |""".stripMargin shouldNot typeCheck
+        }
+        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
+        assert(e.message.get.endsWith(
+          """for: 
+            |println(\"test)
+            |""".stripMargin))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
     }
 
