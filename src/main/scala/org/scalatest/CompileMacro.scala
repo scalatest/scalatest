@@ -19,7 +19,7 @@ import scala.language.experimental.macros
 import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 import org.scalatest.exceptions.StackDepthException._
 import org.scalatest.exceptions.StackDepthExceptionHelper._
-import org.scalatest.words.CompileWord
+import org.scalatest.words.{TypeCheckWord, CompileWord}
 
 private[scalatest] object CompileMacro {
 
@@ -172,6 +172,88 @@ private[scalatest] object CompileMacro {
   def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] =
     notCompileImpl(c)(compileWord)("must")
 
+  def notTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(shouldOrMust: String): c.Expr[Unit] = {
+
+    import c.universe._
+
+    def checkNotTypeCheck(code: String): c.Expr[Unit] = {
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))
+        val messageExpr = c.literal("Expected a type error, but got none for: " + code)
+        reify {
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
+        }
+      } catch {
+        case e: TypecheckException =>
+          reify {
+            // Do nothing
+          }
+        case e: ParseException =>
+          val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
+          reify {
+            throw new TestFailedException(messageExpr.splice, 0)
+          }
+      }
+    }
+
+    val methodName = shouldOrMust + "Not"
+
+    c.macroApplication match {
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Literal(Constant(code))
+                 )
+               ),
+               methodNameTermName
+             ),
+             _
+           ) if methodNameTermName.decoded == methodName =>
+
+        val codeStr = code.toString
+        checkNotTypeCheck(codeStr)
+
+      case Apply(
+             Select(
+               Apply(
+                 _,
+                 List(
+                   Select(
+                     Apply(
+                       Select(
+                         _,
+                         augmentStringTermName
+                       ),
+                       List(
+                         Literal(
+                           Constant(code)
+                         )
+                       )
+                     ),
+                     stripMarginTermName
+                   )
+                 )
+               ),
+               methodNameTermName
+             ),
+             _
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+
+        val codeStr = code.toString.stripMargin
+        checkNotTypeCheck(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not typeCheck' syntax only works with String literal only.")
+    }
+  }
+
+  def shouldNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Unit] =
+    notTypeCheckImpl(c)(typeCheckWord)("should")
+
+  def mustNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Unit] =
+    notTypeCheckImpl(c)(typeCheckWord)("must")
+
   def compileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Unit] = {
     import c.universe._
 
@@ -198,48 +280,48 @@ private[scalatest] object CompileMacro {
 
     c.macroApplication match {
       case Apply(
-             Select(
-               Apply(
-                 _,
-                 List(
-                   Literal(
-                     Constant(code)
-                   )
-                 )
-               ),
-               shouldOrMustTermName
-             ),
-             _
-           ) if shouldOrMustTermName.decoded == shouldOrMust =>
+      Select(
+      Apply(
+      _,
+      List(
+      Literal(
+      Constant(code)
+      )
+      )
+      ),
+      shouldOrMustTermName
+      ),
+      _
+      ) if shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString
         checkCompile(codeStr)
 
       case Apply(
-             Select(
-               Apply(
-                 _,
-                 List(
-                   Select(
-                     Apply(
-                       Select(
-                         _,
-                       augmentStringTermName
-                       ),
-                       List(
-                         Literal(
-                           Constant(code)
-                         )
-                       )
-                     ),
-                   stripMarginTermName
-                   )
-                 )
-               ),
-               shouldOrMustTermName
-             ),
-             _
-           ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
+      Select(
+      Apply(
+      _,
+      List(
+      Select(
+      Apply(
+      Select(
+      _,
+      augmentStringTermName
+      ),
+      List(
+      Literal(
+      Constant(code)
+      )
+      )
+      ),
+      stripMarginTermName
+      )
+      )
+      ),
+      shouldOrMustTermName
+      ),
+      _
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
 
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)
