@@ -6949,6 +6949,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot typeCheck
+     *        ^
+     * </pre>
+     */
+    def shouldNot(typeCheckWord: TypeCheckWord): Unit = macro CompileMacro.shouldNotTypeCheckImpl
+
 /*
     /**
      * This method enables syntax such as the following:
