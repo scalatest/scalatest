@@ -692,27 +692,6 @@ trait Assertions extends TripleEquals {
   def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
 
   /**
-   * Asserts that a given string snippet of code pass the Scala type checker.
-   *
-   * <p>
-   * You can use this to make sure a snippet of code compiles:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assertNoTypeError("val a: Int = 1")
-   * </pre>
-   *
-   * <p>
-   * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
-   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>,
-   * snippets of code that <em>do not</em> type check) are reported as test failures at runtime.
-   * </p>
-   *
-   * @param code the snippet of code that should type check
-   */
-  def assertNoTypeError(code: String): Unit = macro CompileMacro.assertNoTypeErrorImpl
-
-  /**
    * Asserts that a given string snippet of code pass the Scala parser and type checker.
    *
    * <p>
@@ -731,7 +710,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should type check
    */
-  def assertCompiles(code: String): Unit = macro CompileMacro.assertNoTypeErrorImpl
+  def assertCompiles(code: String): Unit = macro CompileMacro.assertCompilesImpl
 
   /* *
    * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable
