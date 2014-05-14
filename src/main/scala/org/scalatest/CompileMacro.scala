@@ -67,6 +67,30 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+    import c.universe._
+
+    val codeStr = getCodeStringFromCodeExpression(c)("assertDoesNotCompile", code)
+
+    try {
+      c.typeCheck(c.parse("{ "+codeStr+" }"))
+      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
+      reify {
+        throw new exceptions.TestFailedException(messageExpr.splice, 0)
+      }
+    } catch {
+      case e: TypecheckException =>
+        reify {
+          // Do nothing
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + codeStr)
+        reify {
+          // Do nothing
+        }
+    }
+  }
+
   def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 

@@ -669,7 +669,8 @@ trait Assertions extends TripleEquals {
   }
 
   /**
-   * Asserts that a given string snippet of code does not pass the Scala type checker.
+   * Asserts that a given string snippet of code does not pass the Scala type checker, but it will fail if the given
+   * snippet does not pass the Scala parser.
    *
    * <p>
    * Often when creating libraries you may wish to ensure that certain arrangements of code that
@@ -690,6 +691,29 @@ trait Assertions extends TripleEquals {
    * @param code the snippet of code that should not type check
    */
   def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
+
+  /**
+   * Asserts that a given string snippet of code does not pass the Scala parser or type checker.
+   *
+   * <p>
+   * Often when creating libraries you may wish to ensure that certain arrangements of code that
+   * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+   * ScalaTest's <code>Assertions</code> trait includes the following syntax for that purpose:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * assertTypeError("val a: String = \"a string")
+   * </pre>
+   *
+   * <p>
+   * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>,
+   * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+   * </p>
+   *
+   * @param code the snippet of code that should not type check
+   */
+  def assertDoesNotCompile(code: String): Unit = macro CompileMacro.assertDoesNotCompileImpl
 
   /**
    * Asserts that a given string snippet of code pass the Scala parser and type checker.
