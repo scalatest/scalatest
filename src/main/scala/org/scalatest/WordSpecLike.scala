@@ -898,7 +898,7 @@ one error found
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", 11, -2, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", 10, -2, resultOfAfterWordApplication.f)
         }
       registerBranch(left, Some(verb), verb, "apply", 7, -2, afterWordFunction)
     }
