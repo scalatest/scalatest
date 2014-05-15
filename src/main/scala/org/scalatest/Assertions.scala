@@ -373,15 +373,32 @@ trait Assertions extends TripleEquals {
    * <li>assert(a != b)</li>
    * <li>assert(a === b)</li>
    * <li>assert(a !== b)</li>
+   * <li>assert(a > b)</li>
+   * <li>assert(a >= b)</li>
+   * <li>assert(a < b)</li>
+   * <li>assert(a <= b)</li>
+   * <li>assert(a startsWith "prefix")</li>
+   * <li>assert(a endsWith "postfix")</li>
+   * <li>assert(a contains "something")</li>
+   * <li>assert(a eq b)</li>
+   * <li>assert(a ne b)</li>
+   * <li>assert(a > 0 && b > 5)</li>
+   * <li>assert(a > 0 || b > 5)</li>
+   * <li>assert(a.isEmpty)</li>
+   * <li>assert(!a.isEmpty)</li>
+   * <li>assert(a.isInstanceOf[String])</li>
+   * <li>assert(a.length == 8)</li>
+   * <li>assert(a.size == 8)</li>
+   * <li>assert(a.exists(_ == 8))</li>
    * </ul>
    *
    * <p>
-   * Any other form of expression will just get a plain-old <code>TestFailedException</code> at this time. In the future,
-   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.0, however, this behavior
-   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
-   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
-   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
-   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * At this time, any other form of expression will just get a <code>TestFailedException</code> with message saying the given
+   * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
+   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
+   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
    * </p>
    *
    * @param condition the boolean condition to assert
@@ -474,9 +491,47 @@ trait Assertions extends TripleEquals {
    * Assert that a boolean condition, described in <code>String</code>
    * <code>message</code>, is true.
    * If the condition is <code>true</code>, this method returns normally.
-   * Else, it throws <code>TestFailedException</code> with the
-   * <code>String</code> obtained by invoking <code>toString</code> on the
+   * Else, it throws <code>TestFailedException</code> with helpful error message (for supported method)
+   * appended with the <code>String</code> obtained by invoking <code>toString</code> on the
    * specified <code>clue</code> as the exception's detail message.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for simple quality checks of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>assert(a == b, "a good clue")</li>
+   * <li>assert(a != b, "a good clue")</li>
+   * <li>assert(a === b, "a good clue")</li>
+   * <li>assert(a !== b, "a good clue")</li>
+   * <li>assert(a > b, "a good clue")</li>
+   * <li>assert(a >= b, "a good clue")</li>
+   * <li>assert(a < b, "a good clue")</li>
+   * <li>assert(a <= b, "a good clue")</li>
+   * <li>assert(a startsWith "prefix", "a good clue")</li>
+   * <li>assert(a endsWith "postfix", "a good clue")</li>
+   * <li>assert(a contains "something", "a good clue")</li>
+   * <li>assert(a eq b, "a good clue")</li>
+   * <li>assert(a ne b, "a good clue")</li>
+   * <li>assert(a > 0 && b > 5, "a good clue")</li>
+   * <li>assert(a > 0 || b > 5, "a good clue")</li>
+   * <li>assert(a.isEmpty, "a good clue")</li>
+   * <li>assert(!a.isEmpty, "a good clue")</li>
+   * <li>assert(a.isInstanceOf[String], "a good clue")</li>
+   * <li>assert(a.length == 8, "a good clue")</li>
+   * <li>assert(a.size == 8, "a good clue")</li>
+   * <li>assert(a.exists(_ == 8), "a good clue")</li>
+   * </ul>
+   *
+   * <p>
+   * At this time, any other form of expression will just get a <code>TestFailedException</code> with message saying the given
+   * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
+   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
+   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * </p>
    *
    * @param condition the boolean condition to assert
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
@@ -568,15 +623,32 @@ trait Assertions extends TripleEquals {
    * <li>assume(a != b)</li>
    * <li>assume(a === b)</li>
    * <li>assume(a !== b)</li>
+   * <li>assume(a > b)</li>
+   * <li>assume(a >= b)</li>
+   * <li>assume(a < b)</li>
+   * <li>assume(a <= b)</li>
+   * <li>assume(a startsWith "prefix")</li>
+   * <li>assume(a endsWith "postfix")</li>
+   * <li>assume(a contains "something")</li>
+   * <li>assume(a eq b)</li>
+   * <li>assume(a ne b)</li>
+   * <li>assume(a > 0 && b > 5)</li>
+   * <li>assume(a > 0 || b > 5)</li>
+   * <li>assume(a.isEmpty)</li>
+   * <li>assume(!a.isEmpty)</li>
+   * <li>assume(a.isInstanceOf[String])</li>
+   * <li>assume(a.length == 8)</li>
+   * <li>assume(a.size == 8)</li>
+   * <li>assume(a.exists(_ == 8))</li>
    * </ul>
    *
    * <p>
-   * Any other form of expression will just get a plain-old <code>TestCanceledException</code> at this time. In the future,
-   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.0, however, this behavior
-   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
-   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
-   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
-   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * At this time, any other form of expression will just get a <code>TestCanceledException</code> with message saying the given
+   * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
+   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
+   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
    * </p>
    *
    * @param condition the boolean condition to assume
@@ -588,9 +660,47 @@ trait Assertions extends TripleEquals {
    * Assume that a boolean condition, described in <code>String</code>
    * <code>message</code>, is true.
    * If the condition is <code>true</code>, this method returns normally.
-   * Else, it throws <code>TestCanceledException</code> with the
-   * <code>String</code> obtained by invoking <code>toString</code> on the
+   * Else, it throws <code>TestCanceledException</code> with helpful error message
+   * appended with <code>String</code> obtained by invoking <code>toString</code> on the
    * specified <code>clue</code> as the exception's detail message.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for simple quality checks of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>assume(a == b, "a good clue")</li>
+   * <li>assume(a != b, "a good clue")</li>
+   * <li>assume(a === b, "a good clue")</li>
+   * <li>assume(a !== b, "a good clue")</li>
+   * <li>assume(a > b, "a good clue")</li>
+   * <li>assume(a >= b, "a good clue")</li>
+   * <li>assume(a < b, "a good clue")</li>
+   * <li>assume(a <= b, "a good clue")</li>
+   * <li>assume(a startsWith "prefix", "a good clue")</li>
+   * <li>assume(a endsWith "postfix", "a good clue")</li>
+   * <li>assume(a contains "something", "a good clue")</li>
+   * <li>assume(a eq b, "a good clue")</li>
+   * <li>assume(a ne b, "a good clue")</li>
+   * <li>assume(a > 0 && b > 5, "a good clue")</li>
+   * <li>assume(a > 0 || b > 5, "a good clue")</li>
+   * <li>assume(a.isEmpty, "a good clue")</li>
+   * <li>assume(!a.isEmpty, "a good clue")</li>
+   * <li>assume(a.isInstanceOf[String], "a good clue")</li>
+   * <li>assume(a.length == 8, "a good clue")</li>
+   * <li>assume(a.size == 8, "a good clue")</li>
+   * <li>assume(a.exists(_ == 8), "a good clue")</li>
+   * </ul>
+   *
+   * <p>
+   * At this time, any other form of expression will just get a <code>TestCanceledException</code> with message saying the given
+   * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
+   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
+   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * </p>
    *
    * @param condition the boolean condition to assume
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
