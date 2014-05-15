@@ -227,7 +227,7 @@ import org.scalactic.{Prettifier, Bool}
  * </p>
  *
  * <a name="checkingThatCodeDoesNotCompile"></a>
- * <h2>Checking that a snippet of code does not compile</h2>
+ * <h2>Checking that a snippet of code does or does not compile</h2>
  * 
  * <p>
  * Often when creating libraries you may wish to ensure that certain arrangements of code that
@@ -365,7 +365,7 @@ trait Assertions extends TripleEquals {
    *
    * <p>
    * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
+   * for expressions of this form:
    * </p>
    *
    * <ul>
@@ -373,17 +373,17 @@ trait Assertions extends TripleEquals {
    * <li>assert(a != b)</li>
    * <li>assert(a === b)</li>
    * <li>assert(a !== b)</li>
-   * <li>assert(a > b)</li>
-   * <li>assert(a >= b)</li>
-   * <li>assert(a < b)</li>
-   * <li>assert(a <= b)</li>
+   * <li>assert(a &gt; b)</li>
+   * <li>assert(a &gt;= b)</li>
+   * <li>assert(a &lt; b)</li>
+   * <li>assert(a &lt;= b)</li>
    * <li>assert(a startsWith "prefix")</li>
    * <li>assert(a endsWith "postfix")</li>
    * <li>assert(a contains "something")</li>
    * <li>assert(a eq b)</li>
    * <li>assert(a ne b)</li>
-   * <li>assert(a > 0 && b > 5)</li>
-   * <li>assert(a > 0 || b > 5)</li>
+   * <li>assert(a &gt; 0 &amp;&amp; b &gt; 5)</li>
+   * <li>assert(a &gt; 0 || b &gt; 5)</li>
    * <li>assert(a.isEmpty)</li>
    * <li>assert(!a.isEmpty)</li>
    * <li>assert(a.isInstanceOf[String])</li>
@@ -393,7 +393,7 @@ trait Assertions extends TripleEquals {
    * </ul>
    *
    * <p>
-   * At this time, any other form of expression will just get a <code>TestFailedException</code> with message saying the given
+   * At this time, any other form of expression will get a <code>TestFailedException</code> with message saying the given
    * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
    * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
    * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
@@ -491,13 +491,13 @@ trait Assertions extends TripleEquals {
    * Assert that a boolean condition, described in <code>String</code>
    * <code>message</code>, is true.
    * If the condition is <code>true</code>, this method returns normally.
-   * Else, it throws <code>TestFailedException</code> with helpful error message (for supported method)
+   * Else, it throws <code>TestFailedException</code> with a helpful error message
    * appended with the <code>String</code> obtained by invoking <code>toString</code> on the
    * specified <code>clue</code> as the exception's detail message.
    *
    * <p>
    * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
+   * for expressions of this form:
    * </p>
    *
    * <ul>
@@ -505,17 +505,17 @@ trait Assertions extends TripleEquals {
    * <li>assert(a != b, "a good clue")</li>
    * <li>assert(a === b, "a good clue")</li>
    * <li>assert(a !== b, "a good clue")</li>
-   * <li>assert(a > b, "a good clue")</li>
-   * <li>assert(a >= b, "a good clue")</li>
-   * <li>assert(a < b, "a good clue")</li>
-   * <li>assert(a <= b, "a good clue")</li>
+   * <li>assert(a &gt; b, "a good clue")</li>
+   * <li>assert(a &gt;= b, "a good clue")</li>
+   * <li>assert(a &lt; b, "a good clue")</li>
+   * <li>assert(a &lt;= b, "a good clue")</li>
    * <li>assert(a startsWith "prefix", "a good clue")</li>
    * <li>assert(a endsWith "postfix", "a good clue")</li>
    * <li>assert(a contains "something", "a good clue")</li>
    * <li>assert(a eq b, "a good clue")</li>
    * <li>assert(a ne b, "a good clue")</li>
-   * <li>assert(a > 0 && b > 5, "a good clue")</li>
-   * <li>assert(a > 0 || b > 5, "a good clue")</li>
+   * <li>assert(a &gt; 0 &amp;&amp; b &gt; 5, "a good clue")</li>
+   * <li>assert(a &gt; 0 || b &gt; 5, "a good clue")</li>
    * <li>assert(a.isEmpty, "a good clue")</li>
    * <li>assert(!a.isEmpty, "a good clue")</li>
    * <li>assert(a.isInstanceOf[String], "a good clue")</li>
@@ -615,7 +615,7 @@ trait Assertions extends TripleEquals {
    *
    * <p>
    * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
+   * for expressions of this form:
    * </p>
    *
    * <ul>
@@ -623,17 +623,17 @@ trait Assertions extends TripleEquals {
    * <li>assume(a != b)</li>
    * <li>assume(a === b)</li>
    * <li>assume(a !== b)</li>
-   * <li>assume(a > b)</li>
-   * <li>assume(a >= b)</li>
-   * <li>assume(a < b)</li>
-   * <li>assume(a <= b)</li>
+   * <li>assume(a &gt; b)</li>
+   * <li>assume(a &gt;= b)</li>
+   * <li>assume(a &lt; b)</li>
+   * <li>assume(a &lt;= b)</li>
    * <li>assume(a startsWith "prefix")</li>
    * <li>assume(a endsWith "postfix")</li>
    * <li>assume(a contains "something")</li>
    * <li>assume(a eq b)</li>
    * <li>assume(a ne b)</li>
-   * <li>assume(a > 0 && b > 5)</li>
-   * <li>assume(a > 0 || b > 5)</li>
+   * <li>assume(a &gt; 0 &amp;&amp; b &gt; 5)</li>
+   * <li>assume(a &gt; 0 || b &gt; 5)</li>
    * <li>assume(a.isEmpty)</li>
    * <li>assume(!a.isEmpty)</li>
    * <li>assume(a.isInstanceOf[String])</li>
@@ -660,13 +660,13 @@ trait Assertions extends TripleEquals {
    * Assume that a boolean condition, described in <code>String</code>
    * <code>message</code>, is true.
    * If the condition is <code>true</code>, this method returns normally.
-   * Else, it throws <code>TestCanceledException</code> with helpful error message
+   * Else, it throws <code>TestCanceledException</code> with a helpful error message
    * appended with <code>String</code> obtained by invoking <code>toString</code> on the
    * specified <code>clue</code> as the exception's detail message.
    *
    * <p>
    * This method is implemented in terms of a Scala macro that will generate a more helpful error message
-   * for simple quality checks of this form:
+   * for expressions of this form:
    * </p>
    *
    * <ul>
@@ -674,17 +674,17 @@ trait Assertions extends TripleEquals {
    * <li>assume(a != b, "a good clue")</li>
    * <li>assume(a === b, "a good clue")</li>
    * <li>assume(a !== b, "a good clue")</li>
-   * <li>assume(a > b, "a good clue")</li>
-   * <li>assume(a >= b, "a good clue")</li>
-   * <li>assume(a < b, "a good clue")</li>
-   * <li>assume(a <= b, "a good clue")</li>
+   * <li>assume(a &gt; b, "a good clue")</li>
+   * <li>assume(a &gt;= b, "a good clue")</li>
+   * <li>assume(a &lt; b, "a good clue")</li>
+   * <li>assume(a &lt;= b, "a good clue")</li>
    * <li>assume(a startsWith "prefix", "a good clue")</li>
    * <li>assume(a endsWith "postfix", "a good clue")</li>
    * <li>assume(a contains "something", "a good clue")</li>
    * <li>assume(a eq b, "a good clue")</li>
    * <li>assume(a ne b, "a good clue")</li>
-   * <li>assume(a > 0 && b > 5, "a good clue")</li>
-   * <li>assume(a > 0 || b > 5, "a good clue")</li>
+   * <li>assume(a &gt; 0 &amp;&amp; b &gt; 5, "a good clue")</li>
+   * <li>assume(a &gt; 0 || b &gt; 5, "a good clue")</li>
    * <li>assume(a.isEmpty, "a good clue")</li>
    * <li>assume(!a.isEmpty, "a good clue")</li>
    * <li>assume(a.isInstanceOf[String], "a good clue")</li>
@@ -744,7 +744,7 @@ trait Assertions extends TripleEquals {
       case None =>
     }
   }
-  
+
   /**
    * Assume that an <code>Option[String]</code> is <code>None</code>.
    * If the condition is <code>None</code>, this method returns normally.
@@ -779,7 +779,7 @@ trait Assertions extends TripleEquals {
   }
 
   /**
-   * Asserts that a given string snippet of code does not pass the Scala type checker, but it will fail if the given
+   * Asserts that a given string snippet of code does not pass the Scala type checker, failing if the given
    * snippet does not pass the Scala parser.
    *
    * <p>
@@ -798,12 +798,20 @@ trait Assertions extends TripleEquals {
    * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
    * </p>
    *
+   * <p>
+   * Note that the difference between <code>assertTypeError</code> and <code>assertDoesNotCompile</code> is
+   * that <code>assertDoesNotCompile</code> will succeed if the given code does not compile for any reason,
+   * whereas <code>assertTypeError</code> will only succeed if the given code does not compile because of
+   * a type error. If the given code does not compile because of a syntax error, for example, <code>assertDoesNotCompile</code>
+   * will return normally but <code>assertTypeError</code> will throw a <code>TestFailedException</code>.
+   * </p>
+   *
    * @param code the snippet of code that should not type check
    */
   def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
 
   /**
-   * Asserts that a given string snippet of code does not pass the Scala parser or type checker.
+   * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
    *
    * <p>
    * Often when creating libraries you may wish to ensure that certain arrangements of code that
@@ -812,13 +820,21 @@ trait Assertions extends TripleEquals {
    * </p>
    *
    * <pre class="stHighlight">
-   * assertTypeError("val a: String = \"a string")
+   * assertDoesNotCompile("val a: String = \"a string")
    * </pre>
    *
    * <p>
-   * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
-   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>,
-   * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+   * Although <code>assertDoesNotCompile</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string doesn't compile, errors (<em>i.e.</em>,
+   * snippets of code that <em>do</em> compile) are reported as test failures at runtime.
+   * </p>
+   *
+   * <p>
+   * Note that the difference between <code>assertTypeError</code> and <code>assertDoesNotCompile</code> is
+   * that <code>assertDoesNotCompile</code> will succeed if the given code does not compile for any reason,
+   * whereas <code>assertTypeError</code> will only succeed if the given code does not compile because of
+   * a type error. If the given code does not compile because of a syntax error, for example, <code>assertDoesNotCompile</code>
+   * will return normally but <code>assertTypeError</code> will throw a <code>TestFailedException</code>.
    * </p>
    *
    * @param code the snippet of code that should not type check
@@ -826,23 +842,23 @@ trait Assertions extends TripleEquals {
   def assertDoesNotCompile(code: String): Unit = macro CompileMacro.assertDoesNotCompileImpl
 
   /**
-   * Asserts that a given string snippet of code pass the Scala parser and type checker.
+   * Asserts that a given string snippet of code passes both the Scala parser and type checker.
    *
    * <p>
    * You can use this to make sure a snippet of code compiles:
    * </p>
    *
    * <pre class="stHighlight">
-   * assertNoTypeError("val a: Int = 1")
+   * assertCompiles("val a: Int = 1")
    * </pre>
    *
    * <p>
-   * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
-   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>,
-   * snippets of code that <em>do not</em> type check) are reported as test failures at runtime.
+   * Although <code>assertCompiles</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string compiles, errors (<em>i.e.</em>,
+   * snippets of code that <em>do not</em> compile) are reported as test failures at runtime.
    * </p>
    *
-   * @param code the snippet of code that should type check
+   * @param code the snippet of code that should compile
    */
   def assertCompiles(code: String): Unit = macro CompileMacro.assertCompilesImpl
 
