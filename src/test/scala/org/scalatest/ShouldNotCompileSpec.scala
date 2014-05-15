@@ -34,7 +34,7 @@ class ShouldNotCompileSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           "val a = 1" shouldNot compile
         }
-        assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -58,12 +58,9 @@ class ShouldNotCompileSpec extends FunSpec {
             |val a = 1
             |""".stripMargin shouldNot compile
         }
-        assert(e.message == Some(
-          """Expected a type error, but got none for: 
-            |val a = 1
-            |""".stripMargin))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "\nval a = 1\n")))
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
       it("should do nothing when parse failed") {

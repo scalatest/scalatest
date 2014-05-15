@@ -5238,7 +5238,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertTypeError("val a = 1")
         }
-        assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
+        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -5247,12 +5247,12 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertTypeError("println(\"test)")
         }
-        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
-        assert(e.message.get.endsWith("\nfor: println(\"test)"))
+        val errMsg = Resources("expectedTypeErrorButGotParseError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -5273,33 +5273,26 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(
-          """Expected a type error, but got none for: 
-            |val a = 1
-            |""".stripMargin))
+        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "\nval a = 1\n")))
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
 
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           assertTypeError(
             """
-              |println(\"test)
+              |println("test)
               |""".stripMargin
           )
         }
-        assert(e.message.get.startsWith("Expected type error, but get parse error: "))
-        assert(e.message.get.endsWith(
-          """for: 
-            |println(\"test)
-            |""".stripMargin))
+        val errMsg = Resources("expectedTypeErrorButGotParseError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0, "error message was: " + e.message.get)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 12)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-
     }
-
   }
 
   describe("assertDoesNotCompile method ") {
@@ -5314,7 +5307,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertDoesNotCompile("val a = 1")
         }
-        assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -5343,12 +5336,9 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(
-          """Expected a type error, but got none for: 
-            |val a = 1
-            |""".stripMargin))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "\nval a = 1\n")))
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
 
       it("should do nothing when parse failed ") {
@@ -5375,18 +5365,22 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertCompiles("val a: String = 2")
         }
-        assert(e.message.get.startsWith("val a: String = 2 encountered a type error:"))
+        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
 
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles("println(\"test)")
         }
-        assert(e.message.get.startsWith("println(\"test) encountered a parse error:"))
+        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
     }
 
@@ -5408,32 +5402,28 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message.get.startsWith(
-          """
-            |val a: String = 2
-            | encountered a type error:""".stripMargin))
+        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("\nval a: String = 2\n") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
 
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
             """
-              |println(\"test)
+              |println("test)
               |""".stripMargin
           )
         }
-        assert(e.message.get.startsWith(
-          """
-            |println(\"test)
-            | encountered a parse error:""".stripMargin))
+        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 11)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-
     }
-
   }
 
   describe("The assertResult method") {

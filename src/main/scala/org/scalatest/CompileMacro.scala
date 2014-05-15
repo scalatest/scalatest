@@ -39,7 +39,7 @@ private[scalatest] object CompileMacro {
         ),
         stripMarginTermName
       ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" => codeStr.toString.stripMargin
-      case _ => c.abort(c.enclosingPosition, methodName + " only works with String literal only.")
+      case _ => c.abort(c.enclosingPosition, methodName + " only works with String literals.")
     }
   }
 
@@ -50,7 +50,7 @@ private[scalatest] object CompileMacro {
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
-      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
+      val messageExpr = c.literal(Resources("expectedTypeErrorButGotNone", codeStr))
       reify {
         throw new exceptions.TestFailedException(messageExpr.splice, 0)
       }
@@ -60,7 +60,7 @@ private[scalatest] object CompileMacro {
           // Do nothing
         }
       case e: ParseException =>
-        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + codeStr)
+        val messageExpr = c.literal(Resources("expectedTypeErrorButGotParseError", e.getMessage, codeStr))
         reify {
           throw new TestFailedException(messageExpr.splice, 0)
         }
@@ -74,7 +74,7 @@ private[scalatest] object CompileMacro {
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
-      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
+      val messageExpr = c.literal(Resources("expectedCompileErrorButGotNone", codeStr))
       reify {
         throw new exceptions.TestFailedException(messageExpr.splice, 0)
       }
@@ -84,7 +84,6 @@ private[scalatest] object CompileMacro {
           // Do nothing
         }
       case e: ParseException =>
-        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + codeStr)
         reify {
           // Do nothing
         }
@@ -102,12 +101,12 @@ private[scalatest] object CompileMacro {
       }
     } catch {
       case e: TypecheckException =>
-        val messageExpr = c.literal(codeStr + " encountered a type error: " + e.getMessage)
+        val messageExpr = c.literal(Resources("expectedNoErrorButGotTypeError", e.getMessage, codeStr))
         reify {
           throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
       case e: ParseException =>
-        val messageExpr = c.literal(codeStr + " encountered a parse error: " + e.getMessage)
+        val messageExpr = c.literal(Resources("expectedNoErrorButGotParseError", e.getMessage, codeStr))
         reify {
           throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
@@ -121,7 +120,7 @@ private[scalatest] object CompileMacro {
     def checkNotCompile(code: String): c.Expr[Unit] = {
       try {
         c.typeCheck(c.parse("{ " + code + " }"))
-        val messageExpr = c.literal("Expected a type error, but got none for: " + code)
+        val messageExpr = c.literal(Resources("expectedCompileErrorButGotNone", code))
         reify {
           throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
@@ -185,7 +184,7 @@ private[scalatest] object CompileMacro {
         val codeStr = code.toString.stripMargin
         checkNotCompile(codeStr)
 
-      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not compile' syntax only works with String literal only.")
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not compile' syntax only works with String literals.")
     }
   }
 
@@ -202,7 +201,7 @@ private[scalatest] object CompileMacro {
     def checkNotTypeCheck(code: String): c.Expr[Unit] = {
       try {
         c.typeCheck(c.parse("{ " + code + " }"))
-        val messageExpr = c.literal("Expected a type error, but got none for: " + code)
+        val messageExpr = c.literal(Resources("expectedTypeErrorButGotNone", code))
         reify {
           throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
@@ -212,7 +211,7 @@ private[scalatest] object CompileMacro {
             // Do nothing
           }
         case e: ParseException =>
-          val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
+          val messageExpr = c.literal(Resources("expectedTypeErrorButGotParseError", e.getMessage, code))
           reify {
             throw new TestFailedException(messageExpr.splice, 0)
           }
@@ -267,7 +266,7 @@ private[scalatest] object CompileMacro {
         val codeStr = code.toString.stripMargin
         checkNotTypeCheck(codeStr)
 
-      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not typeCheck' syntax only works with String literal only.")
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
     }
   }
 
@@ -289,12 +288,12 @@ private[scalatest] object CompileMacro {
         }
       } catch {
         case e: TypecheckException =>
-          val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
+          val messageExpr = c.literal(Resources("expectedNoErrorButGotTypeError", e.getMessage, code))
           reify {
             throw new exceptions.TestFailedException(messageExpr.splice, 0)
           }
         case e: ParseException =>
-          val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
+          val messageExpr = c.literal(Resources("expectedNoErrorButGotParseError", e.getMessage, code))
           reify {
             throw new exceptions.TestFailedException(messageExpr.splice, 0)
           }
@@ -349,7 +348,7 @@ private[scalatest] object CompileMacro {
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)
 
-      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + " compile' syntax only works with String literal only.")
+      case _ => c.abort(c.enclosingPosition, "The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
