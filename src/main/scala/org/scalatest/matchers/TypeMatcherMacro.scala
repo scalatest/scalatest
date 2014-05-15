@@ -22,7 +22,8 @@ import org.scalactic.Prettifier
 
 private[scalatest] object TypeMatcherMacro {
 
-  def checkNoTypeParameter(context: Context)(tree: context.Tree, methodName: String) {
+  // Check that no type parameter is specified, if any does, give a friendly compiler warning.
+  def checkTypeParameter(context: Context)(tree: context.Tree, methodName: String) {
 
     import context.universe._
 
@@ -37,28 +38,36 @@ private[scalatest] object TypeMatcherMacro {
              ),
              _
            ) if methodNameTermName.decoded == methodName =>
+        // Got a type list, let's go through it
         typeList.foreach { t =>
           t.original match {
-            case AppliedTypeTree(tpt, args) =>
+            case AppliedTypeTree(tpt, args) => // type is specified, let's give warning.
               context.warning(args(0).pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
 
-            case _ =>
+            case _ => // otherwise don't do anything
           }
         }
 
-      case _ =>
+      case _ => // otherwise don't do anything
     }
 
   }
 
+  // Do checking on type parameter and generate AST that create a 'a type' matcher
   def aTypeMatcherImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree, "a")
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
 
+    /**
+     * Generate AST that does the following code:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.aTypeMatcher(aType)
+     */
     context.Expr(
       Apply(
         Select(
@@ -80,14 +89,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST that create a 'an type' matcher
   def anTypeMatcherImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
     val tree = anType.tree
 
-    checkNoTypeParameter(context)(tree, "an")
+    // check type parameter
+    checkTypeParameter(context)(tree, "an")
 
+    /**
+     * Generate AST that does the following code:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.anTypeMatcher(anType)
+     */
     context.Expr(
       Apply(
         Select(
@@ -109,13 +125,20 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST that create a negated 'a type' matcher
   def notATypeMatcher(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree, "a")
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
 
+    /**
+     * Generate AST that does the following code:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.notATypeMatcher(aType)
+     */
     context.Expr(
       Apply(
         Select(
@@ -136,13 +159,20 @@ private[scalatest] object TypeMatcherMacro {
     )
   }
 
+  // Do checking on type parameter and generate AST that create a negated 'an type' matcher
   def notAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
     import context.universe._
 
     val tree = anType.tree
 
-    checkNoTypeParameter(context)(tree, "an")
+    // check type parameter
+    checkTypeParameter(context)(tree, "an")
 
+    /**
+     * Generate AST that does the following code:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.notAnTypeMatcher(anType)
+     */
     context.Expr(
       Apply(
         Select(
@@ -163,12 +193,19 @@ private[scalatest] object TypeMatcherMacro {
     )
   }
 
+  // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'a type' matcher.
   def andNotATypeMatcher(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
+    // create a negated matcher from notATypeMatcher
     val rhs = notATypeMatcher(context)(aType)
 
+    /**
+     * Generate AST for code that call the 'and' method on the Matcher instance (reference through 'owner'):
+     *
+     * owner.and(rhs)
+     */
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
         context.Expr(
@@ -188,12 +225,19 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST that does a 'and not' logical expression matcher for 'an type' matcher.
   def andNotAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
+    // create a negated matcher from notAnTypeMatcher
     val rhs = notAnTypeMatcher(context)(anType)
 
+    /**
+     * Generate AST for code that call the 'and' method on the Matcher instance (reference through 'owner'):
+     *
+     * owner.and(rhs)
+     */
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
         context.Expr(
@@ -213,12 +257,19 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'a type' matcher.
   def orNotATypeMatcher(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
+    // create a negated matcher from notATypeMatcher
     val rhs = notATypeMatcher(context)(aType)
 
+    /**
+     * Generate AST for code that call the 'or' method on the Matcher instance (reference through 'owner'):
+     *
+     * owner.or(rhs)
+     */
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
         context.Expr(
@@ -238,12 +289,19 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST that does a 'or not' logical expression matcher for 'an type' matcher.
   def orNotAnTypeMatcher(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Matcher[Any]] = {
 
     import context.universe._
 
+    // create a negated matcher from notAnTypeMatcher
     val rhs = notAnTypeMatcher(context)(anType)
 
+    /**
+     * Generate AST for code that call the 'or' method on the Matcher instance (reference through 'owner'):
+     *
+     * owner.or(rhs)
+     */
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
         context.Expr(
@@ -263,16 +321,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
   def shouldBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree, "a")
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAType:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAType(lhs, aType)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
@@ -300,16 +363,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
   def mustBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree, "a")
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAType:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAType(lhs, aType)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
@@ -337,16 +405,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe an [type]' syntax
   def shouldBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = anType.tree
 
-    checkNoTypeParameter(context)(tree, "an")
+    // check type parameter
+    checkTypeParameter(context)(tree, "an")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAnType:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAnType(lhs, anType)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
@@ -374,16 +447,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
   def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = anType.tree
 
-    checkNoTypeParameter(context)(tree, "an")
+    // check type parameter
+    checkTypeParameter(context)(tree, "an")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAnType:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAnType(lhs, anType)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
@@ -411,16 +489,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkATypeShouldBeTrue
   def checkATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = aType.tree
 
-    checkNoTypeParameter(context)(tree, "a")
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkATypeShouldBeTrue:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkATypeShouldBeTrue(lhs, aType, shouldBeTrue)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
@@ -448,16 +531,21 @@ private[scalatest] object TypeMatcherMacro {
 
   }
 
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnTypeShouldBeTrue
   def checkAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
-
-    import context.universe._
 
     import context.universe._
 
     val tree = anType.tree
 
-    checkNoTypeParameter(context)(tree, "an")
+    // check type parameter
+    checkTypeParameter(context)(tree, "an")
 
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAnTypeShouldBeTrue:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAnTypeShouldBeTrue(lhs, anType, shouldBeTrue)
+     */
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>

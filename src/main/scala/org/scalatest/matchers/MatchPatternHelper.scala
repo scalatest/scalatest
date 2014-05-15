@@ -75,7 +75,7 @@ object MatchPatternHelper {
    *                   ^
    * </pre>
    */
-  def checkPatternMatcher(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
+  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
