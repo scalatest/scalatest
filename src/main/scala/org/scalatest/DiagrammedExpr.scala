@@ -26,6 +26,9 @@ private[org] case class AnchorValue(anchor: Int, value: Any)
  * <li>anchor values of this expression (including sub-expressions)</li>
  * </ul>
  *
+ * <code>DiagrammedExpr</code> is used by code generated from <code>DiagrammedAssertionsMacro</code>, it needs to be public
+ * so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>DiagrammedExpr</code>
+ * directly.
  */
 trait DiagrammedExpr[T] {
   val anchor: Int
@@ -40,6 +43,10 @@ trait DiagrammedExpr[T] {
 
 /**
  * <code>DiagrammedExpr</code> companion object that provides factory methods to create different sub types of <code>DiagrammedExpr</code>
+ *
+ * <code>DiagrammedExpr</code> is used by code generated from <code>DiagrammedAssertionsMacro</code>, it needs to be public
+ * so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>DiagrammedExpr</code>
+ * directly.
  */
 object DiagrammedExpr {
 

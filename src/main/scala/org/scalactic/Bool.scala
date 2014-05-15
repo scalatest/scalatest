@@ -26,6 +26,8 @@ import java.text.MessageFormat
  * <li>logical expression methods that makes <code>Bool</code> composable</li>
  * </ul>
  *
+ * <code>Bool</code> is used by code generated from <code>BooleanMacro</code> (which <code>AssertionsMacro</code> and <code>RequirementsMacro</code> uses),
+ * it needs to be public so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>Bool</code> directly.
  */
 trait Bool {
 
@@ -153,6 +155,9 @@ trait Bool {
 
 /**
  * <code>Bool</code> companion object that provides factory methods to create different sub types of <code>Bool</code>
+ *
+ * <code>Bool</code> is used by code generated from <code>BooleanMacro</code> (which <code>AssertionsMacro</code> and <code>RequirementsMacro</code> uses),
+ * it needs to be public so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>Bool</code> directly.
  */
 object Bool {
 
