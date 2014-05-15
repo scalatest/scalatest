@@ -353,6 +353,15 @@ private[scalactic] object RequirementsMacro {
   def requireNonNull(context: Context)(arguments: context.Expr[Any]*): context.Expr[Unit] = {
     import context.universe._
 
+    // generate AST that create array containing the argument name in source (get from calling 'show')
+    // for example, if you have:
+    // val a = "1"
+    // val b = null
+    // val c = "3"
+    // requireNonNull(a, b, c)
+    // it will generate the following code:
+    //
+    // Array("a", "b", "c")
     val variablesNamesArray =
       Apply(
         Select(
@@ -362,6 +371,15 @@ private[scalactic] object RequirementsMacro {
         List(arguments.map(e => context.literal(show(e.tree)).tree): _*)
       )
 
+    // generate AST that create array containing the argument values
+    // for example, if you have:
+    // val a = "1"
+    // val b = null
+    // val c = "3"
+    // requireNonNull(a, b, c)
+    // it will generate the following code:
+    //
+    // Array(a, b, c)
     val argumentsArray =
       Apply(
         Select(
@@ -371,6 +389,9 @@ private[scalactic] object RequirementsMacro {
         List(arguments.map(e => e.tree): _*)
       )
 
+    // Generate AST to call requirementsHelper.macroRequireNonNull and pass in both variable names and values array:
+    //
+    // requirementsHelper.macroRequireNonNull(variableNamesArray, valuesArray)
     context.Expr(
       Apply(
         Select(
