@@ -128,8 +128,21 @@ import StringReporter.fragmentsForEvent
  *
  * <p>
  * Each <code>Suite</code> in ScalaTest now maps to a <code>Task</code> in sbt, and its nested suites are returned as nested <code>Task</code>s.
- * This enables parallel execution of nested suites in sbt.
+ * In <code>Framework</code> implementation, this is done through <code>Distributor</code> that records nested suites and passes them back to sbt
+ * so sbt can distribute the execution of those on its own thread pool.   This enables parallel execution of nested suites when <code>parallelTestExecution</code>
+ * is set to <code>true</code> (the default in sbt).
  * </p>
+ *
+ * <p>
+ * Note that the behavior of nested suites are executed after the parent suite is the opposite of what is specified by [[org.scalatest.Suite <code>Suite</code>]],
+ * which nested suites are executed first.  To make nested suites to run first, you can override <code>run</code> and set <code>distributor</code> in <code>args</code>
+ * to <code>None</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * override def run(testName: Option[String], args: Args): Status =
+ *   super.run(testName, args.copy(distributor = None))
+ * </pre>
  *
  * <h3>API to support test execution in <code>fork</code> mode</h3>
  *
