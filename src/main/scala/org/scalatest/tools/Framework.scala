@@ -117,32 +117,31 @@ import StringReporter.fragmentsForEvent
  * for sbt to render at the end of the project run, which allows ScalaTest to return its own summary text.
  * </p>
  *
- * <h3>API to return nested tasks</h3>
+ * <h3>API to return nested <code>Suite</code>s as sbt <code>Task</code>s</h3>
  *
  * <p>
- * In sbt version before 0.13, ScalaTest's nested suites are always executed sequentially regardless of <code>parallelExecution</code> value.
+ * In sbt versions before 0.13, ScalaTest's nested suites were always executed sequentially regardless of the <code>parallelExecution</code> value of the sbt build.
  * In new Framework API, a new concept of <a href="https://github.com/sbt/test-interface/blob/master/src/main/java/sbt/testing/Task.java"><code>Task</code></a>
- * is introduced, which its <code>execute</code> method can return more (nested) <code>Task</code>s for execution.  When <code>parallelExecution</code>
- * is set to <code>true</code> (the default), sbt will execute the nested tasks in parallel.
+ * was introduced. A <code>Task</code> has an <code>execute</code> method that can return more <code>Task</code>s for execution.  When <code>parallelExecution</code>
+ * is set to <code>true</code> (sbt's default), sbt will execute returned tasks in parallel.
  * </p>
  *
  * <p>
- * Each <code>Suite</code> in ScalaTest now maps to a <code>Task</code> in sbt, and its nested suites are returned as nested <code>Task</code>s.
- * In <code>Framework</code> implementation, this is done through <code>Distributor</code> that records nested suites and passes them back to sbt
- * so sbt can distribute the execution of those on its own thread pool.   This enables parallel execution of nested suites when <code>parallelTestExecution</code>
- * is set to <code>true</code> (the default in sbt).
+ * Each <code>Suite</code> in ScalaTest maps to a <code>Task</code> in sbt. Any nested suites of a <code>Suite</code> executed by sbt are returned to sbt
+ * as <code>Task</code>s so that sbt can execute them using its own thread pool, either in parallel (sbt's default), or on a single thread if sequential execution
+ * was requested by the sbt build. The way <code>Framework</code> achieves this behavior is by inserting a <code>Distributor</code> that records any nested suites
+ * added to it, passing those <code>Suites</code> back to sbt as <code>Task</code>s.
  * </p>
  *
  * <p>
- * Note that the behavior of nested suites are executed after the parent suite is the opposite of what is specified by [[org.scalatest.Suite <code>Suite</code>]],
- * which nested suites are executed first.  To make nested suites to run first, you can override <code>run</code> and set <code>distributor</code> in <code>args</code>
- * to <code>None</code>:
+ * Note that the way nested suites are executed sequentially is different when using sbt than when running directly with ScalaTest. The reason
+ * is that when ScalaTest executes sequentially, it passes in <code>None</code> for the <code>Option[Distributor]</code> parameter, where as <code>Framework</code> passes
+ * in <code>Some[Distributor]</code> to collect the nested suites so they can be returned to sbt as <code>Task</code>s. As a result, when ScalaTest executes a <code>Suite</code> sequentially,
+ * that <code>Suite</code>'s nested suites are executed <em>before</em> its tests. When sbt asks ScalaTest through this <code>Framework</code> class to execute a <code>Suite</code> sequentially,
+ * the <code>Suite</code>'s nested suites will be executed <em>after</em> its tests.
+ * To make nested suites run sequentially before the tests when using sbt, mix in trait <a href="../SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>,
+ * which overrides <code>runNestedSuites</code> to replace the <code>Some[Distributor]</code> passed in by <code>Framework</code> with <code>None</code>.
  * </p>
- *
- * <pre class="stHighlight">
- * override def run(testName: Option[String], args: Args): Status =
- *   super.run(testName, args.copy(distributor = None))
- * </pre>
  *
  * <h3>API to support test execution in <code>fork</code> mode</h3>
  *
