@@ -4390,10 +4390,21 @@ trait WebBrowser {
    *   <li>For an array, return a List<Object> with each object following the rules above. We support nested lists</li>
    *   <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ol>
+   *
+   * <p>
+   * Script arguments must be a number, a boolean, a String, WebElement, or a List of any combination of the above. An exception will
+   * be thrown if the arguments do not meet these criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
+   * </p>
+   *
+   * <p>
+   * Note: The above behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
+   * it is still possible for the underlying <code>JavascriptExecutor</code> implementation to return an object other than the above list.  For example, we have learned that <code>HtmlUnit</code>
+   * implementation returns a <code>java.util.Map</code> for Javascript object.
+   * </p>
    * 
    * @param script the JavaScript to execute
    * @param args the arguments to the script, may be empty
-   * @return One of Boolean, Long, String, List or WebElement. Or null
+   * @return One of Boolean, Long, String, List or WebElement. Or null (following <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>)
    */
   def executeScript[T](script: String, args: AnyRef*)(implicit driver: WebDriver): AnyRef =
     driver match {
@@ -4423,10 +4434,16 @@ trait WebBrowser {
    * Script arguments must be a number, a boolean, a String, WebElement, or a List of any combination of the above. An exception will 
    * be thrown if the arguments do not meet these criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
    * </p>
+   *
+   * <p>
+   * Note: The above behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
+   * it is still possible for the underlying <code>JavascriptExecutor</code> implementation to return an object other than the above list.  For example, we have learned that <code>HtmlUnit</code>
+   * implementation returns a <code>java.util.Map</code> for Javascript object.
+   * </p>
    * 
    * @param script the JavaScript to execute
    * @param args the arguments to the script, may be empty
-   * @return One of Boolean, Long, String, List, WebElement, or null
+   * @return One of Boolean, Long, String, List, WebElement, or null (following <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>)
    */
   def executeAsyncScript(script: String, args: AnyRef*)(implicit driver: WebDriver): AnyRef =
     driver match {
