@@ -11,17 +11,17 @@
 
     <property name="release" value="2.1.7" />
 
+<!--
     <property name="scala.version" value="2.10.3" />
     <property name="deploy.scala.version" value="2.10" />
     <property name="for.scala" value="2.10" />
-    <property name="github.tag" value="release-2.1.7-for-scala-2.10" /> <!-- for scaladoc source urls -->
+    <property name="github.tag" value="release-2.1.7-for-scala-2.10" />
+-->
 
-<!--
     <property name="scala.version" value="2.11.0" />
     <property name="deploy.scala.version" value="2.11" />
 	<property name="for.scala" value="2.11" />
     <property name="github.tag" value="release-2.1.7-for-scala-2.11" />
--->
 
     <property name="scala-xml.version.number"                value="1.0.1" />
     <property name="scala-parser-combinators.version.number" value="1.0.1" />
@@ -97,7 +97,6 @@
           <pom file="${build}/pom.xml"/>
         </artifact:dependencies>
 	
-<!-- Needed for the 2.11.0-RC3 build
         <macrodef name="readProperty">
           <attribute name="name" />
           <attribute name="property" />
@@ -113,7 +112,6 @@
             <pathelement location="${scala-xml}" />
             <pathelement location="${scala-parser-combinators}" />
         </path>
--->
 
         <path id="build.class.path">
             <pathelement location="${classes}" />
@@ -155,10 +153,8 @@
             	<pathelement location="${org.scala-lang:scala-library:jar}" />
             	<pathelement location="${org.scala-lang:scala-compiler:jar}" />
             	<pathelement location="${org.scala-lang:scala-reflect:jar}" /> <!-- needed for 2.10 build -->
-<!-- Needed for 2.11.0-RC3 build
                 <pathelement location="${scala-xml}" />
                 <pathelement location="${scala-parser-combinators}" />
--->
             </classpath>
         </taskdef>
 
@@ -1578,7 +1574,7 @@
     </target>
 
     <!-- Note: For 2.11.0-RC3 I deleted the osgi.test dependency, because it fails. Need to figure that out. -->
-    <target name="jar" depends="dist,osgi.test"></target>
+    <target name="jar" depends="dist"></target>
 
     <!-- creates jars of scalatest and scalautils source files -->
     <target name="jarsrc">
