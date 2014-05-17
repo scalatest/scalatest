@@ -4392,14 +4392,11 @@ trait WebBrowser {
    * </ol>
    *
    * <p>
-   * Script arguments must be a number, a boolean, a String, WebElement, or a List of any combination of the above. An exception will
+   * Script arguments must be a number, boolean, String, WebElement, or a List of any combination of these. An exception will
    * be thrown if the arguments do not meet these criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
-   * </p>
-   *
-   * <p>
-   * Note: The above behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
-   * it is still possible for the underlying <code>JavascriptExecutor</code> implementation to return an object other than the above list.  For example, we have learned that <code>HtmlUnit</code>
-   * implementation returns a <code>java.util.Map</code> for Javascript object.
+   * (Note that although this behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
+   * it may still be possible for the underlying <code>JavascriptExecutor</code> implementation to return an objects of other types.
+   * For example, <code>HtmlUnit</code> has been observed to return a <code>java.util.Map</code> for a Javascript object.)
    * </p>
    * 
    * @param script the JavaScript to execute
@@ -4431,14 +4428,11 @@ trait WebBrowser {
    * </ol>
    * 
    * <p>
-   * Script arguments must be a number, a boolean, a String, WebElement, or a List of any combination of the above. An exception will 
+   * Script arguments must be a number, boolean, String, WebElement, or a List of any combination of these. An exception will 
    * be thrown if the arguments do not meet these criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
-   * </p>
-   *
-   * <p>
-   * Note: The above behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
-   * it is still possible for the underlying <code>JavascriptExecutor</code> implementation to return an object other than the above list.  For example, we have learned that <code>HtmlUnit</code>
-   * implementation returns a <code>java.util.Map</code> for Javascript object.
+   * (Note that although this behavior is specified by <a href="http://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/JavascriptExecutor.html">Selenium's JavascriptExecutor Javadoc</a>,
+   * it may still be possible for the underlying <code>JavascriptExecutor</code> implementation to return an objects of other types.
+   * For example, <code>HtmlUnit</code> has been observed to return a <code>java.util.Map</code> for a Javascript object.)
    * </p>
    * 
    * @param script the JavaScript to execute
