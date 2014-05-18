@@ -1090,8 +1090,7 @@
 
       <exec executable="support/docjavatags.scala"/>
 
-      <scaladoc addparams="-no-specialization"
-                srcdir="${build}/docsrc"
+      <scaladoc srcdir="${build}/docsrc"
                 sourcepath="${build}/docsrc"
                 docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${doc}"
@@ -1152,8 +1151,7 @@
         </fileset>
       </replaceregexp>
 
-      <scaladoc addparams="-no-specialization"
-                srcdir="${build}/docsrc"
+      <scaladoc srcdir="${build}/docsrc"
                 sourcepath="${build}/docsrc"
                 docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
@@ -1566,7 +1564,7 @@
     </target>
 
     <target name="osgi.compile" depends="compile">
-        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC"/>
+        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC"/>
     </target>
 
     <target name="osgi.test" depends="osgi.compile,taskdefscalatest,dist">
