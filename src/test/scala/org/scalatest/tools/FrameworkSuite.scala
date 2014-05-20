@@ -1758,4 +1758,27 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
+
+  test("Framework.runner should use passed in -o config in sub-process") {
+    val mainRunner = framework.runner(Array("-oDF"), Array.empty, testClassLoader)
+    makeSureDone(mainRunner) {
+      val remoteArgs = mainRunner.remoteArgs
+      val subRunner = framework.runner(Array("-oDF"), remoteArgs, testClassLoader)
+
+      makeSureDone(subRunner) {
+        assert(subRunner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+        val scalatestRunner = subRunner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+        assert(scalatestRunner.useSbtLogInfoReporter)
+        assert(scalatestRunner.presentAllDurations)
+        assert(scalatestRunner.presentInColor)
+        assert(scalatestRunner.presentShortStackTraces)
+        assert(scalatestRunner.presentFullStackTraces)
+        assert(!scalatestRunner.presentUnformatted)
+        assert(!scalatestRunner.presentReminder)
+        assert(!scalatestRunner.presentReminderWithShortStackTraces)
+        assert(!scalatestRunner.presentReminderWithFullStackTraces)
+        assert(!scalatestRunner.presentReminderWithoutCanceledTests)
+      }
+    }
+  }
 }

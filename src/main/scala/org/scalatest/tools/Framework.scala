@@ -801,16 +801,16 @@ class Framework extends SbtFramework {
     autoSelectors: List[Selector],
     configMap: ConfigMap, 
     repConfig: ReporterConfigurations,
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean, 
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean, 
+    val useSbtLogInfoReporter: Boolean,
+    val presentAllDurations: Boolean,
+    val presentInColor: Boolean,
+    val presentShortStackTraces: Boolean,
+    val presentFullStackTraces: Boolean,
+    val presentUnformatted: Boolean,
+    val presentReminder: Boolean,
+    val presentReminderWithShortStackTraces: Boolean,
+    val presentReminderWithFullStackTraces: Boolean,
+    val presentReminderWithoutCanceledTests: Boolean,
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long
@@ -1100,7 +1100,8 @@ class Framework extends SbtFramework {
       }
       else {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
-        Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: Nil)
+        val stdoutArgs = reporterArgs.filter(_.startsWith("-o"))
+        Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: stdoutArgs)
       }
 
     val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
