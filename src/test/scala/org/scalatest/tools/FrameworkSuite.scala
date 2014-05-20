@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package org.scalatest.tools
-import org.scalatest.{FunSuite, Resources, Retries}
+import org.scalatest.{FunSuite, Resources, Retries, OptionValues}
 import sbt.testing._
 import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
 import java.io.File
-import org.scalatest.Retries._
+import Retries._
+import OptionValues._
 
 class FrameworkSuite extends FunSuite {
 
@@ -1779,6 +1780,36 @@ class FrameworkSuite extends FunSuite {
         assert(!scalatestRunner.presentReminderWithFullStackTraces)
         assert(!scalatestRunner.presentReminderWithoutCanceledTests)
       }
+    }
+  }
+
+  test("Framework.runner should use the first -o when multiple -o is passed in") {
+    val runner = framework.runner(Array("-oW", "-oDF"), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      assert(scalatestRunner.useSbtLogInfoReporter)
+      assert(!scalatestRunner.presentAllDurations)
+      assert(!scalatestRunner.presentInColor)
+      assert(!scalatestRunner.presentShortStackTraces)
+      assert(!scalatestRunner.presentFullStackTraces)
+      assert(!scalatestRunner.presentUnformatted)
+      assert(!scalatestRunner.presentReminder)
+      assert(!scalatestRunner.presentReminderWithShortStackTraces)
+      assert(!scalatestRunner.presentReminderWithFullStackTraces)
+      assert(!scalatestRunner.presentReminderWithoutCanceledTests)
+    }
+  }
+
+  test("Framework.runner should use the first -o when multiple -e is passed in") {
+    val runner = framework.runner(Array("-eW", "-eDF"), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      val repConfig = scalatestRunner.repConfig
+      val configSet = repConfig.standardErrReporterConfiguration.value.configSet
+      assert(configSet.size == 1)
+      assert(configSet.head == PresentWithoutColor)
     }
   }
 }

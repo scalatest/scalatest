@@ -800,7 +800,7 @@ class Framework extends SbtFramework {
     wildcard: List[String],
     autoSelectors: List[Selector],
     configMap: ConfigMap, 
-    repConfig: ReporterConfigurations,
+    val repConfig: ReporterConfigurations,
     val useSbtLogInfoReporter: Boolean,
     val presentAllDurations: Boolean,
     val presentInColor: Boolean,
@@ -1091,16 +1091,21 @@ class Framework extends SbtFramework {
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
+
+    val (stdoutArgs, stderrArgs, others) = {
+      val (stdoutArgs, nonStdoutArgs) = reporterArgs.partition(_.startsWith("-o"))
+      val (stderrArgs, others) = nonStdoutArgs.partition(_.startsWith("-e"))
+      (if (stdoutArgs.isEmpty) stdoutArgs else List(stdoutArgs.head), if (stderrArgs.isEmpty) stderrArgs else List(stderrArgs.head), others)
+    }
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
         // Creating the normal/main runner, should create reporters as specified by args.
         // If no reporters specified, just give them a default stdout reporter
-        Runner.parseReporterArgsIntoConfigurations(reporterArgs)
+        Runner.parseReporterArgsIntoConfigurations(stdoutArgs ::: stderrArgs ::: others)
       }
       else {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
-        val stdoutArgs = reporterArgs.filter(_.startsWith("-o"))
         Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: stdoutArgs)
       }
 
