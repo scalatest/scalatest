@@ -1000,9 +1000,39 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     )
   }
 
-  def `parseCompoundArgIntoSet should work correctly` {
-    assertResult(Set("Cat", "Dog")) {
-      Runner.parseCompoundArgIntoSet(List("-n", "Cat Dog"), "-n")
+  object `parseCompoundArgIntoSet should` {
+    def `work correctly` {
+      assertResult(Set("Cat", "Dog")) {
+        Runner.parseCompoundArgIntoSet(List("-n", "Cat Dog"), "-n")
+      }
+    }
+    def `merge overlapping values` {
+      assertResult(Set("tag", "tag2", "tag3")) {
+        Runner.parseCompoundArgIntoSet(List("-l", "tag tag2", "-l", "tag2 tag3"),"-l")
+      }
+    }
+  }
+
+  object `parseCompoundArgIntoList should parse` {
+    def `single` {
+      assertResult(List("tag")) {
+        Runner.parseCompoundArgIntoList(List("-l", "tag"),"-l")
+      }
+    }
+    def `multi` {
+      assertResult(List("tag","tag2")) {
+        Runner.parseCompoundArgIntoList(List("-l", "tag tag2"),"-l")
+      }
+    }
+    def `different pairs` {
+      assertResult(List("tag", "tag2", "tag3", "tag4")) {
+        Runner.parseCompoundArgIntoList(List("-l", "tag tag2", "-l", "tag3 tag4"),"-l")
+      }
+    }
+    def `overlapping pairs` {
+      assertResult(List("tag", "tag2", "tag2", "tag3")) {
+        Runner.parseCompoundArgIntoList(List("-l", "tag tag2", "-l", "tag2 tag3"),"-l")
+      }
     }
   }
 
