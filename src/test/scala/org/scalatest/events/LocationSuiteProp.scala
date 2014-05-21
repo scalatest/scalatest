@@ -184,9 +184,9 @@ class LocationSuiteProp extends SuiteProp
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
   
-  def fixtureSpec = new TestLocationFixtureSpec
-  class TestLocationFixtureSpec extends StringFixtureFunSpec with FixtureServices {
-    val suiteTypeName = "org.scalatest.events.LocationSuiteProp$TestLocationFixtureSpec"
+  def fixtureFunSpec = new TestLocationFixtureFunSpec
+  class TestLocationFixtureFunSpec extends StringFixtureFunSpec with FixtureServices {
+    val suiteTypeName = "org.scalatest.events.LocationSuiteProp$TestLocationFixtureFunSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
                                          TopOfClassPair(suiteTypeName + "$FailNestedSuite"))
