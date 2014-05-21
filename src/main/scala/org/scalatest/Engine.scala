@@ -761,7 +761,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
     val suiteTags = for { 
-      a <- theSuite.getClass.getDeclaredAnnotations
+      a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName

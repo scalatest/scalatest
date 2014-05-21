@@ -133,6 +133,86 @@ class InheritedTagProp extends SuiteProp {
     }
   }
 
+  test("All suite types should return inherited org.scalatest.tags.ChromeBrowser tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.ChromeBrowser"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.FirefoxBrowser tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.FirefoxBrowser"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.HtmlUnitBrowser tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.HtmlUnitBrowser"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.InternetExplorerBrowser tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.InternetExplorerBrowser"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.SafariBrowser tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.SafariBrowser"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.CPU tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.CPU"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.Disk tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.Disk"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.Network tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.Network"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.Retryable tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.Retryable"))
+    }
+  }
+
+  test("All suite types should return inherited org.scalatest.tags.Slow tag inherited from super class in testDataFor method") {
+    forAll(filteredExamples) { suite =>
+      assert(suite.testNames.size == 1)
+      val resultTestData = suite.testDataFor(suite.testNames.head)
+      assert(resultTestData.tags.contains("org.scalatest.tags.Slow"))
+    }
+  }
+
   type FixtureServices = InheritedTagFixtureServices
 
   @org.scalatest.tags.ChromeBrowser
