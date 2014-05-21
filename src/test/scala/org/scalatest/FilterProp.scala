@@ -91,4 +91,10 @@ class FilterProp extends SuiteProp {
   def fixtureWordSpec = new fixture.WordSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
+  def spec = new Spec {
+    override def nestedSuites = Vector(new Suite {})
+  }
+  def fixtureSpec = new fixture.Spec with StringFixture {
+    override def nestedSuites = Vector(new Suite {})
+  }
 }

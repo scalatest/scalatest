@@ -518,4 +518,36 @@ class InheritedTagProp extends SuiteProp {
     "test something" in { f => }
   }
   def fixtureWordSpec = new InheritedTagFixtureWordSpec
+
+  @org.scalatest.tags.ChromeBrowser
+  @org.scalatest.tags.FirefoxBrowser
+  @org.scalatest.tags.HtmlUnitBrowser
+  @org.scalatest.tags.InternetExplorerBrowser
+  @org.scalatest.tags.SafariBrowser
+  @org.scalatest.tags.CPU
+  @org.scalatest.tags.Disk
+  @org.scalatest.tags.Network
+  @org.scalatest.tags.Retryable
+  @org.scalatest.tags.Slow
+  class BaseTagSpec extends Spec with FixtureServices
+  class InheritedTagSpec extends BaseTagSpec {
+    def `test something` {}
+  }
+  def spec = new InheritedTagSpec
+
+  @org.scalatest.tags.ChromeBrowser
+  @org.scalatest.tags.FirefoxBrowser
+  @org.scalatest.tags.HtmlUnitBrowser
+  @org.scalatest.tags.InternetExplorerBrowser
+  @org.scalatest.tags.SafariBrowser
+  @org.scalatest.tags.CPU
+  @org.scalatest.tags.Disk
+  @org.scalatest.tags.Network
+  @org.scalatest.tags.Retryable
+  @org.scalatest.tags.Slow
+  class BaseTagFixtureSpec extends fixture.Spec with StringFixture with FixtureServices
+  class InheritedTagFixtureSpec extends BaseTagFixtureSpec {
+    def `test something` {}
+  }
+  def fixtureSpec = new InheritedTagFixtureSpec
 }
