@@ -213,7 +213,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
    */
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     val suiteTags = for { 
-      a <- this.getClass.getDeclaredAnnotations
+      a <- this.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
