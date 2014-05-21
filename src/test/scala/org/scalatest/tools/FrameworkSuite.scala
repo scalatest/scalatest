@@ -1758,4 +1758,24 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
+
+  test("ScalaTestRunner.task should return task and its nested task that tags method returns collection that contains tag inherited from superclass") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleInheritedSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      val resultTags = task.tags
+      assert(resultTags.contains("cpu"))
+
+      val testEventHandler = new TestEventHandler
+      val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
+      assert(nestedTasks.size == 1)
+      val nestedResultTags = nestedTasks(0).tags
+      assert(nestedResultTags.contains("cpu"))
+    }
+    finally {
+      runner.done()
+    }
+  }
 }

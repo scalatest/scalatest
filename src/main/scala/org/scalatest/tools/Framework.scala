@@ -522,7 +522,7 @@ class Framework extends SbtFramework {
     
     def tags = 
       for { 
-        a <- suite.getClass.getDeclaredAnnotations
+        a <- suite.getClass.getAnnotations
         annotationClass = a.annotationType
         if (annotationClass.isAnnotationPresent(classOf[TagAnnotation]) || annotationClass.isAssignableFrom(classOf[TagAnnotation])) 
       } yield {
@@ -611,7 +611,7 @@ class Framework extends SbtFramework {
     
     def tags = 
       for { 
-        a <- suiteClass.getDeclaredAnnotations
+        a <- suiteClass.getAnnotations
         annotationClass = a.annotationType
         if (annotationClass.isAnnotationPresent(classOf[TagAnnotation]) || annotationClass.isAssignableFrom(classOf[TagAnnotation])) 
       } yield {
