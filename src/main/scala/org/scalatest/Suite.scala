@@ -2420,7 +2420,7 @@ used for test events like succeeded/failed, etc.
   
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
     val suiteTags = for { 
-      a <- theSuite.getClass.getDeclaredAnnotations
+      a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
