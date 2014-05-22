@@ -67,7 +67,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
   describe("A Waiter") {
 
     it("should throw a NotAllowedException if await is called by a thread different from the" +
-    		"thread that constructed the Waiter") { con => import con._
+    		"thread that constructed the Waiter", Retryable) { con => import con._
       val w = new Waiter
       thread {
         val caught =
