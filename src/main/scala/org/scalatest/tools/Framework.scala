@@ -870,8 +870,11 @@ class Framework extends SbtFramework {
         serverThread.get match {
           case Some(thread) =>
             // Need to wait until the server thread is done
+            thread.join()
+/*
             while(thread.isAlive)  // Any better way?
               Thread.sleep(100)
+*/
           case None =>
         }
 
@@ -986,7 +989,7 @@ class Framework extends SbtFramework {
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
       thread.start()
-      serverThread.getAndSet(Some(thread))
+      serverThread.set(Some(thread))
       Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
   }
