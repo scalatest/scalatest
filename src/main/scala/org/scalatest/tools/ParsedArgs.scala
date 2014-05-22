@@ -23,6 +23,7 @@ private[scalatest] case class ParsedArgs(
   suites: List[String],
   tryAgains: List[String],
   junits: List[String],
+  doJunitDiscovery: Boolean,
   props: List[String],
   includes: List[String],
   excludes: List[String],
