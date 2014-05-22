@@ -33,7 +33,7 @@ import Runner.parseDoubleArgument
 import Runner.parseSlowpokeConfig
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
+import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
 import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 
@@ -759,7 +759,7 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests
   ) {
-    
+
     protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
@@ -800,22 +800,23 @@ class Framework extends SbtFramework {
     wildcard: List[String],
     autoSelectors: List[Selector],
     configMap: ConfigMap, 
-    repConfig: ReporterConfigurations,
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean, 
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean, 
+    val repConfig: ReporterConfigurations,
+    val useSbtLogInfoReporter: Boolean,
+    val presentAllDurations: Boolean,
+    val presentInColor: Boolean,
+    val presentShortStackTraces: Boolean,
+    val presentFullStackTraces: Boolean,
+    val presentUnformatted: Boolean,
+    val presentReminder: Boolean,
+    val presentReminderWithShortStackTraces: Boolean,
+    val presentReminderWithFullStackTraces: Boolean,
+    val presentReminderWithoutCanceledTests: Boolean,
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long
-  ) extends sbt.testing.Runner {  
+  ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
+    val serverThread = new AtomicReference[Option[Thread]](None)
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
@@ -865,6 +866,15 @@ class Framework extends SbtFramework {
     
     def done = {
       if (!isDone.getAndSet(true)) {
+
+        serverThread.get match {
+          case Some(thread) =>
+            // Need to wait until the server thread is done
+            while(thread.isAlive)  // Any better way?
+              Thread.sleep(100)
+          case None =>
+        }
+
         val duration = System.currentTimeMillis - runStartTime
         val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get, 
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
@@ -904,12 +914,12 @@ class Framework extends SbtFramework {
           val is = new ObjectInputStream(socket.getInputStream)
 
           try {
-			(new React(is)).react()
+			      (new React(is)).react()
           } 
           finally {
             is.close()	
             socket.close()
-		  }
+		      }
         }
         
         class React(is: ObjectInputStream) {
@@ -917,7 +927,7 @@ class Framework extends SbtFramework {
           final def react() { 
             val event = is.readObject
             event match {
-              case e: TestStarting => 
+              case e: TestStarting =>
                 dispatchReporter(e) 
                 react()
               case e: TestSucceeded => 
@@ -976,6 +986,7 @@ class Framework extends SbtFramework {
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
       thread.start()
+      serverThread.getAndSet(Some(thread))
       Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
   }
@@ -1080,16 +1091,22 @@ class Framework extends SbtFramework {
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
+
+    val (stdoutArgs, stderrArgs, others) = {
+      val (stdoutArgs, nonStdoutArgs) = reporterArgs.partition(_.startsWith("-o"))
+      val (stderrArgs, others) = nonStdoutArgs.partition(_.startsWith("-e"))
+      (stdoutArgs.take(1), stderrArgs.take(1), others)
+    }
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
         // Creating the normal/main runner, should create reporters as specified by args.
         // If no reporters specified, just give them a default stdout reporter
-        Runner.parseReporterArgsIntoConfigurations(reporterArgs)
+        Runner.parseReporterArgsIntoConfigurations(stdoutArgs ::: stderrArgs ::: others)
       }
       else {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
-        Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: Nil)
+        Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: stdoutArgs)
       }
 
     val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
@@ -1123,7 +1140,11 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithoutCanceledTests)
           )
-        case None => 
+        case None =>
+          // use stdout when it is sub-process runner, or when no reporter is specified
+          // the reason that sub-process must use stdout is that the Array[Logger] is passed in from SBT only when the
+          // suite is run, in the fork mode case this happens only at the sub-process side, the main process will not be
+          // able to get the Array[Logger] to create SbtInfoLoggerReporter.
           (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false)
       }
     
