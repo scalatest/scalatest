@@ -132,7 +132,7 @@ object ScalatestBuild extends Build {
   def scalaLibraries(theScalaVersion: String) =
     Seq(
       "org.scala-lang" % "scala-compiler" % theScalaVersion % "provided",
-      "org.scala-lang" % "scala-reflect" % theScalaVersion % "provided" // this is needed to compile macro
+      "org.scala-lang" % "scala-reflect" % theScalaVersion // this is needed to compile macro
     )
 
   def scalatestLibraryDependencies =
