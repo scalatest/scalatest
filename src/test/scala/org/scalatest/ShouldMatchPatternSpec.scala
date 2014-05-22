@@ -15,15 +15,10 @@
  */
 package org.scalatest
 
-import org.scalatest.Matchers._
 import OptionValues._
 import org.scalactic.Prettifier
 import SharedHelpers.thisLineNumber
-import scala.Some
-import scala.Some
-import scala.Some
-import scala.Some
-import scala.Some
+import Matchers._
 
 class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
