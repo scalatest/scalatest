@@ -47,6 +47,7 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
+import MatchersHelper.convertClassIfNeeded
 import org.scalactic.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
@@ -4955,6 +4956,36 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!definition.isDefined(e))
           throw newTestFailedException(FailureMessages("wasNotDefined", e), None, 6)
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe a [Type]
+     *         ^
+     * </pre>
+     */
+    def shouldBe(aType: ResultOfATypeInvocation[_]) {
+      doCollected(collected, xs, original, "shouldBe", 1) { e =>
+        if (!convertClassIfNeeded(aType.clazz).isAssignableFrom(e.getClass))
+          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(aType.clazz.getName)), None, 6)
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe an [Type]
+     *         ^
+     * </pre>
+     */
+    def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
+      doCollected(collected, xs, original, "shouldBe", 1) { e =>
+        if (!convertClassIfNeeded(anType.clazz).isAssignableFrom(e.getClass))
+          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(anType.clazz.getName)), None, 6)
       }
     }
 

@@ -316,4 +316,17 @@ private[scalatest] object MatchersHelper {
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotIncludeRegex", "includedRegex", "includedRegexButNotGroupAtIndex", 
                                "includedRegexButNotGroup", "includedRegexAndGroup")
   }
+
+  def convertClassIfNeeded(clazz: Class[_]): Class[_] =
+    clazz.getName match {
+      case "int" => classOf[java.lang.Integer]
+      case "long" => classOf[java.lang.Long]
+      case "short" => classOf[java.lang.Short]
+      case "boolean" => classOf[java.lang.Boolean]
+      case "byte" => classOf[java.lang.Byte]
+      case "char" => classOf[java.lang.Character]
+      case "double" => classOf[java.lang.Double]
+      case "float" => classOf[java.lang.Float]
+      case _ => clazz
+    }
 }
