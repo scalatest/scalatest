@@ -2246,7 +2246,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assert(woof { meow(y = 5) } == "woof")
       }
 
@@ -2268,7 +2268,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }
+      }*/
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -2283,6 +2283,15 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3")
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+      }
+
+      it("should do nothing when a block of code that evaluates to true is passed in") {
+        assert {
+          val a = 1
+          val b = 2
+          val c = a + b
+          a < b || c == a + b
+        }
       }
     }
 
@@ -4432,7 +4441,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assert(woof { meow(y = 5) } == "woof", "this is a clue")
       }
 
@@ -4454,7 +4463,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }
+      }*/
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -6618,7 +6627,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assume(woof { meow(y = 5) } == "woof")
       }
 
@@ -6640,7 +6649,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }
+      }*/
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=
@@ -8804,7 +8813,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assume(woof { meow(y = 5) } == "woof", "this is a clue")
       }
 
@@ -8826,7 +8835,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }
+      }*/
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=

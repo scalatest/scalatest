@@ -321,7 +321,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
       case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
       case select: Select => selectExpr(select) // delegate to selectExpr if it is a Select
-      case Block(stats, expr) => transformAst(expr) // call transformAst recursively using the expr argument if it is a block
+      case Block(stats, expr) =>
+        println("###input AST: " + show(tree))
+        println("###output AST: " + show(Block(stats, transformAst(expr))))
+        Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
       case other => simpleExpr(other) // for others, just delegate to simpleExpr
     }
   }
