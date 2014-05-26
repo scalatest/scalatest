@@ -74,6 +74,11 @@ object GenTestsHelper {
     val mytagsSource = new File("src/test/scala/org/scalatest/mytags.scala")
     val mytagsTarget = new File(targetDir, mytagsSource.getName)
     copyFile(mytagsSource, mytagsTarget)
+
+    val pathExampleLikeSpecsSource = new File("src/test/scala/org/scalatest/path/ExampleLikeSpecs.scala")
+    val pathExampleLikeSpecsTarget = new File(targetDir, pathExampleLikeSpecsSource.getName)
+    copyFile(pathExampleLikeSpecsSource, pathExampleLikeSpecsTarget)
+
   }
 
   def main(args: Array[String]) {
