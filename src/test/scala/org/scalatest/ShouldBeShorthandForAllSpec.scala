@@ -722,146 +722,146 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Int]` {
+    def `should work with a [java.lang.Integer] but not [Int]` {
 
       val int1 = 7
       val int2: Any = 8
       val str = "Hi"
 
-      all(List(int1, int2)) shouldBe a [Int]
+      all(List(int1, int2)) shouldBe a [java.lang.Integer]
       all(List(int1, str)) shouldBe a [Any]
 
-      val list = List(int1, int2, str)
+      val list = List(int1, int2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Int]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of int", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Long]` {
+    def `should work with a [java.lang.Long], but not [Long]` {
 
       val long1 = 7L
       val long2: Any = 8L
       val str = "Hi"
 
-      all(List(long1, long2)) shouldBe a [Long]
+      all(List(long1, long2)) shouldBe a [java.lang.Long]
       all(List(long1, str)) shouldBe a [Any]
 
-      val list = List(long1, long2, str)
+      val list = List(long1, long2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Long]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of long", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, long1 + " was not an instance of long", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Short]` {
+    def `should work with a [java.lang.Short], but not [Short]` {
 
       val short1: Short = 7
       val short2: Any = 8.toShort
       val str = "Hi"
 
-      all(List(short1, short2)) shouldBe a [Short]
+      all(List(short1, short2)) shouldBe a [java.lang.Short]
       all(List(short1, str)) shouldBe a [Any]
 
-      val list = List(short1, short2, str)
+      val list = List(short1, short2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Short]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of short", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Byte]` {
+    def `should work with a [java.lang.Byte], but not [Byte]` {
 
       val byte1: Byte = 7.toByte
       val byte2: Any = 8.toByte
       val str = "Hi"
 
-      all(List(byte1, byte2)) shouldBe a [Byte]
+      all(List(byte1, byte2)) shouldBe a [java.lang.Byte]
       all(List(byte1, str)) shouldBe a [Any]
 
-      val list = List(byte1, byte2, str)
+      val list = List(byte1, byte2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Byte]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of byte", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, byte1 + " was not an instance of byte", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Double]` {
+    def `should work with a [java.lang.Double], but not [Double]` {
 
       val double1: Double = 7.77
       val double2: Any = 8.88
       val str = "Hi"
 
-      all(List(double1, double2)) shouldBe a [Double]
+      all(List(double1, double2)) shouldBe a [java.lang.Double]
       all(List(double1, str)) shouldBe a [Any]
 
-      val list = List(double1, double2, str)
+      val list = List(double1, double2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Double]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of double", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Float]` {
+    def `should work with a [java.lang.Float], but not [Float]` {
 
       val float1: Float = 7.77f
       val float2: Any = 8.88f
       val str = "Hi"
 
-      all(List(float1, float2)) shouldBe a [Float]
+      all(List(float1, float2)) shouldBe a [java.lang.Float]
       all(List(float1, str)) shouldBe a [Any]
 
-      val list = List(float1, float2, str)
+      val list = List(float1, float2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Float]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of float", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, float1 + " was not an instance of float", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Boolean]` {
+    def `should work with a [java.lang.Boolean], but not [Boolean]` {
 
       val bool1 = false
       val bool2: Any = true
       val str = "Hi"
 
-      all(List(bool1, bool2)) shouldBe a [Boolean]
+      all(List(bool1, bool2)) shouldBe a [java.lang.Boolean]
       all(List(bool1, str)) shouldBe a [Any]
 
-      val list = List(bool1, bool2, str)
+      val list = List(bool1, bool2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Boolean]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of boolean", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, bool1 + " was not an instance of boolean", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [Char]` {
+    def `should work with a [java.lang.Character], but not [Char]` {
 
       val c1 = '7'
       val c2: Any = '8'
       val str = "Hi"
 
-      all(List(c1, c2)) shouldBe a [Char]
+      all(List(c1, c2)) shouldBe a [java.lang.Character]
       all(List(c1, str)) shouldBe a [Any]
 
-      val list = List(c1, c2, str)
+      val list = List(c1, c2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Char]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of char", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, "'7' was not an instance of char", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
@@ -884,146 +884,146 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Int]` {
+    def `should work with an [java.lang.Intger], but not [Int]` {
 
       val int1 = 7
       val int2: Any = 8
       val str = "Hi"
 
-      all(List(int1, int2)) shouldBe an [Int]
+      all(List(int1, int2)) shouldBe an [java.lang.Integer]
       all(List(int1, str)) shouldBe an [Any]
 
-      val list = List(int1, int2, str)
+      val list = List(int1, int2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Int]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of int", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Long]` {
+    def `should work with an [java.lang.Long], but not [Long]` {
 
       val long1 = 7L
       val long2: Any = 8L
       val str = "Hi"
 
-      all(List(long1, long2)) shouldBe an [Long]
+      all(List(long1, long2)) shouldBe an [java.lang.Long]
       all(List(long1, str)) shouldBe an [Any]
 
-      val list = List(long1, long2, str)
+      val list = List(long1, long2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Long]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of long", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, long1 + " was not an instance of long", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Short]` {
+    def `should work with an [java.lang.Short], but not [Short]` {
 
       val short1: Short = 7
       val short2: Any = 8.toShort
       val str = "Hi"
 
-      all(List(short1, short2)) shouldBe an [Short]
+      all(List(short1, short2)) shouldBe an [java.lang.Short]
       all(List(short1, str)) shouldBe an [Any]
 
-      val list = List(short1, short2, str)
+      val list = List(short1, short2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Short]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of short", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Byte]` {
+    def `should work with an [java.lang.Byte], but not [Byte]` {
 
       val byte1: Byte = 7.toByte
       val byte2: Any = 8.toByte
       val str = "Hi"
 
-      all(List(byte1, byte2)) shouldBe an [Byte]
+      all(List(byte1, byte2)) shouldBe an [java.lang.Byte]
       all(List(byte1, str)) shouldBe an [Any]
 
-      val list = List(byte1, byte2, str)
+      val list = List(byte1, byte2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Byte]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of byte", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, byte1 + " was not an instance of byte", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Double]` {
+    def `should work with an [java.lang.Double], but not [Double]` {
 
       val double1: Double = 7.77
       val double2: Any = 8.88
       val str = "Hi"
 
-      all(List(double1, double2)) shouldBe an [Double]
+      all(List(double1, double2)) shouldBe an [java.lang.Double]
       all(List(double1, str)) shouldBe an [Any]
 
-      val list = List(double1, double2, str)
+      val list = List(double1, double2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Double]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of double", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Float]` {
+    def `should work with an [java.lang.Float], but not [Float]` {
 
       val float1: Float = 7.77f
       val float2: Any = 8.88f
       val str = "Hi"
 
-      all(List(float1, float2)) shouldBe an [Float]
+      all(List(float1, float2)) shouldBe an [java.lang.Float]
       all(List(float1, str)) shouldBe an [Any]
 
       val list = List(float1, float2, str)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Float]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of float", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, float1 + " was not an instance of float", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Boolean]` {
+    def `should work with an [java.lang.Boolean], but not [Boolean]` {
 
       val bool1 = false
       val bool2: Any = true
       val str = "Hi"
 
-      all(List(bool1, bool2)) shouldBe an [Boolean]
+      all(List(bool1, bool2)) shouldBe an [java.lang.Boolean]
       all(List(bool1, str)) shouldBe an [Any]
 
-      val list = List(bool1, bool2, str)
+      val list = List(bool1, bool2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Boolean]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of boolean", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, bool1 + " was not an instance of boolean", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [Char]` {
+    def `should work with an [java.lang.Character], but not [Char]` {
 
       val c1 = '7'
       val c2: Any = '8'
       val str = "Hi"
 
-      all(List(c1, c2)) shouldBe an [Char]
+      all(List(c1, c2)) shouldBe an [java.lang.Character]
       all(List(c1, str)) shouldBe an [Any]
 
-      val list = List(c1, c2, str)
+      val list = List(c1, c2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Char]
       }
-      assert(caught1.message === (Some(errorMessage(2, "\"Hi\" was not an instance of char", thisLineNumber - 2, list))))
+      assert(caught1.message === (Some(errorMessage(0, "'7' was not an instance of char", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

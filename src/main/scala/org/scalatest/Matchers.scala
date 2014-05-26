@@ -47,7 +47,6 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
-import MatchersHelper.convertClassIfNeeded
 import org.scalactic.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
@@ -4969,7 +4968,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(aType: ResultOfATypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
-        if (!convertClassIfNeeded(aType.clazz).isAssignableFrom(e.getClass))
+        if (!aType.clazz.isAssignableFrom(e.getClass))
           throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(aType.clazz.getName)), None, 6)
       }
     }
@@ -4984,7 +4983,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
-        if (!convertClassIfNeeded(anType.clazz).isAssignableFrom(e.getClass))
+        if (!anType.clazz.isAssignableFrom(e.getClass))
           throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(anType.clazz.getName)), None, 6)
       }
     }
