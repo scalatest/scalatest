@@ -2246,7 +2246,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\" ") {
         assert(woof { meow(y = 5) } == "woof")
       }
 
@@ -2259,16 +2259,15 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """
               |
               |assert(woof { meow(y = 5) } == "meow")
-              |       |          |         |  |
-              |       "woof"     |         |  "meow"
-              |                  |         false
-              |                  <(), the Unit value>
+              |       |                    |  |
+              |       "woof"               |  "meow"
+              |                            false
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }*/
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -2292,6 +2291,49 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           val c = a + b
           a < b || c == a + b
         }
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when a block of code that evaluates to false is passed") {
+        val e = intercept[TestFailedException] {
+          assert { val a = 1; val b = 2; val c = a + b; a > b || c == b * b }
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assert { val a = 1; val b = 2; val c = a + b; a > b || c == b * b }
+              |                                              | | | |  | |  | | |
+              |                                              1 | 2 |  3 |  2 4 2
+              |                                                |   |    false
+              |                                                |   false
+              |                                                false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
+        val e = intercept[TestFailedException] {
+          assert {
+            val a = 1
+            val b = 2
+            val c = a + b
+            a > b || c == b * b }
+        }
+        e.message should be (
+          Some(
+            """{
+              |  val a: Int = 1;
+              |  val b: Int = 2;
+              |  val c: Int = a.+(b);
+              |  a.>(b).||(c.==(b.*(b)))
+              |} was false""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
     }
 
@@ -4441,7 +4483,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assert(woof { meow(y = 5) } == "woof", "this is a clue")
       }
 
@@ -4454,16 +4496,15 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """this is a clue
               |
               |assert(woof { meow(y = 5) } == "meow", "this is a clue")
-              |       |          |         |  |
-              |       "woof"     |         |  "meow"
-              |                  |         false
-              |                  <(), the Unit value>
+              |       |                    |  |
+              |       "woof"               |  "meow"
+              |                            false
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }*/
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assert((b == a + 2) && (b - 2 <=
@@ -4478,6 +4519,58 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3 this is a clue")
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+      }
+
+      it("should do nothing when a block of code that evaluates to true is passed in") {
+        assert({
+          val a = 1
+          val b = 2
+          val c = a + b
+          a < b || c == a + b
+        }, "this is a clue")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when a block of code that evaluates to false is passed") {
+        val e = intercept[TestFailedException] {
+          assert({ val a = 1; val b = 2; val c = a + b; a > b || c == b * b }, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assert({ val a = 1; val b = 2; val c = a + b; a > b || c == b * b }, "this is a clue")
+              |                                              | | | |  | |  | | |
+              |                                              1 | 2 |  3 |  2 4 2
+              |                                                |   |    false
+              |                                                |   false
+              |                                                false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
+        val e = intercept[TestFailedException] {
+          assert({
+            val a = 1
+            val b = 2
+            val c = a + b
+            a > b || c == b * b }, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """{
+              |  val a: Int = 1;
+              |  val b: Int = 2;
+              |  val c: Int = a.+(b);
+              |  a.>(b).||(c.==(b.*(b)))
+              |} was false this is a clue""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
     }
 
@@ -6627,7 +6720,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assume(woof { meow(y = 5) } == "woof")
       }
 
@@ -6640,16 +6733,15 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """
               |
               |assume(woof { meow(y = 5) } == "meow")
-              |       |          |         |  |
-              |       "woof"     |         |  "meow"
-              |                  |         false
-              |                  <(), the Unit value>
+              |       |                    |  |
+              |       "woof"               |  "meow"
+              |                            false
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }*/
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=
@@ -6664,6 +6756,58 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3")
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+      }
+
+      it("should do nothing when a block of code that evaluates to true is passed in") {
+        assume {
+          val a = 1
+          val b = 2
+          val c = a + b
+          a < b || c == a + b
+        }
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when a block of code that evaluates to false is passed") {
+        val e = intercept[TestCanceledException] {
+          assume { val a = 1; val b = 2; val c = a + b; a > b || c == b * b }
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assume { val a = 1; val b = 2; val c = a + b; a > b || c == b * b }
+              |                                              | | | |  | |  | | |
+              |                                              1 | 2 |  3 |  2 4 2
+              |                                                |   |    false
+              |                                                |   false
+              |                                                false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
+        val e = intercept[TestCanceledException] {
+          assume {
+            val a = 1
+            val b = 2
+            val c = a + b
+            a > b || c == b * b }
+        }
+        e.message should be (
+          Some(
+            """{
+              |  val a: Int = 1;
+              |  val b: Int = 2;
+              |  val c: Int = a.+(b);
+              |  a.>(b).||(c.==(b.*(b)))
+              |} was false""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
     }
 
@@ -8813,7 +8957,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
 
-      /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
         assume(woof { meow(y = 5) } == "woof", "this is a clue")
       }
 
@@ -8826,16 +8970,15 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             """this is a clue
               |
               |assume(woof { meow(y = 5) } == "meow", "this is a clue")
-              |       |          |         |  |
-              |       "woof"     |         |  "meow"
-              |                  |         false
-              |                  <(), the Unit value>
+              |       |                    |  |
+              |       "woof"               |  "meow"
+              |                            false
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-      }*/
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
 
       it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
         assume((b == a + 2) && (b - 2 <=
@@ -8850,6 +8993,58 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3 this is a clue")
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+      }
+
+      it("should do nothing when a block of code that evaluates to true is passed in") {
+        assume({
+          val a = 1
+          val b = 2
+          val c = a + b
+          a < b || c == a + b
+        }, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when a block of code that evaluates to false is passed") {
+        val e = intercept[TestCanceledException] {
+          assume({ val a = 1; val b = 2; val c = a + b; a > b || c == b * b }, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume({ val a = 1; val b = 2; val c = a + b; a > b || c == b * b }, "this is a clue")
+              |                                              | | | |  | |  | | |
+              |                                              1 | 2 |  3 |  2 4 2
+              |                                                |   |    false
+              |                                                |   false
+              |                                                false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
+        val e = intercept[TestCanceledException] {
+          assume({
+            val a = 1
+            val b = 2
+            val c = a + b
+            a > b || c == b * b }, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """{
+              |  val a: Int = 1;
+              |  val b: Int = 2;
+              |  val c: Int = a.+(b);
+              |  a.>(b).||(c.==(b.*(b)))
+              |} was false this is a clue""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
     }
 

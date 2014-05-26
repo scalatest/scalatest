@@ -156,6 +156,13 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  // inspired from https://github.com/scala/async/blob/master/src/main/scala/scala/async/internal/TransformUtils.scala#L112-L127
+  private def isByName(fun: Tree, i: Int, j: Int): Boolean = {
+    val paramss = fun.tpe.paramss
+    val byNamess = paramss.map(_.map(_.asTerm.isByNameParam))
+    util.Try(byNamess(i)(j)).getOrElse(false)
+  }
+
   /**
    * Given a Apply, e.g. a == b, generate AST for the following code:
    *
@@ -182,8 +189,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
             args.zipWithIndex.map { case (arg, j) =>
               arg match {
                 case func: Function => valDef("$org_scalatest_macro_arg_" + (base + j), simpleExpr(Literal(Constant("")))) // ignore function, create a dummy val.
-                case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => valDef("$org_scalatest_macro_arg_" + (base + j), simpleExpr(Literal(Constant("")))) // TODO: Is there a better way to detect a by-name?
-                case other => valDef("$org_scalatest_macro_arg_" + (base + j), transformAst(arg))
+                case other =>
+                  if (isByName(fun, 0, j))
+                    valDef("$org_scalatest_macro_arg_" + (base + j), simpleExpr(Literal(Constant(""))))
+                  else
+                    valDef("$org_scalatest_macro_arg_" + (base + j), transformAst(arg))
               }
             }
           case _ => List.empty
@@ -321,10 +331,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
       case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
       case select: Select => selectExpr(select) // delegate to selectExpr if it is a Select
-      case Block(stats, expr) =>
-        println("###input AST: " + show(tree))
-        println("###output AST: " + show(Block(stats, transformAst(expr))))
-        Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
+      case Block(stats, expr) => Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
       case other => simpleExpr(other) // for others, just delegate to simpleExpr
     }
   }
