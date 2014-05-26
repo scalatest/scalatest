@@ -39,6 +39,7 @@ object TypeMatcherHelper {
           clazz.isAssignableFrom(left.getClass),
           Resources("wasNotAnInstanceOf"),
           Resources("wasAnInstanceOf"),
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
           Vector(left, UnquotedString(clazz.getName))
         )
       }
@@ -59,6 +60,7 @@ object TypeMatcherHelper {
           clazz.isAssignableFrom(left.getClass),
           Resources("wasNotAnInstanceOf"),
           Resources("wasAnInstanceOf"),
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
           Vector(left, UnquotedString(clazz.getName))
         )
       }
@@ -79,7 +81,8 @@ object TypeMatcherHelper {
           !clazz.isAssignableFrom(left.getClass),
           Resources("wasAnInstanceOf"),
           Resources("wasNotAnInstanceOf"),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazz.getName)),
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         )
       }
       override def toString: String = "not be " + Prettifier.default(aType)
@@ -99,7 +102,8 @@ object TypeMatcherHelper {
           !clazz.isAssignableFrom(left.getClass),
           Resources("wasAnInstanceOf"),
           Resources("wasNotAnInstanceOf"),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazz.getName)),
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         )
       }
       override def toString: String = "not be " + Prettifier.default(anType)
@@ -116,7 +120,7 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
   }
 
@@ -131,7 +135,7 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
   }
 
@@ -150,7 +154,8 @@ object TypeMatcherHelper {
         FailureMessages(
           if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
           left,
-          UnquotedString(clazz.getName)
+          UnquotedString(clazz.getName),
+          UnquotedString(left.getClass.getName)
         )
       )
     }
@@ -171,7 +176,8 @@ object TypeMatcherHelper {
         FailureMessages(
           if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
           left,
-          UnquotedString(clazz.getName)
+          UnquotedString(clazz.getName),
+          UnquotedString(left.getClass.getName)
         )
       )
     }

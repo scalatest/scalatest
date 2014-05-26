@@ -1815,17 +1815,17 @@ class NotWordSpec extends Spec with FileMocks {
         mr should have (
           'matches (false),
           'failureMessage (myFile + " was an instance of " + clazz.getName),
-          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'midSentenceFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'rawFailureMessage ("{0} was an instance of {1}"),
-          'rawNegatedFailureMessage ("{0} was not an instance of {1}"),
+          'rawNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawMidSentenceFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
+          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName)))
         )
       }
       
@@ -1834,17 +1834,17 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct negated MatcherResult` {
         nmr should have (
           'matches (true),
-          'failureMessage (myFile + " was not an instance of " + clazz.getName),
+          'failureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'negatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'midSentenceNegatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'rawFailureMessage ("{0} was not an instance of {1}"),
+          'rawFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawNegatedFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}"),
+          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawMidSentenceNegatedFailureMessage ("{0} was an instance of {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
         )
       }
@@ -1875,17 +1875,17 @@ class NotWordSpec extends Spec with FileMocks {
         mr should have (
           'matches (false),
           'failureMessage (myFile + " was an instance of " + clazz.getName),
-          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'midSentenceFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'rawFailureMessage ("{0} was an instance of {1}"),
-          'rawNegatedFailureMessage ("{0} was not an instance of {1}"),
+          'rawNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawMidSentenceFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
+          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName)))
         )
       }
       
@@ -1894,17 +1894,17 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct negated MatcherResult` {
         nmr should have (
           'matches (true),
-          'failureMessage (myFile + " was not an instance of " + clazz.getName),
+          'failureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'negatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName),
+          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
           'midSentenceNegatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'rawFailureMessage ("{0} was not an instance of {1}"),
+          'rawFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawNegatedFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}"),
+          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
           'rawMidSentenceNegatedFailureMessage ("{0} was an instance of {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
+          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
           'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
         )
       }

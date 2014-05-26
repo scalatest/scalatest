@@ -466,9 +466,9 @@ final class BeWord {
       def apply(left: Any): MatchResult = 
         MatchResult(
           right.isAssignableFromClassOf(left),
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages("wasAnInstanceOf"), // TODO, missing the left, right.className here. Write a test and fix it.
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages("wasAnInstanceOf")
         )
     }

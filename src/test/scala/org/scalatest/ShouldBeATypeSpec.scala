@@ -25,7 +25,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
   case class Book(title: String)
   
   def wasNotAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.getName))
+    FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
     
   def wasAnInstanceOf(left: Any, right: Class[_]) = 
     FailureMessages("wasAnInstanceOf", left, UnquotedString(right.getName))

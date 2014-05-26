@@ -1965,7 +1965,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       if (clazz.isAssignableFrom(left.getClass)) {
         throw newTestFailedException(
           if (shouldBeTrue)
-            FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName))
+            FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
           else
             FailureMessages("wasAnInstanceOf")
         )
@@ -4969,7 +4969,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(aType: ResultOfATypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(aType.clazz.getName)), None, 6)
+          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
       }
     }
 
@@ -4984,7 +4984,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(anType.clazz.getName)), None, 6)
+          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
       }
     }
 
@@ -6763,7 +6763,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 /*
     def shouldBe[U](right: AType[U]) {
       if (!right.isAssignableFromClassOf(leftSideValue)) {
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(right.className)))
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(right.className), UnquotedString(leftSideValue.getClass.getName)))
       }
     }
 */
