@@ -37,11 +37,19 @@ object GenScalactic {
 
   def genMain(targetDir: File, scalaVersion: String) {
 
-    val packageDir = new File(targetDir, "org/scalactic")
-    packageDir.mkdirs()
-    val sourceDir = new File("src/main/scala/org/scalactic")
-    sourceDir.listFiles.foreach { sourceFile =>
-      val destFile = new File(packageDir, sourceFile.getName)
+    val scalacticPackageDir = new File(targetDir, "org/scalactic")
+    scalacticPackageDir.mkdirs()
+    val scalacticSourceDir = new File("src/main/scala/org/scalactic")
+    scalacticSourceDir.listFiles.foreach { sourceFile =>
+      val destFile = new File(scalacticPackageDir, sourceFile.getName)
+      copyFile(sourceFile, destFile)
+    }
+
+    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
+    scalautilsPackageDir.mkdirs()
+    val scalautilsSourceDir = new File("src/main/scala/org/scalautils")
+    scalautilsSourceDir.listFiles.foreach { sourceFile =>
+      val destFile = new File(scalautilsPackageDir, sourceFile.getName)
       copyFile(sourceFile, destFile)
     }
 

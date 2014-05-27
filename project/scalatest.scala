@@ -253,7 +253,8 @@ object ScalatestBuild extends Build {
       scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
-        "org.scalactic"
+        "org.scalactic",
+        "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -371,24 +372,6 @@ object ScalatestBuild extends Build {
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
                genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
-
-  /*def scalatestDependencies = crossBuildDependencies ++
-    Seq(
-      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "com.google.inject" % "guice" % "2.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-      "org.apache.ant" % "ant" % "1.7.1" % "optional",
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
-    )*/
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
