@@ -17,6 +17,7 @@ package org.scalatest
 
 import reflect.macros.Context
 import org.scalactic.MacroOwnerRepair
+import scala.annotation.tailrec
 
 private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName: String) {
 
@@ -156,10 +157,21 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  def paramss(tpe: Type): List[List[Symbol]] = {
+    @tailrec
+    def loop(tpe: Type, paramss: List[List[Symbol]]): List[List[Symbol]] = tpe match {
+      case PolyType(_, tpe) => loop(tpe, paramss)
+      case MethodType(tparams, tpe) => loop(tpe, paramss :+ tparams)
+      case _ => paramss
+    }
+    loop(tpe, Nil)
+  }
+
   // inspired from https://github.com/scala/async/blob/master/src/main/scala/scala/async/internal/TransformUtils.scala#L112-L127
   private def isByName(fun: Tree, i: Int, j: Int): Boolean = {
-    val paramss = fun.tpe.asInstanceOf[scala.reflect.internal.Types#Type].paramss  // TODO: Should remove the ugly cast when we no longer need to support scala 2.10.
-    val byNamess = paramss.map(_.map(_.asTerm.isByNameParam))
+    //val paramss = fun.tpe.asInstanceOf[scala.reflect.internal.Types#Type].paramss
+    //TODO: We could use fun.tpe.paramss when we no longer need to support scala 2.10.
+    val byNamess = paramss(fun.tpe).map(_.map(_.asTerm.isByNameParam))
     util.Try(byNamess(i)(j)).getOrElse(false)
   }
 
