@@ -29,6 +29,8 @@ private[scalatest] object DiagrammedAssertionsMacro {
       case apply: Apply => getFirstLine(context)(apply.fun) // If it is a Apply, we'll look into its apply.fun, which contains the qualifier (looking for the left-most).
       case typeApply: TypeApply => getFirstLine(context)(typeApply.fun) // If it is a TypedApply, we'll look into its apply.fun, which contains the qualifier (looking for the left-most)
       case select: Select => getFirstLine(context)(select.qualifier) // If it is a Select, we'll look at its qualifier (looking for the left)
+      case Block(Nil, expr) => getFirstLine(context)(expr)
+      case Block(stats, _) => getFirstLine(context)(stats.head)
       case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line // For others, just the position line number
     }
   }
@@ -49,6 +51,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
           getLastLine(context)(typeApply.args.last)
         else // If there's no argument, then we look at the apply.fun then.
           getLastLine(context)(typeApply.fun)
+      case Block(_, expr) => getLastLine(context)(expr)
       case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].line // For others, just the position line number
     }
   }
