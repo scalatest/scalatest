@@ -236,13 +236,36 @@ import org.scalactic.{Prettifier, Bool}
  * </p>
  *
  * <pre class="stHighlight">
+ * assertDoesNotCompile("val a: String = 1")
+ * </pre>
+ *
+ * <p>
+ * If you want to ensure that a snippet of code does not compile because of a type error (as opposed
+ * to a syntax error), use:
+ * </p>
+ *
+ * <pre class="stHighlight">
  * assertTypeError("val a: String = 1")
  * </pre>
  *
  * <p>
- * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
- * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>, 
- * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+ * Note that the <code>assertTypeError</code> call will only succeed if the given snippet of code does not
+ * compile because of a type error. A syntax error will still result on a thrown <code>TestFailedException</code>.
+ * </p>
+ *
+ * <p>
+ * If you want to state that a snippet of code <em>does</em> compile, you can make that
+ * more obvious with:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * assertCompiles("val a: Int = 1")
+ * </pre>
+ *
+ * <p>
+ * Although the previous three constructs are implemented with macros that determine at compile time whether
+ * the snippet of code represented by the string does or does not compile, errors 
+ * are reported as test failures at runtime.
  * </p>
  *
  * <a name="assumptions"></a>
