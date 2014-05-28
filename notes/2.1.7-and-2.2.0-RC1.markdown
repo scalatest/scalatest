@@ -1,0 +1,19 @@
+***ScalaTest 2.1.7 and 2.2.0-RC1***
+
+ScalaTest 2.1.7 is a maintenance release for the 2.1.x series that includes two minor changes described in the [2.1.7 release notes](http://scalatest.org/release_notes/2.1.7).
+
+ScalaTest 2.2.0-RC1 is the first release candidate for the next major version of ScalaTest. The [2.2.0-RC1 release notes](http://scalatest.org/release_notes/2.2.0) gives
+the details, but here are some highlights:
+
+### Highlights of 2.2.0-RC1
+
+* [Introducing the Scalactic library](http://scalatest.org/release_notes/2.2.0#introductingScalactic)
+* [Enhanced `Assertions` error messages](http://scalatest.org/release_notes/2.2.0#enhancedAssertionsErrorMessages)
+* [`DiagrammedAssertions`](http://scalatest.org/release_notes/2.2.0#diagrammedAssertions)
+* [Scalactic `Requirements`](http://scalatest.org/release_notes/2.2.0#scalacticRequirements)
+* [Scalactic `Snapshots`](http://scalatest.org/release_notes/2.2.0#scalacticSnapshots)
+* [New matchers and assertions](http://scalatest.org/release_notes/2.2.0#newMatchersAndAssertions)
+* [`TestRegistration` trait](http://scalatest.org/release_notes/2.2.0#testRegistration)
+* [Other enhancements and bug fixes](http://scalatest.org/release_notes/2.2.0#otherEnhancements)
+
+
