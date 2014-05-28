@@ -22,11 +22,13 @@ object GenMatchers {
 
   def translateShouldToMust(shouldLine: String): String = {
     shouldLine
+      .replaceAll("Trait <a href=\"MustMatchers.html\"><code>MustMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>MustMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
       .replaceAll("MustMatchers", "I_NEED_TO_STAY_MUSTMATCHERS")
       .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
       .replaceAll("must", "I_NEED_TO_STAY_SMALL_MUST")
       .replaceAll("Must", "I_NEED_TO_STAY_BIG_MUST")
-      .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD")
+      .replaceAll("<!-- PRESERVE --><code>should", "<code>I_NEED_TO_STAY_SMALL_SHOULD")
+      .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
       .replaceAll("should", "must")
       .replaceAll("Should", "Must")
       .replaceAll("trait Matchers", "trait MustMatchers")
