@@ -88,6 +88,13 @@ import PatienceConfiguration._
  * </p>
  *
  * <p>
+ * Note that if a <code>Waiter</code> receives <em>more </em> than the expected number of dismissals, it will not report
+ * this as an error: <em>i.e.</em>, receiving greater than the number of expected dismissals without any failed assertion will simply
+ * cause the the test to complete, not to fail. The only way a <code>Waiter</code> will cause a test to fail is if one of the
+ * asynchronous assertions to which it is applied fails.
+ * </p>
+ *
+ * <p>
  * Finally, to perform an assertion in a different thread, you just apply the <code>Waiter</code> to the assertion code. Here are
  * some examples:
  * </p>
