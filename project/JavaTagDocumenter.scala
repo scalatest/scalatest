@@ -39,17 +39,22 @@ object JavaTagDocumenter {
 
   //
   // Splits java file's contents into two pieces: a top and body.
-  // The top contains everything up through the declared class's name, and
-  // the body contains the following curly braces and their contents.
+  // The top contains the first scaladoc encountered plus
+  // everything else up through the declared class's name. The
+  // body contains the following curly braces and their contents.
   //
-  private def parseContents(className: String, text: String): (String, String) =
-  {
-    val pat = Pattern.compile("""(?sm)(.*? @interface """ + className +
-                              """) *(\{.*\})""")
-    val matcher = pat.matcher(text)
+  def parseContents(className: String, text: String): (String, String) = {
+    val topDocPat = Pattern.compile("""(?s)^(.*?/\*\*.*?\*/)(.*)$""")
+    val topDocMat = topDocPat.matcher(text)
 
-    matcher.find()
-    (matcher.group(1), matcher.group(2))
+    topDocMat.find()
+
+    val bodyPat = Pattern.compile("""(?sm)(.*? @interface """ + className +
+                                  """) *(\{.*\})""")
+    val bodyMat = bodyPat.matcher(topDocMat.group(2))
+
+    bodyMat.find()
+    (topDocMat.group(1) + bodyMat.group(1), bodyMat.group(2))
   }
 
   //
@@ -94,6 +99,39 @@ object JavaTagDocumenter {
     else ""
   }
 
+  //
+  // Processes source code above the body.  If code contains scaladoc it
+  // splits that out and processes the code above and below it separately.
+  //
+  def genNewTop(top: String): String = {
+    val matcher =
+      Pattern.compile("""(?s)^(.*?)(/\*\*.*?\*/)(.*)$""").matcher(top)
+
+    if (matcher.find()) {
+      val code = matcher.group(1)
+      val comment = matcher.group(2)
+      val remainder = matcher.group(3)
+
+      processCode(code) + comment + genNewTop(remainder)
+    }
+    else {
+      processCode(top)
+    }
+  }
+
+  //
+  // Removes java code in order to make it palatable to scaladoc processor.
+  //
+  def processCode(text: String): String = {
+    text.replaceAll("""@Retention\(.*?\)""",  "")
+        .replaceAll("""@Target\(.*?\)""",     "")
+        .replaceAll("""@TagAnnotation.*\)""", "")
+        .replaceAll("""@TagAnnotation""",     "")
+        .replaceAll("""@Inherited""",         "")
+        .replaceAll("""public *@interface""", "")
+        .replaceAll("""(?m)^import.*$""",     "")
+  }
+
   def docJavaTags(javaSources: Set[File]): Set[File] = {
     def isAnnotation(fileContents: String): Boolean =
       fileContents.contains(
@@ -114,21 +152,14 @@ object JavaTagDocumenter {
 
       val (top, body) = parseContents(className, contents)
 
+      val newTop = genNewTop(top)
       val newBody = genNewBody(body)
-
       val newContents =
-        top
-          .replaceAll("""@Retention\(.*?\)""",  "")
-          .replaceAll("""@Target\(.*?\)""",     "")
-          .replaceAll("""@TagAnnotation.*\)""", "")
-          .replaceAll("""@TagAnnotation""",     "")
-          .replaceAll("""@Inherited""",         "")
-          .replaceAll("""public *@interface""", "")
-          .replaceAll("""(?m)^import.*$""",     "")
-          .replaceAll(className + "$",
-                      "trait "+ className +
-                      " extends java.lang.annotation.Annotation "+ newBody +
-                      "\n")
+        newTop
+          .replaceFirst(className + "$",
+                        "trait "+ className +
+                        " extends java.lang.annotation.Annotation "+ newBody +
+                        "\n")
 
       if (!destFile.exists || (srcFile.lastModified > destFile.lastModified)) {
         createDirectory(file(destFile.getParent))
