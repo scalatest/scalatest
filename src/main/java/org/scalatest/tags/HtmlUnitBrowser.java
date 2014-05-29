@@ -20,6 +20,11 @@ import org.scalatest.TagAnnotation;
 
 /**
  * Tag that indicates a Selenium test uses the HtmlUnit browser.
+ *
+ * <p>
+ * <em>Note: This is actually an annotation defined in Java, not a Scala trait. It must be defined in Java instead of Scala so it will be accessible
+ * at runtime. It has been inserted into Scaladoc by pretending it is a trait.</em>
+ * </p>
  */
 @TagAnnotation("org.scalatest.tags.HtmlUnitBrowser")
 @Retention(RetentionPolicy.RUNTIME)
