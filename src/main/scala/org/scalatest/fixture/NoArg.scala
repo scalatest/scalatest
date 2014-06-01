@@ -34,8 +34,6 @@ import org.scalatest._
  * it is quite handy for its intended use case (described in the next paragraph).
  * One potential gotcha, for example, is that a subclass's constructor body could in theory be executed multiple times by simply invoking <code>apply</code> multiple
  * times. In the intended use case for this trait, however, the body will be executed only once.
- * In addition, the <code>NoArg</code> method is not thread safe, as it is intended to be used by just one thread, which is
- * executing a test.
  * </p>
  *
  * <p>
@@ -134,6 +132,84 @@ import org.scalatest._
  * Since <code>FixtureParam</code> is unused in this use case, it could 
  * be anything. Making it <code>Unit</code> will hopefully help readers more easily recognize that it is not being used.
  * </p>
+ *
+ * <p>
+ * Note: As of Scala 2.11, <code>DelayedInit</code> (which is used by <code>NoArg</code>) has been deprecated, to indicate it is buggy and should be avoided
+ * if possible. Those in charge of the Scala compiler and standard library have promised that <code>DelayedInit</code> will not be removed from Scala
+ * unless an alternate way to achieve the same goal is provided. Thus it <em>should</em> be safe to use <code>NoArg</code>, but if you'd rather
+ * not you can achieve the same effect with a bit more boilerplate by extending (<code>() =&gt; Unit</code>) instead of <code>NoArg</code> and placing
+ * your code in an explicit <code>body</code> method. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import akka.actor.ActorSystem
+ * import akka.testkit.{TestKit, ImplicitSender}
+ * import java.util.concurrent.atomic.AtomicInteger
+ * import org.scalatest.fixture.NoArg
+ *
+ * object ActorSys {
+ *   val uniqueId = new AtomicInteger(0)
+ * }
+ *
+ * class ActorSys(name: String) extends
+ *         TestKit(ActorSystem(name))
+ *         with ImplicitSender
+ *         with (() =&gt; Unit) {
+ *
+ *   def this() = this(
+ *     "TestSystem%05d".format(
+ *        ActorSys.uniqueId.getAndIncrement()))
+ *
+ *   def shutdown(): Unit = system.shutdown()
+ *   def body(): Unit
+ *
+ *   override def apply() = {
+ *     try body()
+ *     finally shutdown()
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Using this version of <code>ActorSys</code> will require an explicit
+ * <code>body</code> method in the tests:
+ *
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * class MyActorSpec extends fixture.WordSpec
+ *         with Matchers
+ *         with UnitFixture
+ *         with ParallelTestExecution {
+ * 
+ *   def makeActor(): ActorRef =
+ *     system.actorOf(Props[MyActor], "MyActor")
+ * 
+ *   "My Actor" should {
+ *     "throw when made with the wrong name" in new ActorSys {
+ *       def body() = 
+ *         evaluating {
+ *           // use a generated name
+ *           val a = system.actorOf(Props[MyActor])
+ *         } should produce [Exception]
+ *     }
+ *     "construct without exception" in new ActorSys {
+ *       def body() = {
+ *         val a = makeActor()
+ *         // The throw will cause the test to fail
+ *       }
+ *     }
+ *     "respond with a Pong to a Ping" in new ActorSys {
+ *       def body() = {
+ *         val a = makeActor()
+ *         a ! Ping
+ *         expectMsg(Pong)
+ *       }
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
  */
 trait NoArg extends DelayedInit with (() => Unit) {
 
