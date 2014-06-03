@@ -3903,7 +3903,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+              if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
@@ -4400,7 +4400,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+              if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),

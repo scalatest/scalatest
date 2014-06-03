@@ -1081,8 +1081,8 @@ final class NotWord {
 
             MatchResult(
               !containing.containsNoneOf(left, right),
-              Resources("didNotContainOneOfElements"),
-              Resources("containedOneOfElements"), 
+              Resources("didNotContainAtLeastOneOf"),
+              Resources("containedAtLeastOneOf"),
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
