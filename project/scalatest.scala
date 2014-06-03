@@ -262,7 +262,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatest)
+    ).dependsOn(scalatest % "test")
 
   def gentestsLibraryDependencies =
     Seq(
