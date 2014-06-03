@@ -90,17 +90,17 @@ class OnlyContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain only (1, 2, 1)
       }
-      e1.getMessage() should be ("only must not contain duplicated value")
+      e1.getMessage() should be (FailureMessages("onlyDuplicate"))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain only (1, 2, 1)
       }
-      e2.getMessage() should be ("only must not contain duplicated value")
+      e2.getMessage() should be (FailureMessages("onlyDuplicate"))
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain only (1, 2, 1)
       }
-      e3.getMessage() should be ("only must not contain duplicated value")
+      e3.getMessage() should be (FailureMessages("onlyDuplicate"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains element not in right List` {

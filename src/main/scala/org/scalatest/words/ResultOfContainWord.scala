@@ -95,7 +95,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
-          if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )

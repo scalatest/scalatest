@@ -85,7 +85,7 @@ trait Containing[-C] {
    * Implements <code>contain</code> <code>oneOf</code> syntax for containers of type <code>C</code>.
    *
    * @param container a container about which an assertion is being made
-   * @param eles elements exactly one (<em>i.e.</em>, one and only one) of which should be contained in the passed container
+   * @param elements elements exactly one (<em>i.e.</em>, one and only one) of which should be contained in the passed container
    * @return true if the passed container contains exactly one of the passed elements
    */
   def containsOneOf(container: C, elements: scala.collection.Seq[Any]): Boolean
@@ -94,7 +94,7 @@ trait Containing[-C] {
    * Implements <code>contain</code> <code>noneOf</code> syntax for containers of type <code>C</code>.
    *
    * @param container a container about which an assertion is being made
-   * @param eles elements none of which should be contained in the passed container
+   * @param elements elements none of which should be contained in the passed container
    * @return true if the passed container contains none of the passed elements
    */
   def containsNoneOf(container: C, elements: scala.collection.Seq[Any]): Boolean

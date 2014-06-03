@@ -316,7 +316,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(One(2)) + " did not contain one of (1, 3, 4) (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages("didNotContainOneOfElements", lists(2), UnquotedString("1, 3, 4")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -366,7 +366,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(One(2)) + " did not contain one of (1, 3, 4) (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages("didNotContainOneOfElements", lists(2), UnquotedString("1, 3, 4")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -427,7 +427,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -484,7 +484,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -524,7 +524,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -564,7 +564,7 @@ class EveryShouldContainOneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (EveryShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
