@@ -80,14 +80,14 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " contained one of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
+      e.message should be (Some(FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " did not contain one of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
+      e.message should be (Some(FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

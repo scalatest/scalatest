@@ -234,7 +234,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, Some(2) did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", somes(2), UnquotedString("1, 3, 4")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(1), Some(1), Some(2))"))
 
         val e2 = intercept[TestFailedException] {
@@ -243,7 +243,7 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, None did not contain one of (\"ho\", \"hey\", \"howdy\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("didNotContainOneOfElements", nones(0), UnquotedString("\"ho\", \"hey\", \"howdy\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(None, None, None)"))
 
         val e4 = intercept[TestFailedException] {
@@ -252,7 +252,7 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, None did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", somesNone(2), UnquotedString("1, 3, 4")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(1), Some(1), None)"))
       }
 
@@ -304,7 +304,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, Some(2) did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", somes(2), UnquotedString("1, 3, 4")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(1), Some(1), Some(2))"))
 
         val e2 = intercept[TestFailedException] {
@@ -313,7 +313,7 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, None did not contain one of (\"ho\", \"hey\", \"howdy\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("didNotContainOneOfElements", nones(0), UnquotedString("\"ho\", \"hey\", \"howdy\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(None, None, None)"))
 
         val e4 = intercept[TestFailedException] {
@@ -322,7 +322,7 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, None did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", somesNone(2), UnquotedString("1, 3, 4")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(1), Some(1), None)"))
       }
 
@@ -383,7 +383,7 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toSomes(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
       def `should use the implicit Equality in scope` {
@@ -440,7 +440,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toSomes(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
       def `should use the implicit Equality in scope` {

@@ -320,7 +320,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List(2)) + " did not contain one of (1, 3, 4) (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", lists(2), UnquotedString("1, 3, 4")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
 
         val e2 = intercept[TestFailedException] {
@@ -329,7 +329,7 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List()) + " did not contain one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("didNotContainOneOfElements", nils(0), UnquotedString("\"ho\", \"hey\", \"howdy\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(nils)))
 
         val e4 = intercept[TestFailedException] {
@@ -338,7 +338,7 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List()) + " did not contain one of (1, 3, 4) (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", listsNil(2), UnquotedString("1, 3, 4")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(listsNil)))
       }
 
@@ -390,7 +390,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List(2)) + " did not contain one of (1, 3, 4) (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", lists(2), UnquotedString("1, 3, 4")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
 
         val e2 = intercept[TestFailedException] {
@@ -399,7 +399,7 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List()) + " did not contain one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("didNotContainOneOfElements", nils(0), UnquotedString("\"ho\", \"hey\", \"howdy\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(nils)))
 
         val e4 = intercept[TestFailedException] {
@@ -408,7 +408,7 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List()) + " did not contain one of (1, 3, 4) (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + FailureMessages("didNotContainOneOfElements", listsNil(2), UnquotedString("1, 3, 4")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(listsNil)))
       }
 
@@ -469,7 +469,7 @@ scala> all (list1s) should (contain (oneOf (1, 3, 4)))
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -526,7 +526,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -566,7 +566,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -606,7 +606,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + FailureMessages("containedOneOfElements", toLists(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {

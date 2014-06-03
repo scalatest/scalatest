@@ -291,7 +291,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(One(2)) + " contained one of (2, 3, 4) (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages("containedOneOfElements", lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -341,7 +341,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(One(2)) + " contained one of (2, 3, 4) (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages("containedOneOfElements", lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -387,7 +387,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " did not contain one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("didNotContainOneOfElements", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -427,7 +427,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " did not contain one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("didNotContainOneOfElements", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -467,7 +467,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " did not contain one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("didNotContainOneOfElements", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -507,7 +507,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(One("to")) + " did not contain one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages("didNotContainOneOfElements", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {

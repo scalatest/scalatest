@@ -24,8 +24,7 @@ class NoneOfContainMatcherSpec extends Spec {
   object `noneOf ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " contained one of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(FailureMessages("containedOneOfElements", left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -58,17 +57,17 @@ class NoneOfContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e1.getMessage() should be ("noneOf must not contain duplicated value")
+      e1.getMessage() should be (FailureMessages("noneOfDuplicate"))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e2.getMessage() should be ("noneOf must not contain duplicated value")
+      e2.getMessage() should be (FailureMessages("noneOfDuplicate"))
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e3.getMessage() should be ("noneOf must not contain duplicated value")
+      e3.getMessage() should be (FailureMessages("noneOfDuplicate"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains element in right List` {
@@ -108,7 +107,7 @@ class NoneOfContainMatcherSpec extends Spec {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " did not contain one of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
