@@ -95,7 +95,7 @@ class FrameworkSuite extends FunSuite {
     def traceReceived = traceList.reverse
   }
 
-  /*test("framework name") {
+  test("framework name") {
     assert(new ScalaTestFramework().name === "ScalaTest")
   }
   
@@ -114,7 +114,7 @@ class FrameworkSuite extends FunSuite {
       fingerprints(1).asInstanceOf[sbt.testing.AnnotatedFingerprint]
     assert(annotatedFingerprint.isModule === false)
     assert(annotatedFingerprint.annotationName === "org.scalatest.WrapWith")
-  }*/
+  }
   
   val testClassLoader = getClass.getClassLoader
   val subClassFingerprint = new sbt.testing.SubclassFingerprint {
@@ -374,7 +374,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("ScalaTestRunner.task should return empty task array when fullyQualifiedName = valid class name, explicitlySpecified = false, selectors = Array(SuiteSelector)" +
   	   "and the suite class is marked as @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
@@ -414,7 +414,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("When an invalid suite class name is passed into to task(fullyQualifiedName: String, fingerprint: Fingerprint), IllegalArgumentException " +
   	   "will be thrown") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
@@ -599,7 +599,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("SuiteSelector should select and run test(s) in selected suite") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
@@ -641,7 +641,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("TestSelector should select and run selected test(s) in suite, excluding nested suites") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
@@ -661,20 +661,25 @@ class FrameworkSuite extends FunSuite {
     
       val testEventHandler2 = new TestEventHandler
       val task2 = tasks(1)
-      task2.execute(testEventHandler2, Array(new TestLogger))
+      val task2NestedSuites = task2.execute(testEventHandler2, Array(new TestLogger))
       val successEvents2 = testEventHandler2.successEventsReceived
       assert(successEvents2.length === 1)
       assertSuiteSuccessEvent(successEvents2(0), "org.scalatest.tools.scalasbt.SuiteWithNestedSuites", "test 2", subclassFingerprint)
       assert(testEventHandler2.errorEventsReceived.length === 0)
       assert(testEventHandler2.failureEventsReceived.length === 0)
       assert(testEventHandler2.skippedEventsReceived.length === 0)
+
+      // Need to finish running the nested suites or runner.done() will be waiting forever.
+      assert(task2NestedSuites.size == 2)
+      task2NestedSuites(0).execute(new TestEventHandler, Array(new TestLogger))
+      task2NestedSuites(1).execute(new TestEventHandler, Array(new TestLogger))
     }
     finally {
       runner.done()
     }
   }
-  
-  test("TestSelector should select and run selected test(s) in suite when it is explicitly specified, even when the suite is annotated with @DoNotDiscover") {    
+
+  test("TestSelector should select and run selected test(s) in suite when it is explicitly specified, even when the suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
       val testEventHandler = new TestEventHandler
@@ -694,8 +699,8 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
-  test("TestSelector should not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {    
+
+  test("TestSelector should not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
       val testEventHandler = new TestEventHandler
@@ -726,13 +731,18 @@ class FrameworkSuite extends FunSuite {
 
       val testEventHandler2 = new TestEventHandler
       val task2 = tasks(1)
-      task2.execute(testEventHandler2, Array(new TestLogger))
+      val task2NestedSuites = task2.execute(testEventHandler2, Array(new TestLogger))
       val successEvents2 = testEventHandler2.successEventsReceived
       assert(successEvents2.length === 1)
       assertSuiteSuccessEvent(successEvents2(0), "org.scalatest.tools.scalasbt.SuiteWithNestedSuites", "test 2", subclassFingerprint)
       assert(testEventHandler2.errorEventsReceived.length === 0)
       assert(testEventHandler2.failureEventsReceived.length === 0)
       assert(testEventHandler2.skippedEventsReceived.length === 0)
+
+      // Need to finish running the nested suites or runner.done() will be waiting forever.
+      assert(task2NestedSuites.size == 2)
+      task2NestedSuites(0).execute(new TestEventHandler, Array(new TestLogger))
+      task2NestedSuites(1).execute(new TestEventHandler, Array(new TestLogger))
     }
     finally {
       runner.done()
@@ -814,7 +824,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("NestedSuiteSelector should select and run test(s) in selected nested suite when it is not explicitly specified, even if the selected nested suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
@@ -857,7 +867,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("NestedTestSelector should select and run selected test(s) in selected nested suite when it is explicitly specified, even if the selected nested suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
@@ -900,7 +910,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("NestedTestSelector should select and run selected test(s) in selected nested suite when it is not explicitly specified, even if the selected nested suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
@@ -942,7 +952,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("ScalaTestRunner should return summary when 'done' is called, and throw IllegalStateException if 'done' method is called twice.") {
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
     
@@ -972,13 +982,13 @@ class FrameworkSuite extends FunSuite {
       }
     }
   }
-  
+
   test("ScalaTestRunner using -oWI should return summary that contains failed and canceled test reminder when 'done' is called") {
     val runner = framework.runner(Array("-oWI"), Array.empty, testClassLoader)
     
     try {
       val testLogger = new TestLogger
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", subclassFingerprint, false, Array(new SuiteSelector()))))
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedCanceledTests", subclassFingerprint, false, Array(new SuiteSelector()))))
       assert(tasks.size === 1)
       val task = tasks(0)
       task.execute(new TestEventHandler, Array(testLogger))
@@ -989,14 +999,14 @@ class FrameworkSuite extends FunSuite {
       assert(summaryText(2) === "Suites: completed 1, aborted 0")
       assert(summaryText(3) === "Tests: succeeded 1, failed 1, canceled 1, ignored 1, pending 1")
       assert(summaryText(4) === "*** 1 TEST FAILED ***")
-      assert(summaryText(5) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(5) === "SuiteWithFailedCanceledTests:")
       assert(summaryText(6) === "")
       assert(summaryText(7) === "- failed *** FAILED ***")
-      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedSkippedTests.scala:24)")
-      assert(summaryText(9) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedCanceledTests.scala:24)")
+      assert(summaryText(9) === "SuiteWithFailedCanceledTests:")
       assert(summaryText(10) === "")
       assert(summaryText(11) === "- canceled !!! CANCELED !!!")
-      assert(summaryText(12) === "  org.scalatest.exceptions.TestCanceledException was thrown. (SuiteWithFailedSkippedTests.scala:25)")
+      assert(summaryText(12) === "  org.scalatest.exceptions.TestCanceledException was thrown. (SuiteWithFailedCanceledTests.scala:25)")
     }
     finally {
       try { // Just to make sure runner.done() has been called to avoid hanging thread
@@ -1007,13 +1017,13 @@ class FrameworkSuite extends FunSuite {
       }
     }
   }
-  
+
   test("ScalaTestRunner using -oWIK should return summary that contains failed test reminder only (without canceled test) when 'done' is called") {
     val runner = framework.runner(Array("-oWIK"), Array.empty, testClassLoader)
     
     try {
       val testLogger = new TestLogger
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", subclassFingerprint, false, Array(new SuiteSelector()))))
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedCanceledTests", subclassFingerprint, false, Array(new SuiteSelector()))))
       assert(tasks.size === 1)
       val task = tasks(0)
       task.execute(new TestEventHandler, Array(testLogger))
@@ -1024,10 +1034,10 @@ class FrameworkSuite extends FunSuite {
       assert(summaryText(2) === "Suites: completed 1, aborted 0")
       assert(summaryText(3) === "Tests: succeeded 1, failed 1, canceled 1, ignored 1, pending 1")
       assert(summaryText(4) === "*** 1 TEST FAILED ***")
-      assert(summaryText(5) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(5) === "SuiteWithFailedCanceledTests:")
       assert(summaryText(6) === "")
       assert(summaryText(7) === "- failed *** FAILED ***")
-      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedSkippedTests.scala:24)")
+      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedCanceledTests.scala:24)")
     }
     finally {
       try { // Just to make sure runner.done() has been called to avoid hanging thread
@@ -1038,7 +1048,7 @@ class FrameworkSuite extends FunSuite {
       }
     }
   }
-  
+
   test("ScalaTest Task's tags method should return 'cpu' when suite class is annotated with @CPU") {
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
     try {
@@ -1070,7 +1080,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("ScalaTest Task's tags method should return 'disk' when suite class is annotated with @Disk") {
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
     try {
@@ -1086,7 +1096,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("ScalaTest Task's tags method should return 'custom' when suite class is annotated with @TagAnnotation('custom')") {
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
     try {
@@ -1135,7 +1145,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("-l argument can be used to exclude test") {
     val runner = framework.runner(Array("-l", "org.scalatest.tools.scalasbt.SampleSuite.SlowTest"), Array.empty, testClassLoader)
     
@@ -1193,7 +1203,7 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
-  
+
   test("-m should execute suites that match the specified package and not its sub packages") {
     val runner = framework.runner(Array("-m", "org.scalatest.tools"), Array.empty, testClassLoader)
     try {
@@ -1231,7 +1241,7 @@ class FrameworkSuite extends FunSuite {
     }
     assert(iae.getMessage === "Running JUnit tests (-j <junit>) is not supported when running ScalaTest from sbt.")
   }
-  
+
   test("Framework.runner should throw IllegalArgumentException when -b is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-b", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
@@ -1266,7 +1276,7 @@ class FrameworkSuite extends FunSuite {
     }
     assert(iae.getMessage === "Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
   }
-  
+
   test("Framework.runner should throw IllegalArgumentException when -p is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-p"), Array.empty, testClassLoader)
@@ -1287,7 +1297,7 @@ class FrameworkSuite extends FunSuite {
     }
     assert(iae.getMessage === "Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
   }
-  
+
   test("Framework.runner should throw IllegalArgumentException when -T is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
@@ -1395,7 +1405,7 @@ class FrameworkSuite extends FunSuite {
       }
     }
   }
-  
+
   test("Framework should work correctly with fork mode", Retryable) {
     val mainRunner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val remoteArgs = mainRunner.remoteArgs()
@@ -1450,7 +1460,7 @@ class FrameworkSuite extends FunSuite {
     intercept[IllegalArgumentException] { framework.runner(Array("excludeorg.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done() }
     intercept[IllegalArgumentException] { framework.runner(Array("exclude org.scala.a, org.scala.b, org.scala.c"), Array.empty, testClassLoader).done() }
   }
-  
+
   test("Runner should support deprecated friendly argument dsl 'stdout'") {
     framework.runner(Array("stdout"), Array.empty, testClassLoader).done()
     framework.runner(Array("stdout(config=\"nocolor fullstacks droptestsucceeded\")"), Array.empty, testClassLoader).done()
@@ -1482,10 +1492,10 @@ class FrameworkSuite extends FunSuite {
     intercept[IllegalArgumentException] { framework.runner(Array("file=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
     intercept[IllegalArgumentException] { framework.runner(Array("file(confi=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
   }
-  
+
   val tempDir = createTempDirectory()
   val cssFile = File.createTempFile("mystyles", "css", tempDir)
-  
+
   test("Runner should support deprecated friendly argument dsl 'junitxml'") {
     framework.runner(Array("junitxml(directory=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done()
     intercept[IllegalArgumentException] { framework.runner(Array("junitxml"), Array.empty, testClassLoader).done() }
@@ -1513,7 +1523,7 @@ class FrameworkSuite extends FunSuite {
     intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"fullstacks\")"), Array.empty, testClassLoader).done() }
     intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"durations\")"), Array.empty, testClassLoader).done() }
   }
-  
+
   test("Runner should support deprecated friendly argument dsl 'membersonly'") {
     framework.runner(Array("membersonly(a.b.c)"), Array.empty, testClassLoader).done()
     framework.runner(Array("membersonly(a.b.c, a.b.d, a.b.e)"), Array.empty, testClassLoader).done()
@@ -1774,11 +1784,15 @@ class FrameworkSuite extends FunSuite {
       assert(nestedTasks.size == 1)
       val nestedResultTags = nestedTasks(0).tags
       assert(nestedResultTags.contains("cpu"))
+
+      // Need to finish running the nested suites or runner.done() will be waiting forever.
+      nestedTasks.foreach(_.execute(new TestEventHandler, Array(new TestLogger)))
     }
     finally {
       runner.done()
     }
   }
+
   test("Framework.runner should use passed in -o config in sub-process") {
     val mainRunner = framework.runner(Array("-oDF"), Array.empty, testClassLoader)
     makeSureDone(mainRunner) {

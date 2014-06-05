@@ -15,11 +15,12 @@
  */
 package org.scalatest.tools.scalasbt
 
-class SampleInheritedNestedSuite extends CPUTaggedSuite
+import org.scalatest._
 
-class SampleInheritedSuite extends CPUTaggedSuite {
-
-  override def nestedSuites =
-    collection.immutable.IndexedSeq(new SampleInheritedNestedSuite)
-
+class SuiteWithFailedCanceledTests extends FunSuite {
+  test("success") {}
+  ignore("ignored") {}
+  test("pending") { pending }
+  test("failed") { fail }
+  test("canceled") { cancel }
 }

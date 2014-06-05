@@ -36,6 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
 import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
+import scala.collection.mutable.ListBuffer
 
 /**
  * <p>
@@ -253,6 +254,7 @@ class Framework extends SbtFramework {
     selectors: Array[Selector],
     explicitlySpecified: Boolean,
     summaryCounter: SummaryCounter,
+    statusList: LinkedBlockingQueue[Status],
     useSbtLogInfoReporter: Boolean,
     presentAllDurations: Boolean,
     presentInColor: Boolean,
@@ -292,6 +294,7 @@ class Framework extends SbtFramework {
           args.configMap,
           summaryCounter,
           status,
+          statusList,
           useSbtLogInfoReporter, 
           presentAllDurations,
           presentInColor,
@@ -364,7 +367,8 @@ class Framework extends SbtFramework {
     explicitlySpecified: Boolean, 
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
-    statefulStatus: Option[ScalaTestStatefulStatus], 
+    statefulStatus: Option[ScalaTestStatefulStatus],
+    statusList: LinkedBlockingQueue[Status],
     loggers: Array[Logger],
     useSbtLogInfoReporter: Boolean,
     presentAllDurations: Boolean,
@@ -440,6 +444,7 @@ class Framework extends SbtFramework {
         selectors,
         explicitlySpecified,
         summaryCounter,
+        statusList,
         useSbtLogInfoReporter,
         presentAllDurations,
         presentInColor,
@@ -455,17 +460,14 @@ class Framework extends SbtFramework {
     try {
       
       val status = suite.run(None, args.copy(distributor = Some(distributor)))
+      statusList.put(status)
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
 
       if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-      report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-      
-      statefulStatus match {
-        case Some(s) => 
-          s.setFailed()
-        case None => // Do nothing
-      }
+        status.whenCompleted { succeed =>
+          report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+        }
     }
     catch {       
       case e: Throwable => {
@@ -511,6 +513,7 @@ class Framework extends SbtFramework {
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: ScalaTestStatefulStatus,
+    statusList: LinkedBlockingQueue[Status],
     useSbtLogInfoReporter: Boolean, 
     presentAllDurations: Boolean,
     presentInColor: Boolean,
@@ -555,7 +558,8 @@ class Framework extends SbtFramework {
         explicitlySpecified, 
         configMap,
         summaryCounter,
-        Some(statefulStatus), 
+        Some(statefulStatus),
+        statusList,
         loggers,
         useSbtLogInfoReporter,
         presentAllDurations,
@@ -584,6 +588,7 @@ class Framework extends SbtFramework {
     explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
+    statusList: LinkedBlockingQueue[Status],
     useSbtLogInfoReporter: Boolean,
     presentAllDurations: Boolean,
     presentInColor: Boolean, 
@@ -677,7 +682,8 @@ class Framework extends SbtFramework {
           explicitlySpecified, 
           configMap,
           summaryCounter,
-          None, 
+          None,
+          statusList,
           loggers,
           useSbtLogInfoReporter,
           presentAllDurations,
@@ -820,6 +826,7 @@ class Framework extends SbtFramework {
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
     val serverThread = new AtomicReference[Option[Thread]](None)
+    val statusList = new LinkedBlockingQueue[Status]()
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
@@ -839,7 +846,8 @@ class Framework extends SbtFramework {
           td.selectors ++ autoSelectors,
           td.explicitlySpecified, 
           configMap,
-          summaryCounter, 
+          summaryCounter,
+          statusList,
           useSbtLogInfoReporter,
           presentAllDurations,
           presentInColor,
@@ -869,6 +877,9 @@ class Framework extends SbtFramework {
     
     def done = {
       if (!isDone.getAndSet(true)) {
+
+        // Wait until all status is completed
+        statusList.asScala.foreach(_.waitUntilCompleted())
 
         serverThread.get match {
           case Some(thread) =>
