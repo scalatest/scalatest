@@ -424,7 +424,8 @@ class Framework extends SbtFramework {
         Filter(if (tagsToInclude.isEmpty) Some(Set(SELECTED_TAG)) else Some(tagsToInclude + SELECTED_TAG), tagsToExclude, false, new DynaTags(suiteTags.filter(s => !testTags.contains(s._1)).toMap, testTags.toMap))
       }
 
-    report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+    if (!suite.isInstanceOf[DistributedTestRunnerSuite])
+      report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
     val distributor =
@@ -457,6 +458,7 @@ class Framework extends SbtFramework {
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
 
+      if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
       
       statefulStatus match {
@@ -476,6 +478,7 @@ class Framework extends SbtFramework {
         val formatter = formatterForSuiteAborted(suite, rawString)
 
         val duration = System.currentTimeMillis - suiteStartTime
+        // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
         report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
         
         statefulStatus match {
