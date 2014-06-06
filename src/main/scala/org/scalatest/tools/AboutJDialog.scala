@@ -40,8 +40,8 @@ private[scalatest] class AboutJDialog(owner: JFrame, title: String) extends JDia
   val copyright = Resources("AppCopyright")
   val moreInfo = Resources("MoreInfo")
   val url = Resources("AppURL")
-  val version = Resources("AppVersion")
-  val scalaVersion = Resources("ScalaVersion")
+  val version = org.scalatest.version
+  val scalaVersion = org.scalatest.buildForScalaVersion
   val reason = Resources("Reason")
   val trademarks = Resources("Trademarks")
   val company = Resources("ArtimaInc")
