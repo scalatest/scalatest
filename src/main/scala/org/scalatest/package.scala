@@ -153,12 +153,5 @@ package object scalatest {
    *
    * @return the ScalaTest version number.
    */
-  val version: String = org.scalactic.version
-
-  /**
-   * The Scala version number ScalaTest is built for.
-   *
-   * @return the Scala version number ScalaTest is built for.
-   */
-  val buildForScalaVersion = org.scalactic.buildForScalaVersion
+  val ScalaTestVersion: String = ScalaTestVersions.ScalaTestVersion
 }

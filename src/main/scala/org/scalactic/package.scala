@@ -58,12 +58,6 @@ package object scalactic {
    *
    * @return the Scalactic version number.
    */
-  val version: String = Versions.version
-
-  /**
-   * The Scala version number Scalactic is built for.
-   *
-   * @return the Scala version number Scalactic is built for.
-   */
-  val buildForScalaVersion = Versions.buildForScalaVersion
+  val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
 }
+

@@ -851,8 +851,8 @@ object Runner {
     Thread.currentThread.setName("ScalaTest-main")
     val result = 
       if (args.contains("-v") || args.contains("--version")) {
-        val version = org.scalatest.version
-        val scalaVersion = org.scalatest.buildForScalaVersion
+        val version = org.scalatest.ScalaTestVersion
+        val scalaVersion = org.scalatest.ScalaTestVersions.BuiltForScalaVersion
         println("ScalaTest " + version + " (Built for Scala " + scalaVersion + ")")
         runOptionallyWithPassFailReporter(args.filter(arg => arg != "-v" && arg != "--version"), true)
       }

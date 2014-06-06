@@ -6,22 +6,39 @@ object GenVersions {
     val shortScalaVersion = scalaVersion.split("\\.").take(2).mkString(".")
     targetDir.mkdirs()
 
-    val versionsFile = new File(targetDir, "Versions.scala")
-    val versionsFileWriter = new BufferedWriter(new FileWriter(versionsFile))
+    val scalacticVersionsFile = new File(targetDir, "ScalacticVersions.scala")
+    val scalacticVersionsFileWriter = new BufferedWriter(new FileWriter(scalacticVersionsFile))
 
-    versionsFileWriter.write(
+    scalacticVersionsFileWriter.write(
       s"""package org.scalactic
         |
-        |private[scalactic] object Versions {
-        |  val version: String = "$version"
-        |  val buildForScalaVersion: String = "$shortScalaVersion"
+        |private[scalactic] object ScalacticVersions {
+        |  val ScalacticVersion: String = "$version"
+        |  val BuiltForScalaVersion: String = "$shortScalaVersion"
         |}
       """.stripMargin
     )
 
-    versionsFileWriter.flush()
-    versionsFileWriter.close()
-    println("Generated " + versionsFile.getAbsolutePath)
+    scalacticVersionsFileWriter.flush()
+    scalacticVersionsFileWriter.close()
+    println("Generated " + scalacticVersionsFile.getAbsolutePath)
+
+    val scalaTestVersionsFile = new File(targetDir, "ScalaTestVersions.scala")
+    val scalaTestVersionsFileWriter = new BufferedWriter(new FileWriter(scalaTestVersionsFile))
+
+    scalaTestVersionsFileWriter.write(
+      s"""package org.scalatest
+        |
+        |private[scalatest] object ScalaTestVersions {
+        |  val ScalaTestVersion: String = "$version"
+        |  val BuiltForScalaVersion: String = "$shortScalaVersion"
+        |}
+      """.stripMargin
+    )
+
+    scalaTestVersionsFileWriter.flush()
+    scalaTestVersionsFileWriter.close()
+    println("Generated " + scalaTestVersionsFile.getAbsolutePath)
   }
 
 }
