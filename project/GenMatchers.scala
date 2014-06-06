@@ -43,7 +43,7 @@ object GenMatchers {
       .replaceAll("Matchers.scala", "MustMatchers.scala")
   }
 
-  def genMain(targetDir: File, scalaVersion: String) {
+  def genMain(targetDir: File, version: String, scalaVersion: String) {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
     matchersDir.mkdirs()
@@ -141,7 +141,7 @@ object GenMatchers {
     temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
-  def genTest(targetBaseDir: File, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
     val matchersDir = new File(targetBaseDir, "matchers")
     matchersDir.mkdirs()
@@ -193,8 +193,9 @@ object GenMatchers {
 
   def main(args: Array[String]) {
     val targetDir = args(0)
-    val scalaVersion = args(1)
-    genMain(new File(targetDir + "/main/scala/org/scalatest/"), scalaVersion)
-    genTest(new File("gentests/" + targetDir + "/test/scala/org/scalatest/"), scalaVersion)
+    val version = args(1)
+    val scalaVersion = args(2)
+    genMain(new File(targetDir + "/main/scala/org/scalatest/"), version, scalaVersion)
+    genTest(new File("gentests/" + targetDir + "/test/scala/org/scalatest/"), version, scalaVersion)
   }
 }

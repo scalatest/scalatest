@@ -34,7 +34,7 @@ object GenTheyWord {
   def main(args: Array[String]) {
   }
   
-  def genTest(dir: File, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String) {
     generateFile("src/test/scala/org/scalatest", 
                  "FunSpecSuite", 
                  dir.getAbsolutePath, 

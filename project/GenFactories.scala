@@ -2701,10 +2701,11 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 
   def main(args: Array[String]) {
     val targetDir = args(0)
-    val scalaVersion = args(1)
+    val version = args(1)
+    val scalaVersion = args(2)
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/matchers")
     mainDir.mkdirs()
-    genMain(mainDir, scalaVersion)
+    genMain(mainDir, version, scalaVersion)
     
 /*
     val testDir = new File("gentests/" + targetDir + "/test/scala/org/scalatest/matchers")
@@ -2713,7 +2714,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 */
   }
   
-  def genMain(dir: File, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
     for (arity <- 1 to MaxArity) {
       genMatcherFactory(dir, arity)

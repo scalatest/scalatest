@@ -37,7 +37,7 @@ object GenTestsHelper {
 
 
 
-  def genTest(targetDir: File, scalaVersion: String) {
+  def genTest(targetDir: File, version: String, scalaVersion: String) {
 
     val sharedHelpersSource = new File("src/test/scala/org/scalatest/SharedHelpers.scala")
     val sharedHelpersTarget = new File(targetDir, sharedHelpersSource.getName)
@@ -83,8 +83,9 @@ object GenTestsHelper {
 
   def main(args: Array[String]) {
     val targetDir = args(0)
-    val scalaVersion = args(1)
-    genTest(new File(targetDir + "/org/scalatest/"), scalaVersion)
+    val version = args(1)
+    val scalaVersion = args(2)
+    genTest(new File(targetDir + "/org/scalatest/"), version, scalaVersion)
   }
 
 }

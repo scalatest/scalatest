@@ -52,4 +52,18 @@ package object scalactic {
     catch {
       case e: Throwable if NonFatal(e) => Bad(e)
     }
+
+  /**
+   * The version number of Scalactic.
+   *
+   * @return the Scalactic version number.
+   */
+  val version: String = Versions.version
+
+  /**
+   * The Scala version number Scalactic is built for.
+   *
+   * @return the Scala version number Scalactic is built for.
+   */
+  val buildForScalaVersion = Versions.buildForScalaVersion
 }

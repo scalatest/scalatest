@@ -2,7 +2,7 @@ import java.io.{FileWriter, BufferedWriter, File}
 
 object GenCompatibleClasses {
 
-  def genMain(targetDir: File, scalaVersion: String) {
+  def genMain(targetDir: File, version: String, scalaVersion: String) {
     targetDir.mkdirs()
     val listCellRendererClass = Class.forName("javax.swing.ListCellRenderer")
     val isJava7 = listCellRendererClass.getTypeParameters.length > 0
@@ -68,10 +68,11 @@ object GenCompatibleClasses {
   def main(args: Array[String]) {
 
     val targetDir = args(0)
-    val scalaVersion = args(1)
+    val version = args(1)
+    val scalaVersion = args(2)
 
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/tools")
-    genMain(mainDir, scalaVersion)
+    genMain(mainDir, version, scalaVersion)
   }
 
 }

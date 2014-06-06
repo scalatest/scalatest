@@ -35,7 +35,7 @@ object GenScalactic {
     }
   }
 
-  def genMain(targetDir: File, scalaVersion: String) {
+  def genMain(targetDir: File, version: String, scalaVersion: String) {
 
     val scalacticPackageDir = new File(targetDir, "org/scalactic")
     scalacticPackageDir.mkdirs()
@@ -66,7 +66,7 @@ object GenScalactic {
     copyFile(sourceCssFile, destCssFile)
   }
 
-  def genTest(targetDir: File, scalaVersion: String) {
+  def genTest(targetDir: File, version: String, scalaVersion: String) {
     val scalatestDir = new File(targetDir, "org/scalatest")
     scalatestDir.mkdirs()
     val sharedHelpersSourceFile = new File("src/test/scala/org/scalatest/SharedHelpers.scala")

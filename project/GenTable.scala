@@ -1154,24 +1154,26 @@ $columnsOfIndexes$
 
   def main(args: Array[String]) {
     val targetDir = args(0)
-    val scalaVersion = args(1)
+    val version = args(1)
+    val scalaVersion = args(2)
+
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/prop")
     mainDir.mkdirs()
-    genMain(mainDir, scalaVersion)
+    genMain(mainDir, version, scalaVersion)
     
     val testDir = new File("gentests/" + targetDir + "/test/scala/org/scalatest/prop")
     testDir.mkdirs()
-    genTest(testDir, scalaVersion)
+    genTest(testDir, version, scalaVersion)
   }
   
-  def genMain(dir: File, scalaVersion: String) {
+  def genMain(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
     genTableForNs(dir)
     genPropertyChecks(dir)
     genTables(dir)
   }
   
-  def genTest(dir: File, scalaVersion: String) {
+  def genTest(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
     genTableSuite(dir)
   }

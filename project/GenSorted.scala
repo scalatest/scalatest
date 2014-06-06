@@ -32,7 +32,7 @@ object GenSorted {
     translate(line, mapping.toIterator)
   }
   
-  def genTest(targetBaseDir: File, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
     val sortedDir = new File(targetBaseDir, "sortedTests")
@@ -93,7 +93,8 @@ object GenSorted {
   
   def main(args: Array[String]) {
     val targetDir = args(0)
-    val scalaVersion = args(1)
-    genTest(new File(targetDir + "/org/scalatest/"), scalaVersion)
+    val version = args(1)
+    val scalaVersion = args(2)
+    genTest(new File(targetDir + "/org/scalatest/"), version, scalaVersion)
   }
 }

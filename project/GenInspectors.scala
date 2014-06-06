@@ -1754,7 +1754,7 @@ object GenInspectors {
     targetDir
   }
 
-  def genTest(targetBaseDir: File, scalaVersion: String) {
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     genForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
     genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
@@ -1767,8 +1767,9 @@ object GenInspectors {
   
   def main(args: Array[String]) {
     val targetBaseDir = args(0)
-    val scalaVersion = args(1)
-    genTest(new File(targetBaseDir), scalaVersion)
+    val version = args(1)
+    val scalaVersion = args(2)
+    genTest(new File(targetBaseDir), version, scalaVersion)
   }
   
 }

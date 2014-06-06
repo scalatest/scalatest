@@ -147,4 +147,18 @@ package object scalatest {
 
   @deprecated("Please use org.scalactic.TimesOnInt instead")
   type TimesOnInt = org.scalactic.TimesOnInt
+
+  /**
+   * The version number of ScalaTest.
+   *
+   * @return the ScalaTest version number.
+   */
+  val version: String = org.scalactic.version
+
+  /**
+   * The Scala version number ScalaTest is built for.
+   *
+   * @return the Scala version number ScalaTest is built for.
+   */
+  val buildForScalaVersion = org.scalactic.buildForScalaVersion
 }
