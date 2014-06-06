@@ -54,19 +54,17 @@ object GenScalactic {
       copyFile(sourceFile, destFile)
     }
 
-    val sourceCssFile = new File("src/main/html/addl.css")
-    val destCssDir = new File(targetDir.getParentFile, "html")
-    destCssDir.mkdirs()
-    val destCssFile = new File(destCssDir, "addl.css")
-    copyFile(sourceCssFile, destCssFile)
-  }
-
-  def genResourceBundle(targetDir: File, version: String, scalaVersion: String) {
     val sourceResourceFile = new File("src/main/resources/org/scalactic/ScalacticBundle.properties")
     val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
     destResourceDir.mkdirs()
     val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
     copyFile(sourceResourceFile, destResourceFile)
+
+    val sourceCssFile = new File("src/main/html/addl.css")
+    val destCssDir = new File(targetDir.getParentFile, "html")
+    destCssDir.mkdirs()
+    val destCssFile = new File(destCssDir, "addl.css")
+    copyFile(sourceCssFile, destCssFile)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String) {
