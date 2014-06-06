@@ -250,8 +250,13 @@ object ScalatestBuild extends Build {
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
+      resourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genResourceBundle),
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
+      mappings in (Compile, packageBin) += {
+        ((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties") -> "org/scalactic/ScalacticBundle.properties"
+      },
       scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
