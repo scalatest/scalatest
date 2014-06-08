@@ -1,0 +1,19 @@
+
+ScalaTest/Scalactic 2.2.0 is the latest major upgrade to ScalaTest/ScalaUtils (Scalactic is the new name for ScalaUtils.). Version 2.2.0
+includes many enhancements, mostly related to using macros to analyze expressions in your code to obtain more informative error and debug messages.
+
+The [2.2.0 release notes](http://scalatest.org/release_notes/2.2.0) gives
+the details, but here are some highlights:
+
+### Highlights of 2.2.0
+
+* [Introducing the Scalactic library](http://scalatest.org/release_notes/2.2.0#introductingScalactic)
+* [Enhanced `Assertions` error messages](http://scalatest.org/release_notes/2.2.0#enhancedAssertionsErrorMessages)
+* [`DiagrammedAssertions`](http://scalatest.org/release_notes/2.2.0#diagrammedAssertions)
+* [Scalactic `Requirements`](http://scalatest.org/release_notes/2.2.0#scalacticRequirements)
+* [Scalactic `Snapshots`](http://scalatest.org/release_notes/2.2.0#scalacticSnapshots)
+* [New matchers and assertions](http://scalatest.org/release_notes/2.2.0#newMatchersAndAssertions)
+* [`TestRegistration` trait](http://scalatest.org/release_notes/2.2.0#testRegistration)
+* [Other enhancements and bug fixes](http://scalatest.org/release_notes/2.2.0#otherEnhancements)
+
+
