@@ -252,6 +252,16 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
+      resourceDirectories in Compile += {
+        (sourceManaged in Compile).value / "resources"
+      },
+      // TODO - This is a hack to get us on the resources list..
+      resourceGenerators in Compile += {
+        Def.task{
+          Seq((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties")
+        }.taskValue
+      },
+      // Note this should be removable.
       mappings in (Compile, packageBin) += {
         ((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties") -> "org/scalactic/ScalacticBundle.properties"
       },
