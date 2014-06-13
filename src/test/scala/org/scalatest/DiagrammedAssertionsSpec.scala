@@ -2335,6 +2335,28 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+
+      it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
+        assert(<person>Dude</person> == <person>Dude</person>)
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when is used to check <person>Dude</person> == <person>Mary</person>") {
+        val e = intercept[TestFailedException] {
+          assert(<person>Dude</person> == <person>Mary</person>)
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assert(<person>Dude</person> == <person>Mary</person>)
+              |        |                    |   |
+              |        |                    |   <person>Mary</person>
+              |        |                    false
+              |        <person>Dude</person>
+              |""".stripMargin
+          )
+        )
+      }
     }
 
     describe("The assert(boolean, clue) method") {
@@ -4571,6 +4593,28 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
+      }
+
+      it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
+        assert(<person>Dude</person> == <person>Dude</person>, "this is a clue")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when is used to check <person>Dude</person> == <person>Mary</person>") {
+        val e = intercept[TestFailedException] {
+          assert(<person>Dude</person> == <person>Mary</person>, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assert(<person>Dude</person> == <person>Mary</person>, "this is a clue")
+              |        |                    |   |
+              |        |                    |   <person>Mary</person>
+              |        |                    false
+              |        <person>Dude</person>
+              |""".stripMargin
+          )
+        )
       }
     }
 
@@ -6809,6 +6853,28 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+
+      it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
+        assume(<person>Dude</person> == <person>Dude</person>)
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check <person>Dude</person> == <person>Mary</person>") {
+        val e = intercept[TestCanceledException] {
+          assume(<person>Dude</person> == <person>Mary</person>)
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assume(<person>Dude</person> == <person>Mary</person>)
+              |        |                    |   |
+              |        |                    |   <person>Mary</person>
+              |        |                    false
+              |        <person>Dude</person>
+              |""".stripMargin
+          )
+        )
+      }
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9045,6 +9111,28 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
+      }
+
+      it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
+        assume(<person>Dude</person> == <person>Dude</person>, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check <person>Dude</person> == <person>Mary</person>") {
+        val e = intercept[TestCanceledException] {
+          assume(<person>Dude</person> == <person>Mary</person>, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(<person>Dude</person> == <person>Mary</person>, "this is a clue")
+              |        |                    |   |
+              |        |                    |   <person>Mary</person>
+              |        |                    false
+              |        <person>Dude</person>
+              |""".stripMargin
+          )
+        )
       }
     }
 
