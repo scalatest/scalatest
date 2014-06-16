@@ -18,6 +18,13 @@ package org.scalatest
 // elements
 import org.scalatest.events._
 import SharedHelpers._
+import org.scalatest.exceptions.TestCanceledException
+import java.lang.annotation.AnnotationFormatError
+import java.awt.AWTError
+import java.nio.charset.CoderMalfunctionError
+import javax.xml.parsers.FactoryConfigurationError
+import javax.xml.transform.TransformerFactoryConfigurationError
+
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
@@ -2635,6 +2642,458 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
           assert(trce.getMessage === "A they clause must only appear after a top level subject clause.")
         }
+
+        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in should scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              assert(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestFailedException])
+          val cause = causeThrowable.asInstanceOf[TestFailedException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              assert(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestFailedException])
+          val cause = causeThrowable.asInstanceOf[TestFailedException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              assert(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestFailedException])
+          val cause = causeThrowable.asInstanceOf[TestFailedException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              assert(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestFailedException])
+          val cause = causeThrowable.asInstanceOf[TestFailedException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              assert(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestFailedException])
+          val cause = causeThrowable.asInstanceOf[TestFailedException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in should scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              assume(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestCanceledException])
+          val cause = causeThrowable.asInstanceOf[TestCanceledException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              assume(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestCanceledException])
+          val cause = causeThrowable.asInstanceOf[TestCanceledException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              assume(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestCanceledException])
+          val cause = causeThrowable.asInstanceOf[TestCanceledException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              assume(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestCanceledException])
+          val cause = causeThrowable.asInstanceOf[TestCanceledException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              assume(a == 2)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause")))
+
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(causeThrowable.isInstanceOf[TestCanceledException])
+          val cause = causeThrowable.asInstanceOf[TestCanceledException]
+          assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
+          assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+        }
+
+        it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside should scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new RuntimeException("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages("exceptionWasThrownInShouldClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+          assert(causeThrowable.isInstanceOf[RuntimeException])
+          val cause = causeThrowable.asInstanceOf[RuntimeException]
+          assert(cause.getMessage == "on purpose")
+        }
+
+        it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new RuntimeException("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages("exceptionWasThrownInWhenClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+          assert(causeThrowable.isInstanceOf[RuntimeException])
+          val cause = causeThrowable.asInstanceOf[RuntimeException]
+          assert(cause.getMessage == "on purpose")
+        }
+
+        it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new RuntimeException("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages("exceptionWasThrownInThatClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+          assert(causeThrowable.isInstanceOf[RuntimeException])
+          val cause = causeThrowable.asInstanceOf[RuntimeException]
+          assert(cause.getMessage == "on purpose")
+        }
+
+        it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new RuntimeException("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages("exceptionWasThrownInWhichClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+          assert(causeThrowable.isInstanceOf[RuntimeException])
+          val cause = causeThrowable.asInstanceOf[RuntimeException]
+          assert(cause.getMessage == "on purpose")
+        }
+
+        it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new RuntimeException("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages("exceptionWasThrownInCanClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+          assert(causeThrowable.isInstanceOf[RuntimeException])
+          val cause = causeThrowable.asInstanceOf[RuntimeException]
+          assert(cause.getMessage == "on purpose")
+        }
+
+        it("should propagate AnnotationFormatError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new AnnotationFormatError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AnnotationFormatError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AWTError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new AWTError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AWTError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate CoderMalfunctionError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+              assert(a == 1)
+            }
+          }
+          val e = intercept[CoderMalfunctionError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+        }
+
+        it("should propagate FactoryConfigurationError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new FactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[FactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate LinkageError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new LinkageError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[LinkageError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate ThreadDeath when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new ThreadDeath
+              assert(a == 1)
+            }
+          }
+          val e = intercept[ThreadDeath] {
+            new TestSpec
+          }
+          assert(e.getMessage == null)
+        }
+
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new TransformerFactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[TransformerFactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" should {
+              val a = 1
+              throw new VirtualMachineError("on purpose") {}
+              assert(a == 1)
+            }
+          }
+          val e = intercept[VirtualMachineError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
       }
     }
   }
