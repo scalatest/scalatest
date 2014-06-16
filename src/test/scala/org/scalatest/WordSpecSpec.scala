@@ -2665,6 +2665,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
           assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
         }
+
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in when scope") {
           class TestSpec extends WordSpec {
             "a feature" when {
@@ -2982,7 +2983,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(cause.getMessage == "on purpose")
         }
 
-        it("should propagate AnnotationFormatError when it is thrown inside scope") {
+        it("should propagate AnnotationFormatError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -2996,7 +2997,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "on purpose")
         }
 
-        it("should propagate AWTError when it is thrown inside scope") {
+        it("should propagate AnnotationFormatError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new AnnotationFormatError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AnnotationFormatError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AnnotationFormatError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new AnnotationFormatError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AnnotationFormatError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AnnotationFormatError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new AnnotationFormatError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AnnotationFormatError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AnnotationFormatError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new AnnotationFormatError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AnnotationFormatError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AWTError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3010,7 +3067,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "on purpose")
         }
 
-        it("should propagate CoderMalfunctionError when it is thrown inside scope") {
+        it("should propagate AWTError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new AWTError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AWTError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AWTError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new AWTError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AWTError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AWTError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new AWTError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AWTError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate AWTError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new AWTError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[AWTError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate CoderMalfunctionError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3024,7 +3137,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "java.lang.RuntimeException: on purpose")
         }
 
-        it("should propagate FactoryConfigurationError when it is thrown inside scope") {
+        it("should propagate CoderMalfunctionError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+              assert(a == 1)
+            }
+          }
+          val e = intercept[CoderMalfunctionError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+        }
+
+        it("should propagate CoderMalfunctionError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+              assert(a == 1)
+            }
+          }
+          val e = intercept[CoderMalfunctionError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+        }
+
+        it("should propagate CoderMalfunctionError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+              assert(a == 1)
+            }
+          }
+          val e = intercept[CoderMalfunctionError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+        }
+
+        it("should propagate CoderMalfunctionError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+              assert(a == 1)
+            }
+          }
+          val e = intercept[CoderMalfunctionError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+        }
+
+        it("should propagate FactoryConfigurationError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3038,7 +3207,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "on purpose")
         }
 
-        it("should propagate LinkageError when it is thrown inside scope") {
+        it("should propagate FactoryConfigurationError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new FactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[FactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate FactoryConfigurationError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new FactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[FactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate FactoryConfigurationError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new FactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[FactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate FactoryConfigurationError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new FactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[FactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate LinkageError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3052,7 +3277,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "on purpose")
         }
 
-        it("should propagate ThreadDeath when it is thrown inside scope") {
+        it("should propagate LinkageError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new LinkageError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[LinkageError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate LinkageError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new LinkageError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[LinkageError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate LinkageError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new LinkageError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[LinkageError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate LinkageError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new LinkageError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[LinkageError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate ThreadDeath when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3066,7 +3347,63 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == null)
         }
 
-        it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
+        it("should propagate ThreadDeath when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new ThreadDeath
+              assert(a == 1)
+            }
+          }
+          val e = intercept[ThreadDeath] {
+            new TestSpec
+          }
+          assert(e.getMessage == null)
+        }
+
+        it("should propagate ThreadDeath when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new ThreadDeath
+              assert(a == 1)
+            }
+          }
+          val e = intercept[ThreadDeath] {
+            new TestSpec
+          }
+          assert(e.getMessage == null)
+        }
+
+        it("should propagate ThreadDeath when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new ThreadDeath
+              assert(a == 1)
+            }
+          }
+          val e = intercept[ThreadDeath] {
+            new TestSpec
+          }
+          assert(e.getMessage == null)
+        }
+
+        it("should propagate ThreadDeath when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new ThreadDeath
+              assert(a == 1)
+            }
+          }
+          val e = intercept[ThreadDeath] {
+            new TestSpec
+          }
+          assert(e.getMessage == null)
+        }
+
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3080,9 +3417,121 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.getMessage == "on purpose")
         }
 
-        it("should propagate VirtualMachineError when it is thrown inside scope") {
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new TransformerFactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[TransformerFactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new TransformerFactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[TransformerFactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new TransformerFactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[TransformerFactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate TransformerFactoryConfigurationError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
+              val a = 1
+              throw new TransformerFactoryConfigurationError("on purpose")
+              assert(a == 1)
+            }
+          }
+          val e = intercept[TransformerFactoryConfigurationError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
+              val a = 1
+              throw new VirtualMachineError("on purpose") {}
+              assert(a == 1)
+            }
+          }
+          val e = intercept[VirtualMachineError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside when scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              val a = 1
+              throw new VirtualMachineError("on purpose") {}
+              assert(a == 1)
+            }
+          }
+          val e = intercept[VirtualMachineError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside that scope") {
+          class TestSpec extends WordSpec {
+            "a feature" that {
+              val a = 1
+              throw new VirtualMachineError("on purpose") {}
+              assert(a == 1)
+            }
+          }
+          val e = intercept[VirtualMachineError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside which scope") {
+          class TestSpec extends WordSpec {
+            "a feature" which {
+              val a = 1
+              throw new VirtualMachineError("on purpose") {}
+              assert(a == 1)
+            }
+          }
+          val e = intercept[VirtualMachineError] {
+            new TestSpec
+          }
+          assert(e.getMessage == "on purpose")
+        }
+
+        it("should propagate VirtualMachineError when it is thrown inside can scope") {
+          class TestSpec extends WordSpec {
+            "a feature" can {
               val a = 1
               throw new VirtualMachineError("on purpose") {}
               assert(a == 1)
