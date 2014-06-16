@@ -155,7 +155,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
 
     def getStackDepth: Int =
       verb match {
-        case "should" | "can" => 5
+        case "should" | "must" | "can" => 5
         case other => 4
       }
 
@@ -163,8 +163,8 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
       registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownIn" + verb.capitalize + "Clause", UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
