@@ -23,7 +23,9 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class NumericEqualityConstraintsSpec extends Spec with TypeCheckedTripleEquals with NumericEqualityConstraints {
+// TODO: Move these to TypeCheckedSpec and also copy them to ConversionCheckedSpec, because
+// these are now extended by those. And I suppose add them to UncheckedSpec too.
+class NumericEqualityConstraintsSpec extends Spec with TypeCheckedTripleEquals {
 
   object `The NumericEqualityConstraints trait` {
     def `should allow equality comparisons between types that co-operate in Scala` {

@@ -53,7 +53,7 @@ import TripleEqualsSupport._
  * priority conversion will be selected.
  * </p>
  */
-trait LowPriorityTypeCheckedConstraint extends TripleEqualsSupport {
+trait LowPriorityTypeCheckedConstraint extends LowPriorityNumericEqualityConstraint {
 
   import scala.language.implicitConversions
 

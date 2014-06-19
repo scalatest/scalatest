@@ -17,9 +17,7 @@ package org.scalactic
 
 import TripleEqualsSupport._
 
-private[scalactic] trait NumericEqualityConstraints {
-  implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: Numeric[A], numB: Numeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
-} 
+trait NewTripleEquals extends TypeCheckedTripleEquals with TraversableEqualityConstraints
 
-private[scalactic] object NumericEqualityConstraints extends NumericEqualityConstraints
+object NewTripleEquals extends NewTripleEquals
 

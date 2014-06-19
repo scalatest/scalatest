@@ -119,7 +119,7 @@ import TripleEqualsSupport._
  *
  * @author Bill Venners
  */
-trait TripleEquals extends TripleEqualsSupport {
+trait UncheckedTripleEquals extends TripleEqualsSupport {
 
   import scala.language.implicitConversions
 
@@ -166,5 +166,5 @@ trait TripleEquals extends TripleEqualsSupport {
  * res0: Boolean = true
  * </pre>
  */
-object TripleEquals extends TripleEquals
+object UncheckedTripleEquals extends TripleEquals
 
