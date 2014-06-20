@@ -18,7 +18,7 @@ package org.scalactic
 import TripleEqualsSupport._
 
 trait LowPriorityNumericEqualityConstraint extends TripleEqualsSupport {
-  implicit override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: Numeric[A], numB: Numeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  implicit override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 } 
 
 // Don't make an object on purpose so that people can't accidentally import this.

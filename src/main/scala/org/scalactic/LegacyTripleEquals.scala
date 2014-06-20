@@ -83,7 +83,7 @@ trait LegacyTripleEquals extends TripleEqualsSupport {
   override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
 
-  override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: Numeric[A], numB: Numeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
   /**
    * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable

@@ -913,7 +913,7 @@ trait TripleEqualsSupport {
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
   // TODO: Scaladoc
-  def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: Numeric[A], numB: Numeric[B]): Constraint[A, B]
+  def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
