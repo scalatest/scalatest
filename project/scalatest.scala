@@ -122,7 +122,7 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.1",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
           "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional"
         )
       case _ =>
