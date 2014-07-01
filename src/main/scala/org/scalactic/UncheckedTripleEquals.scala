@@ -166,5 +166,5 @@ trait UncheckedTripleEquals extends TripleEqualsSupport {
  * res0: Boolean = true
  * </pre>
  */
-object UncheckedTripleEquals extends TripleEquals
+object UncheckedTripleEquals extends UncheckedTripleEquals
 
