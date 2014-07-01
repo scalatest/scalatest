@@ -27,4 +27,11 @@ object CooperatingNumeric {
   implicit val cooperatingNumericNatureOfDouble: CooperatingNumeric[Double] = new CooperatingNumeric[Double]
   implicit val cooperatingNumericNatureOfBigInt: CooperatingNumeric[BigInt] = new CooperatingNumeric[BigInt]
   implicit val cooperatingNumericNatureOfBigDecimal: CooperatingNumeric[BigDecimal] = new CooperatingNumeric[BigDecimal]
+  implicit val cooperatingNumericNatureOfJavaByte: CooperatingNumeric[java.lang.Byte] = new CooperatingNumeric[java.lang.Byte]
+  implicit val cooperatingNumericNatureOfJavaShort: CooperatingNumeric[java.lang.Short] = new CooperatingNumeric[java.lang.Short]
+  implicit val cooperatingNumericNatureOfJavaCharacter: CooperatingNumeric[java.lang.Character] = new CooperatingNumeric[java.lang.Character]
+  implicit val cooperatingNumericNatureOfJavaInteger: CooperatingNumeric[java.lang.Integer] = new CooperatingNumeric[java.lang.Integer]
+  implicit val cooperatingNumericNatureOfJavaLong: CooperatingNumeric[java.lang.Long] = new CooperatingNumeric[java.lang.Long]
+  implicit val cooperatingNumericNatureOfJavaFloat: CooperatingNumeric[java.lang.Float] = new CooperatingNumeric[java.lang.Float]
+  implicit val cooperatingNumericNatureOfJavaDouble: CooperatingNumeric[java.lang.Double] = new CooperatingNumeric[java.lang.Double]
 }
