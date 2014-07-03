@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import org.scalactic.Normalization
 import scala.xml.{Text, Node, Elem, NodeSeq}
 
 trait XmlNormalizations {
@@ -29,9 +28,9 @@ trait XmlNormalizations {
       case _ => List(node)
     }
 
-  implicit val normalizedXmlElem: Normalization[Elem] = {
+  implicit val normalizedXmlElem: Uniformity[Elem] = {
 
-    new Normalization[Elem] {
+    new Uniformity[Elem] {
       def normalized(elem: Elem): Elem =
         elem match {
           case Elem(pre, lab, md, scp, children @ _*) =>
@@ -49,28 +48,109 @@ trait XmlNormalizations {
               }
             Elem(pre, lab, md, scp, false, (mergedTextNodes.flatMap(trimTextZappingEmpty)):_*)
         }
+
+      /**
+       * Returns true if the passed <code>Any</code> is a <code>Elem</code>.
+       *
+       * @return true if the passed <code>Any</code> is a <code>Elem</code>.
+       */
+      final def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Elem]
+    
+      /**
+       * Normalizes the passed object if it is a <code>Elem</code>.
+       *
+       * <p>
+       * This method returns either:
+       * </p>
+       *
+       * <ul>
+       * <li>if the passed object is a <code>Elem</code>, the result of passing that string to <code>normalized</code></li>
+       * <li>else, the same exact object that was passed
+       * </p>
+       *
+       * @return a normalized form of any passed <code>Elem</code>, or the same object if not a <code>Elem</code>.
+       */
+      final def normalizedOrSame(b: Any): Any =
+        b match {
+          case s: Elem => normalized(s)
+          case _ => b
+       }
     }
   }
 
-  implicit val normalizedXmlNode: Normalization[Node] = {
+  implicit val normalizedXmlNode: Uniformity[Node] = {
 
-    new Normalization[Node] {
+    new Uniformity[Node] {
       def normalized(node: Node): Node =
         node match {
           case elem: Elem => normalizedXmlElem.normalized(elem)
           case _ => node
         }
+
+      /**
+       * Returns true if the passed <code>Any</code> is a <code>Node</code>.
+       *
+       * @return true if the passed <code>Any</code> is a <code>Node</code>.
+       */
+      final def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Node]
+    
+      /**
+       * Normalizes the passed object if it is a <code>Node</code>.
+       *
+       * <p>
+       * This method returns either:
+       * </p>
+       *
+       * <ul>
+       * <li>if the passed object is a <code>Node</code>, the result of passing that string to <code>normalized</code></li>
+       * <li>else, the same exact object that was passed
+       * </p>
+       *
+       * @return a normalized form of any passed <code>Node</code>, or the same object if not a <code>Node</code>.
+       */
+      final def normalizedOrSame(b: Any): Any =
+        b match {
+          case s: Node => normalized(s)
+          case _ => b
+       }
     }
   }
 
-  implicit val normalizedXmlNodeSeq: Normalization[NodeSeq] = {
+  implicit val normalizedXmlNodeSeq: Uniformity[NodeSeq] = {
 
-    new Normalization[NodeSeq] {
+    new Uniformity[NodeSeq] {
       def normalized(nodeSeq: NodeSeq): NodeSeq =
         nodeSeq match {
           case elem: Elem => normalizedXmlElem.normalized(elem)
           case _ => nodeSeq
         }
+
+      /**
+       * Returns true if the passed <code>Any</code> is a <code>NodeSeq</code>.
+       *
+       * @return true if the passed <code>Any</code> is a <code>NodeSeq</code>.
+       */
+      final def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[NodeSeq]
+    
+      /**
+       * Normalizes the passed object if it is a <code>NodeSeq</code>.
+       *
+       * <p>
+       * This method returns either:
+       * </p>
+       *
+       * <ul>
+       * <li>if the passed object is a <code>NodeSeq</code>, the result of passing that string to <code>normalized</code></li>
+       * <li>else, the same exact object that was passed
+       * </p>
+       *
+       * @return a normalized form of any passed <code>NodeSeq</code>, or the same object if not a <code>NodeSeq</code>.
+       */
+      final def normalizedOrSame(b: Any): Any =
+        b match {
+          case s: NodeSeq => normalized(s)
+          case _ => b
+       }
     }
   }
 }
