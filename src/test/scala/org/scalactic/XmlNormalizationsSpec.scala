@@ -59,22 +59,22 @@ class XmlNormalizationsSpec extends Spec with Matchers {
     }
 
     def `should zap text that is only whitespace, unless it is already a Text` {
-      <summer> </summer>.norm == <summer></summer> shouldBe true
-      <summer>
-      </summer>.norm == <summer></summer> shouldBe true
-      <summer>
+      (<summer> </summer>.norm: Node) == <summer></summer> shouldBe true
+      (<summer>
+      </summer>.norm: Node) == <summer></summer> shouldBe true
+      (<summer>
         <day></day>
-      </summer>.norm == <summer><day></day></summer> shouldBe true
+      </summer>.norm: Node) == <summer><day></day></summer> shouldBe true
       <summer><day></day></summer> ==
-        <summer>
+        (<summer>
           <day></day>
-        </summer>.norm shouldBe true
+        </summer>.norm: Node) shouldBe true
       <summer><day>Dude!</day></summer> ==
-        <summer>
+        (<summer>
           <day>
             Dude!
           </day>
-        </summer>.norm shouldBe true
+        </summer>.norm: Node) shouldBe true
       (Text("   "): Node).norm shouldBe Text("   ")
       (<div>{Text("My name is ")}{Text("Harry")}</div>: Node).norm shouldBe <div>My name is Harry</div>
     }
