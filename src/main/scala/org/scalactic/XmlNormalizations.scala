@@ -16,7 +16,7 @@
 package org.scalactic
 
 import org.scalactic.Normalization
-import scala.xml.{Text, Node, Elem}
+import scala.xml.{Text, Node, Elem, NodeSeq}
 
 trait XmlNormalizations {
 
@@ -51,6 +51,7 @@ trait XmlNormalizations {
         }
     }
   }
+
   implicit val normalizedXmlNode: Normalization[Node] = {
 
     new Normalization[Node] {
@@ -58,6 +59,17 @@ trait XmlNormalizations {
         node match {
           case elem: Elem => normalizedXmlElem.normalized(elem)
           case _ => node
+        }
+    }
+  }
+
+  implicit val normalizedXmlNodeSeq: Normalization[NodeSeq] = {
+
+    new Normalization[NodeSeq] {
+      def normalized(nodeSeq: NodeSeq): NodeSeq =
+        nodeSeq match {
+          case elem: Elem => normalizedXmlElem.normalized(elem)
+          case _ => nodeSeq
         }
     }
   }

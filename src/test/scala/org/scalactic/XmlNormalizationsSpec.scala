@@ -18,7 +18,7 @@ package org.scalactic
 import org.scalatest._
 
 import org.scalactic.NormMethods._
-import scala.xml.{Node, Text}
+import scala.xml.{Node, Text, NodeSeq}
 
 class XmlNormalizationsSpec extends Spec with Matchers {
 
@@ -77,6 +77,35 @@ class XmlNormalizationsSpec extends Spec with Matchers {
         </summer>.norm: Node) shouldBe true
       (Text("   "): Node).norm shouldBe Text("   ")
       (<div>{Text("My name is ")}{Text("Harry")}</div>: Node).norm shouldBe <div>My name is Harry</div>
+    }
+  }
+
+  object `Xml Normalization of NodeSeq` {
+
+    def `should leave already-normalized XML alone` {
+      (<summer></summer>: NodeSeq).norm == <summer></summer> shouldBe true
+      (Text("Bla"): NodeSeq).norm shouldBe Text("Bla")
+    }
+
+    def `should zap text that is only whitespace, unless it is already a Text` {
+      (<summer> </summer>.norm: NodeSeq) == <summer></summer> shouldBe true
+      (<summer>
+      </summer>.norm: NodeSeq) == <summer></summer> shouldBe true
+      (<summer>
+        <day></day>
+      </summer>.norm: NodeSeq) == <summer><day></day></summer> shouldBe true
+      <summer><day></day></summer> ==
+        (<summer>
+          <day></day>
+        </summer>.norm: NodeSeq) shouldBe true
+      <summer><day>Dude!</day></summer> ==
+        (<summer>
+          <day>
+            Dude!
+          </day>
+        </summer>.norm: NodeSeq) shouldBe true
+      (Text("   "): NodeSeq).norm shouldBe Text("   ")
+      (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq).norm shouldBe <div>My name is Harry</div>
     }
   }
 }
