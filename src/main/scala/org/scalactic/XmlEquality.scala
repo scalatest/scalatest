@@ -20,6 +20,15 @@ import scala.xml.{Elem,Node,NodeSeq}
 
 trait XmlEquality {
 
+  implicit def xmlElemEquality[T <: NodeSeq]: Equality[T] = {
+    new Equality[T] {
+      val xUni: Uniformity[T] = XmlNormalization.compressed[T]
+      def areEqual(a: T, b: Any): Boolean = {
+        xUni.normalized(a) == xUni.normalizedOrSame(b)
+      }
+    }
+  }
+/*
   implicit val xmlElemEquality: Equality[Elem] = {
     new Equality[Elem] {
       val xUni: Uniformity[Elem] = XmlNormalization.normalizedXmlElem
@@ -44,6 +53,7 @@ trait XmlEquality {
       }
     }
   }
+*/
 }
 
 object XmlEquality extends XmlEquality

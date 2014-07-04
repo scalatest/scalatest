@@ -28,6 +28,57 @@ trait XmlNormalization {
       case _ => List(node)
     }
 
+  implicit def compressed[T <: NodeSeq]: Uniformity[T] = {
+
+    new Uniformity[T] {
+      def normalized(nodeSeq: T): T =
+        nodeSeq match {
+          case Elem(pre, lab, md, scp, children @ _*) =>
+            val mergedTextNodes = // Merge adjacent text nodes
+              children.foldLeft(Nil: List[Node]) { (acc, ele) =>
+                ele match {
+                  case eleTxt: Text =>
+                    acc.headOption match {
+                      case Some(accTxt: Text) =>
+                        Text(accTxt.text + eleTxt.text) :: acc.tail
+                      case _ => ele :: acc
+                    }
+                  case _ => ele :: acc
+                }
+              }
+            Elem(pre, lab, md, scp, false, (mergedTextNodes.flatMap(trimTextZappingEmpty)):_*).asInstanceOf[T]
+          case _ => nodeSeq
+        }
+
+      /**
+       * Returns true if the passed <code>Any</code> is a <code>Elem</code>.
+       *
+       * @return true if the passed <code>Any</code> is a <code>Elem</code>.
+       */
+      final def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[NodeSeq]
+    
+      /**
+       * Normalizes the passed object if it is a <code>Elem</code>.
+       *
+       * <p>
+       * This method returns either:
+       * </p>
+       *
+       * <ul>
+       * <li>if the passed object is a <code>Elem</code>, the result of passing that string to <code>normalized</code></li>
+       * <li>else, the same exact object that was passed
+       * </p>
+       *
+       * @return a normalized form of any passed <code>Elem</code>, or the same object if not a <code>Elem</code>.
+       */
+      final def normalizedOrSame(b: Any): Any =
+        b match {
+          case s: NodeSeq => XmlNormalization.compressed[NodeSeq].normalized(s)
+          case _ => b
+       }
+    }
+  }
+/*
   implicit val normalizedXmlElem: Uniformity[Elem] = {
 
     new Uniformity[Elem] {
@@ -153,6 +204,7 @@ trait XmlNormalization {
        }
     }
   }
+*/
 }
 
 object XmlNormalization extends XmlNormalization
