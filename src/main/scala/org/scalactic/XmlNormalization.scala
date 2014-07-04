@@ -19,16 +19,16 @@ import scala.xml.{Text, Node, Elem, NodeSeq}
 
 trait XmlNormalization {
 
-  private def trimTextZappingEmpty(node: Node): Seq[Node] =
-    node match {
-      case Text(text) if (text.trim.isEmpty) => Nil
-      case Text(text) => List(Text(text.trim))
-      case Elem(pre, lab, md, scp, children @ _*) =>
-        Elem(pre, lab, md, scp, false, (children.flatMap(trimTextZappingEmpty)):_*)
-      case _ => List(node)
-    }
-
   implicit def compressed[T <: NodeSeq]: Uniformity[T] = {
+
+    def trimTextZappingEmpty(node: Node): Seq[Node] =
+      node match {
+        case Text(text) if (text.trim.isEmpty) => Nil
+        case Text(text) => List(Text(text.trim))
+        case Elem(pre, lab, md, scp, children @ _*) =>
+          Elem(pre, lab, md, scp, false, (children.flatMap(trimTextZappingEmpty)):_*)
+        case _ => List(node)
+      }
 
     new Uniformity[T] {
       def normalized(nodeSeq: T): T =

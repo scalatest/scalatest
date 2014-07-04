@@ -22,7 +22,7 @@ import scala.xml.{Node, Text, NodeSeq}
 
 class XmlNormalizationSpec extends Spec with Matchers {
 
-  import XmlNormalization._
+  import XmlNormalization.compressed
 
   object `Xml Normalization of Elems` {
 
