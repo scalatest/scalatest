@@ -22,24 +22,124 @@ import scala.collection.GenSet
 import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
+import scala.xml.{Node, Text, NodeSeq}
 
-class XmlEqualitySpec extends Spec with TripleEquals {
+class XmlEqualitySpec extends Spec with Matchers {
 
-  object `the XmlEquality type class` {
+  import XmlEquality._
 
-    def `should call .equals on the left hand object (and not on the right hand object)` {
+  object `Xml Equality of Elems` {
 
-      assert(<a href="hi"></a> == <a href="hi"></a>)
-      assert(<a href="hi"></a> != <a href="hi"> </a>)
+    def `should leave already-normalized XML alone` {
+      <summer></summer> should equal (<summer></summer>)
+    }
 
-      assert(<a href="hi"></a> === <a href="hi"></a>)
-      assert(<a href="hi"></a> !== <a href="hi"> </a>)
+    def `should zap text that is only whitespace` {
 
-      new XmlEquality {
-        assert(<a href="hi"></a> === <a href="hi"></a>)
-        // assert(<a href="hi"></a>.asInstanceOf[xml.Node] === <a href="hi"> </a>)
-        assert(<a href="hi"></a> === <a href="hi"> </a>)
-      }
+      <summer> </summer> should equal (<summer></summer>)
+
+      <summer>
+       </summer> should equal (<summer></summer>)
+
+      <summer>
+        <day></day>
+      </summer> should equal (<summer><day></day></summer>)
+
+      <summer><day></day></summer> should equal (
+        <summer>
+          <day></day>
+        </summer>
+      )
+
+      <summer><day>Dude!</day></summer> should equal (
+        <summer>
+          <day>
+            Dude!
+          </day>
+        </summer>
+      )
+
+      <div>{Text("My name is ")}{Text("Harry")}</div> should equal (<div>My name is Harry</div>)
+    }
+  }
+
+  object `Xml Equality of Nodes` {
+
+    def `should leave already-normalized XML alone` {
+
+      (<summer></summer>: Node) shouldEqual (<summer></summer>)
+
+      (Text("Bla"): Node) shouldEqual (Text("Bla"))
+    }
+
+    def `should zap text that is only whitespace, unless it is already a Text` {
+
+      (<summer> </summer>: Node) should equal (<summer></summer>)
+
+      (<summer>
+      </summer>: Node) should equal (<summer></summer>)
+
+      (<summer>
+        <day></day>
+      </summer>: Node) should equal (<summer><day></day></summer>)
+
+      <summer><day></day></summer> should equal (
+        <summer>
+          <day></day>
+        </summer>: Node
+      )
+
+      <summer><day>Dude!</day></summer> should equal (
+        <summer>
+          <day>
+            Dude!
+          </day>
+        </summer>: Node
+      )
+
+      (Text("   "): Node) should equal (Text("   "))
+
+      (<div>{Text("My name is ")}{Text("Harry")}</div>: Node) should equal (<div>My name is Harry</div>)
+    }
+  }
+
+  object `Xml Normalization of NodeSeq` {
+
+    def `should leave already-normalized XML alone` {
+
+      (<summer></summer>: NodeSeq) should equal (<summer></summer>)
+
+      (Text("Bla"): NodeSeq) should equal (Text("Bla"))
+    }
+
+    def `should zap text that is only whitespace, unless it is already a Text` {
+
+      (<summer> </summer>: NodeSeq) should equal (<summer></summer>)
+
+      (<summer>
+      </summer>: NodeSeq) should equal (<summer></summer>)
+
+      (<summer>
+        <day></day>
+      </summer>: NodeSeq) should equal (<summer><day></day></summer>)
+
+      <summer><day></day></summer> should equal (
+        <summer>
+          <day></day>
+        </summer>: NodeSeq
+      )
+
+      <summer><day>Dude!</day></summer> should equal (
+        <summer>
+          <day>
+            Dude!
+          </day>
+        </summer>: NodeSeq
+      )
+
+      (Text("   "): NodeSeq) should equal (Text("   "))
+
+      (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>)
     }
   }
 }

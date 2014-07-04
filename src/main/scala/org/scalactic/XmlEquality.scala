@@ -16,37 +16,34 @@
 package org.scalactic
 
 import annotation.tailrec
+import scala.xml.{Elem,Node,NodeSeq}
 
-private[scalactic] trait XmlEquality {
+trait XmlEquality {
 
-  import XmlEquality.normalize
-
-  implicit def xmlEquality[T <: collection.immutable.Seq[xml.Node]]: Equality[T] =
-  // implicit def xmlEquality[T <: xml.Node]: Equality[T] =
-    new Equality[T] {
-      def areEqual(a: T, b: Any): Boolean = {
-        (a, b) match {
-          case (aNode: xml.Node, bNode: xml.Node) => normalize(aNode) == normalize(bNode)
-          case _ => a == b
-        }
+  implicit val xmlElemEquality: Equality[Elem] = {
+    new Equality[Elem] {
+      val xUni: Uniformity[Elem] = XmlNormalization.normalizedXmlElem
+      def areEqual(a: Elem, b: Any): Boolean = {
+        xUni.normalized(a) == xUni.normalizedOrSame(b)
       }
     }
-}
-
-private[scalactic] object XmlEquality extends XmlEquality {
-  private def normalize(node: xml.Node): xml.Node = {
-    node match {
-      case elem: xml.Elem =>
-        val canonicalizedChildren =
-          for (child <- node.child if !child.toString.trim.isEmpty) yield {
-            child match {
-              case elem: xml.Elem => normalize(elem)
-              case other => other
-            }
-          }
-        new scala.xml.Elem(elem.prefix, elem.label, elem.attributes, elem.scope, canonicalizedChildren: _*)
-      case other => other
+  }
+  implicit val xmlNodeEquality: Equality[Node] = {
+    new Equality[Node] {
+      val xUni: Uniformity[Node] = XmlNormalization.normalizedXmlNode
+      def areEqual(a: Node, b: Any): Boolean = {
+        xUni.normalized(a) == xUni.normalizedOrSame(b)
+      }
+    }
+  }
+  implicit val xmlNodeSeqEquality: Equality[NodeSeq] = {
+    new Equality[NodeSeq] {
+      val xUni: Uniformity[NodeSeq] = XmlNormalization.normalizedXmlNodeSeq
+      def areEqual(a: NodeSeq, b: Any): Boolean = {
+        xUni.normalized(a) == xUni.normalizedOrSame(b)
+      }
     }
   }
 }
 
+object XmlEquality extends XmlEquality
