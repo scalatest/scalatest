@@ -20,9 +20,9 @@ import org.scalatest._
 import org.scalactic.NormMethods._
 import scala.xml.{Node, Text}
 
-class XmlNormalizationsSpec extends Spec with Matchers {
+class XmlNormalizationSpec extends Spec with Matchers {
 
-  import XmlNormalizations._
+  import XmlNormalization._
 
   object `Xml Normalization of Elems` {
 

@@ -18,7 +18,7 @@ package org.scalactic
 import org.scalactic.Normalization
 import scala.xml.{Text, Node, Elem}
 
-trait XmlNormalizations {
+trait XmlNormalization {
 
   private def trimTextZappingEmpty(node: Node): Seq[Node] =
     node match {
@@ -63,4 +63,4 @@ trait XmlNormalizations {
   }
 }
 
-object XmlNormalizations extends XmlNormalizations
+object XmlNormalization extends XmlNormalization
