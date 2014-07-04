@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest
 
 import annotation.tailrec
 import scala.xml.{Elem,Node,NodeSeq}
+import org.scalactic.{Equality, Uniformity}
 
-trait CompressedXmlNormMethods extends XmlCompression with NormMethods {
-  implicit override def compressed[T <: NodeSeq]: Uniformity[T] = super.compressed[T]
+trait CompressedXmlEquality {
+
+  implicit def compressedXmlEquality[T <: NodeSeq]: Equality[T] = {
+    new Equality[T] {
+      val xu: Uniformity[T] = XmlCompression.compressed[T]
+      def areEqual(a: T, b: Any): Boolean = {
+        xu.normalized(a) == xu.normalizedOrSame(b)
+      }
+    }
+  }
 }
 
-object CompressedXmlNormMethods extends CompressedXmlNormMethods
+object CompressedXmlEquality extends CompressedXmlEquality
 
