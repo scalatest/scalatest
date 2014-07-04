@@ -24,11 +24,11 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.xml.{Node, Text, NodeSeq}
 
-class XmlEqualitySpec extends Spec with Matchers {
+class CompressedXmlEqualitySpec extends Spec with Matchers {
 
-  import XmlEquality._
+  import CompressedXmlEquality._
 
-  object `Xml Equality of Elems` {
+  object `Compressed Xml Equality of Elems` {
 
     def `should leave already-normalized XML alone` {
       <summer></summer> should equal (<summer></summer>)
@@ -63,7 +63,7 @@ class XmlEqualitySpec extends Spec with Matchers {
     }
   }
 
-  object `Xml Equality of Nodes` {
+  object `Compressed Xml Equality of Nodes` {
 
     def `should leave already-normalized XML alone` {
 
@@ -103,7 +103,7 @@ class XmlEqualitySpec extends Spec with Matchers {
     }
   }
 
-  object `Xml Normalization of NodeSeq` {
+  object `Compressed Xml Normalization of NodeSeq` {
 
     def `should leave already-normalized XML alone` {
 

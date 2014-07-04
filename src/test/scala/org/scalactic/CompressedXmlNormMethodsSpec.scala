@@ -17,12 +17,9 @@ package org.scalactic
 
 import org.scalatest._
 
-import org.scalactic.NormMethods._
 import scala.xml.{Node, Text, NodeSeq}
 
-class XmlNormalizationSpec extends Spec with Matchers {
-
-  import XmlNormalization.compressed
+class CompressedXmlNormMethodsSpec extends Spec with Matchers with CompressedXmlNormMethods {
 
   object `Xml Normalization of Elems` {
 
