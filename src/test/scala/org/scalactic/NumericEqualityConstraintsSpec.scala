@@ -25,6 +25,7 @@ import scala.collection.GenTraversableOnce
 
 // TODO: Move these to TypeCheckedSpec and also copy them to ConversionCheckedSpec, because
 // these are now extended by those. And I suppose add them to UncheckedSpec too.
+/*
 class NumericEqualityConstraintsSpec extends Spec with TypeCheckedTripleEquals {
 
   object `The NumericEqualityConstraints trait` {
@@ -321,4 +322,5 @@ class NumericEqualityConstraintsSpec extends Spec with TypeCheckedTripleEquals {
     }
   }
 }
+*/
 
