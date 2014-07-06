@@ -19,11 +19,11 @@ import annotation.tailrec
 import scala.xml.{Elem,Node,NodeSeq}
 import org.scalactic.{Equality, Uniformity}
 
-trait CompressedXmlEquality {
+trait StreamlinedXmlEquality {
 
-  implicit def compressedXmlEquality[T <: NodeSeq]: Equality[T] = {
+  implicit def streamlinedXmlEquality[T <: NodeSeq]: Equality[T] = {
     new Equality[T] {
-      val xu: Uniformity[T] = XmlCompression.compressed[T]
+      val xu: Uniformity[T] = StreamlinedXml.streamlined[T]
       def areEqual(a: T, b: Any): Boolean = {
         xu.normalized(a) == xu.normalizedOrSame(b)
       }
@@ -31,5 +31,5 @@ trait CompressedXmlEquality {
   }
 }
 
-object CompressedXmlEquality extends CompressedXmlEquality
+object StreamlinedXmlEquality extends StreamlinedXmlEquality
 

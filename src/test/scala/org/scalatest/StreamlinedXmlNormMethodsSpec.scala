@@ -17,7 +17,7 @@ package org.scalatest
 
 import scala.xml.{Node, Text, NodeSeq}
 
-class CompressedXmlNormMethodsSpec extends Spec with Matchers with CompressedXmlNormMethods {
+class StreamlinedXmlNormMethodsSpec extends Spec with Matchers with StreamlinedXmlNormMethods {
 
   object `Xml Normalization of Elems` {
 

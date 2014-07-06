@@ -19,9 +19,9 @@ import annotation.tailrec
 import scala.xml.{Elem,Node,NodeSeq}
 import org.scalactic.{NormMethods, Uniformity}
 
-trait CompressedXmlNormMethods extends XmlCompression with NormMethods {
-  implicit override def compressed[T <: NodeSeq]: Uniformity[T] = super.compressed[T]
+trait StreamlinedXmlNormMethods extends StreamlinedXml with NormMethods {
+  implicit override def streamlined[T <: NodeSeq]: Uniformity[T] = super.streamlined[T]
 }
 
-object CompressedXmlNormMethods extends CompressedXmlNormMethods
+object StreamlinedXmlNormMethods extends StreamlinedXmlNormMethods
 

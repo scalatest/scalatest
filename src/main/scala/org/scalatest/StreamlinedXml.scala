@@ -18,9 +18,9 @@ package org.scalatest
 import scala.xml.{Text, Node, Elem, NodeSeq}
 import org.scalactic.Uniformity
 
-trait XmlCompression {
+trait StreamlinedXml {
 
-  def compressed[T <: NodeSeq]: Uniformity[T] = {
+  def streamlined[T <: NodeSeq]: Uniformity[T] = {
 
     def trimTextZappingEmpty(node: Node): Seq[Node] =
       node match {
@@ -74,11 +74,11 @@ trait XmlCompression {
        */
       final def normalizedOrSame(b: Any): Any =
         b match {
-          case s: NodeSeq => XmlCompression.compressed[NodeSeq].normalized(s)
+          case s: NodeSeq => StreamlinedXml.streamlined[NodeSeq].normalized(s)
           case _ => b
        }
     }
   }
 }
 
-object XmlCompression extends XmlCompression
+object StreamlinedXml extends StreamlinedXml
