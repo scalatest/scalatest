@@ -74,7 +74,6 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-/*
       def `should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported` {
 
         object O extends TripleEquals
@@ -260,12 +259,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           }
         }
       }
-*/
     }
 
     object `with TypeCheckedTripleEquals` {
 
-/*
       def `should compare supertypes with subtypes on either side` {
 
         new TypeCheckedTripleEquals {
@@ -472,12 +469,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           }
         }
       }
-*/
     }
 
     object `with ConversionCheckedTripleEquals` {
 
-/*
       def `should compare supertypes with subtypes on either side as well as types with implicit conversions in either direction` {
 
         new ConversionCheckedTripleEquals {
@@ -684,7 +679,6 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           }
         }
       }
-*/
     }
   }
   
@@ -699,7 +693,6 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
       val result2 = new TripleEqualsInvocation("Bob", false)
       assert(result2.toString == "!== \"Bob\"")
     }
-    
   }
 }
 
