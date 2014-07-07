@@ -104,12 +104,12 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(super1 === sub1)
           assert(sub1 === super1)
 
-          // The rest should not compile
-          assertTypeError("1 === 1L")
-          assertTypeError("1L === 1")
-          assertTypeError("1 !== 1L")
-          assertTypeError("1L !== 1")
+          assert(1 === 1L)
+          assert(1L === 1)
+          assert(1 !== 2L)
+          assert(1L !== 2)
 
+          // The rest should not compile
           assertTypeError("\"1\" === 1")
           assertTypeError("1 === \"1\"")
           assertTypeError("\"1\" !== 1")
@@ -298,12 +298,12 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(!(nullSuper === super1))
           assert(nullSuper !== super1)
 
-          // The rest should not compile
-          assertTypeError("1 === 1L")
-          assertTypeError("1L === 1")
-          assertTypeError("1 !== 1L")
-          assertTypeError("1L !== 1")
+          assert(1 === 1L)
+          assert(1L === 1)
+          assert(1 !== 2L)
+          assert(1L !== 2)
 
+          // The rest should not compile
           assertTypeError("\"1\" === 1")
           assertTypeError("1 === \"1\"")
           assertTypeError("\"1\" !== 1")
@@ -618,12 +618,12 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(super1 === sub1) // compiles on 2.10 but not 2.9
           assert(sub1 === super1) // compiles on 2.10 but not 2.9
 
-          // The rest should not compile
-          assertTypeError("1 === 1L")
-          assertTypeError("1L === 1")
-          assertTypeError("1 !== 1L")
-          assertTypeError("1L !== 1")
+          assert(1 === 1L)
+          assert(1L === 1)
+          assert(1 !== 2L)
+          assert(1L !== 2)
 
+          // The rest should not compile
           assertTypeError("\"1\" === 1")
           assertTypeError("1 === \"1\"")
           assertTypeError("\"1\" !== 1")

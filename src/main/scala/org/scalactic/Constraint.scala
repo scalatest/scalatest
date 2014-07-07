@@ -36,3 +36,7 @@ abstract class Constraint[A, B] {
   def areEqual(a: A, b: B): Boolean
 }
 
+object Constraint {
+  import TripleEqualsSupport.EqualityConstraint
+  implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+}
