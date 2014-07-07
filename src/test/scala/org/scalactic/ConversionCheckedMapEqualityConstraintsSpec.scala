@@ -50,7 +50,7 @@ class ConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitA
 
   object `the MapEqualityConstraints trait` {
 
-    def `should allow any Map to be compared with any other Map, so long as the element types of the two Maps adhere to the equality constraint in force for those types` {
+    def `should allow any Map to be compared with any other Map, so long as the key and value types of the two Maps have respective InnerConstraints` {
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
       assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))

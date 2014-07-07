@@ -49,8 +49,7 @@ class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitA
 
   object `the SeqEqualityConstraints trait` {
 
-    // Actually, I wonder if we shouldn't use something put into scope by either TypeChecked or ConversionChecked
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
+    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's have an InnerConstraint` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
       assert(Vector(1L, 2L, 3L) === List(1, 2, 3))

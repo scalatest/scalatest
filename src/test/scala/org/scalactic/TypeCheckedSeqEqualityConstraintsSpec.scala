@@ -49,7 +49,7 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
 
   object `the SeqEqualityConstraints trait` {
 
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
+    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's have an InnerConstraint` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
 

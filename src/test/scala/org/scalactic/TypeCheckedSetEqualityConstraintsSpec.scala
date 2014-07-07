@@ -50,7 +50,7 @@ class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAsserti
 
   object `the SetEqualityConstraints trait` {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types` {
+    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets have an InnerConstraint` {
 
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L))
