@@ -97,6 +97,7 @@ import TripleEqualsSupport._
  * 
  * @author Bill Venners
  */
+@deprecated("MapEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of MapEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait MapEqualityConstraints {
 
   import scala.language.higherKinds
@@ -113,4 +114,5 @@ trait MapEqualityConstraints {
  * an alternative to mixing it in. One use case is to import <code>MapEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
+@deprecated("MapEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of MapEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object MapEqualityConstraints extends MapEqualityConstraints

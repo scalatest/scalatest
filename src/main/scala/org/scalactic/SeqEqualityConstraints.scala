@@ -94,6 +94,7 @@ import TripleEqualsSupport._
  * 
  * @author Bill Venners
  */
+@deprecated("SeqEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SeqEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait SeqEqualityConstraints {
 
   import scala.language.higherKinds
@@ -113,4 +114,5 @@ trait SeqEqualityConstraints {
  * an alternative to mixing it in. One use case is to import <code>SeqEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
+@deprecated("SeqEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SeqEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object SeqEqualityConstraints extends SeqEqualityConstraints

@@ -101,6 +101,7 @@ package org.scalactic
  * 
  * @author Bill Venners
  */
+@deprecated("TraversableEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of TraversableEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait TraversableEqualityConstraints extends SeqEqualityConstraints with SetEqualityConstraints with MapEqualityConstraints
 
 /**
@@ -108,4 +109,5 @@ trait TraversableEqualityConstraints extends SeqEqualityConstraints with SetEqua
  * an alternative to mixing it in. One use case is to import <code>TraversableEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
+@deprecated("TraversableEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of TraversableEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object TraversableEqualityConstraints extends TraversableEqualityConstraints
