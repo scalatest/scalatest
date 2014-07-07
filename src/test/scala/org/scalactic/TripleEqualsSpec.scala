@@ -106,17 +106,17 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           // The rest should not compile
           assertTypeError("1 === 1L")
-          // assert(1L === 1)
-          // assert(1 !== 1L)
-          // assert(1L !== 1)
+          assertTypeError("1L === 1")
+          assertTypeError("1 !== 1L")
+          assertTypeError("1L !== 1")
 
-          // assert("1" === 1)
-          // assert(1 === "1")
-          // assert("1" !== 1)
-          // assert(1 !== "1")
+          assertTypeError("\"1\" === 1")
+          assertTypeError("1 === \"1\"")
+          assertTypeError("\"1\" !== 1")
+          assertTypeError("1 !== \"1\"")
 
-          // assert(fr === cr)
-          // assert(cr === fr)
+          assertTypeError("fr === cr")
+          assertTypeError("cr === fr")
         }
       }
 
@@ -150,18 +150,18 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             assert(sub1 === super1)
   
             // The rest should not compile
-            // assert(1 === 1L)
-            // assert(1L === 1)
-            // assert(1 !== 1L)
-            // assert(1L !== 1)
+            assertTypeError("1 === 1L")
+            assertTypeError("1L === 1")
+            assertTypeError("1 !== 1L")
+            assertTypeError("1L !== 1")
   
-            // assert("1" === 1)
-            // assert(1 === "1")
-            // assert("1" !== 1)
-            // assert(1 !== "1")
+            assertTypeError("\"1\" === 1")
+            assertTypeError("1 === \"1\"")
+            assertTypeError("\"1\" !== 1")
+            assertTypeError("1 !== \"1\"")
   
-            // assert(fr === cr)
-            // assert(cr === fr)
+            assertTypeError("fr === cr")
+            assertTypeError("cr === fr")
           }
         }
       }
@@ -203,13 +203,13 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             assert(!(1L !== 1))
 
             // The rest should not compile
-            // assert("1" === 1)
-            // assert(1 === "1")
-            // assert("1" !== 1)
-            // assert(1 !== "1")
+            assertTypeError("\"1\" === 1")
+            assertTypeError("1 === \"1\"")
+            assertTypeError("\"1\" !== 1")
+            assertTypeError("1 !== \"1\"")
 
-            // assert(fr === cr)
-            // assert(cr === fr)
+            assertTypeError("fr === cr")
+            assertTypeError("cr === fr")
         }
       }
 
@@ -249,13 +249,13 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             assert(!(1L !== 1))
 
             // The rest should not compile
-            // assert("1" === 1)
-            // assert(1 === "1")
-            // assert("1" !== 1)
-            // assert(1 !== "1")
+            assertTypeError("\"1\" === 1")
+            assertTypeError("1 === \"1\"")
+            assertTypeError("\"1\" !== 1")
+            assertTypeError("1 !== \"1\"")
 
-            // assert(fr === cr)
-            // assert(cr === fr)
+            assertTypeError("fr === cr")
+            assertTypeError("cr === fr")
           }
         }
       }
@@ -299,18 +299,18 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(nullSuper !== super1)
 
           // The rest should not compile
-          // assert(1 === 1L)
-          // assert(1L === 1)
-          // assert(1 !== 1L)
-          // assert(1L !== 1)
+          assertTypeError("1 === 1L")
+          assertTypeError("1L === 1")
+          assertTypeError("1 !== 1L")
+          assertTypeError("1L !== 1")
 
-          // assert("1" === 1)
-          // assert(1 === "1")
-          // assert("1" !== 1)
-          // assert(1 !== "1")
+          assertTypeError("\"1\" === 1")
+          assertTypeError("1 === \"1\"")
+          assertTypeError("\"1\" !== 1")
+          assertTypeError("1 !== \"1\"")
 
-          // assert(fr === cr)
-          // assert(cr === fr)
+          assertTypeError("fr === cr")
+          assertTypeError("cr === fr")
         }
       }
 
@@ -338,10 +338,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           assert(super1 !== super2)
           assert(super1 !== sub2)
-          // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+          assert(sub2 !== super1) // compiles on 2.10 but not 2.9
           assert(super1 === super1)
           assert(super1 === sub1)
-          // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+          assert(sub1 === super1) // compiles on 2.10 but not 2.9
         }
       }
 
@@ -368,10 +368,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
             assert(super1 !== super2)
             assert(super1 !== sub2)
-            // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+            assert(sub2 !== super1) // compiles on 2.10 but not 2.9
             assert(super1 === super1)
             assert(super1 === sub1)
-            // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+            assert(sub1 === super1) // compiles on 2.10 but not 2.9
           }
         }
       }
@@ -391,20 +391,20 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           val cr: Crunchy = new Apple
           val ap: Apple = new Apple
 
-          // assert(1 === 1) // compiles on 2.10 but not 2.9
-          // assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
+          assert(1 === 1) // compiles on 2.10 but not 2.9
+          assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
 
-          // assert(ap === fr) // compiles on 2.10 but not 2.9
+          assert(ap === fr) // compiles on 2.10 but not 2.9
           // compiles on 2.10 but not 2.9/ assert(fr === ap) // compiles on 2.10 but not 2.9
-          // assert(ap === cr) // compiles on 2.10 but not 2.9
-          // assert(cr === ap) // compiles on 2.10 but not 2.9
+          assert(ap === cr) // compiles on 2.10 but not 2.9
+          assert(cr === ap) // compiles on 2.10 but not 2.9
 
-          // assert(super1 !== super2) // compiles on 2.10 but not 2.9
-          // assert(super1 !== sub2) // compiles on 2.10 but not 2.9
-          // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
-          // assert(super1 === super1) // compiles on 2.10 but not 2.9
-          // assert(super1 === sub1) // compiles on 2.10 but not 2.9
-          // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+          assert(super1 !== super2) // compiles on 2.10 but not 2.9
+          assert(super1 !== sub2) // compiles on 2.10 but not 2.9
+          assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+          assert(super1 === super1) // compiles on 2.10 but not 2.9
+          assert(super1 === sub1) // compiles on 2.10 but not 2.9
+          assert(sub1 === super1) // compiles on 2.10 but not 2.9
 
           // These should work with implicit conversions
           assert(1 === 1L)
@@ -413,13 +413,13 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(!(1L !== 1))
 
           // The rest should not compile
-          // assert("1" === 1)
-          // assert(1 === "1")
-          // assert("1" !== 1)
-          // assert(1 !== "1")
+          assertTypeError("\"1\" === 1")
+          assertTypeError("1 === \"1\"")
+          assertTypeError("\"1\" !== 1")
+          assertTypeError("1 !== \"1\"")
 
-          // assert(fr === cr)
-          // assert(cr === fr)
+          assertTypeError("fr === cr")
+          assertTypeError("cr === fr")
         }
       }
 
@@ -437,20 +437,20 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             val cr: Crunchy = new Apple
             val ap: Apple = new Apple
 
-            // assert(1 === 1) // compiles on 2.10 but not 2.9
-            // assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
+            assert(1 === 1) // compiles on 2.10 but not 2.9
+            assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
 
-            // assert(ap === fr) // compiles on 2.10 but not 2.9
-            // assert(fr === ap) // compiles on 2.10 but not 2.9
-            // assert(ap === cr) // compiles on 2.10 but not 2.9
-            // assert(cr === ap) // compiles on 2.10 but not 2.9
+            assert(ap === fr) // compiles on 2.10 but not 2.9
+            assert(fr === ap) // compiles on 2.10 but not 2.9
+            assert(ap === cr) // compiles on 2.10 but not 2.9
+            assert(cr === ap) // compiles on 2.10 but not 2.9
 
-            // assert(super1 !== super2) // compiles on 2.10 but not 2.9
-            // assert(super1 !== sub2) // compiles on 2.10 but not 2.9
-            // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
-            // assert(super1 === super1) // compiles on 2.10 but not 2.9
-            // assert(super1 === sub1) // compiles on 2.10 but not 2.9
-            // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+            assert(super1 !== super2) // compiles on 2.10 but not 2.9
+            assert(super1 !== sub2) // compiles on 2.10 but not 2.9
+            assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+            assert(super1 === super1) // compiles on 2.10 but not 2.9
+            assert(super1 === sub1) // compiles on 2.10 but not 2.9
+            assert(sub1 === super1) // compiles on 2.10 but not 2.9
 
             // These should work with implicit conversions
             assert(1 === 1L)
@@ -459,13 +459,13 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             assert(!(1L !== 1))
 
             // The rest should not compile
-            // assert("1" === 1)
-            // assert(1 === "1")
-            // assert("1" !== 1)
-            // assert(1 !== "1")
+            assertTypeError("\"1\" === 1")
+            assertTypeError("1 === \"1\"")
+            assertTypeError("\"1\" !== 1")
+            assertTypeError("1 !== \"1\"")
 
-            // assert(fr === cr)
-            // assert(cr === fr)
+            assertTypeError("fr === cr")
+            assertTypeError("cr === fr")
           }
         }
       }
@@ -516,13 +516,13 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(nullSuper !== super1)
 
           // The rest should not compile
-          // assert("1" === 1)
-          // assert(1 === "1")
-          // assert("1" !== 1)
-          // assert(1 !== "1")
+          assertTypeError("\"1\" === 1")
+          assertTypeError("1 === \"1\"")
+          assertTypeError("\"1\" !== 1")
+          assertTypeError("1 !== \"1\"")
 
-          // assert(fr === cr)
-          // assert(cr === fr)
+          assertTypeError("fr === cr")
+          assertTypeError("cr === fr")
         }
       }
 
@@ -536,8 +536,8 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           assert(1 === 1)
           assert(!(1 !== 1))
 
-          // assert(1 === 1L) // compiles on 2.10 but not 2.9
-          // assert(!(1 !== 1L)) // compiles on 2.10 but not 2.9
+          assert(1 === 1L) // compiles on 2.10 but not 2.9
+          assert(!(1 !== 1L)) // compiles on 2.10 but not 2.9
 
           assert(1L === 1)
           assert(!(1L !== 1))
@@ -550,10 +550,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           assert(super1 !== super2)
           assert(super1 !== sub2)
-          // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+          assert(sub2 !== super1) // compiles on 2.10 but not 2.9
           assert(super1 === super1)
           assert(super1 === sub1)
-          // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+          assert(sub1 === super1) // compiles on 2.10 but not 2.9
         }
       }
 
@@ -566,8 +566,8 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             assert(1 === 1)
             assert(!(1 !== 1))
 
-            // assert(1 === 1L) // compiles on 2.10 but not 2.9
-            // assert(!(1 !== 1L)) // compiles on 2.10 but not 2.9
+            assert(1 === 1L) // compiles on 2.10 but not 2.9
+            assert(!(1 !== 1L)) // compiles on 2.10 but not 2.9
 
             assert(1L === 1)
             assert(!(1L !== 1))
@@ -580,10 +580,10 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
             assert(super1 !== super2)
             assert(super1 !== sub2)
-            // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+            assert(sub2 !== super1) // compiles on 2.10 but not 2.9
             assert(super1 === super1)
             assert(super1 === sub1)
-            // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+            assert(sub1 === super1) // compiles on 2.10 but not 2.9
           }
         }
       }
@@ -603,34 +603,34 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
           val cr: Crunchy = new Apple
           val ap: Apple = new Apple
 
-          // assert(1 === 1) // compiles on 2.10 but not 2.9
-          // assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
+          assert(1 === 1) // compiles on 2.10 but not 2.9
+          assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
 
-          // assert(ap === fr) // compiles on 2.10 but not 2.9
-          // assert(fr === ap) // compiles on 2.10 but not 2.9
-          // assert(ap === cr) // compiles on 2.10 but not 2.9
-          // assert(cr === ap) // compiles on 2.10 but not 2.9
+          assert(ap === fr) // compiles on 2.10 but not 2.9
+          assert(fr === ap) // compiles on 2.10 but not 2.9
+          assert(ap === cr) // compiles on 2.10 but not 2.9
+          assert(cr === ap) // compiles on 2.10 but not 2.9
 
-          // assert(super1 !== super2) // compiles on 2.10 but not 2.9
-          // assert(super1 !== sub2) // compiles on 2.10 but not 2.9
-          // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
-          // assert(super1 === super1) // compiles on 2.10 but not 2.9
-          // assert(super1 === sub1) // compiles on 2.10 but not 2.9
-          // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+          assert(super1 !== super2) // compiles on 2.10 but not 2.9
+          assert(super1 !== sub2) // compiles on 2.10 but not 2.9
+          assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+          assert(super1 === super1) // compiles on 2.10 but not 2.9
+          assert(super1 === sub1) // compiles on 2.10 but not 2.9
+          assert(sub1 === super1) // compiles on 2.10 but not 2.9
 
           // The rest should not compile
-          // assert(1 === 1L)
-          // assert(1L === 1)
-          // assert(1 !== 1L)
-          // assert(1L !== 1)
+          assertTypeError("1 === 1L")
+          assertTypeError("1L === 1")
+          assertTypeError("1 !== 1L")
+          assertTypeError("1L !== 1")
 
-          // assert("1" === 1)
-          // assert(1 === "1")
-          // assert("1" !== 1)
-          // assert(1 !== "1")
+          assertTypeError("\"1\" === 1")
+          assertTypeError("1 === \"1\"")
+          assertTypeError("\"1\" !== 1")
+          assertTypeError("1 !== \"1\"")
 
-          // assert(fr === cr)
-          // assert(cr === fr)
+          assertTypeError("fr === cr")
+          assertTypeError("cr === fr")
         }
       }
 
@@ -648,40 +648,40 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
             val cr: Crunchy = new Apple
             val ap: Apple = new Apple
 
-            // assert(1 === 1) // compiles on 2.10 but not 2.9
-            // assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
+            assert(1 === 1) // compiles on 2.10 but not 2.9
+            assert(!(1 !== 1)) // compiles on 2.10 but not 2.9
 
-            // assert(ap === fr) // compiles on 2.10 but not 2.9
-            // assert(fr === ap) // compiles on 2.10 but not 2.9
-            // assert(ap === cr) // compiles on 2.10 but not 2.9
-            // assert(cr === ap) // compiles on 2.10 but not 2.9
+            assert(ap === fr) // compiles on 2.10 but not 2.9
+            assert(fr === ap) // compiles on 2.10 but not 2.9
+            assert(ap === cr) // compiles on 2.10 but not 2.9
+            assert(cr === ap) // compiles on 2.10 but not 2.9
 
-            // assert(super1 !== super2) // compiles on 2.10 but not 2.9
-            // assert(super1 !== sub2) // compiles on 2.10 but not 2.9
-            // assert(sub2 !== super1) // compiles on 2.10 but not 2.9
-            // assert(super1 === super1) // compiles on 2.10 but not 2.9
-            // assert(super1 === sub1) // compiles on 2.10 but not 2.9
-            // assert(sub1 === super1) // compiles on 2.10 but not 2.9
+            assert(super1 !== super2) // compiles on 2.10 but not 2.9
+            assert(super1 !== sub2) // compiles on 2.10 but not 2.9
+            assert(sub2 !== super1) // compiles on 2.10 but not 2.9
+            assert(super1 === super1) // compiles on 2.10 but not 2.9
+            assert(super1 === sub1) // compiles on 2.10 but not 2.9
+            assert(sub1 === super1) // compiles on 2.10 but not 2.9
 
             // The rest should not compile
-            // assert(1 === 1L)
-            // assert(1L === 1)
-            // assert(1 !== 1L)
-            // assert(1L !== 1)
+            assertTypeError("1 === 1L")
+            assertTypeError("1L === 1")
+            assertTypeError("1 !== 1L")
+            assertTypeError("1L !== 1")
 
-            // assert("1" === 1)
-            // assert(1 === "1")
-            // assert("1" !== 1)
-            // assert(1 !== "1")
+            assertTypeError("\"1\" === 1")
+            assertTypeError("1 === \"1\"")
+            assertTypeError("\"1\" !== 1")
+            assertTypeError("1 !== \"1\"")
 
-            // assert(fr === cr)
-            // assert(cr === fr)
+            assertTypeError("fr === cr")
+            assertTypeError("cr === fr")
           }
         }
       }
     }
   }
-  
+
   object `TripleEqualsInvocation ` {
     
     import TripleEqualsSupport.TripleEqualsInvocation
