@@ -58,10 +58,8 @@ class ConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitA
       assert(immutable.HashSet(1, 2, 3) === mutable.HashSet(1L, 2L, 3L))
       assert(immutable.HashSet(1L, 2L, 3L) === mutable.HashSet(1, 2, 3))
 
-/* broken
-      assert(immutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === mutable.HashSet(1, 2, 3))
-      assert(immutable.HashSet(1, 2, 3) === mutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)))
-*/
+      assertTypeError("immutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === mutable.HashSet(1, 2, 3)")
+      assertTypeError("immutable.HashSet(1, 2, 3) === mutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))")
 
       assert(mutable.HashSet(new Apple, new Apple) === immutable.HashSet(new Fruit("apple"), new Fruit("apple")))
       assert(immutable.HashSet(new Fruit("apple"), new Fruit("apple")) === mutable.HashSet(new Apple, new Apple))
