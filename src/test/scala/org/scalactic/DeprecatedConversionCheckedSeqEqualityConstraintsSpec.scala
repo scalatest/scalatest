@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class DeprecatedConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals with SeqEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -39,7 +39,7 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Orange extends Fruit("orange")
 
   implicit class IntWrapper(val value: Int) {
-    override def equals(o: Any): Boolean = 
+    override def equals(o: Any): Boolean =
       o match {
         case that: IntWrapper => this.value == that.value
         case _ => false
@@ -49,9 +49,11 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
 
   object `the SeqEqualityConstraints trait` {
 
+    // Actually, I wonder if we shouldn't use something put into scope by either TypeChecked or ConversionChecked
     def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
+      assert(Vector(1L, 2L, 3L) === List(1, 2, 3))
 
       // Test for something convertible
       assertTypeError("Vector(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === List(1, 2, 3)")

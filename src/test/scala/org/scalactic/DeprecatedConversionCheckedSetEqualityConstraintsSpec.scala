@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class DeprecatedConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals with SetEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -54,7 +54,6 @@ class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAsserti
 
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L))
-
       assert(mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3))
       assert(immutable.HashSet(1, 2, 3) === mutable.HashSet(1L, 2L, 3L))
       assert(immutable.HashSet(1L, 2L, 3L) === mutable.HashSet(1, 2, 3))

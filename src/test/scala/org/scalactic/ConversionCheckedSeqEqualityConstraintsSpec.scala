@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals with SeqEqualityConstraints {
+class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

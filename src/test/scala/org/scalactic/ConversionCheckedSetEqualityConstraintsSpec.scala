@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class ConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals with SetEqualityConstraints {
+class ConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class DeprecatedTypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with MapEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
