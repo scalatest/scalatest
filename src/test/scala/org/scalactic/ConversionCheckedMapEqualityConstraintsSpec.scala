@@ -62,6 +62,8 @@ class ConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitA
       // Test for something convertible
       assertTypeError("mutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3)) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)")
       assertTypeError("mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3))")
+      assertTypeError("mutable.HashMap(new IntWrapper(1) -> 'a', new IntWrapper(2) -> 'b', new IntWrapper(3) -> 'c') === immutable.HashMap(1 -> 'a', 2 -> 'b', 3 -> 'c')")
+      assertTypeError("mutable.HashMap(1 -> 'a', 2 -> 'b', 3 -> 'c') === immutable.HashMap(new IntWrapper(1) -> 'a', new IntWrapper(2) -> 'b', new IntWrapper(3) -> 'c')")
 
       assertTypeError("mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Orange, 'b' -> new Orange)")
       assertTypeError("immutable.HashMap('a' -> new Apple, 'b' -> new Apple) === mutable.HashMap('a' -> new Orange, 'b' -> new Orange)")
