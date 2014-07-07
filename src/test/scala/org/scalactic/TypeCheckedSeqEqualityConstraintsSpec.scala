@@ -38,15 +38,29 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
+  implicit class IntWrapper(val value: Int) {
+    override def equals(o: Any): Boolean = 
+      o match {
+        case that: IntWrapper => this.value == that.value
+        case _ => false
+      }
+    override def hashCode: Int = value.hashCode
+  }
+
   object `the SeqEqualityConstraints trait` {
 
     def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
-      // assert(Vector(1, 2, 3) === List(1L, 2L, 3L)) // does not compile last time I checked
+      assert(Vector(1, 2, 3) === List(1L, 2L, 3L)) // does not compile last time I checked
+
+      // Test for something convertible
+      assertTypeError("Vector(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === List(1, 2, 3)")
+      assertTypeError("Vector(1, 2, 3) === List(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))")
+
       assert(Vector(new Apple, new Apple) === List(new Fruit("apple"), new Fruit("apple")))
       assert(List(new Fruit("apple"), new Fruit("apple")) === Vector(new Apple, new Apple))
-      // assert(Vector(new Apple, new Apple) === List(new Orange, new Orange)) // does not compile last time I checked
-      // assert(List(new Orange, new Orange) === Vector(new Apple, new Apple)) // does not compile last time I checked
+      assertTypeError("Vector(new Apple, new Apple) === List(new Orange, new Orange)")
+      assertTypeError("List(new Orange, new Orange) === Vector(new Apple, new Apple)")
     }
   }
 }
