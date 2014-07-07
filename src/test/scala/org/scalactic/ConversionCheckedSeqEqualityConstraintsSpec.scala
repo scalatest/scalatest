@@ -55,11 +55,9 @@ class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitA
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
       assert(Vector(1L, 2L, 3L) === List(1, 2, 3))
 
-/* broken
       // Test for something convertible
-      assert(Vector(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === List(1, 2, 3))
-      assert(Vector(1, 2, 3) === List(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)))
-*/
+      assertTypeError("Vector(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === List(1, 2, 3)")
+      assertTypeError("Vector(1, 2, 3) === List(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))")
 
       assert(Vector(new Apple, new Apple) === List(new Fruit("apple"), new Fruit("apple")))
       assert(List(new Fruit("apple"), new Fruit("apple")) === Vector(new Apple, new Apple))
