@@ -51,7 +51,7 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
 
     def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
-      assert(Vector(1, 2, 3) === List(1L, 2L, 3L)) // does not compile last time I checked
+      assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
 
       // Test for something convertible
       assertTypeError("Vector(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === List(1, 2, 3)")

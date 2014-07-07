@@ -52,10 +52,10 @@ class ConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitA
 
     def `should allow any Map to be compared with any other Map, so long as the element types of the two Maps adhere to the equality constraint in force for those types` {
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
-      assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L)) // does not compile last time I checked
-      assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)) // does not compile last time I checked
-      assert(immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L)) // does not compile last time I checked
-      assert(immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)) // does not compile last time I checked
+      assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
+      assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
+      assert(immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
+      assert(immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
       assert(mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")))
       assert(immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")) === mutable.HashMap('a' -> new Apple, 'b' -> new Apple))
 
