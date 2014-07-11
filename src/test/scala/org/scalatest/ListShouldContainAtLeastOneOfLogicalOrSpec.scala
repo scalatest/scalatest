@@ -127,14 +127,14 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec {
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (fumList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) or contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (toList) or contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"foe\""), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by defaultEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by defaultEquality[List[String]], after being lowerCased and trimmed)
       }
       
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -310,11 +310,11 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec {
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)

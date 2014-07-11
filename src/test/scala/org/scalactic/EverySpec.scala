@@ -347,9 +347,9 @@ class EverySpec extends UnitSpec {
   }
   it should "have an equals method" in {
     // This already worked, because the only concrete classes
-    // are case classes, and comparing One with Many should always
-    // be false.
-    One(1) should not equal Many(1, 2)
+    // are case classes.
+    One(1) should not equal One(2)
+    Many(1, 2) should not equal Many(2, 3)
   }
   it should "have an exists method" in {
     Every(1, 2, 3).exists(_ == 2) shouldBe true

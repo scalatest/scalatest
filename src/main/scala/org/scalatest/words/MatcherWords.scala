@@ -20,6 +20,7 @@ import org.scalactic.{Equality, Prettifier}
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalatest.enablers.EvidenceThat
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -288,10 +289,10 @@ trait MatcherWords {
    * </p>
    *
    */
-  def equal(right: Any): MatcherFactory1[Any, Equality] =
-    new MatcherFactory1[Any, Equality] {
-      def matcher[T <: Any : Equality]: Matcher[T] = {
-        val equality = implicitly[Equality[T]]
+  def equal[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] =
+    new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
+      def matcher[T <: Any : EvidenceThat[R]#CanEqual]: Matcher[T] = {
+        val equality = implicitly[EvidenceThat[R]#CanEqual[T]]
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters

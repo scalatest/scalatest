@@ -779,7 +779,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Equality] =
+    def equal[R](any: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanEqual] =
       thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
@@ -1927,7 +1927,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Equality] =
+    def equal[R](any: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanEqual] =
       thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**

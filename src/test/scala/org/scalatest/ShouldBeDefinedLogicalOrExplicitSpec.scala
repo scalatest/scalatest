@@ -77,13 +77,13 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (something should (be (nothing) or be (defined ))) (definition)
         (nothing should (be (nothing) or be (defined ))) (definition)
         
-        (something should (be (defined ) or equal (something))) (definition, defaultEquality)
-        (nothing should (be (defined ) or equal (nothing))) (definition, defaultEquality)
-        (something should (be (defined ) or equal (nothing))) (definition, defaultEquality)
+        (something should (be (defined ) or equal (something))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (nothing should (be (defined ) or equal (nothing))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (something should (be (defined ) or equal (nothing))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         
-        (something should (equal (something) or be (defined ))) (defaultEquality, definition)
-        (something should (equal (nothing) or be (defined ))) (defaultEquality, definition)
-        (nothing should (equal (nothing) or be (defined ))) (defaultEquality, definition)
+        (something should (equal (something) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (something should (equal (nothing) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (nothing should (equal (nothing) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
       }
       
       def `should throw TestFailedException with correct stack depth when thing is not defined ` {
@@ -102,14 +102,14 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (nothing should (be (defined ) or equal (something))) (definition, defaultEquality)
+          (nothing should (be (defined ) or equal (something))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         }
         assert(caught3.message === Some(wasNotDefined(nothing) + ", and " + didNotEqual(nothing, something)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (nothing should (equal (something) or be (defined ))) (defaultEquality, definition)
+          (nothing should (equal (something) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
         }
         assert(caught4.message === Some(didNotEqual(nothing, something) + ", and " + wasNotDefined(nothing)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -128,13 +128,13 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (nothing should (not be nothing or not be defined )) (definition)
         (something should (not be nothing or not be defined )) (definition)
         
-        (nothing should (not be defined  or not equal something)) (definition, defaultEquality)
-        (something should (not be defined  or not equal nothing)) (definition, defaultEquality)
-        (nothing should (not be defined  or not equal nothing)) (definition, defaultEquality)
+        (nothing should (not be defined  or not equal something)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (something should (not be defined  or not equal nothing)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (nothing should (not be defined  or not equal nothing)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         
-        (nothing should (not equal something or not be defined )) (defaultEquality, definition)
-        (nothing should (not equal nothing or not be defined )) (defaultEquality, definition)
-        (something should (not equal nothing or not be defined )) (defaultEquality, definition)
+        (nothing should (not equal something or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (nothing should (not equal nothing or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (something should (not equal nothing or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
       }
       
       def `should throw TestFailedException with correct stack depth when thing is defined ` {
@@ -153,14 +153,14 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (something should (not be defined  or not equal something)) (definition, defaultEquality)
+          (something should (not be defined  or not equal something)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         }
         assert(caught3.message === Some(wasDefined(something) + ", and " + equaled(something, something)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (something should (not equal something or not be defined )) (defaultEquality, definition)
+          (something should (not equal something or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
         }
         assert(caught4.message === Some(equaled(something, something) + ", and " + wasDefined(something)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -179,13 +179,13 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (all(List(something)) should (be (nothing) or be (defined ))) (definition)
         (all(List(nothing)) should (be (nothing) or be (defined ))) (definition)
         
-        (all(List(something)) should (be (defined ) or equal (something))) (definition, defaultEquality)
-        (all(List(nothing)) should (be (defined ) or equal (nothing))) (definition, defaultEquality)
-        (all(List(something)) should (be (defined ) or equal (nothing))) (definition, defaultEquality)
+        (all(List(something)) should (be (defined ) or equal (something))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (all(List(nothing)) should (be (defined ) or equal (nothing))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (all(List(something)) should (be (defined ) or equal (nothing))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         
-        (all(List(something)) should (equal (something) or be (defined ))) (defaultEquality, definition)
-        (all(List(something)) should (equal (nothing) or be (defined ))) (defaultEquality, definition)
-        (all(List(nothing)) should (equal (nothing) or be (defined ))) (defaultEquality, definition)
+        (all(List(something)) should (equal (something) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (all(List(something)) should (equal (nothing) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (all(List(nothing)) should (equal (nothing) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not defined ` {
@@ -207,7 +207,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         
         val left3 = List(nothing)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (equal (something) or be (defined ))) (defaultEquality, definition)
+          (all(left3) should (equal (something) or be (defined ))) (defaultEquality[Thing{val isDefined: Boolean}], definition)
         }
         assert(caught3.message === Some(allError(didNotEqual(nothing, something) + ", and " + wasNotDefined(nothing), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -215,7 +215,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         
         val left4 = List(nothing)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (be (defined ) or equal (something))) (definition, defaultEquality)
+          (all(left4) should (be (defined ) or equal (something))) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         }
         assert(caught4.message === Some(allError(wasNotDefined(nothing) + ", and " + didNotEqual(nothing, something), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -233,13 +233,13 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (all(List(nothing)) should (not be nothing or not be defined )) (definition)
         (all(List(something)) should (not be nothing or not be defined )) (definition)
         
-        (all(List(nothing)) should (not be defined  or not equal something)) (definition, defaultEquality)
-        (all(List(something)) should (not be defined  or not equal nothing)) (definition, defaultEquality)
-        (all(List(nothing)) should (not be defined  or not equal nothing)) (definition, defaultEquality)
+        (all(List(nothing)) should (not be defined  or not equal something)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (all(List(something)) should (not be defined  or not equal nothing)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
+        (all(List(nothing)) should (not be defined  or not equal nothing)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         
-        (all(List(nothing)) should (not equal something or not be defined )) (defaultEquality, definition)
-        (all(List(nothing)) should (not equal nothing or not be defined )) (defaultEquality, definition)
-        (all(List(something)) should (not equal nothing or not be defined )) (defaultEquality, definition)
+        (all(List(nothing)) should (not equal something or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (all(List(nothing)) should (not equal nothing or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
+        (all(List(something)) should (not equal nothing or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not defined ` {
@@ -261,7 +261,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         
         val left3 = List(something)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (not equal something or not be defined )) (defaultEquality, definition)
+          (all(left3) should (not equal something or not be defined )) (defaultEquality[Thing{val isDefined: Boolean}], definition)
         }
         assert(caught3.message === Some(allError(equaled(something, something) + ", and " + wasDefined(something), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -269,7 +269,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         
         val left4 = List(something)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (not be defined  or not equal something)) (definition, defaultEquality)
+          (all(left4) should (not be defined  or not equal something)) (definition, defaultEquality[Thing{val isDefined: Boolean}])
         }
         assert(caught4.message === Some(allError(wasDefined(something) + ", and " + equaled(something, something), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))

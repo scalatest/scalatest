@@ -76,13 +76,13 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (emptyThing should (be (nonEmptyThing) or be (empty))) (emptiness)
         (nonEmptyThing should (be (nonEmptyThing) or be (empty))) (emptiness)
         
-        (emptyThing should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality)
-        (nonEmptyThing should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality)
-        (emptyThing should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality)
+        (emptyThing should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (nonEmptyThing should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (emptyThing should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         
-        (emptyThing should (equal (emptyThing) or be (empty))) (defaultEquality, emptiness)
-        (emptyThing should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
-        (nonEmptyThing should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
+        (emptyThing should (equal (emptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (emptyThing should (equal (nonEmptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (nonEmptyThing should (equal (nonEmptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
       }
       
       def `should throw TestFailedException with correct stack depth when file is not empty` {
@@ -101,14 +101,14 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (nonEmptyThing should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality)
+          (nonEmptyThing should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         }
         assert(caught3.message === Some(wasNotEmpty(nonEmptyThing) + ", and " + didNotEqual(nonEmptyThing, emptyThing)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (nonEmptyThing should (equal (emptyThing) or be (empty))) (defaultEquality, emptiness)
+          (nonEmptyThing should (equal (emptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
         }
         assert(caught4.message === Some(didNotEqual(nonEmptyThing, emptyThing) + ", and " + wasNotEmpty(nonEmptyThing)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -127,13 +127,13 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (nonEmptyThing should (not be nonEmptyThing or not be empty)) (emptiness)
         (emptyThing should (not be nonEmptyThing or not be empty)) (emptiness)
         
-        (nonEmptyThing should (not be empty or not equal emptyThing)) (emptiness, defaultEquality)
-        (emptyThing should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality)
-        (nonEmptyThing should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality)
+        (nonEmptyThing should (not be empty or not equal emptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (emptyThing should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (nonEmptyThing should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         
-        (nonEmptyThing should (not equal emptyThing or not be empty)) (defaultEquality, emptiness)
-        (nonEmptyThing should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
-        (emptyThing should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
+        (nonEmptyThing should (not equal emptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (nonEmptyThing should (not equal nonEmptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (emptyThing should (not equal nonEmptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
       }
       
       def `should throw TestFailedException with correct stack depth when file is empty` {
@@ -152,14 +152,14 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (emptyThing should (not be empty or not equal emptyThing)) (emptiness, defaultEquality)
+          (emptyThing should (not be empty or not equal emptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         }
         assert(caught3.message === Some(wasEmpty(emptyThing) + ", and " + equaled(emptyThing, emptyThing)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (emptyThing should (not equal emptyThing or not be empty)) (defaultEquality, emptiness)
+          (emptyThing should (not equal emptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
         }
         assert(caught4.message === Some(equaled(emptyThing, emptyThing) + ", and " + wasEmpty(emptyThing)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -178,13 +178,13 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (all(List(emptyThing)) should (be (nonEmptyThing) or be (empty))) (emptiness)
         (all(List(nonEmptyThing)) should (be (nonEmptyThing) or be (empty))) (emptiness)
         
-        (all(List(emptyThing)) should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality)
-        (all(List(nonEmptyThing)) should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality)
-        (all(List(emptyThing)) should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality)
+        (all(List(emptyThing)) should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (all(List(nonEmptyThing)) should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (all(List(emptyThing)) should (be (empty) or equal (nonEmptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         
-        (all(List(emptyThing)) should (equal (emptyThing) or be (empty))) (defaultEquality, emptiness)
-        (all(List(emptyThing)) should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
-        (all(List(nonEmptyThing)) should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
+        (all(List(emptyThing)) should (equal (emptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (all(List(emptyThing)) should (equal (nonEmptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (all(List(nonEmptyThing)) should (equal (nonEmptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -206,7 +206,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         
         val left3 = List(nonEmptyThing)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (equal (emptyThing) or be (empty))) (defaultEquality, emptiness)
+          (all(left3) should (equal (emptyThing) or be (empty))) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
         }
         assert(caught3.message === Some(allError(didNotEqual(nonEmptyThing, emptyThing) + ", and " + wasNotEmpty(nonEmptyThing), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -214,7 +214,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         
         val left4 = List(nonEmptyThing)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality)
+          (all(left4) should (be (empty) or equal (emptyThing))) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         }
         assert(caught4.message === Some(allError(wasNotEmpty(nonEmptyThing) + ", and " + didNotEqual(nonEmptyThing, emptyThing), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -232,13 +232,13 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (all(List(nonEmptyThing)) should (not be nonEmptyThing or not be empty)) (emptiness)
         (all(List(emptyThing)) should (not be nonEmptyThing or not be empty)) (emptiness)
         
-        (all(List(nonEmptyThing)) should (not be empty or not equal emptyThing)) (emptiness, defaultEquality)
-        (all(List(emptyThing)) should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality)
-        (all(List(nonEmptyThing)) should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality)
+        (all(List(nonEmptyThing)) should (not be empty or not equal emptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (all(List(emptyThing)) should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
+        (all(List(nonEmptyThing)) should (not be empty or not equal nonEmptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         
-        (all(List(nonEmptyThing)) should (not equal emptyThing or not be empty)) (defaultEquality, emptiness)
-        (all(List(nonEmptyThing)) should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
-        (all(List(emptyThing)) should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
+        (all(List(nonEmptyThing)) should (not equal emptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (all(List(nonEmptyThing)) should (not equal nonEmptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
+        (all(List(emptyThing)) should (not equal nonEmptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -260,7 +260,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         
         val left3 = List(emptyThing)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (not equal emptyThing or not be empty)) (defaultEquality, emptiness)
+          (all(left3) should (not equal emptyThing or not be empty)) (defaultEquality[Thing{val isEmpty: Boolean}], emptiness)
         }
         assert(caught3.message === Some(allError(equaled(emptyThing, emptyThing) + ", and " + wasEmpty(emptyThing), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -268,7 +268,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         
         val left4 = List(emptyThing)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (not be empty or not equal emptyThing)) (emptiness, defaultEquality)
+          (all(left4) should (not be empty or not equal emptyThing)) (emptiness, defaultEquality[Thing{val isEmpty: Boolean}])
         }
         assert(caught4.message === Some(allError(wasEmpty(emptyThing) + ", and " + equaled(emptyThing, emptyThing), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))

@@ -170,7 +170,7 @@ final class NotWord {
    *                 ^
    * </pre>
    */
-  def equal(right: Any): MatcherFactory1[Any, Equality] = apply(MatcherWords.equal(right))
+  def equal[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = apply(MatcherWords.equal(right))
 
   /**
    * This method enables the following syntax for the "primitive" numeric types: 

@@ -68,8 +68,8 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
     object `when work with 'file should be (readable)'` {
       
       def `should do nothing when file is readable` {
-        (book should (equal (book) and be (readable))) (defaultEquality, readability)
-        (book should (be (readable) and equal (book))) (readability, defaultEquality)
+        (book should (equal (book) and be (readable))) (defaultEquality[Thing{val canRead: Boolean}], readability)
+        (book should (be (readable) and equal (book))) (readability, defaultEquality[Thing{val canRead: Boolean}])
         
         (book should (be (book) and be (readable))) (readability)
         (book should (be (readable) and be (book))) (readability)
@@ -77,14 +77,14 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when file is not readable` {
         val caught1 = intercept[TestFailedException] {
-          (stone should (equal (stone) and be (readable))) (defaultEquality, readability)
+          (stone should (equal (stone) and be (readable))) (defaultEquality[Thing{val canRead: Boolean}], readability)
         }
         assert(caught1.message === Some(equaled(stone, stone) + ", but " + wasNotReadable(stone)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          (stone should (be (readable) and equal (stone))) (readability, defaultEquality)
+          (stone should (be (readable) and equal (stone))) (readability, defaultEquality[Thing{val canRead: Boolean}])
         }
         assert(caught2.message === Some(wasNotReadable(stone)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -109,8 +109,8 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
     object `when work with 'file should not be sorted'` {
       
       def `should do nothing when file is not readable` {
-        (stone should (not equal book and not be readable)) (defaultEquality, readability)
-        (stone should (not be readable and not equal book)) (readability, defaultEquality)
+        (stone should (not equal book and not be readable)) (defaultEquality[Thing{val canRead: Boolean}], readability)
+        (stone should (not be readable and not equal book)) (readability, defaultEquality[Thing{val canRead: Boolean}])
         
         (stone should (not be book and not be readable)) (readability)
         (stone should (not be readable and not be book)) (readability)
@@ -118,14 +118,14 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val caught1 = intercept[TestFailedException] {
-          (book should (not equal stone and not be readable)) (defaultEquality, readability)
+          (book should (not equal stone and not be readable)) (defaultEquality[Thing{val canRead: Boolean}], readability)
         }
         assert(caught1.message === Some(didNotEqual(book, stone) + ", but " + wasReadable(book)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          (book should (not be readable and not equal stone)) (readability, defaultEquality)
+          (book should (not be readable and not equal stone)) (readability, defaultEquality[Thing{val canRead: Boolean}])
         }
         assert(caught2.message === Some(wasReadable(book)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -153,8 +153,8 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         (all(List(book)) should (be (book) and be (readable))) (readability)
         (all(List(book)) should (be (readable) and be (book))) (readability)
         
-        (all(List(book)) should (equal (book) and be (readable))) (defaultEquality, readability)
-        (all(List(book)) should (be (readable) and equal (book))) (readability, defaultEquality)
+        (all(List(book)) should (equal (book) and be (readable))) (defaultEquality[Thing{val canRead: Boolean}], readability)
+        (all(List(book)) should (be (readable) and equal (book))) (readability, defaultEquality[Thing{val canRead: Boolean}])
       }
       
       def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
@@ -176,7 +176,7 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         
         val left3 = List(stone)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (equal (stone) and be (readable))) (defaultEquality, readability)
+          (all(left3) should (equal (stone) and be (readable))) (defaultEquality[Thing{val canRead: Boolean}], readability)
         }
         assert(caught3.message === Some(allError(equaled(stone, stone) + ", but " + wasNotReadable(stone), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -184,7 +184,7 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         
         val left4 = List(stone)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (be (readable) and equal (stone))) (readability, defaultEquality)
+          (all(left4) should (be (readable) and equal (stone))) (readability, defaultEquality[Thing{val canRead: Boolean}])
         }
         assert(caught4.message === Some(allError(wasNotReadable(stone), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -197,8 +197,8 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         (all(List(stone)) should (not be readable and not be book)) (readability)
         (all(List(stone)) should (not be book and not be readable)) (readability)
         
-        (all(List(stone)) should (not be readable and not equal book)) (readability, defaultEquality)
-        (all(List(stone)) should (not equal book and not be readable)) (defaultEquality, readability)
+        (all(List(stone)) should (not be readable and not equal book)) (readability, defaultEquality[Thing{val canRead: Boolean}])
+        (all(List(stone)) should (not equal book and not be readable)) (defaultEquality[Thing{val canRead: Boolean}], readability)
       }
       
       def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
@@ -220,7 +220,7 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         
         val left3 = List(book)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (not equal stone and not be readable)) (defaultEquality, readability)
+          (all(left3) should (not equal stone and not be readable)) (defaultEquality[Thing{val canRead: Boolean}], readability)
         }
         assert(caught3.message === Some(allError(didNotEqual(book, stone) + ", but " + wasReadable(book), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -228,7 +228,7 @@ class ShouldBeReadableLogicalAndExplicitSpec extends Spec {
         
         val left4 = List(book)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (not be readable and not equal stone)) (readability, defaultEquality)
+          (all(left4) should (not be readable and not equal stone)) (readability, defaultEquality[Thing{val canRead: Boolean}])
         }
         assert(caught4.message === Some(allError(wasReadable(book), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))

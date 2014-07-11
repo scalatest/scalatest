@@ -32,36 +32,36 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
 
     def `should do nothing when equal` {
       intercept[TestFailedException] { 1 should equal (1) }
-      1 should equal (1) (defaultEquality)
-      1 should equal (1) (decided by defaultEquality)
-      (1 should equal (1)) (defaultEquality)
-      (1 should equal (1)) (decided by defaultEquality)
+      1 should equal (1) (defaultEquality[Int])
+      1 should equal (1) (decided by defaultEquality[Int])
+      (1 should equal (1)) (defaultEquality[Int])
+      (1 should equal (1)) (decided by defaultEquality[Int])
       intercept[TestFailedException] { 1 shouldEqual 1 }
-      (1 shouldEqual 1) (defaultEquality)
-      (1 shouldEqual 1) (decided by defaultEquality)
-      (1).shouldEqual(1)(defaultEquality)
-      (1).shouldEqual(1)(decided by defaultEquality)
+      (1 shouldEqual 1) (defaultEquality[Int])
+      (1 shouldEqual 1) (decided by defaultEquality[Int])
+      (1).shouldEqual(1)(defaultEquality[Int])
+      (1).shouldEqual(1)(decided by defaultEquality[Int])
     }
 
     def `should do nothing when not equal and used with not` {
       intercept[TestFailedException] { 1 should not { equal (2) } }
       intercept[TestFailedException] { 1 should not equal (2) }
-      1 should not { equal (2) } (defaultEquality)
-      1 should not { equal (2) } (decided by defaultEquality)
-      (1 should not equal (2)) (defaultEquality)
-      (1 should not equal (2)) (decided by defaultEquality)
+      1 should not { equal (2) } (defaultEquality[Int])
+      1 should not { equal (2) } (decided by defaultEquality[Int])
+      (1 should not equal (2)) (defaultEquality[Int])
+      (1 should not equal (2)) (decided by defaultEquality[Int])
 /*
       intercept[TestFailedException] { 1 shouldNot { equal (2) } }
       intercept[TestFailedException] { 1 shouldNot equal (2) }
-      1 shouldNot equal (2) (defaultEquality)
-      1 shouldNot equal (2) (decided by defaultEquality)
+      1 shouldNot equal (2) (defaultEquality[Int])
+      1 shouldNot equal (2) (decided by defaultEquality[Int])
 */
     }
 
     def `should do nothing when equal and used in a logical-and expression` {
       intercept[TestFailedException] { 1 should (equal (1) and equal (2 - 1)) }
-      1 should (equal (1) and equal (2 - 1)) (decided by defaultEquality)
-      1 should (equal (1) (decided by defaultEquality) and equal (2 - 1) (decided by defaultEquality)) 
+      1 should (equal (1) and equal (2 - 1)) (decided by defaultEquality[Int])
+      1 should (equal (1) (decided by defaultEquality[Int]) and equal (2 - 1) (decided by defaultEquality[Int])) 
     }
 
     def `should do nothing when equal and used in multi-part logical expressions` {
@@ -76,30 +76,30 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
             equal (1) or
             equal (1)
         ) }
-        1 should (equal (1) and equal (1) and equal (1) and equal (1)) (decided by defaultEquality)
-        1 should (equal (1) and equal (1) or equal (1) and equal (1) or equal (1)) (decided by defaultEquality)
+        1 should (equal (1) and equal (1) and equal (1) and equal (1)) (decided by defaultEquality[Int])
+        1 should (equal (1) and equal (1) or equal (1) and equal (1) or equal (1)) (decided by defaultEquality[Int])
         1 should (
             equal (1) and
             equal (1) or
             equal (1) and
             equal (1) or
             equal (1)
-        ) (decided by defaultEquality)
-        1 should (equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality))
-        1 should (equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) or equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) or equal (1) (decided by defaultEquality))
+        ) (decided by defaultEquality[Int])
+        1 should (equal (1) (decided by defaultEquality[Int]) and equal (1) (decided by defaultEquality[Int]) and equal (1) (decided by defaultEquality[Int]) and equal (1) (decided by defaultEquality[Int]))
+        1 should (equal (1) (decided by defaultEquality[Int]) and equal (1) (decided by defaultEquality[Int]) or equal (1) (decided by defaultEquality[Int]) and equal (1) (decided by defaultEquality[Int]) or equal (1) (decided by defaultEquality[Int]))
         1 should (
-            equal (1) (decided by defaultEquality) and
-            equal (1) (decided by defaultEquality) or
-            equal (1) (decided by defaultEquality) and
-            equal (1) (decided by defaultEquality) or
-            equal (1) (decided by defaultEquality)
+            equal (1) (decided by defaultEquality[Int]) and
+            equal (1) (decided by defaultEquality[Int]) or
+            equal (1) (decided by defaultEquality[Int]) and
+            equal (1) (decided by defaultEquality[Int]) or
+            equal (1) (decided by defaultEquality[Int])
         )
     }
 
     def `should do nothing when equal and used in a logical-or expression` {
       intercept[TestFailedException] { 1 should { equal (1) or equal (2 - 1) } }
-      1 should (equal (1) or equal (2 - 1)) (decided by defaultEquality)
-      1 should { equal (1) (decided by defaultEquality) or equal (2 - 1) (decided by defaultEquality) }
+      1 should (equal (1) or equal (2 - 1)) (decided by defaultEquality[Int])
+      1 should { equal (1) (decided by defaultEquality[Int]) or equal (2 - 1) (decided by defaultEquality[Int]) }
     }
 
     def `should do nothing when not equal and used in a logical-and expression with not` {
@@ -108,12 +108,12 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       // Will back up on these MatcherGen1 and not ones, and do simpler MatcherGen1 and MatcherGen1 ones first
       // intercept[TestFailedException] { 1 should (not equal (2) and not equal (3 - 1)) }
 
-      1 should (not (equal (2)) and not (equal (3 - 1))) (decided by defaultEquality)
-      1 should (not equal (2) and (not equal (3 - 1))) (decided by defaultEquality)
-      // 1 should (not equal (2) and not equal (3 - 1)) (decided by defaultEquality)
+      1 should (not (equal (2)) and not (equal (3 - 1))) (decided by defaultEquality[Int])
+      1 should (not equal (2) and (not equal (3 - 1))) (decided by defaultEquality[Int])
+      // 1 should (not equal (2) and not equal (3 - 1)) (decided by defaultEquality[Int])
 
-      1 should (not (equal (2) (decided by defaultEquality)) and not (equal (3 - 1) (decided by defaultEquality)))
-      1 should ((not equal 2) (decided by defaultEquality) and (not equal 3 - 1) (decided by defaultEquality))
+      1 should (not (equal (2) (decided by defaultEquality[Int])) and not (equal (3 - 1) (decided by defaultEquality[Int])))
+      1 should ((not equal 2) (decided by defaultEquality[Int]) and (not equal 3 - 1) (decided by defaultEquality[Int]))
     }
 
 /*

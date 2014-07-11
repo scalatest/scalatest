@@ -200,7 +200,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   }
   it can "be used with toSeq" in {
     Good(12).toSeq shouldEqual Seq(12)
-    Good[Int].orBad(12).toSeq shouldEqual Seq.empty
+    Good[Int].orBad(12).toSeq shouldEqual Seq.empty[Int]
   }
 // toArray, toBuffer, toIndexedSeq, toIterable, toIterator, toList, 
 // toSeq, toStream, toTraversable, toVector

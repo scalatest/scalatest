@@ -66,13 +66,13 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
   object `The exist syntax when used with File` {
     
     def `should do nothing when the file exists` {
-      (something should (equal (something) or exist)) (defaultEquality, existence)
-      (something should (equal (nothing) or exist)) (defaultEquality, existence)
-      (nothing should (equal (nothing) or exist)) (defaultEquality, existence)
+      (something should (equal (something) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (something should (equal (nothing) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (nothing should (equal (nothing) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
       
-      (something should (exist or equal (something))) (existence, defaultEquality)
-      (nothing should (exist or equal (nothing))) (existence, defaultEquality)
-      (something should (exist or equal (nothing))) (existence, defaultEquality)
+      (something should (exist or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (nothing should (exist or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (something should (exist or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
       
       (something should (be (something) or exist)) (existence)
       (something should (be (nothing) or exist)) (existence)
@@ -85,14 +85,14 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     
     def `should throw TFE with correct stack depth and message when the file does not exist` {
       val e1 = intercept[exceptions.TestFailedException] {
-        (nothing should (equal (something) or exist)) (defaultEquality, existence)
+        (nothing should (equal (something) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
       }
       assert(e1.message === Some(didNotEqual(nothing, something) + ", and " + doesNotExist(nothing)))
       assert(e1.failedCodeFileName === Some(fileName))
       assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e2 = intercept[exceptions.TestFailedException] {
-        (nothing should (exist or equal (something))) (existence, defaultEquality)
+        (nothing should (exist or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
       }
       assert(e2.message === Some(doesNotExist(nothing) + ", and " + didNotEqual(nothing, something)))
       assert(e2.failedCodeFileName === Some(fileName))
@@ -114,13 +114,13 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     }
     
     def `should do nothing when it is used with not and the file does not exists` {
-      (nothing should (equal (nothing) or not (exist))) (defaultEquality, existence)
-      (nothing should (equal (something) or not (exist))) (defaultEquality, existence)
-      (something should (equal (something) or not (exist))) (defaultEquality, existence)
+      (nothing should (equal (nothing) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (nothing should (equal (something) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (something should (equal (something) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
       
-      (nothing should (not (exist) or equal (nothing))) (existence, defaultEquality)
-      (something should (not (exist) or equal (something))) (existence, defaultEquality)
-      (nothing should (not (exist) or equal (something))) (existence, defaultEquality)
+      (nothing should (not (exist) or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (something should (not (exist) or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (nothing should (not (exist) or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
       
       (nothing should (be (nothing) or not (exist))) (existence)
       (nothing should (be (something) or not (exist))) (existence)
@@ -133,14 +133,14 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     
     def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
       val e1 = intercept[exceptions.TestFailedException] {
-        (something should (equal (nothing) or not (exist))) (defaultEquality, existence)
+        (something should (equal (nothing) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
       }
       assert(e1.message === Some(didNotEqual(something, nothing) + ", and " + exists(something)))
       assert(e1.failedCodeFileName === Some(fileName))
       assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e2 = intercept[exceptions.TestFailedException] {
-        (something should (not (exist) or equal (nothing))) (existence, defaultEquality)
+        (something should (not (exist) or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
       }
       assert(e2.message === Some(exists(something) + ", and " + didNotEqual(something, nothing)))
       assert(e2.failedCodeFileName === Some(fileName))
@@ -165,13 +165,13 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
   object `The exist syntax when used with all(xs)` {
     
     def `should do nothing when the file exists` {
-      (all(List(something)) should (equal (something) or exist)) (defaultEquality, existence)
-      (all(List(something)) should (equal (nothing) or exist)) (defaultEquality, existence)
-      (all(List(nothing)) should (equal (nothing) or exist)) (defaultEquality, existence)
+      (all(List(something)) should (equal (something) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (all(List(something)) should (equal (nothing) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (all(List(nothing)) should (equal (nothing) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
       
-      (all(List(something)) should (exist or equal (something))) (existence, defaultEquality)
-      (all(List(nothing)) should (exist or equal (nothing))) (existence, defaultEquality)
-      (all(List(something)) should (exist or equal (nothing))) (existence, defaultEquality)
+      (all(List(something)) should (exist or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (all(List(nothing)) should (exist or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (all(List(something)) should (exist or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
       
       (all(List(something)) should (be (something) or exist)) (existence)
       (all(List(something)) should (be (nothing) or exist)) (existence)
@@ -185,7 +185,7 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     def `should throw TFE with correct stack depth and message when the file does not exist` {
       val left1 = List(nothing)
       val e1 = intercept[exceptions.TestFailedException] {
-        (all(left1) should (equal (something) or exist)) (defaultEquality, existence)
+        (all(left1) should (equal (something) or exist)) (defaultEquality[Thing{val exist: Boolean}], existence)
       }
       assert(e1.message === Some(allError(left1, didNotEqual(nothing, something) + ", and " + doesNotExist(nothing), thisLineNumber - 2)))
       assert(e1.failedCodeFileName === Some(fileName))
@@ -193,7 +193,7 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
       
       val left2 = List(nothing)
       val e2 = intercept[exceptions.TestFailedException] {
-        (all(left2) should (exist or equal (something))) (existence, defaultEquality)
+        (all(left2) should (exist or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
       }
       assert(e2.message === Some(allError(left2, doesNotExist(nothing) + ", and " + didNotEqual(nothing, something), thisLineNumber - 2)))
       assert(e2.failedCodeFileName === Some(fileName))
@@ -217,13 +217,13 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     }
     
     def `should do nothing when it is used with not and the file does not exists` {
-      (all(List(nothing)) should (equal (nothing) or not (exist))) (defaultEquality, existence)
-      (all(List(nothing)) should (equal (something) or not (exist))) (defaultEquality, existence)
-      (all(List(something)) should (equal (something) or not (exist))) (defaultEquality, existence)
+      (all(List(nothing)) should (equal (nothing) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (all(List(nothing)) should (equal (something) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
+      (all(List(something)) should (equal (something) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
       
-      (all(List(nothing)) should (not (exist) or equal (nothing))) (existence, defaultEquality)
-      (all(List(something)) should (not (exist) or equal (something))) (existence, defaultEquality)
-      (all(List(nothing)) should (not (exist) or equal (something))) (existence, defaultEquality)
+      (all(List(nothing)) should (not (exist) or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (all(List(something)) should (not (exist) or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
+      (all(List(nothing)) should (not (exist) or equal (something))) (existence, defaultEquality[Thing{val exist: Boolean}])
       
       (all(List(nothing)) should (be (nothing) or not (exist))) (existence)
       (all(List(nothing)) should (be (something) or not (exist))) (existence)
@@ -237,7 +237,7 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
     def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
       val left1 = List(something)
       val e1 = intercept[exceptions.TestFailedException] {
-        (all(left1) should (equal (nothing) or not (exist))) (defaultEquality, existence)
+        (all(left1) should (equal (nothing) or not (exist))) (defaultEquality[Thing{val exist: Boolean}], existence)
       }
       assert(e1.message === Some(allError(left1, didNotEqual(something, nothing) + ", and " + exists(something), thisLineNumber - 2)))
       assert(e1.failedCodeFileName === Some(fileName))
@@ -245,7 +245,7 @@ class ShouldExistLogicalOrExplicitSpec extends Spec {
       
       val left2 = List(something)
       val e2 = intercept[exceptions.TestFailedException] {
-        (all(left2) should (not (exist) or equal (nothing))) (existence, defaultEquality)
+        (all(left2) should (not (exist) or equal (nothing))) (existence, defaultEquality[Thing{val exist: Boolean}])
       }
       assert(e2.message === Some(allError(left2, exists(something) + ", and " + didNotEqual(something, nothing), thisLineNumber - 2)))
       assert(e2.failedCodeFileName === Some(fileName))

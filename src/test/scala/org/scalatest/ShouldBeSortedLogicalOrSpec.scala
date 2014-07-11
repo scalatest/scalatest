@@ -145,7 +145,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) or equal (orderedInts))
         }
-        (outOfOrderInts should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality)
+        (outOfOrderInts should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality[List[Int]])
       }
     }
     
@@ -215,7 +215,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) or not equal (orderedInts))
         }
-        (orderedInts should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality)
+        (orderedInts should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality[List[Int]])
       }
     }
     
@@ -297,7 +297,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))
         }
-        (all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality)
+        (all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality[List[Int]])
       }
     }
     
@@ -375,7 +375,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))
         }
-        (all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality)
+        (all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality[List[Int]])
       }
     }
     

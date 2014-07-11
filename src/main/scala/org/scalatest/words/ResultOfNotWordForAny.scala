@@ -62,8 +62,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def equal(right: Any)(implicit equality: Equality[T]) {
-    if (equality.areEqual(left, right) != shouldBeTrue)
+  def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    if (evidence.areEqual(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
          if (shouldBeTrue) "didNotEqual" else "equaled",

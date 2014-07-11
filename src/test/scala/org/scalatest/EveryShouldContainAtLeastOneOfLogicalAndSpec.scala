@@ -137,16 +137,16 @@ class EveryShouldContainAtLeastOneOfLogicalAndSpec extends Spec {
       }
 
       def `should use an explicitly provided Equality` {
-        (fumList should (equal (fumList) and contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) and contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) and contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) and contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"foe\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (toList) and contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (equal (fumList) and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by defaultEquality, after being lowerCased and trimmed)
+        (fumList should (equal (fumList) and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by defaultEquality[Every[String]], after being lowerCased and trimmed)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -344,13 +344,13 @@ class EveryShouldContainAtLeastOneOfLogicalAndSpec extends Spec {
       }
 
       def `should use an explicitly provided Equality` {
-        (fumList should (not equal (toList) and not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) and not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) and not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) and not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) and not contain atLeastOneOf ("fum", "foe"))) (decided by defaultEquality[Every[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)

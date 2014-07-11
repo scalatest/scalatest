@@ -3189,9 +3189,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def equal(right: Any)(implicit equality: Equality[T]) {
+    def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
       doCollected(collected, xs, original, "equal", 1) { e =>
-        if ((equality.areEqual(e, right)) != shouldBeTrue)
+        if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotEqual" else "equaled",
@@ -4889,9 +4889,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldEqual(right: Any)(implicit equality: Equality[T]) {
+    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
-        if (!equality.areEqual(e, right)) {
+        if (!evidence.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
           throw newTestFailedException(FailureMessages("didNotEqual", eee, rightee), None, 6)
         }
@@ -6297,8 +6297,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldEqual(right: Any)(implicit equality: Equality[T]) {
-      if (!equality.areEqual(leftSideValue, right)) {
+    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+      if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
       }

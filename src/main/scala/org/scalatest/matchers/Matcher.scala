@@ -1170,7 +1170,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory1[T, Equality] =
+    def equal[R](any: R): MatcherFactory1[T, EvidenceThat[R]#CanEqual] =
       outerInstance.and(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
@@ -2316,7 +2316,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory1[T, Equality] =
+    def equal[R](any: R): MatcherFactory1[T, EvidenceThat[R]#CanEqual] =
       outerInstance.or(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
