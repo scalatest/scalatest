@@ -48,7 +48,7 @@ object EvidenceThat {
     (new EvidenceThat[R]).canBeContainedIn[E, TRAV](constraint)
 */
 
-  implicit def convertEqualityToEvidence[L, R](equality: Equality[L]): EvidenceThat[R]#CanEqual[L] =
+  implicit def convertEqualityToEvidence[L, R](equality: Equality[L])(implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
     (new EvidenceThat[R]).canEqualByEquality[L](equality)
 }
 

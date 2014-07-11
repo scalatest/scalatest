@@ -209,6 +209,16 @@ class ShouldEqualTypeCheckSpec extends Spec with TypeCheckedTripleEquals {
               equal (1)
           )""" shouldNot typeCheck
       }
+      def `when a wrongly typed explcit equality is provided` {
+        import org.scalactic.Explicitly._
+        import org.scalactic.StringNormalizations._
+        implicit val strEq = after being lowerCased
+        """"hi" should equal ("Hi")""" should compile
+        """"hi" shouldNot equal ("Hi") (decided by defaultEquality[String])""" should compile
+        """"hi" shouldNot equal ("Hi") (defaultEquality[String])""" should compile
+        """1 shouldNot equal ("Hi") (defaultEquality[Int])""" shouldNot typeCheck
+        """1 should equal ("Hi") (defaultEquality[Int])""" shouldNot typeCheck
+      }
     }
     object `for collections` {
       def `at the basic level` {
