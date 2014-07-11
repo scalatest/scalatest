@@ -22,7 +22,7 @@ final class EvidenceThat[R] {
   abstract class CanEqual[L] {
     def areEqual(leftSide: L, rightSide: R): Boolean
   }
-  def canEqual[L](implicit constraint: Constraint[L, R]): CanEqual[L] =
+  def canEqualByConstraint[L](implicit constraint: Constraint[L, R]): CanEqual[L] =
     new CanEqual[L] {
       def areEqual(leftSide: L, rightSide: R): Boolean = constraint.areEqual(leftSide, rightSide)
     }
@@ -42,7 +42,7 @@ final class EvidenceThat[R] {
 }
 object EvidenceThat {
   implicit def constrainedEquality[L, R](implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
-    (new EvidenceThat[R]).canEqual[L]
+    (new EvidenceThat[R]).canEqualByConstraint[L]
 /*
   implicit def constrainedHoldingForGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e], R](implicit constraint: Constraint[E, R]): EvidenceThat[R]#CanBeContainedIn[TRAV[E]] =
     (new EvidenceThat[R]).canBeContainedIn[E, TRAV](constraint)
