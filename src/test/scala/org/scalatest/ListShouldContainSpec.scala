@@ -137,7 +137,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -266,7 +266,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
