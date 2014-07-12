@@ -30,25 +30,32 @@ final class EvidenceThat[R] {
     new CanEqual[L] {
       def areEqual(leftSide: L, rightSide: R): Boolean = equality.areEqual(leftSide, rightSide)
     }
-/*
   abstract class CanBeContainedIn[L] {
-    def isContainedIn(leftSide: L, rightSide: R): Boolean
+    def contains(leftSide: L, rightSide: R): Boolean
   }
-  def canBeContainedIn[E, TRAV[e] <: scala.collection.GenTraversable[e]](constraint: Constraint[E, R]): CanBeContainedIn[TRAV[E]] =
-    new CanBeContainedIn[TRAV[E]] {
-      def isContainedIn(trav: TRAV[E], ele: R): Boolean = trav.exists((e: E) => constraint.areEqual(e, ele))
+  def canBeContainedIn[L](constraint: ContainingConstraint[L, R]): CanBeContainedIn[L] =
+    new CanBeContainedIn[L] {
+      def contains(container: L, ele: R): Boolean = constraint.contains(container, ele)
     }
-*/
 }
 object EvidenceThat {
   implicit def constrainedEquality[L, R](implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
     (new EvidenceThat[R]).canEqualByConstraint[L]
-/*
-  implicit def constrainedHoldingForGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e], R](implicit constraint: Constraint[E, R]): EvidenceThat[R]#CanBeContainedIn[TRAV[E]] =
-    (new EvidenceThat[R]).canBeContainedIn[E, TRAV](constraint)
-*/
-
-  implicit def convertEqualityToEvidence[L, R](equality: Equality[L])(implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
+  implicit def convertEqualityToEvidenceThatRCanEqualL[L, R](equality: Equality[L])(implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
     (new EvidenceThat[R]).canEqualByEquality[L](equality)
+
+  implicit def constrainedContaining[L, R](implicit constraint: ContainingConstraint[L, R]): EvidenceThat[R]#CanBeContainedIn[L] =
+    (new EvidenceThat[R]).canBeContainedIn[L](constraint)
+
+  implicit def convertEqualityToEvidenceThatRCanBeContainedInL[L, R](equality: Equality[R])(implicit cvt: Equality[R] => ContainingConstraint[L, R]): EvidenceThat[R]#CanBeContainedIn[L] =
+    (new EvidenceThat[R]).canBeContainedIn[L](cvt(equality))
+
+/*
+  implicit def convertEqualityToEvidenceThatRCanBeContainedInL[L, R](equality: Equality[R])(implicit constraint: ContainingConstraint[L, R]): EvidenceThat[R]#CanBeContainedIn[L] =
+    (new EvidenceThat[R]).canBeContainedInByEquality[L](constraint)
+
+  implicit def convertEqualityToEveryContainingConstraint[E, R](equality: Equality[E])(constraint: ContainingConstraint[Every[E], R]): ContainingConstraint[Every[E], R] =
+    containingNatureOfEvery[E, R](equality)
+*/
 }
 

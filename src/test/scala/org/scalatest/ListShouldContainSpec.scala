@@ -76,7 +76,7 @@ class ListShouldContainSpec extends Spec {
         }
         (xs should contain ("hi")) (decided by defaultEquality[String])
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
@@ -202,7 +202,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -327,7 +327,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         caseLists shouldNot contain ("HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -392,7 +392,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         caseLists shouldNot (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -492,7 +492,7 @@ class ListShouldContainSpec extends Spec {
         (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         (all (hiLists) should contain ("HI ")) (after being trimmed and lowerCased)
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      @Ignore def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
         intercept[TestFailedException] {
           all (hiHeHoLists) should contain ("HO")

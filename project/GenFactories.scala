@@ -316,7 +316,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
+    def apply[R](expectedElement: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
 
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
@@ -1468,7 +1468,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
+    def apply[R](expectedElement: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

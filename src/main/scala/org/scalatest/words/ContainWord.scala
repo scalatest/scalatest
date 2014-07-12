@@ -23,6 +23,7 @@ import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalactic.{Equality, Every}
 import org.scalatest.enablers.Containing
+import org.scalatest.enablers.EvidenceThat
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
@@ -46,14 +47,14 @@ final class ContainWord {
    *                             ^
    * </pre>
    */
-  def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
-    new MatcherFactory1[Any, Containing] {
-      def matcher[U <: Any : Containing]: Matcher[U] = 
+  def apply[R](expectedElement: R): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] =
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[U <: Any : EvidenceThat[R]#CanBeContainedIn]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
-            val containing = implicitly[Containing[U]]
+            val evidence = implicitly[EvidenceThat[R]#CanBeContainedIn[U]]
             MatchResult(
-              containing.contains(left, expectedElement),
+              evidence.contains(left, expectedElement),
               Resources("didNotContainExpectedElement"),
               Resources("containedExpectedElement"), 
               Vector(left, expectedElement)
