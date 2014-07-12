@@ -179,39 +179,39 @@ class ShouldContainElementTypeCheckSpec extends Spec with TypeCheckedTripleEqual
 
         import scala.collection.immutable.HashSet
 
-        """Set(1, 2) should contain ("2")""" shouldNot typeCheck
-        """Set(1, 2) should (contain ("2"))""" shouldNot typeCheck
+        """HashSet(1, 2) should contain ("2")""" shouldNot typeCheck
+        """HashSet(1, 2) should (contain ("2"))""" shouldNot typeCheck
 
-        """Set(1, 2) should not { contain ("3") }""" shouldNot typeCheck
-        """Set(1, 2) should not contain ("3")""" shouldNot typeCheck
+        """HashSet(1, 2) should not { contain ("3") }""" shouldNot typeCheck
+        """HashSet(1, 2) should not contain ("3")""" shouldNot typeCheck
 
-        """Set(1, 2) should { contain ("2") and (contain (1)) }""" shouldNot typeCheck
-        """Set(1, 2) should ((contain ("2")) and (contain (1)))""" shouldNot typeCheck
-        """Set(1, 2) should (contain ("2") and contain (1))""" shouldNot typeCheck
-        """Set(1, 2) should { contain (2) and (contain ("1")) }""" shouldNot typeCheck
-        """Set(1, 2) should ((contain (2)) and (contain ("1")))""" shouldNot typeCheck
-        """Set(1, 2) should (contain (2) and contain ("1"))""" shouldNot typeCheck
+        """HashSet(1, 2) should { contain ("2") and (contain (1)) }""" shouldNot typeCheck
+        """HashSet(1, 2) should ((contain ("2")) and (contain (1)))""" shouldNot typeCheck
+        """HashSet(1, 2) should (contain ("2") and contain (1))""" shouldNot typeCheck
+        """HashSet(1, 2) should { contain (2) and (contain ("1")) }""" shouldNot typeCheck
+        """HashSet(1, 2) should ((contain (2)) and (contain ("1")))""" shouldNot typeCheck
+        """HashSet(1, 2) should (contain (2) and contain ("1"))""" shouldNot typeCheck
 
-        """Set(1, 2) should { contain ("77") or (contain (2)) }""" shouldNot typeCheck
-        """Set(1, 2) should ((contain ("77")) or (contain (2)))""" shouldNot typeCheck
-        """Set(1, 2) should (contain ("77") or contain (2))""" shouldNot typeCheck
-        """Set(1, 2) should { contain (77) or (contain ("2")) }""" shouldNot typeCheck
-        """Set(1, 2) should ((contain (77)) or (contain ("2")))""" shouldNot typeCheck
-        """Set(1, 2) should (contain (77) or contain ("2"))""" shouldNot typeCheck
+        """HashSet(1, 2) should { contain ("77") or (contain (2)) }""" shouldNot typeCheck
+        """HashSet(1, 2) should ((contain ("77")) or (contain (2)))""" shouldNot typeCheck
+        """HashSet(1, 2) should (contain ("77") or contain (2))""" shouldNot typeCheck
+        """HashSet(1, 2) should { contain (77) or (contain ("2")) }""" shouldNot typeCheck
+        """HashSet(1, 2) should ((contain (77)) or (contain ("2")))""" shouldNot typeCheck
+        """HashSet(1, 2) should (contain (77) or contain ("2"))""" shouldNot typeCheck
 
-        """Set(1, 2) should { not { contain ("5") } and not { contain (3) }}""" shouldNot typeCheck
-        """Set(1, 2) should ((not contain ("5")) and (not contain (3)))""" shouldNot typeCheck
-        """Set(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
-        """Set(1, 2) should { not { contain (5) } and not { contain ("3") }}""" shouldNot typeCheck
-        """Set(1, 2) should ((not contain (5)) and (not contain ("3")))""" shouldNot typeCheck
-        """Set(1, 2) should { not { contain (1) } or not { contain ("3") }}""" shouldNot typeCheck
+        """HashSet(1, 2) should { not { contain ("5") } and not { contain (3) }}""" shouldNot typeCheck
+        """HashSet(1, 2) should ((not contain ("5")) and (not contain (3)))""" shouldNot typeCheck
+        """HashSet(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
+        """HashSet(1, 2) should { not { contain (5) } and not { contain ("3") }}""" shouldNot typeCheck
+        """HashSet(1, 2) should ((not contain (5)) and (not contain ("3")))""" shouldNot typeCheck
+        """HashSet(1, 2) should { not { contain (1) } or not { contain ("3") }}""" shouldNot typeCheck
 
-        """Set(1, 2) should ((not contain ("1")) or (not contain (3)))""" shouldNot typeCheck
-        """Set(1, 2) should (not contain ("3") or not contain (2))""" shouldNot typeCheck
-        """Set(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
-        """Set(1, 2) should ((not contain (1)) or (not contain ("3")))""" shouldNot typeCheck
-        """Set(1, 2) should (not contain (3) or not contain ("2"))""" shouldNot typeCheck
-        """Set(1, 2) should (not contain (5) and not contain ("3"))""" shouldNot typeCheck
+        """HashSet(1, 2) should ((not contain ("1")) or (not contain (3)))""" shouldNot typeCheck
+        """HashSet(1, 2) should (not contain ("3") or not contain (2))""" shouldNot typeCheck
+        """HashSet(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
+        """HashSet(1, 2) should ((not contain (1)) or (not contain ("3")))""" shouldNot typeCheck
+        """HashSet(1, 2) should (not contain (3) or not contain ("2"))""" shouldNot typeCheck
+        """HashSet(1, 2) should (not contain (5) and not contain ("3"))""" shouldNot typeCheck
       }
       def `on scala.collection.mutable.HashSet` {
 
