@@ -3818,10 +3818,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain(expectedElement: Any)(implicit containing: Containing[T]) {
+    def contain[R](expectedElement: R)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
       doCollected(collected, xs, original, "contain", 1) { e =>
         val right = expectedElement
-        if ((containing.contains(e, right)) != shouldBeTrue) {
+        if ((evidence.contains(e, right)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
