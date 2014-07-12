@@ -500,9 +500,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def contain(expectedElement: Any)(implicit containing: Containing[T]) {
+  def contain[R](expectedElement: R)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
     val right = expectedElement
-    if (containing.contains(left, right) != shouldBeTrue) {
+    if (evidence.contains(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",

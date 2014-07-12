@@ -984,12 +984,12 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](expectedElement: T): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
-      def matcher[U : Containing]: Matcher[U] = 
-        new Matcher[U] {
-          def apply(left: U): MatchResult = {
-            val containing = implicitly[Containing[U]]
+  def contain[R](expectedElement: R): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[L : EvidenceThat[R]#CanBeContainedIn]: Matcher[L] = 
+        new Matcher[L] {
+          def apply(left: L): MatchResult = {
+            val containing = implicitly[EvidenceThat[R]#CanBeContainedIn[L]]
             MatchResult(
               !containing.contains(left, expectedElement),
               Resources("containedExpectedElement"),

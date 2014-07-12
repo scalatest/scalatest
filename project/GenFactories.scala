@@ -1222,7 +1222,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](expectedElement: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -2370,7 +2370,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](expectedElement: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.not.contain(expectedElement))
 
     /**

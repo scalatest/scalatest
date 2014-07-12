@@ -24,145 +24,53 @@ class ShouldContainElementTypeCheckSpec extends Spec with TypeCheckedTripleEqual
 
   def `should give a compiler error` {
     """List(1, 2, 3) should contain ("hi")""" shouldNot typeCheck
+    // """List(1, 2, 3) should contain oneOf ("hi", "ho")""" shouldNot typeCheck
   }
-/*
+
   // Checking for a specific size
-  object `The 'contain (Int)' syntax` {
+  object `The 'contain (<element>)' syntax` {
 
-    object `on Array` {
+    object `should give a type error if the types are not compatible` {
 
-      def `should do nothing if array contains the specified element` {
-        Array(1, 2) should contain (2)
-        Array(1, 2) should (contain (2))
-        // check((arr: Array[Int]) => arr.size != 0 ==> returnsNormally(arr should contain (arr(arr.length - 1))))
-      }
+      def `on Array` {
 
-      def `should do nothing if array does not contain the element and used with should not` {
-        Array(1, 2) should not { contain (3) }
-        Array(1, 2) should not contain (3)
-        // check((arr: Array[Int], i: Int) => !arr.exists(_ == i) ==> returnsNormally(arr should not { contain (i) }))
-        // check((arr: Array[Int], i: Int) => !arr.exists(_ == i) ==> returnsNormally(arr should not contain (i)))
-      }
+        """Array(1, 2) should contain ("2")""" shouldNot typeCheck
+        """Array(1, 2) should (contain ("2"))""" shouldNot typeCheck
 
-      def `should do nothing when array contains the specified element and used in a logical-and expression` {
-        Array(1, 2) should { contain (2) and (contain (1)) }
-        Array(1, 2) should ((contain (2)) and (contain (1)))
-        Array(1, 2) should (contain (2) and contain (1))
-       }
+        """Array(1, 2) should not { contain ("3") }""" shouldNot typeCheck
+        """Array(1, 2) should not contain ("3")""" shouldNot typeCheck
 
-      def `should do nothing when array contains the specified element and used in a logical-or expression` {
-        Array(1, 2) should { contain (77) or (contain (2)) }
-        Array(1, 2) should ((contain (77)) or (contain (2)))
-        Array(1, 2) should (contain (77) or contain (2))
-      }
+        """Array(1, 2) should { contain ("2") and (contain (1)) }""" shouldNot typeCheck
+        """Array(1, 2) should ((contain ("2")) and (contain (1)))""" shouldNot typeCheck
+        """Array(1, 2) should (contain ("2") and contain (1))""" shouldNot typeCheck
+        """Array(1, 2) should { contain (2) and (contain ("1")) }""" shouldNot typeCheck
+        """Array(1, 2) should ((contain (2)) and (contain ("1")))""" shouldNot typeCheck
+        """Array(1, 2) should (contain (2) and contain ("1"))""" shouldNot typeCheck
 
-      def `should do nothing when array doesn't contain the specified element and used in a logical-and expression with not` {
-        Array(1, 2) should { not { contain (5) } and not { contain (3) }}
-        Array(1, 2) should ((not contain (5)) and (not contain (3)))
-        Array(1, 2) should (not contain (5) and not contain (3))
-      }
+        """Array(1, 2) should { contain ("77") or (contain (2)) }""" shouldNot typeCheck
+        """Array(1, 2) should ((contain ("77")) or (contain (2)))""" shouldNot typeCheck
+        """Array(1, 2) should (contain ("77") or contain (2))""" shouldNot typeCheck
+        """Array(1, 2) should { contain (77) or (contain ("2")) }""" shouldNot typeCheck
+        """Array(1, 2) should ((contain (77)) or (contain ("2")))""" shouldNot typeCheck
+        """Array(1, 2) should (contain (77) or contain ("2"))""" shouldNot typeCheck
 
-      def `should do nothing when array doesn't contain the specified element and used in a logical-or expression with not` {
-        Array(1, 2) should { not { contain (1) } or not { contain (3) }}
-        Array(1, 2) should ((not contain (1)) or (not contain (3)))
-        Array(1, 2) should (not contain (3) or not contain (2))
-      }
+        """Array(1, 2) should { not { contain ("5") } and not { contain (3) }}""" shouldNot typeCheck
+        """Array(1, 2) should ((not contain ("5")) and (not contain (3)))""" shouldNot typeCheck
+        """Array(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
+        """Array(1, 2) should { not { contain (5) } and not { contain ("3") }}""" shouldNot typeCheck
+        """Array(1, 2) should ((not contain (5)) and (not contain ("3")))""" shouldNot typeCheck
+        """Array(1, 2) should { not { contain (1) } or not { contain ("3") }}""" shouldNot typeCheck
 
-      def `should throw TestFailedException if array does not contain the specified element` {
-        val caught = intercept[TestFailedException] {
-          Array(1, 2) should contain (3)
-        }
-        assert(caught.getMessage === "Array(1, 2) did not contain element 3")
-        // check((arr: Array[String], s: String) => !arr.exists(_ == s) ==> throwsTestFailedException(arr should contain (s)))
-      }
-
-      def `should throw TestFailedException if array contains the specified element, when used with not` {
-
-        val caught1 = intercept[TestFailedException] {
-          Array(1, 2) should not contain (2)
-        }
-        assert(caught1.getMessage === "Array(1, 2) contained element 2")
-        // check((arr: Array[String]) => arr.length > 0 ==> throwsTestFailedException(arr should not contain (arr(0))))
-
-        val caught2 = intercept[TestFailedException] {
-          Array(1, 2) should not (contain (2))
-        }
-        assert(caught2.getMessage === "Array(1, 2) contained element 2")
-        // check((arr: Array[String]) => arr.length > 0 ==> throwsTestFailedException(arr should not (contain (arr(0)))))
-
-        val caught3 = intercept[TestFailedException] {
-          Array(1, 2) should (not contain (2))
-        }
-        assert(caught3.getMessage === "Array(1, 2) contained element 2")
-        // check((arr: Array[String]) => arr.length > 0 ==> throwsTestFailedException(arr should not (contain (arr(0)))))
-      }
-
-      def `should throw a TestFailedException when array doesn't contain the specified element and used in a logical-and expression` {
-
-        val caught1 = intercept[TestFailedException] {
-          Array(1, 2) should { contain (5) and (contain (2 - 1)) }
-        }
-        assert(caught1.getMessage === "Array(1, 2) did not contain element 5")
-
-        val caught2 = intercept[TestFailedException] {
-          Array(1, 2) should (contain (5) and contain (2 - 1))
-        }
-        assert(caught2.getMessage === "Array(1, 2) did not contain element 5")
-      }
-
-      def `should throw a TestFailedException when array doesn't contain the specified element and used in a logical-or expression` {
-
-        val caught1 = intercept[TestFailedException] {
-          Array(1, 2) should { contain (55) or (contain (22)) }
-        }
-        assert(caught1.getMessage === "Array(1, 2) did not contain element 55, and Array(1, 2) did not contain element 22")
-
-        val caught2 = intercept[TestFailedException] {
-          Array(1, 2) should (contain (55) or contain (22))
-        }
-        assert(caught2.getMessage === "Array(1, 2) did not contain element 55, and Array(1, 2) did not contain element 22")
-      }
-
-      def `should throw a TestFailedException when array contains the specified element and used in a logical-and expression with not` {
-
-        val caught1 = intercept[TestFailedException] {
-          Array(1, 2) should { not { contain (3) } and not { contain (2) }}
-        }
-        assert(caught1.getMessage === "Array(1, 2) did not contain element 3, but Array(1, 2) contained element 2")
-
-        val caught2 = intercept[TestFailedException] {
-          Array(1, 2) should ((not contain (3)) and (not contain (2)))
-        }
-        assert(caught2.getMessage === "Array(1, 2) did not contain element 3, but Array(1, 2) contained element 2")
-
-        val caught3 = intercept[TestFailedException] {
-          Array(1, 2) should (not contain (3) and not contain (2))
-        }
-        assert(caught3.getMessage === "Array(1, 2) did not contain element 3, but Array(1, 2) contained element 2")
-      }
-
-      def `should throw a TestFailedException when array contains the specified element and used in a logical-or expression with not` {
-
-        val caught1 = intercept[TestFailedException] {
-          Array(1, 2) should { not { contain (2) } or not { contain (2) }}
-        }
-        assert(caught1.getMessage === "Array(1, 2) contained element 2, and Array(1, 2) contained element 2")
-
-        val caught2 = intercept[TestFailedException] {
-          Array(1, 2) should ((not contain (2)) or (not contain (2)))
-        }
-        assert(caught2.getMessage === "Array(1, 2) contained element 2, and Array(1, 2) contained element 2")
-
-        val caught3 = intercept[TestFailedException] {
-          Array(1, 2) should (not contain (2) or not contain (2))
-        }
-        assert(caught3.getMessage === "Array(1, 2) contained element 2, and Array(1, 2) contained element 2")
-      }
-
-      def `should work on parallel form` {
-        Array(1, 2).par should contain (2)
+        """Array(1, 2) should ((not contain ("1")) or (not contain (3)))""" shouldNot typeCheck
+        """Array(1, 2) should (not contain ("3") or not contain (2))""" shouldNot typeCheck
+        """Array(1, 2) should (not contain ("5") and not contain (3))""" shouldNot typeCheck
+        """Array(1, 2) should ((not contain (1)) or (not contain ("3")))""" shouldNot typeCheck
+        """Array(1, 2) should (not contain (3) or not contain ("2"))""" shouldNot typeCheck
+        """Array(1, 2) should (not contain (5) and not contain ("3"))""" shouldNot typeCheck
       }
     }
+  }
+/*
 
     object `on scala.collection.immutable.Set ` {
 

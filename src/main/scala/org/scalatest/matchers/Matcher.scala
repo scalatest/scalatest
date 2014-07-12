@@ -1613,7 +1613,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory1[T, Containing] =
+    def contain[R](expectedElement: R): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.and(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -2759,7 +2759,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory1[T, Containing] =
+    def contain[R](expectedElement: R): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.or(MatcherWords.not.contain(expectedElement))
 
     /**
