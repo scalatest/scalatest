@@ -202,16 +202,16 @@ final class ContainWord {
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
     }
 
-  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Containing] = {
+  def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ContainWord.scala", "oneOf"))
-    new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              containing.containsOneOf(left, right),
+              evidence.containsOneOf(left, right),
               Resources("didNotContainOneOfElements"),
               Resources("containedOneOfElements"), 
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))

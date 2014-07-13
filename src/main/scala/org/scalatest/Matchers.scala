@@ -2935,11 +2935,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
-    new ResultOfOneOfApplication(xs)
+    new ResultOfOneOfApplication[R](xs)
   }
 
   /**
@@ -3843,12 +3843,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain(oneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
+    def contain[R](oneOf: ResultOfOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
 
       val right = oneOf.right
 
       doCollected(collected, xs, original, "contain", 1) { e =>
-        if (containing.containsOneOf(e, right) != shouldBeTrue)
+        if (evidence.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

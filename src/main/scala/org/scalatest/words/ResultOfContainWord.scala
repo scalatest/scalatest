@@ -17,6 +17,7 @@ package org.scalatest.words
 
 import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
+import org.scalatest.enablers.EvidenceThat
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
@@ -44,11 +45,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]) {
+  def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[L]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
-    if (containing.containsOneOf(left, right) != shouldBeTrue)
+    if (evidence.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

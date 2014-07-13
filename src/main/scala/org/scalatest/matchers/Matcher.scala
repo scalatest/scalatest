@@ -796,7 +796,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      */
-    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
       
     /**
@@ -1624,9 +1624,9 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
+    def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.and(MatcherWords.not.contain(right))
-      
+
     /**
      * This method enables the following syntax:
      *
@@ -1931,7 +1931,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      */
-    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
       
     /**
@@ -2770,7 +2770,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      */
-    def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
+    def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**

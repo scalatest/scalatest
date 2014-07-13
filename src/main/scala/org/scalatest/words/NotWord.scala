@@ -1011,16 +1011,16 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](oneOf: ResultOfOneOfApplication): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+  def contain[R](oneOf: ResultOfOneOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = oneOf.right
 
             MatchResult(
-              !containing.containsOneOf(left, right),
+              !evidence.containsOneOf(left, right),
               Resources("containedOneOfElements"),
               Resources("didNotContainOneOfElements"), 
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))

@@ -756,11 +756,11 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
+  def contain[R](newOneOf: ResultOfOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
 
     val right = newOneOf.right
 
-    if (containing.containsOneOf(left, right) != shouldBeTrue)
+    if (evidence.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

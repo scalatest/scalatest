@@ -405,7 +405,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1255,7 +1255,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1553,7 +1553,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -2403,7 +2403,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
