@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.enablers
+package org.scalactic.enablers
 
 import org.scalactic.Equality
 import org.scalatest.words.ArrayWrapper
@@ -21,7 +21,6 @@ import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
-import Aggregating.tryEquality
 
 /**
  * Supertrait for typeclasses that enable <code>be empty</code> matcher syntax.

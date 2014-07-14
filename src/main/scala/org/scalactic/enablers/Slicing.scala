@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.enablers
+package org.scalactic.enablers
 
 import org.scalactic.{Equality, Every}
 import org.scalatest.words.ArrayWrapper
@@ -64,7 +64,7 @@ import scala.collection.JavaConverters._
  * versus Aggregating</a> section of the main documentation for trait <code>Containing</code>.
  * </p>
  */
-private[scalatest] trait Slicing[-A] {
+private[scalactic] trait Slicing[-A] {
 
 // TODO: Write tests that a NotAllowedException is thrown when no elements are passed, maybe if only one element is passed, and 
 // likely if an object is repeated in the list.
@@ -107,7 +107,7 @@ private[scalatest] trait Slicing[-A] {
  * <li><code>java.util.Map</code></li>
  * </ul>
  */
-private[scalatest] object Slicing {
+private[scalactic] object Slicing {
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.

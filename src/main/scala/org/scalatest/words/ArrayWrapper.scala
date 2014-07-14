@@ -20,7 +20,7 @@ import org.scalatest.FailureMessages
 /**
  * This wrapper gives better toString (Array(x, x, x)) as compared to Scala default one (WrappedArray(x, x, x)).
  */
-private[scalatest] class ArrayWrapper[T](underlying: Array[T]) extends Traversable[T] {
+private[org] class ArrayWrapper[T](underlying: Array[T]) extends Traversable[T] {
   def foreach[U](f: (T) => U) {
     var index = 0
     while (index < underlying.length) {

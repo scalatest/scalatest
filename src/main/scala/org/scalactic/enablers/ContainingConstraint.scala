@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.enablers
+package org.scalactic.enablers
 
 import org.scalactic.{Equality, NormalizingEquality, Every, Constraint}
 import scala.collection.{GenTraversableOnce, GenTraversable}
@@ -136,7 +136,7 @@ object ContainingConstraint {
         case cce: ClassCastException => false
     }
   
-  private[scalatest] def checkOneOf[T, R](left: GenTraversableOnce[T], right: GenTraversable[R], constraint: Constraint[T, R]): Set[R] = {
+  private[scalactic] def checkOneOf[T, R](left: GenTraversableOnce[T], right: GenTraversable[R], constraint: Constraint[T, R]): Set[R] = {
     // aggregate version is more verbose, but it allows parallel execution.
     right.aggregate(Set.empty[R])( 
       { case (fs, r) => 
@@ -160,7 +160,7 @@ object ContainingConstraint {
     )
   }
   
-  private[scalatest] def checkNoneOf[T, R](left: GenTraversableOnce[T], right: GenTraversable[R], constraint: Constraint[T, R]): Option[R] = {
+  private[scalactic] def checkNoneOf[T, R](left: GenTraversableOnce[T], right: GenTraversable[R], constraint: Constraint[T, R]): Option[R] = {
     right.aggregate(None)( 
       { case (f, r) => 
           if (left.exists(t => constraint.areEqual(t, r))) 

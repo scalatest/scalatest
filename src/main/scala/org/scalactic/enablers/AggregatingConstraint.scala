@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.enablers
+package org.scalactic.enablers
 
 import org.scalactic.{Equality, Every, Constraint}
 import org.scalactic.TripleEqualsSupport.EqualityConstraint
@@ -129,14 +129,14 @@ trait AggregatingConstraint[-A, R] {
 object AggregatingConstraint {
 
   // TODO: Throwing exceptions is slow. Just do a pattern match and test the type before trying to cast it.
-  private[scalatest] def tryEquality[L, R](left: Any, right: Any, constraint: Constraint[L, R]): Boolean = 
+  private[scalactic] def tryEquality[L, R](left: Any, right: Any, constraint: Constraint[L, R]): Boolean = 
     try constraint.areEqual(left.asInstanceOf[L], right.asInstanceOf[R])
       catch {
         case cce: ClassCastException => false
     }
   
   
-  private[scalatest] def checkTheSameElementsAs[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkTheSameElementsAs[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
     case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
     object ZipNoMatch
     
@@ -182,7 +182,7 @@ object AggregatingConstraint {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
   
-  private[scalatest] def checkOnly[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkOnly[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
     @tailrec
     def findNext(value: L, rightItr: Iterator[R], processedSet: Set[R]): Set[R] = 
       if (rightItr.hasNext) {
@@ -215,7 +215,7 @@ object AggregatingConstraint {
     checkEqual(left.toIterator, right.toIterator, Set.empty)
   }
   
-  private[scalatest] def checkAllOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkAllOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
     @tailrec
     def checkEqual(left: GenTraversable[L], rightItr: Iterator[R]): Boolean = {
       if (rightItr.hasNext) {
@@ -231,7 +231,7 @@ object AggregatingConstraint {
     checkEqual(left, right.toIterator)
   }
   
-  private[scalatest] def checkAtMostOneOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkAtMostOneOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
     
     def countElements: Int = 
       right.aggregate(0)(

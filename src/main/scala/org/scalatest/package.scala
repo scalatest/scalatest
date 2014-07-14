@@ -85,10 +85,10 @@ package object scalatest {
   /**
    * <p>
    * <strong>This trait has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.ModifiableMessageXXX</code> to <code>org.scalatest.exceptions.ModifiableMessageXXX</code>.</strong>
+   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.ModifiableMessage</code> to <code>org.scalatest.exceptions.ModifiableMessage</code>.</strong>
    * </p>
    */
-  @deprecated("Please use org.scalatest.exceptions.ModifiableMessageXXX instead.")
+  @deprecated("Please use org.scalatest.exceptions.ModifiableMessage instead.")
   type ModifiableMessage[T <: Throwable] = exceptions.ModifiableMessage[T]
 
   /**
