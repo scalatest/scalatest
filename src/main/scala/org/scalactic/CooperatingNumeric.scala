@@ -15,23 +15,73 @@
  */
 package org.scalactic
 
-sealed class CooperatingNumeric[T]
+sealed abstract class CooperatingNumeric[T]
 
 object CooperatingNumeric {
-  implicit val cooperatingNumericNatureOfByte: CooperatingNumeric[Byte] = new CooperatingNumeric[Byte]
-  implicit val cooperatingNumericNatureOfShort: CooperatingNumeric[Short] = new CooperatingNumeric[Short]
-  implicit val cooperatingNumericNatureOfChar: CooperatingNumeric[Char] = new CooperatingNumeric[Char]
-  implicit val cooperatingNumericNatureOfInt: CooperatingNumeric[Int] = new CooperatingNumeric[Int]
-  implicit val cooperatingNumericNatureOfLong: CooperatingNumeric[Long] = new CooperatingNumeric[Long]
-  implicit val cooperatingNumericNatureOfFloat: CooperatingNumeric[Float] = new CooperatingNumeric[Float]
-  implicit val cooperatingNumericNatureOfDouble: CooperatingNumeric[Double] = new CooperatingNumeric[Double]
-  implicit val cooperatingNumericNatureOfBigInt: CooperatingNumeric[BigInt] = new CooperatingNumeric[BigInt]
-  implicit val cooperatingNumericNatureOfBigDecimal: CooperatingNumeric[BigDecimal] = new CooperatingNumeric[BigDecimal]
-  implicit val cooperatingNumericNatureOfJavaByte: CooperatingNumeric[java.lang.Byte] = new CooperatingNumeric[java.lang.Byte]
-  implicit val cooperatingNumericNatureOfJavaShort: CooperatingNumeric[java.lang.Short] = new CooperatingNumeric[java.lang.Short]
-  implicit val cooperatingNumericNatureOfJavaCharacter: CooperatingNumeric[java.lang.Character] = new CooperatingNumeric[java.lang.Character]
-  implicit val cooperatingNumericNatureOfJavaInteger: CooperatingNumeric[java.lang.Integer] = new CooperatingNumeric[java.lang.Integer]
-  implicit val cooperatingNumericNatureOfJavaLong: CooperatingNumeric[java.lang.Long] = new CooperatingNumeric[java.lang.Long]
-  implicit val cooperatingNumericNatureOfJavaFloat: CooperatingNumeric[java.lang.Float] = new CooperatingNumeric[java.lang.Float]
-  implicit val cooperatingNumericNatureOfJavaDouble: CooperatingNumeric[java.lang.Double] = new CooperatingNumeric[java.lang.Double]
+
+  private object CooperatingByte extends CooperatingNumeric[Byte] {
+    override def toString: String = "CooperatingNumeric[Byte]"
+  }
+  private object CooperatingShort extends CooperatingNumeric[Short] {
+    override def toString: String = "CooperatingNumeric[Short]"
+  }
+  private object CooperatingChar extends CooperatingNumeric[Char] {
+    override def toString: String = "CooperatingNumeric[Char]"
+  }
+  private object CooperatingInt extends CooperatingNumeric[Int] {
+    override def toString: String = "CooperatingNumeric[Int]"
+  }
+  private object CooperatingLong extends CooperatingNumeric[Long] {
+    override def toString: String = "CooperatingNumeric[Long]"
+  }
+  private object CooperatingFloat extends CooperatingNumeric[Float] {
+    override def toString: String = "CooperatingNumeric[Float]"
+  }
+  private object CooperatingDouble extends CooperatingNumeric[Double] {
+    override def toString: String = "CooperatingNumeric[Doubl]"
+  }
+  private object CooperatingBigInt extends CooperatingNumeric[BigInt] {
+    override def toString: String = "CooperatingNumeric[BigInt]"
+  }
+  private object CooperatingBigDecimal extends CooperatingNumeric[BigDecimal] {
+    override def toString: String = "CooperatingNumeric[BigDecimal]"
+  }
+  private object CooperatingJavaLangByte extends CooperatingNumeric[java.lang.Byte] {
+    override def toString: String = "CooperatingNumeric[java.lang.Byte]"
+  }
+  private object CooperatingJavaLangShort extends CooperatingNumeric[java.lang.Short] {
+    override def toString: String = "CooperatingNumeric[java.lang.Short]"
+  }
+  private object CooperatingJavaLangCharacter extends CooperatingNumeric[java.lang.Character] {
+    override def toString: String = "CooperatingNumeric[java.lang.Character]"
+  }
+  private object CooperatingJavaLangInteger extends CooperatingNumeric[java.lang.Integer] {
+    override def toString: String = "CooperatingNumeric[java.lang.Integer]"
+  }
+  private object CooperatingJavaLangLong extends CooperatingNumeric[java.lang.Long] {
+    override def toString: String = "CooperatingNumeric[java.lang.Long]"
+  }
+  private object CooperatingJavaLangFloat extends CooperatingNumeric[java.lang.Float] {
+    override def toString: String = "CooperatingNumeric[java.lang.Float]"
+  }
+  private object CooperatingJavaLangDouble extends CooperatingNumeric[java.lang.Double] {
+    override def toString: String = "CooperatingNumeric[java.lang.Double]"
+  }
+
+  implicit val cooperatingNumericNatureOfByte: CooperatingNumeric[Byte] = CooperatingByte
+  implicit val cooperatingNumericNatureOfShort: CooperatingNumeric[Short] = CooperatingShort
+  implicit val cooperatingNumericNatureOfChar: CooperatingNumeric[Char] = CooperatingChar
+  implicit val cooperatingNumericNatureOfInt: CooperatingNumeric[Int] = CooperatingInt
+  implicit val cooperatingNumericNatureOfLong: CooperatingNumeric[Long] = CooperatingLong
+  implicit val cooperatingNumericNatureOfFloat: CooperatingNumeric[Float] = CooperatingFloat
+  implicit val cooperatingNumericNatureOfDouble: CooperatingNumeric[Double] = CooperatingDouble
+  implicit val cooperatingNumericNatureOfBigInt: CooperatingNumeric[BigInt] = CooperatingBigInt
+  implicit val cooperatingNumericNatureOfBigDecimal: CooperatingNumeric[BigDecimal] = CooperatingBigDecimal
+  implicit val cooperatingNumericNatureOfJavaByte: CooperatingNumeric[java.lang.Byte] = CooperatingJavaLangByte
+  implicit val cooperatingNumericNatureOfJavaShort: CooperatingNumeric[java.lang.Short] = CooperatingJavaLangShort
+  implicit val cooperatingNumericNatureOfJavaCharacter: CooperatingNumeric[java.lang.Character] = CooperatingJavaLangCharacter
+  implicit val cooperatingNumericNatureOfJavaInteger: CooperatingNumeric[java.lang.Integer] = CooperatingJavaLangInteger
+  implicit val cooperatingNumericNatureOfJavaLong: CooperatingNumeric[java.lang.Long] = CooperatingJavaLangLong
+  implicit val cooperatingNumericNatureOfJavaFloat: CooperatingNumeric[java.lang.Float] = CooperatingJavaLangFloat
+  implicit val cooperatingNumericNatureOfJavaDouble: CooperatingNumeric[java.lang.Double] = CooperatingJavaLangDouble
 }
