@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfAtMostOneOfApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfAtMostOneOfApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "atMostOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
 }

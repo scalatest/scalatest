@@ -350,7 +350,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+    def theSameElementsAs[R](right: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] = 
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsAs(right))
 
     /**
@@ -361,7 +361,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
+    def theSameElementsInOrderAs[R](right: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] = 
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsInOrderAs(right))
 
     /**
@@ -372,7 +372,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -383,7 +383,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*))
 
     /**
@@ -394,7 +394,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -416,7 +416,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -427,7 +427,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+    def only[R](right: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] = 
       thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*))
 
     /**
@@ -438,7 +438,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -449,7 +449,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
   }
 
@@ -1266,7 +1266,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAtLeastOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1277,7 +1277,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](right: ResultOfNoneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1288,7 +1288,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfTheSameElementsAsApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1299,7 +1299,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfTheSameElementsInOrderAsApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1310,7 +1310,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfOnlyApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1321,7 +1321,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfInOrderOnlyApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1332,7 +1332,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAllOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1343,7 +1343,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfInOrderApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1354,7 +1354,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAtMostOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
@@ -1498,7 +1498,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+    def theSameElementsAs[R](right: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] = 
       thisMatcherFactory.or(MatcherWords.contain.theSameElementsAs(right))
 
     /**
@@ -1509,7 +1509,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
+    def theSameElementsInOrderAs[R](right: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] = 
       thisMatcherFactory.or(MatcherWords.contain.theSameElementsInOrderAs(right))
 
     /**
@@ -1520,7 +1520,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1531,7 +1531,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1542,7 +1542,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1564,7 +1564,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1575,7 +1575,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+    def only[R](right: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] = 
       thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*))
 
     /**
@@ -1586,7 +1586,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
 
     /**
@@ -1597,7 +1597,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
   }
 
@@ -2414,7 +2414,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAtLeastOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2425,7 +2425,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain[R](right: ResultOfNoneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2436,7 +2436,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfTheSameElementsAsApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2447,7 +2447,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfTheSameElementsInOrderAsApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2458,7 +2458,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfOnlyApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2469,7 +2469,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfInOrderOnlyApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2480,7 +2480,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAllOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2491,7 +2491,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    def contain[R](right: ResultOfInOrderApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInSequence] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
@@ -2502,7 +2502,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain[R](right: ResultOfAtMostOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**

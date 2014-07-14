@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfOnlyApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfOnlyApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "only (" + right.map(Prettifier.default(_)).mkString(", ") + ")" 
 }

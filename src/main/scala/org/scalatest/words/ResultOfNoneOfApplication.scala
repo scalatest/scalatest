@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfNoneOfApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfNoneOfApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "noneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
 }

@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfAtLeastOneOfApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfAtLeastOneOfApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "atLeastOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
 }

@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfTheSameElementsAsApplication(val right: scala.collection.GenTraversable[_]) {
+class ResultOfTheSameElementsAsApplication[R](val right: scala.collection.GenTraversable[R]) {
   override def toString: String = "theSameElementsAs (" + Prettifier.default(right) + ")" 
 }

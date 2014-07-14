@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfAllOfApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfAllOfApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
 }

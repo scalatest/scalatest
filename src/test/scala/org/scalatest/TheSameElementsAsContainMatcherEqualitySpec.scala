@@ -204,7 +204,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Explicitly {
       
       val javaMapEquality = new JavaMapTrimEquality
       
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (javaMapEquality, javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Vector(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")))) (javaMapEquality, javaMapEquality)
     }
       
     def `should take custom implicit equality in scope when 'should not contain' is used` {

@@ -770,7 +770,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = atLeastOneOf.right
 
@@ -784,7 +784,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]) {
+  def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
 
     val right = noneOf.right
 
@@ -798,7 +798,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
+  def contain[R](theSameElementsAs: ResultOfTheSameElementsAsApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = theSameElementsAs.right
 
@@ -812,7 +812,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit sequencing: Sequencing[T]) {
+  def contain[R](theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
 
     val right = theSameElementsInOrderAs.right
 
@@ -826,7 +826,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(only: ResultOfOnlyApplication)(implicit aggregating: Aggregating[T]) {
+  def contain[R](only: ResultOfOnlyApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = only.right
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
@@ -845,7 +845,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
-  def contain(only: ResultOfInOrderOnlyApplication)(implicit sequencing: Sequencing[T]) {
+  def contain[R](only: ResultOfInOrderOnlyApplication[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
     val right = only.right
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -857,7 +857,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(only: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain[R](only: ResultOfAllOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = only.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
@@ -869,8 +869,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
         )
       )
   }
-  
-  def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
+
+  def contain[R](only: ResultOfInOrderApplication[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
 
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
@@ -883,7 +883,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(atMostOneOf: ResultOfAtMostOneOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = atMostOneOf.right
 

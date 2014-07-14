@@ -224,12 +224,12 @@ final class ContainWord {
     }
   }
 
-  def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Aggregating] = {
+  def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("ContainWord.scala", "atLeastOneOf"))
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -246,12 +246,12 @@ final class ContainWord {
     }
   }
   
-  def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Containing] = {
+  def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("ContainWord.scala", "noneOf"))
-    new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit containing: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -268,9 +268,9 @@ final class ContainWord {
     }
   }
   
-  def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def theSameElementsAs[R](right: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -287,9 +287,9 @@ final class ContainWord {
     }
   }
   
-  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+  def theSameElementsInOrderAs[R](right: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+      def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -306,13 +306,13 @@ final class ContainWord {
     }
   }
   
-  def only(right: Any*): MatcherFactory1[Any, Aggregating] = {
+  def only[R](right: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("ContainWord.scala", "only"))
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("ContainWord.scala", "only"))
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val postfix =
@@ -334,12 +334,12 @@ final class ContainWord {
     }
   }
 
-  def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Sequencing] = {
+  def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("ContainWord.scala", "inOrderOnly"))
-    new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+      def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -356,12 +356,12 @@ final class ContainWord {
     }
   }
   
-  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Aggregating] = {
+  def allOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("ContainWord.scala", "allOf"))
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -378,12 +378,12 @@ final class ContainWord {
     }
   }
   
-  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Sequencing] = {
+  def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("ContainWord.scala", "inOrder"))
-    new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+      def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -400,12 +400,12 @@ final class ContainWord {
     }
   }
   
-  def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Aggregating] = {
+  def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("ContainWord.scala", "atMostOneOf"))
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(

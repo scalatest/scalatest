@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfInOrderApplication(val right: scala.collection.Seq[Any]) {
+class ResultOfInOrderApplication[R](val right: scala.collection.Seq[R]) {
   override def toString: String = "inOrder (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
 }
