@@ -16,6 +16,7 @@
 package org.scalactic
 
 import TripleEqualsSupport._
+import enablers.ContainingConstraint
 
 /**
  * Trait that defines abstract methods used to enforce compile-time type constraints for equality comparisons, and defines <code>===</code> and <code>!==</code> operators
@@ -413,6 +414,12 @@ trait TripleEqualsSupport {
      * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
     def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
+
+    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
+      ev.contains(rightSide, leftSide)
+
+    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
+      !(ev.contains(rightSide, leftSide))
   }
 
   /**

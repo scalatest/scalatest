@@ -457,6 +457,7 @@ class ShouldContainElementTypeCheckSpec extends Spec with TypeCheckedTripleEqual
 
         val map: scala.collection.Map[String, Int] = Map("one" -> 1, "two" -> 2)
 
+// TODO: This is wrong in all the examples. Should just be map should contain...
         """map("one" -> 1, "two" -> 2) should contain (2 -> 2)""" shouldNot typeCheck
         """map("one" -> 1, "two" -> 2) should (contain (2 -> 2))""" shouldNot typeCheck
         """map(1 -> "one", 2 -> "two") should contain ("two" -> "two")""" shouldNot typeCheck

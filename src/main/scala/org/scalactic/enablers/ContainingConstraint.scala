@@ -18,6 +18,7 @@ package org.scalactic.enablers
 import org.scalactic.{Equality, NormalizingEquality, Every, Constraint}
 import scala.collection.{GenTraversableOnce, GenTraversable}
 import org.scalactic.TripleEqualsSupport.EqualityConstraint
+import annotation.implicitNotFound
 
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
@@ -71,6 +72,7 @@ import org.scalactic.TripleEqualsSupport.EqualityConstraint
  * for type <code>scala.Option</code>.
  * </p>
  */
+@implicitNotFound(msg = "Could not find evidence that ${R} can be contained in ${C}; the missing implicit parameter is of type org.scalactic.enablers.ContainingConstraint[${C},${R}]")
 trait ContainingConstraint[-C, R] {
 
   /**
