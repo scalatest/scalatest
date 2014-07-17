@@ -61,13 +61,13 @@ class ShouldExistLogicalOrSpec extends Spec {
       imaginaryFile should (exist or equal (imaginaryFile))
       existFile should (exist or equal (imaginaryFile))
       
-      existFile should (be (existFile) or exist)
-      existFile should (be (imaginaryFile) or exist)
-      imaginaryFile should (be (imaginaryFile) or exist)
+      existFile should (be_== (existFile) or exist)
+      existFile should (be_== (imaginaryFile) or exist)
+      imaginaryFile should (be_== (imaginaryFile) or exist)
       
-      existFile should (exist or be (existFile))
-      imaginaryFile should (exist or be (imaginaryFile))
-      existFile should (exist or be (imaginaryFile))
+      existFile should (exist or be_== (existFile))
+      imaginaryFile should (exist or be_== (imaginaryFile))
+      existFile should (exist or be_== (imaginaryFile))
     }
     
     def `should throw TFE with correct stack depth and message when the file does not exist` {
@@ -86,14 +86,14 @@ class ShouldExistLogicalOrSpec extends Spec {
       assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e3 = intercept[exceptions.TestFailedException] {
-        imaginaryFile should (be (existFile) or exist)
+        imaginaryFile should (be_== (existFile) or exist)
       }
       assert(e3.message === Some(wasNotEqualTo(imaginaryFile, existFile) + ", and " + doesNotExist(imaginaryFile)))
       assert(e3.failedCodeFileName === Some(fileName))
       assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e4 = intercept[exceptions.TestFailedException] {
-        imaginaryFile should (exist or be (existFile))
+        imaginaryFile should (exist or be_== (existFile))
       }
       assert(e4.message === Some(doesNotExist(imaginaryFile) + ", and " + wasNotEqualTo(imaginaryFile, existFile)))
       assert(e4.failedCodeFileName === Some(fileName))
@@ -109,13 +109,13 @@ class ShouldExistLogicalOrSpec extends Spec {
       existFile should (not (exist) or equal (existFile))
       imaginaryFile should (not (exist) or equal (existFile))
       
-      imaginaryFile should (be (imaginaryFile) or not (exist))
-      imaginaryFile should (be (existFile) or not (exist))
-      existFile should (be (existFile) or not (exist))
+      imaginaryFile should (be_== (imaginaryFile) or not (exist))
+      imaginaryFile should (be_== (existFile) or not (exist))
+      existFile should (be_== (existFile) or not (exist))
       
-      imaginaryFile should (not (exist) or be (imaginaryFile))
-      existFile should (not (exist) or be (existFile))
-      imaginaryFile should (not (exist) or be (existFile))
+      imaginaryFile should (not (exist) or be_== (imaginaryFile))
+      existFile should (not (exist) or be_== (existFile))
+      imaginaryFile should (not (exist) or be_== (existFile))
     }
     
     def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
@@ -134,14 +134,14 @@ class ShouldExistLogicalOrSpec extends Spec {
       assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e3 = intercept[exceptions.TestFailedException] {
-        existFile should (be (imaginaryFile) or not (exist))
+        existFile should (be_== (imaginaryFile) or not (exist))
       }
       assert(e3.message === Some(wasNotEqualTo(existFile, imaginaryFile) + ", and " + exists(existFile)))
       assert(e3.failedCodeFileName === Some(fileName))
       assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e4 = intercept[exceptions.TestFailedException] {
-        existFile should (not (exist) or be (imaginaryFile))
+        existFile should (not (exist) or be_== (imaginaryFile))
       }
       assert(e4.message === Some(exists(existFile) + ", and " + wasNotEqualTo(existFile, imaginaryFile)))
       assert(e4.failedCodeFileName === Some(fileName))
@@ -160,13 +160,13 @@ class ShouldExistLogicalOrSpec extends Spec {
       all(List(imaginaryFile)) should (exist or equal (imaginaryFile))
       all(List(existFile)) should (exist or equal (imaginaryFile))
       
-      all(List(existFile)) should (be (existFile) or exist)
-      all(List(existFile)) should (be (imaginaryFile) or exist)
-      all(List(imaginaryFile)) should (be (imaginaryFile) or exist)
+      all(List(existFile)) should (be_== (existFile) or exist)
+      all(List(existFile)) should (be_== (imaginaryFile) or exist)
+      all(List(imaginaryFile)) should (be_== (imaginaryFile) or exist)
       
-      all(List(existFile)) should (exist or be (existFile))
-      all(List(imaginaryFile)) should (exist or be (imaginaryFile))
-      all(List(existFile)) should (exist or be (imaginaryFile))
+      all(List(existFile)) should (exist or be_== (existFile))
+      all(List(imaginaryFile)) should (exist or be_== (imaginaryFile))
+      all(List(existFile)) should (exist or be_== (imaginaryFile))
     }
     
     def `should throw TFE with correct stack depth and message when the file does not exist` {
@@ -188,7 +188,7 @@ class ShouldExistLogicalOrSpec extends Spec {
       
       val left3 = List(imaginaryFile)
       val e3 = intercept[exceptions.TestFailedException] {
-        all(left3) should (be (existFile) or exist)
+        all(left3) should (be_== (existFile) or exist)
       }
       assert(e3.message === Some(allError(left3, wasNotEqualTo(imaginaryFile, existFile) + ", and " + doesNotExist(imaginaryFile), thisLineNumber - 2)))
       assert(e3.failedCodeFileName === Some(fileName))
@@ -196,7 +196,7 @@ class ShouldExistLogicalOrSpec extends Spec {
       
       val left4 = List(imaginaryFile)
       val e4 = intercept[exceptions.TestFailedException] {
-        all(left4) should (exist or be (existFile))
+        all(left4) should (exist or be_== (existFile))
       }
       assert(e4.message === Some(allError(left4, doesNotExist(imaginaryFile) + ", and " + wasNotEqualTo(imaginaryFile, existFile), thisLineNumber - 2)))
       assert(e4.failedCodeFileName === Some(fileName))
@@ -212,13 +212,13 @@ class ShouldExistLogicalOrSpec extends Spec {
       all(List(existFile)) should (not (exist) or equal (existFile))
       all(List(imaginaryFile)) should (not (exist) or equal (existFile))
       
-      all(List(imaginaryFile)) should (be (imaginaryFile) or not (exist))
-      all(List(imaginaryFile)) should (be (existFile) or not (exist))
-      all(List(existFile)) should (be (existFile) or not (exist))
+      all(List(imaginaryFile)) should (be_== (imaginaryFile) or not (exist))
+      all(List(imaginaryFile)) should (be_== (existFile) or not (exist))
+      all(List(existFile)) should (be_== (existFile) or not (exist))
       
-      all(List(imaginaryFile)) should (not (exist) or be (imaginaryFile))
-      all(List(existFile)) should (not (exist) or be (existFile))
-      all(List(imaginaryFile)) should (not (exist) or be (existFile))
+      all(List(imaginaryFile)) should (not (exist) or be_== (imaginaryFile))
+      all(List(existFile)) should (not (exist) or be_== (existFile))
+      all(List(imaginaryFile)) should (not (exist) or be_== (existFile))
     }
     
     def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
@@ -240,7 +240,7 @@ class ShouldExistLogicalOrSpec extends Spec {
       
       val left3 = List(existFile)
       val e3 = intercept[exceptions.TestFailedException] {
-        all(left3) should (be (imaginaryFile) or not (exist))
+        all(left3) should (be_== (imaginaryFile) or not (exist))
       }
       assert(e3.message === Some(allError(left3, wasNotEqualTo(existFile, imaginaryFile) + ", and " + exists(existFile), thisLineNumber - 2)))
       assert(e3.failedCodeFileName === Some(fileName))
@@ -248,7 +248,7 @@ class ShouldExistLogicalOrSpec extends Spec {
       
       val left4 = List(existFile)
       val e4 = intercept[exceptions.TestFailedException] {
-        all(left4) should (not (exist) or be (imaginaryFile))
+        all(left4) should (not (exist) or be_== (imaginaryFile))
       }
       assert(e4.message === Some(allError(left4, exists(existFile) + ", and " + wasNotEqualTo(existFile, imaginaryFile), thisLineNumber - 2)))
       assert(e4.failedCodeFileName === Some(fileName))

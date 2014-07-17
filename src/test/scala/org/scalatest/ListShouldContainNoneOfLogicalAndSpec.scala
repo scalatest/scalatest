@@ -178,46 +178,46 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
     object `when used with (be (..) and contain noneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (be (fumList) and contain noneOf("fie", "fee", "fam", "foe"))
+        fumList should (be_== (fumList) and contain noneOf("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) and contain noneOf ("fee", "fie", "foe", "fam"))
+          fumList should (be_== (toList) and contain noneOf ("fee", "fie", "foe", "fam"))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (be (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))
+          fumList should (be_== (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (be (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))
+        fumList should (be_== (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) and contain noneOf ("fee", "fie", "foe", "fum"))
+          fumList should (be_== (toList) and contain noneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (be (fumList) and (contain noneOf ("FEE", "FIE", "FOE", "FUM")))
+          fumList should (be_== (fumList) and (contain noneOf ("FEE", "FIE", "FOE", "FUM")))
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (be (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+        (fumList should (be_== (fumList) and contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (fumList) and contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be_== (fumList) and contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (be (toList) and contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (be_== (toList) and contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) and contain noneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
+        (fumList should (be_== (fumList) and contain noneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (be (fumList) and contain noneOf("fee", "fie", "foe", "fie", "fum"))
+          fumList should (be_== (fumList) and contain noneOf("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -228,46 +228,46 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
     object `when used with (contain noneOf (..) and be (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (contain noneOf("fie", "fee", "fam", "foe") and be (fumList))
+        fumList should (contain noneOf("fie", "fee", "fam", "foe") and be_== (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("fee", "fie", "foe", "fam") and be (toList))
+          fumList should (contain noneOf ("fee", "fie", "foe", "fam") and be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be (fumList))
+          fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be_== (fumList))
         }
         checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be (fumList))
+        fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be_== (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and be (toList))
+          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and (be (fumList)))
+          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and (be_== (fumList)))
         }
         checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be_== (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and be (fumList))) (decided by upperCaseStringEquality)
+          (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") and be_== (fumList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain noneOf ("fee", "fie", "foe", "fum") and be_== (toList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ") and be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ") and be_== (fumList))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain noneOf("fee", "fie", "foe", "fie", "fum") and be (fumList))
+          fumList should (contain noneOf("fee", "fie", "foe", "fie", "fum") and be_== (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -386,38 +386,38 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
     object `when used with (not be (..) and not contain noneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not be (toList) and not contain noneOf("fee", "fie", "foe", "fum"))
+        fumList should (not be_== (toList) and not contain noneOf("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not contain noneOf ("fee", "fie", "foe", "fum"))
+          fumList should (not be_== (fumList) and not contain noneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not be (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
+          fumList should (not be_== (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (not be (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (not be_== (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
+          fumList should (not be_== (fumList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not be (toList) and (not contain noneOf ("fee", "fie", "foe", "fum")))
+          fumList should (not be_== (toList) and (not contain noneOf ("fee", "fie", "foe", "fum")))
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not be (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (not be_== (toList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (not be_== (toList) and not contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (not be_== (fumList) and not contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ") and not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
@@ -425,7 +425,7 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not be (toList) and not contain noneOf("fee", "fie", "foe", "fie", "fum"))
+          fumList should (not be_== (toList) and not contain noneOf("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -527,28 +527,28 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
     object `when used with (be (..) and contain noneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (be (List(1)) and contain noneOf (2, 3, 4))
-        atLeast (2, lists) should (be (List(1)) and contain noneOf (2, 3, 4))
-        atMost (2, lists) should (be (List(1)) and contain noneOf (2, 3, 4))
-        no (lists) should (be (List(8)) and contain noneOf (1, 2, 3))
+        all (list1s) should (be_== (List(1)) and contain noneOf (2, 3, 4))
+        atLeast (2, lists) should (be_== (List(1)) and contain noneOf (2, 3, 4))
+        atMost (2, lists) should (be_== (List(1)) and contain noneOf (2, 3, 4))
+        no (lists) should (be_== (List(8)) and contain noneOf (1, 2, 3))
         
         val e1 = intercept[TestFailedException] {
-          all (lists) should (be (List(1)) and contain noneOf (3, 6, 9))
+          all (lists) should (be_== (List(1)) and contain noneOf (3, 6, 9))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " was not equal to " + decorateToStringValue(List(1)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (list1s) should (be (List(1)) and contain noneOf (1, 2, 3))
+          all (list1s) should (be_== (List(1)) and contain noneOf (1, 2, 3))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1)) + " was equal to " + decorateToStringValue(List(1)) + ", but " + FailureMessages("containedAtLeastOneOf", list1s(0), UnquotedString("1, 2, 3")), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
-          all (hiLists) should (be (List("hi")) and contain noneOf ("hi", "hey", "howdy"))
+          all (hiLists) should (be_== (List("hi")) and contain noneOf ("hi", "hey", "howdy"))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", but " + FailureMessages("containedAtLeastOneOf", hiLists(0), UnquotedString("\"hi\", \"hey\", \"howdy\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
-          all (list1s) should (be (List(1)) and contain noneOf (1, 2, 3))
+          all (list1s) should (be_== (List(1)) and contain noneOf (1, 2, 3))
         }
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List(1)) + " was equal to " + decorateToStringValue(List(1)) + ", but " + FailureMessages("containedAtLeastOneOf", list1s(0), UnquotedString("1, 2, 3")), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -556,35 +556,35 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         
-        all (hiLists) should (be (List("hi")) and contain noneOf ("hi", "he"))
+        all (hiLists) should (be_== (List("hi")) and contain noneOf ("hi", "he"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (be (List("ho")) and contain noneOf ("hi", "he"))
+          all (hiLists) should (be_== (List("ho")) and contain noneOf ("hi", "he"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (hiLists) should (be (List("hi")) and contain noneOf ("HI", "HE"))
+          all (hiLists) should (be_== (List("hi")) and contain noneOf ("HI", "HE"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", but " + FailureMessages("containedAtLeastOneOf", hiLists(0), UnquotedString("\"HI\", \"HE\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (be (List("hi")) and contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be_== (List("hi")) and contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho")) and contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be_== (List("ho")) and contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("hi")) and contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be_== (List("hi")) and contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", but " + FailureMessages("containedAtLeastOneOf", hiLists(0), UnquotedString("\"HI\", \"HE\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (be (List(1)) and contain noneOf (1, 2, 2, 3))
+          all (list1s) should (be_== (List(1)) and contain noneOf (1, 2, 2, 3))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -670,28 +670,28 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
     object `when used with (not be (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (not be (List(2)) and not contain noneOf (1, 2, 3))
-        atLeast (2, lists) should (not be (List(3)) and not contain noneOf (1, 6, 8))
-        atMost (2, lists) should (not be (List(3)) and contain noneOf (1, 6, 8))
-        no (list1s) should (not be (List(1)) and not contain noneOf (3, 6, 9))
+        all (list1s) should (not be_== (List(2)) and not contain noneOf (1, 2, 3))
+        atLeast (2, lists) should (not be_== (List(3)) and not contain noneOf (1, 6, 8))
+        atMost (2, lists) should (not be_== (List(3)) and contain noneOf (1, 6, 8))
+        no (list1s) should (not be_== (List(1)) and not contain noneOf (3, 6, 9))
         
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not be (List(2)) and not contain noneOf (1, 2, 3))
+          all (lists) should (not be_== (List(2)) and not contain noneOf (1, 2, 3))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " was equal to " + decorateToStringValue(List(2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (lists) should (not be (List(3)) and not contain noneOf (1, 6, 8))
+          all (lists) should (not be_== (List(3)) and not contain noneOf (1, 6, 8))
         }
         checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + FailureMessages("didNotContainAtLeastOneOf", lists(2), UnquotedString("1, 6, 8")), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi")) and not contain noneOf ("hi", "hey", "howdy"))
+          all (hiLists) should (not be_== (List("hi")) and not contain noneOf ("hi", "hey", "howdy"))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("ho")) and not contain noneOf ("ho", "hello"))
+          all (hiLists) should (not be_== (List("ho")) and not contain noneOf ("ho", "hello"))
         }
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + FailureMessages("didNotContainAtLeastOneOf", hiLists(0), UnquotedString("\"ho\", \"hello\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -699,35 +699,35 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         
-        all (hiLists) should (not be (List("ho")) and not contain noneOf ("HI", "HE"))
+        all (hiLists) should (not be_== (List("ho")) and not contain noneOf ("HI", "HE"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi")) and not contain noneOf ("HI", "HE"))
+          all (hiLists) should (not be_== (List("hi")) and not contain noneOf ("HI", "HE"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("ho")) and not contain noneOf ("hi", "he"))
+          all (hiLists) should (not be_== (List("ho")) and not contain noneOf ("hi", "he"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + FailureMessages("didNotContainAtLeastOneOf", hiLists(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (not be (List("ho")) and not contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be_== (List("ho")) and not contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi")) and not contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be_== (List("hi")) and not contain noneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("ho")) and not contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be_== (List("ho")) and not contain noneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + FailureMessages("didNotContainAtLeastOneOf", hiLists(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not be (List(2)) and not contain noneOf (1, 2, 2, 3))
+          all (list1s) should (not be_== (List(2)) and not contain noneOf (1, 2, 2, 3))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

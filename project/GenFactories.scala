@@ -823,11 +823,22 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
+     * aMatcherFactory and not be_== (3 - 1)
+     *                         ^
+     * </pre>
+     */
+     def be_==(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
+       thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.be_==(any)))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
      * aMatcherFactory and not be (3 - 1)
      *                         ^
      * </pre>
      */
-    def be(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
+    def be[R](any: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanEqual] =
       thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.be(any)))
 
     /**
@@ -1971,11 +1982,22 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
+     * aMatcherFactory or not be_== (2)
+     *                        ^
+     * </pre>
+     */
+     def be_==(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
+       thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.be_==(any)))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
      * aMatcherFactory or not be (2)
      *                        ^
      * </pre>
      */
-    def be(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
+    def be[R](any: R): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanEqual] =
       thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.be(any)))
 
     /**

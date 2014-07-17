@@ -114,6 +114,16 @@ trait MatcherWords {
    * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
+   * obj should (be_== (string) and be_== (string))
+   *             ^
+   * </pre>
+   */
+  val be_== = new BeEqualEqualWord
+
+  /**
+   * This field enables syntax such as the following:
+   *
+   * <pre class="stHighlight">
    * list should (contain ('a') and have length (7))
    *              ^
    * </pre>

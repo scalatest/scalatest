@@ -189,46 +189,46 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
     object `when used with (be (..) and contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (be (fumList) and contain only ("fie", "fee", "fum", "foe"))
+        fumList should (be_== (fumList) and contain only ("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) and contain only ("fee", "fie", "foe", "fum"))
+          fumList should (be_== (toList) and contain only ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (be (fumList) and contain only ("happy", "birthday", "to", "you"))
+          fumList should (be_== (fumList) and contain only ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be_== (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))
+          fumList should (be_== (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (be (fumList) and (contain only ("happy", "birthday", "to", "you")))
+          fumList should (be_== (fumList) and (contain only ("happy", "birthday", "to", "you")))
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
-        (fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be_== (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (fumList) and contain only ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
+          (fumList should (be_== (fumList) and contain only ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (be (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be_== (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (be_== (fumList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (be (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
+          fumList should (be_== (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -237,7 +237,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e2 = intercept[TestFailedException] {
-          fumList should (be (fumList) and contain only Many("happy", "birthday", "to", "you"))
+          fumList should (be_== (fumList) and contain only Many("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Many("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
@@ -246,46 +246,46 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
     object `when used with (contain only (..) and be (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (contain only ("fie", "fee", "fum", "foe") and be (fumList))
+        fumList should (contain only ("fie", "fee", "fum", "foe") and be_== (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain only ("fee", "fie", "foe", "fum") and be (toList))
+          fumList should (contain only ("fee", "fie", "foe", "fum") and be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("containedOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain only ("happy", "birthday", "to", "you") and be (fumList))
+          fumList should (contain only ("happy", "birthday", "to", "you") and be_== (fumList))
         }
         checkMessageStackDepth(e2, Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))
+        fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be_== (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be (toList))
+          fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain only ("HAPPY", "BIRTHDAY", "TO", "YOU") and (be (fumList)))
+          fumList should (contain only ("HAPPY", "BIRTHDAY", "TO", "YOU") and (be_== (fumList)))
         }
         checkMessageStackDepth(e2, Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
-        (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be_== (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
+          (fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be_== (fumList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be_== (toList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("containedOnlyElements", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\"") + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and be_== (fumList))) (after being lowerCased and trimmed)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and be (fumList))
+          fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and be_== (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -294,7 +294,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          fumList should (contain only Many("happy", "birthday", "to", "you") and be (fumList))
+          fumList should (contain only Many("happy", "birthday", "to", "you") and be_== (fumList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Many("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
@@ -428,38 +428,38 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
     object `when used with (not be (..) and not contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not be (toList) and not contain only ("fie", "fee", "fuu", "foe"))
+        fumList should (not be_== (toList) and not contain only ("fie", "fee", "fuu", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not contain only ("happy", "birthday", "to", "you"))
+          fumList should (not be_== (fumList) and not contain only ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not be (toList) and not contain only ("fee", "fie", "foe", "fum"))
+          fumList should (not be_== (toList) and not contain only ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
+        fumList should (not be_== (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
+          fumList should (not be_== (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not be (toList) and (not contain only ("FIE", "FEE", "FUM", "FOE")))
+          fumList should (not be_== (toList) and (not contain only ("FIE", "FEE", "FUM", "FOE")))
         }
         checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElements", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
-        (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (not be_== (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (not be_== (toList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElements", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (not be_== (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
@@ -467,7 +467,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not be (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
+          fumList should (not be_== (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -476,7 +476,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          One(Many("fee", "fie", "foe", "fum")) should (not be (toList) and not contain only (Many("fee", "fie", "foe", "fum")))
+          One(Many("fee", "fie", "foe", "fum")) should (not be_== (toList) and not contain only (Many("fee", "fie", "foe", "fum")))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(One(Many("fee", "fie", "foe", "fum"))), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(One(Many("fee", "fie", "foe", "fum"))), decorateToStringValue(Many("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
@@ -585,28 +585,28 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
     object `when used with (be (..) and contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (be (Many(3, 2, 1)) and contain only (1, 3, 2))
-        atLeast (2, lists) should (be (Many(3, 2, 1)) and contain only (1, 3, 2))
-        atMost (2, lists) should (be (Many(3, 2, 1)) and contain only (2, 3, 1))
-        no (lists) should (be (Many(3, 6, 9)) and contain only (3, 4, 5))
+        all (list1s) should (be_== (Many(3, 2, 1)) and contain only (1, 3, 2))
+        atLeast (2, lists) should (be_== (Many(3, 2, 1)) and contain only (1, 3, 2))
+        atMost (2, lists) should (be_== (Many(3, 2, 1)) and contain only (2, 3, 1))
+        no (lists) should (be_== (Many(3, 6, 9)) and contain only (3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (be (Many(3, 2, 1)) and contain only (1, 3, 2))
+          all (lists) should (be_== (Many(3, 2, 1)) and contain only (1, 3, 2))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(4, 3, 2)) + " was not equal to " + decorateToStringValue(Many(3, 2, 1)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (list1s) should (be (Many(3, 2, 1)) and contain only (2, 3, 8))
+          all (list1s) should (be_== (Many(3, 2, 1)) and contain only (2, 3, 8))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many(3, 2, 1)) + " was equal to " + decorateToStringValue(Many(3, 2, 1)) + ", but " + decorateToStringValue(Many(3, 2, 1)) + " did not contain only " + "(2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
-          all (hiLists) should (be (Many("hi", "hello")) and contain only ("ho", "hey", "howdy"))
+          all (hiLists) should (be_== (Many("hi", "hello")) and contain only ("ho", "hey", "howdy"))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " did not contain only " + "(\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
-          all (list1s) should (be (Many(3, 2, 1)) and contain only (2, 3, 8))
+          all (list1s) should (be_== (Many(3, 2, 1)) and contain only (2, 3, 8))
         }
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many(3, 2, 1)) + " was equal to " + decorateToStringValue(Many(3, 2, 1)) + ", but " + decorateToStringValue(Many(3, 2, 1)) + " did not contain only " + "(2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -614,35 +614,35 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (be (Many("hi", "hello")) and contain only ("HELLO", "HI"))
+        all (hiLists) should (be_== (Many("hi", "hello")) and contain only ("HELLO", "HI"))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (be (Many("HI", "HELLO")) and contain only ("HELLO", "HI"))
+          all (hiLists) should (be_== (Many("HI", "HELLO")) and contain only ("HELLO", "HI"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(Many("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (hiLists) should (be (Many("hi", "hello")) and contain only ("HO", "HELLO"))
+          all (hiLists) should (be_== (Many("hi", "hello")) and contain only ("HO", "HELLO"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (be (Many("hi", "hello")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be_== (Many("hi", "hello")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (Many("HI", "HELLO")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be_== (Many("HI", "HELLO")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(Many("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (be (Many("hi", "hello")) and contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be_== (Many("hi", "hello")) and contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (be (Many(3, 2, 1)) and contain only (3, 2, 2, 1))
+          all (list1s) should (be_== (Many(3, 2, 1)) and contain only (3, 2, 2, 1))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -651,17 +651,17 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (One(One(Many(3, 2, 1)))) should (be (One(Many(3, 2, 1))) and contain only Many(2, 3, 8))
+          all (One(One(Many(3, 2, 1)))) should (be_== (One(Many(3, 2, 1))) and contain only Many(2, 3, 8))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One(Many(3, 2, 1))) + " was equal to " + decorateToStringValue(One(Many(3, 2, 1))) + ", but " + decorateToStringValue(One(Many(3, 2, 1))) + " did not contain only (" + decorateToStringValue(Many(2, 3, 8)) + "), did you forget to say : _*", thisLineNumber - 2, One(One(Many(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (One(One(Many("hi", "hello")))) should (be (One(Many("hi", "hello"))) and contain only Many("ho", "hey", "howdy"))
+          all (One(One(Many("hi", "hello")))) should (be_== (One(Many("hi", "hello"))) and contain only Many("ho", "hey", "howdy"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One(Many("hi", "hello"))) + " was equal to " + decorateToStringValue(One(Many("hi", "hello"))) + ", but " + decorateToStringValue(One(Many("hi", "hello"))) + " did not contain only (" + decorateToStringValue(Many("ho", "hey", "howdy")) + "), did you forget to say : _*", thisLineNumber - 2, One(One(Many("hi", "hello")))), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
-          all (One(One(Many(3, 2, 1)))) should (be (One(Many(3, 2, 1))) and contain only Many(2, 3, 8))
+          all (One(One(Many(3, 2, 1)))) should (be_== (One(Many(3, 2, 1))) and contain only Many(2, 3, 8))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(One(Many(3, 2, 1))) + " was equal to " + decorateToStringValue(One(Many(3, 2, 1))) + ", but " + decorateToStringValue(One(Many(3, 2, 1))) + " did not contain only (" + decorateToStringValue(Many(2, 3, 8)) + "), did you forget to say : _*", thisLineNumber - 2, One(One(Many(3, 2, 1)))), fileName, thisLineNumber - 2)
       }
@@ -767,28 +767,28 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
     object `when used with (not be (..) and not contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (not be (One(2)) and not contain only (8, 3, 4))
-        atLeast (2, lists) should (not be (One(3)) and not contain only (8, 3, 4))
-        atMost (2, lists) should (not be (Many(4, 3, 2)) and not contain only (3, 4, 2))
-        no (list1s) should (not be (Many(3, 2, 1)) and not contain only (1, 2, 3))
+        all (list1s) should (not be_== (One(2)) and not contain only (8, 3, 4))
+        atLeast (2, lists) should (not be_== (One(3)) and not contain only (8, 3, 4))
+        atMost (2, lists) should (not be_== (Many(4, 3, 2)) and not contain only (3, 4, 2))
+        no (list1s) should (not be_== (Many(3, 2, 1)) and not contain only (1, 2, 3))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not be (Many(4, 3, 2)) and not contain only (8, 3, 4))
+          all (lists) should (not be_== (Many(4, 3, 2)) and not contain only (8, 3, 4))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(4, 3, 2)) + " was equal to " + decorateToStringValue(Many(4, 3, 2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (lists) should (not be (One(3)) and not contain only (2, 3, 4))
+          all (lists) should (not be_== (One(3)) and not contain only (2, 3, 4))
         }
         checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(Many(4, 3, 2)) + " was not equal to " + decorateToStringValue(One(3)) + ", but " + decorateToStringValue(Many(4, 3, 2)) + " contained only " + "(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
-          all (hiLists) should (not be (Many("hi", "hello")) and not contain only ("ho", "hey", "howdy"))
+          all (hiLists) should (not be_== (Many("hi", "hello")) and not contain only ("ho", "hey", "howdy"))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
-          all (hiLists) should (not be (One("ho")) and not contain only ("hello", "hi"))
+          all (hiLists) should (not be_== (One("ho")) and not contain only ("hello", "hi"))
         }
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " contained only " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -796,35 +796,35 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
 
-        all (hiLists) should (not be (One("ho")) and not contain only ("HO", "HELLO"))
+        all (hiLists) should (not be_== (One("ho")) and not contain only ("HO", "HELLO"))
 
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (Many("hi", "hello")) and not contain only ("HELLO", "HI"))
+          all (hiLists) should (not be_== (Many("hi", "hello")) and not contain only ("HELLO", "HI"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (hiLists) should (not be (One("ho")) and not contain only ("HI", "HELLO"))
+          all (hiLists) should (not be_== (One("ho")) and not contain only ("HI", "HELLO"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (not be (One("ho")) and not contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be_== (One("ho")) and not contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (Many("hi", "hello")) and not contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be_== (Many("hi", "hello")) and not contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (One("ho")) and not contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be_== (One("ho")) and not contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not be (One(2)) and not contain only (3, 2, 2, 1))
+          all (list1s) should (not be_== (One(2)) and not contain only (3, 2, 2, 1))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -833,12 +833,12 @@ class EveryShouldContainOnlyLogicalAndSpec extends Spec {
 
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (One(One(Many(3, 2, 1)))) should (not be (One(3)) and not contain only (Many(3, 2, 1)))
+          all (One(One(Many(3, 2, 1)))) should (not be_== (One(3)) and not contain only (Many(3, 2, 1)))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One(Many(3, 2, 1))) + " was not equal to " + decorateToStringValue(One(3)) + ", but " + decorateToStringValue(One(Many(3, 2, 1))) + " contained only (" + decorateToStringValue(Many(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, One(One(Many(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          all (One(One(Many("hi", "hello")))) should (not be (One("ho")) and not contain only (Many("hi", "hello")))
+          all (One(One(Many("hi", "hello")))) should (not be_== (One("ho")) and not contain only (Many("hi", "hello")))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One(Many("hi", "hello"))) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(One(Many("hi", "hello"))) + " contained only (" + decorateToStringValue(Many("hi", "hello")) + "), did you forget to say : _*", thisLineNumber - 2, One(One(Many("hi", "hello")))), fileName, thisLineNumber - 2)
       }

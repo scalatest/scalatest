@@ -24,12 +24,7 @@ import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-import org.scalatest.enablers.Sequencing
-import org.scalatest.enablers.Sortable
-import org.scalatest.enablers.Readability
-import org.scalatest.enablers.Writability
-import org.scalatest.enablers.Emptiness
-import org.scalatest.enablers.Definition
+import org.scalatest.enablers._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -541,17 +536,23 @@ final class BeWord {
    *               ^
    * </pre>
    */
-  def apply(right: Any): Matcher[Any] =
-    new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
-        MatchResult(
-          areEqualComparingArraysStructurally(left, right),
-          Resources("wasNotEqualTo"),
-          Resources("wasEqualTo"), 
-          Vector(leftee, rightee), 
-          Vector(left, right)
-        )
+  def apply[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] =
+    new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
+      def matcher[T <: Any : EvidenceThat[R]#CanEqual]: Matcher[T] = {
+        val equality = implicitly[EvidenceThat[R]#CanEqual[T]]
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
+            MatchResult(
+              equality.areEqual(left, right),
+              Resources("wasNotEqualTo"),
+              Resources("wasEqualTo"),
+              Vector(leftee, rightee),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "be (" + Prettifier.default(right) + ")"
+        }
       }
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }

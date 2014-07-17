@@ -53,22 +53,22 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
       it("should do nothing for when both passed") {
         objTrue should (be (defined) or equal (objTrue))
         objTrue should (equal (objTrue) or be (defined))
-        objTrue should (be (defined) or be (objTrue))
-        objTrue should (be (objTrue) or be (defined))
+        objTrue should (be (defined) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (defined))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (defined) or equal (objFalse))
         objTrue should (equal (objFalse) or be (defined))
-        objFalse should (be (defined) or be (objFalse))
-        objTrue should (be (objFalse) or be (defined))
+        objFalse should (be (defined) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (defined))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (defined) or equal (objFalse))
         objFalse should (equal (objFalse) or be (defined))
-        objTrue should (be (defined) or be (objFalse))
-        objFalse should (be (objFalse) or be (defined))
+        objTrue should (be (defined) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (defined))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -87,14 +87,14 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (defined) or be (objTrue))
+          objFalse should (be (defined) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotDefined(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (defined))
+          objFalse should (be_== (objTrue) or be (defined))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotDefined(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -114,22 +114,22 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
       it("should do nothing for when both passed") {
         objTrue should (be (defined) or equal (objTrue))
         objTrue should (equal (objTrue) or be (defined))
-        objTrue should (be (defined) or be (objTrue))
-        objTrue should (be (objTrue) or be (defined))
+        objTrue should (be (defined) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (defined))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (defined) or equal (objFalse))
         objTrue should (equal (objFalse) or be (defined))
-        objFalse should (be (defined) or be (objFalse))
-        objTrue should (be (objFalse) or be (defined))
+        objFalse should (be (defined) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (defined))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (defined) or equal (objFalse))
         objFalse should (equal (objFalse) or be (defined))
-        objTrue should (be (defined) or be (objFalse))
-        objFalse should (be (objFalse) or be (defined))
+        objTrue should (be (defined) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (defined))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -148,14 +148,14 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (defined) or be (objTrue))
+          objFalse should (be (defined) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotDefined(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (defined))
+          objFalse should (be_== (objTrue) or be (defined))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotDefined(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -175,22 +175,22 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
       it("should do nothing for when both passed") {
         objTrue should (be (defined) or equal (objTrue))
         objTrue should (equal (objTrue) or be (defined))
-        objTrue should (be (defined) or be (objTrue))
-        objTrue should (be (objTrue) or be (defined))
+        objTrue should (be (defined) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (defined))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (defined) or equal (objFalse))
         objTrue should (equal (objFalse) or be (defined))
-        objFalse should (be (defined) or be (objFalse))
-        objTrue should (be (objFalse) or be (defined))
+        objFalse should (be (defined) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (defined))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (defined) or equal (objFalse))
         objFalse should (equal (objFalse) or be (defined))
-        objTrue should (be (defined) or be (objFalse))
-        objFalse should (be (objFalse) or be (defined))
+        objTrue should (be (defined) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (defined))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -209,14 +209,14 @@ class ShouldBeDefinedStructuralLogicalOrSpec extends FunSpec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (defined) or be (objTrue))
+          objFalse should (be (defined) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotDefined(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (defined))
+          objFalse should (be_== (objTrue) or be (defined))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotDefined(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))

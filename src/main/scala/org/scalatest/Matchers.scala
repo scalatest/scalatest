@@ -3208,13 +3208,36 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all(xs) should not be_== (7)
+     *                    ^
+     * </pre>
+     */
+    def be_==(right: Any) {
+      doCollected(collected, xs, original, "be", 1) { e =>
+        if ((e == right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all(xs) should not be (7)
      *                    ^
      * </pre>
      */
-    def be(right: Any) {
+    def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
       doCollected(collected, xs, original, "be", 1) { e =>
-        if ((e == right) != shouldBeTrue)
+        if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",

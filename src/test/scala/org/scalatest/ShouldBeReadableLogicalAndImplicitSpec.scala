@@ -71,8 +71,8 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         book should (equal (book) and be (readable))
         book should (be (readable) and equal (book))
         
-        book should (be (book) and be (readable))
-        book should (be (readable) and be (book))
+        book should (be_== (book) and be (readable))
+        book should (be (readable) and be_== (book))
       }
       
       def `should throw TestFailedException with correct stack depth when file is not readable` {
@@ -91,14 +91,14 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          stone should (be (stone) and be (readable))
+          stone should (be_== (stone) and be (readable))
         }
         assert(caught3.message === Some(wasEqualTo(stone, stone) + ", but " + wasNotReadable(stone)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          stone should (be (readable) and be (stone))
+          stone should (be (readable) and be_== (stone))
         }
         assert(caught4.message === Some(wasNotReadable(stone)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -112,8 +112,8 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         stone should (not equal book and not be readable)
         stone should (not be readable and not equal book)
         
-        stone should (not be book and not be readable)
-        stone should (not be readable and not be book)
+        stone should (not be_== book and not be readable)
+        stone should (not be readable and not be_== book)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -132,14 +132,14 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          book should (not be stone and not be readable)
+          book should (not be_== stone and not be readable)
         }
         assert(caught3.message === Some(wasNotEqualTo(book, stone) + ", but " + wasReadable(book)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          book should (not be readable and not be stone)
+          book should (not be readable and not be_== stone)
         }
         assert(caught4.message === Some(wasReadable(book)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -150,8 +150,8 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
     object `when work with 'all(xs) should be (readable)'` {
       
       def `should do nothing when all(xs) is readable` {
-        all(List(book)) should (be (book) and be (readable))
-        all(List(book)) should (be (readable) and be (book))
+        all(List(book)) should (be_== (book) and be (readable))
+        all(List(book)) should (be (readable) and be_== (book))
         
         all(List(book)) should (equal (book) and be (readable))
         all(List(book)) should (be (readable) and equal (book))
@@ -160,7 +160,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (be (stone) and be (readable))
+          all(left1) should (be_== (stone) and be (readable))
         }
         assert(caught1.message === Some(allError(wasEqualTo(stone, stone) + ", but " + wasNotReadable(stone), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -168,7 +168,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         
         val left2 = List(stone)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (be (readable) and be (stone))
+          all(left2) should (be (readable) and be_== (stone))
         }
         assert(caught2.message === Some(allError(wasNotReadable(stone), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -194,8 +194,8 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
     
     object `when work with 'all(xs) should not be readable'` {
       def `should do nothing when all(xs) is not readable` {
-        all(List(stone)) should (not be readable and not be book)
-        all(List(stone)) should (not be book and not be readable)
+        all(List(stone)) should (not be readable and not be_== book)
+        all(List(stone)) should (not be_== book and not be readable)
         
         all(List(stone)) should (not be readable and not equal book)
         all(List(stone)) should (not equal book and not be readable)
@@ -204,7 +204,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (not be stone and not be readable)
+          all(left1) should (not be_== stone and not be readable)
         }
         assert(caught1.message === Some(allError(wasNotEqualTo(book, stone) + ", but " + wasReadable(book), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -212,7 +212,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         
         val left2 = List(book)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (not be readable and not be stone)
+          all(left2) should (not be readable and not be_== stone)
         }
         assert(caught2.message === Some(allError(wasReadable(book), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
