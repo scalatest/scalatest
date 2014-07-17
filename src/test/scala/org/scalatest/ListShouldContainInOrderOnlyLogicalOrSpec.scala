@@ -159,40 +159,40 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     object `when used with (be xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (be (fumList) or contain inOrderOnly ("fum", "foe", "fie", "fee"))
-        fumList should (be (toList) or contain inOrderOnly ("fum", "foe", "fie", "fee"))
-        fumList should (be (fumList) or contain inOrderOnly ("fee", "fie", "foe", "fum"))
+        fumList should (be_== (fumList) or contain inOrderOnly ("fum", "foe", "fie", "fee"))
+        fumList should (be_== (toList) or contain inOrderOnly ("fum", "foe", "fie", "fee"))
+        fumList should (be_== (fumList) or contain inOrderOnly ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) or contain inOrderOnly ("fee", "fie", "foe", "fum"))
+          fumList should (be_== (toList) or contain inOrderOnly ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (be (fumList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
-        fumList should (be (toList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
-        fumList should (be (fumList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be_== (fumList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be_== (toList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be_== (fumList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (be (toList) or (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM")))
+          fumList should (be_== (toList) or (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM")))
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (be (fumList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be_== (fumList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be_== (toList) or contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be_== (fumList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be_== (toList) or contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (be_== (fumList) or contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (be (fumList) or contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
+          fumList should (be_== (fumList) or contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -203,40 +203,40 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     object `when used with (contain inOrderOnly xx and be xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (contain inOrderOnly ("fum", "foe", "fie", "fee") or be (fumList))
-        fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum") or be (fumList))
-        fumList should (contain inOrderOnly ("fum", "foe", "fie", "fee") or be (toList))
+        fumList should (contain inOrderOnly ("fum", "foe", "fie", "fee") or be_== (fumList))
+        fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum") or be_== (fumList))
+        fumList should (contain inOrderOnly ("fum", "foe", "fie", "fee") or be_== (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum") or be (toList))
+          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum") or be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be (fumList))
-        fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be (fumList))
-        fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be (toList))
+        fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be_== (fumList))
+        fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be_== (fumList))
+        fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be_== (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be (toList))
+          fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be_== (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be_== (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be_== (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE") or be_== (toList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain inOrderOnly ("FEE", "FIE", "FOE", "FUM") or be_== (toList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ") or be_== (fumList))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fie", "fum") or be (fumList))
+          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fie", "fum") or be_== (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -340,32 +340,32 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     object `when used with (not be xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not be (toList) or not contain inOrderOnly ("fee", "fie", "foe", "fum"))
-        fumList should (not be (fumList) or not contain inOrderOnly ("fee", "fie", "foe", "fum"))
-        fumList should (not be (toList) or not contain inOrderOnly ("fum", "foe", "fie", "fee"))
+        fumList should (not be_== (toList) or not contain inOrderOnly ("fee", "fie", "foe", "fum"))
+        fumList should (not be_== (fumList) or not contain inOrderOnly ("fee", "fie", "foe", "fum"))
+        fumList should (not be_== (toList) or not contain inOrderOnly ("fum", "foe", "fie", "fee"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or not contain inOrderOnly ("fum", "foe", "fie", "fee"))
+          fumList should (not be_== (fumList) or not contain inOrderOnly ("fum", "foe", "fie", "fee"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"fum\", \"foe\", \"fie\", \"fee\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (not be (toList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
-        fumList should (not be (fumList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
-        fumList should (not be (toList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
+        fumList should (not be_== (toList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (not be_== (fumList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (not be_== (toList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or (not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE")))
+          fumList should (not be_== (fumList) or (not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE")))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not be (toList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (not be_== (toList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (not be_== (fumList) or not contain inOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (not be_== (toList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+          (fumList should (not be_== (fumList) or not contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
         (fumList should (not contain inOrderOnly (" FEE ", " FIE ", " FOE ", " FUU ") or not contain inOrderOnly (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
@@ -373,7 +373,7 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not be (toList) or not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
+          fumList should (not be_== (toList) or not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -457,12 +457,12 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     object `when used with (be xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (be (List(1, 2, 2, 3)) or contain inOrderOnly (1, 2, 3))
-        all (list1s) should (be (List(2, 3, 4)) or contain inOrderOnly (1, 2, 3))
-        all (list1s) should (be (List(1, 2, 2, 3)) or contain inOrderOnly (2, 3, 4))
+        all (list1s) should (be_== (List(1, 2, 2, 3)) or contain inOrderOnly (1, 2, 3))
+        all (list1s) should (be_== (List(2, 3, 4)) or contain inOrderOnly (1, 2, 3))
+        all (list1s) should (be_== (List(1, 2, 2, 3)) or contain inOrderOnly (2, 3, 4))
         
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (be (List(2, 3, 4)) or contain inOrderOnly (2, 3, 4))
+          all (list1s) should (be_== (List(2, 3, 4)) or contain inOrderOnly (2, 3, 4))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1, 2, 2, 3)) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(List(1, 2, 2, 3)) + " did not contain only " + "(2, 3, 4)" + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -470,30 +470,30 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         
-        all (hiLists) should (be (List("hi", "hello")) or contain inOrderOnly ("HI", "HELLO"))
-        all (hiLists) should (be (List("ho", "hello")) or contain inOrderOnly ("HI", "HELLO"))
-        all (hiLists) should (be (List("hi", "hello")) or contain inOrderOnly ("HELLO", "HI"))
+        all (hiLists) should (be_== (List("hi", "hello")) or contain inOrderOnly ("HI", "HELLO"))
+        all (hiLists) should (be_== (List("ho", "hello")) or contain inOrderOnly ("HI", "HELLO"))
+        all (hiLists) should (be_== (List("hi", "hello")) or contain inOrderOnly ("HELLO", "HI"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (be (List("ho", "hello")) or contain inOrderOnly ("HELLO", "HI"))
+          all (hiLists) should (be_== (List("ho", "hello")) or contain inOrderOnly ("HELLO", "HI"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (be (List("hi", "hello")) or contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("ho", "hello")) or contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("hi", "hello")) or contain inOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be_== (List("hi", "hello")) or contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be_== (List("ho", "hello")) or contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be_== (List("hi", "hello")) or contain inOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho", "hello")) or contain inOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be_== (List("ho", "hello")) or contain inOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (be (List(1, 2, 2, 3)) or contain inOrderOnly (1, 2, 2, 3))
+          all (list1s) should (be_== (List(1, 2, 2, 3)) or contain inOrderOnly (1, 2, 2, 3))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -558,12 +558,12 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     object `when used with (not be xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (not be (List(2)) or not contain inOrderOnly (8, 3, 4))
-        all (list1s) should (not be (List(1, 2, 2, 3)) or not contain inOrderOnly (8, 3, 4))
-        all (list1s) should (not be (List(2)) or not contain inOrderOnly (1, 2, 3))
+        all (list1s) should (not be_== (List(2)) or not contain inOrderOnly (8, 3, 4))
+        all (list1s) should (not be_== (List(1, 2, 2, 3)) or not contain inOrderOnly (8, 3, 4))
+        all (list1s) should (not be_== (List(2)) or not contain inOrderOnly (1, 2, 3))
         
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (not be (List(1, 2, 2, 3)) or not contain inOrderOnly (1, 2, 3))
+          all (list1s) should (not be_== (List(1, 2, 2, 3)) or not contain inOrderOnly (1, 2, 3))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1, 2, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 2, 3)) + ", and " + decorateToStringValue(List(1, 2, 2, 3)) + " contained only " + "(1, 2, 3)" + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -571,30 +571,30 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         
-        all (hiLists) should (not be (List("hello", "ho")) or not contain inOrderOnly ("HELLO", "HO"))
-        all (hiLists) should (not be (List("hi", "hello")) or not contain inOrderOnly ("HELLO", "HO"))
-        all (hiLists) should (not be (List("hello", "ho")) or not contain inOrderOnly ("HI", "HELLO"))
+        all (hiLists) should (not be_== (List("hello", "ho")) or not contain inOrderOnly ("HELLO", "HO"))
+        all (hiLists) should (not be_== (List("hi", "hello")) or not contain inOrderOnly ("HELLO", "HO"))
+        all (hiLists) should (not be_== (List("hello", "ho")) or not contain inOrderOnly ("HI", "HELLO"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi", "hello")) or not contain inOrderOnly ("HI", "HELLO"))
+          all (hiLists) should (not be_== (List("hi", "hello")) or not contain inOrderOnly ("HI", "HELLO"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain inOrderOnly ("HELLO", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("hi", "hello")) or not contain inOrderOnly ("HELLO", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be_== (List("hello", "ho")) or not contain inOrderOnly ("HELLO", "HO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be_== (List("hi", "hello")) or not contain inOrderOnly ("HELLO", "HO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be_== (List("hello", "ho")) or not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi", "hello")) or not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be_== (List("hi", "hello")) or not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not be (List(2)) or not contain inOrderOnly (1, 2, 2, 3))
+          all (list1s) should (not be_== (List(2)) or not contain inOrderOnly (1, 2, 2, 3))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

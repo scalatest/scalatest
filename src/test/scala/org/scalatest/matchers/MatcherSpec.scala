@@ -29,13 +29,15 @@ class MatcherSpec extends Spec {
     
     object `AndNotWord ` {
       
-      object `equal(Null) method returns Matcher` {
+      object `equal(Null) method returns MatcherFactory` {
         
         val aNullRef: String = null
-        val mt = not be ("hi") and not equal (null)
+        val mtf = not be ("hi") and not equal (null)
+        val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mt.toString should be ("(not be \"hi\") and (not equal null)")
+          mtf.toString should be ("(not be (\"hi\")) and (not equal null)")
+          mt.toString should be ("(not be (\"hi\")) and (not equal null)")
         }
         
         val mr = mt("Bob")
@@ -104,13 +106,15 @@ class MatcherSpec extends Spec {
     
     object `OrNotWord ` {
       
-      object `equal(Null) method returns Matcher` {
+      object `equal(Null) method returns MatcherFactory` {
         
         val aNullRef: String = null
-        val mt = not be ("Bob") or not equal (null)
+        val mtf = not be ("Bob") or not equal (null)
+        val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mt.toString should be ("(not be \"Bob\") or (not equal null)")
+          mtf.toString should be ("(not be (\"Bob\")) or (not equal null)")
+          mt.toString should be ("(not be (\"Bob\")) or (not equal null)")
         }
         
         val mr = mt("Bob")

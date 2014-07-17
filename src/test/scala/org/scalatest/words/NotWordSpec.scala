@@ -1417,7 +1417,7 @@ class NotWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `be(Any) method returns Matcher` {
+    object `be(Any) method returns MatcherFactory` {
       
       case class MyFile(
         val name: String,
@@ -1427,15 +1427,17 @@ class NotWordSpec extends Spec with FileMocks {
 
       val myFileRight = MyFile("test right", true, false)
       
-      val mt = not be (myFileRight)
+      val mtf = not be (myFileRight)
+      val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
-        mt.toString should be ("not be " + myFileRight)
+        mt.toString should be ("not be (" + myFileRight + ")")
       }
       
       object `when left is not null` {
       
         val myFileLeft = MyFile("test left", true, false)
+
         val mr = mt(myFileLeft)
       
         def `should have correct MatcherResult` {
@@ -1485,18 +1487,18 @@ class NotWordSpec extends Spec with FileMocks {
         def `should have correct MatcherResult` {
           mr should have (
             'matches (true),
-            'failureMessage ("The reference was null"),
-            'negatedFailureMessage (myFileRight + " was not null"),
-            'midSentenceFailureMessage ("the reference was null"),
-            'midSentenceNegatedFailureMessage (myFileRight + " was not null"),
-            'rawFailureMessage ("The reference was null"),
-            'rawNegatedFailureMessage ("{0} was not null"),
-            'rawMidSentenceFailureMessage ("the reference was null"),
-            'rawMidSentenceNegatedFailureMessage ("{0} was not null"),
-            'failureMessageArgs(Vector.empty),
-            'negatedFailureMessageArgs(Vector(myFileRight)),
-            'midSentenceFailureMessageArgs(Vector.empty),
-            'midSentenceNegatedFailureMessageArgs(Vector(myFileRight))    
+            'failureMessage (myFileLeft + " was equal to " + myFileRight),
+            'negatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+            'midSentenceFailureMessage (myFileLeft + " was equal to " + myFileRight),
+            'midSentenceNegatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+            'rawFailureMessage ("{0} was equal to {1}"),
+            'rawNegatedFailureMessage ("{0} was not equal to {1}"),
+            'rawMidSentenceFailureMessage ("{0} was equal to {1}"),
+            'rawMidSentenceNegatedFailureMessage ("{0} was not equal to {1}"),
+            'failureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))
           )
         }
       
@@ -1505,18 +1507,18 @@ class NotWordSpec extends Spec with FileMocks {
         def `should have correct negated MatcherResult` {
           nmr should have (
             'matches (false),
-            'failureMessage (myFileRight + " was not null"),
-            'negatedFailureMessage ("The reference was null"),
-            'midSentenceFailureMessage (myFileRight + " was not null"),
-            'midSentenceNegatedFailureMessage ("the reference was null"),
-            'rawFailureMessage ("{0} was not null"),
-            'rawNegatedFailureMessage ("The reference was null"),
-            'rawMidSentenceFailureMessage ("{0} was not null"),
-            'rawMidSentenceNegatedFailureMessage ("the reference was null"),
-            'failureMessageArgs(Vector(myFileRight)),
-            'negatedFailureMessageArgs(Vector.empty),
-            'midSentenceFailureMessageArgs(Vector(myFileRight)),
-            'midSentenceNegatedFailureMessageArgs(Vector.empty)    
+            'failureMessage (myFileLeft + " was not equal to " + myFileRight),
+            'negatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
+            'midSentenceFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+            'midSentenceNegatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
+            'rawFailureMessage ("{0} was not equal to {1}"),
+            'rawNegatedFailureMessage ("{0} was equal to {1}"),
+            'rawMidSentenceFailureMessage ("{0} was not equal to {1}"),
+            'rawMidSentenceNegatedFailureMessage ("{0} was equal to {1}"),
+            'failureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+            'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))
           )
         }
       }

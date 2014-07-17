@@ -54,13 +54,13 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       
       def `should do nothing when opt is defined` {
         
-        something should (be (defined) or be (something))
-        nothing should (be (defined) or be (nothing))
-        something should (be (defined) or be (nothing))
+        something should (be (defined) or be_== (something))
+        nothing should (be (defined) or be_== (nothing))
+        something should (be (defined) or be_== (nothing))
         
-        something should (be (something) or be (defined))
-        something should (be (nothing) or be (defined))
-        nothing should (be (nothing) or be (defined))
+        something should (be_== (something) or be (defined))
+        something should (be_== (nothing) or be (defined))
+        nothing should (be_== (nothing) or be (defined))
         
         something should (be (defined) or equal (something))
         nothing should (be (defined) or equal (nothing))
@@ -73,14 +73,14 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when opt is not defined` {
         val caught1 = intercept[TestFailedException] {
-          nothing should (be (defined) or be (something))
+          nothing should (be (defined) or be_== (something))
         }
         assert(caught1.message === Some(wasNotDefined(nothing) + ", and " + wasNotEqualTo(nothing, something)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          nothing should (be (something) or be (defined))
+          nothing should (be_== (something) or be (defined))
         }
         assert(caught2.message === Some(wasNotEqualTo(nothing, something) + ", and " + wasNotDefined(nothing)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -105,13 +105,13 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
     object `when work with 'opt should not be defined'` {
       
       def `should do nothing when opt is not defined` {
-        nothing should (not be defined or not be something)
-        something should (not be defined or not be nothing)
-        nothing should (not be defined or not be nothing)
+        nothing should (not be defined or not be_== something)
+        something should (not be defined or not be_== nothing)
+        nothing should (not be defined or not be_== nothing)
         
-        nothing should (not be something or not be defined)
-        nothing should (not be nothing or not be defined)
-        something should (not be nothing or not be defined)
+        nothing should (not be_== something or not be defined)
+        nothing should (not be_== nothing or not be defined)
+        something should (not be_== nothing or not be defined)
         
         nothing should (not be defined or not equal something)
         something should (not be defined or not equal nothing)
@@ -124,14 +124,14 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when opt is defined` {
         val caught1 = intercept[TestFailedException] {
-          something should (not be defined or not be something)
+          something should (not be defined or not be_== something)
         }
         assert(caught1.message === Some(wasDefined(something) + ", and " + wasEqualTo(something, something)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          something should (not be something or not be defined)
+          something should (not be_== something or not be defined)
         }
         assert(caught2.message === Some(wasEqualTo(something, something) + ", and " + wasDefined(something)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -156,13 +156,13 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
     object `when work with 'all(xs) should be (defined)'` {
       
       def `should do nothing when all(xs) is defined` {
-        all(List(something)) should (be (defined) or be (something))
-        all(List(nothing)) should (be (defined) or be (nothing))
-        all(List(something)) should (be (defined) or be (nothing))
+        all(List(something)) should (be (defined) or be_== (something))
+        all(List(nothing)) should (be (defined) or be_== (nothing))
+        all(List(something)) should (be (defined) or be_== (nothing))
         
-        all(List(something)) should (be (something) or be (defined))
-        all(List(something)) should (be (nothing) or be (defined))
-        all(List(nothing)) should (be (nothing) or be (defined))
+        all(List(something)) should (be_== (something) or be (defined))
+        all(List(something)) should (be_== (nothing) or be (defined))
+        all(List(nothing)) should (be_== (nothing) or be (defined))
         
         all(List(something)) should (be (defined) or equal (something))
         all(List(nothing)) should (be (defined) or equal (nothing))
@@ -176,7 +176,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val left1 = List(nothing)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (be (something) or be (defined))
+          all(left1) should (be_== (something) or be (defined))
         }
         assert(caught1.message === Some(allError(wasNotEqualTo(nothing, something) + ", and " + wasNotDefined(nothing), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -184,7 +184,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         
         val left2 = List(nothing)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (be (defined) or be (something))
+          all(left2) should (be (defined) or be_== (something))
         }
         assert(caught2.message === Some(allError(wasNotDefined(nothing) + ", and " + wasNotEqualTo(nothing, something), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -210,13 +210,13 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
     
     object `when work with 'all(xs) should not be sorted'` {
       def `should do nothing when xs is not sorted` {
-        all(List(nothing)) should (not be defined or not be something)
-        all(List(something)) should (not be defined or not be nothing)
-        all(List(nothing)) should (not be defined or not be nothing)
+        all(List(nothing)) should (not be defined or not be_== something)
+        all(List(something)) should (not be defined or not be_== nothing)
+        all(List(nothing)) should (not be defined or not be_== nothing)
         
-        all(List(nothing)) should (not be something or not be defined)
-        all(List(nothing)) should (not be nothing or not be defined)
-        all(List(something)) should (not be nothing or not be defined)
+        all(List(nothing)) should (not be_== something or not be defined)
+        all(List(nothing)) should (not be_== nothing or not be defined)
+        all(List(something)) should (not be_== nothing or not be defined)
         
         all(List(nothing)) should (not be defined or not equal something)
         all(List(something)) should (not be defined or not equal nothing)
@@ -230,7 +230,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val left1 = List(something)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (not be something or not be defined)
+          all(left1) should (not be_== something or not be defined)
         }
         assert(caught1.message === Some(allError(wasEqualTo(something, something) + ", and " + wasDefined(something), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -238,7 +238,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         
         val left2 = List(something)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (not be defined or not be something)
+          all(left2) should (not be defined or not be_== something)
         }
         assert(caught2.message === Some(allError(wasDefined(something) + ", and " + wasEqualTo(something, something), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))

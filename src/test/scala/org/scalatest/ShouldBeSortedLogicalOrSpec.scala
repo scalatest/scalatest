@@ -81,8 +81,8 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         orderedInts should (equal (orderedStudents) or be (sorted))
         
         orderedStudents should (be (sorted) or be (sorted))
-        orderedStudents should (be (sorted) or be (orderedInts))
-        orderedStudents should (be (orderedInts) or be (sorted))
+        orderedStudents should (be (sorted) or be_== (orderedInts))
+        orderedStudents should (be_== (orderedInts) or be (sorted))
         
         orderedString should (be (sorted) or be (sorted))
         orderedString should (be (sorted) or equal (orderedStudents))
@@ -91,14 +91,14 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val caught1 = intercept[TestFailedException] {
-          outOfOrderInts should (be (outOfOrderStudents) or be (sorted))
+          outOfOrderInts should (be_== (outOfOrderStudents) or be (sorted))
         }
         assert(caught1.message === Some(wasNotEqualTo(outOfOrderInts, outOfOrderStudents) + ", and " + wasNotSorted(outOfOrderInts)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          outOfOrderInts should (be (sorted) or be (outOfOrderStudents))
+          outOfOrderInts should (be (sorted) or be_== (outOfOrderStudents))
         }
         assert(caught2.message === Some(wasNotSorted(outOfOrderInts) + ", and " + wasNotEqualTo(outOfOrderInts, outOfOrderStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -119,14 +119,14 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
-          outOfOrderString should (be (outOfOrderStudents) or be (sorted))
+          outOfOrderString should (be_== (outOfOrderStudents) or be (sorted))
         }
         assert(caught5.message === Some(wasNotEqualTo(outOfOrderString, outOfOrderStudents) + ", and " + wasNotSorted(outOfOrderString)))
         assert(caught5.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
-          outOfOrderString should (be (sorted) or be (outOfOrderStudents))
+          outOfOrderString should (be (sorted) or be_== (outOfOrderStudents))
         }
         assert(caught6.message === Some(wasNotSorted(outOfOrderString) + ", and " + wasNotEqualTo(outOfOrderString, outOfOrderStudents)))
         assert(caught6.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -135,10 +135,10 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
-          outOfOrderInts should (be (sorted) or be (orderedInts))
+          outOfOrderInts should (be (sorted) or be_== (orderedInts))
         }
         implicit val imp = trueSortable
-        outOfOrderInts should (be (sorted) or be (orderedInts))
+        outOfOrderInts should (be (sorted) or be_== (orderedInts))
       }
       
       def `should use explicitly specified Sortable` {
@@ -152,8 +152,8 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
     object `when work with 'xs should not be sorted'` {
       
       def `should do nothing when xs is not sorted` {
-        outOfOrderInts should (not be sorted or not be outOfOrderInts)
-        outOfOrderInts should (not be outOfOrderInts or not be sorted)
+        outOfOrderInts should (not be sorted or not be_== outOfOrderInts)
+        outOfOrderInts should (not be_== outOfOrderInts or not be sorted)
         
         outOfOrderStudents should (not be sorted or not equal outOfOrderStudents)
         outOfOrderStudents should (not equal outOfOrderStudents or not be sorted)
@@ -161,14 +161,14 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val caught1 = intercept[TestFailedException] {
-          orderedInts should (not be orderedInts or not be sorted)
+          orderedInts should (not be_== orderedInts or not be sorted)
         }
         assert(caught1.message === Some(wasEqualTo(orderedInts, orderedInts) + ", and " + wasSorted(orderedInts)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          orderedInts should (not be sorted or not be orderedInts)
+          orderedInts should (not be sorted or not be_== orderedInts)
         }
         assert(caught2.message === Some(wasSorted(orderedInts) + ", and " + wasEqualTo(orderedInts, orderedInts)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -189,14 +189,14 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
-          orderedString should (not be orderedString or not be sorted)
+          orderedString should (not be_== orderedString or not be sorted)
         }
         assert(caught5.message === Some(wasEqualTo(orderedString, orderedString) + ", and " + wasSorted(orderedString)))
         assert(caught5.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
-          orderedString should (not be sorted or not be orderedString)
+          orderedString should (not be sorted or not be_== orderedString)
         }
         assert(caught6.message === Some(wasSorted(orderedString) + ", and " + wasEqualTo(orderedString, orderedString)))
         assert(caught6.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -205,10 +205,10 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
-          orderedInts should (not be (sorted) or not be (orderedInts))
+          orderedInts should (not be (sorted) or not be_== (orderedInts))
         }
         implicit val imp = falseSortable
-        orderedInts should (not be (sorted) or not be (orderedInts))
+        orderedInts should (not be (sorted) or not be_== (orderedInts))
       }
       
       def `should use explicitly specified Sortable` {
@@ -227,8 +227,8 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         all(List(orderedInts)) should (equal (orderedStudents) or be (sorted))
 
         all(List(orderedStudents)) should (be (sorted) or be (sorted))
-        all(List(orderedStudents)) should (be (sorted) or be (orderedInts))
-        all(List(orderedStudents)) should (be (orderedInts) or be (sorted))
+        all(List(orderedStudents)) should (be (sorted) or be_== (orderedInts))
+        all(List(orderedStudents)) should (be_== (orderedInts) or be (sorted))
         
         all(List(orderedString)) should (be (sorted) or be (sorted))
         all(List(orderedString)) should (be (sorted) or equal (orderedStudents))
@@ -238,7 +238,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val left1 = List(outOfOrderInts)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (be (orderedInts) or be (sorted))
+          all(left1) should (be_== (orderedInts) or be (sorted))
         }
         assert(caught1.message === Some(allInspectionFailed(0, wasNotEqualTo(outOfOrderInts, orderedInts) + ", and " + wasNotSorted(outOfOrderInts), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -246,7 +246,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         
         val left2 = List(outOfOrderInts)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (be (sorted) or be (orderedInts))
+          all(left2) should (be (sorted) or be_== (orderedInts))
         }
         assert(caught2.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderInts) + ", and " + wasNotEqualTo(outOfOrderInts, orderedInts), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -270,7 +270,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
 
         val left5 = List(outOfOrderString)
         val caught5 = intercept[TestFailedException] {
-          all(left5) should (be (orderedString) or be (sorted))
+          all(left5) should (be_== (orderedString) or be (sorted))
         }
         assert(caught5.message === Some(allInspectionFailed(0, wasNotEqualTo(outOfOrderString, orderedString) + ", and " + wasNotSorted(outOfOrderString), thisLineNumber - 2, left5)))
         assert(caught5.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -278,7 +278,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         
         val left6 = List(outOfOrderString)
         val caught6 = intercept[TestFailedException] {
-          all(left6) should (be (sorted) or be (orderedString))
+          all(left6) should (be (sorted) or be_== (orderedString))
         }
         assert(caught6.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderString) + ", and " + wasNotEqualTo(outOfOrderString, orderedString), thisLineNumber - 2, left6)))
         assert(caught6.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -287,10 +287,10 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
-          all(List(outOfOrderInts)) should (be (sorted) or be (orderedInts))
+          all(List(outOfOrderInts)) should (be (sorted) or be_== (orderedInts))
         }
         implicit val imp = trueSortable
-        all(List(outOfOrderInts)) should (be (sorted) or be (orderedInts))
+        all(List(outOfOrderInts)) should (be (sorted) or be_== (orderedInts))
       }
       
       def `should use explicitly specified Sortable` {
@@ -303,20 +303,20 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
     
     object `when work with 'all(xs) should not be sorted'` {
       def `should do nothing when xs is not sorted` {
-        all(List(outOfOrderInts)) should (not be sorted or not be orderedStudents)
-        all(List(outOfOrderInts)) should (not be orderedStudents or not be sorted)
+        all(List(outOfOrderInts)) should (not be sorted or not be_== orderedStudents)
+        all(List(outOfOrderInts)) should (not be_== orderedStudents or not be sorted)
         
         all(List(outOfOrderStudents)) should (not be sorted or not equal orderedInts)
         all(List(outOfOrderStudents)) should (not equal orderedInts or not be sorted)
 
-        all(List(outOfOrderString)) should (not be sorted or not be orderedStudents)
-        all(List(outOfOrderString)) should (not be orderedStudents or not be sorted)
+        all(List(outOfOrderString)) should (not be sorted or not be_== orderedStudents)
+        all(List(outOfOrderString)) should (not be_== orderedStudents or not be sorted)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
         val left1 = List(orderedInts)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (not be orderedInts or not be sorted)
+          all(left1) should (not be_== orderedInts or not be sorted)
         }
         assert(caught1.message === Some(allInspectionFailed(0, wasEqualTo(orderedInts, orderedInts) + ", and " + wasSorted(orderedInts), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -324,7 +324,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         
         val left2 = List(orderedInts)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (not be sorted or not be orderedInts)
+          all(left2) should (not be sorted or not be_== orderedInts)
         }
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(orderedInts) + ", and " + wasEqualTo(orderedInts, orderedInts), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -348,7 +348,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
 
         val left5 = List(orderedString)
         val caught5 = intercept[TestFailedException] {
-          all(left5) should (not be orderedString or not be sorted)
+          all(left5) should (not be_== orderedString or not be sorted)
         }
         assert(caught5.message === Some(allInspectionFailed(0, wasEqualTo(orderedString, orderedString) + ", and " + wasSorted(orderedString), thisLineNumber - 2, left5)))
         assert(caught5.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -356,7 +356,7 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
         
         val left6 = List(orderedString)
         val caught6 = intercept[TestFailedException] {
-          all(left6) should (not be sorted or not be orderedString)
+          all(left6) should (not be sorted or not be_== orderedString)
         }
         assert(caught6.message === Some(allInspectionFailed(0, wasSorted(orderedString) + ", and " + wasEqualTo(orderedString, orderedString), thisLineNumber - 2, left6)))
         assert(caught6.failedCodeFileName === Some("ShouldBeSortedLogicalOrSpec.scala"))
@@ -365,10 +365,10 @@ class ShouldBeSortedLogicalOrSpec extends Spec {
       
       def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
-          all(List(orderedInts)) should (not be (sorted) or not be (orderedInts))
+          all(List(orderedInts)) should (not be (sorted) or not be_== (orderedInts))
         }
         implicit val imp = falseSortable
-        all(List(orderedInts)) should (not be (sorted) or not be (orderedInts))
+        all(List(orderedInts)) should (not be (sorted) or not be_== (orderedInts))
       }
       
       def `should use explicitly specified Sortable` {

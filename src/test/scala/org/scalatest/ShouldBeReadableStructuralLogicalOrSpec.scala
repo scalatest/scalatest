@@ -52,22 +52,22 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
       it("should do nothing for when both passed") {
         objTrue should (be (readable) or equal (objTrue))
         objTrue should (equal (objTrue) or be (readable))
-        objTrue should (be (readable) or be (objTrue))
-        objTrue should (be (objTrue) or be (readable))
+        objTrue should (be (readable) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (readable))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (readable) or equal (objFalse))
         objTrue should (equal (objFalse) or be (readable))
-        objFalse should (be (readable) or be (objFalse))
-        objTrue should (be (objFalse) or be (readable))
+        objFalse should (be (readable) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (readable))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (readable) or equal (objFalse))
         objFalse should (equal (objFalse) or be (readable))
-        objTrue should (be (readable) or be (objFalse))
-        objFalse should (be (objFalse) or be (readable))
+        objTrue should (be (readable) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (readable))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -86,14 +86,14 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (readable) or be (objTrue))
+          objFalse should (be (readable) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotReadable(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (readable))
+          objFalse should (be_== (objTrue) or be (readable))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotReadable(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -113,22 +113,22 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
       it("should do nothing for when both passed") {
         objTrue should (be (readable) or equal (objTrue))
         objTrue should (equal (objTrue) or be (readable))
-        objTrue should (be (readable) or be (objTrue))
-        objTrue should (be (objTrue) or be (readable))
+        objTrue should (be (readable) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (readable))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (readable) or equal (objFalse))
         objTrue should (equal (objFalse) or be (readable))
-        objFalse should (be (readable) or be (objFalse))
-        objTrue should (be (objFalse) or be (readable))
+        objFalse should (be (readable) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (readable))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (readable) or equal (objFalse))
         objFalse should (equal (objFalse) or be (readable))
-        objTrue should (be (readable) or be (objFalse))
-        objFalse should (be (objFalse) or be (readable))
+        objTrue should (be (readable) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (readable))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -147,14 +147,14 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (readable) or be (objTrue))
+          objFalse should (be (readable) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotReadable(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (readable))
+          objFalse should (be_== (objTrue) or be (readable))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotReadable(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -174,22 +174,22 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
       it("should do nothing for when both passed") {
         objTrue should (be (readable) or equal (objTrue))
         objTrue should (equal (objTrue) or be (readable))
-        objTrue should (be (readable) or be (objTrue))
-        objTrue should (be (objTrue) or be (readable))
+        objTrue should (be (readable) or be_== (objTrue))
+        objTrue should (be_== (objTrue) or be (readable))
       }
       
       it("should do nothing when first check failed") {
         objFalse should (be (readable) or equal (objFalse))
         objTrue should (equal (objFalse) or be (readable))
-        objFalse should (be (readable) or be (objFalse))
-        objTrue should (be (objFalse) or be (readable))
+        objFalse should (be (readable) or be_== (objFalse))
+        objTrue should (be_== (objFalse) or be (readable))
       }
       
       it("should do nothing when second check failed") {
         objTrue should (be (readable) or equal (objFalse))
         objFalse should (equal (objFalse) or be (readable))
-        objTrue should (be (readable) or be (objFalse))
-        objFalse should (be (objFalse) or be (readable))
+        objTrue should (be (readable) or be_== (objFalse))
+        objFalse should (be_== (objFalse) or be (readable))
       }
       
       it("should throw correct TFE when both check failed") {
@@ -208,14 +208,14 @@ class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          objFalse should (be (readable) or be (objTrue))
+          objFalse should (be (readable) or be_== (objTrue))
         }
         assert(caught3.message === Some(wasNotReadable(objFalse) + ", and " + wasNotEqualTo(objFalse, objTrue)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          objFalse should (be (objTrue) or be (readable))
+          objFalse should (be_== (objTrue) or be (readable))
         }
         assert(caught4.message === Some(wasNotEqualTo(objFalse, objTrue) + ", and " + wasNotReadable(objFalse)))
         assert(caught4.failedCodeFileName === Some(fileName))

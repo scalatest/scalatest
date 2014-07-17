@@ -694,6 +694,52 @@ final class NotWord {
   }
 
   /**
+   * This method enables <code>be_==</code> to be used for inequality comparison. Here are some examples:
+   *
+   * <pre class="stHighlight">
+   * result should not be_== (None)
+   *                   ^
+   * result should not be_== (Some(1))
+   *                   ^
+   * result should not be_== (true)
+   *                   ^
+   * result should not be_== (false)
+   *                   ^
+   * sum should not be_== (19)
+   *                ^
+   * </pre>
+   */
+  def be_==(right: Any): Matcher[Any] = {
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        left match {
+          case null =>
+            MatchResult(
+              right != null,
+              Resources("wasNull"),
+              Resources("wasNotNull"),
+              Resources("midSentenceWasNull"),
+              Resources("wasNotNull"),
+              Vector.empty,
+              Vector(right)
+            )
+          case _ =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
+            MatchResult(
+              !areEqualComparingArraysStructurally(left, right),
+              Resources("wasEqualTo"),
+              Resources("wasNotEqualTo"),
+              Vector(left, right),
+              Vector(leftee, rightee)
+            )
+        }
+      }
+      override def toString: String = "not be_== " + Prettifier.default(right)
+    }
+  }
+
+
+  /**
    * This method enables <code>be</code> to be used for inequality comparison. Here are some examples:
    *
    * <pre class="stHighlight">
@@ -709,34 +755,18 @@ final class NotWord {
    *                   ^
    * </pre>
    */
-  def be(right: Any): Matcher[Any] = {
-    new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        left match {
-          case null =>
-            MatchResult(
-              right != null, 
-              Resources("wasNull"),
-              Resources("wasNotNull"),
-              Resources("midSentenceWasNull"),
-              Resources("wasNotNull"), 
-              Vector.empty, 
-              Vector(right)
-            )
-          case _ => 
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
-            MatchResult(
-              !areEqualComparingArraysStructurally(left, right),
-              Resources("wasEqualTo"),
-              Resources("wasNotEqualTo"), 
-              Vector(left, right), 
-              Vector(leftee, rightee)
-            )
+  def be[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = //apply(MatcherWords.be(right))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
+      val innerMatcherFactory = MatcherWords.be(right)
+      def matcher[V <: Any : EvidenceThat[R]#CanEqual]: Matcher[V] = {
+        val innerMatcher: Matcher[V] = innerMatcherFactory.matcher
+        new Matcher[V] {
+          def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not " + Prettifier.default(innerMatcher)
         }
       }
-      override def toString: String = "not be " + Prettifier.default(right)
+      override def toString: String = "not " + Prettifier.default(innerMatcherFactory)
     }
-  }
   
   /**
      * This method enables the following syntax:

@@ -1214,11 +1214,22 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * aMatcher and not be_== (3 - 1)
+     *                  ^
+     * </pre>
+     */
+    def be_==(any: Any): Matcher[T] =
+      outerInstance.and(MatcherWords.not.apply(MatcherWords.be_==(any)))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * aMatcher and not be (3 - 1)
      *                  ^
      * </pre>
      */
-    def be(any: Any): Matcher[T] =
+    def be[R](any: R): MatcherFactory1[T, EvidenceThat[R]#CanEqual] =
       outerInstance.and(MatcherWords.not.apply(MatcherWords.be(any)))
 
     /**
@@ -2360,11 +2371,22 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * aMatcher or not be_== (2)
+     *                 ^
+     * </pre>
+     */
+    def be_==(any: Any): Matcher[T] =
+      outerInstance.or(MatcherWords.not.apply(MatcherWords.be_==(any)))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * aMatcher or not be (2)
      *                 ^
      * </pre>
      */
-    def be(any: Any): Matcher[T] =
+    def be[R](any: R): MatcherFactory1[T, EvidenceThat[R]#CanEqual] =
       outerInstance.or(MatcherWords.not.apply(MatcherWords.be(any)))
 
     /**

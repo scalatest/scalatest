@@ -61,8 +61,8 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         writableFile should (equal (writableFile) and be (writable))
         writableFile should (be (writable) and equal (writableFile))
         
-        writableFile should (be (writableFile) and be (writable))
-        writableFile should (be (writable) and be (writableFile))
+        writableFile should (be_== (writableFile) and be (writable))
+        writableFile should (be (writable) and be_== (writableFile))
       }
       
       def `should throw TestFailedException with correct stack depth when file is not writable` {
@@ -81,14 +81,14 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          secretFile should (be (secretFile) and be (writable))
+          secretFile should (be_== (secretFile) and be (writable))
         }
         assert(caught3.message === Some(wasEqualTo(secretFile, secretFile) + ", but " + wasNotWritable(secretFile)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          secretFile should (be (writable) and be (secretFile))
+          secretFile should (be (writable) and be_== (secretFile))
         }
         assert(caught4.message === Some(wasNotWritable(secretFile)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -102,8 +102,8 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         secretFile should (not equal writableFile and not be writable)
         secretFile should (not be writable and not equal writableFile)
         
-        secretFile should (not be writableFile and not be writable)
-        secretFile should (not be writable and not be writableFile)
+        secretFile should (not be_== writableFile and not be writable)
+        secretFile should (not be writable and not be_== writableFile)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -122,14 +122,14 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          writableFile should (not be secretFile and not be writable)
+          writableFile should (not be_== secretFile and not be writable)
         }
         assert(caught3.message === Some(wasNotEqualTo(writableFile, secretFile) + ", but " + wasWritable(writableFile)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          writableFile should (not be writable and not be secretFile)
+          writableFile should (not be writable and not be_== secretFile)
         }
         assert(caught4.message === Some(wasWritable(writableFile)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -140,8 +140,8 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
     object `when work with 'all(xs) should be (writable)'` {
       
       def `should do nothing when all(xs) is writable` {
-        all(List(writableFile)) should (be (writableFile) and be (writable))
-        all(List(writableFile)) should (be (writable) and be (writableFile))
+        all(List(writableFile)) should (be_== (writableFile) and be (writable))
+        all(List(writableFile)) should (be (writable) and be_== (writableFile))
         
         all(List(writableFile)) should (equal (writableFile) and be (writable))
         all(List(writableFile)) should (be (writable) and equal (writableFile))
@@ -150,7 +150,7 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when all(xs) is not writable` {
         val left1 = List(secretFile)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (be (secretFile) and be (writable))
+          all(left1) should (be_== (secretFile) and be (writable))
         }
         assert(caught1.message === Some(allError(wasEqualTo(secretFile, secretFile) + ", but " + wasNotWritable(secretFile), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -158,7 +158,7 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         
         val left2 = List(secretFile)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (be (writable) and be (secretFile))
+          all(left2) should (be (writable) and be_== (secretFile))
         }
         assert(caught2.message === Some(allError(wasNotWritable(secretFile), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -184,8 +184,8 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
     
     object `when work with 'all(xs) should not be writable'` {
       def `should do nothing when all(xs) is not writable` {
-        all(List(secretFile)) should (not be writable and not be writableFile)
-        all(List(secretFile)) should (not be writableFile and not be writable)
+        all(List(secretFile)) should (not be writable and not be_== writableFile)
+        all(List(secretFile)) should (not be_== writableFile and not be writable)
         
         all(List(secretFile)) should (not be writable and not equal writableFile)
         all(List(secretFile)) should (not equal writableFile and not be writable)
@@ -194,7 +194,7 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
       def `should throw TestFailedException with correct stack depth when all(xs) is writable` {
         val left1 = List(writableFile)
         val caught1 = intercept[TestFailedException] {
-          all(left1) should (not be secretFile and not be writable)
+          all(left1) should (not be_== secretFile and not be writable)
         }
         assert(caught1.message === Some(allError(wasNotEqualTo(writableFile, secretFile) + ", but " + wasWritable(writableFile), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -202,7 +202,7 @@ class ShouldBeWritableLogicalAndSpec extends Spec {
         
         val left2 = List(writableFile)
         val caught2 = intercept[TestFailedException] {
-          all(left2) should (not be writable and not be secretFile)
+          all(left2) should (not be writable and not be_== secretFile)
         }
         assert(caught2.message === Some(allError(wasWritable(writableFile), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))

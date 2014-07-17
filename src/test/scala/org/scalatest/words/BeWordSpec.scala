@@ -991,7 +991,7 @@ class BeWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `apply(Any) method returns Matcher` {
+    object `apply(Any) method returns MatcherFactory` {
       
       case class MyFile(
         val name: String,
@@ -1002,7 +1002,8 @@ class BeWordSpec extends Spec with FileMocks {
       val myFileLeft = MyFile("test left", true, false)
       val myFileRight = MyFile("test right", true, false)
       
-      val mt = be (myFileRight)
+      val mtf = be (myFileRight)
+      val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
         mt.toString should be ("be (" + myFileRight + ")")
