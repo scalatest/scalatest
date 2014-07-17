@@ -34,7 +34,7 @@ abstract class StackDepthException(
   val messageFun: StackDepthException => Option[String],
   val cause: Option[Throwable],
   val failedCodeStackDepthFun: StackDepthException => Int
-) extends RuntimeException(if (cause.isDefined) cause.get else null) with StackDepth {
+) extends RuntimeException(cause.orNull) with StackDepth {
 
   if (messageFun == null) throw new NullPointerException("messageFun was null")
 
