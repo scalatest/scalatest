@@ -15,9 +15,11 @@
  */
 package org.scalatest.words
 
+import org.scalactic.Prettifier
 import org.scalatest.{Suite, Resources}
 import org.scalatest.matchers.{MatchResult, Matcher}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -57,8 +59,53 @@ final class BeEqualEqualWord {
           Vector(left, right)
         )
       }
+
+      override def toString: String = "be_== (" + Prettifier.default(right) + ")"
     }
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should be_== (true)
+   *               ^
+   * </pre>
+   */
+  def apply(right: Boolean): Matcher[Boolean] =
+    new Matcher[Boolean] {
+      def apply(left: Boolean): MatchResult =
+        MatchResult(
+          left == right,
+          Resources("wasNot"),
+          Resources("was"),
+          Vector(left, right)
+        )
+      override def toString: String = "be_== (" + Prettifier.default(right) + ")"
+    }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should be_== (null)
+   *               ^
+   * </pre>
+   */
+  def apply(o: Null): Matcher[AnyRef] =
+    new Matcher[AnyRef] {
+      def apply(left: AnyRef): MatchResult = {
+        MatchResult(
+          left == null,
+          Resources("wasNotNull"),
+          Resources("wasNull"),
+          Resources("wasNotNull"),
+          Resources("midSentenceWasNull"),
+          Vector(left),
+          Vector.empty
+        )
+      }
+      override def toString: String = "be_== (null)"
+    }
 
   /**
    * Overrides toString to return "length"
