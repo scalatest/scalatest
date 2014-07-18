@@ -721,8 +721,67 @@ class BeWordSpec extends Spec with FileMocks {
       }
     }
     
+    object `apply(Boolean) method returns MatcherFactory` {
+      
+      case class MyFile(
+        val name: String,
+        val file: Boolean,
+        val isDirectory: Boolean
+      )
+
+      val myFileLeft = MyFile("test left", true, false)
+      val myFileRight = MyFile("test right", true, false)
+      
+      val mtf = be (myFileRight)
+      val mt = mtf.matcher[MyFile]
+      
+      def `should have pretty toString` {
+        mt.toString should be ("be (" + myFileRight + ")")
+      }
+      
+      val mr = mt(myFileLeft)
+      
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (false),
+          'failureMessage (myFileLeft + " was not equal to " + myFileRight),
+          'negatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
+          'midSentenceFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+          'midSentenceNegatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
+          'rawFailureMessage ("{0} was not equal to {1}"),
+          'rawNegatedFailureMessage ("{0} was equal to {1}"),
+          'rawMidSentenceFailureMessage ("{0} was not equal to {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} was equal to {1}"),
+          'failureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
+        )
+      }
+      
+      val nmr = mr.negated
+      
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (true),
+          'failureMessage (myFileLeft + " was equal to " + myFileRight),
+          'negatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+          'midSentenceFailureMessage (myFileLeft + " was equal to " + myFileRight),
+          'midSentenceNegatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
+          'rawFailureMessage ("{0} was equal to {1}"),
+          'rawNegatedFailureMessage ("{0} was not equal to {1}"),
+          'rawMidSentenceFailureMessage ("{0} was equal to {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} was not equal to {1}"),
+          'failureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
+          'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
+        )
+      }
+    }
     object `apply(Boolean) method returns Matcher` {
-      val mt = be (true)
+      val mtf = be (true)
+      val mt = mtf.matcher[Boolean]
       
       def `should have pretty toString` {
         mt.toString should be ("be (true)")

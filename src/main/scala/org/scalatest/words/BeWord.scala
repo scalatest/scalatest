@@ -409,26 +409,6 @@ final class BeWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * result should be (true)
-   *                  ^
-   * </pre>
-   */
-  def apply(right: Boolean): Matcher[Boolean] = 
-    new Matcher[Boolean] {
-      def apply(left: Boolean): MatchResult =
-        MatchResult(
-          left == right,
-          Resources("wasNot"),
-          Resources("was"), 
-          Vector(left, right)
-        )
-      override def toString: String = "be (" + Prettifier.default(right) + ")"
-    }
-
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
    * result should be (null)
    *                  ^
    * </pre>
@@ -543,10 +523,11 @@ final class BeWord {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
+            val rightIsBoolean = right.isInstanceOf[Boolean]
             MatchResult(
               equality.areEqual(left, right),
-              Resources("wasNotEqualTo"),
-              Resources("wasEqualTo"),
+              Resources(if (rightIsBoolean) "wasNot" else "wasNotEqualTo"),
+              Resources(if (rightIsBoolean) "was" else "wasEqualTo"),
               Vector(leftee, rightee),
               Vector(left, right)
             )
