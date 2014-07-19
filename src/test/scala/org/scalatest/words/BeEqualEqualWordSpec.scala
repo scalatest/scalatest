@@ -136,54 +136,6 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       "be_== theSameInstanceAs (myFileRight)" shouldNot compile
     }
 
-    object `apply(Boolean) method returns Matcher` {
-      val mt = be_== (true)
-
-      def `should have pretty toString` {
-        mt.toString should be ("be_== (true)")
-      }
-
-      val mr = mt(true)
-
-      def `should have correct MatcherResult` {
-        mr should have (
-          'matches (true),
-          'failureMessage ("true was not true"),
-          'negatedFailureMessage ("true was true"),
-          'midSentenceFailureMessage ("true was not true"),
-          'midSentenceNegatedFailureMessage ("true was true"),
-          'rawFailureMessage ("{0} was not {1}"),
-          'rawNegatedFailureMessage ("{0} was {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was {1}"),
-          'failureMessageArgs(Vector(true, true)),
-          'negatedFailureMessageArgs(Vector(true, true)),
-          'midSentenceFailureMessageArgs(Vector(true, true)),
-          'midSentenceNegatedFailureMessageArgs(Vector(true, true))
-        )
-      }
-
-      val nmr = mr.negated
-
-      def `should have correct negated MatcherResult` {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("true was true"),
-          'negatedFailureMessage ("true was not true"),
-          'midSentenceFailureMessage ("true was true"),
-          'midSentenceNegatedFailureMessage ("true was not true"),
-          'rawFailureMessage ("{0} was {1}"),
-          'rawNegatedFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceFailureMessage ("{0} was {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not {1}"),
-          'failureMessageArgs(Vector(true, true)),
-          'negatedFailureMessageArgs(Vector(true, true)),
-          'midSentenceFailureMessageArgs(Vector(true, true)),
-          'midSentenceNegatedFailureMessageArgs(Vector(true, true))
-        )
-      }
-    }
-
     object `apply(Null) method returns Matcher` {
       val mt = be_== (null)
 

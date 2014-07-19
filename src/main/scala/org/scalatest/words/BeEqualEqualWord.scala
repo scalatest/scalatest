@@ -67,26 +67,6 @@ final class BeEqualEqualWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * result should be_== (true)
-   *               ^
-   * </pre>
-   */
-  def apply(right: Boolean): Matcher[Boolean] =
-    new Matcher[Boolean] {
-      def apply(left: Boolean): MatchResult =
-        MatchResult(
-          left == right,
-          Resources("wasNot"),
-          Resources("was"),
-          Vector(left, right)
-        )
-      override def toString: String = "be_== (" + Prettifier.default(right) + ")"
-    }
-
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
    * result should be_== (null)
    *               ^
    * </pre>
