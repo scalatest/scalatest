@@ -18,10 +18,44 @@ package org.scalactic
 import java.text._
 import org.scalatest._
 import java.util.Date
+import scala.collection.mutable
 
 class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEquals {
   
   object `Inner constraints should enable equality comparisons` {
+    def `on Seqs and Arrays` {
+      List(1, 2, 3) shouldEqual Vector(1L, 2L, 3L)
+      List(1, 2, 3) shouldEqual List(1L, 2L, 3L)
+      Vector(1, 2, 3) shouldEqual List(1L, 2L, 3L)
+      List(1, 2, 3) shouldEqual Array(1L, 2L, 3L)
+      Array(1, 2, 3) shouldEqual Array(1L, 2L, 3L)
+      Array(1, 2, 3) shouldEqual List(1L, 2L, 3L)
+    }
+    def `on nested Seqs` {
+      Vector(List(1, 2, 3)) shouldEqual List(Vector(1L, 2L, 3L))
+      List(List(1, 2, 3)) shouldEqual List(List(1L, 2L, 3L))
+      List(Vector(1, 2, 3)) shouldEqual Vector(List(1L, 2L, 3L))
+    }
+    def `on Sets` {
+      Set(1, 2, 3) shouldEqual mutable.HashSet(1L, 2L, 3L)
+      Set(1, 2, 3) shouldEqual Set(1L, 2L, 3L)
+      mutable.HashSet(1, 2, 3) shouldEqual Set(1L, 2L, 3L)
+    }
+    def `on nested Sets` {
+      mutable.HashSet(Set(1, 2, 3)) shouldEqual Set(mutable.HashSet(1L, 2L, 3L))
+      Set(Set(1, 2, 3)) shouldEqual Set(Set(1L, 2L, 3L))
+      Set(mutable.HashSet(1, 2, 3)) shouldEqual mutable.HashSet(Set(1L, 2L, 3L))
+    }
+    def `on Maps` {
+      Map("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual mutable.HashMap("1" -> 1L, "2" -> 2L, "3" -> 3L)
+      Map("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual Map("1" -> 1L, "2" -> 2L, "3" -> 3L)
+      mutable.HashMap("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual Map("1" -> 1L, "2" -> 2L, "3" -> 3L)
+    }
+    def `on nested Maps` {
+      mutable.HashMap(0 -> Map("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual Map(0 -> mutable.HashMap("1" -> 1L, "2" -> 2L, "3" -> 3L))
+      Map(0 -> Map("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual Map(0 -> Map("1" -> 1L, "2" -> 2L, "3" -> 3L))
+      Map(0 -> mutable.HashMap("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual mutable.HashMap(0 -> Map("1" -> 1L, "2" -> 2L, "3" -> 3L))
+    }
     def `on Every` {
       One(1) shouldEqual One(1L)
       Many(1, 2) shouldEqual Many(1L, 2L)

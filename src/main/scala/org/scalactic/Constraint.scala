@@ -47,6 +47,8 @@ object Constraint extends LowPriorityConstraints {
 
   implicit def arrayOnRightEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: Array[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 
+  implicit def arrayOnBothSidesConstraint[EA, EB](implicit equalityOfA: Equality[Array[EA]], ev: InnerConstraint[EA, EB]): Constraint[Array[EA], Array[EB]] = new EqualityConstraint[Array[EA], Array[EB]](equalityOfA)
+
   implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 
   implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit equalityOfA: Equality[CA[KA, VA]], evKey: InnerConstraint[KA, KB], evValue: InnerConstraint[VA, VB]): Constraint[CA[KA, VA], CB[KB, VB]] = new EqualityConstraint[CA[KA, VA], CB[KB, VB]](equalityOfA)

@@ -31,6 +31,12 @@ object InnerConstraint extends LowPriorityInnerConstraints {
   import scala.language.implicitConversions
   implicit def typeCheckedInnerConstraint[A, B](implicit ev: B <:< A): InnerConstraint[A, B] = new InnerConstraint[A, B]
 
+  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], CB[EB]] = new InnerConstraint[CA[EA], CB[EB]]
+
+  implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], CB[EB]] = new InnerConstraint[CA[EA], CB[EB]]
+
+  implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit evKey: InnerConstraint[KA, KB], evValue: InnerConstraint[VA, VB]): InnerConstraint[CA[KA, VA], CB[KB, VB]] = new InnerConstraint[CA[KA, VA], CB[KB, VB]]
+
   // 1. Every on left, can by subclass of Every on right
   // 2. Every on right, can be subclass of Every on left
   // 3. One on left, can be One or Every on right, but the latter will be provided by number 2
