@@ -27,6 +27,12 @@ import scala.language.higherKinds
  */
 class InnerConstraint[A, B]
 
+//
+// Going to need to deal with Array more specially at the nested level. Would need to take the Array
+// Equality for the nested one. I think I could do this in general: have special implicits when the
+// contained type is Array, for any and all containers. I think that would fix List[Array[T]] too.
+//
+
 object InnerConstraint extends LowPriorityInnerConstraints {
   import scala.language.implicitConversions
   implicit def typeCheckedInnerConstraint[A, B](implicit ev: B <:< A): InnerConstraint[A, B] = new InnerConstraint[A, B]
@@ -70,5 +76,28 @@ object InnerConstraint extends LowPriorityInnerConstraints {
   implicit def orOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit ev: InnerConstraint[ELB, ERB]): InnerConstraint[Or[ELG, ELB], Bad[ERG, ERB]] = new InnerConstraint[Or[ELG, ELB], Bad[ERG, ERB]]
 
   implicit def badOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit ev: InnerConstraint[ELB, ERB]): InnerConstraint[Bad[ELG, ELB], Bad[ERG, ERB]] = new InnerConstraint[Bad[ELG, ELB], Bad[ERG, ERB]]
+
+  // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
+  // ETL Element Target Left
+  // ETR Element Target Right
+  // EPL Element Parameter Left
+  // EPR Element Parameter Right
+  // This one will provide an equality constraint if the Left types have an inner constraint. It doesn't matter
+  // in this case what the Right type does. If there isn't one for the Left type, the lower priority implicit method
+  // LowPriorityConstraints.lowPriorityEitherEqualityConstraint will be checked will see
+  // If there's an InnerConstraint for the Bad types.
+  implicit def eitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]]
+
+  implicit def leftOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Left[ETL, ETR], Either[EPL, EPR]]
+
+  implicit def eitherOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, ETR], Left[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Left[EPL, EPR]]
+
+  implicit def leftOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, ETR], Left[EPL, EPR]] = new InnerConstraint[Left[ETL, ETR], Left[EPL, EPR]]
+
+  implicit def rightOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Right[ETL, ETR], Either[EPL, EPR]]
+
+  implicit def eitherOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]]
+
+  implicit def rightOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]]
 }
 

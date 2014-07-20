@@ -88,4 +88,27 @@ object Constraint extends LowPriorityConstraints {
   implicit def orOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Or[ELG, ELB], Bad[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
 
   implicit def badOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Bad[ELG, ELB], Bad[ERG, ERB]] = new EqualityConstraint[Bad[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
+
+  // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
+  // ETL Element Target Left
+  // ETR Element Target Right
+  // EPL Element Parameter Left
+  // EPR Element Parameter Right
+  // This one will provide an equality constraint if the Left types have an inner constraint. It doesn't matter
+  // in this case what the Right type does. If there isn't one for the Left type, the lower priority implicit method
+  // LowPriorityConstraints.lowPriorityEitherEqualityConstraint will be checked will see
+  // If there's an InnerConstraint for the Bad types.
+  implicit def eitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): Constraint[Either[ETL, ETR], Either[EPL, EPR]] = new EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
+
+  implicit def leftOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Left[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): Constraint[Left[ETL, ETR], Either[EPL, EPR]] = new EqualityConstraint[Left[ETL, ETR], Either[EPL, EPR]](equalityOfT)
+
+  implicit def eitherOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): Constraint[Either[ETL, ETR], Left[EPL, EPR]] = new EqualityConstraint[Either[ETL, ETR], Left[EPL, EPR]](equalityOfT)
+
+  implicit def leftOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Left[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): Constraint[Left[ETL, ETR], Left[EPL, EPR]] = new EqualityConstraint[Left[ETL, ETR], Left[EPL, EPR]](equalityOfT)
+
+  implicit def rightOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Right[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Right[ETL, ETR], Either[EPL, EPR]] = new EqualityConstraint[Right[ETL, ETR], Either[EPL, EPR]](equalityOfT)
+
+  implicit def eitherOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Either[ETL, ETR], Right[EPL, EPR]] = new EqualityConstraint[Either[ETL, ETR], Right[EPL, EPR]](equalityOfT)
+
+  implicit def rightOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Right[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Right[ETL, ETR], Right[EPL, EPR]] = new EqualityConstraint[Right[ETL, ETR], Right[EPL, EPR]](equalityOfT)
 }

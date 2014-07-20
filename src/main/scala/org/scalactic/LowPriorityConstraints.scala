@@ -24,10 +24,8 @@ trait LowPriorityConstraints {
 
   // ELG Element Left Good
   // ELB Element Left Bad
-  // ORL Or Left
   // ERG Element Right Good
   // ERB Element Right Bad
-  // ORR Or Right
   // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
@@ -35,4 +33,14 @@ trait LowPriorityConstraints {
 
   // This must be low priority to allow Every on both sides
   implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], Every[EB]] = new EqualityConstraint[CA[EA], Every[EB]](equalityOfA)
+
+  // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
+  // ETL Element Target Left
+  // ETR Element Target Right
+  // EPL Element Parameter Left
+  // EPR Element Parameter Right
+  // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
+  // in this case what the Good type does. If there was a constraint available for the Good types, then it would
+  // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
+  implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Either[ETL, ETR], Either[EPL, EPR]] = new EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
 }
