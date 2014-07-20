@@ -42,43 +42,72 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
       (Good(1): Good[Int, Int]) shouldEqual (Good(1): Good[Int, Long])
       (Good(1L): Good[Long, Int]) shouldEqual (Good(1): Good[Int, Int])
       (Good(1): Good[Int, Long]) shouldEqual (Good(1): Good[Int, Int])
-      // Given both sides are Good, it shouldn't matter if the bad type has no constraint
+      // Given both sides are Good, it shouldn't matter if the Bad type has no constraint
       (Good(1): Good[Int, Long]) shouldEqual (Good(1): Good[Int, String])
       (Good(1L): Good[Long, Int]) shouldEqual (Good(1): Good[Int, String])
-      // But if there's a ...
+      // But if both sides are Good but without a constraint, it should not compile, even
+      // if the Bad type has a constraint.
+      """(Good(1L): Good[Long, Int]) shouldEqual (Good("one"): Good[String, Int])""" shouldNot typeCheck
 
       // Left side Good, right side Or
       (Good(1): Good[Int, Int]) shouldEqual (Good(1L): Long Or Int)
       (Good(1): Good[Int, Int]) shouldEqual (Good(1): Int Or Long)
       (Good(1L): Good[Long, Int]) shouldEqual (Good(1): Int Or Int)
       (Good(1): Good[Int, Long]) shouldEqual (Good(1): Int Or Int)
-      // If left side is Good, right side must be an Or with a valid Good type.
-      // Therefore, if right side is an Or with mismatched Good type but valid Bad type, it should not type check
-      """(Good(1L): Good[Long, Int]) shouldEqual (Good("hi"): String Or Int)""" shouldNot typeCheck
+      // Given left side is Good, it shouldn't matter if the Bad type has no constraint
+      (Good(1): Good[Int, Long]) shouldEqual (Good(1): Or[Int, String])
+      (Good(1L): Good[Long, Int]) shouldEqual (Good(1): Or[Int, String])
+      // But if left side is Good but without a constraint between left and right Good types, it should not compile, even
+      // if the Bad type has a constraint.
+      """(Good(1L): Good[Long, Int]) shouldEqual (Good("one"): Good[String, Int])""" shouldNot typeCheck
 
       // Right side Good, left side Or
       (Good(1): Int Or Int) shouldEqual (Good(1L): Good[Long, Int])
       (Good(1): Int Or Int) shouldEqual (Good(1): Good[Int, Long])
       (Good(1L): Long Or Int) shouldEqual (Good(1): Good[Int, Int])
       (Good(1): Int Or Long) shouldEqual (Good(1): Good[Int, Int])
+      // Given right side is Good, it shouldn't matter if the Bad type has no constraint
+      (Good(1): Or[Int, Long]) shouldEqual (Good(1): Good[Int, String])
+      (Good(1L): Or[Long, Int]) shouldEqual (Good(1): Good[Int, String])
+      // But if right side is Good but without a constraint between left and right Good types, it should not compile, even
+      // if the Bad type has a constraint.
+      """(Good(1L): Or[Long, Int]) shouldEqual (Good("one"): Good[String, Int])""" shouldNot typeCheck
 
       // Both sides Bad
       (Bad(1): Bad[Int, Int]) shouldEqual (Bad(1): Bad[Long, Int])
       (Bad(1): Bad[Int, Int]) shouldEqual (Bad(1L): Bad[Int, Long])
       (Bad(1): Bad[Long, Int]) shouldEqual (Bad(1): Bad[Int, Int])
       (Bad(1L): Bad[Int, Long]) shouldEqual (Bad(1): Bad[Int, Int])
+      // Given both sides are Bad, it shouldn't matter if the Good type has no constraint
+      (Bad(1): Bad[Long, Int]) shouldEqual (Bad(1): Bad[String, Int])
+      (Bad(1L): Bad[Int, Long]) shouldEqual (Bad(1): Bad[String, Int])
+      // But if both sides are Bad but without a constraint, it should not compile, even
+      // if the Good type has a constraint.
+      """(Bad(1L): Bad[Int, Long]) shouldEqual (Bad("one"): Bad[Int, String])""" shouldNot typeCheck
 
       // Left side Bad, right side Or
       (Bad(1): Bad[Int, Int]) shouldEqual (Bad(1): Long Or Int)
       (Bad(1): Bad[Int, Int]) shouldEqual (Bad(1L): Int Or Long)
       (Bad(1): Bad[Long, Int]) shouldEqual (Bad(1): Int Or Int)
       (Bad(1L): Bad[Int, Long]) shouldEqual (Bad(1): Int Or Int)
+      // Given left side is Bad, it shouldn't matter if the Good type has no constraint
+      (Bad(1): Bad[Long, Int]) shouldEqual (Bad(1): Or[String, Int])
+      (Bad(1L): Bad[Int, Long]) shouldEqual (Bad(1): Or[String, Int])
+      // But if left side is Bad but without a constraint between left and right Bad types, it should not compile, even
+      // if the Good type has a constraint.
+      """(Bad(1L): Bad[Int, Long]) shouldEqual (Bad("one"): Or[Int, String])""" shouldNot typeCheck
 
       // Right side Bad, left side Or
       (Bad(1): Int Or Int) shouldEqual (Bad(1): Bad[Long, Int])
       (Bad(1): Int Or Int) shouldEqual (Bad(1L): Bad[Int, Long])
       (Bad(1): Long Or Int) shouldEqual (Bad(1): Bad[Int, Int])
       (Bad(1L): Int Or Long) shouldEqual (Bad(1): Bad[Int, Int])
+      // Given right side is Bad, it shouldn't matter if the Good type has no constraint
+      (Bad(1): Or[Long, Int]) shouldEqual (Bad(1): Bad[String, Int])
+      (Bad(1L): Or[Int, Long]) shouldEqual (Bad(1): Bad[String, Int])
+      // But if right side is Bad but without a constraint between left and right Bad types, it should not compile, even
+      // if the Good type has a constraint.
+      """(Bad(1L): Or[Int, Long]) shouldEqual (Bad("one"): Bad[Int, String])""" shouldNot typeCheck
 
       // Both sides Or
       (Good(1): Int Or Int) shouldEqual (Good(1L): Long Or Int)
@@ -101,13 +130,10 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
       // res1: Boolean = true
       (Good(1).orBad[String]: Int Or String) shouldEqual (Good(1L).orBad[Date]: Long Or Date)
       (Good[Int].orBad("hi"): Int Or String) shouldEqual (Good[Date].orBad("hi"): Date Or String)
+      // The only way an equality comparison of two Ors will not be allowed to compile, therefore, is if
+      // no constraint exists between either the Good or Bad types:
+      """(Good(1): Int Or String) shouldEqual (Good("one"): String Or Int)""" shouldNot typeCheck
     }
-/*
-   If left side is Good, right side must be an Or with a valid Good type.
-   If left side is Bad, right side must be an Or with a valid Bad type.
-   If left side is Or, and right side is Bad, left side must have valid Bad type.
-   If left side is Or, and right side is Good, left side must have valid Good type.
-*/
   }
 }
 
