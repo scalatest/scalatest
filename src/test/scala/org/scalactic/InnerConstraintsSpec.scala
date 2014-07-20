@@ -34,6 +34,9 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
 
       Every(1) shouldEqual Every(1L)
       Every(1, 2) shouldEqual Every(1L, 2L)
+
+      // But if a One and Many are compared, that can never be equal, so it should not be allowed
+      """One(1) === Many(1, 2)""" shouldNot typeCheck
     }
     def `on Or` {
 

@@ -29,10 +29,11 @@ trait LowPriorityConstraints {
   // ERB Element Right Bad
   // ORR Or Right
   // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
-  // in this case what the Good type does. If there was a constraint available ofr the Good types, then it would
+  // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-/*
-  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ORL[elg, erb] <: Or[elg, erb], ERG, ERB, ORR[erg, erb] <: Or[erg, erb]](implicit equalityOfA: Equality[ORL[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[ORL[ELG, ELB], ORR[ERG, ERB]] = new EqualityConstraint[ORL[ELG, ELB], ORR[ERG, ERB]](equalityOfA)
-*/
   implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Or[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+
+  // This must be low priority to allow Every on both sides
+  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], Every[EB]] = new EqualityConstraint[CA[EA], Every[EB]](equalityOfA)
+
 }

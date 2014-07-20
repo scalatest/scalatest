@@ -53,7 +53,17 @@ object Constraint extends LowPriorityConstraints {
 
   implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
-  implicit def everyEqualityConstraint[EA, CA[ea] <: Every[ea], EB, CB[eb] <: Every[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
+  // 1. Every on left, can by subclass of Every on right
+  // 2. Every on right, can be subclass of Every on left
+  // 3. One on left, can be One or Every on right, but the latter will be provided by number 2
+  // 4. One on right, can be One or Every on left, but the latter will be provided by number 1
+  // 5. Many on left, can be Many or Every on right, but the latter will be provided by number 2
+  // 6. Many on right, can be Many or Every on left, but the latter will be provided by number 1
+  implicit def everyOnLeftEqualityConstraint[EA, EB, CB[eb] <: Every[eb]](implicit equalityOfA: Equality[Every[EA]], ev: InnerConstraint[EA, EB]): Constraint[Every[EA], CB[EB]] = new EqualityConstraint[Every[EA], CB[EB]](equalityOfA)
+
+  implicit def oneOnBothSidesqualityConstraint[EA, EB](implicit equalityOfA: Equality[One[EA]], ev: InnerConstraint[EA, EB]): Constraint[One[EA], One[EB]] = new EqualityConstraint[One[EA], One[EB]](equalityOfA)
+
+  implicit def manyOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Many[EA]], ev: InnerConstraint[EA, EB]): Constraint[Many[EA], Many[EB]] = new EqualityConstraint[Many[EA], Many[EB]](equalityOfA)
 
   // ELG Element Left Good
   // ELB Element Left Bad
@@ -63,9 +73,6 @@ object Constraint extends LowPriorityConstraints {
   // in this case what the Bad type does. If there isn't one for the Good type, the lower priority implicit method
   // LowPriorityConstraints.lowPriorityOrEqualityConstraint will be checked will see
   // If there's an InnerConstraint for the Bad types.
-/*
-  implicit def orEqualityConstraint[ELG, ELB, ORL[elg, erb] <: Or[elg, erb], ERG, ERB, ORR[erg, erb] <: Or[erg, erb]](implicit equalityOfL: Equality[ORL[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[ORL[ELG, ELB], ORR[ERG, ERB]] = new EqualityConstraint[ORL[ELG, ELB], ORR[ERG, ERB]](equalityOfL)
-*/
   implicit def orEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Or[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
 
   implicit def goodOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Good[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Good[ELG, ELB], Or[ERG, ERB]](equalityOfL)
