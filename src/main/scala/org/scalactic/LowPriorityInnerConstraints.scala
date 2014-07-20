@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,16 @@ package org.scalactic
 import annotation.implicitNotFound
 import scala.language.higherKinds
 
-trait LowPriorityConstraints {
-
-  import TripleEqualsSupport.EqualityConstraint
+/**
+ * Abstract class used to enforce type constraints for equality checks.
+ *
+ * <p>
+ * For more information on how this class is used, see the documentation of <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+ * </p>
+ */
+trait LowPriorityInnerConstraints extends EvenLowerPriorityInnerConstraints {
+  import scala.language.implicitConversions
+  implicit def lowPriorityTypeCheckedInnerConstraint[A, B](implicit ev: A <:< B): InnerConstraint[A, B] = new InnerConstraint[A, B]
 
   // ELG Element Left Good
   // ELB Element Left Bad
@@ -31,8 +38,8 @@ trait LowPriorityConstraints {
   // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Or[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit ev: InnerConstraint[ELB, ERB]): InnerConstraint[Or[ELG, ELB], Or[ERG, ERB]] = new InnerConstraint[Or[ELG, ELB], Or[ERG, ERB]]
 
   // This must be low priority to allow Every on both sides
-  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], Every[EB]] = new EqualityConstraint[CA[EA], Every[EB]](equalityOfA)
+  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], Every[EB]] = new InnerConstraint[CA[EA], Every[EB]]
 }

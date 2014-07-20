@@ -37,6 +37,24 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
 
       // But if a One and Many are compared, that can never be equal, so it should not be allowed
       """One(1) === Many(1, 2)""" shouldNot typeCheck
+      """Many(1) === One(1, 2)""" shouldNot typeCheck
+    }
+    def `on nested Every` {
+      List(One(1)) shouldEqual Vector(One(1L))
+      List(Many(1, 2)) shouldEqual Vector(Many(1L, 2L))
+
+      List(Every(1)) shouldEqual Vector(One(1L))
+      List(Every(1, 2)) shouldEqual Vector(Many(1L, 2L))
+
+      List(One(1)) shouldEqual Vector(Every(1L))
+      List(Many(1, 2)) shouldEqual Vector(Every(1L, 2L))
+
+      List(Every(1)) shouldEqual Vector(Every(1L))
+      List(Every(1, 2)) shouldEqual Vector(Every(1L, 2L))
+
+      // But if a One and Many are compared, that can never be equal, so it should not be allowed
+      """List(One(1)) === Vector(Many(1, 2))""" shouldNot typeCheck
+      """List(Many(1)) === Vector(One(1, 2))""" shouldNot typeCheck
     }
     def `on Or` {
 
@@ -136,6 +154,105 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
       // The only way an equality comparison of two Ors will not be allowed to compile, therefore, is if
       // no constraint exists between either the Good or Bad types:
       """(Good(1): Int Or String) shouldEqual (Good("one"): String Or Int)""" shouldNot typeCheck
+    }
+    def `on Nested Or` {
+
+      // Both sides Good
+      (List(Good(1)): List[Good[Int, Int]]) shouldEqual (List(Good(1L)): List[Good[Long, Int]])
+      (List(Good(1)): List[Good[Int, Int]]) shouldEqual (List(Good(1)): List[Good[Int, Long]])
+      (List(Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good(1)): List[Good[Int, Int]])
+      (List(Good(1)): List[Good[Int, Long]]) shouldEqual (List(Good(1)): List[Good[Int, Int]])
+      // Given both sides are Good, it shouldn't matter if the Bad type has no constraint
+      (List(Good(1)): List[Good[Int, Long]]) shouldEqual (List(Good(1)): List[Good[Int, String]])
+      (List(Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good(1)): List[Good[Int, String]])
+      // But if both sides are Good but without a constraint, it should not compile, even
+      // if the Bad type has a constraint.
+      """(List(Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good("one")): List[Good[String, Int]])""" shouldNot typeCheck
+
+      // Left side Good, right side Or
+      (List(Good(1)): List[Good[Int, Int]]) shouldEqual (List(Good(1L)): List[Long Or Int])
+      (List(Good(1)): List[Good[Int, Int]]) shouldEqual (List(Good(1)): List[Int Or Long])
+      (List(Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good(1)): List[Int Or Int])
+      (List(Good(1)): List[Good[Int, Long]]) shouldEqual (List(Good(1)): List[Int Or Int])
+      // Given left side is Good, it shouldn't matter if the Bad type has no constraint
+      (List(Good(1)): List[Good[Int, Long]]) shouldEqual (List(Good(1)): List[Or[Int, String]])
+      (List(Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good(1)): List[Or[Int, String]])
+      // But if left side is Good but without a constraint between left and right Good types, it should not compile, even
+      // if the Bad type has a constraint.
+      """List((Good(1L)): List[Good[Long, Int]]) shouldEqual (List(Good("one")): List[Good[String, Int]])""" shouldNot typeCheck
+
+      // Right side Good, left side Or
+      (List(Good(1)): List[Int Or Int]) shouldEqual (List(Good(1L)): List[Good[Long, Int]])
+      (List(Good(1)): List[Int Or Int]) shouldEqual (List(Good(1)): List[Good[Int, Long]])
+      (List(Good(1L)): List[Long Or Int]) shouldEqual (List(Good(1)): List[Good[Int, Int]])
+      (List(Good(1)): List[Int Or Long]) shouldEqual (List(Good(1)): List[Good[Int, Int]])
+      // Given right side is Good, it shouldn't matter if the Bad type has no constraint
+      (List(Good(1)): List[Or[Int, Long]]) shouldEqual (List(Good(1)): List[Good[Int, String]])
+      (List(Good(1L)): List[Or[Long, Int]]) shouldEqual (List(Good(1)): List[Good[Int, String]])
+      // But if right side is Good but without a constraint between left and right Good types, it should not compile, even
+      // if the Bad type has a constraint.
+      """(List(Good(1L)): List[Or[Long, Int]]) shouldEqual (List(Good("one")): List[Good[String, Int]])""" shouldNot typeCheck
+
+      // Both sides Bad
+      (List(Bad(1)): List[Bad[Int, Int]]) shouldEqual (List(Bad(1)): List[Bad[Long, Int]])
+      (List(Bad(1)): List[Bad[Int, Int]]) shouldEqual (List(Bad(1L)): List[Bad[Int, Long]])
+      (List(Bad(1)): List[Bad[Long, Int]]) shouldEqual (List(Bad(1)): List[Bad[Int, Int]])
+      (List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad(1)): List[Bad[Int, Int]])
+      // Given both sides are Bad, it shouldn't matter if the Good type has no constraint
+      (List(Bad(1)): List[Bad[Long, Int]]) shouldEqual (List(Bad(1)): List[Bad[String, Int]])
+      (List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad(1)): List[Bad[String, Int]])
+      // But if both sides are Bad but without a constraint, it should not compile, even
+      // if the Good type has a constraint.
+      """(List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad("one")): List[Bad[Int, String]])""" shouldNot typeCheck
+
+      // Left side Bad, right side Or
+      (List(Bad(1)): List[Bad[Int, Int]]) shouldEqual (List(Bad(1)): List[Long Or Int])
+      (List(Bad(1)): List[Bad[Int, Int]]) shouldEqual (List(Bad(1L)): List[Int Or Long])
+      (List(Bad(1)): List[Bad[Long, Int]]) shouldEqual (List(Bad(1)): List[Int Or Int])
+      (List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad(1)): List[Int Or Int])
+      // Given left side is Bad, it shouldn't matter if the Good type has no constraint
+      (List(Bad(1)): List[Bad[Long, Int]]) shouldEqual (List(Bad(1)): List[Or[String, Int]])
+      (List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad(1)): List[Or[String, Int]])
+      // But if left side is Bad but without a constraint between left and right Bad types, it should not compile, even
+      // if the Good type has a constraint.
+      """(List(Bad(1L)): List[Bad[Int, Long]]) shouldEqual (List(Bad("one")): List[Or[Int, String]])""" shouldNot typeCheck
+
+      // Right side Bad, left side Or
+      (List(Bad(1)): List[Int Or Int]) shouldEqual (List(Bad(1)): List[Bad[Long, Int]])
+      (List(Bad(1)): List[Int Or Int]) shouldEqual (List(Bad(1L)): List[Bad[Int, Long]])
+      (List(Bad(1)): List[Long Or Int]) shouldEqual (List(Bad(1)): List[Bad[Int, Int]])
+      (List(Bad(1L)): List[Int Or Long]) shouldEqual (List(Bad(1)): List[Bad[Int, Int]])
+      // Given right side is Bad, it shouldn't matter if the Good type has no constraint
+      (List(Bad(1)): List[Or[Long, Int]]) shouldEqual (List(Bad(1)): List[Bad[String, Int]])
+      (List(Bad(1L)): List[Or[Int, Long]]) shouldEqual (List(Bad(1)): List[Bad[String, Int]])
+      // But if right side is Bad but without a constraint between left and right Bad types, it should not compile, even
+      // if the Good type has a constraint.
+      """(List(Bad(1L)): List[Or[Int, Long]]) shouldEqual (List(Bad("one")): List[Bad[Int, String]])""" shouldNot typeCheck
+
+      // Both sides Or
+      (List(Good(1)): List[Int Or Int]) shouldEqual (List(Good(1L)): List[Long Or Int])
+      (List(Good(1)): List[Int Or Int]) shouldEqual (List(Good(1)): List[Int Or Long])
+      (List(Good(1L)): List[Long Or Int]) shouldEqual (List(Good(1)): List[Int Or Int])
+      (List(Good(1)): List[Int Or Long]) shouldEqual (List(Good(1)): List[Int Or Int])
+      (List(Bad(1)): List[Int Or Int]) shouldEqual (List(Bad(1)): List[Long Or Int])
+      (List(Bad(1)): List[Int Or Int]) shouldEqual (List(Bad(1L)): List[Int Or Long])
+      (List(Bad(1)): List[Long Or Int]) shouldEqual (List(Bad(1)): List[Int Or Int])
+      (List(Bad(1L)): List[Int Or Long]) shouldEqual (List(Bad(1)): List[Int Or Int])
+      // So long as an equality constraint exists for one the Good or Bad side of type Or,
+      // the comparison will be allowed. This is because it may be true. At the
+      // end of the day, a Good[Int].orBad[String] can equal a Good[Int].orBad[java.util.Date]
+      // 
+      // scala> Good(1).orBad[String] == Good(1L).orBad[java.util.Date]
+      // res0: Boolean = true
+      // 
+      // Similarly, a Good[Int].orBad[String] can equal a Good[java.util.Date].orBad[String]
+      // scala> Good[Int].orBad("hi") == Good[java.util.Date].orBad("hi"])
+      // res1: Boolean = true
+      (List(Good(1).orBad[String]): List[Int Or String]) shouldEqual (List(Good(1L).orBad[Date]): List[Long Or Date])
+      (List(Good[Int].orBad("hi")): List[Int Or String]) shouldEqual (List(Good[Date].orBad("hi")): List[Date Or String])
+      // The only way an equality comparison of two Ors will not be allowed to compile, therefore, is if
+      // no constraint exists between either the Good or Bad types:
+      """(List(Good(1)): List[Int Or String]) shouldEqual (List(Good("one")): List[String Or Int])""" shouldNot typeCheck
     }
   }
 }
