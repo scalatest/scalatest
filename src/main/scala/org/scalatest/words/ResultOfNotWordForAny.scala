@@ -74,6 +74,29 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   }
 
   /**
+   * This method enables the following syntax: // TODO: Write tests, including for special boolean error message
+   *
+   * <pre class="stHighlight">
+   * result should not be (7)
+   *                   ^
+   * </pre>
+   */
+  def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    if (evidence.areEqual(left, right) != shouldBeTrue) {
+      val rightIsBoolean = right.isInstanceOf[Boolean]
+      val wasNotEqualTo = if (rightIsBoolean) "wasNot" else "wasNotEqualTo"
+      val wasEqualTo = if (rightIsBoolean) "was" else "wasEqualTo"
+      throw newTestFailedException(
+        FailureMessages(
+         if (shouldBeTrue) wasNotEqualTo else wasEqualTo,
+          left,
+          right
+        )
+      )
+    }
+  }
+
+  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -81,7 +104,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be(right: Any) {
+  def be_==(right: Any) {
     if ((left == right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -90,6 +113,25 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           right
         )
       )
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * map should not be_== (null)
+   *                ^
+   * </pre>
+   */
+  def be_==(o: Null)(implicit ev: T <:< AnyRef) {
+    if ((left == null) != shouldBeTrue) {
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages("wasNotNull", left) 
+        else
+          FailureMessages("wasNull")
+      )
+    }
   }
 
   /**

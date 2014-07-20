@@ -5271,11 +5271,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldBe(right: Any) {
-      doCollected(collected, xs, original, "shouldBe", 1) { e =>
-        if (e != right) {
+    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+      doCollected(collected, xs, original, "shouldBe", 1) { e => // May have just broke tests because changed wasNot to wasNotEqualTo
+        if (!evidence.areEqual(e, right)) {
+          val rightIsBoolean = right.isInstanceOf[Boolean]
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          throw newTestFailedException(FailureMessages("wasNot", eee, rightee), None, 6)
+          throw newTestFailedException(FailureMessages(if (rightIsBoolean) "wasNot" else "wasNotEqualTo", eee, rightee), None, 6)
         }
       }
     }
@@ -6790,16 +6791,32 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * aDouble shouldBe 8.8
-     *         ^
+     * a shouldBe b
+     *   ^
      * </pre>
      */
-    def shouldBe(right: Any) {
-      if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
+    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) { // TODO: Tests and behavior for special Boolean err msg
+      if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * a shouldBe_== b
+     *   ^
+     * </pre>
+     */
+    def shouldBe_==(right: Any) {
+      if (leftSideValue != right) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
+        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
+      }
+    }
+    // TODO: add shouldBe_== to all()...
 
     /**
      * This method enables syntax such as the following:

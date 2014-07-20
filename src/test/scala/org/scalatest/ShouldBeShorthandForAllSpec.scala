@@ -54,7 +54,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list1) shouldBe 1
       }
-      assert(caught1.message === (Some(errorMessage(1, "2 was not 1", thisLineNumber - 2, list1))))
+      assert(caught1.message === (Some(errorMessage(1, "2 was not equal to 1", thisLineNumber - 2, list1))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -112,6 +112,17 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught7.message === Some(errorMessage(1, "false was not true", thisLineNumber - 2, list7)))
       assert(caught7.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    def `should give a special "was not" instead of "was not equal to" error message if the right hand side is Boolean` {
+      
+      all(List(true, true, true)) shouldBe true
+      val list1 = List(false, true)
+      val caught1 = intercept[TestFailedException] {
+        all(list1) shouldBe false
+      }
+      assert(caught1.message === (Some(errorMessage(1, "true was not false", thisLineNumber - 2, list1))))
+      assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
     def `should work with BeMatcher` {

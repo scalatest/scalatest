@@ -22,18 +22,18 @@ import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeDoubleEqualsSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
-  // Checking for equality with "be"
-  object `The be token` {
+  // Checking for equality with "be_=="
+  object `The be_== token` {
 
     def `should compare arrays structurally` {
-      Array(1, 2) should be (Array(1, 2))
+      Array(1, 2) should be_== (Array(1, 2))
     }
 
     def `should call .deep on an array in either left or ride sides` {
-      Array(1, 2) should be (List(1, 2))
-      List(1, 2) should be (Array(1, 2))
+      Array(1, 2) should be_== (List(1, 2))
+      List(1, 2) should be_== (Array(1, 2))
     }
 
     def `should compare arrays deeply` {
@@ -41,142 +41,125 @@ class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAsser
       val a2 = Array(1, Array("a", "b"), 3)
       val a3 = Array(1, Array("c", "d"), 3)
       a1 should not be theSameInstanceAs (a2)
-      a1 should be (a2)
+      a1 should be_== (a2)
       intercept[TestFailedException] {
-        a1 should be (a3)
+        a1 should be_== (a3)
       }
     }
 
     def `should do nothing when equal` {
-      1 should be (1)
+      1 should be_== (1)
       // 1 shouldBe 1
 
       // objects should equal themselves
-      check((s: String) => returnsNormally(s should be (s)))
-      check((i: Int) => returnsNormally(i should be (i)))
+      check((s: String) => returnsNormally(s should be_== (s)))
+      check((i: Int) => returnsNormally(i should be_== (i)))
       
       // a string should equal another string with the same value
-      check((s: String) => returnsNormally(s should be (new String(s))))
+      check((s: String) => returnsNormally(s should be_== (new String(s))))
     }
 
     def `should do nothing when not equal and used with not` {
-      1 should not { be (2) }
-      1 should not be (2)
+      1 should not { be_== (2) }
+      1 should not be_== (2)
 
       // unequal objects should not equal each other
-      check((s: String, t: String) => s != t ==> returnsNormally(s should not { be (t) }))
-      check((s: String, t: String) => s != t ==> returnsNormally(s should not be (t)))
+      check((s: String, t: String) => s != t ==> returnsNormally(s should not { be_== (t) }))
+      check((s: String, t: String) => s != t ==> returnsNormally(s should not be_== (t)))
     }
 
     def `should do nothing when equal and used in a logical-and expression` {
-      1 should (be (1) and be (2 - 1))
+      1 should (be_== (1) and be_== (2 - 1))
     }
 
     def `should do nothing when equal and used in multi-part logical expressions` {
 
         // Just to make sure these work strung together
-        1 should (be (1) and be (1) and be (1) and be (1))
-        1 should (be (1) and be (1) or be (1) and be (1) or be (1))
+        1 should (be_== (1) and be_== (1) and be_== (1) and be_== (1))
+        1 should (be_== (1) and be_== (1) or be_== (1) and be_== (1) or be_== (1))
         1 should (
-            be (1) and
-            be (1) or
-            be (1) and
-            be (1) or
-            be (1)
+            be_== (1) and
+            be_== (1) or
+            be_== (1) and
+            be_== (1) or
+            be_== (1)
         )
     }
 
     def `should do nothing when equal and used in a logical-or expression` {
-      1 should { be (1) or be (2 - 1) }
+      1 should { be_== (1) or be_== (2 - 1) }
     }
 
     def `should do nothing when not equal and used in a logical-and expression with not` {
-      1 should { not { be (2) } and not { be (3 - 1) }}
-      1 should { not be (2) and (not be (3 - 1)) }
-      1 should (not be (2) and not be (3 - 1))
+      1 should { not { be_== (2) } and not { be_== (3 - 1) }}
+      1 should { not be_== (2) and (not be_== (3 - 1)) }
+      1 should (not be_== (2) and not be_== (3 - 1))
     }
 
     def `should do nothing when not equal and used in a logical-or expression with not` {
-      1 should { not { be (2) } or not { be (3 - 1) }}
-      1 should { not be (2) or (not be (3 - 1)) }
-      1 should (not be (2) or not be (3 - 1))
+      1 should { not { be_== (2) } or not { be_== (3 - 1) }}
+      1 should { not be_== (2) or (not be_== (3 - 1)) }
+      1 should (not be_== (2) or not be_== (3 - 1))
     }
 
     def `should throw an assertion error when not equal` {
       val caught1 = intercept[TestFailedException] {
-        1 should be (2)
+        1 should be_== (2)
       }
       assert(caught1.getMessage === "1 was not equal to 2")
 
       // unequal objects used with "a should equal (b)" should throw an TestFailedException
-      check((s: String, t: String) => s != t ==> throwsTestFailedException(s should be (t)))
+      check((s: String, t: String) => s != t ==> throwsTestFailedException(s should be_== (t)))
 
       val caught2 = intercept[TestFailedException] {
-        1 should not (not be (2))
+        1 should not (not be_== (2))
       }
       assert(caught2.getMessage === "1 was not equal to 2")
 
       val s: String = null
       val caught3 = intercept[TestFailedException] {
-        s should be ("hi")
+        s should be_== ("hi")
       }
       assert(caught3.getMessage === "null was not equal to \"hi\"")
     }
 
     def `should throw an assertion error when equal but used with should not` {
       val caught1 = intercept[TestFailedException] {
-        1 should not { be (1) }
+        1 should not { be_== (1) }
       }
       assert(caught1.getMessage === "1 was equal to 1")
 
       val caught2 = intercept[TestFailedException] {
-        1 should not be (1)
+        1 should not be_== (1)
       }
       assert(caught2.getMessage === "1 was equal to 1")
 
       // the same object used with "a should not { equal (a) } should throw TestFailedException
-      check((s: String) => throwsTestFailedException(s should not { be (s) }))
-      check((i: Int) => throwsTestFailedException(i should not { be (i) }))
-      check((s: String) => throwsTestFailedException(s should not be (s)))
-      check((i: Int) => throwsTestFailedException(i should not be (i)))
+      check((s: String) => throwsTestFailedException(s should not { be_== (s) }))
+      check((i: Int) => throwsTestFailedException(i should not { be_== (i) }))
+      check((s: String) => throwsTestFailedException(s should not be_== (s)))
+      check((i: Int) => throwsTestFailedException(i should not be_== (i)))
 
-      // two different strings with the same value used with "s should not { be (t) } should throw TestFailedException
-      check((s: String) => throwsTestFailedException(s should not { be (new String(s)) }))
-      check((s: String) => throwsTestFailedException(s should not be (new String(s))))
+      // two different strings with the same value used with "s should not { be_== (t) } should throw TestFailedException
+      check((s: String) => throwsTestFailedException(s should not { be_== (new String(s)) }))
+      check((s: String) => throwsTestFailedException(s should not be_== (new String(s))))
 
       val caught3 = intercept[TestFailedException] {
-        1 should not (not (not be (1)))
+        1 should not (not (not be_== (1)))
       }
       assert(caught3.getMessage === "1 was equal to 1")
     }
 
-    def `should throw a TFE when equal to Boolean right-hand-side, but used with should not, giving special error message` {
-      val caught1 = intercept[TestFailedException] {
-        false should not { be (false) }
-      }
-      assert(caught1.getMessage === "false was false")
-
-      val caught2 = intercept[TestFailedException] {
-        true should not be (true)
-      }
-      assert(caught2.getMessage === "true was true")
-
-      val caught3 = intercept[TestFailedException] {
-        true should not (not (not be (true)))
-      }
-      assert(caught3.getMessage === "true was true")
-    }
-
     def `should throw an assertion error when not equal and used in a logical-and expression` {
       val caught = intercept[TestFailedException] {
-        1 should { be (5) and be (2 - 1) }
+        1 should { be_== (5) and be_== (2 - 1) }
       }
       assert(caught.getMessage === "1 was not equal to 5")
     }
 
     def `should throw an assertion error when not equal and used in a logical-or expression` {
       val caught = intercept[TestFailedException] {
-        1 should { be (5) or be (5 - 1) }
+        1 should { be_== (5) or be_== (5 - 1) }
       }
       assert(caught.getMessage === "1 was not equal to 5, and 1 was not equal to 4")
     }
@@ -184,32 +167,32 @@ class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAsser
     def `should throw an assertion error when equal and used in a logical-and expression with not` {
 
       val caught1 = intercept[TestFailedException] {
-        1 should { not { be (1) } and not { be (3 - 1) }}
+        1 should { not { be_== (1) } and not { be_== (3 - 1) }}
       }
       assert(caught1.getMessage === "1 was equal to 1")
 
       val caught2 = intercept[TestFailedException] {
-        1 should { not be (1) and (not be (3 - 1)) }
+        1 should { not be_== (1) and (not be_== (3 - 1)) }
       }
       assert(caught2.getMessage === "1 was equal to 1")
 
       val caught3 = intercept[TestFailedException] {
-        1 should (not be (1) and not be (3 - 1))
+        1 should (not be_== (1) and not be_== (3 - 1))
       }
       assert(caught3.getMessage === "1 was equal to 1")
 
       val caught4 = intercept[TestFailedException] {
-        1 should { not { be (2) } and not { be (1) }}
+        1 should { not { be_== (2) } and not { be_== (1) }}
       }
       assert(caught4.getMessage === "1 was not equal to 2, but 1 was equal to 1")
 
       val caught5 = intercept[TestFailedException] {
-        1 should { not be (2) and (not be (1)) }
+        1 should { not be_== (2) and (not be_== (1)) }
       }
       assert(caught5.getMessage === "1 was not equal to 2, but 1 was equal to 1")
 
       val caught6 = intercept[TestFailedException] {
-        1 should (not be (2) and not be (1))
+        1 should (not be_== (2) and not be_== (1))
       }
       assert(caught6.getMessage === "1 was not equal to 2, but 1 was equal to 1")
     }
@@ -217,17 +200,17 @@ class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAsser
     def `should throw an assertion error when equal and used in a logical-or expression with not` {
 
       val caught1 = intercept[TestFailedException] {
-        1 should { not { be (1) } or not { be (2 - 1) }}
+        1 should { not { be_== (1) } or not { be_== (2 - 1) }}
       }
       assert(caught1.getMessage === "1 was equal to 1, and 1 was equal to 1")
 
       val caught2 = intercept[TestFailedException] {
-        1 should { not be (1) or { not be (2 - 1) }}
+        1 should { not be_== (1) or { not be_== (2 - 1) }}
       }
       assert(caught2.getMessage === "1 was equal to 1, and 1 was equal to 1")
 
       val caught3 = intercept[TestFailedException] {
-        1 should (not be (1) or not be (2 - 1))
+        1 should (not be_== (1) or not be_== (2 - 1))
       }
       assert(caught3.getMessage === "1 was equal to 1, and 1 was equal to 1")
     }

@@ -16,6 +16,7 @@
 package org.scalactic
 
 import annotation.implicitNotFound
+import scala.language.higherKinds
 
 /**
  * Abstract class used to enforce type constraints for equality checks.

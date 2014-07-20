@@ -18,6 +18,8 @@ package org.scalactic.enablers
 import org.scalactic.Constraint
 import org.scalactic.Equality
 import scala.collection.GenTraversable
+import scala.language.implicitConversions
+import scala.language.higherKinds
 
 final class EvidenceThat[R] {
 

@@ -429,34 +429,36 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
   it can "be combined with collection.combined" in {
 
+    // TODO: Investigate the Equality Constraint type errors 
+
     // List
     // Is this the right answer? Has to be, because couldn't come up with an error anyway.
-    List.empty[Int Or Every[String]].combined shouldBe Good(List.empty[Int])
+    List.empty[Int Or Every[String]].combined shouldBe_== Good(List.empty[Int])
 
     //  def combine[G, ELE, EVERY[b] <: Every[b], SEQ[s]](xs: SEQ[G Or EVERY[ELE]])(implicit seq: Sequenceable[SEQ]): SEQ[G] Or Every[ELE] =
     // G = Int, ELE = Nothing, SEQ = List
-    List(Good(3)).combined shouldBe Good(List(3))
-    List(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
+    List(Good(3)).combined shouldBe_== Good(List(3))
+    List(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    List(Good(3), Good(4)).combined shouldBe Good(List(3, 4))
-    List(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
-    List(Good(3), Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    List(Bad(One("oops")), Good(3)).combined shouldBe Bad(One("oops"))
+    List(Good(3), Good(4)).combined shouldBe_== Good(List(3, 4))
+    List(Bad(One("darn")), Bad(One("oops"))).combined shouldBe_== Bad(Every("darn", "oops"))
+    List(Good(3), Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    List(Bad(One("oops")), Good(3)).combined shouldBe_== Bad(One("oops"))
 
-    List(Good(3), Good(4), Good(5)).combined shouldBe Good(List(3, 4, 5))
+    List(Good(3), Good(4), Good(5)).combined shouldBe_== Good(List(3, 4, 5))
 
     // Vector
-    Vector.empty[Int Or Every[String]].combined shouldBe Good(Vector.empty[Int])
+    Vector.empty[Int Or Every[String]].combined shouldBe_== Good(Vector.empty[Int])
 
-    Vector(Good(3)).combined shouldBe Good(Vector(3))
-    Vector(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
+    Vector(Good(3)).combined shouldBe_== Good(Vector(3))
+    Vector(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    Vector(Good(3), Good(4)).combined shouldBe Good(Vector(3, 4))
-    Vector(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
-    Vector(Good(3), Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    Vector(Bad(One("oops")), Good(3)).combined shouldBe Bad(One("oops"))
+    Vector(Good(3), Good(4)).combined shouldBe_== Good(Vector(3, 4))
+    Vector(Bad(One("darn")), Bad(One("oops"))).combined shouldBe_== Bad(Every("darn", "oops"))
+    Vector(Good(3), Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    Vector(Bad(One("oops")), Good(3)).combined shouldBe_== Bad(One("oops"))
 
-    Vector(Good(3), Good(4), Good(5)).combined shouldBe Good(Vector(3, 4, 5))
+    Vector(Good(3), Good(4), Good(5)).combined shouldBe_== Good(Vector(3, 4, 5))
 
     // Do the same thing with Iterator
     (List.empty[Int Or Every[String]].iterator).combined.map(_.toStream) shouldEqual (Good(List.empty[Int].iterator).map(_.toStream))
@@ -472,42 +474,42 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     List(Good(3), Good(4), Good(5)).iterator.combined.map(_.toStream) shouldEqual (Good(List(3, 4, 5).iterator).map(_.toStream))
 
     // Set
-    Set.empty[Int Or Every[String]].combined shouldBe Good(Set.empty[Int])
-    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).asInstanceOf[Set[Int Or Every[String]]].combined shouldBe Bad(One("oops"))
-    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).combined shouldBe Bad(One("oops"))
+    Set.empty[Int Or Every[String]].combined shouldBe_== Good(Set.empty[Int])
+    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).asInstanceOf[Set[Int Or Every[String]]].combined shouldBe_== Bad(One("oops"))
+    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    Set(Good(3)).combined shouldBe Good(Set(3))
-    Set(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
+    Set(Good(3)).combined shouldBe_== Good(Set(3))
+    Set(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    Set(Good(3), Good(4)).combined shouldBe Good(Set(3, 4))
-    Set(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
-    Set(Good(3), Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    Set(Bad(One("oops")), Good(3)).combined shouldBe Bad(One("oops"))
+    Set(Good(3), Good(4)).combined shouldBe_== Good(Set(3, 4))
+    Set(Bad(One("darn")), Bad(One("oops"))).combined shouldBe_== Bad(Every("darn", "oops"))
+    Set(Good(3), Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    Set(Bad(One("oops")), Good(3)).combined shouldBe_== Bad(One("oops"))
 
-    Set(Good(3), Good(4), Good(5)).combined shouldBe Good(Set(3, 4, 5))
+    Set(Good(3), Good(4), Good(5)).combined shouldBe_== Good(Set(3, 4, 5))
 
     // Every
-    Every(Good(3).orBad[Every[String]], Good[Int].orBad(Every("oops"))).combined shouldBe Bad(One("oops"))
+    Every(Good(3).orBad[Every[String]], Good[Int].orBad(Every("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    Every(Good(3)).combined shouldBe Good(Every(3))
-    One(Good(3)).combined shouldBe Good(Every(3))
-    Every(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    One(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
+    Every(Good(3)).combined shouldBe_== Good(Every(3))
+    One(Good(3)).combined shouldBe_== Good(Every(3))
+    Every(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    One(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
 
-    Every(Good(3), Good(4)).combined shouldBe Good(Every(3, 4))
-    Many(Good(3), Good(4)).combined shouldBe Good(Every(3, 4))
-    Every(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
-    Many(Bad(One("darn")), Bad(One("oops"))).combined shouldBe Bad(Every("darn", "oops"))
-    Every(Good(3), Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    Every(Bad(One("oops")), Good(3)).combined shouldBe Bad(One("oops"))
+    Every(Good(3), Good(4)).combined shouldBe_== Good(Every(3, 4))
+    Many(Good(3), Good(4)).combined shouldBe_== Good(Every(3, 4))
+    Every(Bad(One("darn")), Bad(One("oops"))).combined shouldBe_== Bad(Every("darn", "oops"))
+    Many(Bad(One("darn")), Bad(One("oops"))).combined shouldBe_== Bad(Every("darn", "oops"))
+    Every(Good(3), Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    Every(Bad(One("oops")), Good(3)).combined shouldBe_== Bad(One("oops"))
 
-    Every(Good(3), Good(4), Good(5)).combined shouldBe Good(Every(3, 4, 5))
+    Every(Good(3), Good(4), Good(5)).combined shouldBe_== Good(Every(3, 4, 5))
 
     // Option
-    Some(Good(3)).combined shouldBe Good(Some(3))
-    (None: Option[Int Or Every[ErrorMessage]]).combined shouldBe Good(None)
-    Some(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
-    Some(Bad(Many("oops", "idoops"))).combined shouldBe Bad(Many("oops", "idoops"))
+    Some(Good(3)).combined shouldBe_== Good(Some(3))
+    (None: Option[Int Or Every[ErrorMessage]]).combined shouldBe_== Good(None)
+    Some(Bad(One("oops"))).combined shouldBe_== Bad(One("oops"))
+    Some(Bad(Many("oops", "idoops"))).combined shouldBe_== Bad(Many("oops", "idoops"))
   }
   it can "be folded with fold" in {
     Good(3).orBad[String].fold(_ + 1, _.length) shouldBe 4

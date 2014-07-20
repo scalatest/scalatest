@@ -738,7 +738,6 @@ final class NotWord {
     }
   }
 
-
   /**
    * This method enables <code>be</code> to be used for inequality comparison. Here are some examples:
    *
