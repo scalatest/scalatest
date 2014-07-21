@@ -616,3 +616,4 @@ object ScalatestBuild extends Build {
                               (sourceManaged in Compile).value,
                               name.value)
 }
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
