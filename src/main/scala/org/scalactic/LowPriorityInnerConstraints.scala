@@ -28,28 +28,4 @@ import scala.language.higherKinds
 trait LowPriorityInnerConstraints extends EvenLowerPriorityInnerConstraints {
   import scala.language.implicitConversions
   implicit def lowPriorityTypeCheckedInnerConstraint[A, B](implicit ev: A <:< B): InnerConstraint[A, B] = new InnerConstraint[A, B]
-
-  // ELG Element Left Good
-  // ELB Element Left Bad
-  // ORL Or Left
-  // ERG Element Right Good
-  // ERB Element Right Bad
-  // ORR Or Right
-  // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
-  // in this case what the Good type does. If there was a constraint available for the Good types, then it would
-  // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit ev: InnerConstraint[ELB, ERB]): InnerConstraint[Or[ELG, ELB], Or[ERG, ERB]] = new InnerConstraint[Or[ELG, ELB], Or[ERG, ERB]]
-
-  // This must be low priority to allow Every on both sides
-  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], Every[EB]] = new InnerConstraint[CA[EA], Every[EB]]
-
-  // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
-  // ETL Element Target Left
-  // ETR Element Target Right
-  // EPL Element Parameter Left
-  // EPR Element Parameter Right
-  // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
-  // in this case what the Good type does. If there was a constraint available for the Good types, then it would
-  // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-  implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]]
 }

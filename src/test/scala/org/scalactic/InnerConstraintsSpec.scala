@@ -194,6 +194,40 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
       // The only way an equality comparison of two Ors will not be allowed to compile, therefore, is if
       // no constraint exists between either the Good or Bad types:
       """(Good(1): Int Or String) shouldEqual (Good("one"): String Or Int)""" shouldNot typeCheck
+
+      // Much ado about Nothing
+      // Both sides Good
+      Good(1) shouldEqual Good(1L)
+      Good(1) shouldEqual Good(1)
+      Good(1L) shouldEqual Good(1)
+      Good(1) shouldEqual Good(1)
+      // Left side Good, right side Or
+      Good(1) shouldEqual Good(1L).asOr
+      Good(1) shouldEqual Good(1).asOr
+      Good(1L) shouldEqual Good(1).asOr
+      // Right side Good, left side Or
+      Good(1).asOr shouldEqual Good(1L)
+      Good(1).asOr shouldEqual Good(1)
+      Good(1L).asOr shouldEqual Good(1)
+      // Both sides Bad
+      Bad(1) shouldEqual Bad(1)
+      Bad(1) shouldEqual Bad(1L)
+      Bad(1L) shouldEqual Bad(1)
+      // Left side Bad, right side Or
+      Bad(1) shouldEqual Bad(1).asOr
+      Bad(1) shouldEqual Bad(1L).asOr
+      Bad(1L) shouldEqual Bad(1).asOr
+      // Right side Bad, left side Or
+      Bad(1).asOr shouldEqual Bad(1)
+      Bad(1).asOr shouldEqual Bad(1L)
+      Bad(1L).asOr shouldEqual Bad(1)
+      // Both sides Or
+      Good(1).asOr shouldEqual Good(1L).asOr
+      Good(1).asOr shouldEqual Good(1).asOr
+      Good(1L).asOr shouldEqual Good(1).asOr
+      Bad(1).asOr shouldEqual Bad(1).asOr
+      Bad(1).asOr shouldEqual Bad(1L).asOr
+      Bad(1L).asOr shouldEqual Bad(1).asOr
     }
     def `on Nested Or` {
 

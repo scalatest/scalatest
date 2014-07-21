@@ -77,17 +77,31 @@ object Constraint extends LowPriorityConstraints {
   // If there's an InnerConstraint for the Bad types.
   implicit def orEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Or[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
 
+  implicit def orOnBothSidesWithBadNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Or[ELG, Nothing]], ev: InnerConstraint[ELG, ERG]): Constraint[Or[ELG, Nothing], Or[ERG, Nothing]] = new EqualityConstraint[Or[ELG, Nothing], Or[ERG, Nothing]](equalityOfL)
+
   implicit def goodOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Good[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Good[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+
+  implicit def goodOnLeftOrOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG, Nothing]], ev: InnerConstraint[ELG, ERG]): Constraint[Good[ELG, Nothing], Or[ERG, Nothing]] = new EqualityConstraint[Good[ELG, Nothing], Or[ERG, Nothing]](equalityOfL)
 
   implicit def orOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Or[ELG, ELB], Good[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Good[ERG, ERB]](equalityOfL)
 
+  implicit def orOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Or[ELG, Nothing]], ev: InnerConstraint[ELG, ERG]): Constraint[Or[ELG, Nothing], Good[ERG, Nothing]] = new EqualityConstraint[Or[ELG, Nothing], Good[ERG, Nothing]](equalityOfL)
+
   implicit def goodOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG, ELB]], ev: InnerConstraint[ELG, ERG]): Constraint[Good[ELG, ELB], Good[ERG, ERB]] = new EqualityConstraint[Good[ELG, ELB], Good[ERG, ERB]](equalityOfL)
+
+  implicit def goodOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG, Nothing]], ev: InnerConstraint[ELG, ERG]): Constraint[Good[ELG, Nothing], Good[ERG, Nothing]] = new EqualityConstraint[Good[ELG, Nothing], Good[ERG, Nothing]](equalityOfL)
 
   implicit def badOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Bad[ELG, ELB], Or[ERG, ERB]] = new EqualityConstraint[Bad[ELG, ELB], Or[ERG, ERB]](equalityOfL)
 
+  implicit def badOnLeftOrOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[Nothing, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Bad[Nothing, ELB], Or[Nothing, ERB]] = new EqualityConstraint[Bad[Nothing, ELB], Or[Nothing, ERB]](equalityOfL)
+
   implicit def orOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Or[ELG, ELB], Bad[ERG, ERB]] = new EqualityConstraint[Or[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
 
+  implicit def orOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Or[Nothing, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Or[Nothing, ELB], Bad[Nothing, ERB]] = new EqualityConstraint[Or[Nothing, ELB], Bad[Nothing, ERB]](equalityOfL)
+
   implicit def badOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELG, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Bad[ELG, ELB], Bad[ERG, ERB]] = new EqualityConstraint[Bad[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
+
+  implicit def badOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[Nothing, ELB]], ev: InnerConstraint[ELB, ERB]): Constraint[Bad[Nothing, ELB], Bad[Nothing, ERB]] = new EqualityConstraint[Bad[Nothing, ELB], Bad[Nothing, ERB]](equalityOfL)
 
   // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
   // ETL Element Target Left
