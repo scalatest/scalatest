@@ -17,16 +17,31 @@ package org.scalactic
 
 import annotation.implicitNotFound
 import scala.language.higherKinds
-
+import scala.language.implicitConversions
 
 class InnerConstraint[A, B]
 
+// Placing the numeric and the subtype/supertype in separate traits because
+// they all work off of A, B, the same level of specificity. So my theory is
+// that they will clash if in the same level (like 1 and 1 would work for all three). 
+// Putting these as the lowest priority because they are the least specific. If
+// put them at the bottom, their points for being higher priority may even out
+// points another more specific one has for being more specific.
+trait NumericInnerConstraint {
+  implicit def numericEqualityInnerConstraint[A, B](implicit numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): InnerConstraint[A, B] = new InnerConstraint[A, B]
+}
+trait LeftTypeIsSubtypeOfRightTypeInnerConstraint extends NumericInnerConstraint {
+  implicit def lowPriorityTypeCheckedInnerConstraint[A, B](implicit ev: A <:< B): InnerConstraint[A, B] = new InnerConstraint[A, B]
+}
+trait RightTypeIsSubtypeOfLeftTypeInnerConstraint extends LeftTypeIsSubtypeOfRightTypeInnerConstraint {
+  implicit def typeCheckedInnerConstraint[A, B](implicit ev: B <:< A): InnerConstraint[A, B] = new InnerConstraint[A, B]
+}
 //
 // Going to need to deal with Array more specially at the nested level. Would need to take the Array
 // Equality for the nested one. I think I could do this in general: have special implicits when the
 // contained type is Array, for any and all containers. I think that would fix List[Array[T]] too.
 //
-trait LowPriorityInnerConstraints3 {
+trait LowPriorityInnerConstraints1 extends RightTypeIsSubtypeOfLeftTypeInnerConstraint {
 
   // ELG Element Left Good
   // ELB Element Left Bad
@@ -52,9 +67,7 @@ trait LowPriorityInnerConstraints3 {
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
   implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]]
 }
-trait LowPriorityInnerConstraints2 extends LowPriorityInnerConstraints3 {
-  import scala.language.implicitConversions
-  implicit def numericEqualityInnerConstraint[A, B](implicit numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): InnerConstraint[A, B] = new InnerConstraint[A, B]
+object InnerConstraint extends LowPriorityInnerConstraints1 {
   implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], CB[EB]] = new InnerConstraint[CA[EA], CB[EB]]
 
   implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], CB[EB]] = new InnerConstraint[CA[EA], CB[EB]]
@@ -117,13 +130,5 @@ trait LowPriorityInnerConstraints2 extends LowPriorityInnerConstraints3 {
   implicit def eitherOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]]
 
   implicit def rightOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]]
-}
-trait LowPriorityInnerConstraints1 extends LowPriorityInnerConstraints2 {
-  import scala.language.implicitConversions
-  implicit def lowPriorityTypeCheckedInnerConstraint[A, B](implicit ev: A <:< B): InnerConstraint[A, B] = new InnerConstraint[A, B]
-}
-object InnerConstraint extends LowPriorityInnerConstraints1 {
-  import scala.language.implicitConversions
-  implicit def typeCheckedInnerConstraint[A, B](implicit ev: B <:< A): InnerConstraint[A, B] = new InnerConstraint[A, B]
 }
 
