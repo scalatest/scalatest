@@ -329,7 +329,6 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
         // no constraint exists between either the Good or Bad types:
         """(List(Good(1)): List[Int Or String]) shouldEqual (List(Good("one")): List[String Or Int])""" shouldNot typeCheck
   
-/*
         // Much ado about Nothing
         // Both sides List[Good]
         List(Good(1)) shouldEqual List(Good(1L))
@@ -363,7 +362,6 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
         List(Bad(1).asOr) shouldEqual List(Bad(1).asOr)
         List(Bad(1).asOr) shouldEqual List(Bad(1L).asOr)
         List(Bad(1L).asOr) shouldEqual List(Bad(1).asOr)
-*/
       }
 
       def `with Set (which is invariant)` {
@@ -464,7 +462,6 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
         // no constraint exists between either the Good or Bad types:
         """(Set(Good(1)): Set[Int Or String]) shouldEqual (Set(Good("one")): Set[String Or Int])""" shouldNot typeCheck
   
-/*
         // Much ado about Nothing
         // Both sides Set[Good]
         Set(Good(1)) shouldEqual Set(Good(1L))
@@ -498,7 +495,6 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
         Set(Bad(1).asOr) shouldEqual Set(Bad(1).asOr)
         Set(Bad(1).asOr) shouldEqual Set(Bad(1L).asOr)
         Set(Bad(1L).asOr) shouldEqual Set(Bad(1).asOr)
-*/
       }
     }
 
