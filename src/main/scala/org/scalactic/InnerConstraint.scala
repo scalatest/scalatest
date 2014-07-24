@@ -69,6 +69,7 @@ trait LowPriorityInnerConstraints1 extends RightTypeIsSubtypeOfLeftTypeInnerCons
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
   implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Either[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]]
+  implicit def lowPriorityEitherNothingConstraint[ETR, EPR](implicit open: Open[Either[Nothing, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[Nothing, ETR], Either[Nothing, EPR]] = new InnerConstraint[Either[Nothing, ETR], Either[Nothing, EPR]]
 }
 object InnerConstraint extends LowPriorityInnerConstraints1 {
   implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit open: Open[CA[EA]], ev: InnerConstraint[EA, EB]): InnerConstraint[CA[EA], CB[EB]] = new InnerConstraint[CA[EA], CB[EB]]
@@ -128,18 +129,26 @@ object InnerConstraint extends LowPriorityInnerConstraints1 {
   // LowPriorityConstraints.lowPriorityEitherEqualityConstraint will be checked will see
   // If there's an InnerConstraint for the Bad types.
   implicit def eitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Either[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Either[EPL, EPR]]
+  implicit def eitherNothingConstraint[ETL, EPL](implicit open: Open[Either[ETL, Nothing]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, Nothing], Either[EPL, Nothing]] = new InnerConstraint[Either[ETL, Nothing], Either[EPL, Nothing]]
 
   implicit def leftOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Left[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Left[ETL, ETR], Either[EPL, EPR]]
+  implicit def leftOnParamSideEitherOnTargetSideNothingConstraint[ETL, EPL](implicit open: Open[Left[ETL, Nothing]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, Nothing], Either[EPL, Nothing]] = new InnerConstraint[Left[ETL, Nothing], Either[EPL, Nothing]]
 
   implicit def eitherOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Either[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, ETR], Left[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Left[EPL, EPR]]
+  implicit def eitherOnParamSideLeftOnTargetSideNothingConstraint[ETL, EPL](implicit open: Open[Either[ETL, Nothing]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Either[ETL, Nothing], Left[EPL, Nothing]] = new InnerConstraint[Either[ETL, Nothing], Left[EPL, Nothing]]
 
   implicit def leftOnParamSideLeftOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Left[ETL, ETR]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, ETR], Left[EPL, EPR]] = new InnerConstraint[Left[ETL, ETR], Left[EPL, EPR]]
+  implicit def leftOnParamSideLeftOnTargetSideNothingConstraint[ETL, EPL](implicit open: Open[Left[ETL, Nothing]], ev: InnerConstraint[ETL, EPL]): InnerConstraint[Left[ETL, Nothing], Left[EPL, Nothing]] = new InnerConstraint[Left[ETL, Nothing], Left[EPL, Nothing]]
 
   implicit def rightOnParamSideEitherOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Right[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[ETL, ETR], Either[EPL, EPR]] = new InnerConstraint[Right[ETL, ETR], Either[EPL, EPR]]
+  implicit def rightOnParamSideEitherOnTargetSideNothingConstraint[ETR, EPR](implicit open: Open[Right[Nothing, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[Nothing, ETR], Either[Nothing, EPR]] = new InnerConstraint[Right[Nothing, ETR], Either[Nothing, EPR]]
 
   implicit def eitherOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Either[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Either[ETL, ETR], Right[EPL, EPR]]
+  implicit def eitherOnParamSideRightOnTargetSideNothingConstraint[ETR, EPR](implicit open: Open[Either[Nothing, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Either[Nothing, ETR], Right[Nothing, EPR]] = new InnerConstraint[Either[Nothing, ETR], Right[Nothing, EPR]]
 
+  // Right on target!
   implicit def rightOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit open: Open[Right[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]] = new InnerConstraint[Right[ETL, ETR], Right[EPL, EPR]]
+  implicit def rightOnParamSideRightOnTargetSideNothingConstraint[ETR, EPR](implicit open: Open[Right[Nothing, ETR]], ev: InnerConstraint[ETR, EPR]): InnerConstraint[Right[Nothing, ETR], Right[Nothing, EPR]] = new InnerConstraint[Right[Nothing, ETR], Right[Nothing, EPR]]
 
   sealed abstract class Open[T]
   object Open {

@@ -497,6 +497,19 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
         Set(Bad(1L).asOr) shouldEqual Set(Bad(1).asOr)
       }
     }
+ 
+    implicit class RightConvenience[L, R](either: Right[L, R]) {
+      def asEither: Either[L, R] = either
+    }
+    implicit class LeftConvenience[L, R](either: Left[L, R]) {
+      def asEither: Either[L, R] = either
+    }
+    implicit class RightConvenienceNothing[R](either: Right[Nothing, R]) {
+      def asEither: Either[Nothing, R] = either
+    }
+    implicit class LeftConvenienceNothing[L](either: Left[L, Nothing]) {
+      def asEither: Either[L, Nothing] = either
+    }
 
     def `on Either` {
 
@@ -596,105 +609,307 @@ class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEqua
       // The only way an equality comparison of two Eithers will not be allowed to compile, therefore, is if
       // no constraint exists between either the Left or Right types:
       """(Left[Int, String](1): Either[Int, String]) shouldEqual (Left[String, Int]("one"): Either[String, Int])""" shouldNot typeCheck
+
+      // Much ado about Nothing
+      // Both sides Left
+      Left(1) shouldEqual Left(1L)
+      Left(1) shouldEqual Left(1)
+      Left(1L) shouldEqual Left(1)
+      Left(1) shouldEqual Left(1)
+      // Target side Left, parameter side Or
+      Left(1) shouldEqual Left(1L).asEither
+      Left(1) shouldEqual Left(1).asEither
+      Left(1L) shouldEqual Left(1).asEither
+      // Parameter side Left, target side Or
+      Left(1).asEither shouldEqual Left(1L)
+      Left(1).asEither shouldEqual Left(1)
+      Left(1L).asEither shouldEqual Left(1)
+      // Both sides Right
+      Right(1) shouldEqual Right(1)
+      Right(1) shouldEqual Right(1L)
+      Right(1L) shouldEqual Right(1)
+      // Target side Right, parameter side Or
+      Right(1) shouldEqual Right(1).asEither
+      Right(1) shouldEqual Right(1L).asEither
+      Right(1L) shouldEqual Right(1).asEither
+      // Parameter side Right, target side Or
+      Right(1).asEither shouldEqual Right(1)
+      Right(1).asEither shouldEqual Right(1L)
+      Right(1L).asEither shouldEqual Right(1)
+      // Both sides Or
+      Left(1).asEither shouldEqual Left(1L).asEither
+      Left(1).asEither shouldEqual Left(1).asEither
+      Left(1L).asEither shouldEqual Left(1).asEither
+      Right(1).asEither shouldEqual Right(1).asEither
+      Right(1).asEither shouldEqual Right(1L).asEither
+      Right(1L).asEither shouldEqual Right(1).asEither
     }
     def `on Nested Either` {
 
-      // Both sides Left
-      (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1L)): List[Left[Long, Int]])
-      (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Long]])
-      (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
-      (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
-      // Given both sides are Left, it shouldn't matter if the Right type has no constraint
-      (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
-      (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
-      // But if both sides are Left but without a constraint, it should not compile, even
-      // if the Right type has a constraint.
-      """(List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
-
-      // Left side Left, right side Either
-      (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1L)): List[Either[Long, Int]])
-      (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Long]])
-      (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
-      (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
-      // Given left side is Left, it shouldn't matter if the Right type has no constraint
-      (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, String]])
-      (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, String]])
-      // But if left side is Left but without a constraint between left and right Left types, it should not compile, even
-      // if the Right type has a constraint.
-      """List((Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
-
-      // Right side Left, left side Either
-      (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1L)): List[Left[Long, Int]])
-      (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Long]])
-      (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
-      (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
-      // Given right side is Left, it shouldn't matter if the Right type has no constraint
-      (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
-      (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
-      // But if right side is Left but without a constraint between left and right Left types, it should not compile, even
-      // if the Right type has a constraint.
-      """(List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
-
-      // Both sides Right
-      (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1)): List[Right[Long, Int]])
-      (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1L)): List[Right[Int, Long]])
-      (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
-      (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
-      // Given both sides are Right, it shouldn't matter if the Left type has no constraint
-      (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
-      (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
-      // But if both sides are Right but without a constraint, it should not compile, even
-      // if the Left type has a constraint.
-      """(List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right("one")): List[Right[Int, String]])""" shouldNot typeCheck
-
-      // Left side Right, right side Either
-      (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1)): List[Either[Long, Int]])
-      (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1L)): List[Either[Int, Long]])
-      (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
-      (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
-      // Given left side is Right, it shouldn't matter if the Left type has no constraint
-      (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Either[String, Int]])
-      (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Either[String, Int]])
-      // But if left side is Right but without a constraint between left and right Right types, it should not compile, even
-      // if the Left type has a constraint.
-      """(List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right("one")): List[Either[Int, String]])""" shouldNot typeCheck
-
-      // Right side Right, left side Either
-      (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1)): List[Right[Long, Int]])
-      (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1L)): List[Right[Int, Long]])
-      (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
-      (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
-      // Given right side is Right, it shouldn't matter if the Left type has no constraint
-      (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
-      (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
-      // But if right side is Right but without a constraint between left and right Right types, it should not compile, even
-      // if the Left type has a constraint.
-      """(List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right("one")): List[Right[Int, String]])""" shouldNot typeCheck
-
-      // Both sides Either
-      (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1L)): List[Either[Long, Int]])
-      (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Long]])
-      (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
-      (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
-      (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1)): List[Either[Long, Int]])
-      (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1L)): List[Either[Int, Long]])
-      (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
-      (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
-      // So long as an equality constraint exists for one the Left or Right side of type Either,
-      // the comparison will be allowed. This is because it may be true. At the
-      // end of the day, a Left[Int, String] can equal a Left[Int, java.util.Date]
-      // 
-      // scala> Left[Int, String](1) == Left[Long, java.util.Date](1L)
-      // res0: Boolean = true
-      // 
-      // Similarly, a Right[Int, String] can equal a Right[java.util.Date, String]
-      // scala> Right[Int, String]("hi") == Right[java.util.Date, String]("hi")
-      // res1: Boolean = true
-      (List(Left[Int, String](1)): List[Either[Int, String]]) shouldEqual (List(Left[Long, Date](1L)): List[Either[Long, Date]])
-      (List(Right[Int, String]("hi")): List[Either[Int, String]]) shouldEqual (List(Right[Date, String]("hi")): List[Either[Date, String]])
-      // The only way an equality comparison of two Eithers will not be allowed to compile, therefore, is if
-      // no constraint exists between either the Left or Right types:
-      """(List(Left(1)): List[Either[Int, String]]) shouldEqual (List(Left("one")): List[Either[String, Int]])""" shouldNot typeCheck
+      def `with List (which is covariant)` {
+        // Both sides Left
+        (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1L)): List[Left[Long, Int]])
+        (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Long]])
+        (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
+        (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
+        // Given both sides are Left, it shouldn't matter if the Right type has no constraint
+        (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
+        (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
+        // But if both sides are Left but without a constraint, it should not compile, even
+        // if the Right type has a constraint.
+        """(List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Left side Left, right side Either
+        (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1L)): List[Either[Long, Int]])
+        (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Long]])
+        (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
+        (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
+        // Given left side is Left, it shouldn't matter if the Right type has no constraint
+        (List(Left(1)): List[Left[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, String]])
+        (List(Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, String]])
+        // But if left side is Left but without a constraint between left and right Left types, it should not compile, even
+        // if the Right type has a constraint.
+        """List((Left(1L)): List[Left[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Right side Left, left side Either
+        (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1L)): List[Left[Long, Int]])
+        (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Long]])
+        (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
+        (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, Int]])
+        // Given right side is Left, it shouldn't matter if the Right type has no constraint
+        (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
+        (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Left[Int, String]])
+        // But if right side is Left but without a constraint between left and right Left types, it should not compile, even
+        // if the Right type has a constraint.
+        """(List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left("one")): List[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Both sides Right
+        (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1)): List[Right[Long, Int]])
+        (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1L)): List[Right[Int, Long]])
+        (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
+        (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
+        // Given both sides are Right, it shouldn't matter if the Left type has no constraint
+        (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
+        (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
+        // But if both sides are Right but without a constraint, it should not compile, even
+        // if the Left type has a constraint.
+        """(List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right("one")): List[Right[Int, String]])""" shouldNot typeCheck
+  
+        // Left side Right, right side Either
+        (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1)): List[Either[Long, Int]])
+        (List(Right(1)): List[Right[Int, Int]]) shouldEqual (List(Right(1L)): List[Either[Int, Long]])
+        (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
+        (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
+        // Given left side is Right, it shouldn't matter if the Left type has no constraint
+        (List(Right(1)): List[Right[Long, Int]]) shouldEqual (List(Right(1)): List[Either[String, Int]])
+        (List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right(1)): List[Either[String, Int]])
+        // But if left side is Right but without a constraint between left and right Right types, it should not compile, even
+        // if the Left type has a constraint.
+        """(List(Right(1L)): List[Right[Int, Long]]) shouldEqual (List(Right("one")): List[Either[Int, String]])""" shouldNot typeCheck
+  
+        // Right side Right, left side Either
+        (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1)): List[Right[Long, Int]])
+        (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1L)): List[Right[Int, Long]])
+        (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
+        (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Right[Int, Int]])
+        // Given right side is Right, it shouldn't matter if the Left type has no constraint
+        (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
+        (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Right[String, Int]])
+        // But if right side is Right but without a constraint between left and right Right types, it should not compile, even
+        // if the Left type has a constraint.
+        """(List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right("one")): List[Right[Int, String]])""" shouldNot typeCheck
+  
+        // Both sides Either
+        (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1L)): List[Either[Long, Int]])
+        (List(Left(1)): List[Either[Int, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Long]])
+        (List(Left(1L)): List[Either[Long, Int]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
+        (List(Left(1)): List[Either[Int, Long]]) shouldEqual (List(Left(1)): List[Either[Int, Int]])
+        (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1)): List[Either[Long, Int]])
+        (List(Right(1)): List[Either[Int, Int]]) shouldEqual (List(Right(1L)): List[Either[Int, Long]])
+        (List(Right(1)): List[Either[Long, Int]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
+        (List(Right(1L)): List[Either[Int, Long]]) shouldEqual (List(Right(1)): List[Either[Int, Int]])
+        // So long as an equality constraint exists for one the Left or Right side of type Either,
+        // the comparison will be allowed. This is because it may be true. At the
+        // end of the day, a Left[Int, String] can equal a Left[Int, java.util.Date]
+        // 
+        // scala> Left[Int, String](1) == Left[Long, java.util.Date](1L)
+        // res0: Boolean = true
+        // 
+        // Similarly, a Right[Int, String] can equal a Right[java.util.Date, String]
+        // scala> Right[Int, String]("hi") == Right[java.util.Date, String]("hi")
+        // res1: Boolean = true
+        (List(Left[Int, String](1)): List[Either[Int, String]]) shouldEqual (List(Left[Long, Date](1L)): List[Either[Long, Date]])
+        (List(Right[Int, String]("hi")): List[Either[Int, String]]) shouldEqual (List(Right[Date, String]("hi")): List[Either[Date, String]])
+        // The only way an equality comparison of two Eithers will not be allowed to compile, therefore, is if
+        // no constraint exists between either the Left or Right types:
+        """(List(Left(1)): List[Either[Int, String]]) shouldEqual (List(Left("one")): List[Either[String, Int]])""" shouldNot typeCheck
+  
+        // Much ado about Nothing
+        // Both sides List[Left]
+        List(Left(1)) shouldEqual List(Left(1L))
+        List(Left(1)) shouldEqual List(Left(1))
+        List(Left(1L)) shouldEqual List(Left(1))
+        List(Left(1)) shouldEqual List(Left(1))
+        // Target side List[Left], parameter side List[Or]
+        List(Left(1)) shouldEqual List(Left(1L).asEither)
+        List(Left(1)) shouldEqual List(Left(1).asEither)
+        List(Left(1L)) shouldEqual List(Left(1).asEither)
+        // Parameter side List[Left], target side List[Or]
+        List(Left(1).asEither) shouldEqual List(Left(1L))
+        List(Left(1).asEither) shouldEqual List(Left(1))
+        List(Left(1L).asEither) shouldEqual List(Left(1))
+        // Both sides List[Right]
+        List(Right(1)) shouldEqual List(Right(1))
+        List(Right(1)) shouldEqual List(Right(1L))
+        List(Right(1L)) shouldEqual List(Right(1))
+        // Target side List[Right], parameter side List[Or]
+        List(Right(1)) shouldEqual List(Right(1).asEither)
+        List(Right(1)) shouldEqual List(Right(1L).asEither)
+        List(Right(1L)) shouldEqual List(Right(1).asEither)
+        // Parameter side List[Right], target side List[Or]
+        List(Right(1).asEither) shouldEqual List(Right(1))
+        List(Right(1).asEither) shouldEqual List(Right(1L))
+        List(Right(1L).asEither) shouldEqual List(Right(1))
+        // Both sides List[Or]
+        List(Left(1).asEither) shouldEqual List(Left(1L).asEither)
+        List(Left(1).asEither) shouldEqual List(Left(1).asEither)
+        List(Left(1L).asEither) shouldEqual List(Left(1).asEither)
+        List(Right(1).asEither) shouldEqual List(Right(1).asEither)
+        List(Right(1).asEither) shouldEqual List(Right(1L).asEither)
+        List(Right(1L).asEither) shouldEqual List(Right(1).asEither)
+      }
+      def `with Set (which is invariant)` {
+        // Both sides Left
+        (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1L)): Set[Left[Long, Int]])
+        (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, Long]])
+        (Set(Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, Int]])
+        (Set(Left(1)): Set[Left[Int, Long]]) shouldEqual (Set(Left(1)): Set[Left[Int, Int]])
+        // Given both sides are Left, it shouldn't matter if the Right type has no constraint
+        (Set(Left(1)): Set[Left[Int, Long]]) shouldEqual (Set(Left(1)): Set[Left[Int, String]])
+        (Set(Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, String]])
+        // But if both sides are Left but without a constraint, it should not compile, even
+        // if the Right type has a constraint.
+        """(Set(Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left("one")): Set[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Left side Left, right side Either
+        (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1L)): Set[Either[Long, Int]])
+        (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1)): Set[Either[Int, Long]])
+        (Set(Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left(1)): Set[Either[Int, Int]])
+        (Set(Left(1)): Set[Left[Int, Long]]) shouldEqual (Set(Left(1)): Set[Either[Int, Int]])
+        // Given left side is Left, it shouldn't matter if the Right type has no constraint
+        (Set(Left(1)): Set[Left[Int, Long]]) shouldEqual (Set(Left(1)): Set[Either[Int, String]])
+        (Set(Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left(1)): Set[Either[Int, String]])
+        // But if left side is Left but without a constraint between left and right Left types, it should not compile, even
+        // if the Right type has a constraint.
+        """Set((Left(1L)): Set[Left[Long, Int]]) shouldEqual (Set(Left("one")): Set[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Right side Left, left side Either
+        (Set(Left(1)): Set[Either[Int, Int]]) shouldEqual (Set(Left(1L)): Set[Left[Long, Int]])
+        (Set(Left(1)): Set[Either[Int, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, Long]])
+        (Set(Left(1L)): Set[Either[Long, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, Int]])
+        (Set(Left(1)): Set[Either[Int, Long]]) shouldEqual (Set(Left(1)): Set[Left[Int, Int]])
+        // Given right side is Left, it shouldn't matter if the Right type has no constraint
+        (Set(Left(1)): Set[Either[Int, Long]]) shouldEqual (Set(Left(1)): Set[Left[Int, String]])
+        (Set(Left(1L)): Set[Either[Long, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, String]])
+        // But if right side is Left but without a constraint between left and right Left types, it should not compile, even
+        // if the Right type has a constraint.
+        """(Set(Left(1L)): Set[Either[Long, Int]]) shouldEqual (Set(Left("one")): Set[Left[String, Int]])""" shouldNot typeCheck
+  
+        // Both sides Right
+        (Set(Right(1)): Set[Right[Int, Int]]) shouldEqual (Set(Right(1)): Set[Right[Long, Int]])
+        (Set(Right(1)): Set[Right[Int, Int]]) shouldEqual (Set(Right(1L)): Set[Right[Int, Long]])
+        (Set(Right(1)): Set[Right[Long, Int]]) shouldEqual (Set(Right(1)): Set[Right[Int, Int]])
+        (Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right(1)): Set[Right[Int, Int]])
+        // Given both sides are Right, it shouldn't matter if the Left type has no constraint
+        (Set(Right(1)): Set[Right[Long, Int]]) shouldEqual (Set(Right(1)): Set[Right[String, Int]])
+        (Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right(1)): Set[Right[String, Int]])
+        // But if both sides are Right but without a constraint, it should not compile, even
+        // if the Left type has a constraint.
+        """(Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right("one")): Set[Right[Int, String]])""" shouldNot typeCheck
+  
+        // Left side Right, right side Either
+        (Set(Right(1)): Set[Right[Int, Int]]) shouldEqual (Set(Right(1)): Set[Either[Long, Int]])
+        (Set(Right(1)): Set[Right[Int, Int]]) shouldEqual (Set(Right(1L)): Set[Either[Int, Long]])
+        (Set(Right(1)): Set[Right[Long, Int]]) shouldEqual (Set(Right(1)): Set[Either[Int, Int]])
+        (Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right(1)): Set[Either[Int, Int]])
+        // Given left side is Right, it shouldn't matter if the Left type has no constraint
+        (Set(Right(1)): Set[Right[Long, Int]]) shouldEqual (Set(Right(1)): Set[Either[String, Int]])
+        (Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right(1)): Set[Either[String, Int]])
+        // But if left side is Right but without a constraint between left and right Right types, it should not compile, even
+        // if the Left type has a constraint.
+        """(Set(Right(1L)): Set[Right[Int, Long]]) shouldEqual (Set(Right("one")): Set[Either[Int, String]])""" shouldNot typeCheck
+  
+        // Right side Right, left side Either
+        (Set(Right(1)): Set[Either[Int, Int]]) shouldEqual (Set(Right(1)): Set[Right[Long, Int]])
+        (Set(Right(1)): Set[Either[Int, Int]]) shouldEqual (Set(Right(1L)): Set[Right[Int, Long]])
+        (Set(Right(1)): Set[Either[Long, Int]]) shouldEqual (Set(Right(1)): Set[Right[Int, Int]])
+        (Set(Right(1L)): Set[Either[Int, Long]]) shouldEqual (Set(Right(1)): Set[Right[Int, Int]])
+        // Given right side is Right, it shouldn't matter if the Left type has no constraint
+        (Set(Right(1)): Set[Either[Long, Int]]) shouldEqual (Set(Right(1)): Set[Right[String, Int]])
+        (Set(Right(1L)): Set[Either[Int, Long]]) shouldEqual (Set(Right(1)): Set[Right[String, Int]])
+        // But if right side is Right but without a constraint between left and right Right types, it should not compile, even
+        // if the Left type has a constraint.
+        """(Set(Right(1L)): Set[Either[Int, Long]]) shouldEqual (Set(Right("one")): Set[Right[Int, String]])""" shouldNot typeCheck
+  
+        // Both sides Either
+        (Set(Left(1)): Set[Either[Int, Int]]) shouldEqual (Set(Left(1L)): Set[Either[Long, Int]])
+        (Set(Left(1)): Set[Either[Int, Int]]) shouldEqual (Set(Left(1)): Set[Either[Int, Long]])
+        (Set(Left(1L)): Set[Either[Long, Int]]) shouldEqual (Set(Left(1)): Set[Either[Int, Int]])
+        (Set(Left(1)): Set[Either[Int, Long]]) shouldEqual (Set(Left(1)): Set[Either[Int, Int]])
+        (Set(Right(1)): Set[Either[Int, Int]]) shouldEqual (Set(Right(1)): Set[Either[Long, Int]])
+        (Set(Right(1)): Set[Either[Int, Int]]) shouldEqual (Set(Right(1L)): Set[Either[Int, Long]])
+        (Set(Right(1)): Set[Either[Long, Int]]) shouldEqual (Set(Right(1)): Set[Either[Int, Int]])
+        (Set(Right(1L)): Set[Either[Int, Long]]) shouldEqual (Set(Right(1)): Set[Either[Int, Int]])
+        // So long as an equality constraint exists for one the Left or Right side of type Either,
+        // the comparison will be allowed. This is because it may be true. At the
+        // end of the day, a Left[Int, String] can equal a Left[Int, java.util.Date]
+        // 
+        // scala> Left[Int, String](1) == Left[Long, java.util.Date](1L)
+        // res0: Boolean = true
+        // 
+        // Similarly, a Right[Int, String] can equal a Right[java.util.Date, String]
+        // scala> Right[Int, String]("hi") == Right[java.util.Date, String]("hi")
+        // res1: Boolean = true
+        (Set(Left[Int, String](1)): Set[Either[Int, String]]) shouldEqual (Set(Left[Long, Date](1L)): Set[Either[Long, Date]])
+        (Set(Right[Int, String]("hi")): Set[Either[Int, String]]) shouldEqual (Set(Right[Date, String]("hi")): Set[Either[Date, String]])
+        // The only way an equality comparison of two Eithers will not be allowed to compile, therefore, is if
+        // no constraint exists between either the Left or Right types:
+        """(Set(Left(1)): Set[Either[Int, String]]) shouldEqual (Set(Left("one")): Set[Either[String, Int]])""" shouldNot typeCheck
+  
+        // Much ado about Nothing
+        // Both sides Set[Left]
+        Set(Left(1)) shouldEqual Set(Left(1L))
+        Set(Left(1)) shouldEqual Set(Left(1))
+        Set(Left(1L)) shouldEqual Set(Left(1))
+        Set(Left(1)) shouldEqual Set(Left(1))
+        // Target side Set[Left], parameter side Set[Or]
+        Set(Left(1)) shouldEqual Set(Left(1L).asEither)
+        Set(Left(1)) shouldEqual Set(Left(1).asEither)
+        Set(Left(1L)) shouldEqual Set(Left(1).asEither)
+        // Parameter side Set[Left], target side Set[Or]
+        Set(Left(1).asEither) shouldEqual Set(Left(1L))
+        Set(Left(1).asEither) shouldEqual Set(Left(1))
+        Set(Left(1L).asEither) shouldEqual Set(Left(1))
+        // Both sides Set[Right]
+        Set(Right(1)) shouldEqual Set(Right(1))
+        Set(Right(1)) shouldEqual Set(Right(1L))
+        Set(Right(1L)) shouldEqual Set(Right(1))
+        // Target side Set[Right], parameter side Set[Or]
+        Set(Right(1)) shouldEqual Set(Right(1).asEither)
+        Set(Right(1)) shouldEqual Set(Right(1L).asEither)
+        Set(Right(1L)) shouldEqual Set(Right(1).asEither)
+        // Parameter side Set[Right], target side Set[Or]
+        Set(Right(1).asEither) shouldEqual Set(Right(1))
+        Set(Right(1).asEither) shouldEqual Set(Right(1L))
+        Set(Right(1L).asEither) shouldEqual Set(Right(1))
+        // Both sides Set[Or]
+        Set(Left(1).asEither) shouldEqual Set(Left(1L).asEither)
+        Set(Left(1).asEither) shouldEqual Set(Left(1).asEither)
+        Set(Left(1L).asEither) shouldEqual Set(Left(1).asEither)
+        Set(Right(1).asEither) shouldEqual Set(Right(1).asEither)
+        Set(Right(1).asEither) shouldEqual Set(Right(1L).asEither)
+        Set(Right(1L).asEither) shouldEqual Set(Right(1).asEither)
+      }
     }
   }
 }

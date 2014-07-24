@@ -45,4 +45,5 @@ trait LowPriorityConstraints {
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
   implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Either[ETL, ETR], Either[EPL, EPR]] = new EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
+  implicit def lowPriorityEitherNothingConstraint[ETR, EPR](implicit equalityOfT: Equality[Either[Nothing, ETR]], ev: InnerConstraint[ETR, EPR]): Constraint[Either[Nothing, ETR], Either[Nothing, EPR]] = new EqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]](equalityOfT)
 }
