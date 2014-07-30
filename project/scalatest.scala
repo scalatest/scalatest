@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.11.1"
+  val buildScalaVersion = "2.11.2"
 
   val releaseVersion = "2.2.0"
   val githubTag = "release-2.2.0-for-scala-2.11-and-2.10" // for scaladoc source urls
