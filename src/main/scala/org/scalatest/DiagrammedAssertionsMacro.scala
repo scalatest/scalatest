@@ -62,10 +62,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
    */
   private[this] def getSourceText(context: Context)(tree: context.Tree): String = {
     import context.universe._
-    tree.pos.asInstanceOf[scala.reflect.internal.util.Position] match {
-      case p: scala.reflect.internal.util.RangePosition => p.lineContent.slice(p.start, p.end)
-      case p: Position => p.lineContent
-    }
+    tree.pos.asInstanceOf[scala.reflect.internal.util.Position].lineContent
   }
 
   /**
