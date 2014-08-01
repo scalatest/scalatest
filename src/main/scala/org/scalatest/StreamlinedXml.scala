@@ -18,8 +18,118 @@ package org.scalatest
 import scala.xml.{Text, Node, Elem, NodeSeq}
 import org.scalactic.Uniformity
 
+/**
+ * Trait providing a <code>streamlined</code> method that returns a <a href="../scalactic/Uniformity.html"><code>Uniformity[T]</code></a>
+ * instance for any subtype of <code>scala.xml.NodeSeq</code> that will normalize the XML by removing empty text nodes and trimming
+ * non-empty text nodes.
+ *
+ * <p>
+ * Here's an example of some unnormalized XML:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * &lt;summer&gt;
+ *   &lt;day&gt;&lt;/day&gt;
+ *   &lt;night&gt;
+ *     with lots of stars
+ *   &lt;/night&gt;
+ * &lt;/summer&gt;
+ * </pre>
+ *
+ * <p>
+ * The <code>Uniformity</code> returned by this trait's <code>streamlined</code> method would transform
+ * the above XML to:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
+ * </pre>
+ *
+ * <p>
+ * The <code>streamlined</code> method can be used with the <a href="../scalactic/Explicitly.html"><code>Explicitly</code></a> DSL, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * xmlElem should equal (
+ *   &lt;summer&gt;
+ *     &lt;day&gt;&lt;/day&gt;
+ *     &lt;night&gt;
+ *       with lots of stars
+ *     &lt;/night&gt;
+ *   &lt;/summer&gt;
+ * ) (after being streamlined[Elem])
+ * </pre>
+ *
+ * <p>
+ * The goal of this trait is to provide a normalization for XML that makes it easier to test XML objects for equality.
+ * White space is significant in XML, and is taken into account by the default equality for XML, accessed
+ * by invoking the <code>==</code> method on an XML <code>NodeSeq</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala> val xmlElem = &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
+ * xmlElem: scala.xml.Elem = &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
+ *
+ * scala> xmlElem == &lt;summer&gt;
+ *      |   &lt;day&gt;&lt;/day&gt;
+ *      |   &lt;night&gt;
+ *      |     with lots of stars
+ *      |   &lt;/night&gt;
+ *      | &lt;/summer&gt;
+ * res1: Boolean = false
+ * </pre>
+ *
+ * <p>
+ * The above equality comparison produces false because of whitespace differences in the XML.
+ * When such whitespace differences are unimportant to the actual application, it can make it
+ * easier to write readable test code if you can compare XML for equality without taking
+ * into account empty text nodes, or leading and trailing whitespace in nonempty text nodes.
+ * The <code>streamlined</code> method of this trait provides a <code>Uniformity</code>
+ * instance that does just that:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala> import org.scalactic._
+ * import org.scalactic._
+ *
+ * scala> import Explicitly._
+ * import Explicitly._
+ *
+ * scala> import TripleEquals._
+ * import TripleEquals._
+ *
+ * scala> import org.sclatest.StreamlinedXml._
+ * import StreamlinedXml._
+ *
+ * scala> import scala.xml.Elem
+ * import scala.xml.Elem * 
+ * 
+ * scala> (xmlElem === <summer>
+ *      |   &lt;day>&lt;/day>
+ *      |   &lt;night>
+ *      |     with lots of stars
+ *      |   &lt;/night>
+ *      | &lt;/summer>) (after being streamlined[Elem])
+ * res9: Boolean = true
+ * </pre>
+ *
+ * @author Bill Venners
+ */
 trait StreamlinedXml {
 
+  /**
+   * Provides a <a href="../scalactic/Uniformity.html"><code>Uniformity[T]</code></a>
+   * instance for any subtype of <code>scala.xml.NodeSeq</code> that will normalize the XML by removing empty text nodes and trimming
+   * non-empty text nodes.
+   *
+   * <p>
+   * The purpose of this <code>Uniformity</code> is to make it easier to write readable test
+   * code that compares XML for equality. See the main documentation for this trait for more
+   * details and examples.
+   * </p>
+   *
+   * @return a <code>Uniformity[T]</code> instance that normalizes XML for testing
+   */
   def streamlined[T <: NodeSeq]: Uniformity[T] = {
 
     def trimTextZappingEmpty(node: Node): Seq[Node] =
@@ -81,4 +191,11 @@ trait StreamlinedXml {
   }
 }
 
+/**
+ * Companion object that facilitates the importing of <code>StreamlinedXml</code> members as 
+ * an alternative to mixing it the trait. One use case is to import <code>StreamlinedXml</code> members so you can use
+ * them in the Scala interpreter.
+ *
+ * @author Bill Venners
+ */
 object StreamlinedXml extends StreamlinedXml
