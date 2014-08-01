@@ -67,10 +67,10 @@ import org.scalactic.Uniformity
  * </p>
  *
  * <pre class="stREPL">
- * scala> val xmlElem = &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
+ * scala&gt; val xmlElem = &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
  * xmlElem: scala.xml.Elem = &lt;summer&gt;&lt;day&gt;&lt;/day&gt;&lt;night&gt;with lots of stars&lt;/night&gt;&lt;/summer&gt;
  *
- * scala> xmlElem == &lt;summer&gt;
+ * scala&gt; xmlElem == &lt;summer&gt;
  *      |   &lt;day&gt;&lt;/day&gt;
  *      |   &lt;night&gt;
  *      |     with lots of stars
@@ -89,27 +89,27 @@ import org.scalactic.Uniformity
  * </p>
  *
  * <pre class="stREPL">
- * scala> import org.scalactic._
+ * scala&gt; import org.scalactic._
  * import org.scalactic._
  *
- * scala> import Explicitly._
+ * scala&gt; import Explicitly._
  * import Explicitly._
  *
- * scala> import TripleEquals._
+ * scala&gt; import TripleEquals._
  * import TripleEquals._
  *
- * scala> import org.sclatest.StreamlinedXml._
+ * scala&gt; import org.scalatest.StreamlinedXml._
  * import StreamlinedXml._
  *
- * scala> import scala.xml.Elem
+ * scala&gt; import scala.xml.Elem
  * import scala.xml.Elem * 
  * 
- * scala> (xmlElem === <summer>
- *      |   &lt;day>&lt;/day>
- *      |   &lt;night>
+ * scala&gt; (xmlElem === &lt;summer&gt;
+ *      |   &lt;day&gt;&lt;/day&gt;
+ *      |   &lt;night&gt;
  *      |     with lots of stars
- *      |   &lt;/night>
- *      | &lt;/summer>) (after being streamlined[Elem])
+ *      |   &lt;/night&gt;
+ *      | &lt;/summer&gt;) (after being streamlined[Elem])
  * res9: Boolean = true
  * </pre>
  *
