@@ -7721,7 +7721,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
 /**
  * Companion object that facilitates the importing of <code>Matchers</code> members as 
-  an alternative to mixing it the trait. One use case is to import <code>Matchers</code> members so you can use
+ * an alternative to mixing it the trait. One use case is to import <code>Matchers</code> members so you can use
  * them in the Scala interpreter.
  *
  * @author Bill Venners

@@ -8,10 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.11.1"
+  val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.2.0"
-  val githubTag = "release-2.2.0-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.1"
+  val githubTag = "release-2.2.1-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -122,7 +122,7 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.1",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
           "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional"
         )
       case _ =>
