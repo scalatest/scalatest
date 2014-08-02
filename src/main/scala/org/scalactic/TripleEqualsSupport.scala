@@ -220,6 +220,76 @@ trait TripleEqualsSupport {
      */
     def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
 
+    // TODO: Remove these from here. They should just be on the new one.
+    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
+      ev.contains(rightSide, leftSide)
+
+    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
+      !(ev.contains(rightSide, leftSide))
+  }
+
+  /**
+   * Class used via an implicit conversion to enable two objects to be compared with
+   * <code>===</code> and <code>!==</code> with a <code>Boolean</code> result and an enforced type constraint between
+   * two object types. For example:
+   *
+   * <pre class="stHighlight">
+   * assert(a === b)
+   * assert(c !== d)
+   * </pre>
+   *
+   * <p>
+   * You can also check numeric values against another with a tolerance. Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * assert(a === (2.0 +- 0.1))
+   * assert(c !== (2.0 +- 0.1))
+   * </pre>
+   *
+   * @param leftSide An object to convert to <code>Equalizer</code>, which represents the value
+   *     on the left side of a <code>===</code> or <code>!==</code> invocation.
+   *
+   * @author Bill Venners
+   */
+  class FreshCheckingEqualizer[L](val leftSide: L) { // Note: This is called leftSide not left to avoid a conflict with scalaz's implicit that adds left
+  
+    /**
+     * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
+     *
+     * @param rightSide the object to compare for equality with <code>leftSide</code>, passed to the constructor
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     *    defines a way of calculating equality for objects of type <code>L</code>
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are equal according to the passed <code>Constraint</code> instance.
+     */
+    def ===[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = constraint.areEqual(leftSide, rightSide)
+  
+    /**
+     * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
+     *
+     * @param rightSide the object to compare for inequality with <code>leftSide</code>, passed to the constructor
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     *    defines a way of calculating equality for objects of type <code>L</code>
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are <em>not</em> equal according to the passed <code>Constraint</code> instance.
+     */
+    def !==[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = !constraint.areEqual(leftSide, rightSide)
+  
+    /**
+     * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
+     *
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
+     */
+    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(leftSide) else leftSide == spread
+  
+    /**
+     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning a <code>Boolean</code>.
+     *
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
+     */
+    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
+
     def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
       ev.contains(rightSide, leftSide)
 
@@ -264,6 +334,8 @@ trait TripleEqualsSupport {
    * @throws NullPointerException if <code>left</code> is <code>null</code>.
    */
   def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T]
+
+  def convertToFreshCheckingEqualizer[T](left: T): FreshCheckingEqualizer[T]
 
   /**
    * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
@@ -394,6 +466,11 @@ trait TripleEqualsSupport {
    *     the passed <code>Equivalence[A]</code>.
    */
   def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B]
+
+  def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B]
+  def convertEquivalenceToAToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B]
+  def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B]
+  def convertEquivalenceToBToAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B]
 
   /**
    * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
@@ -594,6 +671,24 @@ object TripleEqualsSupport {
   }
 
   /**
+   * An implementation of <a href="Constraint.html"><code>Constraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
+   * which its <code>areEqual</code> method can delegate an equality comparison.
+   *
+   * @param equalityOfA an <code>Equality</code> type class for <code>A</code>
+   */
+  final class BasicEqualityConstraint[A, B](equalityOfA: Equality[A]) extends EqualityConstraint[A, B] {
+
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
+     * result of invoking <code>areEqual(a, b)</code> on the passed <code>equalityOfA</code> object.
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     */
+    def areEqual(a: A, b: B): Boolean = equalityOfA.areEqual(a, b)
+  }
+
+  /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[B]</code>
    * and a conversion function from <code>A</code> to <code>B</code>. 
    *
@@ -617,12 +712,58 @@ object TripleEqualsSupport {
   }
   
   /**
+   * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[B]</code>
+   * and a conversion function from <code>A</code> to <code>B</code>. 
+   *
+   * @param equivalenceOfB an <code>Equivalence</code> type class for <code>B</code>
+   */
+  final class AToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: A => B) extends EqualityConstraint[A, B] {
+
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by return the
+     * result of invoking <code>areEqual(cnv(a), b)</code> on the passed <code>equalityOfB</code> object.
+     *
+     * <p>
+     * In other words, the <code>a</code> object of type <code>A</code> is first converted to a <code>B</code> via the passed conversion
+     * function, <code>cnv</code>, then compared for equality with the <code>b</code> object.
+     * </p>
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     */
+    override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
+  }
+  
+  /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code>
    * and a conversion function from <code>B</code> to <code>A</code>. 
    *
    * @param equivalenceOfA an <code>Equivalence</code> type class for <code>A</code>
    */
   final class BToAEquivalenceConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: B => A) extends Constraint[A, B] {
+  
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
+     * result of invoking <code>areEqual(a, cnv(b))</code> on the passed <code>equalityOfA</code> object.
+     *
+     * <p>
+     * In other words, the <code>b</code> object of type <code>B</code> is first converted to an <code>A</code> via the passed conversion
+     * function, <code>cnv</code>, then compared for equality with the <code>a</code> object.
+     * </p>
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     */
+    override def areEqual(a: A, b: B): Boolean = equivalenceOfA.areEquivalent(a, cnv(b))
+  }
+
+  /**
+   * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code>
+   * and a conversion function from <code>B</code> to <code>A</code>. 
+   *
+   * @param equivalenceOfA an <code>Equivalence</code> type class for <code>A</code>
+   */
+  final class BToAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: B => A) extends EqualityConstraint[A, B] {
   
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
