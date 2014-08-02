@@ -41,8 +41,7 @@ import TripleEqualsSupport._
  *
  * <p>
  * The first expression above is enabled by the implicit conversion <code>conversionCheckedConstraint</code> in traits
- * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> and
- * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>. The second expression above is
+ * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>. The second expression above is
  * enabled by the implicit conversion <code>lowPriorityConversionCheckedConstraint</code> in this trait.
  * </p>
  *

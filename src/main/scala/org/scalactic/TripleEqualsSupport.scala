@@ -31,41 +31,23 @@ import enablers.ContainingConstraint
  *
  * <p>
  * <b>Unchecked</b> - <code>A</code> and <code>B</code> can be any two types. This (weakest) constraint level is available from
- * subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+ * subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a>.
  * </p>
  * 
  * <p>
  * <b>Conversion checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa, or an implicit conversion must be available that converts
  * <code>A</code> to <code>B</code>, or vice versa. (Both <code>A</code> and <code>B</code> can be the same type, because a type is considered a subtype
  * of itself.)
- * This (intermediate) constraint level is available from subtraits <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> and <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>.
+ * This (intermediate) constraint level is available from subtraits <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
  * </p>
  * 
  * <p>
  * <b>Type checked</b> - <code>A</code> must be a subtype of <code>B</code>, or vice versa.
  * (Both <code>A</code> and <code>B</code> can be the same type, because a type is considered a subtype
  * of itself.)
- * This (strongest) constraint level is available from subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>.
+ * This (strongest) constraint level is available from subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
  * </p>
  *
- * <p>
- * The difference between the regular and &ldquo;legacy&rdquo; variants of each pair of traits is that the  <code>===</code> and <code>!==</code> operators
- * provided by the regular variants result in <code>Boolean</code>, whereas those of the legacy variants result in <code>Option[String]</code>. For example, were you
- * to mix in <code>TripleEquals</code>, the expression <code>1 + 1 === 3</code> would return <code>false</code>. Were you to mix in <code>LegacyTripleEquals</code>,
- * by contrast, the expression <code>1 + 1 === 3</code> would return <code>Some("2 did not equal 3")</code>.
- * </p>
- *
- * <p>
- * The purpose of the legacy variants is to maintain compatibility with
- * existing code that uses ScalaTest's original <code>===</code> defined in trait <a href="../scalatest/Assertions.html"><code>org.scalatest.Assertions</code></a>. This
- * <code>===</code> operator returned an
- * <code>Option[String]</code> to facilitate better error messages. With the advent of macros in Scala 2.10, it is possible to obtain good error messages by making
- * <code>assert</code> a macro. Once ScalaTest no longer supports Scala 2.9, the legacy variants (<code>LegacyTripleEquals</code>,
- * <code>ConversionCheckedLegacyTripleEquals</code>, and <code>TypeCheckedLegacyTripleEquals</code>) will be deprecated and eventually removed, <code>===</code> will
- * return only <code>Boolean</code>, and good error
- * messages will be obtained via macros. 
- * </p>
- * 
  * <p>
  * This trait defines all methods that need to be defined implicitly by the six subtraits so that if multiple subtraits are used together, the inner-most
  * subtrait in scope can not only enable the implicits it needs by overriding or hiding those methods (currently-in-scope as regular, non-implicit methods) and making
@@ -177,183 +159,6 @@ trait TripleEqualsSupport {
   }
 
   /**
-   * Class used via an implicit conversion to enable any two objects to be compared with
-   * <code>===</code> and <code>!==</code> with an <code>Option[String]</code> result and no enforced type constraint between
-   * two object types. For example:
-   *
-   * <pre class="stHighlight">
-   * assert(a === b)
-   * assert(c !== d)
-   * </pre>
-   *
-   * <p>
-   * You can also check numeric values against another with a tolerance. Here are some examples:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert(a === (2.0 +- 0.1))
-   * assert(c !== (2.0 +- 0.1))
-   * </pre>
-   *
-   * <p>
-   * The benefit of using <code>assert(a === b)</code> rather than <code>assert(a == b)</code> in ScalaTest code is
-   * that a <code>TestFailedException</code> produced by the former will include the values of <code>a</code> and <code>b</code>
-   * in its detail message.
-   * </p>
-   *
-   * <p>
-   * <em>
-   * Note: This class has "Legacy" in its name because its approach to error messages will eventually be replaced by macros. Once ScalaTest no longer supports Scala 2.9, 
-   * this class will be deprecated in favor of class <code>Equalizer</code>. Instead of obtaining nice error messages via the <code>Option[String]</code>
-   * returned by the methods of this class, the error messages will be obtained by a macro. The "legacy" approach to good error messages will continue to be
-   * used, however, until ScalaTest no longer supports Scala 2.9, since macros were introduced to Scala (in experimental form) in 2.10.
-   * </em>
-   * </p>
-   *
-   * <p>
-   * The primary constructor takes one object, <code>left</code>, whose type is being converted to <code>Equalizer</code>. The <code>left</code>
-   * value may be a <code>null</code> reference, because this is allowed by Scala's <code>==</code> operator.
-   * </p>
-   *
-   * @param left An object to convert to <code>Equalizer</code>, which represents the <code>left</code> value
-   *     of a <code>===</code> or <code>!==</code> equality check.
-   *
-   * @author Bill Venners
-   */
-  class LegacyEqualizer[L](left: L) {
-  
-    private def diffStrings(s: String, t: String): Tuple2[String, String] = {
-      def findCommonPrefixLength(s: String, t: String): Int = {
-        val max = s.length.min(t.length) // the maximum potential size of the prefix
-        var i = 0
-        var found = false
-        while (i < max & !found) {
-          found = (s.charAt(i) != t.charAt(i))
-          if (!found)
-            i = i + 1
-        }
-        i
-      }
-      def findCommonSuffixLength(s: String, t: String): Int = {
-        val max = s.length.min(t.length) // the maximum potential size of the suffix
-        var i = 0
-        var found = false
-        while (i < max & !found) {
-          found = (s.charAt(s.length - 1 - i) != t.charAt(t.length - 1 - i))
-          if (!found)
-            i = i + 1
-        }
-        i
-      }
-      val commonPrefixLength = findCommonPrefixLength(s, t)
-      val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
-      val prefix = s.substring(0, commonPrefixLength)
-      val suffix = if (s.length - commonSuffixLength < 0) "" else s.substring(s.length - commonSuffixLength)
-      val sMiddleEnd = s.length - commonSuffixLength
-      val tMiddleEnd = t.length - commonSuffixLength
-      val sMiddle = s.substring(commonPrefixLength, sMiddleEnd)
-      val tMiddle = t.substring(commonPrefixLength, tMiddleEnd)
-      val MaxContext = 20
-      val shortPrefix = if (commonPrefixLength > MaxContext) "..." + prefix.substring(prefix.length - MaxContext) else prefix
-      val shortSuffix = if (commonSuffixLength > MaxContext) suffix.substring(0, MaxContext) + "..." else suffix
-      (shortPrefix + "[" + sMiddle + "]" + shortSuffix, shortPrefix + "[" + tMiddle + "]" + shortSuffix)
-    }
-  
-    // If the objects are two strings, replace them with whatever is returned by diffStrings.
-    // Otherwise, use the same objects.
-    private def getObjectsForFailureMessage(a: Any, b: Any) =
-      a match {
-        case aStr: String => {
-          b match {
-            case bStr: String => {
-              diffStrings(aStr, bStr)
-            }
-            case _ => (a, b)
-          }
-        }
-        case _ => (a, b)
-      }
-  
-    /**
-     * Compare two objects for equality, returning an <code>Option[String]</code>, using the <code>Equality</code> type class passed as <code>equality</code>.
-     *
-     * @param right the object to compare for equality with <code>left</code>, passed to the constructor
-     * @param equality an implicit <code>Equality</code> type class that defines a way of calculating equality for objects of type <code>L</code>
-     * @return None if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Equality</code> type class.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def ===(right: Any)(implicit equality: Equality[L]): Option[String] = 
-      if (equality.areEqual(left, right))
-        None
-      else {
-        val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("didNotEqual", leftee, rightee))
-      }
-  
-    /**
-     * Compare two objects for inequality, returning an <code>Option[String]</code>, using the <code>Equality</code> type class passed as <code>equality</code>.
-     *
-     * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
-     * @param equality an implicit <code>Equality</code> type class that defines a way of calculating equality for objects of type <code>L</code>
-     * @return None if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def !==(right: Any)(implicit equality: Equality[L]): Option[String] =
-      if (!equality.areEqual(left, right))
-        None
-      else {
-        val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("equaled", leftee, rightee))
-      }
-  
-    /**
-     * Determine whether a numeric object is within the passed <code>Spread</code>, returning an <code>Option[String]</code>.
-     *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method, 
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def ===(spread: Spread[L]): Option[String] =
-      if (spread == null) {
-        if (left == null)
-          None
-        else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
-          Some(FailureMessages("didNotEqual", leftee, rightee))
-        }
-      }
-      else {
-        if (spread.isWithin(left))
-          None
-        else
-          Some(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
-      }
-  
-    /**
-     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning an <code>Option[String]</code>.
-     *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def !==(spread: Spread[L]): Option[String] =
-      if (spread == null) {
-        if (left != null)
-          None
-        else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
-          Some(FailureMessages("equaled", leftee, rightee))
-        }
-      }
-      else {
-        if (if (spread != null) !spread.isWithin(left) else left != spread)
-          None
-        else
-          Some(FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance))
-      }
-  }
-  
-  /**
    * Class used via an implicit conversion to enable two objects to be compared with
    * <code>===</code> and <code>!==</code> with a <code>Boolean</code> result and an enforced type constraint between
    * two object types. For example:
@@ -423,185 +228,6 @@ trait TripleEqualsSupport {
   }
 
   /**
-   * Class used via an implicit conversion to enable any two objects to be compared with
-   * <code>===</code> and <code>!==</code> with an <code>Option[String]</code> result and an enforced type constraint between
-   * two object types. For example:
-   *
-   * <pre class="stHighlight">
-   * assert(a === b)
-   * assert(c !== d)
-   * </pre>
-   *
-   * <p>
-   * You can also check numeric values against another with a tolerance. Here are some examples:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert(a === (2.0 +- 0.1))
-   * assert(c !== (2.0 +- 0.1))
-   * </pre>
-   *
-   * <p>
-   * The benefit of using <code>assert(a === b)</code> rather than <code>assert(a == b)</code> in ScalaTest code is
-   * that a <code>TestFailedException</code> produced by the former will include the values of <code>a</code> and <code>b</code>
-   * in its detail message.
-   * </p>
-   *
-   * <p>
-   * <em>
-   * Note: This class has "Legacy" in its name because its approach to error messages will eventually be replaced by macros. Once ScalaTest no longer supports Scala 2.9, 
-   * this class will be deprecated in favor of class <code>Equalizer</code>. Instead of obtaining nice error messages via the <code>Option[String]</code>
-   * returned by the methods of this class, the error messages will be obtained by a macro. The "legacy" approach to good error messages will continue to be
-   * used, however, until ScalaTest no longer supports Scala 2.9, since macros were introduced to Scala (in experimental form) in 2.10.
-   * </em>
-   * </p>
-   *
-   * <p>
-   * The primary constructor takes one object, <code>left</code>, whose type is being converted to <code>Equalizer</code>. The <code>left</code>
-   * value may be a <code>null</code> reference, because this is allowed by Scala's <code>==</code> operator.
-   * </p>
-   *
-   * @param left An object to convert to <code>Equalizer</code>, which represents the <code>left</code> value
-   *     of a <code>===</code> or <code>!==</code> equality check.
-   *
-   * @author Bill Venners
-   */
-  class LegacyCheckingEqualizer[L](left: L) {
-  
-    private def diffStrings(s: String, t: String): Tuple2[String, String] = {
-      def findCommonPrefixLength(s: String, t: String): Int = {
-        val max = s.length.min(t.length) // the maximum potential size of the prefix
-        var i = 0
-        var found = false
-        while (i < max & !found) {
-          found = (s.charAt(i) != t.charAt(i))
-          if (!found)
-            i = i + 1
-        }
-        i
-      }
-      def findCommonSuffixLength(s: String, t: String): Int = {
-        val max = s.length.min(t.length) // the maximum potential size of the suffix
-        var i = 0
-        var found = false
-        while (i < max & !found) {
-          found = (s.charAt(s.length - 1 - i) != t.charAt(t.length - 1 - i))
-          if (!found)
-            i = i + 1
-        }
-        i
-      }
-      val commonPrefixLength = findCommonPrefixLength(s, t)
-      val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
-      val prefix = s.substring(0, commonPrefixLength)
-      val suffix = if (s.length - commonSuffixLength < 0) "" else s.substring(s.length - commonSuffixLength)
-      val sMiddleEnd = s.length - commonSuffixLength
-      val tMiddleEnd = t.length - commonSuffixLength
-      val sMiddle = s.substring(commonPrefixLength, sMiddleEnd)
-      val tMiddle = t.substring(commonPrefixLength, tMiddleEnd)
-      val MaxContext = 20
-      val shortPrefix = if (commonPrefixLength > MaxContext) "..." + prefix.substring(prefix.length - MaxContext) else prefix
-      val shortSuffix = if (commonSuffixLength > MaxContext) suffix.substring(0, MaxContext) + "..." else suffix
-      (shortPrefix + "[" + sMiddle + "]" + shortSuffix, shortPrefix + "[" + tMiddle + "]" + shortSuffix)
-    }
-  
-    // If the objects are two strings, replace them with whatever is returned by diffStrings.
-    // Otherwise, use the same objects.
-    private def getObjectsForFailureMessage(a: Any, b: Any) =
-      a match {
-        case aStr: String => {
-          b match {
-            case bStr: String => {
-              diffStrings(aStr, bStr)
-            }
-            case _ => (a, b)
-          }
-        }
-        case _ => (a, b)
-      }
-  
-    /**
-     * Compare two objects for equality, returning an <code>Option[String]</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
-     *
-     * @param right the object to compare for equality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
-     *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return None if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Equality</code> type class.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def ===[R](right: R)(implicit constraint: Constraint[L, R]): Option[String] = 
-      if (constraint.areEqual(left, right))
-        None
-      else {
-        val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("didNotEqual", leftee, rightee))
-      }
-  
-    /**
-     * Compare two objects for inequality, returning an <code>Option[String]</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
-     *
-     * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
-     *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return None if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def !==[R](right: R)(implicit constraint: Constraint[L, R]): Option[String] =
-      if (!constraint.areEqual(left, right))
-        None
-      else {
-        val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("equaled", leftee, rightee))
-      }
-  
-    /**
-     * Determine whether a numeric object is within the passed <code>Spread</code>, returning an <code>Option[String]</code>.
-     *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method, 
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def ===(spread: Spread[L]): Option[String] =
-      if (spread == null) {
-        if (left == null)
-          None
-        else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
-          Some(FailureMessages("equaled", leftee, rightee))
-        }
-      }
-      else {
-        if (spread.isWithin(left))
-          None
-        else
-          Some(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
-      }
-  
-    /**
-     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning an <code>Option[String]</code>.
-     *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
-     *    else returns an error message string wrapped in a <code>Some</code>.
-     */
-    def !==(spread: Spread[L]): Option[String] =
-      if (spread == null) {
-        if (left != null)
-          None
-        else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
-          Some(FailureMessages("equaled", leftee, rightee))
-        }
-      }
-      else {
-        if (if (spread != null) !spread.isWithin(left) else left != spread)
-          None
-        else
-          Some(FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance))
-      }
-  }
-
-  /**
    * Returns an <code>Equality[A]</code> for any type <code>A</code> that determines equality
    * by first calling <code>.deep</code> on any <code>Array</code> (on either the left or right side),
    * then comparing the resulting objects with <code>==</code>.
@@ -625,20 +251,6 @@ trait TripleEqualsSupport {
   def convertToEqualizer[T](left: T): Equalizer[T]
 
   /**
-   * Converts to a <a href="LegacyEqualizer.html"><code>LegacyEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
-   * result in <code>Option[String]</code> and enforce no type constraint.
-   *
-   * <p>
-   * This method is overridden and made implicit by subtrait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a> and overriden as non-implicit
-   * by the other subtraits in this package.
-   * </p>
-   *
-   * @param left the object whose type to convert to <code>LegacyEqualizer</code>.
-   * @throws NullPointerException if <code>left</code> is <code>null</code>.
-   */
-  def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T]
-
-  /**
    * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
    * that result in <code>Boolean</code> and enforce a type constraint.
    *
@@ -654,21 +266,6 @@ trait TripleEqualsSupport {
   def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T]
 
   /**
-   * Converts to a <a href="LegacyCheckingEqualizer.html"><code>LegacyCheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
-   * that result in <code>Option[String]</code> and enforce a type constraint.
-   *
-   * <p>
-   * This method is overridden and made implicit by subtraits <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>
-   * and <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
-   * overriden as non-implicit by the other subtraits in this package.
-   * </p>
-   *
-   * @param left the object whose type to convert to <code>LegacyCheckingEqualizer</code>.
-   * @throws NullPointerException if <code>left</code> is <code>null</code>.
-   */
-  def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T]
-
-  /**
    * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
    * implicit <code>Equality[A]</code>.
    *
@@ -678,9 +275,8 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and
-   * <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>, and
-   * overriden as non-implicit by the other subtraits in this package.
+   * This method is overridden and made implicit by subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a>
+   * and overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
    * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
@@ -699,11 +295,9 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="LowPriorityTypeCheckedConstraint.html"><code>LowPriorityTypeCheckedConstraint</code></a> (extended by
-   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>), and
-   * <a href="LowPriorityTypeCheckedLegacyConstraint.html"><code>LowPriorityTypeCheckedLegacyConstraint</code></a> (extended by
-   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>), and
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -733,9 +327,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityTypeCheckedConstraint.html"><code>LowPriorityTypeCheckedConstraint</code></a> (extended by
-   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>), and
-   * <a href="LowPriorityTypeCheckedLegacyConstraint.html"><code>LowPriorityTypeCheckedLegacyConstraint</code></a> (extended by
-   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>), and
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -757,9 +349,8 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
-   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -792,9 +383,8 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
-   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -815,11 +405,9 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
-   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
-   * <a href="LowPriorityConversionCheckedLegacyConstraint.html"><code>LowPriorityConversionCheckedLegacyConstraint</code></a> (extended by
-   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>), and
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -848,9 +436,7 @@ trait TripleEqualsSupport {
    * <p>
    * This method is overridden and made implicit by subtraits
    * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
-   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
-   * <a href="LowPriorityConversionCheckedLegacyConstraint.html"><code>LowPriorityConversionCheckedLegacyConstraint</code></a> (extended by
-   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>), and
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -871,9 +457,8 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
-   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -906,9 +491,8 @@ trait TripleEqualsSupport {
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits
+   * This method is overridden and made implicit by subtrait
    * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
-   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
