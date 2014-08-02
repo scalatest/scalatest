@@ -17,7 +17,7 @@ package org.scalactic.enablers
 
 import org.scalactic.{Equality, NormalizingEquality, Every, Constraint}
 import scala.collection.{GenTraversableOnce, GenTraversable}
-import org.scalactic.TripleEqualsSupport.EqualityConstraint
+import org.scalactic.TripleEqualsSupport.BasicConstraint
 import annotation.implicitNotFound
 
 /**
@@ -228,7 +228,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>JCOL[E]</code>
    */
   implicit def convertEqualityToJavaCollectionContainingConstraint[E, JCOL[e] <: java.util.Collection[e], R](equality: Equality[E]): ContainingConstraint[JCOL[E], R] = 
-    containingNatureOfJavaCollection(new EqualityConstraint[E, R](equality))
+    containingNatureOfJavaCollection(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>GenTraversable</code>.
@@ -278,7 +278,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>TRAV[E]</code>
    */
   implicit def convertEqualityToGenTraversableContainingConstraint[E, TRAV[e] <: scala.collection.GenTraversable[e], R](equality: Equality[E]): ContainingConstraint[TRAV[E], R] = 
-    containingNatureOfGenTraversable(new EqualityConstraint[E, R](equality))
+    containingNatureOfGenTraversable(new BasicConstraint[E, R](equality))
 
   // OPT so that it will work with Some also, but it doesn't work with None
   /**
@@ -322,7 +322,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>OPT[E]</code>
    */
   implicit def convertEqualityToOptionContainingConstraint[E, OPT[e] <: Option[e], R](equality: Equality[E]): ContainingConstraint[OPT[E], R] = 
-    containingNatureOfOption(new EqualityConstraint[E, R](equality))
+    containingNatureOfOption(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>Array</code>.
@@ -362,7 +362,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>Array[E]</code>
    */
   implicit def convertEqualityToArrayContaining[E, R](equality: Equality[E]): ContainingConstraint[Array[E], R] = 
-    containingNatureOfArray(new EqualityConstraint[E, R](equality))
+    containingNatureOfArray(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>String</code>.
@@ -401,7 +401,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringContainingConstraint[R](equality: Equality[Char]): ContainingConstraint[String, R] = 
-    containingNatureOfString(new EqualityConstraint[Char, R](equality))
+    containingNatureOfString(new BasicConstraint[Char, R](equality))
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>java.util.Map</code>.
@@ -450,7 +450,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>JMAP[K, V]</code>
    */
   implicit def convertEqualityToJavaMapContainingConstraint[K, V, JMAP[k, v] <: java.util.Map[k, v], R](equality: Equality[java.util.Map.Entry[K, V]]): ContainingConstraint[JMAP[K, V], R] = 
-    containingNatureOfJavaMap(new EqualityConstraint[java.util.Map.Entry[K, V], R](equality))
+    containingNatureOfJavaMap(new BasicConstraint[java.util.Map.Entry[K, V], R](equality))
 
   /**
    * Implicit to support <code>Containing</code> nature of <code>Every</code>.
@@ -497,7 +497,7 @@ object ContainingConstraint {
    * @return <code>Containing</code> of type <code>Every[E]</code>
    */
   implicit def convertEqualityToEveryContainingConstraint[E, R](equality: Equality[E]): ContainingConstraint[Every[E], R] =
-    containingNatureOfEvery(new EqualityConstraint[E, R](equality))
+    containingNatureOfEvery(new BasicConstraint[E, R](equality))
 }
 
 

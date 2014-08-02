@@ -103,7 +103,7 @@ trait SeqEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSeq</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.
    */
-  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
+  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new BasicConstraint[CA[EA], CB[EB]](equalityOfA)
 }
 
 /**

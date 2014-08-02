@@ -16,7 +16,7 @@
 package org.scalactic.enablers
 
 import org.scalactic.{Equality, Every, Constraint}
-import org.scalactic.TripleEqualsSupport.EqualityConstraint
+import org.scalactic.TripleEqualsSupport.BasicConstraint
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -301,7 +301,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
    */
   implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e], R](equality: Equality[E]): AggregatingConstraint[TRAV[E], R] =
-    aggregatingNatureOfGenTraversable(new EqualityConstraint[E, R](equality))
+    aggregatingNatureOfGenTraversable(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
@@ -346,7 +346,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>Array[E]</code>
    */
   implicit def convertEqualityToArrayAggregating[E, R](equality: Equality[E]): AggregatingConstraint[Array[E], R] = 
-    aggregatingNatureOfArray(new EqualityConstraint[E, R](equality))
+    aggregatingNatureOfArray(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
@@ -390,7 +390,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringAggregating[R](equality: Equality[Char]): AggregatingConstraint[String, R] =
-    aggregatingNatureOfString(new EqualityConstraint[Char, R](equality))
+    aggregatingNatureOfString(new BasicConstraint[Char, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
@@ -439,7 +439,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
    */
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e], R](equality: Equality[E]): AggregatingConstraint[JCOL[E], R] = 
-    aggregatingNatureOfJavaCollection(new EqualityConstraint[E, R](equality))
+    aggregatingNatureOfJavaCollection(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
@@ -493,7 +493,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
    */
   implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v], R](equality: Equality[java.util.Map.Entry[K, V]]): AggregatingConstraint[JMAP[K, V], R] = 
-    aggregatingNatureOfJavaMap(new EqualityConstraint[java.util.Map.Entry[K, V], R](equality))
+    aggregatingNatureOfJavaMap(new BasicConstraint[java.util.Map.Entry[K, V], R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Every</code>.
@@ -538,5 +538,5 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>Every[E]</code>
    */
   implicit def convertEqualityToEveryAggregating[E, R](equality: Equality[E]): AggregatingConstraint[Every[E], R] =
-    aggregatingNatureOfEvery(new EqualityConstraint[E, R](equality))
+    aggregatingNatureOfEvery(new BasicConstraint[E, R](equality))
 }

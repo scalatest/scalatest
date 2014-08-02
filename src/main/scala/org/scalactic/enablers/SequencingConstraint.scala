@@ -16,7 +16,7 @@
 package org.scalactic.enablers
 
 import org.scalactic.{Equality, Every, Constraint}
-import org.scalactic.TripleEqualsSupport.EqualityConstraint
+import org.scalactic.TripleEqualsSupport.BasicConstraint
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
@@ -237,7 +237,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>SEQ[E]</code>
    */
   implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e], R](equality: Equality[E]): SequencingConstraint[SEQ[E], R] = 
-    sequencingNatureOfGenSeq(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfGenSeq(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedSet</code>.
@@ -281,7 +281,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>SET[E]</code>
    */
   implicit def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e], R](equality: Equality[E]): SequencingConstraint[SET[E], R] = 
-    sequencingNatureOfSortedSet(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfSortedSet(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedMap</code>.
@@ -328,7 +328,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>MAP[K, V]</code>
    */
   implicit def convertEqualityToSortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v], R](equality: Equality[(K, V)]): SequencingConstraint[MAP[K, V], R] = 
-    sequencingNatureOfSortedMap(new EqualityConstraint[(K, V), R](equality))
+    sequencingNatureOfSortedMap(new BasicConstraint[(K, V), R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>Array</code>.
@@ -370,7 +370,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>Array[E]</code>
    */
   implicit def convertEqualityToArraySequencing[E, R](equality: Equality[E]): SequencingConstraint[Array[E], R] = 
-    sequencingNatureOfArray(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfArray(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.List</code>.
@@ -416,7 +416,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
   implicit def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e], R](equality: Equality[E]): SequencingConstraint[JLIST[E], R] = 
-    sequencingNatureOfJavaList(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfJavaList(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedSet</code>.
@@ -462,7 +462,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
   implicit def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e], R](equality: Equality[E]): SequencingConstraint[JSET[E], R] = 
-    sequencingNatureOfJavaSortedSet(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfJavaSortedSet(new BasicConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedMap</code>.
@@ -511,7 +511,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JMAP[K, V]</code>
    */
   implicit def convertEqualityToJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v], R](equality: Equality[java.util.Map.Entry[K, V]]): SequencingConstraint[JMAP[K, V], R] = 
-    sequencingNatureOfJavaSortedMap(new EqualityConstraint[java.util.Map.Entry[K, V], R](equality))
+    sequencingNatureOfJavaSortedMap(new BasicConstraint[java.util.Map.Entry[K, V], R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>String</code>.
@@ -552,7 +552,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringSequencing[R](equality: Equality[Char]): SequencingConstraint[String, R] = 
-    sequencingNatureOfString(new EqualityConstraint[Char, R](equality))
+    sequencingNatureOfString(new BasicConstraint[Char, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>Every</code>.
@@ -591,6 +591,6 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>Every[E]</code>
    */
   implicit def convertEqualityToEverySequencing[E, R](equality: Equality[E]): SequencingConstraint[Every[E], R] =
-    sequencingNatureOfEvery(new EqualityConstraint[E, R](equality))
+    sequencingNatureOfEvery(new BasicConstraint[E, R](equality))
     
 }

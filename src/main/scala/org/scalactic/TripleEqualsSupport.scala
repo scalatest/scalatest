@@ -988,13 +988,16 @@ trait TripleEqualsSupport {
 
 object TripleEqualsSupport {
 
+   // TODO: Will need to deprecate the TripleEqualsSupport.EqualityConstraint name and 
+   // change it to TripleEqualsSupport.BasicConstraint in a pre-3.0 release. Since this is
+   // in an object, I think it can just go in a 2.2.x release.
   /**
    * An implementation of <a href="Constraint.html"><code>Constraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
    * which its <code>areEqual</code> method can delegate an equality comparison.
    *
    * @param equalityOfA an <code>Equality</code> type class for <code>A</code>
    */
-  final class EqualityConstraint[A, B](equalityOfA: Equality[A]) extends Constraint[A, B] {
+  final class BasicConstraint[A, B](equalityOfA: Equality[A]) extends Constraint[A, B] {
 
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the

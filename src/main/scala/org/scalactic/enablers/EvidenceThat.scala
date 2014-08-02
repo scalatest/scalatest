@@ -103,7 +103,7 @@ object EvidenceThat {
           map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
         }
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.EqualityConstraint(equality)
+        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
 
         def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           val foundSet = ContainingConstraint.checkOneOf[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]](map.entrySet.asScala, elements, constraint)
@@ -130,7 +130,7 @@ object EvidenceThat {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.EqualityConstraint(equality)
+        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
 
         def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: org.scalatest.Entry[K, V]) => constraint.areEqual(e, ele)))
@@ -163,7 +163,7 @@ object EvidenceThat {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.EqualityConstraint(equality)
+        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
 
         def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           SequencingConstraint.checkInOrder(map.entrySet.iterator.asScala.toVector, elements, constraint)

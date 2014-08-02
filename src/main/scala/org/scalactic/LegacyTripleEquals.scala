@@ -64,7 +64,7 @@ trait LegacyTripleEquals extends TripleEqualsSupport {
 
   import scala.language.implicitConversions
 
-  implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
