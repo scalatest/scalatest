@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class ToleranceSpec extends Spec with TripleEquals with Tolerance {
+class ToleranceSpec extends Spec with UncheckedEquality with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

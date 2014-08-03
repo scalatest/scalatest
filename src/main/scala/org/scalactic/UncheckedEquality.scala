@@ -23,10 +23,10 @@ import EqualityPolicy._
  * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Trait <code>TripleEquals</code> is useful (in both production and test code) when you need determine equality for a type of object differently than its
+ * Trait <code>UncheckedEquality</code> is useful (in both production and test code) when you need determine equality for a type of object differently than its
  * <code>equals</code> method: either you can't change the <code>equals</code> method, or the <code>equals</code> method is sensible generally, but
  * you are in a special situation where you need something else. If you also want a compile-time type check, however, you should use one
- * of <code>TripleEquals</code> sibling traits: 
+ * of <code>UncheckedEquality</code> sibling traits: 
  * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> or <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
  * </td></tr></table>
  *
@@ -72,7 +72,7 @@ import EqualityPolicy._
  * </pre>
  * 
  * <p>
- * You can &ldquo;turn off&rdquo; the type checking locally by importing the members of <code>TripleEquals</code> in
+ * You can &ldquo;turn off&rdquo; the type checking locally by importing the members of <code>UncheckedEquality</code> in
  * a limited scope:
  * </p>
  * 
@@ -85,7 +85,7 @@ import EqualityPolicy._
  * object Example {
  * 
  *   def cmp(a: Int, b: Long): Int = {
- *     import TripleEquals._
+ *     import UncheckedEquality._
  *     if (a === b) 0
  *     else if (a &lt; b) -1
  *     else 1
@@ -106,7 +106,7 @@ import EqualityPolicy._
  * </p>
  * 
  * <p>
- * Because the methods in <code>TripleEquals</code> (and its siblings)<em>override</em> all the methods defined in
+ * Because the methods in <code>UncheckedEquality</code> (and its siblings)<em>override</em> all the methods defined in
  * supertype <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>, you can achieve the same
  * kind of nested tuning of equality constraints whether you mix in traits, import from companion objects, or use some combination of both.
  * </p>
@@ -119,7 +119,7 @@ import EqualityPolicy._
  *
  * @author Bill Venners
  */
-trait TripleEquals extends EqualityPolicy {
+trait UncheckedEquality extends EqualityPolicy {
 
   import scala.language.implicitConversions
 
@@ -149,8 +149,8 @@ trait TripleEquals extends EqualityPolicy {
 }
 
 /**
- * Companion object to trait <code>TripleEquals</code> that facilitates the importing of <code>TripleEquals</code> members as 
- * an alternative to mixing it in. One use case is to import <code>TripleEquals</code> members so you can use
+ * Companion object to trait <code>UncheckedEquality</code> that facilitates the importing of <code>UncheckedEquality</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>UncheckedEquality</code> members so you can use
  * them in the Scala interpreter:
  *
  * <pre class="stREPL">
@@ -162,12 +162,12 @@ trait TripleEquals extends EqualityPolicy {
  * scala&gt; import org.scalactic._
  * import org.scalactic._
  *
- * scala&gt; import TripleEquals._
- * import TripleEquals._
+ * scala&gt; import UncheckedEquality._
+ * import UncheckedEquality._
  *
  * scala&gt; 1 + 1 === 2
  * res0: Boolean = true
  * </pre>
  */
-object TripleEquals extends TripleEquals
+object UncheckedEquality extends UncheckedEquality
 

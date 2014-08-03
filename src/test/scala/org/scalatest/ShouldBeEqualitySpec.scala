@@ -24,7 +24,7 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
-import org.scalactic.TripleEquals
+import org.scalactic.UncheckedEquality
 import Matchers._
 
 class ShouldBeEqualitySpec extends Spec {

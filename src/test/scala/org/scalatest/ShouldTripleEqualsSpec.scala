@@ -21,7 +21,7 @@ import scala.collection.GenSet
 import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
-import org.scalactic.TripleEquals
+import org.scalactic.UncheckedEquality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
@@ -60,11 +60,11 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
 
   object `the custom equality should === (operator` {
 
-    object `with TripleEquals` {
+    object `with UncheckedEquality` {
 
       def `should compare anything with anything` {
 
-        new TripleEquals {
+        new UncheckedEquality {
 
           1 should === (1)
           intercept[TestFailedException] { 1 should !== (1) }
@@ -155,9 +155,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported` {
+      def `should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality imported` {
 
-        object O extends TripleEquals
+        object O extends UncheckedEquality
         import O._
 
         new TypeCheckedTripleEquals {
@@ -201,9 +201,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when TripleEquals mixed in` {
+      def `should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality mixed in` {
 
-        object O extends TripleEquals {
+        object O extends UncheckedEquality {
 
           new TypeCheckedTripleEquals {
 
@@ -247,9 +247,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported` {
+      def `should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality imported` {
 
-        object O extends TripleEquals
+        object O extends UncheckedEquality
         import O._
 
         new ConversionCheckedTripleEquals {
@@ -294,9 +294,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TripleEquals mixed in` {
+      def `should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality mixed in` {
 
-        object O extends TripleEquals {
+        object O extends UncheckedEquality {
 
           new ConversionCheckedTripleEquals {
 
@@ -453,12 +453,12 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported` {
+      def `should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals imported` {
 
         object O extends TypeCheckedTripleEquals
         import O._
 
-        new TripleEquals {
+        new UncheckedEquality {
 
           1 should === (1)
           intercept[TestFailedException] { 1 should !== (1) }
@@ -484,11 +484,11 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when TypeCheckedTripleEquals mixed in` {
+      def `should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals mixed in` {
 
         object O extends TypeCheckedTripleEquals {
 
-          new TripleEquals {
+          new UncheckedEquality {
 
             1 should === (1)
             intercept[TestFailedException] { 1 should !== (1) }
@@ -723,12 +723,12 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported` {
+      def `should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals imported` {
 
         object O extends ConversionCheckedTripleEquals
         import O._
 
-        new TripleEquals {
+        new UncheckedEquality {
 
           1 should === (1)
           intercept[TestFailedException] { 1 should !== (1) }
@@ -754,11 +754,11 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when ConversionCheckedTripleEquals mixed in` {
+      def `should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals mixed in` {
 
         object O extends ConversionCheckedTripleEquals {
 
-          new TripleEquals {
+          new UncheckedEquality {
 
             1 should === (1)
             intercept[TestFailedException] { 1 should !== (1) }

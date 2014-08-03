@@ -583,9 +583,9 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
     
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+    // UncheckedEquality tests
+    // currently these tests are not calling UncheckedEquality's === and !== yet, import org.scalactic.UncheckedEquality does not seems to work
+    // Should make Assertions to extend UncheckedEquality instead of LegacyTripleEquals instead.
     
     it("should do nothing when is used to check a === 3") {
       assert(a === 3)
@@ -1816,9 +1816,9 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+    // UncheckedEquality tests
+    // currently these tests are not calling UncheckedEquality's === and !== yet, import org.scalactic.UncheckedEquality does not seems to work
+    // Should make Assertions to extend UncheckedEquality instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
       assert(a === 3, "dude")
@@ -3043,9 +3043,9 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+    // UncheckedEquality tests
+    // currently these tests are not calling UncheckedEquality's === and !== yet, import org.scalactic.UncheckedEquality does not seems to work
+    // Should make Assertions to extend UncheckedEquality instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
       assume(a === 3)
@@ -4276,9 +4276,9 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+    // UncheckedEquality tests
+    // currently these tests are not calling UncheckedEquality's === and !== yet, import org.scalactic.UncheckedEquality does not seems to work
+    // Should make Assertions to extend UncheckedEquality instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
       assume(a === 3, "dude")
