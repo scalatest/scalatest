@@ -66,5 +66,10 @@ package object scalactic {
   @deprecated("Please use org.scalactic.EqualityPolicy instead.")
   val TripleEqualsSupport = org.scalactic.EqualityPolicy
 
+  @deprecated("Please use org.scalactic.UncheckedEquality instead.")
+  type TripleEquals = org.scalactic.UncheckedEquality
+
+  @deprecated("Please use org.scalactic.UncheckedEquality instead.")
+  val TripleEquals = org.scalactic.UncheckedEquality
 }
 
