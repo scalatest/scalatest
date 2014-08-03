@@ -63,7 +63,7 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
   // 6. Many on right, can be Many or Every on left, but the latter will be provided by number 1
   implicit def everyOnLeftEqualityConstraint[EA, EB, CB[eb] <: Every[eb]](implicit equalityOfA: Equality[Every[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Every[EA], CB[EB]] = new BasicEqualityConstraint[Every[EA], CB[EB]](equalityOfA)
 
-  implicit def oneOnBothSidesqualityConstraint[EA, EB](implicit equalityOfA: Equality[One[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[One[EA], One[EB]] = new BasicEqualityConstraint[One[EA], One[EB]](equalityOfA)
+  implicit def oneOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[One[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[One[EA], One[EB]] = new BasicEqualityConstraint[One[EA], One[EB]](equalityOfA)
 
   implicit def manyOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Many[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Many[EA], Many[EB]] = new BasicEqualityConstraint[Many[EA], Many[EB]](equalityOfA)
 
@@ -132,4 +132,20 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 
   implicit def rightOnParamSideRightOnTargetSideEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Right[ETL, ETR]], ev: EqualityConstraint[ETR, EPR]): EqualityConstraint[Right[ETL, ETR], Right[EPL, EPR]] = new BasicEqualityConstraint[Right[ETL, ETR], Right[EPL, EPR]](equalityOfT)
   implicit def rightOnParamSideRightOnTargetSideNothingConstraint[ETR, EPR](implicit equalityOfT: Equality[Right[Nothing, ETR]], ev: EqualityConstraint[ETR, EPR]): EqualityConstraint[Right[Nothing, ETR], Right[Nothing, EPR]] = new BasicEqualityConstraint[Right[Nothing, ETR], Right[Nothing, EPR]](equalityOfT)
+
+  // 1. Option on left, can by subclass of Option on right
+  // 2. Option on right, can be subclass of Option on left
+  // 3. None on left, can be None or Option on right, but the latter will be provided by number 2
+  // 4. None on right, can be None or Option on left, but the latter will be provided by number 1
+  // 5. Some on left, can be Some or Option on right, but the latter will be provided by number 2
+  // 6. Some on right, can be Some or Option on left, but the latter will be provided by number 1
+  implicit def optionOnLeftEqualityConstraint[EA, EB, CB[eb] <: Option[eb]](implicit equalityOfA: Equality[Option[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Option[EA], CB[EB]] = new BasicEqualityConstraint[Option[EA], CB[EB]](equalityOfA)
+
+/*
+  // Will need to duplicate this one to get None against None to fail to compile
+  implicit def noneOnBothSidesEqualityConstraintConflict3: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
+  implicit def noneOnBothSidesEqualityConstraintConflict4: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
+*/
+
+  implicit def someOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Some[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Some[EA], Some[EB]] = new BasicEqualityConstraint[Some[EA], Some[EB]](equalityOfA)
 }

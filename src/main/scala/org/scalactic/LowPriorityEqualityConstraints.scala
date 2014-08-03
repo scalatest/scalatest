@@ -46,4 +46,12 @@ trait LowPriorityEqualityConstraints {
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
   implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: EqualityConstraint[ETR, EPR]): EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]] = new BasicEqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
   implicit def lowPriorityEitherNothingConstraint[ETR, EPR](implicit equalityOfT: Equality[Either[Nothing, ETR]], ev: EqualityConstraint[ETR, EPR]): EqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]] = new BasicEqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]](equalityOfT)
+
+  // This must be low priority to allow Option on both sides
+  implicit def optionOnRightEqualityConstraint[EA, CA[ea] <: Option[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[CA[EA], Option[EB]] = new BasicEqualityConstraint[CA[EA], Option[EB]](equalityOfA)
+/*
+  implicit def noneOnBothSidesEqualityConstraintConflict1: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
+  implicit def noneOnBothSidesEqualityConstraintConflict2: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
+*/
+
 }

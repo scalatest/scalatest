@@ -912,6 +912,152 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
         Set(Right(1L).asEither) shouldEqual Set(Right(1).asEither)
       }
     }
+    def `on Options` {
+      // Both sides Option
+      Option(1) shouldEqual Option(1L)
+      Option(1L) shouldEqual Option(1L)
+      // Both sides Some
+      Some(1) shouldEqual Some(1L)
+      Some(1L) shouldEqual Some(1L)
+      // Both sides None
+/*
+      "None shouldEqual None" shouldNot typeCheck
+*/
+      None shouldEqual None // For now at least, will allow this.
+      // Left side Some, right side Option
+      Some(1) shouldEqual Option(1L)
+      Some(1L) shouldEqual Option(1)
+      // Left side Option, right side Some
+      Option(1) shouldEqual Some(1L)
+      Option(1L) shouldEqual Some(1)
+      // Left side None, right side Option
+      None should not equal Option(1L)
+      None should not equal Option(1)
+      None shouldEqual (None: Option[Int])
+      // Left side Option, right side None
+      Option(1) should not equal None
+      (None: Option[Int]) shouldEqual None
+      Option(1L) should not equal None
+      (None: Option[Long]) shouldEqual None
+      // Left side None, right side Some
+      "None shouldEqual Some(1L)" shouldNot typeCheck
+      "None shouldEqual Some(1)" shouldNot typeCheck
+      // Left side Some, right side None
+      "Some(1) shouldEqual None" shouldNot typeCheck
+      "Some(1L) shouldEqual None" shouldNot typeCheck
+    }
+    def `on nested Options` {
+      // Both sides Option
+      Option(Option(1)) shouldEqual Option(Option(1L))
+      Option(Option(1L)) shouldEqual Option(Option(1))
+      // Both sides Some
+      Option(Some(1)) shouldEqual Option(Some(1L))
+      Some(Some(1L)) shouldEqual Some(Some(1L))
+      // Both sides None
+/*
+      "Some(None) shouldEqual Some(None)" shouldNot typeCheck
+      "Option(None) shouldEqual Option(None)" shouldNot typeCheck
+*/
+      Some(None) shouldEqual Some(None)
+      Option(None) shouldEqual Option(None)
+      // Left side Some, right side Option
+      Option(Some(1)) shouldEqual Option(Option(1L))
+      Some(Some(1)) shouldEqual Some(Option(1L))
+      Option(Some(1L)) shouldEqual Option(Option(1))
+      Some(Some(1L)) shouldEqual Some(Option(1))
+      // Left side Option, right side Some
+      Option(Option(1)) shouldEqual Option(Some(1L))
+      Some(Option(1)) shouldEqual Some(Some(1L))
+      Option(Option(1L)) shouldEqual Option(Some(1))
+      Some(Option(1L)) shouldEqual Some(Some(1))
+      // Left side None, right side Option
+      Option(None) should not equal Option(Option(1L))
+      Option(None) shouldEqual Option((None: Option[Long]))
+      Option(None) should not equal Option(Option(1))
+      Option(None) shouldEqual Option((None: Option[Int]))
+      // Left side Option, right side None
+      Option(Option(1)) should not equal Option(None)
+      Option((None: Option[Int])) shouldEqual Option(None)
+      Option(Option(1L)) should not equal Option(None)
+      Option((None: Option[Long])) shouldEqual Option(None)
+      // Left side None, right side Some
+      "Some(None) should not equal Some(Some(1L))" shouldNot typeCheck
+      "Option(None) should not equal Option(Some(1))" shouldNot typeCheck
+      // Left side Some, right side None
+      "Some(Some(1)) should not equal Some(None)" shouldNot typeCheck
+      "Option(Some(1L)) should not equal Option(None)" shouldNot typeCheck
+    }
+/*
+      val ex = new Exception("oops")
+    def `on Try` {
+      // Both sides Try
+      Try(1) shouldEqual Try(1L)
+      Try(1L) shouldEqual Try(1L)
+      // Both sides Success
+      Success(1) shouldEqual Success(1L)
+      Success(1L) shouldEqual Success(1L)
+      // Both sides Failure(ex)
+      Failure(ex) shouldEqual Failure(ex)
+      // Left side Success, right side Try
+      Success(1) shouldEqual Try(1L)
+      Success(1L) shouldEqual Try(1)
+      // Left side Try, right side Success
+      Try(1) shouldEqual Success(1L)
+      Try(1L) shouldEqual Success(1)
+      // Left side Failure(ex), right side Try
+      Failure(ex) should not equal Try(1L)
+      Failure(ex) should not equal Try(1)
+      Failure(ex) shouldEqual (Failure(ex): Try[Int])
+      // Left side Try, right side Failure(ex)
+      Try(1) should not equal Failure(ex)
+      (Failure(ex): Try[Int]) shouldEqual Failure(ex)
+      Try(1L) should not equal Failure(ex)
+      (Failure(ex): Try[Long]) shouldEqual Failure(ex)
+      // Left side Failure(ex), right side Success
+      "Failure(ex) shouldEqual Success(1L)" shouldNot typeCheck
+      "Failure(ex) shouldEqual Success(1)" shouldNot typeCheck
+      // Left side Success, right side Failure(ex)
+      "Success(1) shouldEqual Failure(ex)" shouldNot typeCheck
+      "Success(1L) shouldEqual Failure(ex)" shouldNot typeCheck
+    }
+    def `on nested Try` {
+      // Both sides Try
+      Try(Try(1)) shouldEqual Try(Try(1L))
+      Try(Try(1L)) shouldEqual Try(Try(1))
+      // Both sides Success
+      Try(Success(1)) shouldEqual Try(Success(1L))
+      Success(Success(1L)) shouldEqual Success(Success(1L))
+      // Both sides Failure(ex)
+      Success(Failure(ex)) shouldEqual Success(Failure(ex))
+      Try(Failure(ex)) shouldEqual Try(Failure(ex))
+      // Left side Success, right side Try
+      Try(Success(1)) shouldEqual Try(Try(1L))
+      Success(Success(1)) shouldEqual Success(Try(1L))
+      Try(Success(1L)) shouldEqual Try(Try(1))
+      Success(Success(1L)) shouldEqual Success(Try(1))
+      // Left side Try, right side Success
+      Try(Try(1)) shouldEqual Try(Success(1L))
+      Success(Try(1)) shouldEqual Success(Success(1L))
+      Try(Try(1L)) shouldEqual Try(Success(1))
+      Success(Try(1L)) shouldEqual Success(Success(1))
+      // Left side Failure(ex), right side Try
+      Try(Failure(ex)) should not equal Try(Try(1L))
+      Try(Failure(ex)) shouldEqual Try((Failure(ex): Try[Long]))
+      Try(Failure(ex)) should not equal Try(Try(1))
+      Try(Failure(ex)) shouldEqual Try((Failure(ex): Try[Int]))
+      // Left side Try, right side Failure(ex)
+      Try(Try(1)) should not equal Try(Failure(ex))
+      Try((Failure(ex): Try[Int])) shouldEqual Try(Failure(ex))
+      Try(Try(1L)) should not equal Try(Failure(ex))
+      Try((Failure(ex): Try[Long])) shouldEqual Try(Failure(ex))
+      // Left side Failure(ex), right side Success
+      "Success(Failure(ex)) should not equal Success(Success(1L))" shouldNot typeCheck
+      "Try(Failure(ex)) should not equal Try(Success(1))" shouldNot typeCheck
+      // Left side Success, right side Failure(ex)
+      "Success(Success(1)) should not equal Success(Failure(ex))" shouldNot typeCheck
+      "Try(Success(1L)) should not equal Try(Failure(ex))" shouldNot typeCheck
+    }
+*/
   }
 }
 
