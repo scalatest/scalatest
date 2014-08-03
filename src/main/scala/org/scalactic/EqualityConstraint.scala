@@ -17,6 +17,7 @@ package org.scalactic
 
 import annotation.implicitNotFound
 import scala.language.higherKinds
+import scala.util.{Try,Success,Failure}
 
 /**
  * Abstract class used to enforce type constraints for equality checks.
@@ -148,4 +149,17 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 */
 
   implicit def someOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Some[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Some[EA], Some[EB]] = new BasicEqualityConstraint[Some[EA], Some[EB]](equalityOfA)
+
+  // 1. Try on left, can by subclass of Try on right
+  // 2. Try on right, can be subclass of Try on left
+  // 3. Success on left, can be Success or Try on right, but the latter will be provided by number 2
+  // 4. Success on right, can be Success or Try on left, but the latter will be provided by number 1
+  // 5. Failure on left, can be Failure or Try on right, but the latter will be provided by number 2
+  // 6. Failure on right, can be Failure or Try on left, but the latter will be provided by number 1
+  implicit def tryOnLeftEqualityConstraint[EA, EB, CB[eb] <: Try[eb]](implicit equalityOfA: Equality[Try[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Try[EA], CB[EB]] = new BasicEqualityConstraint[Try[EA], CB[EB]](equalityOfA)
+
+  implicit def successOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Success[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Success[EA], Success[EB]] = new BasicEqualityConstraint[Success[EA], Success[EB]](equalityOfA)
+
+  implicit def failureOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Failure[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Failure[EA], Failure[EB]] = new BasicEqualityConstraint[Failure[EA], Failure[EB]](equalityOfA)
+
 }

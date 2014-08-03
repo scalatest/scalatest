@@ -17,6 +17,7 @@ package org.scalactic
 
 import annotation.implicitNotFound
 import scala.language.higherKinds
+import scala.util.{Try,Success,Failure}
 
 trait LowPriorityEqualityConstraints {
 
@@ -53,5 +54,8 @@ trait LowPriorityEqualityConstraints {
   implicit def noneOnBothSidesEqualityConstraintConflict1: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
   implicit def noneOnBothSidesEqualityConstraintConflict2: EqualityConstraint[None.type, None.type] = new BasicEqualityConstraint[None.type, None.type](Equality.default[None.type])
 */
+
+  // This must be low priority to allow Try on both sides
+  implicit def tryOnRightEqualityConstraint[EA, CA[ea] <: Try[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[CA[EA], Try[EB]] = new BasicEqualityConstraint[CA[EA], Try[EB]](equalityOfA)
 
 }

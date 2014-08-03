@@ -987,8 +987,9 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       "Some(Some(1)) should not equal Some(None)" shouldNot typeCheck
       "Option(Some(1L)) should not equal Option(None)" shouldNot typeCheck
     }
-/*
-      val ex = new Exception("oops")
+
+    import scala.util.{Try, Success, Failure}
+    val ex = new Exception("oops")
     def `on Try` {
       // Both sides Try
       Try(1) shouldEqual Try(1L)
@@ -1057,7 +1058,6 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       "Success(Success(1)) should not equal Success(Failure(ex))" shouldNot typeCheck
       "Try(Success(1L)) should not equal Try(Failure(ex))" shouldNot typeCheck
     }
-*/
   }
 }
 
