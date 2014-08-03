@@ -59,6 +59,8 @@ import TripleEqualsSupport._
  */
 trait NonImplicitAssertions extends Assertions {
 
+
+  // TODO: Investigate whether unconstrainedEquality and unconstrainedFreshEquality should be here too
   /**
    * Overrides the <code>super</code> implementation of <code>convertToEqualizer</code>, turning off the implicit 
    * modifier (if present) to remove the method from the space of implicit conversions.

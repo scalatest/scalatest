@@ -18,9 +18,9 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
 import Matchers._
-import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.CheckedEquality
 
-class ShouldContainAtMostOneOfTypeCheckSpec extends Spec with TypeCheckedTripleEquals {
+class ShouldContainAtMostOneOfTypeCheckSpec extends Spec with CheckedEquality {
 
   // Checking for a specific size
   object `The 'contain atMostOneOf (1, <element>)' syntax` {

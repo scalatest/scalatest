@@ -18,9 +18,9 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
 import Matchers._
-import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.CheckedEquality
 
-class ShouldContainElementTypeCheckSpec extends Spec with TypeCheckedTripleEquals {
+class ShouldContainElementTypeCheckSpec extends Spec with CheckedEquality {
 
   // Checking for a specific size
   object `The 'contain (<element>)' syntax` {

@@ -15,8 +15,8 @@
  */
 package org.scalactic.enablers
 
-import org.scalactic.{Equality, Every, Constraint}
-import org.scalactic.TripleEqualsSupport.BasicConstraint
+import org.scalactic.{Equality, Every, EqualityConstraint}
+import org.scalactic.TripleEqualsSupport.BasicEqualityConstraint
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
@@ -105,7 +105,7 @@ trait SequencingConstraint[-S, R] {
  */
 object SequencingConstraint {
   
-  private[enablers] def checkTheSameElementsInOrderAs[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: Constraint[T, R]): Boolean = {
+  private[enablers] def checkTheSameElementsInOrderAs[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: EqualityConstraint[T, R]): Boolean = {
     @tailrec
     def checkEqual(left: Iterator[T], right: Iterator[R]): Boolean = {
       if (left.hasNext && right.hasNext) {
@@ -122,7 +122,7 @@ object SequencingConstraint {
     checkEqual(left.toIterator, right.toIterator)
   }
 
-  private[enablers] def checkInOrderOnly[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: Constraint[T, R]): Boolean = {
+  private[enablers] def checkInOrderOnly[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: EqualityConstraint[T, R]): Boolean = {
   
     @tailrec
     def checkEqual(left: T, right: R, leftItr: Iterator[T], rightItr: Iterator[R]): Boolean = {
@@ -159,7 +159,7 @@ object SequencingConstraint {
     else left.isEmpty && right.isEmpty
   }
   
-  private[enablers] def checkInOrder[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: Constraint[T, R]): Boolean = {
+  private[enablers] def checkInOrder[T, R](left: GenTraversable[T], right: GenTraversable[R], constraint: EqualityConstraint[T, R]): Boolean = {
     @tailrec
     def lastIndexOf(itr: Iterator[T], element: R, idx: Option[Int], i: Int): Option[Int] = {
       if (itr.hasNext) {
@@ -200,7 +200,7 @@ object SequencingConstraint {
    * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
    * @return <code>Sequencing[SEQ[E]]</code> that supports <code>scala.collection.GenSeq</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e], R](implicit constraint: Constraint[E, R]): SequencingConstraint[SEQ[E], R] =
+  implicit def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e], R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[SEQ[E], R] =
     new SequencingConstraint[SEQ[E], R] {
 
       def containsInOrder(seq: SEQ[E], elements: scala.collection.Seq[R]): Boolean = {
@@ -237,7 +237,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>SEQ[E]</code>
    */
   implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e], R](equality: Equality[E]): SequencingConstraint[SEQ[E], R] = 
-    sequencingNatureOfGenSeq(new BasicConstraint[E, R](equality))
+    sequencingNatureOfGenSeq(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedSet</code>.
@@ -247,7 +247,7 @@ object SequencingConstraint {
    * @tparam SET any subtype of <code>scala.collection.SortedSet</code>
    * @return <code>Sequencing[SET[E]]</code> that supports <code>scala.collection.SortedSet</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfSortedSet[E, SET[e] <: scala.collection.SortedSet[e], R](implicit constraint: Constraint[E, R]): SequencingConstraint[SET[E], R] =
+  implicit def sequencingNatureOfSortedSet[E, SET[e] <: scala.collection.SortedSet[e], R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[SET[E], R] =
     new SequencingConstraint[SET[E], R] {
 
       def containsInOrder(set: SET[E], elements: scala.collection.Seq[R]): Boolean = {
@@ -281,7 +281,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>SET[E]</code>
    */
   implicit def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e], R](equality: Equality[E]): SequencingConstraint[SET[E], R] = 
-    sequencingNatureOfSortedSet(new BasicConstraint[E, R](equality))
+    sequencingNatureOfSortedSet(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedMap</code>.
@@ -292,7 +292,7 @@ object SequencingConstraint {
    * @tparam MAP any subtype of <code>scala.collection.SortedMap</code>
    * @return <code>Sequencing[MAP[K, V]]</code> that supports <code>scala.collection.SortedMap</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfSortedMap[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v], R](implicit constraint: Constraint[(K, V), R]): SequencingConstraint[MAP[K, V], R] =
+  implicit def sequencingNatureOfSortedMap[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v], R](implicit constraint: EqualityConstraint[(K, V), R]): SequencingConstraint[MAP[K, V], R] =
     new SequencingConstraint[MAP[K, V], R] {
 
       def containsInOrder(map: MAP[K, V], elements: scala.collection.Seq[R]): Boolean = {
@@ -328,7 +328,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>MAP[K, V]</code>
    */
   implicit def convertEqualityToSortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v], R](equality: Equality[(K, V)]): SequencingConstraint[MAP[K, V], R] = 
-    sequencingNatureOfSortedMap(new BasicConstraint[(K, V), R](equality))
+    sequencingNatureOfSortedMap(new BasicEqualityConstraint[(K, V), R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>Array</code>.
@@ -337,7 +337,7 @@ object SequencingConstraint {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Sequencing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfArray[E, R](implicit constraint: Constraint[E, R]): SequencingConstraint[Array[E], R] = 
+  implicit def sequencingNatureOfArray[E, R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[Array[E], R] = 
     new SequencingConstraint[Array[E], R] {
 
       def containsInOrder(array: Array[E], elements: scala.collection.Seq[R]): Boolean = {
@@ -370,7 +370,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>Array[E]</code>
    */
   implicit def convertEqualityToArraySequencing[E, R](equality: Equality[E]): SequencingConstraint[Array[E], R] = 
-    sequencingNatureOfArray(new BasicConstraint[E, R](equality))
+    sequencingNatureOfArray(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.List</code>.
@@ -380,7 +380,7 @@ object SequencingConstraint {
    * @tparam JLIST any subtype of <code>java.util.List</code>
    * @return <code>Sequencing[JLIST[E]]</code> that supports <code>java.util.List</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e], R](implicit constraint: Constraint[E, R]): SequencingConstraint[JLIST[E], R] = 
+  implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e], R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[JLIST[E], R] = 
     new SequencingConstraint[JLIST[E], R] {
 
       def containsInOrder(col: JLIST[E], elements: scala.collection.Seq[R]): Boolean = {
@@ -416,7 +416,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
   implicit def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e], R](equality: Equality[E]): SequencingConstraint[JLIST[E], R] = 
-    sequencingNatureOfJavaList(new BasicConstraint[E, R](equality))
+    sequencingNatureOfJavaList(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedSet</code>.
@@ -426,7 +426,7 @@ object SequencingConstraint {
    * @tparam JSET any subtype of <code>java.util.SortedSet</code>
    * @return <code>Sequencing[JSET[E]]</code> that supports <code>java.util.SortedSet</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfJavaSortedSet[E, JSET[e] <: java.util.SortedSet[e], R](implicit constraint: Constraint[E, R]): SequencingConstraint[JSET[E], R] =
+  implicit def sequencingNatureOfJavaSortedSet[E, JSET[e] <: java.util.SortedSet[e], R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[JSET[E], R] =
     new SequencingConstraint[JSET[E], R] {
 
       def containsInOrder(set: JSET[E], elements: scala.collection.Seq[R]): Boolean = {
@@ -462,7 +462,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
   implicit def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e], R](equality: Equality[E]): SequencingConstraint[JSET[E], R] = 
-    sequencingNatureOfJavaSortedSet(new BasicConstraint[E, R](equality))
+    sequencingNatureOfJavaSortedSet(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedMap</code>.
@@ -473,7 +473,7 @@ object SequencingConstraint {
    * @tparam JMAP any subtype of <code>java.util.SortedMap</code>
    * @return <code>Sequencing[JMAP[K, V]]</code> that supports <code>java.util.SortedMap</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfJavaSortedMap[K, V, JMAP[k, v] <: java.util.SortedMap[k, v], R](implicit constraint: Constraint[java.util.Map.Entry[K, V], R]): SequencingConstraint[JMAP[K, V], R] =
+  implicit def sequencingNatureOfJavaSortedMap[K, V, JMAP[k, v] <: java.util.SortedMap[k, v], R](implicit constraint: EqualityConstraint[java.util.Map.Entry[K, V], R]): SequencingConstraint[JMAP[K, V], R] =
     new SequencingConstraint[JMAP[K, V], R] {
 
       def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[R]): Boolean = {
@@ -511,7 +511,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>JMAP[K, V]</code>
    */
   implicit def convertEqualityToJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v], R](equality: Equality[java.util.Map.Entry[K, V]]): SequencingConstraint[JMAP[K, V], R] = 
-    sequencingNatureOfJavaSortedMap(new BasicConstraint[java.util.Map.Entry[K, V], R](equality))
+    sequencingNatureOfJavaSortedMap(new BasicEqualityConstraint[java.util.Map.Entry[K, V], R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>String</code>.
@@ -519,7 +519,7 @@ object SequencingConstraint {
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Sequencing[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfString[R](implicit constraint: Constraint[Char, R]): SequencingConstraint[String, R] = 
+  implicit def sequencingNatureOfString[R](implicit constraint: EqualityConstraint[Char, R]): SequencingConstraint[String, R] = 
     new SequencingConstraint[String, R] {
 
       def containsInOrder(s: String, elements: scala.collection.Seq[R]): Boolean = {
@@ -552,7 +552,7 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringSequencing[R](equality: Equality[Char]): SequencingConstraint[String, R] = 
-    sequencingNatureOfString(new BasicConstraint[Char, R](equality))
+    sequencingNatureOfString(new BasicEqualityConstraint[Char, R](equality))
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>Every</code>.
@@ -561,7 +561,7 @@ object SequencingConstraint {
    * @tparam E the type of the element in the <code>Every</code>
    * @return <code>Sequencing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfEvery[E, R](implicit constraint: Constraint[E, R]): SequencingConstraint[Every[E], R] =
+  implicit def sequencingNatureOfEvery[E, R](implicit constraint: EqualityConstraint[E, R]): SequencingConstraint[Every[E], R] =
     new SequencingConstraint[Every[E], R] {
 
       def containsInOrder(every: Every[E], elements: scala.collection.Seq[R]): Boolean =
@@ -591,6 +591,6 @@ object SequencingConstraint {
    * @return <code>Sequencing</code> of type <code>Every[E]</code>
    */
   implicit def convertEqualityToEverySequencing[E, R](equality: Equality[E]): SequencingConstraint[Every[E], R] =
-    sequencingNatureOfEvery(new BasicConstraint[E, R](equality))
+    sequencingNatureOfEvery(new BasicEqualityConstraint[E, R](equality))
     
 }

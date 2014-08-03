@@ -262,7 +262,7 @@ trait TripleEqualsSupport {
      *    defines a way of calculating equality for objects of type <code>L</code>
      * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are equal according to the passed <code>Constraint</code> instance.
      */
-    def ===[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = constraint.areEqual(leftSide, rightSide)
+    def ===[R](rightSide: R)(implicit constraint: EqualityConstraint[L, R]): Boolean = constraint.areEqual(leftSide, rightSide)
   
     /**
      * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
@@ -272,7 +272,7 @@ trait TripleEqualsSupport {
      *    defines a way of calculating equality for objects of type <code>L</code>
      * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are <em>not</em> equal according to the passed <code>Constraint</code> instance.
      */
-    def !==[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = !constraint.areEqual(leftSide, rightSide)
+    def !==[R](rightSide: R)(implicit constraint: EqualityConstraint[L, R]): Boolean = !constraint.areEqual(leftSide, rightSide)
   
     /**
      * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
@@ -356,6 +356,8 @@ trait TripleEqualsSupport {
    *     the passed <code>Equality[A]</code>.
    */
   def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B]
+
+  def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B]
 
   /**
    * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint

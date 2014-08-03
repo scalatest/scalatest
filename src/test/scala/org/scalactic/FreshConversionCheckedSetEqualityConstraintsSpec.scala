@@ -24,7 +24,9 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class DeprecatedTypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
+class FreshConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with CheckedEquality {
+
+  // TODO: Need to explicitly enable the implicit conversion equality 
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -50,11 +52,10 @@ class DeprecatedTypeCheckedSetEqualityConstraintsSpec extends Spec with NonImpli
 
   object `the SetEqualityConstraints trait` {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets have an InnerConstraint` {
+    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere have an InnerConstraint` {
 
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L))
-
       assert(mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3))
       assert(immutable.HashSet(1, 2, 3) === mutable.HashSet(1L, 2L, 3L))
       assert(immutable.HashSet(1L, 2L, 3L) === mutable.HashSet(1, 2, 3))

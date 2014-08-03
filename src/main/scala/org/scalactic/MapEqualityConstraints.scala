@@ -97,7 +97,6 @@ import TripleEqualsSupport._
  * 
  * @author Bill Venners
  */
-@deprecated("MapEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of MapEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait MapEqualityConstraints {
 
   import scala.language.higherKinds
@@ -106,7 +105,7 @@ trait MapEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenMap</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for both key types and both value types.
    */
-  implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit equalityOfA: Equality[CA[KA, VA]], evKey: InnerConstraint[KA, KB], evValue: InnerConstraint[VA, VB]): Constraint[CA[KA, VA], CB[KB, VB]] = new BasicConstraint[CA[KA, VA], CB[KB, VB]](equalityOfA)
+  implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit equalityOfA: Equality[CA[KA, VA]], evKey: Constraint[KA, KB], evValue: Constraint[VA, VB]): Constraint[CA[KA, VA], CB[KB, VB]] = new BasicConstraint[CA[KA, VA], CB[KB, VB]](equalityOfA)
 }
 
 /**
@@ -114,5 +113,4 @@ trait MapEqualityConstraints {
  * an alternative to mixing it in. One use case is to import <code>MapEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
-@deprecated("MapEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of MapEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object MapEqualityConstraints extends MapEqualityConstraints

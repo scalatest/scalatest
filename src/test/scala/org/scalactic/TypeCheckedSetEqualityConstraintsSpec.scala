@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -39,32 +39,16 @@ class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  implicit class IntWrapper(val value: Int) {
-    override def equals(o: Any): Boolean =
-      o match {
-        case that: IntWrapper => this.value == that.value
-        case _ => false
-      }
-    override def hashCode: Int = value.hashCode
-  }
-
   object `the SetEqualityConstraints trait` {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets have an InnerConstraint` {
-
+    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types` {
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
-      assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L))
-
-      assert(mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3))
-      assert(immutable.HashSet(1, 2, 3) === mutable.HashSet(1L, 2L, 3L))
-      assert(immutable.HashSet(1L, 2L, 3L) === mutable.HashSet(1, 2, 3))
-
-      assertTypeError("immutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)) === mutable.HashSet(1, 2, 3)")
-      assertTypeError("immutable.HashSet(1, 2, 3) === mutable.HashSet(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))")
-
+      assertTypeError("mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L)") // does not compile last time I checked
+      assertTypeError("mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3)") // does not compile last time I checked
+      assertTypeError("immutable.HashSet(1, 2, 3) === mutable.HashSet(1L, 2L, 3L)") // does not compile last time I checked
+      assertTypeError("immutable.HashSet(1L, 2L, 3L) === mutable.HashSet(1, 2, 3)") // does not compile last time I checked
       assert(mutable.HashSet(new Apple, new Apple) === immutable.HashSet(new Fruit("apple"), new Fruit("apple")))
       assert(immutable.HashSet(new Fruit("apple"), new Fruit("apple")) === mutable.HashSet(new Apple, new Apple))
-
       assertTypeError("mutable.HashSet(new Apple, new Apple) === immutable.HashSet(new Orange, new Orange)")
       assertTypeError("immutable.HashSet(new Apple, new Apple) === mutable.HashSet(new Orange, new Orange)")
       assertTypeError("immutable.HashSet(new Orange, new Orange) === mutable.HashSet(new Apple, new Apple)")

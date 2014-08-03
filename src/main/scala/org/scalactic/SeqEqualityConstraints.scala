@@ -94,7 +94,6 @@ import TripleEqualsSupport._
  * 
  * @author Bill Venners
  */
-@deprecated("SeqEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SeqEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait SeqEqualityConstraints {
 
   import scala.language.higherKinds
@@ -103,7 +102,8 @@ trait SeqEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSeq</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.
    */
-  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new BasicConstraint[CA[EA], CB[EB]](equalityOfA)
+  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: Constraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new BasicConstraint[CA[EA], CB[EB]](equalityOfA)
+
 }
 
 /**
@@ -111,5 +111,4 @@ trait SeqEqualityConstraints {
  * an alternative to mixing it in. One use case is to import <code>SeqEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
-@deprecated("SeqEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SeqEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object SeqEqualityConstraints extends SeqEqualityConstraints

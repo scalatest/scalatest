@@ -23,9 +23,9 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class ConversionCheckedTripleEqualsNumericSpec extends Spec with ConversionCheckedTripleEquals {
+class CheckedEqualityPolicyNumericSpec extends Spec with CheckedEquality {
 
-  object `The ConversionCheckedTripleEquals trait` {
+  object `The CheckedEqualityPolicy trait` {
     def `should allow equality comparisons between types that co-operate in Scala` {
 
       val aChar: Char = 'c'

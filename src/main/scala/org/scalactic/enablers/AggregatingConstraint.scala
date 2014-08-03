@@ -15,8 +15,8 @@
  */
 package org.scalactic.enablers
 
-import org.scalactic.{Equality, Every, Constraint}
-import org.scalactic.TripleEqualsSupport.BasicConstraint
+import org.scalactic.{Equality, Every, EqualityConstraint}
+import org.scalactic.TripleEqualsSupport.BasicEqualityConstraint
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -129,14 +129,14 @@ trait AggregatingConstraint[-A, R] {
 object AggregatingConstraint {
 
   // TODO: Throwing exceptions is slow. Just do a pattern match and test the type before trying to cast it.
-  private[scalactic] def tryEquality[L, R](left: Any, right: Any, constraint: Constraint[L, R]): Boolean = 
+  private[scalactic] def tryEquality[L, R](left: Any, right: Any, constraint: EqualityConstraint[L, R]): Boolean = 
     try constraint.areEqual(left.asInstanceOf[L], right.asInstanceOf[R])
       catch {
         case cce: ClassCastException => false
     }
   
   
-  private[scalactic] def checkTheSameElementsAs[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkTheSameElementsAs[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: EqualityConstraint[L, R]): Boolean = {
     case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
     object ZipNoMatch
     
@@ -182,7 +182,7 @@ object AggregatingConstraint {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
   
-  private[scalactic] def checkOnly[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkOnly[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: EqualityConstraint[L, R]): Boolean = {
     @tailrec
     def findNext(value: L, rightItr: Iterator[R], processedSet: Set[R]): Set[R] = 
       if (rightItr.hasNext) {
@@ -215,7 +215,7 @@ object AggregatingConstraint {
     checkEqual(left.toIterator, right.toIterator, Set.empty)
   }
   
-  private[scalactic] def checkAllOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkAllOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: EqualityConstraint[L, R]): Boolean = {
     @tailrec
     def checkEqual(left: GenTraversable[L], rightItr: Iterator[R]): Boolean = {
       if (rightItr.hasNext) {
@@ -231,7 +231,7 @@ object AggregatingConstraint {
     checkEqual(left, right.toIterator)
   }
   
-  private[scalactic] def checkAtMostOneOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: Constraint[L, R]): Boolean = {
+  private[scalactic] def checkAtMostOneOf[L, R](left: GenTraversable[L], right: GenTraversable[R], constraint: EqualityConstraint[L, R]): Boolean = {
     
     def countElements: Int = 
       right.aggregate(0)(
@@ -262,7 +262,7 @@ object AggregatingConstraint {
    * @tparam TRAV any subtype of <code>GenTraversable</code>
    * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e], R](implicit constraint: Constraint[E, R]): AggregatingConstraint[TRAV[E], R] = 
+  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e], R](implicit constraint: EqualityConstraint[E, R]): AggregatingConstraint[TRAV[E], R] = 
     new AggregatingConstraint[TRAV[E], R] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[R]): Boolean = {
         trav.exists((e: E) => elements.exists((ele: R) => constraint.areEqual(e, ele)))
@@ -301,7 +301,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
    */
   implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e], R](equality: Equality[E]): AggregatingConstraint[TRAV[E], R] =
-    aggregatingNatureOfGenTraversable(new BasicConstraint[E, R](equality))
+    aggregatingNatureOfGenTraversable(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
@@ -310,7 +310,7 @@ object AggregatingConstraint {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfArray[E, R](implicit constraint: Constraint[E, R]): AggregatingConstraint[Array[E], R] = 
+  implicit def aggregatingNatureOfArray[E, R](implicit constraint: EqualityConstraint[E, R]): AggregatingConstraint[Array[E], R] = 
     new AggregatingConstraint[Array[E], R] {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[R]): Boolean = {
         new ArrayWrapper(array).exists((e: E) => elements.exists((ele: R) => constraint.areEqual(e, ele)))
@@ -346,7 +346,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>Array[E]</code>
    */
   implicit def convertEqualityToArrayAggregating[E, R](equality: Equality[E]): AggregatingConstraint[Array[E], R] = 
-    aggregatingNatureOfArray(new BasicConstraint[E, R](equality))
+    aggregatingNatureOfArray(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
@@ -354,7 +354,7 @@ object AggregatingConstraint {
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfString[R](implicit constraint: Constraint[Char, R]): AggregatingConstraint[String, R] = 
+  implicit def aggregatingNatureOfString[R](implicit constraint: EqualityConstraint[Char, R]): AggregatingConstraint[String, R] = 
     new AggregatingConstraint[String, R] {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[R]): Boolean = {
         s.exists((e: Char) => elements.exists((ele: R) => constraint.areEqual(e, ele)))
@@ -390,7 +390,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringAggregating[R](equality: Equality[Char]): AggregatingConstraint[String, R] =
-    aggregatingNatureOfString(new BasicConstraint[Char, R](equality))
+    aggregatingNatureOfString(new BasicEqualityConstraint[Char, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
@@ -400,7 +400,7 @@ object AggregatingConstraint {
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
    * @return <code>Aggregating[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e], R](implicit constraint: Constraint[E, R]): AggregatingConstraint[JCOL[E], R] = 
+  implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e], R](implicit constraint: EqualityConstraint[E, R]): AggregatingConstraint[JCOL[E], R] = 
     new AggregatingConstraint[JCOL[E], R] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[R]): Boolean = {
         col.asScala.exists((e: E) => elements.exists((ele: R) => constraint.areEqual(e, ele)))
@@ -439,7 +439,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
    */
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e], R](equality: Equality[E]): AggregatingConstraint[JCOL[E], R] = 
-    aggregatingNatureOfJavaCollection(new BasicConstraint[E, R](equality))
+    aggregatingNatureOfJavaCollection(new BasicEqualityConstraint[E, R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
@@ -450,7 +450,7 @@ object AggregatingConstraint {
    * @tparam JMAP any subtype of <code>java.util.Map</code>
    * @return <code>Aggregating[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v], R](implicit constraint: Constraint[java.util.Map.Entry[K, V], R]): AggregatingConstraint[JMAP[K, V], R] = 
+  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v], R](implicit constraint: EqualityConstraint[java.util.Map.Entry[K, V], R]): AggregatingConstraint[JMAP[K, V], R] = 
     new AggregatingConstraint[JMAP[K, V], R] {
     
       import scala.collection.JavaConverters._
@@ -493,7 +493,7 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
    */
   implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v], R](equality: Equality[java.util.Map.Entry[K, V]]): AggregatingConstraint[JMAP[K, V], R] = 
-    aggregatingNatureOfJavaMap(new BasicConstraint[java.util.Map.Entry[K, V], R](equality))
+    aggregatingNatureOfJavaMap(new BasicEqualityConstraint[java.util.Map.Entry[K, V], R](equality))
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Every</code>.
@@ -502,7 +502,7 @@ object AggregatingConstraint {
    * @tparam E the type of the element in the <code>Every</code>
    * @return <code>Aggregating[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfEvery[E, R](implicit constraint: Constraint[E, R]): AggregatingConstraint[Every[E], R] =
+  implicit def aggregatingNatureOfEvery[E, R](implicit constraint: EqualityConstraint[E, R]): AggregatingConstraint[Every[E], R] =
     new AggregatingConstraint[Every[E], R] {
       def containsAtLeastOneOf(every: Every[E], elements: scala.collection.Seq[R]): Boolean = {
         every.exists((e: E) => elements.exists((ele: R) => constraint.areEqual(e, ele)))
@@ -538,5 +538,5 @@ object AggregatingConstraint {
    * @return <code>Aggregating</code> of type <code>Every[E]</code>
    */
   implicit def convertEqualityToEveryAggregating[E, R](equality: Equality[E]): AggregatingConstraint[Every[E], R] =
-    aggregatingNatureOfEvery(new BasicConstraint[E, R](equality))
+    aggregatingNatureOfEvery(new BasicEqualityConstraint[E, R](equality))
 }

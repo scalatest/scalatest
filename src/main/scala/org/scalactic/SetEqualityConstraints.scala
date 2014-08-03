@@ -97,7 +97,6 @@ import TripleEqualsSupport._
  * 
  * @author Bill Venners
  */
-@deprecated("SetEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SetEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 trait SetEqualityConstraints {
 
   import scala.language.higherKinds
@@ -106,7 +105,8 @@ trait SetEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSet</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.
    */
-  implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit equalityOfA: Equality[CA[EA]], ev: InnerConstraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new BasicConstraint[CA[EA], CB[EB]](equalityOfA)
+  implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit equalityOfA: Equality[CA[EA]], ev: Constraint[EA, EB]): Constraint[CA[EA], CB[EB]] = new BasicConstraint[CA[EA], CB[EB]](equalityOfA)
+
 }
 
 /**
@@ -114,5 +114,4 @@ trait SetEqualityConstraints {
  * an alternative to mixing it in. One use case is to import <code>SetEqualityConstraints</code> members so you can use
  * them in the Scala interpreter.
  */
-@deprecated("SetEqualityConstraints has been deprecated and will be removed in a future version of ScalaTest. You should be able to just remove all mentions of SetEqualityConstriants, as the contraints it provided have been added to the Constraint companion object.")
 object SetEqualityConstraints extends SetEqualityConstraints

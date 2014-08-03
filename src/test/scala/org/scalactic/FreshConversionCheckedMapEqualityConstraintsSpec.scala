@@ -24,7 +24,9 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class DeprecatedTypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with MapEqualityConstraints {
+class FreshConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with CheckedEquality {
+
+  // TODO: Need to explicitly enable the implicit conversion equality comparison
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -56,13 +58,15 @@ class DeprecatedTypeCheckedMapEqualityConstraintsSpec extends Spec with NonImpli
       assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
       assert(immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
       assert(immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
+      assert(mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")))
+      assert(immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")) === mutable.HashMap('a' -> new Apple, 'b' -> new Apple))
 
       // Test for something convertible
       assertTypeError("mutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3)) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)")
       assertTypeError("mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3))")
+      assertTypeError("mutable.HashMap(new IntWrapper(1) -> 'a', new IntWrapper(2) -> 'b', new IntWrapper(3) -> 'c') === immutable.HashMap(1 -> 'a', 2 -> 'b', 3 -> 'c')")
+      assertTypeError("mutable.HashMap(1 -> 'a', 2 -> 'b', 3 -> 'c') === immutable.HashMap(new IntWrapper(1) -> 'a', new IntWrapper(2) -> 'b', new IntWrapper(3) -> 'c')")
 
-      assert(mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")))
-      assert(immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")) === mutable.HashMap('a' -> new Apple, 'b' -> new Apple))
       assertTypeError("mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Orange, 'b' -> new Orange)")
       assertTypeError("immutable.HashMap('a' -> new Apple, 'b' -> new Apple) === mutable.HashMap('a' -> new Orange, 'b' -> new Orange)")
       assertTypeError("immutable.HashMap('a' -> new Orange, 'b' -> new Orange) === mutable.HashMap('a' -> new Apple, 'b' -> new Apple)")

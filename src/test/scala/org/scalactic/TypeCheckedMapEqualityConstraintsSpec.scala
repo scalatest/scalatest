@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class TypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with MapEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -39,28 +39,14 @@ class TypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  implicit class IntWrapper(val value: Int) {
-    override def equals(o: Any): Boolean =
-      o match {
-        case that: IntWrapper => this.value == that.value
-        case _ => false
-      }
-    override def hashCode: Int = value.hashCode
-  }
-
   object `the MapEqualityConstraints trait` {
 
-    def `should allow any Map to be compared with any other Map, so long as the key and value types of the two Maps have respective InnerConstraints` {
+    def `should allow any Map to be compared with any other Map, so long as the element types of the two Maps adhere to the equality constraint in force for those types` {
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
-      assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
-      assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
-      assert(immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
-      assert(immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
-
-      // Test for something convertible
-      assertTypeError("mutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3)) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)")
-      assertTypeError("mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> new IntWrapper(1), 'b' -> new IntWrapper(2), 'c' -> new IntWrapper(3))")
-
+      assertTypeError("mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L)")
+      assertTypeError("mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)")
+      assertTypeError("immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L)")
+      assertTypeError("immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)")
       assert(mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")))
       assert(immutable.HashMap('a' -> new Fruit("apple"), 'b' -> new Fruit("apple")) === mutable.HashMap('a' -> new Apple, 'b' -> new Apple))
       assertTypeError("mutable.HashMap('a' -> new Apple, 'b' -> new Apple) === immutable.HashMap('a' -> new Orange, 'b' -> new Orange)")
@@ -70,4 +56,3 @@ class TypeCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAsserti
     }
   }
 }
-

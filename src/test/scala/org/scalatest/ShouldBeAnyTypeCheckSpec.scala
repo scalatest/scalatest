@@ -24,10 +24,10 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
-import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.CheckedEquality
 import Matchers._
 
-class ShouldBeAnyTypeCheckSpec extends Spec with TypeCheckedTripleEquals {
+class ShouldBeAnyTypeCheckSpec extends Spec with CheckedEquality {
 
   object `the should be syntax should give a type error for suspicious types` {
     object `for values` {

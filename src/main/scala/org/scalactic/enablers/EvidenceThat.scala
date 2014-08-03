@@ -15,7 +15,7 @@
  */
 package org.scalactic.enablers
 
-import org.scalactic.Constraint
+import org.scalactic.EqualityConstraint
 import org.scalactic.Equality
 import scala.collection.GenTraversable
 import scala.language.implicitConversions
@@ -27,7 +27,7 @@ final class EvidenceThat[R] {
     def areEqual(leftSide: L, rightSide: R): Boolean
   }
 
-  def canEqualByConstraint[L](implicit constraint: Constraint[L, R]): CanEqual[L] =
+  def canEqualByConstraint[L](implicit constraint: EqualityConstraint[L, R]): CanEqual[L] =
     new CanEqual[L] {
       def areEqual(leftSide: L, rightSide: R): Boolean = constraint.areEqual(leftSide, rightSide)
     }
@@ -81,9 +81,9 @@ final class EvidenceThat[R] {
     }
 }
 object EvidenceThat {
-  implicit def constrainedEquality[L, R](implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
+  implicit def constrainedEquality[L, R](implicit constraint: EqualityConstraint[L, R]): EvidenceThat[R]#CanEqual[L] =
     (new EvidenceThat[R]).canEqualByConstraint[L]
-  implicit def convertEqualityToEvidenceThatRCanEqualL[L, R](equality: Equality[L])(implicit constraint: Constraint[L, R]): EvidenceThat[R]#CanEqual[L] =
+  implicit def convertEqualityToEvidenceThatRCanEqualL[L, R](equality: Equality[L])(implicit constraint: EqualityConstraint[L, R]): EvidenceThat[R]#CanEqual[L] =
     (new EvidenceThat[R]).canEqualByEquality[L](equality)
 
   implicit def constrainedContaining[L, R](implicit constraint: ContainingConstraint[L, R]): EvidenceThat[R]#CanBeContainedIn[L] =
@@ -103,7 +103,7 @@ object EvidenceThat {
           map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
         }
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicEqualityConstraint(equality)
 
         def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           val foundSet = ContainingConstraint.checkOneOf[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]](map.entrySet.asScala, elements, constraint)
@@ -130,7 +130,7 @@ object EvidenceThat {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicEqualityConstraint(equality)
 
         def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: org.scalatest.Entry[K, V]) => constraint.areEqual(e, ele)))
@@ -163,7 +163,7 @@ object EvidenceThat {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: Constraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.TripleEqualsSupport.BasicEqualityConstraint(equality)
 
         def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
           SequencingConstraint.checkInOrder(map.entrySet.iterator.asScala.toVector, elements, constraint)

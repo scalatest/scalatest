@@ -26,7 +26,7 @@ import scala.collection.mutable
 // contained type is Array, for any and all containers. I think that would fix List[Array[T]] too.
 //
 
-class InnerConstraintsSpec extends Spec with Matchers with TypeCheckedTripleEquals {
+class InnerConstraintsSpec extends Spec with Matchers with CheckedEquality {
   
   object `Inner constraints should enable equality comparisons` {
     def `on Seqs and Arrays` {

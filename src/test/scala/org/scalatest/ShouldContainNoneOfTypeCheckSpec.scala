@@ -18,9 +18,9 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
 import Matchers._
-import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.CheckedEquality
 
-class ShouldContainNoneOfTypeCheckSpec extends Spec with TypeCheckedTripleEquals {
+class ShouldContainNoneOfTypeCheckSpec extends Spec with CheckedEquality {
 
   // Checking for a specific size
   object `The 'contain noneOf (1, <element>)' syntax` {
