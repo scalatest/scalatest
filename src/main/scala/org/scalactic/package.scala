@@ -59,5 +59,12 @@ package object scalactic {
    * @return the Scalactic version number.
    */
   val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
+
+  @deprecated("Please use org.scalactic.EqualityPolicy instead.")
+  type TripleEqualsSupport = org.scalactic.EqualityPolicy
+
+  @deprecated("Please use org.scalactic.EqualityPolicy instead.")
+  val TripleEqualsSupport = org.scalactic.EqualityPolicy
+
 }
 

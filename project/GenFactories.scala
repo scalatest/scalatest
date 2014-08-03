@@ -31,8 +31,8 @@ import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
 import org.scalactic.Equality
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.EqualityPolicy.Spread
+import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalactic.Prettifier
 import org.scalatest.FailureMessages
 import org.scalatest.Resources

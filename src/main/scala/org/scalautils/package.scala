@@ -179,13 +179,11 @@ package object scalautils {
   @deprecated("Please use org.scalactic.PrettyMethods instead.")
   val PrettyMethods = org.scalactic.PrettyMethods
 
-/* TODO: Uncomment this once I have put back the deprecated type alias for TripleEqualsSupport
   @deprecated("Please use org.scalactic.EqualityPolicy instead.")
-  type TripleEqualsSupport = org.scalactic.TripleEqualsSupport
+  type TripleEqualsSupport = org.scalactic.EqualityPolicy
 
-  @deprecated("Please use org.scalactic.TripleEqualsSupport instead.")
-  val TripleEqualsSupport = org.scalactic.TripleEqualsSupport
-*/
+  @deprecated("Please use org.scalactic.EqualityPolicy instead.")
+  val TripleEqualsSupport = org.scalactic.EqualityPolicy
 
   @deprecated("Please use org.scalactic.TripleEquals instead.")
   type TripleEquals = org.scalactic.TripleEquals
