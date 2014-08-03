@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
 /**
  * Provides an implicit conversion that will be applied only if a higher-priority implicit conversion declared a subtrait
@@ -52,7 +52,7 @@ import TripleEqualsSupport._
  * priority conversion will be selected.
  * </p>
  */
-trait LowPriorityCheckedEqualityConstraints extends TripleEqualsSupport {
+trait LowPriorityCheckedEqualityConstraints extends EqualityPolicy {
 
   import scala.language.implicitConversions
 

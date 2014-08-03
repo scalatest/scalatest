@@ -93,7 +93,7 @@ package org.scalactic
  * Scalactic defines a default <code>Equality[T]</code> for all types <code>T</code> whose <code>areEqual</code> method works by first
  * calling <code>.deep</code> on any passed array, then calling <code>==</code> on the left-hand object, passing in the right-hand object.
  * You can obtain a default equality via the <code>default</code> method of the <a href="Equality$.html">Equality companion object</a>,
- * or from the <code>defaultEquality</code> method defined in <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+ * or from the <code>defaultEquality</code> method defined in <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
  * </p>
  *
  * <a name="aboutEquality"></a>

@@ -20,7 +20,7 @@ import scala.language.higherKinds
 
 trait LowPriorityEqualityConstraints {
 
-  import TripleEqualsSupport.BasicEqualityConstraint
+  import EqualityPolicy.BasicEqualityConstraint
 
   // ELG Element Left Good
   // ELB Element Left Bad

@@ -17,7 +17,7 @@ package org.scalactic.enablers
 
 import org.scalactic.{Equality, NormalizingEquality, Every, EqualityConstraint}
 import scala.collection.{GenTraversableOnce, GenTraversable}
-import org.scalactic.TripleEqualsSupport.BasicEqualityConstraint
+import org.scalactic.EqualityPolicy.BasicEqualityConstraint
 import annotation.implicitNotFound
 
 /**

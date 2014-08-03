@@ -15,9 +15,9 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
-trait LowPriorityNumericEqualityConstraint extends TripleEqualsSupport {
+trait LowPriorityNumericEqualityConstraint extends EqualityPolicy {
   implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
 } 
 

@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
 /**
  * Provides an implicit method that loosens the equality constraint defined by <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>

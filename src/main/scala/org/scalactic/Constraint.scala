@@ -22,7 +22,7 @@ import scala.language.higherKinds
  * Abstract class used to enforce type constraints for equality checks.
  *
  * <p>
- * For more information on how this class is used, see the documentation of <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+ * For more information on how this class is used, see the documentation of <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
  * </p>
  */
 @implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[${A},${B}]")

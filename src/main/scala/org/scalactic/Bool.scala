@@ -656,9 +656,9 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
 
   private def getObjectsForFailureMessage =
     left match {
-      case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] =>
+      case aEqualizer: org.scalactic.EqualityPolicy#Equalizer[_] =>
         Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
-      case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] =>
+      case aEqualizer: org.scalactic.EqualityPolicy#CheckingEqualizer[_] =>
         Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)
       case _ => Prettifier.getObjectsForFailureMessage(left, right)
     }

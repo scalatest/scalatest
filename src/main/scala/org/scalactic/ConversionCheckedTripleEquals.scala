@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
 /**
  * Provides <code>===</code> and <code>!==</code> operators that return <code>Boolean</code>, delegate the equality determination
@@ -168,7 +168,7 @@ import TripleEqualsSupport._
  * 
  * <p>
  * Because the methods in <code>ConversionCheckedTripleEquals</code> (and its siblings)
- * <em>override</em> all the methods defined in supertype <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>, you can achieve the same
+ * <em>override</em> all the methods defined in supertype <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>, you can achieve the same
  * kind of nested tuning of equality constraints whether you mix in traits, import from companion objects, or use some combination of both.
  * </p>
  *

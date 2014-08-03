@@ -684,7 +684,7 @@ class TripleEqualsSpec extends Spec with NonImplicitAssertions {
 
   object `TripleEqualsInvocation ` {
     
-    import TripleEqualsSupport.TripleEqualsInvocation
+    import EqualityPolicy.TripleEqualsInvocation
     
     def `should have pretty toString` {
       val result1 = new TripleEqualsInvocation("Bob", true)

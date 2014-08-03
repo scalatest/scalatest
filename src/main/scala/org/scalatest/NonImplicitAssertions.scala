@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
 /**
  * Trait that can be mixed into a <code>Suite</code> to disable the lone implicit conversion provided by default in trait

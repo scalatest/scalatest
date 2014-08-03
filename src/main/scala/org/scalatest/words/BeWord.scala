@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic._
-import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.EqualityPolicy.Spread
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.UnquotedString

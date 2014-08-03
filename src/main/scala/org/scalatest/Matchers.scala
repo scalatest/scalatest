@@ -30,10 +30,10 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalactic.Tolerance
 import org.scalactic.Explicitly
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.EqualityPolicy.Spread
+import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalactic.Equality
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
+import org.scalactic.EqualityPolicy.TripleEqualsInvocationOnSpread
 import org.scalactic.Constraint
 import org.scalactic.Prettifier
 import org.scalactic.Every

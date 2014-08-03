@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport.Spread
+import EqualityPolicy.Spread
 
 /**
  * Trait containing an implicit conversion that adds a <code>+-</code> method to <code>Numeric</code> types, which enables
@@ -97,7 +97,7 @@ trait Tolerance {
  * import Tolerance._
  *
  * scala&gt; 1.0 +- 0.1
- * res0: org.scalactic.TripleEqualsSupport.Spread[Double] = Spread(1.0,0.1)
+ * res0: org.scalactic.EqualityPolicy.Spread[Double] = Spread(1.0,0.1)
  * </pre>
  */
 object Tolerance extends Tolerance

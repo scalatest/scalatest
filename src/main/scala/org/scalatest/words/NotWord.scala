@@ -19,8 +19,8 @@ import org.scalatest.matchers._
 import org.scalatest.enablers._
 import scala.collection.GenTraversable
 import org.scalactic._
-import org.scalactic.TripleEqualsSupport.Spread
-import TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.EqualityPolicy.Spread
+import EqualityPolicy.TripleEqualsInvocation
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
@@ -34,8 +34,8 @@ import org.scalatest.Suite.getObjectsForFailureMessage
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.Resources
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.EqualityPolicy.Spread
+import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

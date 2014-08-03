@@ -22,7 +22,7 @@ import scala.language.higherKinds
  * Abstract class used to enforce type constraints for equality checks.
  *
  * <p>
- * For more information on how this class is used, see the documentation of <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+ * For more information on how this class is used, see the documentation of <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
  * </p>
  */
 @implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.EqualityConstraint[${A},${B}]")
@@ -39,7 +39,7 @@ abstract class EqualityConstraint[A, B] { thisConstraint =>
 
 object EqualityConstraint extends LowPriorityEqualityConstraints {
 
-  import TripleEqualsSupport.BasicEqualityConstraint
+  import EqualityPolicy.BasicEqualityConstraint
 
   implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[CA[EA], CB[EB]] = new BasicEqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 

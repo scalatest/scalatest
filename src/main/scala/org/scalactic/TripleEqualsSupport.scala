@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 import enablers.ContainingConstraint
 
 /**
@@ -26,7 +26,7 @@ import enablers.ContainingConstraint
  * The abstract methods of this trait are selectively implemented as implicit by subclasses to enable a spectrum of type constraints for the
  * <code>===</code> and <code>!==</code> operators. As an illustration, if in the expression, <code>a === b</code>, the type of <code>a</code>
  * is <code>A</code> and <code>b</code> is <code>B</code>, the following three levels of compile-time checking can be obtained from
- * <code>TripleEqualsSupport</code> subtraits:
+ * <code>EqualityPolicy</code> subtraits:
  * </p>
  *
  * <p>
@@ -79,7 +79,7 @@ import enablers.ContainingConstraint
  * 
  * @author Bill Venners
  */
-trait TripleEqualsSupport {
+trait EqualityPolicy {
 
   /**
    * Class used via an implicit conversion to enable any two objects to be compared with
@@ -649,10 +649,10 @@ trait TripleEqualsSupport {
   def !==[T](right: Spread[T]): TripleEqualsInvocationOnSpread[T] = new TripleEqualsInvocationOnSpread[T](right, false)
 }
 
-object TripleEqualsSupport {
+object EqualityPolicy {
 
-   // TODO: Will need to deprecate the TripleEqualsSupport.EqualityConstraint name and 
-   // change it to TripleEqualsSupport.BasicConstraint in a pre-3.0 release. Since this is
+   // TODO: Will need to deprecate the EqualityPolicy.EqualityConstraint name and 
+   // change it to EqualityPolicy.BasicConstraint in a pre-3.0 release. Since this is
    // in an object, I think it can just go in a 2.2.x release.
   /**
    * An implementation of <a href="Constraint.html"><code>Constraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
@@ -787,7 +787,7 @@ object TripleEqualsSupport {
    *  
    * <p>
    * Instances of this class are created and returned by the <code>===</code> and <code>!==</code> methods of
-   * trait <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+   * trait <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
    * </p>
    *
    * @param spread the <code>Spread[T]</code> against which to compare the left-hand value
@@ -800,7 +800,7 @@ object TripleEqualsSupport {
    *  
    * <p>
    * Instances of this class are created and returned by the <code>===</code> and <code>!==</code> methods of
-   * trait <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
+   * trait <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
    * </p>
    *
    * @param right the right-hand side value for an equality assertion

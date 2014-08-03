@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import EqualityPolicy._
 
 trait NewTripleEquals extends TypeCheckedTripleEquals with TraversableEqualityConstraints
 

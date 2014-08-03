@@ -582,7 +582,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.EqualityPolicy.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -616,7 +616,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.EqualityPolicy.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -751,7 +751,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.EqualityPolicy.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -785,7 +785,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.EqualityPolicy.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *

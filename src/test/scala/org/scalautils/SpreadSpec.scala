@@ -16,7 +16,7 @@
 package org.scalautils
 
 import org.scalatest._
-import TripleEqualsSupport.Spread
+import org.scalactic.EqualityPolicy.Spread
 
 class SpreadSpec extends Spec {
 
