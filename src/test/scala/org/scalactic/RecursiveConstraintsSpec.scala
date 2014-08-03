@@ -24,11 +24,12 @@ import scala.collection.mutable
 // Going to need to deal with Array more specially at the nested level. Would need to take the Array
 // Equality for the nested one. I think I could do this in general: have special implicits when the
 // contained type is Array, for any and all containers. I think that would fix List[Array[T]] too.
+// Nope, not now that it is recursive, but the TODO is to write tests for that.
 //
 
-class InnerConstraintsSpec extends Spec with Matchers with CheckedEquality {
-  
-  object `Inner constraints should enable equality comparisons` {
+class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
+
+  object `Recursive constraints should enable equality comparisons` {
     def `on Seqs and Arrays` {
       List(1, 2, 3) shouldEqual Vector(1L, 2L, 3L)
       List(1, 2, 3) shouldEqual List(1L, 2L, 3L)

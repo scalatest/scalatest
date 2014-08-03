@@ -49,7 +49,7 @@ class FreshTypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAs
 
   object `the SeqEqualityConstraints trait` {
 
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's have an InnerConstraint` {
+    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's have a recursive EqualityConstraint` {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
 
@@ -63,7 +63,7 @@ class FreshTypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAs
       assertTypeError("List(new Orange, new Orange) === Vector(new Apple, new Apple)")
     }
 
-    def `should allow an Array to be compared with any other Seq, so long as the element types of the two objects have an InnerConstraint` {
+    def `should allow an Array to be compared with any other Seq, so long as the element types of the two objects have a recursive EqualityConstraint` {
       assert(Array(1, 2, 3) === List(1, 2, 3))
       assert(Array(1, 2, 3) === List(1L, 2L, 3L))
       assert(Array(1L, 2L, 3L) === List(1, 2, 3))
@@ -78,7 +78,7 @@ class FreshTypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAs
       assertTypeError("Array(new Orange, new Orange) === Vector(new Apple, new Apple)")
     }
 
-    def `should allow any Seq to be compared with an Array, so long as the element types of the two objects have an InnerConstraint` {
+    def `should allow any Seq to be compared with an Array, so long as the element types of the two objects have a recursive EqualityConstraint` {
       assert(Vector(1, 2, 3) === Array(1, 2, 3))
       assert(Vector(1, 2, 3) === Array(1L, 2L, 3L))
       assert(Vector(1L, 2L, 3L) === Array(1, 2, 3))
