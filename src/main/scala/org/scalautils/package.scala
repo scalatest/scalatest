@@ -186,10 +186,10 @@ package object scalautils {
   val TripleEqualsSupport = org.scalactic.EqualityPolicy
 
   @deprecated("Please use org.scalactic.UncheckedEquality instead.")
-  type TripleEquals = org.scalactic.UncheckedEquality
+  type TripleEquals = org.scalactic.TripleEquals
 
   @deprecated("Please use org.scalactic.UncheckedEquality instead.")
-  val TripleEquals = org.scalactic.UncheckedEquality
+  val TripleEquals = org.scalactic.TripleEquals
 
   @deprecated("Please use org.scalactic.TolerantNumerics instead.")
   type TolerantNumerics = org.scalactic.TolerantNumerics
