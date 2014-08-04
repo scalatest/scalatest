@@ -219,13 +219,6 @@ trait EqualityPolicy {
      * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
     def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
-
-    // TODO: Remove these from here. They should just be on the new one.
-    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      ev.contains(rightSide, leftSide)
-
-    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      !(ev.contains(rightSide, leftSide))
   }
 
   /**

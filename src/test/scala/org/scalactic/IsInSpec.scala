@@ -17,7 +17,8 @@ package org.scalactic
 
 import org.scalatest._
 
-class IsInSpec extends Spec with Matchers with TypeCheckedTripleEquals {
+// TODO: Tests and code for isIn under UncheckedEquality
+class IsInSpec extends Spec with Matchers with CheckedEquality {
 
   object `The IsIn and IsNotIn syntax should` {
     def `allow type checked containership tests` {
