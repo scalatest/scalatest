@@ -39,6 +39,9 @@ class EnabledEqualitySpec extends Spec with Matchers with NonImplicitAssertions 
       new EnabledEquality { """"hi" should not equal (1: Any)""" shouldNot typeCheck }
       new EnabledEquality { """("hi": Any) should not equal 1""" shouldNot typeCheck }
     }
+    def `should allow two Strings to be compared` {
+      new EnabledEquality { "hi" shouldEqual "hi" }
+    }
   }
 }
 

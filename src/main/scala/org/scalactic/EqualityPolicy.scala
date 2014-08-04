@@ -575,6 +575,8 @@ trait EqualityPolicy {
    */
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
+  def enabledIdentityEqualityForType[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledIdentityEquality[A]): EqualityConstraint[A, A]
+
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
    * the &ldquo;<code><em>&lt;left&gt;</em> should === <em>&lt;right&gt;</em></code>&rdquo; syntax
@@ -683,6 +685,17 @@ object EqualityPolicy {
     def areEqual(a: A, b: B): Boolean = equalityOfA.areEqual(a, b)
   }
 
+  final class IdentityEqualityConstraint[A](equivalenceOfA: Equivalence[A]) extends EqualityConstraint[A, A] {
+
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
+     * result of invoking <code>areEqual(a, b)</code> on the passed <code>equalityOfA</code> object.
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     */
+    def areEqual(a: A, b: A): Boolean = equivalenceOfA.areEquivalent(a, b)
+  }
   /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[B]</code>
    * and a conversion function from <code>A</code> to <code>B</code>. 

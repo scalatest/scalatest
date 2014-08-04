@@ -146,6 +146,8 @@ trait UncheckedEquality extends EqualityPolicy {
   override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
   override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
   override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+
+  override def enabledIdentityEqualityForType[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledIdentityEquality[A]): EqualityConstraint[A, A] = new IdentityEqualityConstraint[A](equivalenceOfA)
 }
 
 /**
