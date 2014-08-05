@@ -255,8 +255,8 @@ trait CheckedEquality extends LowPriorityCheckedEqualityConstraints {
 
   // For EnabledEquality
   override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EqualityEnabledFor[A]): EqualityConstraint[A, A] = new EnabledEqualityConstraint[A](equivalenceOfA)
-  override def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
-  override def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
+  implicit override def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
+  implicit override def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
 }
 
 /**
