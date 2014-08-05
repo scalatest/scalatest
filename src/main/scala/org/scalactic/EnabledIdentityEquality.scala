@@ -15,8 +15,8 @@
  */
 package org.scalactic
 
-class EnabledIdentityEquality[A]
+class EqualityEnabledFor[A]
 
-object EnabledIdentityEquality {
-  implicit val strEqEn: EnabledIdentityEquality[String] = new EnabledIdentityEquality[String]
+object EqualityEnabledFor {
+  implicit val strEqEn: EqualityEnabledFor[String] = new EqualityEnabledFor[String]
 }

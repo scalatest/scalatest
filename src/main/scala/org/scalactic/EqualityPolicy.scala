@@ -575,7 +575,7 @@ trait EqualityPolicy {
    */
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
-  def enabledIdentityEqualityForType[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledIdentityEquality[A]): EqualityConstraint[A, A]
+  def enabledIdentityEqualityForType[A](implicit equivalenceOfA: Equivalence[A], ev: EqualityEnabledFor[A]): EqualityConstraint[A, A]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
