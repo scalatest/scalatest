@@ -138,4 +138,10 @@ object Equivalence {
    * @return a default <code>Equivalence[T]</code>
    */
   implicit def default[T]: Equivalence[T] = Equality.default[T]
+
+  implicit def recursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] =
+    new Equivalence[Some[E]] {
+      def areEquivalent(a: Some[E], b: Some[E]): Boolean = equivalenceOfE.areEquivalent(a.get, b.get)
+    }
+
 }

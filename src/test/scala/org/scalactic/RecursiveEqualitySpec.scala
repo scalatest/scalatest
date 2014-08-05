@@ -18,5 +18,18 @@ package org.scalactic
 import org.scalatest._
 
 class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
+  object `An Option` {
+    def `should do recursive equality under the new policies` {
+      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      new UncheckedEquality { Some("hi") shouldEqual Some("HI") }
+      new CheckedEquality { Some("hi") shouldEqual Some("HI") }
+      new EnabledEquality { Some("hi") shouldEqual Some("HI") }
+    }
+    def `should NOT do recursive equality under the old, deprecated policies` {
+      new TripleEquals { Some("hi") should not equal Some("HI") }
+      new TypeCheckedTripleEquals { Some("hi") should not equal Some("HI") }
+      new ConversionCheckedTripleEquals { Some("hi") should not equal Some("HI") }
+    }
+  }
 }
 

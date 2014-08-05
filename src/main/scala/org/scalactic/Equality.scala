@@ -245,6 +245,15 @@ object Equality {
     }
   }
 
+  implicit def recursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] =
+    new Equality[Some[E]] {
+      def areEqual(a: Some[E], b: Any): Boolean =
+        b match {
+          case Some(bEle) => equalityOfE.areEqual(a.get, bEle)
+          case _ => false
+        }
+    }
+
   /**
    * Provides default <code>Equality</code> implementations for the specified type whose
    * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
