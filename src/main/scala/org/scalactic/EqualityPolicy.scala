@@ -575,7 +575,10 @@ trait EqualityPolicy {
    */
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
-  def enabledIdentityEqualityForType[A](implicit equivalenceOfA: Equivalence[A], ev: EqualityEnabledFor[A]): EqualityConstraint[A, A]
+  // For EnabledEquality
+  def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EqualityEnabledFor[A]): EqualityConstraint[A, A]
+  def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]): EqualityConstraint[A, B]
+  def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]): EqualityConstraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
@@ -685,7 +688,7 @@ object EqualityPolicy {
     def areEqual(a: A, b: B): Boolean = equalityOfA.areEqual(a, b)
   }
 
-  final class IdentityEqualityConstraint[A](equivalenceOfA: Equivalence[A]) extends EqualityConstraint[A, A] {
+  final class EnabledEqualityConstraint[A](equivalenceOfA: Equivalence[A]) extends EqualityConstraint[A, A] {
 
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
@@ -696,6 +699,7 @@ object EqualityPolicy {
      */
     def areEqual(a: A, b: A): Boolean = equivalenceOfA.areEquivalent(a, b)
   }
+
   /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[B]</code>
    * and a conversion function from <code>A</code> to <code>B</code>. 
@@ -742,6 +746,14 @@ object EqualityPolicy {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
+  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]) extends EqualityConstraint[A, B] {
+    override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
+  }
+  
+  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]) extends EqualityConstraint[A, B] {
+    override def areEqual(a: A, b: B): Boolean = equivalenceOfA.areEquivalent(a, cnv(b))
+  }
+
   /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code>
    * and a conversion function from <code>B</code> to <code>A</code>. 
