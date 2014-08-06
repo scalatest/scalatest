@@ -1105,6 +1105,93 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual("woof", "meow"))
     }
 
+    it("should compile when used with org == xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |require(org == "test")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |require(org === "test")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |  it("testing here") {
+          |    val org = "test"
+          |    require(org === "test")
+          |  }
+          |}
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class Test {
+          |  def aCustomMethod: Boolean = true
+          |}
+          |val org = new Test
+          |require(org.aCustomMethod)
+        """.stripMargin)
+    }
+
+    it("should compile when used with !org that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = false
+          |require(!org)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isEmpty that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.isEmpty)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.isInstanceOf[String])
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.size == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = Array.empty[String]
+          |require(org.size == 0)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.length == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.length == 0)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+      assertCompiles(
+        """
+          |val org = "abc"
+          |require(org.exists(_ == 'b'))
+        """.stripMargin)
+    }
+
   }
 
   describe("The require(boolean, clue) method") {
@@ -2092,6 +2179,93 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual("woof", "meow") + ", dude")
     }
 
+    it("should compile when used with org == xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |require(org == "test", ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |require(org === "test", ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |  it("testing here") {
+          |    val org = "test"
+          |    require(org === "test", ", dude")
+          |  }
+          |}
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class Test {
+          |  def aCustomMethod: Boolean = true
+          |}
+          |val org = new Test
+          |require(org.aCustomMethod, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with !org that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = false
+          |require(!org, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isEmpty that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.isEmpty, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.isInstanceOf[String], ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.size == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = Array.empty[String]
+          |require(org.size == 0, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.length == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |require(org.length == 0, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+      assertCompiles(
+        """
+          |val org = "abc"
+          |require(org.exists(_ == 'b'), ", dude")
+        """.stripMargin)
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -3037,6 +3211,93 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(woof { meow(y = 5) } == "meow")
       }
       assert(e.getMessage == didNotEqual("woof", "meow"))
+    }
+
+    it("should compile when used with org == xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |requireState(org == "test")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |requireState(org === "test")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |  it("testing here") {
+          |    val org = "test"
+          |    requireState(org === "test")
+          |  }
+          |}
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class Test {
+          |  def aCustomMethod: Boolean = true
+          |}
+          |val org = new Test
+          |requireState(org.aCustomMethod)
+        """.stripMargin)
+    }
+
+    it("should compile when used with !org that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = false
+          |requireState(!org)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isEmpty that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.isEmpty)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.isInstanceOf[String])
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.size == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = Array.empty[String]
+          |requireState(org.size == 0)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.length == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.length == 0)
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+      assertCompiles(
+        """
+          |val org = "abc"
+          |requireState(org.exists(_ == 'b'))
+        """.stripMargin)
     }
 
   }
@@ -4026,6 +4287,93 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual("woof", "meow") + ", dude")
     }
 
+    it("should compile when used with org == xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |requireState(org == "test", ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |requireState(org === "test", ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |  it("testing here") {
+          |    val org = "test"
+          |    requireState(org === "test", ", dude")
+          |  }
+          |}
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |class Test {
+          |  def aCustomMethod: Boolean = true
+          |}
+          |val org = new Test
+          |requireState(org.aCustomMethod, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with !org that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = false
+          |requireState(!org, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isEmpty that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.isEmpty, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.isInstanceOf[String], ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.size == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = Array.empty[String]
+          |requireState(org.size == 0, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.length == 0 that shadow org.scalactic") {
+      assertCompiles(
+        """
+          |val org = ""
+          |requireState(org.length == 0, ", dude")
+        """.stripMargin)
+    }
+
+    it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+      assertCompiles(
+        """
+          |val org = "abc"
+          |requireState(org.exists(_ == 'b'), ", dude")
+        """.stripMargin)
+    }
+
   }
 
   describe("The requireNonNull(...) method") {
@@ -4091,6 +4439,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireNonNull(prefix, returnNull, suffix)
       }
       assert(e.getMessage == "returnNull was null")
+    }
+
+    it("should compile correctly when variable with name 'org' is passed in") {
+      assertCompiles(
+        """
+          |val org = "test"
+          |requireNonNull(org)
+        """.stripMargin
+      )
     }
 
   }

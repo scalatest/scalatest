@@ -81,7 +81,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       Select(
         Select(
           Select(
-            Ident(newTermName("org")),
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
             newTermName("scalatest")
           ),
           newTermName("DiagrammedExpr")
@@ -138,7 +141,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
               newTermName("scalatest")
             ),
             newTermName("DiagrammedExpr")
@@ -266,7 +272,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
               newTermName("scalatest")
             ),
             newTermName("DiagrammedExpr")

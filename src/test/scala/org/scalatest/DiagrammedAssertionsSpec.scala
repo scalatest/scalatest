@@ -2357,6 +2357,93 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
+
+      it("should compile when used with org == xxx that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assert(org == "test")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assert(org === "test")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |  it("testing here") {
+            |    val org = "test"
+            |    assert(org === "test")
+            |  }
+            |}
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class Test {
+            |  def aCustomMethod: Boolean = true
+            |}
+            |val org = new Test
+            |assert(org.aCustomMethod)
+          """.stripMargin)
+      }
+
+      it("should compile when used with !org that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = false
+            |assert(!org)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isEmpty that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.isEmpty)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.isInstanceOf[String])
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.size == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = Array.empty[String]
+            |assert(org.size == 0)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.length == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.length == 0)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "abc"
+            |assert(org.exists(_ == 'b'))
+          """.stripMargin)
+      }
     }
 
     describe("The assert(boolean, clue) method") {
@@ -4615,6 +4702,93 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
               |""".stripMargin
           )
         )
+      }
+
+      it("should compile when used with org == xxx that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assert(org == "test", "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assert(org === "test", "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |  it("testing here") {
+            |    val org = "test"
+            |    assert(org === "test", "this is a clue")
+            |  }
+            |}
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class Test {
+            |  def aCustomMethod: Boolean = true
+            |}
+            |val org = new Test
+            |assert(org.aCustomMethod, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with !org that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = false
+            |assert(!org, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isEmpty that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.isEmpty, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.isInstanceOf[String], "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.size == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = Array.empty[String]
+            |assert(org.size == 0, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.length == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assert(org.length == 0, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "abc"
+            |assert(org.exists(_ == 'b'), "this is a clue")
+          """.stripMargin)
       }
     }
 
@@ -6875,6 +7049,93 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           )
         )
       }
+
+      it("should compile when used with org == xxx that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assume(org == "test")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assume(org === "test")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |  it("testing here") {
+            |    val org = "test"
+            |    assume(org === "test")
+            |  }
+            |}
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class Test {
+            |  def aCustomMethod: Boolean = true
+            |}
+            |val org = new Test
+            |assume(org.aCustomMethod)
+          """.stripMargin)
+      }
+
+      it("should compile when used with !org that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = false
+            |assume(!org)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isEmpty that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.isEmpty)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.isInstanceOf[String])
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.size == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = Array.empty[String]
+            |assume(org.size == 0)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.length == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.length == 0)
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "abc"
+            |assume(org.exists(_ == 'b'))
+          """.stripMargin)
+      }
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9133,6 +9394,93 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
               |""".stripMargin
           )
         )
+      }
+
+      it("should compile when used with org == xxx that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assume(org == "test", "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = "test"
+            |assume(org === "test", "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |  it("testing here") {
+            |    val org = "test"
+            |    assume(org === "test", "this is a clue")
+            |  }
+            |}
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |class Test {
+            |  def aCustomMethod: Boolean = true
+            |}
+            |val org = new Test
+            |assume(org.aCustomMethod, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with !org that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = false
+            |assume(!org, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isEmpty that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.isEmpty, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.isInstanceOf that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.isInstanceOf[String], "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.size == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = Array.empty[String]
+            |assume(org.size == 0, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.length == 0 that shadow org.scalactic") {
+        assertCompiles(
+          """
+            |val org = ""
+            |assume(org.length == 0, "this is a clue")
+          """.stripMargin)
+      }
+
+      it("should compile when used with org.exists(_ == 'b') that shadow org.scalactic ") {
+        assertCompiles(
+          """
+            |val org = "abc"
+            |assume(org.exists(_ == 'b'), "this is a clue")
+          """.stripMargin)
       }
     }
 
