@@ -226,7 +226,7 @@ import EqualityPolicy._
  * 
  * @author Bill Venners
  */
-trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint {
+trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint with BackwardsCompatibility {
 
   import scala.language.implicitConversions
 

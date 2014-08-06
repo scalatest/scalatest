@@ -120,7 +120,7 @@ import EqualityPolicy._
  * @author Bill Venners
  */
 @deprecated("Please use org.scalactic.UncheckedEquality instead.")
-trait TripleEquals extends EqualityPolicy {
+trait TripleEquals extends EqualityPolicy with BackwardsCompatibility {
 
   import scala.language.implicitConversions
 

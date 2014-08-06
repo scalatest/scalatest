@@ -19,8 +19,8 @@ import org.scalatest._
 
 class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
   object `An Option` {
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
     def `should do recursive equality under the new policies` {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
       new UncheckedEquality { Some("hi") shouldEqual Some("HI") }
       new CheckedEquality { Some("hi") shouldEqual Some("HI") }
       new EnabledEquality { Some("hi") shouldEqual Some("HI") }
