@@ -42,14 +42,6 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 
   import EqualityPolicy.BasicEqualityConstraint
 
-  implicit def conflictingEmptySeqConstraint1[LSEQ[e] <: scala.collection.GenSeq[e], RSEQ[e] <: scala.collection.GenSeq[e]]: EqualityConstraint[LSEQ[Nothing], RSEQ[Nothing]] =
-    new BasicEqualityConstraint[LSEQ[Nothing], RSEQ[Nothing]](Equality.default[LSEQ[Nothing]])
-  implicit def conflictingEmptySeqConstraint2[LSEQ[e] <: scala.collection.GenSeq[e], RSEQ[e] <: scala.collection.GenSeq[e]]: EqualityConstraint[LSEQ[Nothing], RSEQ[Nothing]] =
-    new BasicEqualityConstraint[LSEQ[Nothing], RSEQ[Nothing]](Equality.default[LSEQ[Nothing]])
-
-  implicit def emptySeqOnLeftEqualityConstraint[CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[Nothing]]): EqualityConstraint[CA[Nothing], CB[EB]] = new BasicEqualityConstraint[CA[Nothing], CB[EB]](equalityOfA)
-  implicit def emptySeqOnRightEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]]): EqualityConstraint[CA[EA], CB[Nothing]] = new BasicEqualityConstraint[CA[EA], CB[Nothing]](equalityOfA)
-
   implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[CA[EA], CB[EB]] = new BasicEqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 
   implicit def arrayOnLeftEqualityConstraint[EA, CA[ea] <: Array[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[CA[EA], CB[EB]] = new BasicEqualityConstraint[CA[EA], CB[EB]](equalityOfA)

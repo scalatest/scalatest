@@ -123,13 +123,17 @@ trait UncheckedEquality extends EqualityPolicy {
 
   import scala.language.implicitConversions
 
+  // Backwards compatibility
+  override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
+
   // Inherit the Scaladoc for these methods
 
   implicit override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
   override def convertToFreshCheckingEqualizer[T](left: T): FreshCheckingEqualizer[T] = new FreshCheckingEqualizer(left)
 
-  implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
+  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
   implicit override def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
   override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)

@@ -120,9 +120,13 @@ import EqualityPolicy._
  * @author Bill Venners
  */
 @deprecated("Please use org.scalactic.UncheckedEquality instead.")
-trait TripleEquals extends EqualityPolicy with BackwardsCompatibility {
+trait TripleEquals extends EqualityPolicy {
 
   import scala.language.implicitConversions
+
+  // Backwards compatibility
+  implicit override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  implicit override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
 
   // Inherit the Scaladoc for these methods
 

@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import Matchers._
-import UncheckedEquality._
+import TripleEquals._
 
 class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Tolerance {
 

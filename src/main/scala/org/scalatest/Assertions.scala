@@ -18,7 +18,7 @@ package org.scalatest
 import exceptions.TestCanceledException
 import scala.reflect.Manifest
 import Assertions.areEqualComparingArraysStructurally
-import org.scalactic.UncheckedEquality
+import org.scalactic.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
@@ -377,7 +377,7 @@ import org.scalactic.{Prettifier, Bool}
  *
  * @author Bill Venners
  */
-trait Assertions extends UncheckedEquality {
+trait Assertions extends TripleEquals {
 
   import language.experimental.macros
 

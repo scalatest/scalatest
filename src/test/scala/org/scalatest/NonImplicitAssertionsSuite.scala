@@ -30,7 +30,7 @@ class NonImplicitAssertionsSuite extends FunSuite with NonImplicitAssertions {
     assertResult("Expected 2, but got 3") { thrown.getMessage }
   }
   test("TripleEquals won't work if mixed in after NonImplicitAssertions, because of trait linearization. It appears earlier than NonImplicitAsssertions.") {
-    class MySpec extends Spec with NonImplicitAssertions with UncheckedEquality {
+    class MySpec extends Spec with NonImplicitAssertions with TripleEquals {
      assertTypeError("1 === 1")
     }
   }

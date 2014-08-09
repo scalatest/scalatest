@@ -226,9 +226,13 @@ import EqualityPolicy._
  * 
  * @author Bill Venners
  */
-trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint with BackwardsCompatibility {
+trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint {
 
   import scala.language.implicitConversions
+
+  // Backwards compatibility
+  implicit override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  implicit override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
 
   // Inherit the Scaladoc for these methods
 

@@ -143,5 +143,4 @@ object Equivalence {
     new Equivalence[Some[E]] {
       def areEquivalent(a: Some[E], b: Some[E]): Boolean = equivalenceOfE.areEquivalent(a.get, b.get)
     }
-
 }

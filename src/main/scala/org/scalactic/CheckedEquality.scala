@@ -230,6 +230,10 @@ trait CheckedEquality extends LowPriorityCheckedEqualityConstraints {
 
   import scala.language.implicitConversions
 
+  // Backwards compatibility
+  override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
+
   // Inherit the Scaladoc for these methods
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)

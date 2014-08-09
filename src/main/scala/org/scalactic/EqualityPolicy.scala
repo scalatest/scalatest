@@ -81,6 +81,10 @@ import enablers.ContainingConstraint
  */
 trait EqualityPolicy {
 
+  // Backwards compatibility 
+  def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]]
+  def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]]
+
   /**
    * Class used via an implicit conversion to enable any two objects to be compared with
    * <code>===</code> and <code>!==</code> with a <code>Boolean</code> result and no enforced type constraint between
