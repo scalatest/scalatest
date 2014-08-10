@@ -317,6 +317,8 @@ trait EqualityPolicy {
    */
   def convertToEqualizer[T](left: T): Equalizer[T]
 
+  def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B]
+
   /**
    * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
    * that result in <code>Boolean</code> and enforce a type constraint.
