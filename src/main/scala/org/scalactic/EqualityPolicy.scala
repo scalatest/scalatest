@@ -585,9 +585,9 @@ trait EqualityPolicy {
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
   // For EnabledEquality
-  def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EqualityEnabledFor[A]): EqualityConstraint[A, A]
-  def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]): EqualityConstraint[A, B]
-  def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]): EqualityConstraint[A, B]
+  def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A]
+  def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B]
+  def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]): EqualityConstraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
@@ -755,11 +755,11 @@ object EqualityPolicy {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
-  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EqualityEnabledBetween[A, B]) extends EqualityConstraint[A, B] {
+  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]) extends EqualityConstraint[A, B] {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
-  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EqualityEnabledBetween[B, A]) extends EqualityConstraint[A, B] {
+  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]) extends EqualityConstraint[A, B] {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfA.areEquivalent(a, cnv(b))
   }
 

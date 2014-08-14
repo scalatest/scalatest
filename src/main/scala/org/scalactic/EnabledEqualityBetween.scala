@@ -15,8 +15,10 @@
  */
 package org.scalactic
 
-class EqualityEnabledFor[A]
+class EnabledEqualityBetween[A, B](implicit cnv: A => B) {
+  def apply(a: A): B = cnv(a)
+}
 
-object EqualityEnabledFor {
-  implicit val strEqEn: EqualityEnabledFor[String] = new EqualityEnabledFor[String]
+object EnabledEqualityBetween {
+  def apply[A, B](implicit cnv: A => B): EnabledEqualityBetween[A, B] = new EnabledEqualityBetween[A, B]
 }
