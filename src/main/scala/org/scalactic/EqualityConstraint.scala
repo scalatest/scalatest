@@ -149,6 +149,7 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 */
 
   implicit def someOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Some[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Some[EA], Some[EB]] = new BasicEqualityConstraint[Some[EA], Some[EB]](equalityOfA)
+  implicit def optionOnBothSidesEqualityConstraint[EA, EB](implicit equalityOfA: Equality[Option[EA]], ev: EqualityConstraint[EA, EB]): EqualityConstraint[Option[EA], Option[EB]] = new BasicEqualityConstraint[Option[EA], Option[EB]](equalityOfA)
 
   // 1. Try on left, can by subclass of Try on right
   // 2. Try on right, can be subclass of Try on left

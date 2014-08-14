@@ -125,8 +125,11 @@ trait TripleEquals extends EqualityPolicy {
   import scala.language.implicitConversions
 
   // Backwards compatibility
-  implicit override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  implicit override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equivalence.default
   implicit override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
+
+  implicit override def nonRecursiveOptionEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Option[E]] = Equivalence.default
+  implicit override def nonRecursiveOptionEquality[E](implicit equalityOfE: Equality[E]): Equality[Option[E]] = Equality.default
 
   // Inherit the Scaladoc for these methods
 

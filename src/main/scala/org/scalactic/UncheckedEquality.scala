@@ -124,8 +124,11 @@ trait UncheckedEquality extends EqualityPolicy {
   import scala.language.implicitConversions
 
   // Backwards compatibility
-  override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equality.default
+  override def nonRecursiveSomeEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Some[E]] = Equivalence.default
   override def nonRecursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] = Equality.default
+
+  override def nonRecursiveOptionEquivalence[E](implicit equivalenceOfE: Equivalence[E]): Equivalence[Option[E]] = Equivalence.default
+  override def nonRecursiveOptionEquality[E](implicit equalityOfE: Equality[E]): Equality[Option[E]] = Equality.default
 
   // Inherit the Scaladoc for these methods
 
