@@ -19,26 +19,30 @@ import org.scalatest._
 
 class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
   object `An Option` {
+
     implicit val strEq = StringNormalizations.lowerCased.toEquality
-    def `should do recursive equality under the new policies` {
+
+    def `should NOT do recursive equality under the all policies by default` {
+
+      // New policies
       // Both sides Some
-      new UncheckedEquality { Some("hi") shouldEqual Some("HI") }
-      new CheckedEquality { Some("hi") shouldEqual Some("HI") }
-      new EnabledEquality { Some("hi") shouldEqual Some("HI") }
+      new UncheckedEquality { Some("hi") should not equal Some("HI") }
+      new CheckedEquality { Some("hi") should not equal Some("HI") }
+      new EnabledEquality { Some("hi") should not equal Some("HI") }
       // Both sides Option
-      new UncheckedEquality { Option("hi") shouldEqual Option("HI") }
-      new CheckedEquality { Option("hi") shouldEqual Option("HI") }
-      new EnabledEquality { Option("hi") shouldEqual Option("HI") }
+      new UncheckedEquality { Option("hi") should not equal Option("HI") }
+      new CheckedEquality { Option("hi") should not equal Option("HI") }
+      new EnabledEquality { Option("hi") should not equal Option("HI") }
       // Left side Some, right side Option
-      new UncheckedEquality { Some("hi") shouldEqual Option("HI") }
-      new CheckedEquality { Some("hi") shouldEqual Option("HI") }
-      new EnabledEquality { Some("hi") shouldEqual Option("HI") }
+      new UncheckedEquality { Some("hi") should not equal Option("HI") }
+      new CheckedEquality { Some("hi") should not equal Option("HI") }
+      new EnabledEquality { Some("hi") should not equal Option("HI") }
       // Left side Option, right side Some
-      new UncheckedEquality { Option("hi") shouldEqual Some("HI") }
-      new CheckedEquality { Option("hi") shouldEqual Some("HI") }
-      new EnabledEquality { Option("hi") shouldEqual Some("HI") }
-    }
-    def `should NOT do recursive equality under the old, deprecated policies` {
+      new UncheckedEquality { Option("hi") should not equal Some("HI") }
+      new CheckedEquality { Option("hi") should not equal Some("HI") }
+      new EnabledEquality { Option("hi") should not equal Some("HI") }
+
+      // Deprecated policies
       // Both sides Some
       new TripleEquals { Some("hi") should not equal Some("HI") }
       new TypeCheckedTripleEquals { Some("hi") should not equal Some("HI") }
@@ -55,6 +59,46 @@ class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertion
       new TripleEquals { Option("hi") should not equal Some("HI") }
       new TypeCheckedTripleEquals { Option("hi") should not equal Some("HI") }
       new ConversionCheckedTripleEquals { Option("hi") should not equal Some("HI") }
+    }
+    def `should do recursive equality under any policy under RecursiveOptionEquality` {
+
+      import RecursiveOptionEquality._
+
+      // New policies
+      // Both sides Some
+      new UncheckedEquality { Some("hi") shouldEqual Some("HI") }
+      new CheckedEquality { Some("hi") shouldEqual Some("HI") }
+      new EnabledEquality { Some("hi") shouldEqual Some("HI") }
+      // Both sides Option
+      new UncheckedEquality { Option("hi") shouldEqual Option("HI") }
+      new CheckedEquality { Option("hi") shouldEqual Option("HI") }
+      new EnabledEquality { Option("hi") shouldEqual Option("HI") }
+      // Left side Some, right side Option
+      new UncheckedEquality { Some("hi") shouldEqual Option("HI") }
+      new CheckedEquality { Some("hi") shouldEqual Option("HI") }
+      new EnabledEquality { Some("hi") shouldEqual Option("HI") }
+      // Left side Option, right side Some
+      new UncheckedEquality { Option("hi") shouldEqual Some("HI") }
+      new CheckedEquality { Option("hi") shouldEqual Some("HI") }
+      new EnabledEquality { Option("hi") shouldEqual Some("HI") }
+
+      // Deprecated policies
+      // Both sides Some
+      new TripleEquals { Some("hi") shouldEqual Some("HI") }
+      new TypeCheckedTripleEquals { Some("hi") shouldEqual Some("HI") }
+      new ConversionCheckedTripleEquals { Some("hi") shouldEqual Some("HI") }
+      // Both sides Option
+      new TripleEquals { Option("hi") shouldEqual Option("HI") }
+      new TypeCheckedTripleEquals { Option("hi") shouldEqual Option("HI") }
+      new ConversionCheckedTripleEquals { Option("hi") shouldEqual Option("HI") }
+      // Left side Some, right side Option
+      new TripleEquals { Some("hi") shouldEqual Option("HI") }
+      new TypeCheckedTripleEquals { Some("hi") shouldEqual Option("HI") }
+      new ConversionCheckedTripleEquals { Some("hi") shouldEqual Option("HI") }
+      // Left side Option, right side Some
+      new TripleEquals { Option("hi") shouldEqual Some("HI") }
+      new TypeCheckedTripleEquals { Option("hi") shouldEqual Some("HI") }
+      new ConversionCheckedTripleEquals { Option("hi") shouldEqual Some("HI") }
     }
   }
 }
