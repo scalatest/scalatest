@@ -30,6 +30,7 @@ import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic.enablers.Collecting
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -268,13 +269,13 @@ final class ContainWord {
     }
   }
   
-  def theSameElementsAs[R](right: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
+  def theSameElementsAs[R, C](right: C)(implicit collecting: Collecting[R, C]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsTheSameElementsAs(left, right),
+              aggregating.containsTheSameElementsAs(left, collecting.genTraversableFrom(right)),
               Resources("didNotContainSameElements"),
               Resources("containedSameElements"), 
               Vector(left, right)

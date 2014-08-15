@@ -100,6 +100,15 @@ object Collecting {
       def genTraversableFrom(collection: TRAV[E]): GenTraversable[E] = collection
     }
 
+  implicit def collectingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Collecting[(K, V), MAP[K, V]] = 
+    new Collecting[(K, V), MAP[K, V]] {
+      def loneElementOf(trav: MAP[K, V]): Option[(K, V)] = {
+        if (trav.size == 1) Some(trav.head) else None
+      }
+      def sizeOf(trav: MAP[K, V]): Int = trav.size
+      def genTraversableFrom(collection: MAP[K, V]): GenTraversable[(K, V)] = collection
+    }
+
   /**
    * Implicit to support <code>Collecting</code> nature of <code>Array</code>.
    *
@@ -198,5 +207,4 @@ object Collecting {
       def sizeOf(every: EVERY[E]): Int = every.size
       def genTraversableFrom(collection: EVERY[E]): GenTraversable[E] = collection.toVector
     }
-
 }
