@@ -313,7 +313,7 @@ trait EqualityPolicy {
    */
   def convertToEqualizer[T](left: T): Equalizer[T]
 
-  def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B]
+  def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] with Cooperative
 
   /**
    * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
@@ -352,7 +352,7 @@ trait EqualityPolicy {
    */
   def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B]
 
-  def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B]
+  def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with Cooperative
 
   /**
    * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
@@ -464,10 +464,10 @@ trait EqualityPolicy {
    */
   def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B]
 
-  def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B]
-  def convertEquivalenceToAToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B]
-  def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B]
-  def convertEquivalenceToBToAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B]
+  def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] with Cooperative
+  def convertEquivalenceToASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] with Cooperative
+  def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B] with Cooperative
+  def convertEquivalenceToBSubtypeOfAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B] with Cooperative
 
   /**
    * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
@@ -578,7 +578,7 @@ trait EqualityPolicy {
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
   // For EnabledEquality
-  def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A]
+  def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative
   def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B]
   def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]): EqualityConstraint[A, B]
 
@@ -678,7 +678,7 @@ object EqualityPolicy {
    *
    * @param equalityOfA an <code>Equality</code> type class for <code>A</code>
    */
-  final class BasicEqualityConstraint[A, B](equalityOfA: Equality[A]) extends EqualityConstraint[A, B] {
+  final class BasicEqualityConstraint[A, B](equalityOfA: Equality[A]) extends EqualityConstraint[A, B] with Cooperative {
 
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
@@ -690,7 +690,7 @@ object EqualityPolicy {
     def areEqual(a: A, b: B): Boolean = equalityOfA.areEqual(a, b)
   }
 
-  final class EnabledEqualityConstraint[A](equivalenceOfA: Equivalence[A]) extends EqualityConstraint[A, A] {
+  final class EnabledEqualityConstraint[A](equivalenceOfA: Equivalence[A]) extends EqualityConstraint[A, A] with Cooperative {
 
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
@@ -731,7 +731,7 @@ object EqualityPolicy {
    *
    * @param equivalenceOfB an <code>Equivalence</code> type class for <code>B</code>
    */
-  final class AToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: A => B) extends EqualityConstraint[A, B] {
+  final class ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: A <:< B) extends EqualityConstraint[A, B] with Cooperative {
 
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by return the
@@ -785,7 +785,7 @@ object EqualityPolicy {
    *
    * @param equivalenceOfA an <code>Equivalence</code> type class for <code>A</code>
    */
-  final class BToAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: B => A) extends EqualityConstraint[A, B] {
+  final class BSubtypeOfAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: B <:< A) extends EqualityConstraint[A, B] with Cooperative {
   
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the

@@ -236,19 +236,19 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
   override def convertToFreshCheckingEqualizer[T](left: T): FreshCheckingEqualizer[T] = new FreshCheckingEqualizer(left)
 
-  override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] with Cooperative = new BasicEqualityConstraint[A, B](equalityOfA)
 
   override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
 
-  implicit override def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  implicit override def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with Cooperative = new BasicEqualityConstraint[A, B](equalityOfA)
 
   implicit override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
   implicit override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
-  override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equivalenceOfB, ev)
-  override def convertEquivalenceToAToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equivalenceOfB, ev)
-  override def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B] = new BToAEqualityConstraint[A, B](equivalenceOfA, ev)
-  override def convertEquivalenceToBToAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B] = new BToAEqualityConstraint[A, B](equivalenceOfA, ev)
+  override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
+  override def convertEquivalenceToASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
+  override def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B] with Cooperative = new BSubtypeOfAEqualityConstraint[A, B](equivalenceOfA, ev)
+  override def convertEquivalenceToBSubtypeOfAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B] with Cooperative = new BSubtypeOfAEqualityConstraint[A, B](equivalenceOfA, ev)
 
   override def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
   override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
@@ -256,7 +256,7 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
   override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
   // For EnabledEquality
-  override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] = new EnabledEqualityConstraint[A](equivalenceOfA)
+  override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative = new EnabledEqualityConstraint[A](equivalenceOfA)
   override def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
   override def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
 }

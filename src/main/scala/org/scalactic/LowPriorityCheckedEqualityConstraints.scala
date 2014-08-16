@@ -57,9 +57,9 @@ trait LowPriorityCheckedEqualityConstraints extends EqualityPolicy {
   import scala.language.implicitConversions
 
   // Inherit the scaladoc for this method
-  implicit override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equivalenceOfB, ev)
-  implicit override def convertEquivalenceToAToBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equivalenceOfB, ev)
-  implicit override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  implicit override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
+  implicit override def convertEquivalenceToASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
+  implicit override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] with Cooperative = new BasicEqualityConstraint[A, B](equalityOfA)
 
 }
 
