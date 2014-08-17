@@ -20,7 +20,7 @@ import org.scalatest._
 class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
   object `An Option` {
 
-    implicit val enabler = EnabledEqualityBetween[Int, Complex]
+    implicit val enabler = EnabledEqualityConverting[Int, Complex]
 
     def `should only be comparable if a CooperativeEqualityConstraint exists between their element types under Checked- and EnabledEquality` {
 

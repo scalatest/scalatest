@@ -29,18 +29,18 @@ trait RecursiveOptionEquality {
       }
     }
 
-  implicit def someToSomeRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Some[A], Some[B]] =
-    EnabledEqualityBetween(
+  implicit def someToSomeRecursiveEnabledEqualityConverting[A, B](implicit cnv: EnabledEqualityConverting[A, B]): EnabledEqualityConverting[Some[A], Some[B]] =
+    EnabledEqualityConverting(
       (someA: Some[A]) => Some(cnv(someA.get))
     )
 
-  implicit def someToOptionRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Some[A], Option[B]] =
-    EnabledEqualityBetween(
+  implicit def someToOptionRecursiveEnabledEqualityConverting[A, B](implicit cnv: EnabledEqualityConverting[A, B]): EnabledEqualityConverting[Some[A], Option[B]] =
+    EnabledEqualityConverting(
       (someA: Some[A]) => Option(cnv(someA.get))
     )
 
-  implicit def optionToOptionRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Option[A], Option[B]] =
-    EnabledEqualityBetween(
+  implicit def optionToOptionRecursiveEnabledEqualityConverting[A, B](implicit cnv: EnabledEqualityConverting[A, B]): EnabledEqualityConverting[Option[A], Option[B]] =
+    EnabledEqualityConverting(
       (optionA: Option[A]) =>
         optionA match {
           case Some(a) => Some(cnv(a))

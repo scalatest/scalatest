@@ -15,10 +15,10 @@
  */
 package org.scalactic
 
-class EnabledEqualityBetween[A, B](implicit cnv: A => B) {
+class EnabledEqualityConverting[A, B](implicit cnv: A => B) {
   def apply(a: A): B = cnv(a)
 }
 
-object EnabledEqualityBetween {
-  def apply[A, B](implicit cnv: A => B): EnabledEqualityBetween[A, B] = new EnabledEqualityBetween[A, B]
+object EnabledEqualityConverting {
+  def apply[A, B](implicit cnv: A => B): EnabledEqualityConverting[A, B] = new EnabledEqualityConverting[A, B]
 }

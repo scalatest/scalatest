@@ -72,8 +72,8 @@ class EnabledEqualitySpec extends Spec with Matchers with NonImplicitAssertions 
       new EnabledEquality { "seven should not equal 7.0" shouldNot typeCheck }
       new EnabledEquality { "7.0 should not equal seven" shouldNot typeCheck }
     }
-    def `should allow a Double to be compared with a Complex, if an implicit EqualityEnablerBetween[Double, Complex] exists` {
-      implicit val enabler = EnabledEqualityBetween[Double, Complex]
+    def `should allow a Double to be compared with a Complex, if an implicit EqualityEnablerConverting[Double, Complex] exists` {
+      implicit val enabler = EnabledEqualityConverting[Double, Complex]
       val seven = Complex(7.0, 0.0)
       seven should not equal Complex(7.0, 1.0)
       Complex(7.0, 0.0) should equal (seven)

@@ -579,8 +579,8 @@ trait EqualityPolicy {
 
   // For EnabledEquality
   def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative
-  def lowPriorityEnabledEqualityConstraintBetween[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B]
-  def enabledEqualityConstraintBetween[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]): EqualityConstraint[A, B]
+  def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B]
+  def enabledEqualityConstraintConverting[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]): EqualityConstraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
@@ -748,11 +748,11 @@ object EqualityPolicy {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
-  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EnabledEqualityBetween[A, B]) extends EqualityConstraint[A, B] {
+  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]) extends EqualityConstraint[A, B] {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
-  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EnabledEqualityBetween[B, A]) extends EqualityConstraint[A, B] {
+  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]) extends EqualityConstraint[A, B] {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfA.areEquivalent(a, cnv(b))
   }
 
