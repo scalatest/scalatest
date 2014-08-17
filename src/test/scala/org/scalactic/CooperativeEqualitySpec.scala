@@ -41,9 +41,7 @@ class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAsserti
       new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
       "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
       "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      implicit class Asifier[T](o: T) {
-        def as[U](implicit cnv: T => U): U = cnv(o)
-      }
+      import AsMethods._
       new CheckedEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
       "new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
       implicit val enableComplexComparisons = EnabledEqualityFor[Complex]

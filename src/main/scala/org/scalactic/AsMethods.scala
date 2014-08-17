@@ -15,6 +15,53 @@
  */
 package org.scalactic
 
+/*
+      // New policies
+      // Both sides Some
+      new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+      "new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      "new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      // Both sides Option
+      new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+      "new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      "new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      // Left side Some, right side Option
+      new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+      "new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      "new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      // Left side Option, right side Some
+      new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      import AsMethods._
+      new CheckedEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+      "new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      implicit val enableComplexComparisons = EnabledEqualityFor[Complex]
+      new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+
+actually normally you'd do (Given opt, an Option[Int]):
+
+opt.map(_.as[Complex])
+
+Although you can do this:
+
+(42 : Complex)
+
+You can't do this:
+
+opt.map(_: Complex)
+
+Because the compiler gets confused. You could do this:
+
+opt.map(a => a : Complex)
+
+So as just makes that a bit more obvious maybe:
+
+opt.map(_.as[Complex])
+
+Maybe I won't include this as the former isn't too bad.
+
+*/
 trait AsMethods {
 
   implicit final class Asifier[T](o: T) {
