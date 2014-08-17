@@ -26,79 +26,368 @@ class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertion
 
       // New policies
       // Both sides Some
-      new UncheckedEquality { Some("hi") should not equal Some("HI") }
-      new CheckedEquality { Some("hi") should not equal Some("HI") }
-      new EnabledEquality { Some("hi") should not equal Some("HI") }
+      new UncheckedEquality {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
+      new CheckedEquality {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
+      new EnabledEquality {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
       // Both sides Option
-      new UncheckedEquality { Option("hi") should not equal Option("HI") }
-      new CheckedEquality { Option("hi") should not equal Option("HI") }
-      new EnabledEquality { Option("hi") should not equal Option("HI") }
+      new UncheckedEquality {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
+      new CheckedEquality {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
+      new EnabledEquality {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
       // Left side Some, right side Option
-      new UncheckedEquality { Some("hi") should not equal Option("HI") }
-      new CheckedEquality { Some("hi") should not equal Option("HI") }
-      new EnabledEquality { Some("hi") should not equal Option("HI") }
+      new UncheckedEquality {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
+      new CheckedEquality {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
+      new EnabledEquality {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
       // Left side Option, right side Some
-      new UncheckedEquality { Option("hi") should not equal Some("HI") }
-      new CheckedEquality { Option("hi") should not equal Some("HI") }
-      new EnabledEquality { Option("hi") should not equal Some("HI") }
+      new UncheckedEquality {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
+      new CheckedEquality {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
+      new EnabledEquality {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
 
       // Deprecated policies
       // Both sides Some
-      new TripleEquals { Some("hi") should not equal Some("HI") }
-      new TypeCheckedTripleEquals { Some("hi") should not equal Some("HI") }
-      new ConversionCheckedTripleEquals { Some("hi") should not equal Some("HI") }
+      new TripleEquals {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Some("hi") should not equal Some("HI")
+        Some(Some("hi")) should not equal Some(Some("HI"))
+        Option(Some("hi")) should not equal Option(Some("HI"))
+        Some(Some("hi")) should not equal Option(Some("HI"))
+        Option(Some("hi")) should not equal Some(Some("HI"))
+      }
       // Both sides Option
-      new TripleEquals { Option("hi") should not equal Option("HI") }
-      new TypeCheckedTripleEquals { Option("hi") should not equal Option("HI") }
-      new ConversionCheckedTripleEquals { Option("hi") should not equal Option("HI") }
+      new TripleEquals {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Option("hi") should not equal Option("HI")
+        Some(Option("hi")) should not equal Some(Option("HI"))
+        Option(Option("hi")) should not equal Option(Option("HI"))
+        Some(Option("hi")) should not equal Option(Option("HI"))
+        Option(Option("hi")) should not equal Some(Option("HI"))
+      }
       // Left side Some, right side Option
-      new TripleEquals { Some("hi") should not equal Option("HI") }
-      new TypeCheckedTripleEquals { Some("hi") should not equal Option("HI") }
-      new ConversionCheckedTripleEquals { Some("hi") should not equal Option("HI") }
+      new TripleEquals {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Some("hi") should not equal Option("HI")
+        Some(Some("hi")) should not equal Some(Option("HI"))
+        Option(Some("hi")) should not equal Option(Option("HI"))
+        Some(Some("hi")) should not equal Option(Option("HI"))
+        Option(Some("hi")) should not equal Some(Option("HI"))
+      }
       // Left side Option, right side Some
-      new TripleEquals { Option("hi") should not equal Some("HI") }
-      new TypeCheckedTripleEquals { Option("hi") should not equal Some("HI") }
-      new ConversionCheckedTripleEquals { Option("hi") should not equal Some("HI") }
+      new TripleEquals {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Option("hi") should not equal Some("HI")
+        Some(Option("hi")) should not equal Some(Some("HI"))
+        Option(Option("hi")) should not equal Option(Some("HI"))
+        Some(Option("hi")) should not equal Option(Some("HI"))
+        Option(Option("hi")) should not equal Some(Some("HI"))
+      }
     }
+
     def `should do recursive equality under any policy under RecursiveOptionEquality` {
 
       import RecursiveOptionEquality._
 
       // New policies
       // Both sides Some
-      new UncheckedEquality { Some("hi") shouldEqual Some("HI") }
-      new CheckedEquality { Some("hi") shouldEqual Some("HI") }
-      new EnabledEquality { Some("hi") shouldEqual Some("HI") }
+      new UncheckedEquality {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
+      new CheckedEquality {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
+      new EnabledEquality {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
       // Both sides Option
-      new UncheckedEquality { Option("hi") shouldEqual Option("HI") }
-      new CheckedEquality { Option("hi") shouldEqual Option("HI") }
-      new EnabledEquality { Option("hi") shouldEqual Option("HI") }
+      new UncheckedEquality {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
+      new CheckedEquality {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
+      new EnabledEquality {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
       // Left side Some, right side Option
-      new UncheckedEquality { Some("hi") shouldEqual Option("HI") }
-      new CheckedEquality { Some("hi") shouldEqual Option("HI") }
-      new EnabledEquality { Some("hi") shouldEqual Option("HI") }
+      new UncheckedEquality {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
+      new CheckedEquality {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
+      new EnabledEquality {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
       // Left side Option, right side Some
-      new UncheckedEquality { Option("hi") shouldEqual Some("HI") }
-      new CheckedEquality { Option("hi") shouldEqual Some("HI") }
-      new EnabledEquality { Option("hi") shouldEqual Some("HI") }
+      new UncheckedEquality {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
+      new CheckedEquality {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
+      new EnabledEquality {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
 
       // Deprecated policies
       // Both sides Some
-      new TripleEquals { Some("hi") shouldEqual Some("HI") }
-      new TypeCheckedTripleEquals { Some("hi") shouldEqual Some("HI") }
-      new ConversionCheckedTripleEquals { Some("hi") shouldEqual Some("HI") }
+      new TripleEquals {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Some("hi") shouldEqual Some("HI")
+        Some(Some("hi")) shouldEqual Some(Some("HI"))
+        Option(Some("hi")) shouldEqual Option(Some("HI"))
+        Some(Some("hi")) shouldEqual Option(Some("HI"))
+        Option(Some("hi")) shouldEqual Some(Some("HI"))
+      }
       // Both sides Option
-      new TripleEquals { Option("hi") shouldEqual Option("HI") }
-      new TypeCheckedTripleEquals { Option("hi") shouldEqual Option("HI") }
-      new ConversionCheckedTripleEquals { Option("hi") shouldEqual Option("HI") }
+      new TripleEquals {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Option("hi") shouldEqual Option("HI")
+        Some(Option("hi")) shouldEqual Some(Option("HI"))
+        Option(Option("hi")) shouldEqual Option(Option("HI"))
+        Some(Option("hi")) shouldEqual Option(Option("HI"))
+        Option(Option("hi")) shouldEqual Some(Option("HI"))
+      }
       // Left side Some, right side Option
-      new TripleEquals { Some("hi") shouldEqual Option("HI") }
-      new TypeCheckedTripleEquals { Some("hi") shouldEqual Option("HI") }
-      new ConversionCheckedTripleEquals { Some("hi") shouldEqual Option("HI") }
+      new TripleEquals {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Some("hi") shouldEqual Option("HI")
+        Some(Some("hi")) shouldEqual Some(Option("HI"))
+        Option(Some("hi")) shouldEqual Option(Option("HI"))
+        Some(Some("hi")) shouldEqual Option(Option("HI"))
+        Option(Some("hi")) shouldEqual Some(Option("HI"))
+      }
       // Left side Option, right side Some
-      new TripleEquals { Option("hi") shouldEqual Some("HI") }
-      new TypeCheckedTripleEquals { Option("hi") shouldEqual Some("HI") }
-      new ConversionCheckedTripleEquals { Option("hi") shouldEqual Some("HI") }
+      new TripleEquals {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
+      new TypeCheckedTripleEquals {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
+      new ConversionCheckedTripleEquals {
+        Option("hi") shouldEqual Some("HI")
+        Some(Option("hi")) shouldEqual Some(Some("HI"))
+        Option(Option("hi")) shouldEqual Option(Some("HI"))
+        Some(Option("hi")) shouldEqual Option(Some("HI"))
+        Option(Option("hi")) shouldEqual Some(Some("HI"))
+      }
     }
   }
 }

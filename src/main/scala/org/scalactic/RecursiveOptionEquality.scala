@@ -15,25 +15,38 @@
  */
 package org.scalactic
 
-trait RecursiveOptionEquality {
-  implicit def recursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] =
-    new Equality[Some[E]] {
-      def areEqual(a: Some[E], b: Any): Boolean =
-        b match {
-          case Some(bEle) => equalityOfE.areEqual(a.get, bEle)
-          case _ => false
-        }
-    }
+import scala.language.higherKinds
 
-  implicit def recursiveOptionEquality[E](implicit equalityOfE: Equality[E]): Equality[Option[E]] =
-    new Equality[Option[E]] {
-      def areEqual(a: Option[E], b: Any): Boolean =
+trait RecursiveOptionEquality {
+
+  implicit def recursiveOptionEquality[E, OPT[e] <: Option[e]](implicit equalityOfE: Equality[E]): Equality[OPT[E]] =
+    new Equality[OPT[E]] {
+      def areEqual(a: OPT[E], b: Any): Boolean = {
         (a, b) match {
           case (Some(aEle), Some(bEle)) => equalityOfE.areEqual(aEle, bEle)
-          case (None, None) => true
-          case _ => false
+          case _ => a == b // false should work here, because None on the left won't match this implicit because of element type Nothing, but just in case, will ask ==
         }
+      }
     }
+
+  implicit def someToSomeRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Some[A], Some[B]] =
+    EnabledEqualityBetween(
+      (someA: Some[A]) => Some(cnv(someA.get))
+    )
+
+  implicit def someToOptionRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Some[A], Option[B]] =
+    EnabledEqualityBetween(
+      (someA: Some[A]) => Option(cnv(someA.get))
+    )
+
+  implicit def optionToOptionRecursiveEnabledEqualityBetween[A, B](implicit cnv: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[Option[A], Option[B]] =
+    EnabledEqualityBetween(
+      (optionA: Option[A]) =>
+        optionA match {
+          case Some(a) => Some(cnv(a))
+          case None => None
+        }
+    )
 }
 
 object RecursiveOptionEquality extends RecursiveOptionEquality
