@@ -19,4 +19,6 @@ class EnabledEqualityFor[A]
 
 object EnabledEqualityFor {
   implicit val strEqEn: EnabledEqualityFor[String] = new EnabledEqualityFor[String]
+  def apply[A]: EnabledEqualityFor[A] = new EnabledEqualityFor[A]
 }
+
