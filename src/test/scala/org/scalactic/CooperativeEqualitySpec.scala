@@ -68,9 +68,9 @@ class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAsserti
         new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
       }
   
-      def `should be comparable under Checked- and EnabledEquality if also under RecursiveOptionEquality` {
+      def `should be comparable under Checked- and EnabledEquality if also under EnabledEqualityConvertingOptions` {
   
-        import RecursiveOptionEquality._
+        import EnabledEqualityConvertingOptions._
   
         // New policies
         // Both sides Some
