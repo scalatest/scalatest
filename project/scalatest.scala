@@ -10,8 +10,8 @@ object ScalatestBuild extends Build {
 
   val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.2.1"
-  val githubTag = "release-2.2.1-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.2-SNAPSHOT"
+  val githubTag = "release-2.2.2-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -231,7 +231,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
-        "org.scalactic"
+        "org.scalactic",
+        "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
