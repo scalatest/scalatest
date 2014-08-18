@@ -47,6 +47,10 @@ trait RecursiveOptionEquality {
           case None => None
         }
     )
+
+  implicit def optionToOptionRecursiveEnabledEqualityBetween[A, OPTA[a] <: Option[a], B, OPTB[b] <: Option[b]](implicit ev: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[OPTA[A], OPTB[B]] =
+      EnabledEqualityBetween[OPTA[A], OPTB[B]]
+
 }
 
 object RecursiveOptionEquality extends RecursiveOptionEquality

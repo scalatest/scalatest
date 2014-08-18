@@ -19,20 +19,20 @@ import EqualityPolicy._
 
 /**
  * Provides <code>===</code> and <code>!==</code> operators that return <code>Boolean</code>, delegate the equality determination
- * to an <code>Equality</code> type class, and require that either the types of the two values compared are in a subtype/supertype
- * relationship, or that an implicit conversion is available that can convert from one type to the other.
- * 
+ * to an <code>Equality</code> type class, and require the types of the two values compared to be in a subtype/supertype
+ * relationship.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Trait <code>ConversionCheckedTripleEquals</code> is useful (in both production and test code) when you need determine equality for a type of object differently than
- * its <code>equals</code>
+ * Trait <code>TypeCheckedTripleEquals</code> is useful (in both production and test code) when you need determine equality for a type of object differently
+ * than its <code>equals</code>
  * method&#8212;either you can't change the <code>equals</code> method, or the <code>equals</code> method is sensible generally, but you're in a special situation where you
- * need something else&#8212;and/or you want a compile-time type check that allows types that are implicitly convertable in either (or both) directions.
+ * need something else&#8212;and/or you want to enforce at compile-time that the types of the compared values are in a subtype/supertype relationship.
  * </td></tr></table>
  *
  * <p>
- * This trait is the middle ground of the three <em>triple equals</em> traits, in between
- * <code>TripleEquals</code>, the most lenient, and <code>TypeCheckedTripleEquals</code>, the most strict.
+ * This trait is the strictest of the three <em>triple equals</em> traits, enforcing a stronger constraint than
+ * both <code>TripleEquals</code> (the most lenient) and <code>ConversionCheckedTripleEquals</code> (the middle ground).
  * If <code>TripleEquals</code> is mixed in or imported, the <code>===</code> can be used with any two types
  * and still compile. If <code>TypeCheckedTripleEquals</code> is mixed in or imported, however, only types in 
  * a subtype or supertype relationship with each other (including when both types are exactly the same) will compile.
@@ -92,7 +92,7 @@ import EqualityPolicy._
  * 
  * <p>
  * This trait will override or hide implicit methods defined by its sibling traits,
- * <a href="TripleEquals.html"><code>TripleEquals</code></a> or <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>,
+ * <a href="TripleEquals.html"><code>TripleEquals</code></a> or <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>,
  * and can therefore be used to temporarily turn on or off conversion checking in a limited scope. Here's an example, in which <code>TypeCheckedTripleEquals</code> will
  * cause a compiler error:
  * </p>
@@ -176,7 +176,7 @@ import EqualityPolicy._
  * In short, you should be able to select a primary constraint level via either a mixin or import, then change that in nested scopes
  * however you want, again either through a mixin or import, without getting any implicit conversion ambiguity. The innermost constraint level in scope
  * will always be in force.
- * <p>
+ * </p>
  *
  * <p>
  * An alternative way to solve an unwanted compiler error caused by an over-zealous type constraint is with a <em>widening type ascription</em>. Here
@@ -187,101 +187,51 @@ import EqualityPolicy._
  * scala&gt; import org.scalactic._
  * import org.scalactic._
  *
- * scala&gt; import ConversionCheckedTripleEquals._
- * import ConversionCheckedTripleEquals._
+ * scala&gt; import TypeCheckedTripleEquals._
+ * import TypeCheckedTripleEquals._
  *
- * scala&gt; List(1, 2, 3) === Vector(1, 2, 3)
- * &lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[List[Int],scala.collection.immutable.Vector[Int]]
- *               List(1, 2, 3) === Vector(1, 2, 3)
- *                             ^
+ * scala&gt; 1 === 1L
+ * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[Int,Long]
+ *               1 === 1L
+ *                 ^
  * </pre>
  *
  * <p>
- * Although you could solve the above type error with <a href="TraversableEqualityConstraints.html"><code>TraversableEqualityConstraints</code></a>, you could also
+ * Although you could solve the above type error with <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, you could also
  * simply widen the type of one side or the other to <code>Any</code>. Because <code>Any</code> is a supertype of everything, the
  * type constraint will be satisfied:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Any)
+ * scala&gt; 1 === (1L: Any)
  * res1: Boolean = true
- *
- * scala&gt; (List(1, 2, 3): Any) === Vector(1, 2, 3)
+ * 
+ * scala&gt; (1: Any) === 1L
  * res2: Boolean = true
  * </pre>
  *
  * <p>
- * You could alternatively widen a type to a more specific common supertype than <code>Any</code>. For example, since <code>List[Int]</code> and
- * <code>Vector[Int]</code> are both subtypes of <code>Seq[Int]</code>, so you could widen either type to <code>Seq[Int]</code> to satisfy
+ * You could alternatively widen a type to a more specific common supertype than <code>Any</code>. For example, since <code>Int</code> and
+ * <code>Long</code> are both subtypes of <code>AnyVal</code>, you could widen either type to <code>AnyVal</code> to satisfy
  * the type checker:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Seq[Int])
+ * scala&gt; 1 === (1L: AnyVal)
  * res3: Boolean = true
- *
- * scala&gt; (List(1, 2, 3): Seq[Int]) === Vector(1, 2, 3)
+ * 
+ * scala&gt; (1: AnyVal) === 1L
  * res4: Boolean = true
  * </pre>
  * 
  * @author Bill Venners
  */
-trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint {
+trait LowPriorityEnabledEqualityConstraints extends EqualityPolicy {
 
   import scala.language.implicitConversions
 
-  // Inherit the Scaladoc for these methods
-
-  override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
-  implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
-  override def convertToFreshCheckingEqualizer[T](left: T): FreshCheckingEqualizer[T] = new FreshCheckingEqualizer(left)
-
-  override def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] with Cooperative = new BasicEqualityConstraint[A, B](equalityOfA)
-
-  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
-  implicit override def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with Cooperative = new BasicEqualityConstraint[A, B](equalityOfA)
-
-  override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-  override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-
-  override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
-  override def convertEquivalenceToASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] with Cooperative = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
-  override def checkedEqualityConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): EqualityConstraint[A, B] with Cooperative = new BSubtypeOfAEqualityConstraint[A, B](equivalenceOfA, ev)
-  override def convertEquivalenceToBSubtypeOfAEqualityConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): EqualityConstraint[A, B] with Cooperative = new BSubtypeOfAEqualityConstraint[A, B](equivalenceOfA, ev)
-
-  implicit override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
-  implicit override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-
-  // For EnabledEquality
-  override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative = new EnabledEqualityConstraint[A](equivalenceOfA)
-  override def lowPriorityEnabledEqualityConstraintBetween[B, A](implicit equalityOfB: Equality[B], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[B, A] = new BasicEqualityConstraint[B, A](equalityOfB)
-  override def enabledEqualityConstraintBetween[A, B](implicit equalityOfA: Equality[A], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
-  override def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
-  override def enabledEqualityConstraintConverting[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
+  implicit override def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
+  implicit override def lowPriorityEnabledEqualityConstraintBetween[B, A](implicit equalityOfB: Equality[B], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[B, A] = new BasicEqualityConstraint[B, A](equalityOfB)
 }
 
-/**
- * Companion object to trait <code>ConversionCheckedTripleEquals</code> that facilitates the importing of <code>ConversionCheckedTripleEquals</code> members as 
- * an alternative to mixing it in. One use case is to import <code>ConversionCheckedTripleEquals</code> members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $ scala -classpath scalactic.jar
- * Welcome to Scala version 2.10.0
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- *
- * scala&gt; import org.scalactic._
- * import org.scalactic._
- * 
- * scala&gt; import ConversionCheckedTripleEquals._
- * import ConversionCheckedTripleEquals._
- * 
- * scala&gt; 1 === 1L
- * res0: Boolean = true
- * </pre>
- */
-object ConversionCheckedTripleEquals extends ConversionCheckedTripleEquals
 

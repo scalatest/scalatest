@@ -255,9 +255,8 @@ trait CheckedEquality extends LowPriorityCheckedEqualityConstraints {
 
   // For EnabledEquality
   override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative = new EnabledEqualityConstraint[A](equivalenceOfA)
-  // This won't work for bijections (implicit conversion in both directions), so write a test that demos that and move it up to
-  // a Low priority trait.
-  implicit override def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
+  implicit override def enabledEqualityConstraintBetween[A, B](implicit equalityOfA: Equality[A], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+
   implicit override def enabledEqualityConstraintConverting[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
 }
 

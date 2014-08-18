@@ -18,96 +18,246 @@ package org.scalactic
 import org.scalatest._
 
 class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
-  object `An Option` {
+  object `Two Options` {
 
-    implicit val enabler = EnabledEqualityConverting[Int, Complex]
+    object `when equality is enabled via conversion from one element type to the other` {
 
-    def `should only be comparable if a CooperativeEqualityConstraint exists between their element types under Checked- and EnabledEquality` {
-
-      // New policies
-      // Both sides Some
-      new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      "new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      "new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      // Both sides Option
-      new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      "new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      "new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      // Left side Some, right side Option
-      new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      "new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      "new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      // Left side Option, right side Some
-      new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      import AsMethods._
-      new CheckedEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
-      "new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      implicit val enableComplexComparisons = EnabledEqualityFor[Complex]
-      new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
-
-      // Deprecated policies
-      // Both sides Some
-      new TripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      // Both sides Option
-      new TripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      // Left side Some, right side Option
-      new TripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      // Left side Option, right side Some
-      new TripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      implicit val enabler = EnabledEqualityConverting[Int, Complex]
+  
+      def `should not by default be comparable under Checked- and EnabledEquality` {
+  
+        // New policies
+        // Both sides Some
+        new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Both sides Option
+        new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Left side Some, right side Option
+        new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Left side Option, right side Some
+        new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        import AsMethods._
+        new CheckedEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+        "new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        implicit val enableComplexComparisons = EnabledEqualityFor[Complex]
+        new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+  
+        // Deprecated policies
+        // Both sides Some
+        new TripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new TripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new TripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new TripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      }
+  
+      def `should be comparable under Checked- and EnabledEquality if also under RecursiveOptionEquality` {
+  
+        import RecursiveOptionEquality._
+  
+        // New policies
+        // Both sides Some
+        new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        // These shouldn't type check because the implicit widening conversion goes
+        // from Int, which is inside Option, to Complex, which is inside Some, but
+        // you can't convert an Option to a Some safely.
+        "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+  
+        // Deprecated policies
+        // Both sides Some
+        new TripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new TripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new TripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new TripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      }
     }
+    object `when cooperative Equality instances are defined for both element types` {
 
-    def `should be comparable if any EqualityConstraint exists between their element types under RecursiveOptionEquality` {
+      implicit val intEquality =
+        new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean =
+            b match {
+              case complex: Complex => complex.imaginary == 0 && complex.real == a
+              case simple => simple == a
+            }
+        }
 
-      import RecursiveOptionEquality._
+      implicit val complexEquality =
+        new Equality[Complex] {
+          def areEqual(a: Complex, b: Any): Boolean =
+            b match {
+              case int: Int => a.imaginary == 0 && a.real == int
+              case other => other == a
+            }
+        }
 
-      // New policies
-      // Both sides Some
-      new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
-      new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
-      // Both sides Option
-      new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
-      new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
-      // Left side Some, right side Option
-      new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
-      new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
-      // Left side Option, right side Some
-      new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      // These shouldn't type check because the implicit widening conversion goes
-      // from Int, which is inside Option, to Complex, which is inside Some, but
-      // you can't convert an Option to a Some safely.
-      "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
-      "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+      implicit val enabler = EnabledEqualityBetween[Int, Complex]
 
-      // Deprecated policies
-      // Both sides Some
-      new TripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
-      // Both sides Option
-      new TripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
-      // Left side Some, right side Option
-      new TripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
-      // Left side Option, right side Some
-      new TripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      new TypeCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
-      new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      // This is a sanity check, a test to make sure the test is testing what
+      // I think it is testing
+      def `should be comparable under Checked- and EnabledEquality outside of Options` {
+        // New policies
+        // Both sides Some
+        new UncheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new CheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new EnabledEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        // Both sides Option
+        new UncheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new CheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new EnabledEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        // Left side Some, right side Option
+        new UncheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new CheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new EnabledEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        // Left side Option, right side Some
+        new UncheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new CheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
+        new EnabledEquality { 42 shouldEqual Complex(42.0, 0.0) }
+  
+        // Deprecated policies
+        // Both sides Some
+        new TripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new TypeCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new ConversionCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        // Both sides Option
+        new TripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new TypeCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new ConversionCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        // Left side Some, right side Option
+        new TripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new TypeCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new ConversionCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        // Left side Option, right side Some
+        new TripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new TypeCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+        new ConversionCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
+      }
+
+      def `should not by default be comparable under Checked- and EnabledEquality` {
+  
+        // New policies
+        // Both sides Some
+        new UncheckedEquality { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Both sides Option
+        new UncheckedEquality { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Left side Some, right side Option
+        new UncheckedEquality { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        // Left side Option, right side Some
+        new UncheckedEquality { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        "new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        "new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        import AsMethods._
+        new CheckedEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+        "new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }" shouldNot typeCheck
+        implicit val enableComplexComparisons = EnabledEqualityFor[Complex]
+        new EnabledEquality { Option(42.as[Complex]) shouldEqual Some(Complex(42.0, 0.0)) }
+  
+        // Deprecated policies
+        // Both sides Some
+        new TripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new TripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new TripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) should not equal Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new TripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
+      }
+  
+      def `should be comparable under Checked- and EnabledEquality if also under RecursiveOptionEquality` {
+  
+        import RecursiveOptionEquality._
+  
+        // New policies
+        // Both sides Some
+        new UncheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new CheckedEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new EnabledEquality { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new UncheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new CheckedEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new EnabledEquality { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new UncheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new CheckedEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new EnabledEquality { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new UncheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new CheckedEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new EnabledEquality { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+  
+        // Deprecated policies
+        // Both sides Some
+        new TripleEquals { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        // Both sides Option
+        new TripleEquals { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Some, right side Option
+        new TripleEquals { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Some(42) shouldEqual Option(Complex(42.0, 0.0)) }
+        // Left side Option, right side Some
+        new TripleEquals { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new TypeCheckedTripleEquals { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+        new ConversionCheckedTripleEquals { Option(42) shouldEqual Some(Complex(42.0, 0.0)) }
+      }
     }
   }
 }

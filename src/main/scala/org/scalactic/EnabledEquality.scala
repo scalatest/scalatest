@@ -226,7 +226,7 @@ import EqualityPolicy._
  * 
  * @author Bill Venners
  */
-trait EnabledEquality extends EqualityPolicy {
+trait EnabledEquality extends LowPriorityEnabledEqualityConstraints {
 
   import scala.language.implicitConversions
 
@@ -261,7 +261,7 @@ trait EnabledEquality extends EqualityPolicy {
 
   // For EnabledEquality
   implicit override def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with Cooperative = new EnabledEqualityConstraint[A](equivalenceOfA)
-  implicit override def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B] = new AToBEnabledEqualityConstraint[A, B](equivalenceOfB, cnv)
+  implicit override def enabledEqualityConstraintBetween[A, B](implicit equalityOfA: Equality[A], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
   implicit override def enabledEqualityConstraintConverting[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]): EqualityConstraint[A, B] = new BToAEnabledEqualityConstraint[A, B](equivalenceOfA, cnv)
 }
 
