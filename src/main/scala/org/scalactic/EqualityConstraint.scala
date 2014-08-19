@@ -54,8 +54,6 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 
   implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit equalityOfA: Equality[CA[KA, VA]], evKey: EqualityConstraint[KA, KB] with NativeSupport, evValue: EqualityConstraint[VA, VB] with NativeSupport): EqualityConstraint[CA[KA, VA], CB[KB, VB]] with NativeSupport = new BasicEqualityConstraint[CA[KA, VA], CB[KB, VB]](equalityOfA)
 
-  implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: CooperatingNumeric[A], numB: CooperatingNumeric[B]): EqualityConstraint[A, B] with NativeSupport = new BasicEqualityConstraint[A, B](equalityOfA)
-
   // 1. Every on left, can by subclass of Every on right
   // 2. Every on right, can be subclass of Every on left
   // 3. One on left, can be One or Every on right, but the latter will be provided by number 2

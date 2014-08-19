@@ -23,9 +23,9 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class CheckedEqualityPolicyNumericSpec extends Spec with CheckedEquality {
+class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
 
-  object `The CheckedEqualityPolicy trait` {
+  object `The EnabledEquality trait` {
     def `should allow equality comparisons between types that co-operate in Scala` {
 
       val aChar: Char = 'c'
@@ -44,6 +44,9 @@ class CheckedEqualityPolicyNumericSpec extends Spec with CheckedEquality {
       val aJavaLong: java.lang.Long = new java.lang.Long(99L)
       val aJavaFloat: java.lang.Float = new java.lang.Float(99.0F)
       val aJavaDouble: java.lang.Double = new java.lang.Double(99.0)
+
+      val aBoolean: Boolean = true
+      val aJavaBoolean: java.lang.Boolean = new java.lang.Boolean(true)
 
       assert(aChar === aChar)
       assert(aChar === aByte)
@@ -316,6 +319,12 @@ class CheckedEqualityPolicyNumericSpec extends Spec with CheckedEquality {
       assert(aJavaDouble === aJavaLong)
       assert(aJavaDouble === aJavaFloat)
       assert(aJavaDouble === aJavaDouble)
+
+      assert(aBoolean === aBoolean)
+      assert(aBoolean === aJavaBoolean)
+
+      assert(aJavaBoolean === aJavaBoolean)
+      assert(aJavaBoolean === aBoolean)
     }
   }
 }
