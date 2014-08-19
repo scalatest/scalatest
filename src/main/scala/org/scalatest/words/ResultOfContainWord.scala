@@ -60,6 +60,28 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain oneElementOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[L]) {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneElementOf"))
+    if (evidence.containsOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
+          left,
+          right
+        )
+      )
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">

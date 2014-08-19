@@ -1063,6 +1063,36 @@ final class NotWord {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain oneElementOf (List(5, 6, 7)))
+   *                         ^
+   * </pre>
+   */
+  def contain[R](oneElementOf: ResultOfOneElementOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = oneElementOf.right
+
+            MatchResult(
+              !evidence.containsOneOf(left, right),
+              Resources("containedOneElementOf"),
+              Resources("didNotContainOneElementOf"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(oneElementOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(oneElementOf)
+    }
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">

@@ -20,6 +20,7 @@ import Matchers._
 import matchers.{AMatcher, 
                  AnMatcher}
 import FailureMessages.decorateToStringValue
+import org.scalactic.Prettifier
 
 class ContainWordSpec extends Spec {
   
@@ -347,6 +348,58 @@ class ContainWordSpec extends Spec {
           'negatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
           'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
           'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8")))    
+        )
+      }
+    }
+    
+    object `oneElementOf(col) method returns MatcherFactory1` {
+      
+      val mtf = contain oneElementOf Seq(2, 8)
+      val mt = mtf.matcher[List[Int]]
+      
+      def `should have pretty toString` {
+        mtf.toString should be ("contain oneElementOf " + Prettifier.default(Seq(2, 8)))
+        mt.toString should be ("contain oneElementOf " + Prettifier.default(Seq(2, 8)))
+      }
+      
+      val lhs = List(1, 2, 3)
+      val mr = mt(lhs)
+      
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (true),
+          'failureMessage (FailureMessages("didNotContainOneElementOf", lhs, Seq(2, 8))),
+          'negatedFailureMessage (FailureMessages("containedOneElementOf", lhs, Seq(2, 8))),
+          'midSentenceFailureMessage (FailureMessages("didNotContainOneElementOf", lhs, Seq(2, 8))),
+          'midSentenceNegatedFailureMessage (FailureMessages("containedOneElementOf", lhs, Seq(2, 8))),
+          'rawFailureMessage (FailureMessages("didNotContainOneElementOf")),
+          'rawNegatedFailureMessage (FailureMessages("containedOneElementOf")),
+          'rawMidSentenceFailureMessage (FailureMessages("didNotContainOneElementOf")),
+          'rawMidSentenceNegatedFailureMessage (FailureMessages("containedOneElementOf")),
+          'failureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'negatedFailureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'midSentenceFailureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, Seq(2, 8)))    
+        )
+      }
+      
+      val nmr = mr.negated
+      
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (false),
+          'failureMessage (FailureMessages("containedOneElementOf", lhs, Seq(2, 8))),
+          'negatedFailureMessage (FailureMessages("didNotContainOneElementOf", lhs, Seq(2, 8))),
+          'midSentenceFailureMessage (FailureMessages("containedOneElementOf", lhs, Seq(2, 8))),
+          'midSentenceNegatedFailureMessage (FailureMessages("didNotContainOneElementOf", lhs, Seq(2, 8))),
+          'rawFailureMessage (FailureMessages("containedOneElementOf")),
+          'rawNegatedFailureMessage (FailureMessages("didNotContainOneElementOf")),
+          'rawMidSentenceFailureMessage (FailureMessages("containedOneElementOf")),
+          'rawMidSentenceNegatedFailureMessage (FailureMessages("didNotContainOneElementOf")),
+          'failureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'negatedFailureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'midSentenceFailureMessageArgs(Vector(lhs, Seq(2, 8))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, Seq(2, 8)))    
         )
       }
     }
