@@ -30,12 +30,12 @@ trait LowPriorityEqualityConstraints {
   // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with Cooperative): EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]] with Cooperative = new BasicEqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+  implicit def lowPriorityOrEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, ELB], Or[ERG, ERB]](equalityOfL)
 
-  implicit def lowPriorityOrOnBothSidesWithGoodNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Or[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with Cooperative): EqualityConstraint[Or[Nothing, ELB], Or[Nothing, ERB]] with Cooperative = new BasicEqualityConstraint[Or[Nothing, ELB], Or[Nothing, ERB]](equalityOfL)
+  implicit def lowPriorityOrOnBothSidesWithGoodNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Or[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[Nothing, ELB], Or[Nothing, ERB]] with NativeSupport = new BasicEqualityConstraint[Or[Nothing, ELB], Or[Nothing, ERB]](equalityOfL)
 
   // This must be low priority to allow Every on both sides
-  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with Cooperative): EqualityConstraint[CA[EA], Every[EB]] with Cooperative = new BasicEqualityConstraint[CA[EA], Every[EB]](equalityOfA)
+  implicit def everyOnRightEqualityConstraint[EA, CA[ea] <: Every[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with NativeSupport): EqualityConstraint[CA[EA], Every[EB]] with NativeSupport = new BasicEqualityConstraint[CA[EA], Every[EB]](equalityOfA)
 
   // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
   // ETL Element Target Left
@@ -45,13 +45,13 @@ trait LowPriorityEqualityConstraints {
   // This one will provide an equality constraint if the Bad types have an inner constraint. It doesn't matter
   // in this case what the Good type does. If there was a constraint available for the Good types, then it would
   // use the higher priority implicit Constraint.orEqualityConstraint and never get here. 
-  implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: EqualityConstraint[ETR, EPR] with Cooperative): EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]] with Cooperative = new BasicEqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
-  implicit def lowPriorityEitherNothingConstraint[ETR, EPR](implicit equalityOfT: Equality[Either[Nothing, ETR]], ev: EqualityConstraint[ETR, EPR] with Cooperative): EqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]] with Cooperative = new BasicEqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]](equalityOfT)
+  implicit def lowPriorityEitherEqualityConstraint[ETL, ETR, EPL, EPR](implicit equalityOfT: Equality[Either[ETL, ETR]], ev: EqualityConstraint[ETR, EPR] with NativeSupport): EqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]] with NativeSupport = new BasicEqualityConstraint[Either[ETL, ETR], Either[EPL, EPR]](equalityOfT)
+  implicit def lowPriorityEitherNothingConstraint[ETR, EPR](implicit equalityOfT: Equality[Either[Nothing, ETR]], ev: EqualityConstraint[ETR, EPR] with NativeSupport): EqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]] with NativeSupport = new BasicEqualityConstraint[Either[Nothing, ETR], Either[Nothing, EPR]](equalityOfT)
 
   // This must be low priority to allow Option on both sides
-  implicit def optionOnRightEqualityConstraint[EA, CA[ea] <: Option[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with Cooperative): EqualityConstraint[CA[EA], Option[EB]] with Cooperative = new BasicEqualityConstraint[CA[EA], Option[EB]](equalityOfA)
+  implicit def optionOnRightEqualityConstraint[EA, CA[ea] <: Option[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with NativeSupport): EqualityConstraint[CA[EA], Option[EB]] with NativeSupport = new BasicEqualityConstraint[CA[EA], Option[EB]](equalityOfA)
 
   // This must be low priority to allow Try on both sides
-  implicit def tryOnRightEqualityConstraint[EA, CA[ea] <: Try[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with Cooperative): EqualityConstraint[CA[EA], Try[EB]] with Cooperative = new BasicEqualityConstraint[CA[EA], Try[EB]](equalityOfA)
+  implicit def tryOnRightEqualityConstraint[EA, CA[ea] <: Try[ea], EB](implicit equalityOfA: Equality[CA[EA]], ev: EqualityConstraint[EA, EB] with NativeSupport): EqualityConstraint[CA[EA], Try[EB]] with NativeSupport = new BasicEqualityConstraint[CA[EA], Try[EB]](equalityOfA)
 
 }

@@ -15,4 +15,4 @@
  */
 package org.scalactic
 
-trait Cooperative
+trait NativeSupport
