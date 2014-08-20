@@ -60,5 +60,7 @@ trait LowPriorityTypeCheckedConstraint extends EqualityPolicy {
   implicit override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
   implicit override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
 
+  override def lowPriorityCheckedEqualityConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): EqualityConstraint[A, B] with NativeSupport = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
+  implicit override def convertEquivalenceToASubtypeOfBEqualityConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): EqualityConstraint[A, B] with NativeSupport = new ASubtypeOfBEqualityConstraint[A, B](equivalenceOfB, ev)
 }
 

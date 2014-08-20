@@ -15,10 +15,18 @@
  */
 package org.scalactic
 
+import scala.language.higherKinds
+
 class EnabledEqualityFor[A]
 
 object EnabledEqualityFor {
   implicit val strEqEn: EnabledEqualityFor[String] = new EnabledEqualityFor[String]
+  implicit def enabledEqualityForTuple2[A, B]: EnabledEqualityFor[Tuple2[A, B]] = EnabledEqualityFor[Tuple2[A, B]]
+/*
+  implicit def enabledEqualityForJavaMapEntry[A, B]: EnabledEqualityFor[java.util.Map.Entry[A, B]] = EnabledEqualityFor[java.util.Map.Entry[A, B]]
+  implicit def enabledEqualityForScalaTestJavaMapEntry[A, B]: EnabledEqualityFor[org.scalatest.Entry[A, B]] = EnabledEqualityFor[org.scalatest.Entry[A, B]]
+  // implicit def enabledEqualityForJavaMapEntry[A, B, ENTRY[a, b] <: java.util.Map.Entry[a, b]]: EnabledEqualityFor[ENTRY[A, B]] = EnabledEqualityFor[ENTRY[A, B]]
+*/
   def apply[A]: EnabledEqualityFor[A] = new EnabledEqualityFor[A]
 }
 

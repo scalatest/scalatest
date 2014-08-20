@@ -19,5 +19,11 @@ class EnabledEqualityBetween[A, B]
 
 object EnabledEqualityBetween {
   def apply[A, B]: EnabledEqualityBetween[A, B] = new EnabledEqualityBetween[A, B]
+  // THis is needed to allow under EnabledEquality an implicit like
+  // enablers.ContainingConstraint.containingNatureOfJavaMap, which needs an implicit
+  // EqualityConstraint[java.util.Map.Entry[K, V], R]. Well R could be org.scalatest.Entry,
+  // and that's a subtype. So with this implicit, will always allow under EnabledEquality
+  // any subtype of java.util.Map.Entry with any other subtype of java.util.Map.Entry.
+  implicit def enabledEqualityBetweenJavaMapEntries[A, B, ENTRYA[a, b] <: java.util.Map.Entry[a, b], ENTRYB[a, b] <: java.util.Map.Entry[a, b]]: EnabledEqualityBetween[ENTRYA[A, B], ENTRYB[A, B]] = EnabledEqualityBetween[ENTRYA[A, B], ENTRYB[A, B]]
 }
 

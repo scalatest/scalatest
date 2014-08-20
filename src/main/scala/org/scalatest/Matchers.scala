@@ -34,7 +34,7 @@ import org.scalactic.EqualityPolicy.Spread
 import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalactic.Equality
 import org.scalactic.EqualityPolicy.TripleEqualsInvocationOnSpread
-import org.scalactic.Constraint
+import org.scalactic.EqualityConstraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
 import MatchersHelper.andMatchersAndApply
@@ -5744,7 +5744,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: Constraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
       doCollected(collected, xs, original, "should", 1) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
@@ -6744,7 +6744,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: Constraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
       if ((constraint.areEqual(leftSideValue, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(

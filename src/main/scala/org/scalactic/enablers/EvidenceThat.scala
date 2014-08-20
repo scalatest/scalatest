@@ -92,6 +92,7 @@ object EvidenceThat {
   implicit def convertEqualityToEvidenceThatRCanBeContainedInL[L, R](equality: Equality[R])(implicit cvt: Equality[R] => ContainingConstraint[L, R]): EvidenceThat[R]#CanBeContainedIn[L] =
     (new EvidenceThat[R]).canBeContainedIn[L](cvt(equality))
 
+  // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
   implicit def enableScalaTestEntryContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedIn[JMAP[K, V]] = {
     (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedIn[JMAP[K, V]] {
       // Here I need a ContainingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
@@ -123,6 +124,7 @@ object EvidenceThat {
   implicit def convertEqualityToEvidenceThatRCanBeContainedInAggregationL[L, R](equality: Equality[R])(implicit cvt: Equality[R] => AggregatingConstraint[L, R]): EvidenceThat[R]#CanBeContainedInAggregation[L] =
     (new EvidenceThat[R]).canBeContainedInAggregation[L](cvt(equality))
 
+  // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
   implicit def enableScalaTestEntryAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedInAggregation[JMAP[K, V]] = {
     (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedInAggregation[JMAP[K, V]] {
       // Here I need an AggregatingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
@@ -156,6 +158,7 @@ object EvidenceThat {
   implicit def convertEqualityToEvidenceThatRCanBeContainedInSequenceL[L, R](equality: Equality[R])(implicit cvt: Equality[R] => SequencingConstraint[L, R]): EvidenceThat[R]#CanBeContainedInSequence[L] =
     (new EvidenceThat[R]).canBeContainedInSequence[L](cvt(equality))
 
+  // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
   implicit def enableScalaTestEntrySequencing[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedInSequence[JMAP[K, V]] = {
     (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedInSequence[JMAP[K, V]] {
       // Here I need an SequencingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
