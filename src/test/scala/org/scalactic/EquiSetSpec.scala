@@ -23,7 +23,7 @@ import scala.collection.mutable.ListBuffer
 
 class EquiSetSpec extends UnitSpec {
   val lower = EquiSets[String](StringNormalizations.lowerCased.toHashingEquality)
-  val upper = EquiSets[String](StringNormalizations.upperCased.toHashingEquality)
+  val trimmed = EquiSets[String](StringNormalizations.trimmed.toHashingEquality)
   "An EquiSet" can "be constructed with empty" in {
     val emptySet = lower.EquiSet.empty
     emptySet shouldBe empty
@@ -45,6 +45,11 @@ class EquiSetSpec extends UnitSpec {
   }
   it should "have a toString method" in {
     lower.EquiSet("hi", "ho").toString should === ("EquiSet(hi, ho)")
+  }
+  it should "have a union method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") union lower.EquiSet("HI", "HO") shouldBe lower.EquiSet("hi", "ho")
+    trimmed.EquiSet("hi", "ho") union trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
+    """lower.EquiSet(" hi ", "hi") union trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
   }
 /*
   it can "be constructed as a Many" in {
@@ -1111,22 +1116,6 @@ class EquiSetSpec extends UnitSpec {
     Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8)).transpose shouldBe Every(Every(1, 3, 5, 7), Every(2, 4, 6, 8))
     Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8)).transpose.transpose shouldBe Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8))
     Every(Every(1, 2, 3), Every(4, 5, 6), Every(7, 8, 9)).transpose.transpose shouldBe Every(Every(1, 2, 3), Every(4, 5, 6), Every(7, 8, 9))
-  }
-  it should "have a union method that takes a GenSeq" in {
-    Every(1) union List(1) shouldBe Every(1, 1)
-    Every(1) union List(1, 2) shouldBe Every(1, 1, 2)
-    Every(1, 2) union List(1, 2) shouldBe Every(1, 2, 1, 2)
-    Every(1, 2) union List(1) shouldBe Every(1, 2, 1)
-    Every(1, 2) union List(3, 4, 5) shouldBe Every(1, 2, 3, 4, 5)
-    Every(1, 2, 3) union List(3, 4, 5) shouldBe Every(1, 2, 3, 3, 4, 5)
-  }
-  it should "have a union method that takes an Every" in {
-    Every(1) union Every(1) shouldBe Every(1, 1)
-    Every(1) union Every(1, 2) shouldBe Every(1, 1, 2)
-    Every(1, 2) union Every(1, 2) shouldBe Every(1, 2, 1, 2)
-    Every(1, 2) union Every(1) shouldBe Every(1, 2, 1)
-    Every(1, 2) union Every(3, 4, 5) shouldBe Every(1, 2, 3, 4, 5)
-    Every(1, 2, 3) union Every(3, 4, 5) shouldBe Every(1, 2, 3, 3, 4, 5)
   }
   it should "have an unzip method" in {
     Every((1, 2)).unzip shouldBe (Every(1),Every(2))

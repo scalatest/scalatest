@@ -25,11 +25,19 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
     override def hashCode: Int = hashingEquality.hashCodeFor(value)
     override def toString: String = s"Wrapped(${value.toString})"
   }
-  class EquiSet private (underlying: Set[Wrapped]) {
+  class EquiSet private (private val underlying: Set[Wrapped]) {
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
-    // def union[E](that: thisEquiSets.EquiSet[T]) = 1
+    def union[E](that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+      new EquiSet(underlying union that.underlying)
     override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    override def equals(other: Any): Boolean =
+      other match {
+        case equiSet: thisEquiSets.EquiSet => 
+          underlying == equiSet.underlying
+        case _ => false
+      }
+    override def hashCode: Int = underlying.hashCode
   }
   object EquiSet {
     def empty: EquiSet = new EquiSet(Set.empty)
