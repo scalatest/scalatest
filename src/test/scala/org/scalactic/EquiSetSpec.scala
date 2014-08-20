@@ -22,12 +22,8 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
 class EquiSetSpec extends UnitSpec {
-  val lower = new EquiSets[String] {
-    val hashingEquality = StringNormalizations.lowerCased.toHashingEquality
-  }
-  val upper = new EquiSets[String] {
-    val hashingEquality = StringNormalizations.upperCased.toHashingEquality
-  }
+  val lower = EquiSets[String](StringNormalizations.lowerCased.toHashingEquality)
+  val upper = EquiSets[String](StringNormalizations.upperCased.toHashingEquality)
   "An EquiSet" can "be constructed with empty" in {
     val emptySet = lower.EquiSet.empty
     emptySet shouldBe empty
@@ -41,11 +37,14 @@ class EquiSetSpec extends UnitSpec {
   it should "construct only sets with appropriate element types" in {
     "lower.EquiSet(1, 2, 3)" shouldNot compile
   }
-  ignore should "eliminate 'duplicate' entries passed to the apply factory method" in {
+  it should "eliminate 'duplicate' entries passed to the apply factory method" in {
     val nonEmptySet = lower.EquiSet("one", "two", "two", "three", "Three")
     nonEmptySet should have size 3
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for EquiSet.
+  }
+  it should "have a toString method" in {
+    lower.EquiSet("hi", "ho").toString should === ("EquiSet(hi, ho)")
   }
 /*
   it can "be constructed as a Many" in {
@@ -1096,11 +1095,6 @@ class EquiSetSpec extends UnitSpec {
     Every(1, 2, 3).toStream should === (Stream(1, 2, 3))
     Many("a", "b").toStream should === (Stream("a", "b"))
     One(1).toStream should === (Stream(1))
-  }
-  it should "have a toString method" in {
-    Every(1, 2, 3).toString should === ("Many(1, 2, 3)")
-    Many(1, 2, 3).toString should === ("Many(1, 2, 3)")
-    One(1).toString should === ("One(1)")
   }
   it should "have a toTraversable method" in {
     Every(1, 2, 3).toTraversable should === (Traversable(1, 2, 3))

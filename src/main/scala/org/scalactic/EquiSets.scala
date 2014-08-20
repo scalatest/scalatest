@@ -15,29 +15,30 @@
  */
 package org.scalactic
 
-private[scalactic] trait EquiSets[T] { thisEquiSets =>
-
-  val hashingEquality: HashingEquality[T]
-
-/*
-  class Wrapped[T](o: T) {
-    override def equals(other: Any): Boolean = {
-      other match {
-      hashingEquality.areEqual(o, other)
-    }
-    override def toString: String = o.toString
+class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
+  case class Wrapped(value: T) {
+    override def equals(o: Any): Boolean = 
+      o match {
+        case other: Wrapped => hashingEquality.areEqual(value, other.value)
+        case _ => false
+      }
+    override def hashCode: Int = hashingEquality.hashCodeFor(value)
+    override def toString: String = s"Wrapped(${value.toString})"
   }
-*/
-
-  class EquiSet[T] private (underlying: Vector[T]) {
+  class EquiSet private (underlying: Set[Wrapped]) {
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
     // def union[E](that: thisEquiSets.EquiSet[T]) = 1
+    override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
   }
   object EquiSet {
-    def empty: EquiSet[T] = new EquiSet(Vector.empty)
-    def apply(elems: T*): EquiSet[T] = 
-      new EquiSet(Vector(elems: _*))
+    def empty: EquiSet = new EquiSet(Set.empty)
+    def apply(elems: T*): EquiSet = 
+      new EquiSet(Set(elems.map(Wrapped(_)): _*))
   }
+}
+
+object EquiSets {
+  def apply[T](hashingEquality: HashingEquality[T]): EquiSets[T] = new EquiSets(hashingEquality)
 }
 
