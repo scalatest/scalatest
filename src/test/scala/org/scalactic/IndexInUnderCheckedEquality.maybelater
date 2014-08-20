@@ -1,0 +1,236 @@
+/*
+ * Copyright 2001-2014 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.scalactic
+
+import org.scalatest._
+
+class IsInUnderCheckedEqualitySpec extends Spec with Matchers with CheckedEquality {
+
+  object `The IsIn and IsNotIn syntax should` {
+    def `allow type checked containership tests` {
+      def `on Array` {
+
+        (1 indexIn Array(1, 2, 1, 3)) shouldBe 0
+        (5 indexIn Array(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn Array(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 indexIn Array(1, 2, 1, 3, 1)) shouldBe 0
+        (5 indexIn Array(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn Array(1, 2, 1, 3, 1)""" shouldNot typeCheck
+
+        (1 lastIndexIn Array(1, 2, 1, 3)) shouldBe 2
+        (5 lastIndexIn Array(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn Array(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 lastIndexIn Array(1, 2, 1, 3, 1)) shouldBe 4
+        (5 lastIndexIn Array(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn Array(1, 2, 1, 3, 1)""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.Set` {
+
+        "1 indexIn Set(1, 2, 3)" shouldNot typeCheck
+        "1 lastIndexIn Set(1, 2, 3)" shouldNot typeCheck
+        """"1" indexIn Set(1, 2, 3)""" shouldNot typeCheck
+        """"1" lastIndexIn Set(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.mutable.Set` {
+
+        import scala.collection.mutable
+
+        "1 indexIn mutable.Set(1, 2, 3)" shouldNot typeCheck
+        "1 lastIndexIn mutable.Set(1, 2, 3)" shouldNot typeCheck
+        """"1" indexIn mutable.Set(1, 2, 3)""" shouldNot typeCheck
+        """"1" lastIndexIn mutable.Set(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.Set` {
+
+        val set: scala.collection.Set[Int] = Set(1, 2)
+
+        "1 indexIn set" shouldNot typeCheck
+        "1 lastIndexIn set" shouldNot typeCheck
+        """"1" indexIn set""" shouldNot typeCheck
+        """"1" lastIndexIn set""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.HashSet` {
+
+        import scala.collection.immutable.HashSet
+
+        "1 indexIn HashSet(1, 2, 3)" shouldNot typeCheck
+        "1 lastIndexIn HashSet(1, 2, 3)" shouldNot typeCheck
+        """"1" indexIn HashSet(1, 2, 3)""" shouldNot typeCheck
+        """"1" lastIndexIn HashSet(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.mutable.HashSet` {
+
+        import scala.collection.mutable
+
+        "1 indexIn mutable.HashSet(1, 2, 3)" shouldNot typeCheck
+        "1 lastIndexIn mutable.HashSet(1, 2, 3)" shouldNot typeCheck
+        """"1" indexIn mutable.HashSet(1, 2, 3)""" shouldNot typeCheck
+        """"1" lastIndexIn mutable.HashSet(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.TreeSet` {
+
+        import scala.collection.immutable.TreeSet
+
+        (1 indexIn TreeSet(1, 2, 3)) shouldBe 0
+        (2 indexIn TreeSet(1, 2, 3)) shouldBe 1
+        (3 indexIn TreeSet(1, 2, 3)) shouldBe 2
+        (5 indexIn TreeSet(1, 2, 3)) shouldBe -1
+        """"1" indexIn TreeSet(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on List` {
+
+        (1 indexIn List(1, 2, 1, 3)) shouldBe 0
+        (5 indexIn List(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn List(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 indexIn List(1, 2, 1, 3, 1)) shouldBe 0
+        (5 indexIn List(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn List(1, 2, 1, 3, 1)""" shouldNot typeCheck
+
+        (1 lastIndexIn List(1, 2, 1, 3)) shouldBe 2
+        (5 lastIndexIn List(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn List(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 lastIndexIn List(1, 2, 1, 3, 1)) shouldBe 4
+        (5 lastIndexIn List(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn List(1, 2, 1, 3, 1)""" shouldNot typeCheck
+      }
+      def `on Vector` {
+
+        (1 indexIn Vector(1, 2, 1, 3)) shouldBe 0
+        (5 indexIn Vector(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn Vector(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 indexIn Vector(1, 2, 1, 3, 1)) shouldBe 0
+        (5 indexIn Vector(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn Vector(1, 2, 1, 3, 1)""" shouldNot typeCheck
+
+        (1 lastIndexIn Vector(1, 2, 1, 3)) shouldBe 2
+        (5 lastIndexIn Vector(1, 2, 1, 3)) shouldBe -1
+        """"1" indexIn Vector(1, 2, 1, 3)""" shouldNot typeCheck
+
+        (1 lastIndexIn Vector(1, 2, 1, 3, 1)) shouldBe 4
+        (5 lastIndexIn Vector(1, 2, 1, 3, 1)) shouldBe -1
+        """"1" indexIn Vector(1, 2, 1, 3, 1)""" shouldNot typeCheck
+      }
+      def `on java.util.List` {
+
+        val javaList: java.util.List[Int] = new java.util.ArrayList
+        javaList.add(1)
+        javaList.add(2)
+        javaList.add(1)
+        javaList.add(3)
+      
+        (1 indexIn javaList) shouldBe 0
+        (5 indexIn javaList) shouldBe -1
+        """"1" indexIn javaList""" shouldNot typeCheck
+
+        (1 lastIndexIn javaList) shouldBe 2
+        (5 lastIndexIn javaList) shouldBe -1
+        """"1" indexIn javaList""" shouldNot typeCheck
+
+        // Why not add another 1
+        javaList.add(1)
+
+        (1 indexIn javaList) shouldBe 0
+        (5 indexIn javaList) shouldBe -1
+        """"1" indexIn javaList""" shouldNot typeCheck
+
+        (1 lastIndexIn javaList) shouldBe 4
+        (5 lastIndexIn javaList) shouldBe -1
+        """"1" indexIn javaList""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.Map ` {
+
+        """("one" -> 1) indexIn Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """("one" -> 1) lastIndexIn Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" indexIn Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" lastIndexIn Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.mutable.Map ` {
+
+        import scala.collection.mutable
+
+        """("one" -> 1) indexIn mutable.Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """("one" -> 1) lastIndexIn mutable.Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" indexIn mutable.Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" lastIndexIn mutable.Map("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.Map ` {
+
+        val map: scala.collection.Map[String, Int] = Map("one" -> 1, "two" -> 2)
+
+        """("one" -> 1) indexIn map""" shouldNot typeCheck
+        """("one" -> 1) lastIndexIn map""" shouldNot typeCheck
+        """"1" indexIn map""" shouldNot typeCheck
+        """"1" lastIndexIn map""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.HashMap ` {
+
+        import scala.collection.immutable.HashMap
+
+        """("one" -> 1) indexIn HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """("one" -> 1) lastIndexIn HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" indexIn HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" lastIndexIn HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.mutable.HashMap ` {
+
+        import scala.collection.mutable
+
+        """("one" -> 1) indexIn mutable.HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """("one" -> 1) lastIndexIn mutable.HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" indexIn mutable.HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+        """"1" lastIndexIn mutable.HashMap("one" -> 1, "two" -> 2, "three" -> 3)""" shouldNot typeCheck
+      }
+      def `on scala.collection.immutable.TreeMap` {
+
+        import scala.collection.immutable.TreeMap
+
+        (("one" -> 1) indexIn TreeMap("one" -> 1, "two" -> 2, "three" -> 3)) shouldBe 0
+        (("two" -> 2) indexIn TreeMap("one" -> 1, "two" -> 2, "three" -> 3)) shouldBe 1
+        (("three" -> 3) indexIn TreeMap("one" -> 1, "two" -> 2, "three" -> 3)) shouldBe 2
+        (("five" -> 5) indexIn TreeMap("one" -> 1, "two" -> 2, "three" -> 3)) shouldBe -1
+        """"1" indexIn TreeMap(1, 2, 3)""" shouldNot typeCheck
+      }
+      def `on java.util.Set` {
+
+        val javaSet: java.util.Set[Int] = new java.util.HashSet
+        javaSet.add(1)
+        javaSet.add(2)
+        javaSet.add(3)
+
+        "1 indexIn javaSet" shouldNot typeCheck
+        "1 lastIndexIn javaSet" shouldNot typeCheck
+        """"1" indexIn javaSet""" shouldNot typeCheck
+        """"1" lastIndexIn javaSet""" shouldNot typeCheck
+      }
+      def `on java.util.Map` {
+
+        val javaMap: java.util.Map[String, Int] = new java.util.HashMap
+        javaMap.put("one",1)
+        javaMap.put("two", 2)
+
+        """Entry("one", 1) indexIn javaMap""" shouldNot typeCheck
+        """Entry("one", 1) lastIndexIn javaMap""" shouldNot typeCheck
+        """"1" indexIn javaMap""" shouldNot typeCheck
+        """"1" lastIndexIn javaMap""" shouldNot typeCheck
+      }
+    }
+  }
+}
