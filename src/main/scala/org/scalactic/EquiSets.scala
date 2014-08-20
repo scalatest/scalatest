@@ -44,6 +44,7 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
     def apply(elems: T*): EquiSet = 
       new EquiSet(Set(elems.map(Wrapped(_)): _*))
   }
+  override def toString: String = s"EquiSets($hashingEquality)"
 }
 
 object EquiSets {
