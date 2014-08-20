@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-trait HashingEquivalence[T] extends Equivalence[T] {
-  def hashFor(a: T): Int
+trait HashingEquality[T] extends Equality[T] {
+  def hashCodeFor(a: T): Int
 } 
 

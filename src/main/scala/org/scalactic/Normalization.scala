@@ -116,11 +116,5 @@ trait Normalization[A] { thisNormalization =>
       override val afterNormalizationEquivalence = equivalence
       def normalized(a: A): A = thisNormalization.normalized(a)
     }
-
-  final def toHashingEquivalence(implicit equivalence: Equivalence[A]): NormalizingHashingEquivalence[A] =
-    new NormalizingHashingEquivalence[A] {
-      override val afterNormalizationEquivalence = equivalence
-      def normalized(a: A): A = thisNormalization.normalized(a)
-    }
 }
 

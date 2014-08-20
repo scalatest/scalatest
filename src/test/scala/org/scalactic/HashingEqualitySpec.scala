@@ -23,13 +23,13 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class HashingEquivalenceSpec extends Spec with MustMatchers {
+class HashingEqualitySpec extends Spec with MustMatchers {
   object `A Normalization` {
-    def `can be converted to a HashingEquivalence via toHashingEquivalence` {
-      val hashEq = StringNormalizations.lowerCased.toHashingEquivalence
-      hashEq.hashFor("HI") mustEqual hashEq.hashFor("hi")
-      hashEq.hashFor("happy") mustEqual hashEq.hashFor("happy")
-      hashEq.hashFor("CamelCase") mustEqual hashEq.hashFor("cAmElCaSe")
+    def `can be converted to a HashingEquality via toHashingEquality` {
+      val hashEq = StringNormalizations.lowerCased.toHashingEquality
+      hashEq.hashCodeFor("HI") mustEqual hashEq.hashCodeFor("hi")
+      hashEq.hashCodeFor("happy") mustEqual hashEq.hashCodeFor("happy")
+      hashEq.hashCodeFor("CamelCase") mustEqual hashEq.hashCodeFor("cAmElCaSe")
     }
   }
 }

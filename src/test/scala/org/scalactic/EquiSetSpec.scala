@@ -23,10 +23,10 @@ import scala.collection.mutable.ListBuffer
 
 class EquiSetSpec extends UnitSpec {
   val lower = new EquiSets[String] {
-    val hashingEquivalence = StringNormalizations.lowerCased.toHashingEquivalence
+    val hashingEquality = StringNormalizations.lowerCased.toHashingEquality
   }
   val upper = new EquiSets[String] {
-    val hashingEquivalence = StringNormalizations.upperCased.toHashingEquivalence
+    val hashingEquality = StringNormalizations.upperCased.toHashingEquality
   }
   "An EquiSet" can "be constructed with empty" in {
     val emptySet = lower.EquiSet.empty

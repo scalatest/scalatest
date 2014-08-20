@@ -15,6 +15,6 @@
  */
 package org.scalactic
 
-trait NormalizingHashingEquivalence[A] extends NormalizingEquivalence[A] with HashingEquivalence[A] {
-  def hashFor(a: A): Int = normalized(a).hashCode
+trait NormalizingHashingEquality[A] extends NormalizingEquality[A] with HashingEquality[A] {
+  def hashCodeFor(a: A): Int = normalized(a).hashCode
 }

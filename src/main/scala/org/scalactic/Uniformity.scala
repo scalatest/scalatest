@@ -240,5 +240,13 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
       def normalizedCanHandle(b: Any): Boolean = thisUniformity.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = thisUniformity.normalizedOrSame(b)
     }
+
+  final def toHashingEquality(implicit equality: Equality[A]): NormalizingHashingEquality[A] =
+    new NormalizingHashingEquality[A] {
+      override val afterNormalizationEquality = equality
+      def normalized(a: A): A = thisUniformity.normalized(a)
+      def normalizedCanHandle(b: Any): Boolean = thisUniformity.normalizedCanHandle(b)
+      def normalizedOrSame(b: Any): Any = thisUniformity.normalizedOrSame(b)
+    }
 }
 

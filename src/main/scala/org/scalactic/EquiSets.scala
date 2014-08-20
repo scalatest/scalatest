@@ -17,7 +17,17 @@ package org.scalactic
 
 private[scalactic] trait EquiSets[T] { thisEquiSets =>
 
-  val hashingEquivalence: HashingEquivalence[T]
+  val hashingEquality: HashingEquality[T]
+
+/*
+  class Wrapped[T](o: T) {
+    override def equals(other: Any): Boolean = {
+      other match {
+      hashingEquality.areEqual(o, other)
+    }
+    override def toString: String = o.toString
+  }
+*/
 
   class EquiSet[T] private (underlying: Vector[T]) {
     def isEmpty: Boolean = underlying.isEmpty
