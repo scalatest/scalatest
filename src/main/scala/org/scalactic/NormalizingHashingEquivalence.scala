@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2014 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,6 @@
  */
 package org.scalactic
 
-private[scalactic] trait EquiSets[T] { thisEquiSets =>
-
-  val hashingEquivalence: HashingEquivalence[T]
-
-  class EquiSet[T] private (underlying: Vector[T]) {
-    def isEmpty: Boolean = underlying.isEmpty
-    def size: Int = underlying.size
-    // def union[E](that: thisEquiSets.EquiSet[T]) = 1
-  }
-  object EquiSet {
-    def empty: EquiSet[T] = new EquiSet(Vector.empty)
-    def apply(elems: T*): EquiSet[T] = 
-      new EquiSet(Vector(elems: _*))
-  }
+trait NormalizingHashingEquivalence[A] extends NormalizingEquivalence[A] with HashingEquivalence[A] {
+  def hashFor(a: A): Int = normalized(a).hashCode
 }
-
