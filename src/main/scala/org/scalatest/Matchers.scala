@@ -2973,6 +2973,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (noElementsOf List(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def noElementsOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    if (xs.distinct.size != xs.size)
+      throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
+    new ResultOfNoElementsOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
