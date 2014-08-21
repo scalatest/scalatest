@@ -51,20 +51,14 @@ class EquiSetSpec extends UnitSpec {
     trimmed.EquiSet("hi", "ho") union trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
     """lower.EquiSet(" hi ", "hi") union trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
   }
+  it should "have a toSet method" in {
+    lower.EquiSet("hi", "ho").toSet should === (Set(lower.Wrapped("hi"), lower.Wrapped("ho")))
+  }
+  it should "have a + method" in {
+    lower.EquiSet("hi", "ho") + "ha" shouldBe lower.EquiSet("hi", "ho", "ha")
+    lower.EquiSet("hi", "ho") + "HO" shouldBe lower.EquiSet("hi", "ho")
+  }
 /*
-  it can "be constructed as a Many" in {
-    val twosie = Many(2, 3)
-    twosie.length shouldBe 2
-    twosie(0) shouldBe 2
-    twosie(1) shouldBe 3
-  }
-  it can "be constructed as an Every" in {
-    val threesie = Every(1, 2, 3)
-    threesie.length shouldBe 3
-    threesie(0) shouldBe 1
-    threesie(1) shouldBe 2
-    threesie(2) shouldBe 3
-  }
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
     Every.from(List("1")) shouldBe Some(One("1"))
@@ -1090,11 +1084,6 @@ class EquiSetSpec extends UnitSpec {
     Every(1, 2, 3).toSeq should === (Seq(1, 2, 3))
     Many("a", "b").toSeq should === (Seq("a", "b"))
     One(1).toSeq should === (Seq(1))
-  }
-  it should "have a toSet method" in {
-    Every(1, 2, 3).toSet should === (Set(1, 2, 3))
-    Many("a", "b").toSet should === (Set("a", "b"))
-    One(1).toSet should === (Set(1))
   }
   it should "have a toStream method" in {
     Every(1, 2, 3).toStream should === (Stream(1, 2, 3))

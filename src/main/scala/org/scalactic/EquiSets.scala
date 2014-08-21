@@ -26,11 +26,7 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
     override def toString: String = s"Wrapped(${value.toString})"
   }
   class EquiSet private (private val underlying: Set[Wrapped]) {
-    def isEmpty: Boolean = underlying.isEmpty
-    def size: Int = underlying.size
-    def union[E](that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
-      new EquiSet(underlying union that.underlying)
-    override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    def + (o: T): thisEquiSets.EquiSet = new EquiSet(underlying + Wrapped(o))
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquiSets.EquiSet => 
@@ -38,6 +34,12 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
         case _ => false
       }
     override def hashCode: Int = underlying.hashCode
+    def isEmpty: Boolean = underlying.isEmpty
+    def size: Int = underlying.size
+    def toSet: Set[thisEquiSets.Wrapped] = underlying
+    override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    def union[E](that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+      new EquiSet(underlying union that.underlying)
   }
   object EquiSet {
     def empty: EquiSet = new EquiSet(Set.empty)
