@@ -16,22 +16,22 @@
 package org.scalactic
 
 class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
-  case class EquiBox(value: T) {
+  case class HashBox(value: T) {
     override def equals(o: Any): Boolean = 
       o match {
-        case other: EquiBox => hashingEquality.areEqual(value, other.value)
+        case other: HashBox => hashingEquality.areEqual(value, other.value)
         case _ => false
       }
     override def hashCode: Int = hashingEquality.hashCodeFor(value)
-    override def toString: String = s"EquiBox(${value.toString})"
+    override def toString: String = s"HashBox(${value.toString})"
   }
-  class EquiSet private (private val underlying: Set[EquiBox]) {
-    def + (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying + EquiBox(elem))
+  class EquiSet private (private val underlying: Set[HashBox]) {
+    def + (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying + HashBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.EquiSet =
-      new EquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
-    def - (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying - EquiBox(elem))
+      new EquiSet(underlying + (HashBox(elem1), HashBox(elem2), elem3.map(HashBox(_)): _*))
+    def - (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying - HashBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.EquiSet =
-      new EquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+      new EquiSet(underlying - (HashBox(elem1), HashBox(elem2), elem3.map(HashBox(_)): _*))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this diff that
@@ -48,7 +48,7 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
       new EquiSet(underlying intersect that.underlying)
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
-    def toSet: Set[thisEquiSets.EquiBox] = underlying
+    def toSet: Set[thisEquiSets.HashBox] = underlying
     override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
       new EquiSet(underlying union that.underlying)
@@ -56,7 +56,7 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
   object EquiSet {
     def empty: EquiSet = new EquiSet(Set.empty)
     def apply(elems: T*): EquiSet = 
-      new EquiSet(Set(elems.map(EquiBox(_)): _*))
+      new EquiSet(Set(elems.map(HashBox(_)): _*))
   }
   override def toString: String = s"EquiSets($hashingEquality)"
 }
