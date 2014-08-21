@@ -26,7 +26,17 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
     override def toString: String = s"Wrapped(${value.toString})"
   }
   class EquiSet private (private val underlying: Set[Wrapped]) {
-    def + (o: T): thisEquiSets.EquiSet = new EquiSet(underlying + Wrapped(o))
+    def + (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying + Wrapped(elem))
+    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.EquiSet =
+      new EquiSet(underlying + (Wrapped(elem1), Wrapped(elem2), elem3.map(Wrapped(_)): _*))
+    def - (elem: T): thisEquiSets.EquiSet = new EquiSet(underlying - Wrapped(elem))
+    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.EquiSet =
+      new EquiSet(underlying - (Wrapped(elem1), Wrapped(elem2), elem3.map(Wrapped(_)): _*))
+    def | (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this union that
+    def & (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this intersect that
+    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = this diff that
+    def diff(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+      new EquiSet(underlying diff that.underlying)
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquiSets.EquiSet => 
@@ -34,11 +44,13 @@ class EquiSets[T](val hashingEquality: HashingEquality[T]) { thisEquiSets =>
         case _ => false
       }
     override def hashCode: Int = underlying.hashCode
+    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+      new EquiSet(underlying intersect that.underlying)
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
     def toSet: Set[thisEquiSets.Wrapped] = underlying
     override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
-    def union[E](that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+    def union(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
       new EquiSet(underlying union that.underlying)
   }
   object EquiSet {

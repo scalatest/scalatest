@@ -46,17 +46,65 @@ class EquiSetSpec extends UnitSpec {
   it should "have a toString method" in {
     lower.EquiSet("hi", "ho").toString should === ("EquiSet(hi, ho)")
   }
+  it should "have a diff method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") diff lower.EquiSet("HI", "HO") shouldBe lower.EquiSet()
+    trimmed.EquiSet("hi", "ho") diff trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet()
+    """lower.EquiSet(" hi ", "hi") diff trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquiSet("hi", "ho") diff lower.EquiSet("ho") shouldBe lower.EquiSet("hi")
+    lower.EquiSet("hi", "ho", "let's", "go") diff lower.EquiSet("bo", "no", "go", "ho") shouldBe lower.EquiSet("hi", "let's")
+  }
+  it should "have a &~ method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") &~ lower.EquiSet("HI", "HO") shouldBe lower.EquiSet()
+    trimmed.EquiSet("hi", "ho") &~ trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet()
+    """lower.EquiSet(" hi ", "hi") &~ trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquiSet("hi", "ho") &~ lower.EquiSet("ho") shouldBe lower.EquiSet("hi")
+    lower.EquiSet("hi", "ho", "let's", "go") &~ lower.EquiSet("bo", "no", "go", "ho") shouldBe lower.EquiSet("hi", "let's")
+  }
+  it should "have an intersect method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") intersect lower.EquiSet("HI", "HO") shouldBe lower.EquiSet("hi", "ho")
+    trimmed.EquiSet("hi", "ho") intersect trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
+    """lower.EquiSet(" hi ", "hi") intersect trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquiSet("hi", "ho") intersect lower.EquiSet("ho") shouldBe lower.EquiSet("ho")
+    lower.EquiSet("hi", "ho", "let's", "go") intersect lower.EquiSet("bo", "no", "go", "ho") shouldBe lower.EquiSet("ho", "go")
+  }
+  it should "have an & method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") & lower.EquiSet("HI", "HO") shouldBe lower.EquiSet("hi", "ho")
+    trimmed.EquiSet("hi", "ho") & trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
+    """lower.EquiSet(" hi ", "hi") & trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquiSet("hi", "ho") & lower.EquiSet("ho") shouldBe lower.EquiSet("ho")
+    lower.EquiSet("hi", "ho", "let's", "go") & lower.EquiSet("bo", "no", "go", "ho") shouldBe lower.EquiSet("ho", "go")
+  }
   it should "have a union method that takes another EquiSet instance with the same path-dependant type" in {
     lower.EquiSet("hi", "ho") union lower.EquiSet("HI", "HO") shouldBe lower.EquiSet("hi", "ho")
     trimmed.EquiSet("hi", "ho") union trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
     """lower.EquiSet(" hi ", "hi") union trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
   }
+  it should "have a | method that takes another EquiSet instance with the same path-dependant type" in {
+    lower.EquiSet("hi", "ho") | lower.EquiSet("HI", "HO") shouldBe lower.EquiSet("hi", "ho")
+    trimmed.EquiSet("hi", "ho") | trimmed.EquiSet(" hi ", " ho ") shouldBe trimmed.EquiSet("hi", "ho")
+    """lower.EquiSet(" hi ", "hi") | trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
+  }
   it should "have a toSet method" in {
     lower.EquiSet("hi", "ho").toSet should === (Set(lower.Wrapped("hi"), lower.Wrapped("ho")))
   }
-  it should "have a + method" in {
+  it should "have a + method that takes one argument" in {
     lower.EquiSet("hi", "ho") + "ha" shouldBe lower.EquiSet("hi", "ho", "ha")
     lower.EquiSet("hi", "ho") + "HO" shouldBe lower.EquiSet("hi", "ho")
+  }
+  it should "have a + method that takes two or more arguments" in {
+    lower.EquiSet("hi", "ho") + ("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho") + ("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
+  }
+  it should "have a - method that takes one argument" in {
+    lower.EquiSet("hi", "ho", "ha") - "ha" shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") - "HO" shouldBe lower.EquiSet("hi")
+    lower.EquiSet("hi", "ho") - "who?" shouldBe lower.EquiSet("hi", "ho")
+  }
+  it should "have a - method that takes two or more arguments" in {
+    lower.EquiSet("hi", "ho", "ha") - ("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
+    lower.EquiSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") - ("HI", "HO") shouldBe lower.EquiSet.empty
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
