@@ -249,5 +249,14 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
       def normalizedOrSame(b: Any): Any = thisUniformity.normalizedOrSame(b)
       override def toString: String = s"NormalizingHashingEquality(${thisUniformity})"
     }
+
+  final def toOrderingEquality(implicit orderingEquality: OrderingEquality[A]): NormalizingOrderingEquality[A] =
+    new NormalizingOrderingEquality[A](orderingEquality) {
+      def normalized(a: A): A = thisUniformity.normalized(a)
+      def normalizedCanHandle(b: Any): Boolean = thisUniformity.normalizedCanHandle(b)
+      def normalizedOrSame(b: Any): Any = thisUniformity.normalizedOrSame(b)
+      override def toString: String = s"NormalizingOrderingEquality(${thisUniformity})"
+    }
 }
+
 
