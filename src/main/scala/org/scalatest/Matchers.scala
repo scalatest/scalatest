@@ -2983,7 +2983,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def noElementsOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
+      throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
     new ResultOfNoElementsOfApplication(xs)
   }
 
@@ -3996,6 +3996,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain noElementsOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+
+      val right = noElementsOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsNoneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain theSameElementsAs ("one")
      *                     ^
      * </pre>
@@ -4454,6 +4480,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain noElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
+      val right = elements.toList
+      if (right.distinct.size != right.size)
+        throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
+      doCollected(collected, xs, original, "noElementsOf", 1) { e =>
+        if (containing.containsNoneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
               e,
               right
             ),

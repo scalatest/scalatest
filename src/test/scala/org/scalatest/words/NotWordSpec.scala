@@ -2520,6 +2520,58 @@ class NotWordSpec extends Spec with FileMocks {
         )
       }
     }
+
+    object `contain(ResultOfNoElementsOfApplication) method returns MatcherFactory1` {
+
+      val mtf = not contain noElementsOf (List(1, 2))
+      val mt = mtf.matcher[List[Int]]
+
+      def `should have pretty toString` {
+        mtf.toString should be ("not contain noElementsOf (1, 2)")
+        mt.toString should be ("not contain noElementsOf (1, 2)")
+      }
+
+      val lhs = List(7, 8, 9)
+      val mr = mt(lhs)
+
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (false),
+          'failureMessage (FailureMessages("didNotContainAtLeastOneOf", lhs, List(1, 2))),
+          'negatedFailureMessage (FailureMessages("containedAtLeastOneOf", lhs, List(1, 2))),
+          'midSentenceFailureMessage (FailureMessages("didNotContainAtLeastOneOf", lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessage (FailureMessages("containedAtLeastOneOf", lhs, List(1, 2))),
+          'rawFailureMessage (FailureMessages("didNotContainAtLeastOneOf")),
+          'rawNegatedFailureMessage (FailureMessages("containedAtLeastOneOf")),
+          'rawMidSentenceFailureMessage (FailureMessages("didNotContainAtLeastOneOf")),
+          'rawMidSentenceNegatedFailureMessage (FailureMessages("containedAtLeastOneOf")),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+
+      val nmr = mr.negated
+
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (true),
+          'failureMessage (FailureMessages("containedAtLeastOneOf", lhs, List(1, 2))),
+          'negatedFailureMessage (FailureMessages("didNotContainAtLeastOneOf", lhs, List(1, 2))),
+          'midSentenceFailureMessage (FailureMessages("containedAtLeastOneOf", lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessage (FailureMessages("didNotContainAtLeastOneOf", lhs, List(1, 2))),
+          'rawFailureMessage (FailureMessages("containedAtLeastOneOf")),
+          'rawNegatedFailureMessage (FailureMessages("didNotContainAtLeastOneOf")),
+          'rawMidSentenceFailureMessage (FailureMessages("containedAtLeastOneOf")),
+          'rawMidSentenceNegatedFailureMessage (FailureMessages("didNotContainAtLeastOneOf")),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+    }
     
     object `contain(ResultOfTheSameElementsAsApplication) method returns MatcherFactory1` {
       

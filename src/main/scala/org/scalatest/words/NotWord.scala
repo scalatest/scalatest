@@ -1151,6 +1151,36 @@ final class NotWord {
       override def toString: String = "not contain " + Prettifier.default(noneOf)
     }
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain noElementsOf (5, 6, 7))
+   *                         ^
+   * </pre>
+   */
+  def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit containing: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = noElementsOf.right
+
+            MatchResult(
+              !containing.containsNoneOf(left, right),
+              Resources("didNotContainAtLeastOneOf"),
+              Resources("containedAtLeastOneOf"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(noElementsOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(noElementsOf)
+    }
+  }
   
   /**
    * This method enables the following syntax: 
