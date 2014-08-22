@@ -2444,6 +2444,29 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(org.exists(_ == 'b'))
           """.stripMargin)
       }
+
+      it("should do nothing when is used to check new String(\"test\") != \"test\"") {
+        assert(new String("test") == "test")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when is used to check new String(\"test\") != \"testing\"") {
+        val e = intercept[TestFailedException] {
+          assert(new String("test") == "testing")
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assert(new String("test") == "testing")
+              |       |                  |  |
+              |       "test"             |  "testing"
+              |                          false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
     }
 
     describe("The assert(boolean, clue) method") {
@@ -4789,6 +4812,29 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |val org = "abc"
             |assert(org.exists(_ == 'b'), "this is a clue")
           """.stripMargin)
+      }
+
+      it("should do nothing when is used to check new String(\"test\") != \"test\"") {
+        assert(new String("test") == "test", "this is a clue")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when is used to check new String(\"test\") != \"testing\"") {
+        val e = intercept[TestFailedException] {
+          assert(new String("test") == "testing", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assert(new String("test") == "testing", "this is a clue")
+              |       |                  |  |
+              |       "test"             |  "testing"
+              |                          false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
     }
 
@@ -7136,6 +7182,29 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assume(org.exists(_ == 'b'))
           """.stripMargin)
       }
+
+      it("should do nothing when is used to check new String(\"test\") != \"test\"") {
+        assume(new String("test") == "test")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check new String(\"test\") != \"testing\"") {
+        val e = intercept[TestCanceledException] {
+          assume(new String("test") == "testing")
+        }
+        e.message should be (
+          Some(
+            """
+              |
+              |assume(new String("test") == "testing")
+              |       |                  |  |
+              |       "test"             |  "testing"
+              |                          false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9481,6 +9550,29 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |val org = "abc"
             |assume(org.exists(_ == 'b'), "this is a clue")
           """.stripMargin)
+      }
+
+      it("should do nothing when is used to check new String(\"test\") != \"test\"") {
+        assume(new String("test") == "test", "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check new String(\"test\") != \"testing\"") {
+        val e = intercept[TestCanceledException] {
+          assume(new String("test") == "testing", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(new String("test") == "testing", "this is a clue")
+              |       |                  |  |
+              |       "test"             |  "testing"
+              |                          false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
     }
 
