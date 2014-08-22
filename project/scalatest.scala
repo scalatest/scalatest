@@ -7,7 +7,9 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
-
+ 
+  // To temporarily switch sbt to a different Scala version:
+  // > ++ 2.10.4
   val buildScalaVersion = "2.11.2"
 
   val releaseVersion = "2.2.3-SNAP1"
