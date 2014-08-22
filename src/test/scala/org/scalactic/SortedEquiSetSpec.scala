@@ -22,8 +22,8 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
 class SortedEquiSetSpec extends UnitSpec {
-  val lower = SortedEquiSets[String](StringNormalizations.lowerCased.toHashingEquality)
-  val trimmed = SortedEquiSets[String](StringNormalizations.trimmed.toHashingEquality)
+  val lower = SortedEquiSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val trimmed = SortedEquiSets[String](StringNormalizations.trimmed.toOrderingEquality)
   "An SortedEquiSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquiSet.empty
     emptySet shouldBe empty
@@ -105,6 +105,9 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
     lower.SortedEquiSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
     lower.SortedEquiSet("hi", "ho") - ("HI", "HO") shouldBe lower.SortedEquiSet.empty
+  }
+  it should "return an iterator that returns elements in sorted order" in {
+    lower.SortedEquiSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

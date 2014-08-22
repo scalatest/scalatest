@@ -21,7 +21,7 @@ package org.scalactic
 // areEqual. Reason is that we were at one point using NormalizingEquality as
 // a performance optimization somewhere. So it seems like this guy should also
 // be a NormalizingEquality.
-abstract class NormalizingOrderingEquality[A](orderingEquality: OrderingEquality[A]) extends NormalizingEquality[A] with OrderingEquality[A] { thisNormEq =>
+abstract class NormalizingOrderingEquality[A](orderingEquality: OrderingEquality[A]) extends NormalizingHashingEquality[A] with OrderingEquality[A] { thisNormEq =>
 
   // Inherit the final areEqual implementation from NormalizingEquality, adn provide this consistent
   // final compare method to go along with it.

@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-trait OrderingEquality[A] extends Equality[A] {
+trait OrderingEquality[A] extends HashingEquality[A] {
 
   def compare(a: A, b: A): Int
 
@@ -84,6 +84,7 @@ object OrderingEquality {
   implicit def defaultOrderingEqualityForString: OrderingEquality[String] =
     new OrderingEquality[String] {
       def compare(a: String, b: String): Int = a.compareTo(b)
+      def hashCodeFor(a: String): Int = a.hashCode
       def areEqual(a: String, b: Any): Boolean =
         b match {
           case s: String => a == s
