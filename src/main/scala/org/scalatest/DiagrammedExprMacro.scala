@@ -76,12 +76,15 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
    *
    * org.scalatest.DiagrammedExpr.simpleExpr(expr, anchorOfExpr)
    */
-  def simpleExpr(tree: Tree): Apply =
+  def simpleExpr(tree: Tree): Apply = {
     Apply(
       Select(
         Select(
           Select(
-            Ident(newTermName("org")),
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
             newTermName("scalatest")
           ),
           newTermName("DiagrammedExpr")
@@ -93,6 +96,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Literal(Constant(getAnchor(tree)))
       )
     )
+  }
 
   // A data holder for result of traverseApply
   case class ApplyInfo(select: Select, applyList: List[GenericApply])
@@ -138,7 +142,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
               newTermName("scalatest")
             ),
             newTermName("DiagrammedExpr")
@@ -266,7 +273,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
               newTermName("scalatest")
             ),
             newTermName("DiagrammedExpr")
@@ -359,6 +369,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def transformAst(tree: Tree): Tree = {
     tree match {
+      case Apply(Select(New(_), _), _) => simpleExpr(tree)  // delegate to simpleExpr if it is a New expression
       case apply: Apply if isXmlSugar(apply) => simpleExpr(tree)
       case apply: GenericApply => applyExpr(apply) // delegate to applyExpr if it is Apply
       case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.

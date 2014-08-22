@@ -1845,4 +1845,24 @@ class FrameworkSuite extends FunSuite {
       assert(configSet.head == PresentWithoutColor)
     }
   }
+
+  test("Framework.runner should not print out test succeeded event when -oC is passed") {
+    val runner = framework.runner(Array("-oC"), Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      val logger = new TestLogger
+      task.execute(testEventHandler, Array(logger))
+      assert(logger.infoReceived.length == 3)
+      assert(logger.infoReceived(0) == "SampleSuite:")
+      assert(logger.infoReceived(1) == "  + This is an alert! ")
+      assert(logger.infoReceived(2) == "  + This is an update! ")
+    }
+    finally {
+      runner.done()
+    }
+  }
 }

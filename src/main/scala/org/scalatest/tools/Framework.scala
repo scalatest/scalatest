@@ -327,24 +327,28 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean, 
+    presentReminderWithoutCanceledTests: Boolean,
+    configSet: Set[ReporterConfigParam],
     summaryCounter: SummaryCounter
   ) = {
     val reporters = 
       if (useSbtLogInfoReporter) {
-        val sbtLogInfoReporter = 
-          new SbtLogInfoReporter(
-            loggers, 
-            presentAllDurations,
-            presentInColor,
-            presentShortStackTraces,
-            presentFullStackTraces, // If they say both S and F, F overrules
-            presentUnformatted,
-            presentReminder,
-            presentReminderWithShortStackTraces,
-            presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests, 
-            summaryCounter
+        val sbtLogInfoReporter =
+          new FilterReporter(
+            new SbtLogInfoReporter(
+              loggers,
+              presentAllDurations,
+              presentInColor,
+              presentShortStackTraces,
+              presentFullStackTraces, // If they say both S and F, F overrules
+              presentUnformatted,
+              presentReminder,
+              presentReminderWithShortStackTraces,
+              presentReminderWithFullStackTraces,
+              presentReminderWithoutCanceledTests,
+              summaryCounter
+            ),
+          configSet
           )
         Vector(reporter, sbtLogInfoReporter)
       }
@@ -598,7 +602,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    configSet: Set[ReporterConfigParam]
   ) extends Task {
     
     def loadSuiteClass = {
@@ -664,7 +669,8 @@ class Framework extends SbtFramework {
             presentReminder,
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests, 
+            presentReminderWithoutCanceledTests,
+            configSet,
             summaryCounter
           )
 
@@ -820,6 +826,7 @@ class Framework extends SbtFramework {
     val presentReminderWithShortStackTraces: Boolean,
     val presentReminderWithFullStackTraces: Boolean,
     val presentReminderWithoutCanceledTests: Boolean,
+    val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long
@@ -857,7 +864,8 @@ class Framework extends SbtFramework {
           presentReminder,
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
+          presentReminderWithoutCanceledTests,
+          configSet
         )
     
     private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
@@ -1138,7 +1146,8 @@ class Framework extends SbtFramework {
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      configSet
     ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
         case Some(stdoutConfig) =>
@@ -1155,14 +1164,15 @@ class Framework extends SbtFramework {
             },
             configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithFullStackTraces),
-            configSet.contains(PresentReminderWithoutCanceledTests)
+            configSet.contains(PresentReminderWithoutCanceledTests),
+            configSet
           )
         case None =>
           // use stdout when it is sub-process runner, or when no reporter is specified
           // the reason that sub-process must use stdout is that the Array[Logger] is passed in from SBT only when the
           // suite is run, in the fork mode case this happens only at the sub-process side, the main process will not be
           // able to get the Array[Logger] to create SbtInfoLoggerReporter.
-          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false)
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
@@ -1197,7 +1207,8 @@ class Framework extends SbtFramework {
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests, 
+      presentReminderWithoutCanceledTests,
+      configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,
       slowpokeDetectionPeriod

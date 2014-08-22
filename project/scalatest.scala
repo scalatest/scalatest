@@ -7,11 +7,13 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
-
+ 
+  // To temporarily switch sbt to a different Scala version:
+  // > ++ 2.10.4
   val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.2.1"
-  val githubTag = "release-2.2.1-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.3-SNAP1"
+  val githubTag = "release-2.2.3-SNAP1-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -231,7 +233,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
-        "org.scalactic"
+        "org.scalactic",
+        "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
