@@ -812,6 +812,20 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain[R](oneElementOf: ResultOfOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+
+    val right = oneElementOf.right
+
+    if (evidence.containsOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
+          left,
+          right
+        )
+      )
+  }
+
   def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
 
     val right = atLeastOneOf.right

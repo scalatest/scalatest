@@ -224,6 +224,28 @@ final class ContainWord {
       override def toString: String = "contain oneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+  
+  def oneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("ContainWord.scala", "oneElementOf"))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              evidence.containsOneOf(left, right),
+              Resources("didNotContainOneElementOf"),
+              Resources("containedOneElementOf"), 
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain oneElementOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain oneElementOf " + Prettifier.default(right)
+    }
+  }
 
   def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     val right = firstEle :: secondEle :: remainingEles.toList

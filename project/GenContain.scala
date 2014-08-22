@@ -1142,7 +1142,9 @@ object GenContain {
         "List\\(\\)" -> "\\\"\\\"", 
         "Resources\\(\\\"didNotEqual\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"didNotEqual\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))", 
         //"Resources\\(\\\"equaled\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"equaled\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
-        "Resources\\(\\\"wasNotEqualTo\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"wasNotEqualTo\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))", 
+        "Resources\\(\\\"wasNotEqualTo\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"wasNotEqualTo\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
+        "FailureMessages\\(\\\"didNotEqual\\\", fumList, toList\\)" -> "FailureMessages(\"didNotEqual\", \"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
+        "FailureMessages\\(\\\"wasNotEqualTo\\\", fumList, toList\\)" -> "FailureMessages(\"wasNotEqualTo\", \"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
         "decorateToStringValue\\(\\\"1\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"2\\\"\\)" -> "decorateToStringValue(\"[1]\") + \" was not equal to \" + decorateToStringValue(\"[2]\")",
         "decorateToStringValue\\(\\\"2\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"1\\\"\\)" -> "decorateToStringValue(\"[2]\") + \" was not equal to \" + decorateToStringValue(\"[1]\")",
         "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"e\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[e]\")",
@@ -1213,7 +1215,24 @@ object GenContain {
     generateFile("ListShouldContainOneOfSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
-    
+
+    // Generate tests for oneElementOf
+    generateFile("ListShouldContainOneElementOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainOneElementOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainOneElementOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainOneElementOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainOneElementOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainOneElementOfLogicalOrSpec.scala", "String", stringMapping: _*)
+
     // Generate tests for noneOf
     generateFile("ListShouldContainNoneOfSpec.scala", "Option", optionMapping: _*)
     generateFile("ListShouldContainNoneOfLogicalAndSpec.scala", "Option", optionMapping: _*)

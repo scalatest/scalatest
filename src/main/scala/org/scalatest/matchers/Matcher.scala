@@ -53,6 +53,7 @@ import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfOneOfApplication
+import org.scalatest.words.ResultOfOneElementOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
 import org.scalatest.words.ResultOfNoneOfApplication
 import org.scalatest.words.ResultOfTheSameElementsAsApplication
@@ -798,6 +799,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain oneElementOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def oneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
+      outerInstance.and(MatcherWords.contain.oneElementOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -1641,11 +1653,22 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aMatcher and not contain oneOf (List(8, 1, 2))
+     * aMatcher and not contain oneOf (8, 1, 2)
      *                  ^
      * </pre>
      */
     def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
+      outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain oneElementOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfOneElementOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.and(MatcherWords.not.contain(right))
 
     /**
@@ -1954,6 +1977,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain oneElementOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def oneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
+      outerInstance.or(MatcherWords.contain.oneElementOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -2813,6 +2847,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain[R](right: ResultOfOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain oneElementOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfOneElementOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedIn] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**
