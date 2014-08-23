@@ -17,62 +17,72 @@ package org.scalactic
 
 import scala.collection.immutable.TreeSet
 
-class SortedEquiSets[T](val orderingEquality: OrderingEquality[T]) { thisSortedEquiSets =>
-  case class OrdBox(value: T) {
-    override def equals(o: Any): Boolean = 
-      o match {
-        case other: OrdBox => orderingEquality.areEqual(value, other.value)
-        case _ => false
-      }
-    override def hashCode: Int = orderingEquality.hashCodeFor(value)
-    override def toString: String = s"OrdBox(${value.toString})"
-  }
-  object OrdBox {
-    implicit val ordering: Ordering[thisSortedEquiSets.OrdBox] =
-      new Ordering[thisSortedEquiSets.OrdBox] {
-        def compare(a: thisSortedEquiSets.OrdBox, b: thisSortedEquiSets.OrdBox): Int =
-          orderingEquality.compare(a.value, b.value)
-      }
+class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends EquiSets[T](equality) { thisEquiSets =>
+
+  val ordering: Ordering[thisEquiSets.EquiBox] =
+    new Ordering[thisEquiSets.EquiBox] {
+      def compare(a: thisEquiSets.EquiBox, b: thisEquiSets.EquiBox): Int =
+        equality.compare(a.value, b.value)
+    }
+
+  trait SortedEquiSet extends EquiSet {
+    def + (elem: T): thisEquiSets.SortedEquiSet
+    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.SortedEquiSet
+    def - (elem: T): thisEquiSets.SortedEquiSet
+    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.SortedEquiSet
+    def | (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+    def & (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+    def diff(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+    def isEmpty: Boolean
+    def iterator: Iterator[T]
+    def size: Int
+    def toSet: Set[thisEquiSets.EquiBox]
+    def union(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
   }
 
-  class SortedEquiSet private (private val underlying: TreeSet[OrdBox]) {
-    def + (elem: T): thisSortedEquiSets.SortedEquiSet = new SortedEquiSet(underlying + OrdBox(elem))
-    def + (elem1: T, elem2: T, elem3: T*): thisSortedEquiSets.SortedEquiSet =
-      new SortedEquiSet(underlying + (OrdBox(elem1), OrdBox(elem2), elem3.map(OrdBox(_)): _*))
-    def - (elem: T): thisSortedEquiSets.SortedEquiSet = new SortedEquiSet(underlying - OrdBox(elem))
-    def - (elem1: T, elem2: T, elem3: T*): thisSortedEquiSets.SortedEquiSet =
-      new SortedEquiSet(underlying - (OrdBox(elem1), OrdBox(elem2), elem3.map(OrdBox(_)): _*))
-    def | (that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet = this union that
-    def & (that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet = this intersect that
-    def &~ (that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet = this diff that
-    def diff(that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet =
-      new SortedEquiSet(underlying diff that.underlying)
+  class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
+    def + (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying + EquiBox(elem))
+    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def - (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying - EquiBox(elem))
+    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def | (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this union that
+    def & (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this intersect that
+    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this diff that
+    def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =
       other match {
-        case equiSet: thisSortedEquiSets.SortedEquiSet => 
-          underlying == equiSet.underlying
+        case equiSet: thisEquiSets.EquiSet => 
+          underlying == equiSet.toSet
         case _ => false
       }
     override def hashCode: Int = underlying.hashCode
-    def intersect(that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet =
-      new SortedEquiSet(underlying intersect that.underlying)
+    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying intersect that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
-    def toSet: Set[thisSortedEquiSets.OrdBox] = underlying
-    override def toString: String = s"SortedEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
-    def union(that: thisSortedEquiSets.SortedEquiSet): thisSortedEquiSets.SortedEquiSet =
-      new SortedEquiSet(underlying union that.underlying)
+    def toSet: Set[thisEquiSets.EquiBox] = underlying
+    override def toString: String = s"TreeEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    def union(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
   }
   object SortedEquiSet {
-    def empty: SortedEquiSet = new SortedEquiSet(TreeSet.empty)
-    def apply(elems: T*): SortedEquiSet = 
-      new SortedEquiSet(TreeSet(elems.map(OrdBox(_)): _*))
+    def empty: SortedEquiSet = TreeEquiSet.empty
+    def apply(elems: T*): SortedEquiSet = TreeEquiSet(elems: _*)
   }
-  override def toString: String = s"SortedEquiSets($orderingEquality)"
+  object TreeEquiSet {
+    def empty: TreeEquiSet = new TreeEquiSet(TreeSet.empty(ordering))
+    def apply(elems: T*): TreeEquiSet = 
+      new TreeEquiSet(TreeSet(elems.map(EquiBox(_)): _*)(ordering))
+  }
 }
 
 object SortedEquiSets {
-  def apply[T](orderingEquality: OrderingEquality[T]): SortedEquiSets[T] = new SortedEquiSets(orderingEquality)
+  def apply[T](equality: OrderingEquality[T]): SortedEquiSets[T] = new SortedEquiSets(equality)
 }
 

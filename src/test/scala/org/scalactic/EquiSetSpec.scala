@@ -85,7 +85,7 @@ class EquiSetSpec extends UnitSpec {
     """lower.EquiSet(" hi ", "hi") | trimmed.EquiSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.EquiSet("hi", "ho").toSet should === (Set(lower.HashBox("hi"), lower.HashBox("ho")))
+    lower.EquiSet("hi", "ho").toSet should === (Set(lower.EquiBox("hi"), lower.EquiBox("ho")))
   }
   it should "have a + method that takes one argument" in {
     lower.EquiSet("hi", "ho") + "ha" shouldBe lower.EquiSet("hi", "ho", "ha")
