@@ -15,6 +15,7 @@
  */
 package org.scalactic
 
+import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
 
 class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends EquiSets[T](equality) { thisEquiSets =>
@@ -38,7 +39,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def isEmpty: Boolean
     def iterator: Iterator[T]
     def size: Int
-    def toSet: Set[thisEquiSets.EquiBox]
+    def toSet: SortedSet[thisEquiSets.EquiBox]
     def union(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
   }
 
@@ -66,7 +67,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
-    def toSet: Set[thisEquiSets.EquiBox] = underlying
+    def toSet: TreeSet[thisEquiSets.EquiBox] = underlying
     override def toString: String = s"TreeEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
