@@ -67,6 +67,7 @@ import org.scalatest.words.ResultOfOneOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
 import org.scalatest.words.ResultOfNoneOfApplication
+import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfTheSameElementsAsApplication
 import org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication
 import org.scalatest.words.ResultOfOnlyApplication
@@ -452,6 +453,17 @@ $endif$
      */
     def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory and contain noElementsOf (1, 2, 3)
+     *                             ^
+     * </pre>
+     */
+    def noElementsOf[R](elements: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
+      thisMatcherFactory.and(MatcherWords.contain.noElementsOf(elements))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1318,6 +1330,17 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
+     * aMatcherFactory and not contain noElementsOf (8, 1, 2)
+     *                         ^
+     * </pre>
+     */
+     def contain[R](right: ResultOfNoElementsOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
+       thisMatcherFactory.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
      * aMatcherFactory and not contain theSameElementsAs (List(8, 1, 2))
      *                         ^
      * </pre>
@@ -1633,6 +1656,17 @@ $endif$
      */
     def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or contain noElementsOf (1, 2, 3)
+     *                            ^
+     * </pre>
+     */
+    def noElementsOf[R](elements: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
+      thisMatcherFactory.or(MatcherWords.contain.noElementsOf(elements))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2493,6 +2527,17 @@ $endif$
      * </pre>
      */
     def contain[R](right: ResultOfNoneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
+      thisMatcherFactory.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or not contain noElementsOf (8, 1, 2)
+     *                        ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfNoElementsOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedIn] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
