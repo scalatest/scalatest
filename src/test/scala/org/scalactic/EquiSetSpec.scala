@@ -106,6 +106,137 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
     lower.EquiSet("hi", "ho") - ("HI", "HO") shouldBe lower.EquiSet.empty
   }
+  it should "return an iterator that returns the set's elements" in {
+    lower.EquiSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
+  }
+/*
+abstract def contains(elem: A): Boolean
+abstract def iterator: Iterator[A] 
+def &(that: GenSet[A]): Set[A]
+def &~(that: GenSet[A]): Set[A]
+def +(elem1: A, elem2: A, elems: A*): Set[A]
+def ++(elems: GenTraversableOnce[A]): Set[A]
+def ++[B](that: GenTraversableOnce[B]): Set[B]
+def ++:[B >: A, That](that: Traversable[B])(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def ++:[B](that: TraversableOnce[B]): Set[B]
+def -(elem1: A, elem2: A, elems: A*): Set[A]
+def --(xs: GenTraversableOnce[A]): Set[A]
+def /:[B](z: B)(op: (B, A) ⇒ B): B
+def :\[B](z: B)(op: (A, B) ⇒ B): B
+def addString(b: StringBuilder): StringBuilder
+def addString(b: StringBuilder, sep: String): StringBuilder
+def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder
+def aggregate[B](z: ⇒ B)(seqop: (B, A) ⇒ B, combop: (B, B) ⇒ B): B
+def andThen[A](g: (Boolean) ⇒ A): (A) ⇒ A
+def apply(elem: A): Boolean
+def canEqual(that: Any): Boolean
+def collect[B](pf: PartialFunction[A, B]): Set[B]
+def collectFirst[B](pf: PartialFunction[A, B]): Option[B]
+def companion: GenericCompanion[Set]
+def compose[A](g: (A) ⇒ A): (A) ⇒ Boolean
+def copyToArray(xs: Array[A], start: Int, len: Int): Unit
+def copyToArray(xs: Array[A]): Unit
+def copyToArray(xs: Array[A], start: Int): Unit
+def copyToBuffer[B >: A](dest: Buffer[B]): Unit
+def count(p: (A) ⇒ Boolean): Int
+def diff(that: GenSet[A]): Set[A]
+def drop(n: Int): Set[A]
+def dropRight(n: Int): Set[A]
+def dropWhile(p: (A) ⇒ Boolean): Set[A]
+def empty: Set[A]
+def equals(that: Any): Boolean
+def exists(p: (A) ⇒ Boolean): Boolean
+def filter(p: (A) ⇒ Boolean): Set[A]
+def filterNot(p: (A) ⇒ Boolean): Set[A]
+def find(p: (A) ⇒ Boolean): Option[A]
+def flatMap[B](f: (A) ⇒ GenTraversableOnce[B]): Set[B]
+def flatten[B]: Set[B]
+def fold[A1 >: A](z: A1)(op: (A1, A1) ⇒ A1): A1
+def foldLeft[B](z: B)(op: (B, A) ⇒ B): B
+def foldRight[B](z: B)(op: (A, B) ⇒ B): B
+def forall(p: (A) ⇒ Boolean): Boolean
+def foreach(f: (A) ⇒ Unit): Unit
+def genericBuilder[B]: Builder[B, Set[B]]
+def groupBy[K](f: (A) ⇒ K): immutable.Map[K, Set[A]]
+def grouped(size: Int): Iterator[Set[A]]
+def hasDefiniteSize: Boolean
+def hashCode(): Int
+def head: A
+def headOption: Option[A]
+def init: Set[A]
+def inits: Iterator[Set[A]]
+def intersect(that: GenSet[A]): Set[A]
+def isEmpty: Boolean
+final def isTraversableAgain: Boolean
+def last: A
+def lastOption: Option[A]
+def map[B](f: (A) ⇒ B): Set[B]
+def max: A
+def maxBy[B](f: (A) ⇒ B): A
+def min: A
+def minBy[B](f: (A) ⇒ B): A
+def mkString: String
+def mkString(sep: String): String
+def mkString(start: String, sep: String, end: String): String
+def nonEmpty: Boolean
+def par: ParSet[A]
+def partition(p: (A) ⇒ Boolean): (Set[A], Set[A])
+def product: A
+def reduce[A1 >: A](op: (A1, A1) ⇒ A1): A1
+def reduceLeft[B >: A](op: (B, A) ⇒ B): B
+def reduceLeftOption[B >: A](op: (B, A) ⇒ B): Option[B]
+def reduceOption[A1 >: A](op: (A1, A1) ⇒ A1): Option[A1]
+def reduceRight[B >: A](op: (A, B) ⇒ B): B
+def reduceRightOption[B >: A](op: (A, B) ⇒ B): Option[B]
+def repr: Set[A]
+def sameElements(that: GenIterable[A]): Boolean
+def scan[B >: A, That](z: B)(op: (B, B) ⇒ B)(implicit cbf: CanBuildFrom[Set[A], B, That]): That
+def scanLeft[B, That](z: B)(op: (B, A) ⇒ B)(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def scanRight[B, That](z: B)(op: (A, B) ⇒ B)(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def seq: Set[A]
+def size: Int
+def slice(from: Int, until: Int): Set[A]
+def sliding(size: Int, step: Int): Iterator[Set[A]]
+def sliding(size: Int): Iterator[Set[A]]
+def span(p: (A) ⇒ Boolean): (Set[A], Set[A])
+def splitAt(n: Int): (Set[A], Set[A])
+def stringPrefix: String
+def subsetOf(that: GenSet[A]): Boolean
+def subsets: Iterator[Set[A]]
+def subsets(len: Int): Iterator[Set[A]]
+def sum: A
+def tail: Set[A]
+def tails: Iterator[Set[A]]
+def take(n: Int): Set[A]
+def takeRight(n: Int): Set[A]
+def takeWhile(p: (A) ⇒ Boolean): Set[A]
+def to[Col[_]]: Col[A]
+def toArray: Array[A]
+def toBuffer[A1 >: A]: Buffer[A1]
+def toIndexedSeq: immutable.IndexedSeq[A]
+def toIterable: Iterable[A]
+def toIterator: Iterator[A]
+def toList: List[A]
+def toMap[T, U]: Map[T, U]
+def toParArray: ParArray[T]
+def toSeq: Seq[A]
+def toSet[B >: A]: immutable.Set[B]
+def toStream: immutable.Stream[A]
+def toString(): String
+def toTraversable: Traversable[A]
+def toVector: Vector[A]
+def transpose[B](implicit asTraversable: (A) ⇒ GenTraversableOnce[B]): Set[Set[B]]
+def union(that: GenSet[A]): Set[A]
+def unzip[A1, A2](implicit asPair: (A) ⇒ (A1, A2)): (Set[A1], Set[A2])
+def unzip3[A1, A2, A3](implicit asTriple: (A) ⇒ (A1, A2, A3)): (Set[A1], Set[A2], Set[A3])
+def view(from: Int, until: Int): IterableView[A, Set[A]]
+def view: IterableView[A, Set[A]]
+def withFilter(p: (A) ⇒ Boolean): FilterMonadic[A, Set[A]]
+def zip[B](that: GenIterable[B]): Set[(A, B)]
+def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
+def zipWithIndex: Set[(A, Int)]
+def |(that: GenSet[A]): Set[A] 
+*/
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

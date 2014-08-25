@@ -27,10 +27,61 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     }
 
   trait SortedEquiSet extends EquiSet {
+
+    /**
+     * Creates a new `SortedEquiSet` with an additional element, unless the element is
+     * already present.
+     *
+     * @param elem the element to be added
+     * @return a new `SortedEquiSet` that contains all elements of this `SortedEquiSet` and that also
+     * contains `elem`.
+     */
     def + (elem: T): thisEquiSets.SortedEquiSet
-    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.SortedEquiSet
+
+    /**
+     * Creates a new `SortedEquiSet` with additional elements.
+     *
+     * This method takes two or more elements to be added. Another overloaded
+     * variant of this method handles the case where a single element is added.
+     *
+     * @param elem1 the first element to add.
+     * @param elem2 the second element to add.
+     * @param elems the remaining elements to add.
+     * @return a new `SortedEquiSet` with the given elements added.
+     */
+    def + (elem1: T, elem2: T, elems: T*): thisEquiSets.SortedEquiSet
+
+    /**
+     * Creates a new `SortedEquiSet` with a given element removed from this `SortedEquiSet`.
+     *
+     * @param elem the element to be removed
+     * @return a new `SortedEquiSet` that contains all elements of this `SortedEquiSet` but that does not
+     * contain `elem`.
+     */
     def - (elem: T): thisEquiSets.SortedEquiSet
-    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.SortedEquiSet
+
+    /* * USE LATER
+     * Creates a new `SortedEquiSet` from this `SortedEquiSet` by removing all elements of another
+     * collection.
+     *
+     * @param xs the collection containing the removed elements.
+     * @return a new `SortedEquiSet` that contains all elements of the current `SortedEquiSet`
+     * except one less occurrence of each of the elements of `elems`.
+     */
+
+    /**
+     * Creates a new `SortedEquiSet` from this `SortedEquiSet` with some elements removed.
+     *
+     * This method takes two or more elements to be removed. Another overloaded
+     * variant of this method handles the case where a single element is
+     * removed.
+     * @param elem1 the first element to remove.
+     * @param elem2 the second element to remove.
+     * @param elems the remaining elements to remove.
+     * @return a new `SortedEquiSet` that contains all elements of the current `SortedEquiSet`
+     * except one less occurrence of each of the given elements.
+     */
+    def - (elem1: T, elem2: T, elems: T*): thisEquiSets.SortedEquiSet
     def | (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
     def & (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
@@ -45,11 +96,11 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
 
   class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
     def + (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying + EquiBox(elem))
-    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.TreeEquiSet =
-      new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def + (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
     def - (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying - EquiBox(elem))
-    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.TreeEquiSet =
-      new TreeEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def - (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
+      new TreeEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this diff that
