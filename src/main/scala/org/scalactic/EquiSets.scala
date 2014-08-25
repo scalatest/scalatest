@@ -83,10 +83,53 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      * except one less occurrence of each of the given elements.
      */
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
+
+    /**
+     * Computes the union between this `EquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `union`.
+     * @param that the `EquiSet` to form the union with.
+     * @return a new `EquiSet` consisting of all elements that are in this
+     * `EquiSet` or in the given `EquiSet` `that`.
+     */
     def | (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+
+    /**
+     * Computes the intersection between this `EquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `intersect`.
+     * @param that the `EquiSet` to intersect with.
+     * @return a new `EquiSet` consisting of all elements that are both in this
+     * `EquiSet` and in the given `EquiSet` `that`.
+     */
     def & (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+
+    /**
+     * The difference of this `EquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `diff`.
+     * @param that the `EquiSet` of elements to exclude.
+     * @return a `EquiSet` containing those elements of this
+     * `EquiSet` that are not also contained in the given `EquiSet` `that`.
+     */
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+
+    /**
+     * Computes the difference of this `EquiSet` and another `EquiSet`.
+     *
+     * @param that the `EquiSet` of elements to exclude.
+     * @return a `EquiSet` containing those elements of this
+     * `EquiSet` that are not also contained in the given `EquiSet` `that`.
+     */
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+
+    /**
+     * Computes the intersection between this `EquiSet` and another `EquiSet`.
+     *
+     * @param that the `EquiSet` to intersect with.
+     * @return a new `EquiSet` consisting of all elements that are both in this
+     * `EquiSet` and in the given `EquiSet` `that`.
+     */
     def intersect(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
     def isEmpty: Boolean
     def iterator: Iterator[T]

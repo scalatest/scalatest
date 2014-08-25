@@ -82,10 +82,53 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
      * except one less occurrence of each of the given elements.
      */
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.SortedEquiSet
+
+    /**
+     * Computes the union between this `SortedEquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `union`.
+     * @param that the `EquiSet` to form the union with.
+     * @return a new `SortedEquiSet` consisting of all elements that are in this
+     * `SortedEquiSet` or in the given `EquiSet` `that`.
+     */
     def | (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+
+    /**
+     * Computes the intersection between this `SortedEquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `intersect`.
+     * @param that the `EquiSet` to intersect with.
+     * @return a new `SortedEquiSet` consisting of all elements that are both in this
+     * `SortedEquiSet` and in the given `EquiSet` `that`.
+     */
     def & (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+
+    /**
+     * The difference of this `SortedEquiSet` and another `EquiSet`.
+     *
+     * '''Note:''' Same as `diff`.
+     * @param that the `EquiSet` of elements to exclude.
+     * @return a `SortedEquiSet` containing those elements of this
+     * `SortedEquiSet` that are not also contained in the given `EquiSet` `that`.
+     */
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+
+    /**
+     * Computes the difference of this `SortedEquiSet` and another `EquiSet`.
+     *
+     * @param that the `EquiSet` of elements to exclude.
+     * @return a `SortedEquiSet` containing those elements of this
+     * `SortedEquiSet` that are not also contained in the given `EquiSet` `that`.
+     */
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
+
+    /**
+     * Computes the intersection between this `SortedEquiSet` and another `EquiSet`.
+     *
+     * @param that the `EquiSet` to intersect with.
+     * @return a new `SortedEquiSet` consisting of all elements that are both in this
+     * `SortedEquiSet` and in the given `EquiSet` `that`.
+     */
     def intersect(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
     def isEmpty: Boolean
     def iterator: Iterator[T]

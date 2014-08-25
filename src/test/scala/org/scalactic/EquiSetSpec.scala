@@ -114,7 +114,6 @@ abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
 def &(that: GenSet[A]): Set[A]
 def &~(that: GenSet[A]): Set[A]
-def +(elem1: A, elem2: A, elems: A*): Set[A]
 def ++(elems: GenTraversableOnce[A]): Set[A]
 def ++[B](that: GenTraversableOnce[B]): Set[B]
 def ++:[B >: A, That](that: Traversable[B])(implicit bf: CanBuildFrom[Set[A], B, That]): That
@@ -235,7 +234,6 @@ def withFilter(p: (A) ⇒ Boolean): FilterMonadic[A, Set[A]]
 def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
-def |(that: GenSet[A]): Set[A] 
 */
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
