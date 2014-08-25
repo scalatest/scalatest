@@ -1252,6 +1252,26 @@ object GenContain {
     generateFile("ListShouldContainNoneOfSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainNoneOfLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainNoneOfLogicalOrSpec.scala", "String", stringMapping: _*)
+
+    // Generate tests for noElementsOf
+    //generateFile("ListShouldContainNoElementsOfSpec.scala", "Option", optionMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "Option", optionMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "Option", optionMapping: _*)
+    generateFile("ListShouldContainNoElementsOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainNoElementsOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainNoElementsOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainNoElementsOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainNoElementsOfLogicalOrSpec.scala", "String", stringMapping: _*)
     
     // Generate tests for theSameElementsAs
     generateFile("ListShouldContainTheSameElementsAsSpec.scala", "Array", arrayMapping: _*)
