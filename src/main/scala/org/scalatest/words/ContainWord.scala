@@ -290,6 +290,28 @@ final class ContainWord {
       override def toString: String = "contain noneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def noElementsOf[R](elements: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("ContainWord.scala", "noElementsOf"))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+      def matcher[T](implicit containing: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              containing.containsNoneOf(left, right),
+              Resources("containedAtLeastOneOf"),
+              Resources("didNotContainAtLeastOneOf"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
+        }
+      }
+      override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
+    }
+  }
   
   def theSameElementsAs[R, C](right: C)(implicit collecting: Collecting[R, C]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {

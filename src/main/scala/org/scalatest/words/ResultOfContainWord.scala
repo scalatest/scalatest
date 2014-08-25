@@ -102,6 +102,28 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain noElementsOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[L]) {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "noElementsOf"))
+    if (containing.containsNoneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
+          left,
+          right
+        )
+      )
+  }
   
   /**
    * This method enables the following syntax: 
