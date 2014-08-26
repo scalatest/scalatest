@@ -245,7 +245,16 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * <code>org.scalatest.path.FreeSpec</code>.
      */
     def - (fun: => Unit) {
-      handleNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", "FreeSpecLike.scala", "-", 3, -2, None)
+      try {
+        handleNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", "FreeSpecLike.scala", "-", 3, -2, None)
+      }
+      catch {
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case tgce: exceptions.TestRegistrationClosedException => throw tgce
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDashClause", UnquotedString(other.getClass.getName), string), Some(other), e => 3)
+        case other: Throwable => throw other
+      }
     }
 
     /**

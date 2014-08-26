@@ -21,8 +21,14 @@ import SharedHelpers._
 import org.scalatest.path.{ FunSpec => PathFunSpec }
 import org.scalatest.events._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import java.lang.annotation.AnnotationFormatError
+import java.awt.AWTError
+import java.nio.charset.CoderMalfunctionError
+import javax.xml.parsers.FactoryConfigurationError
+import javax.xml.transform.TransformerFactoryConfigurationError
 
 class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
@@ -924,6 +930,169 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 15)
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
+
+    "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          val a = 1
+          assert(a == 2)
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause")))
+
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(causeThrowable.isInstanceOf[TestFailedException])
+      val cause = causeThrowable.asInstanceOf[TestFailedException]
+      assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+    }
+
+    "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          val a = 1
+          assume(a == 2)
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause")))
+
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(causeThrowable.isInstanceOf[TestCanceledException])
+      val cause = causeThrowable.asInstanceOf[TestCanceledException]
+      assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
+      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+    }
+
+    "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new RuntimeException("on purpose")
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+
+      assert(causeThrowable.isInstanceOf[RuntimeException])
+      val cause = causeThrowable.asInstanceOf[RuntimeException]
+      assert(cause.getMessage == "on purpose")
+    }
+
+    "should propagate AnnotationFormatError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new AnnotationFormatError("on purpose")
+        }
+      }
+      val e = intercept[AnnotationFormatError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    "should propagate AWTError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new AWTError("on purpose")
+        }
+      }
+      val e = intercept[AWTError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    "should propagate CoderMalfunctionError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+        }
+      }
+      val e = intercept[CoderMalfunctionError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+    }
+
+    "should propagate FactoryConfigurationError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new FactoryConfigurationError("on purpose")
+        }
+      }
+      val e = intercept[FactoryConfigurationError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    "should propagate LinkageError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new LinkageError("on purpose")
+        }
+      }
+      val e = intercept[LinkageError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    "should propagate ThreadDeath when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new ThreadDeath
+        }
+      }
+      val e = intercept[ThreadDeath] {
+        new TestSpec
+      }
+      assert(e.getMessage == null)
+    }
+
+    "should propagate TransformerFactoryConfigurationError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new TransformerFactoryConfigurationError("on purpose")
+        }
+      }
+      val e = intercept[TransformerFactoryConfigurationError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    "should propagate VirtualMachineError when it is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        describe("a feature") {
+          throw new VirtualMachineError("on purpose") {}
+        }
+      }
+      val e = intercept[VirtualMachineError] {
+        new TestSpec
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
   }
 }
 

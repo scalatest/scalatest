@@ -121,7 +121,16 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
                 }
               }
               val scopeLocation = TopOfClass(m.getReturnType.getName)
-              registerNestedBranch(scopeDesc, None, scopeFun, "registrationAlreadyClosed", sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
+              try {
+                registerNestedBranch(scopeDesc, None, scopeFun, "registrationAlreadyClosed", sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
+              }
+              catch {
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideDefNotObject"), Some(e), e => 8)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideDefNotObject"), Some(e), e => 8)
+                case dtne: exceptions.DuplicateTestNameException => throw dtne
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInObject", UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case other: Throwable => throw other
+              }
             }
             else {
               val methodName = m.getName

@@ -22,6 +22,7 @@ package org.scalatest.exceptions
  * of that suite will fail with a <code>NotAllowedException</code>.
  *
  * @param message a string that explains the problem
+ * @param cause an optional cause
  * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *    something not allowed resides.
  *
@@ -29,8 +30,8 @@ package org.scalatest.exceptions
  *
  * @author Bill Venners
  */
-class NotAllowedException(message: String, failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
+class NotAllowedException(message: String, cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int)
+    extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
 
   if (message == null) throw new NullPointerException("message was null")
   if (failedCodeStackDepthFun == null) throw new NullPointerException("failedCodeStackDepthFun was null")
@@ -45,7 +46,18 @@ class NotAllowedException(message: String, failedCodeStackDepthFun: StackDepthEx
    *
    * @throws NullPointerException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepth: Int) = this(message, e => failedCodeStackDepth)
+  def this(message: String, failedCodeStackDepth: Int) = this(message, None, e => failedCodeStackDepth)
+
+  /**
+   * Construct a <code>NotAllowedException</code> with pre-determined <code>message</code> and
+   * a function that returns the depth in the stack trace of this exception at which the line of code that attempted.
+   *
+   * @param message the exception's detail message
+   * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
+   *
+   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   */
+  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, failedCodeStackDepthFun)
 
   /**
    * Returns an exception of class <code>NotAllowedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 

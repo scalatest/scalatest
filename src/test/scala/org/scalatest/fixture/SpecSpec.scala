@@ -23,9 +23,15 @@ import org.scalatest.Suite._
 import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
                         Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, Specs, 
                         Reporter, Distributor, OptionValues, NotAllowedException, Resources, DoNotDiscover, WrapWith, 
-                        ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
+                        ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome, FailureMessages,
+                        UnquotedString }
 import org.scalatest.SharedHelpers._
 import org.scalatest.tools.Runner.CHOSEN_STYLES
+import java.lang.annotation.AnnotationFormatError
+import java.awt.AWTError
+import java.nio.charset.CoderMalfunctionError
+import javax.xml.parsers.FactoryConfigurationError
+import javax.xml.transform.TransformerFactoryConfigurationError
 
 class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
@@ -1680,7 +1686,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       
       class ExampleSpec extends Spec with StringFixture {
         object `A Scope` {
-          throw new IllegalArgumentException("boom!")
+          throw new AnnotationFormatError("boom!")
           def `Test 1` {}
           def `Test 2` {}
           def `Test 3` {}
@@ -1688,7 +1694,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       
       val s = new ExampleSpec
-      intercept[IllegalArgumentException] {
+      intercept[AnnotationFormatError] {
         s.run(None, Args(reporter = SilentReporter))
       }
     }
@@ -2481,6 +2487,212 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some("SpecSpec.scala"))
+    }
+
+    it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          val a = 1
+          assert(a == 2)
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert("SpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideDefNotObject")))
+
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(causeThrowable.isInstanceOf[TestFailedException])
+      val cause = causeThrowable.asInstanceOf[TestFailedException]
+      assert("SpecSpec.scala" == cause.failedCodeFileName.get)
+      assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
+      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+    }
+
+    it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          val a = 1
+          assume(a == 2)
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert("SpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideDefNotObject")))
+
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(causeThrowable.isInstanceOf[TestCanceledException])
+      val cause = causeThrowable.asInstanceOf[TestCanceledException]
+      assert("SpecSpec.scala" == cause.failedCodeFileName.get)
+      assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
+      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+    }
+
+    it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new RuntimeException("on purpose")
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert("SpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages("exceptionWasThrownInObject", UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
+
+      assert(causeThrowable.isInstanceOf[RuntimeException])
+      val cause = causeThrowable.asInstanceOf[RuntimeException]
+      assert(cause.getMessage == "on purpose")
+    }
+
+    it("should propagate AnnotationFormatError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new AnnotationFormatError("on purpose")
+        }
+      }
+      val e = intercept[AnnotationFormatError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    it("should propagate AWTError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new AWTError("on purpose")
+        }
+      }
+      val e = intercept[AWTError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    it("should propagate CoderMalfunctionError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new CoderMalfunctionError(new RuntimeException("on purpose"))
+        }
+      }
+      val e = intercept[CoderMalfunctionError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "java.lang.RuntimeException: on purpose")
+    }
+
+    it("should propagate FactoryConfigurationError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new FactoryConfigurationError("on purpose")
+        }
+      }
+      val e = intercept[FactoryConfigurationError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    it("should propagate LinkageError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new LinkageError("on purpose")
+        }
+      }
+      val e = intercept[LinkageError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    it("should propagate ThreadDeath when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new ThreadDeath
+        }
+      }
+      val e = intercept[ThreadDeath] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == null)
+    }
+
+    it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new TransformerFactoryConfigurationError("on purpose")
+        }
+      }
+      val e = intercept[TransformerFactoryConfigurationError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
+    }
+
+    it("should propagate VirtualMachineError when it is thrown inside scope") {
+      class TestSpec extends Spec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        object `a feature` {
+          throw new VirtualMachineError("on purpose") {}
+        }
+      }
+      val e = intercept[VirtualMachineError] {
+        val spec = new TestSpec
+        val rep = new EventRecordingReporter
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      }
+      assert(e.getMessage == "on purpose")
     }
   }
 }
