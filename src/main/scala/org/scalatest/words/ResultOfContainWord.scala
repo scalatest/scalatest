@@ -257,6 +257,28 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain allElementsOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "allElementsOf"))
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
+          left,
+          right
+        )
+      )
+  }
   
   /**
    * This method enables the following syntax: 

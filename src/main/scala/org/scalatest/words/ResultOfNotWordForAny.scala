@@ -940,6 +940,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+
+    val right = only.right
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
+          left,
+          right
+        )
+      )
+  }
+
   def contain[R](only: ResultOfInOrderApplication[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
 
     val right = only.right

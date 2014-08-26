@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2014 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +19,23 @@ import org.scalactic.Prettifier
 import org.scalatest._
 import Matchers._
 
-class ResultOfNoElementsOfApplicationSpec extends Spec {
+class ResultOfAllElementsOfApplicationSpec extends Spec {
 
-  object `ResultOfNoElementsOfApplication ` {
+  object `ResultOfAllElementsOfApplication ` {
 
     def `should have pretty toString when right is empty` {
-      val result = new ResultOfNoElementsOfApplication(Vector.empty)
-      result.toString should be ("noElementsOf (Vector())")
+      val result = new ResultOfAllElementsOfApplication(Vector.empty)
+      result.toString should be ("allElementsOf (Vector())")
     }
 
     def `should have pretty toString when right contains 1 element` {
-      val result = new ResultOfNoElementsOfApplication(Vector("Bob"))
-      result.toString should be ("noElementsOf (Vector(\"Bob\"))")
+      val result = new ResultOfAllElementsOfApplication(Vector("Bob"))
+      result.toString should be ("allElementsOf (Vector(\"Bob\"))")
     }
 
     def `should have pretty toString when right contains > 1 elements` {
-      val result = new ResultOfNoElementsOfApplication(Vector("Bob", "Alice"))
-      result.toString should be ("noElementsOf (Vector(\"Bob\", \"Alice\"))")
+      val result = new ResultOfAllElementsOfApplication(Vector("Bob", "Alice"))
+      result.toString should be ("allElementsOf (Vector(\"Bob\", \"Alice\"))")
     }
   }
 
