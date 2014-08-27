@@ -2976,6 +2976,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atLeastOneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def atLeastOneElementOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    if (xs.distinct.size != xs.size)
+      throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
+    new ResultOfAtLeastOneElementOfApplication(xs)
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
    * List(1, 2, 3) should contain (noElementsOf List(1, 2))
    *                               ^
    * </pre>
@@ -3985,6 +4000,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain atLeastOneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+
+      val right = atLeastOneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAtLeastOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain noneOf ("one")
      *                     ^
      * </pre>
@@ -4579,6 +4620,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain atLeastOneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+      val right = elements.toList
+      if (right.distinct.size != right.size)
+        throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
+      doCollected(collected, xs, original, "atLeastOneElementOf", 1) { e =>
+        if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
+              e,
+              right
+            ),
+            None,
+            6
+          )
       }
     }
 
