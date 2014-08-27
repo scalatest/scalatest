@@ -300,7 +300,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + "List(1, 2, 3)" + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + decorateToStringValue(List(1, 2, 3)) + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -350,7 +350,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + "List(1, 2, 3)" + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + decorateToStringValue(List(1, 2, 3)) + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -396,7 +396,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + "List(\"you\", \"to\")" +  " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + decorateToStringValue(List("you", "to")) +  " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -436,7 +436,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + "List(\"you\", \"to\")" + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + decorateToStringValue(List("you", "to")) + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -476,7 +476,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + "List(\"you\", \"to\")" +  " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + decorateToStringValue(List("you", "to")) +  " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -516,7 +516,7 @@ class EveryShouldContainAllElementsOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainAllElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + "List(\"you\", \"to\")" + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("happy", "to", "you")) + " contained all elements of " + decorateToStringValue(List("you", "to")) + " (EveryShouldContainAllElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {

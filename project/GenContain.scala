@@ -1156,6 +1156,8 @@ object GenContain {
         "decorateToStringValue\\(\\\"8234\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[8234]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")",
         "decorateToStringValue\\(\\\"8432\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[8432]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")",
         "decorateToStringValue\\(\\\"8432\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3210\\\"\\)" -> "decorateToStringValue(\"[8432]\") + \" was not equal to \" + decorateToStringValue(\"[3210]\")",
+        "decorateToStringValue\\(lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3210\\\"\\)" -> "decorateToStringValue(\"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[3210]\")",
+        "decorateToStringValue\\(list1s\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"234\\\"\\)" -> "decorateToStringValue(\"[\" + list1s(0) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[234]\")",
         "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"321\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[321]\")", 
         "decorateToStringValue\\(\\\"234\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"123\\\"\\)" -> "decorateToStringValue(\"[234]\") + \" was not equal to \" + decorateToStringValue(\"[123]\")",
         "decorateToStringValue\\(\\\"234\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"1233\\\"\\)" -> "decorateToStringValue(\"[234]\") + \" was not equal to \" + decorateToStringValue(\"[1233]\")",
@@ -1347,6 +1349,23 @@ object GenContain {
     generateFile("ListShouldContainAllOfLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainAllOfLogicalOrSpec.scala", "String", stringMapping: _*)
       
+    // Generate tests for allElementsOf
+    generateFile("ListShouldContainAllElementsOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAllElementsOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAllElementsOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAllElementsOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAllElementsOfLogicalOrSpec.scala", "String", stringMapping: _*)
+
     // Generate tests for inOrderOnly
     generateFile("ListShouldContainInOrderOnlySpec.scala", "Array", arrayMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "Array", arrayMapping: _*)

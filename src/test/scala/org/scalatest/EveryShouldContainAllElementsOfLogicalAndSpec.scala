@@ -450,17 +450,17 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (contain allElementsOf Seq(1, 2, 3) and contain allElementsOf Seq(1, 3, 2))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + "List(1, 2, 3)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + decorateToStringValue(List(1, 2, 3)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (list1s) should (contain allElementsOf Seq(1, 2, 3) and contain allElementsOf Seq(1, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " contained all elements of " + "List(1, 2, 3)" + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + "List(1, 3, 4)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " contained all elements of " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + decorateToStringValue(List(1, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (contain allElementsOf Seq("hi", "hello") and contain allElementsOf Seq("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hi\", \"hello\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -471,12 +471,12 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (contain allElementsOf Seq("HO", "HELLO") and contain allElementsOf Seq("HI", "HELLO"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (contain allElementsOf Seq("HELLO", "HI") and contain allElementsOf Seq("HO", "HELLO"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -484,12 +484,12 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain allElementsOf Seq("HO", "HELLO") and contain allElementsOf Seq("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (contain allElementsOf Seq("HELLO", "HI") and contain allElementsOf Seq("HO", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -525,17 +525,17 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           all (list1s) should (be_== (Many(3, 2, 1, 0)) and contain allElementsOf Seq(2, 3, 8))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(Many(3, 2, 1, 0)) + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + "List(2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(Many(3, 2, 1, 0)) + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + decorateToStringValue(List(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (be_== (Many("howdy", "hi", "hello")) and contain allElementsOf Seq("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (list1s) should (be_== (Many(3, 2, 1, 0)) and contain allElementsOf Seq(2, 3, 8))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(Many(3, 2, 1, 0)) + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + "List(2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(Many(3, 2, 1, 0)) + ", but " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all elements of " + decorateToStringValue(List(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -551,7 +551,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (be_== (Many("howdy", "hi", "hello")) and contain allElementsOf Seq("HO", "HELLO"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -564,7 +564,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (be_== (Many("howdy", "hi", "hello")) and contain allElementsOf Seq("HO", "HELLO"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -588,22 +588,22 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not contain allElementsOf (Seq(2, 3, 4)) and not contain allElementsOf (Seq(8, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + "List(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (lists) should (not contain allElementsOf (Seq(3, 6, 8)) and not contain allElementsOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + "List(3, 6, 8)" + ", but " + decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + "List(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all elements of " + decorateToStringValue(List(3, 6, 8)) + ", but " + decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not contain allElementsOf (Seq("hello", "hi")) and not contain allElementsOf (Seq("ho", "hey", "howdy")))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not contain allElementsOf (Seq("ho", "hey", "howdy")) and not contain allElementsOf (Seq("hello", "hi")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"ho\", \"hey\", \"howdy\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("ho", "hey", "howdy")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -614,12 +614,12 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not contain allElementsOf (Seq("HELLO", "HI")) and not contain allElementsOf (Seq("HO", "HE")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not contain allElementsOf (Seq("HO", "HE")) and not contain allElementsOf (Seq("HELLO", "HI")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HE\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HE")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -627,12 +627,12 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain allElementsOf (Seq("HELLO", "HI")) and not contain allElementsOf (Seq("HO", "HE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not contain allElementsOf (Seq("HO", "HE")) and not contain allElementsOf (Seq("HELLO", "HI")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HO\", \"HE\")" + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all elements of " + decorateToStringValue(List("HO", "HE")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -668,7 +668,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           all (lists) should (not be_== (One(3)) and not contain allElementsOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " was not equal to " + decorateToStringValue(One(3)) + ", but " + decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + "List(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " was not equal to " + decorateToStringValue(One(3)) + ", but " + decorateToStringValue(Many(8, 4, 3, 2)) + " contained all elements of " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not be_== (Many("howdy", "hi", "hello")) and not contain allElementsOf (Seq("ho", "hey", "howdy")))
@@ -678,7 +678,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not be_== (One("ho")) and not contain allElementsOf (Seq("hello", "hi")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -694,7 +694,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not be_== (One("ho")) and not contain allElementsOf (Seq("HI", "HELLO")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -707,7 +707,7 @@ class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not be_== (One("ho")) and not contain allElementsOf (Seq("HI", "HELLO")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all elements of " + decorateToStringValue(List("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {

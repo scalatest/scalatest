@@ -414,7 +414,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (contain allElementsOf Seq(3, 1, 2) or contain allElementsOf Seq(1, 3, 2))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(8, 4, 3, 2)) + " did not contain all elements of " + "List(3, 1, 2)" + ", and " + decorateToStringValue(List(8, 4, 3, 2)) + " did not contain all elements of " + "List(1, 3, 2)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(lists(2)) + " did not contain all elements of " + decorateToStringValue(Seq(3, 1, 2)) + ", and " + decorateToStringValue(lists(2)) + " did not contain all elements of " + decorateToStringValue(Seq(1, 3, 2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -427,7 +427,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (contain allElementsOf Seq("HELLO", "HO") or contain allElementsOf Seq("hello", "ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HELLO", "HO")) + ", and " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -438,7 +438,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain allElementsOf Seq("HELLO", "HO") or contain allElementsOf Seq("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HELLO", "HO")) + ", and " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -468,7 +468,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (list1s) should (be_== (List(2, 3, 4)) or contain allElementsOf Seq(2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(3, 2, 1, 0)) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(List(3, 2, 1, 0)) + " did not contain all elements of " + "List(2, 3, 4)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(list1s(0)) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(list1s(0)) + " did not contain all elements of " + decorateToStringValue(Seq(2, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -481,7 +481,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (be_== (List("ho", "hello")) or contain allElementsOf Seq("HELLO", "HO"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HELLO", "HO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -492,7 +492,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be_== (List("ho", "hello")) or contain allElementsOf Seq("HELLO", "HO"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " did not contain all elements of " + "List(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HELLO", "HO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -515,7 +515,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not contain allElementsOf (Seq(4, 2, 3)) or not contain allElementsOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(8, 4, 3, 2)) + " contained all elements of " + "List(4, 2, 3)" + ", and " + decorateToStringValue(List(8, 4, 3, 2)) + " contained all elements of " + "List(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(lists(2)) + " contained all elements of " + decorateToStringValue(Seq(4, 2, 3)) + ", and " + decorateToStringValue(lists(2)) + " contained all elements of " + decorateToStringValue(Seq(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -528,7 +528,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not contain allElementsOf (Seq("HELLO", "HI")) or not contain allElementsOf (Seq("hello", "hi")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")) + ", and " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -539,7 +539,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain allElementsOf (Seq("HELLO", "HI")) or not contain allElementsOf (Seq("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")) + ", and " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -569,7 +569,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (list1s) should (not be_== (List(3, 2, 1, 0)) or not contain allElementsOf (Seq(2, 3, 1)))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(List(3, 2, 1, 0)) + ", and " + decorateToStringValue(List(3, 2, 1, 0)) + " contained all elements of " + "List(2, 3, 1)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(list1s(0)) + " was equal to " + decorateToStringValue(List(3, 2, 1, 0)) + ", and " + decorateToStringValue(list1s(0)) + " contained all elements of " + decorateToStringValue(Seq(2, 3, 1)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -582,7 +582,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not be_== (List("howdy", "hi", "hello")) or not contain allElementsOf (Seq("HELLO", "HI")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(List("howdy", "hi", "hello")) + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was equal to " + decorateToStringValue(List("howdy", "hi", "hello")) + ", and " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -593,7 +593,7 @@ class ListShouldContainAllElementsOfLogicalOrSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be_== (List("howdy", "hi", "hello")) or not contain allElementsOf (Seq("HELLO", "HI")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(List("howdy", "hi", "hello")) + ", and " + decorateToStringValue(List("howdy", "hi", "hello")) + " contained all elements of " + "List(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was equal to " + decorateToStringValue(List("howdy", "hi", "hello")) + ", and " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
