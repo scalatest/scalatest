@@ -1200,7 +1200,24 @@ object GenContain {
     generateFile("ListShouldContainAtLeastOneOfSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainAtLeastOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainAtLeastOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
-    
+
+    // Generate tests for atLeastOneElementOf
+    generateFile("ListShouldContainAtLeastOneElementOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", "String", stringMapping: _*)
+
     // Generate tests for oneOf
     generateFile("ListShouldContainOneOfSpec.scala", "Array", arrayMapping: _*)
     generateFile("ListShouldContainOneOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
