@@ -66,6 +66,7 @@ import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfOneOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
+import org.scalatest.words.ResultOfAtLeastOneElementOfApplication
 import org.scalatest.words.ResultOfNoneOfApplication
 import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfTheSameElementsAsApplication
@@ -443,6 +444,17 @@ $endif$
      */
     def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory and contain atLeastOneElementOf (1, 2, 3)
+     *                             ^
+     * </pre>
+     */
+    def atLeastOneElementOf[R](elements: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
+      thisMatcherFactory.and(MatcherWords.contain.atLeastOneElementOf(elements))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1331,6 +1343,17 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
+     * aMatcherFactory and not contain atLeastOneOf (8, 1, 2)
+     *                         ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfAtLeastOneElementOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
+      thisMatcherFactory.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
      * aMatcherFactory and not contain noneOf (8, 1, 2)
      *                         ^
      * </pre>
@@ -1668,6 +1691,17 @@ $endif$
      */
     def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or contain atLeastOneOf (1, 2, 3)
+     *                            ^
+     * </pre>
+     */
+    def atLeastOneElementOf[R](elements: GenTraversable[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
+      thisMatcherFactory.or(MatcherWords.contain.atLeastOneElementOf(elements))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2551,6 +2585,17 @@ $endif$
      */
     def contain[R](right: ResultOfAtLeastOneOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or not contain atLeastOneElementOf (8, 1, 2)
+     *                        ^
+     * </pre>
+     */
+     def contain[R](right: ResultOfAtLeastOneElementOfApplication[R]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, EvidenceThat[R]#CanBeContainedInAggregation] =
+       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

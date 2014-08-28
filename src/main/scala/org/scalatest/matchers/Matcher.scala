@@ -785,7 +785,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
       outerInstance.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
-    
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain atLeastOneElementOf (1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def atLeastOneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
+      outerInstance.and(MatcherWords.contain.atLeastOneElementOf(elements))
+
     /**
      * This method enables the following syntax:
      *
@@ -1650,11 +1661,22 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aMatcher and not contain atLeastOneOf (List(8, 1, 2))
+     * aMatcher and not contain atLeastOneOf (8, 1, 2)
      *                  ^
      * </pre>
      */
     def contain[R](right: ResultOfAtLeastOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
+      outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain atLeastOneElementOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfAtLeastOneElementOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -2007,6 +2029,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
       outerInstance.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain atLeastOneElementOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def atLeastOneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
+      outerInstance.or(MatcherWords.contain.atLeastOneElementOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -2888,6 +2921,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain[R](right: ResultOfAtLeastOneOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain atLeastOneElementOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfAtLeastOneElementOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInAggregation] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**
