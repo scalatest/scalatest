@@ -101,6 +101,13 @@ trait ContainingConstraint[-C, R] {
    * @return true if the passed container contains none of the passed elements
    */
   def containsNoneOf(container: C, elements: scala.collection.Seq[R]): Boolean
+
+/*
+  def indexOf(container: C, element: R, from: Int): Boolean
+  def lastIndexOf(container: C, element: R, from: Int): Boolean
+  def indexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
+  def lastIndexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
+*/
 }
 
 /*
@@ -204,6 +211,20 @@ object ContainingConstraint {
         val found = checkNoneOf[E, R](javaColl.asScala, elements, constraint)
         !found.isDefined
       }
+/*
+      def indexOf(javaColl: JCOL[E], element: R, from: Int): Int = {
+        val it: java.util.Iterator[E] = javaColl.iterator
+        var found = false
+        var index = -1
+        while (!found && it.hasNext) {
+          index += 1
+          if (index >= from)
+            found = constraint.areEqual(it.next, element)
+          else it.next
+        }
+        if (found) index else -1
+      }
+*/
     }
 
   import scala.language.implicitConversions

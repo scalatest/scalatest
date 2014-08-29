@@ -235,7 +235,7 @@ class EverySpec extends UnitSpec {
     fn(0) shouldBe 2
     fn(1) shouldBe 3
   }
-  it should "have an contains method" in {
+  it should "have an contains method that does a type check" in {
     val e = Every(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
@@ -243,6 +243,16 @@ class EverySpec extends UnitSpec {
     e.contains(2) shouldBe true
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
+    e.contains("five") shouldBe false
+    new CheckedEquality {
+      """e.contains("five")""" shouldNot typeCheck
+      val es = Every("one", "two", "three")
+      es.contains("ONE") shouldBe false;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.contains("ONE") shouldBe true
+      }
+    }
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
@@ -465,12 +475,30 @@ class EverySpec extends UnitSpec {
     One("hi").headOption shouldBe Some("hi")
     Many(1, 2, 3).headOption shouldBe Some(1)
   }
-  it should "have 2 indexOf methods" in {
+  it should "have 2 indexOf methods that do a type check" in {
     Every(1, 2, 3, 4, 5).indexOf(3) shouldBe 2
     Every(1, 2, 3, 4, 5).indexOf(1) shouldBe 0
     Every(1, 2, 3, 4, 5).indexOf(1, 2) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf(6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
+
+/*
+    Every(1, 2, 3, 4, 5).indexOf("six") shouldBe -1
+    Every(1, 2, 3, 4, 5).indexOf("five", 3) shouldBe -1
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).indexOf("six")""" shouldNot typeCheck
+      """Every(1, 2, 3, 4, 5).indexOf("five", 3)""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.indexOf("THREE") shouldBe -1
+      es.indexOf("FIVE", 3) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.indexOf("THREE") shouldBe 2
+        es.indexOf("ONE", 2) shouldBe -1
+        es.indexOf("FIVE", 3) shouldBe 4
+      }
+    }
+*/
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
     Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
@@ -549,6 +577,7 @@ class EverySpec extends UnitSpec {
   }
   it should "have 2 lastIndexOf methods" in {
     Every(1, 2, 3, 4, 5).lastIndexOf(2) shouldBe 1
+    Every(1, 2, 3, 4, 5, 1).lastIndexOf(1) shouldBe 5
     Every(1, 2, 3, 4, 5).lastIndexOf(0) shouldBe -1
     Every(1, 2, 3, 4, 5).lastIndexOf(5) shouldBe 4
     Every(1, 2, 3, 3, 5).lastIndexOf(3) shouldBe 3
@@ -556,6 +585,24 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 3) shouldBe 1
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 0) shouldBe -1
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 1) shouldBe 1
+
+/*
+    Every(1, 2, 3, 4, 5).lastIndexOf("six") shouldBe -1
+    Every(1, 2, 3, 4, 5).lastIndexOf("five", 3) shouldBe -1
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).lastIndexOf("six")""" shouldNot typeCheck
+      """Every(1, 2, 3, 4, 5).lastIndexOf("five", 3)""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.lastIndexOf("THREE") shouldBe -1
+      es.lastIndexOf("FIVE", 3) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.lastIndexOf("TWO") shouldBe 1
+        es.lastIndexOf("ONE", 2) shouldBe -1
+        es.lastIndexOf("FIVE", 3) shouldBe 4
+      }
+    }
+*/
   }
   it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List(2, 3)) shouldBe 1
