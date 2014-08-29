@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfNoElementsOfApplication[R](val right: scala.collection.Seq[R]) {
-  override def toString: String = "noElementsOf (" + Prettifier.default(right) + ")"
+class ResultOfAtLeastOneElementOfApplication[R](val right: scala.collection.Seq[R]) {
+  override def toString: String = "atLeastOneElementOf (" + Prettifier.default(right) + ")"
 }

@@ -840,6 +840,20 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+
+    val right = atLeastOneElementOf.right
+
+    if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
+          left,
+          right
+        )
+      )
+  }
+
   def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
 
     val right = noneOf.right
@@ -936,6 +950,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+
+  def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+
+    val right = only.right
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
+          left,
+          right
         )
       )
   }

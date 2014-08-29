@@ -268,6 +268,28 @@ final class ContainWord {
       override def toString: String = "contain atLeastOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def atLeastOneElementOf[R](elements: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("ContainWord.scala", "atLeastOneElementOf"))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAtLeastOneOf(left, right),
+              Resources("didNotContainAtLeastOneElementOf"),
+              Resources("containedAtLeastOneElementOf"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
+    }
+  }
   
   def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
     val right = firstEle :: secondEle :: remainingEles.toList
@@ -420,6 +442,28 @@ final class ContainWord {
         }
       }
       override def toString: String = "contain allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
+    }
+  }
+
+  def allElementsOf[R](elements: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("ContainWord.scala", "allElementsOf"))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+      def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAllOf(left, right),
+              Resources("didNotContainAllElementsOf"),
+              Resources("containedAllElementsOf"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain allElementsOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain allElementsOf " + Prettifier.default(right)
     }
   }
   

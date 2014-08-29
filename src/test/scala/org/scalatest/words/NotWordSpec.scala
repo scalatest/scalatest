@@ -2527,8 +2527,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[List[Int]]
 
       def `should have pretty toString` {
-        mtf.toString should be ("not contain noElementsOf (1, 2)")
-        mt.toString should be ("not contain noElementsOf (1, 2)")
+        mtf.toString should be ("not contain noElementsOf (List(1, 2))")
+        mt.toString should be ("not contain noElementsOf (List(1, 2))")
       }
 
       val lhs = List(7, 8, 9)
@@ -2831,6 +2831,58 @@ class NotWordSpec extends Spec with FileMocks {
           'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
           'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
           'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
+        )
+      }
+    }
+
+    object `contain(ResultOfAllElementsOfApplication) method returns MatcherFactory1` {
+
+      val mtf = not contain allElementsOf (List(1, 2))
+      val mt = mtf.matcher[List[Int]]
+
+      def `should have pretty toString` {
+        mtf.toString should be ("not contain allElementsOf (List(1, 2))")
+        mt.toString should be ("not contain allElementsOf (List(1, 2))")
+      }
+
+      val lhs = List(1, 2, 3)
+      val mr = mt(lhs)
+
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (false),
+          'failureMessage (lhs + " contained all elements of List(1, 2)"),
+          'negatedFailureMessage (lhs + " did not contain all elements of List(1, 2)"),
+          'midSentenceFailureMessage (lhs + " contained all elements of List(1, 2)"),
+          'midSentenceNegatedFailureMessage (lhs + " did not contain all elements of List(1, 2)"),
+          'rawFailureMessage ("{0} contained all elements of {1}"),
+          'rawNegatedFailureMessage ("{0} did not contain all elements of {1}"),
+          'rawMidSentenceFailureMessage ("{0} contained all elements of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all elements of {1}"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+
+      val nmr = mr.negated
+
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (true),
+          'failureMessage (lhs + " did not contain all elements of List(1, 2)"),
+          'negatedFailureMessage (lhs + " contained all elements of List(1, 2)"),
+          'midSentenceFailureMessage (lhs + " did not contain all elements of List(1, 2)"),
+          'midSentenceNegatedFailureMessage (lhs + " contained all elements of List(1, 2)"),
+          'rawFailureMessage ("{0} did not contain all elements of {1}"),
+          'rawNegatedFailureMessage ("{0} contained all elements of {1}"),
+          'rawMidSentenceFailureMessage ("{0} did not contain all elements of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} contained all elements of {1}"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
         )
       }
     }
