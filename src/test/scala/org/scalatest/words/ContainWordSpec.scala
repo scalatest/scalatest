@@ -1029,6 +1029,58 @@ class ContainWordSpec extends Spec {
         )
       }
     }
+
+    object `atMostOneElementOf(elements) method returns MatcherFactory1` {
+
+      val mtf = contain atMostOneElementOf List(1, 2)
+      val mt = mtf.matcher[List[Int]]
+
+      def `should have pretty toString` {
+        mtf.toString should be ("contain atMostOneElementOf (List(1, 2))")
+        mt.toString should be ("contain atMostOneElementOf (List(1, 2))")
+      }
+
+      val lhs = List(1, 6, 8)
+      val mr = mt(lhs)
+
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (true),
+          'failureMessage (lhs + " did not contain at most one element of List(1, 2)"),
+          'negatedFailureMessage (lhs + " contained at most one element of List(1, 2)"),
+          'midSentenceFailureMessage (lhs + " did not contain at most one element of List(1, 2)"),
+          'midSentenceNegatedFailureMessage (lhs + " contained at most one element of List(1, 2)"),
+          'rawFailureMessage ("{0} did not contain at most one element of {1}"),
+          'rawNegatedFailureMessage ("{0} contained at most one element of {1}"),
+          'rawMidSentenceFailureMessage ("{0} did not contain at most one element of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} contained at most one element of {1}"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+
+      val nmr = mr.negated
+
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (false),
+          'failureMessage (lhs + " contained at most one element of List(1, 2)"),
+          'negatedFailureMessage (lhs + " did not contain at most one element of List(1, 2)"),
+          'midSentenceFailureMessage (lhs + " contained at most one element of List(1, 2)"),
+          'midSentenceNegatedFailureMessage (lhs + " did not contain at most one element of List(1, 2)"),
+          'rawFailureMessage ("{0} contained at most one element of {1}"),
+          'rawNegatedFailureMessage ("{0} did not contain at most one element of {1}"),
+          'rawMidSentenceFailureMessage ("{0} contained at most one element of {1}"),
+          'rawMidSentenceNegatedFailureMessage ("{0} did not contain at most one element of {1}"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+    }
     
   }
   
