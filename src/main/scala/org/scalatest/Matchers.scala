@@ -4679,8 +4679,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * option should contain theSameElementsAs (1, 2)
-     *                       ^
+     * list should contain theSameElementsAs (List(1, 2))
+     *                     ^
      * </pre>
      */
     def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
