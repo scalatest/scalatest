@@ -94,6 +94,16 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
 
     /**
+     * Creates a new $coll from this $coll by removing all elements of another
+     *  collection.
+     *
+     *  @param elems     the collection containing the removed elements.
+     *  @return a new $coll that contains all elements of the current $coll
+     *  except one less occurrence of each of the elements of `elems`.
+     */
+    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+
+    /**
      * Computes the union between this `EquiSet` and another `EquiSet`.
      *
      * '''Note:''' Same as `union`.
@@ -156,6 +166,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def - (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
+      new HashEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this diff that

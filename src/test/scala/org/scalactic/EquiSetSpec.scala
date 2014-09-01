@@ -119,6 +119,22 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
     lower.EquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
   }
+  it should "have a -- method that takes a GenTraversableOnce" in {
+    lower.EquiSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
+    lower.EquiSet("hi", "ho") -- List("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") -- List("HI", "HO") shouldBe lower.EquiSet.empty
+
+    lower.EquiSet("hi", "ho", "ha") -- Set("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
+    lower.EquiSet("hi", "ho") -- Set("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") -- Set("HI", "HO") shouldBe lower.EquiSet.empty
+
+    lower.EquiSet("hi", "ho", "ha") -- Vector("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
+    lower.EquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.EquiSet.empty
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

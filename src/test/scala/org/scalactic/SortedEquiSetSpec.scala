@@ -109,6 +109,32 @@ class SortedEquiSetSpec extends UnitSpec {
   it should "return an iterator that returns elements in sorted order" in {
     lower.SortedEquiSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
   }
+  it should "have a ++ method that takes a GenTraversableOnce" in {
+    lower.SortedEquiSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+    lower.SortedEquiSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+
+    lower.SortedEquiSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+    lower.SortedEquiSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+
+    lower.SortedEquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+    lower.SortedEquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+  }
+  it should "have a -- method that takes a GenTraversableOnce" in {
+    lower.SortedEquiSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
+    lower.SortedEquiSet("hi", "ho") -- List("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho") -- List("HI", "HO") shouldBe lower.SortedEquiSet.empty
+
+    lower.SortedEquiSet("hi", "ho", "ha") -- Set("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
+    lower.SortedEquiSet("hi", "ho") -- Set("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho") -- Set("HI", "HO") shouldBe lower.SortedEquiSet.empty
+
+    lower.SortedEquiSet("hi", "ho", "ha") -- Vector("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
+    lower.SortedEquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.SortedEquiSet.empty
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

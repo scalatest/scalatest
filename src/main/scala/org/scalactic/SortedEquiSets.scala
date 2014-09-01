@@ -147,6 +147,8 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def - (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
+    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
+      new TreeEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this diff that
