@@ -94,14 +94,50 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
 
     /**
-     * Creates a new $coll from this $coll by removing all elements of another
+     * Creates a new `EquiSet` from this $coll by removing all elements of another
      *  collection.
      *
      *  @param elems     the collection containing the removed elements.
-     *  @return a new $coll that contains all elements of the current $coll
+     *  @return a new `EquiSet` that contains all elements of the current $coll
      *  except one less occurrence of each of the elements of `elems`.
      */
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+
+    /**
+     * Applies a binary operator to a start value and all elements of this $coll,
+     *  going left to right.
+     *
+     *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
+     *  `xs foldLeft z`.
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (5 /: a)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (5 /: a)((x,y) => x + y)
+     *      c: Int = 15
+     *  }}}
+     *
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  @param   z    the start value.
+     *  @param   op   the binary operator.
+     *  @tparam  B    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *           going left to right with the start value `z` on the left:
+     *           {{{
+     *             op(...op(op(z, x_1), x_2), ..., x_n)
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     */
+    def /:[B](z: B)(op: (B, T) => B): B
 
     /**
      * Computes the union between this `EquiSet` and another `EquiSet`.
@@ -168,6 +204,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
       new HashEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
+    def /:[B](z: B)(op: (B, T) => B): B =
+      underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this diff that

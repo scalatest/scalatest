@@ -22,6 +22,12 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
 class EquiSetSpec extends UnitSpec {
+  def normalHashingEquality[T] =
+    new HashingEquality[T] {
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
+  val number = EquiSets[Int](normalHashingEquality[Int])
   val lower = EquiSets[String](StringNormalizations.lowerCased.toHashingEquality)
   val trimmed = EquiSets[String](StringNormalizations.trimmed.toHashingEquality)
   "An EquiSet" can "be constructed with empty" in {
@@ -134,6 +140,12 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
     lower.EquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
     lower.EquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.EquiSet.empty
+  }
+  it should "have a /: method" in {
+    (0 /: number.EquiSet(1))(_ + _) shouldBe 1
+    (1 /: number.EquiSet(1))(_ + _) shouldBe 2
+    (0 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 6
+    (1 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 7
   }
 /*
 abstract def contains(elem: A): Boolean
