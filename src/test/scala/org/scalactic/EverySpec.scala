@@ -48,7 +48,11 @@ class EverySpec extends UnitSpec {
     Every.from(List("1").par) shouldBe Some(One("1"))
     Every.from(List(1, 2, 3).par) shouldBe Some(Many(1, 2, 3))
   }
-  it can "not be constructed with any null elements" is pending
+  it can "be constructed with null elements" in {
+    noException should be thrownBy Every("hi", null, "ho")
+    noException should be thrownBy One(null)
+    noException should be thrownBy Many("ho", null)
+  }
   it can "be deconstructed with One" in {
     One(1) match {
       case One(x) => x shouldEqual 1
