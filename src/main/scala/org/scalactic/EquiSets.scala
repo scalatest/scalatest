@@ -15,6 +15,8 @@
  */
 package org.scalactic
 
+import scala.collection.GenTraversableOnce
+
 class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
 
   case class EquiBox(value: T) {
@@ -51,6 +53,13 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      * @return a new `EquiSet` with the given elements added.
      */
     def + (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
+
+    /** Creates a new `EquiSet` by adding all elements contained in another collection to this `EquiSet`.
+      *
+      *  @param elems     the collection containing the added elements.
+      *  @return          a new `EquiSet` with the given elements added.
+      */
+    def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
 
     /**
      * Creates a new `EquiSet` with a given element removed from this `EquiSet`.
@@ -142,6 +151,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def + (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+    def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
+      new HashEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
     def - (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))

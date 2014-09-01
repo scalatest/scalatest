@@ -109,6 +109,16 @@ class EquiSetSpec extends UnitSpec {
   it should "return an iterator that returns the set's elements" in {
     lower.EquiSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
   }
+  it should "have a ++ method that takes a GenTraversableOnce" in {
+    lower.EquiSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
+
+    lower.EquiSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
+
+    lower.EquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
