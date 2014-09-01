@@ -138,7 +138,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def union(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
   }
 
-  class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
+  private class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
     def + (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
@@ -168,7 +168,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def union(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
   }
-  object HashEquiSet {
+  private object HashEquiSet {
     def empty: HashEquiSet = new HashEquiSet(Set.empty)
     def apply(elems: T*): HashEquiSet = 
       new HashEquiSet(Set(elems.map(EquiBox(_)): _*))

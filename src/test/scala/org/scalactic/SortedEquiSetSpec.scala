@@ -44,7 +44,7 @@ class SortedEquiSetSpec extends UnitSpec {
     // instance for Size and Length for SortedEquiSet.
   }
   it should "have a toString method" in {
-    lower.SortedEquiSet("hi", "ho").toString should === ("TreeEquiSet(hi, ho)")
+    lower.SortedEquiSet("hi", "ho").toString should === ("SortedEquiSet(hi, ho)")
   }
   it should "have a diff method that takes another SortedEquiSet instance with the same path-dependant type" in {
     lower.SortedEquiSet("hi", "ho") diff lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet()

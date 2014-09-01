@@ -137,7 +137,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def union(that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
   }
 
-  class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
+  private class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
     def + (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
@@ -162,7 +162,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquiSets.EquiBox] = underlying
-    override def toString: String = s"TreeEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    override def toString: String = s"SortedEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
   }
@@ -170,7 +170,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def empty: SortedEquiSet = TreeEquiSet.empty
     def apply(elems: T*): SortedEquiSet = TreeEquiSet(elems: _*)
   }
-  object TreeEquiSet {
+  private object TreeEquiSet {
     def empty: TreeEquiSet = new TreeEquiSet(TreeSet.empty(ordering))
     def apply(elems: T*): TreeEquiSet = 
       new TreeEquiSet(TreeSet(elems.map(EquiBox(_)): _*)(ordering))
