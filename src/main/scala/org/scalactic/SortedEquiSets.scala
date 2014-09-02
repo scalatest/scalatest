@@ -268,6 +268,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
+    def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

@@ -327,6 +327,15 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B
 
     /**
+     * Tests if some element is contained in this set.
+     *
+     *  This method is equivalent to `contains`. It allows sets to be interpreted as predicates.
+     *  @param elem the element to test for membership.
+     *  @return  `true` if `elem` is contained in this set, `false` otherwise.
+     */
+    def apply(elem: T): Boolean
+
+    /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -375,6 +384,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
+    def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

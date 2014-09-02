@@ -183,6 +183,18 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
     lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquiSet())(_ + _, _ ++ _) shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
   }
+  it should "have an apply method" in {
+    val a = number.SortedEquiSet(1, 2, 3)
+    a(2) shouldEqual true
+    a(5) shouldEqual false
+
+    val b = lower.SortedEquiSet("hi")
+    b("hi") shouldEqual true
+    b("Hi") shouldEqual true
+    b("hI") shouldEqual true
+    b("HI") shouldEqual true
+    b("he") shouldEqual false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
