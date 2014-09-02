@@ -146,6 +146,12 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
     lower.SortedEquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.SortedEquiSet.empty
   }
+  it should "have a -- method that takes another EquiSet" in {
+    lower.SortedEquiSet("hi", "ho", "ha") -- lower.EquiSet("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquiSet("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
+    lower.SortedEquiSet("hi", "ho") -- lower.EquiSet("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.SortedEquiSet("hi", "ho") -- lower.EquiSet("HI", "HO") shouldBe lower.SortedEquiSet.empty
+  }
   it should "have a /: method" in {
     (0 /: number.SortedEquiSet(1))(_ + _) shouldBe 1
     (1 /: number.SortedEquiSet(1))(_ + _) shouldBe 2

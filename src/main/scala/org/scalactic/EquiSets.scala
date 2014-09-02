@@ -102,7 +102,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
 
     /**
-     * Creates a new `EquiSet` from this $coll by removing all elements of another
+     * Creates a new `EquiSet` from this `EquiSet` by removing all elements of another
      *  collection.
      *
      *  @param elems     the collection containing the removed elements.
@@ -110,6 +110,14 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      *  except one less occurrence of each of the elements of `elems`.
      */
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+
+    /**
+     * Creates a new `EquiSet` from this `EquiSet` by removing all elements of another `EquiSet`
+     *
+     * @param that       the other `EquiSet` containing the removed elements.
+     * @return a new `EquiSet` that contains all elements of the current `EquiSet` minus elements contained in the passed in `EquiSet`.
+     */
+    def --(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
 
     /**
      * Applies a binary operator to a start value and all elements of this `EquiSet`,
@@ -354,6 +362,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
       new HashEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
+    def --(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
+      new HashEquiSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
     def :\[B](z: B)(op: (T, B) => B): B =

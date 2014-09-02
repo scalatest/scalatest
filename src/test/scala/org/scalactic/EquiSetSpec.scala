@@ -145,6 +145,12 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
     lower.EquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.EquiSet.empty
   }
+  it should "have a -- method that takes another EquiSet" in {
+    lower.EquiSet("hi", "ho", "ha") -- lower.EquiSet("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquiSet("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
+    lower.EquiSet("hi", "ho") -- lower.EquiSet("who", "goes", "thar") shouldBe lower.EquiSet("hi", "ho")
+    lower.EquiSet("hi", "ho") -- lower.EquiSet("HI", "HO") shouldBe lower.EquiSet.empty
+  }
   it should "have a /: method" in {
     (0 /: number.EquiSet(1))(_ + _) shouldBe 1
     (1 /: number.EquiSet(1))(_ + _) shouldBe 2
