@@ -67,7 +67,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      * @param that     the other `EquiSet` containing the added elements.
      * @return         a new `EquiSet` with the given elements added.
      */
-    def ++ (that: EquiSet): thisEquiSets.EquiSet
+    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
 
     /**
      * Creates a new `EquiSet` with a given element removed from this `EquiSet`.
@@ -356,7 +356,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
       new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
       new HashEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
-    def ++ (that: EquiSet): thisEquiSets.EquiSet = new HashEquiSet(underlying ++ that.toSet)
+    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = new HashEquiSet(underlying ++ that.toSet)
     def - (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
