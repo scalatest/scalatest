@@ -98,13 +98,13 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      *  collection.
      *
      *  @param elems     the collection containing the removed elements.
-     *  @return a new `EquiSet` that contains all elements of the current $coll
+     *  @return a new `EquiSet` that contains all elements of the current `EquiSet`
      *  except one less occurrence of each of the elements of `elems`.
      */
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
 
     /**
-     * Applies a binary operator to a start value and all elements of this $coll,
+     * Applies a binary operator to a start value and all elements of this `EquiSet`,
      *  going left to right.
      *
      *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as

@@ -52,6 +52,13 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
      */
     def + (elem1: T, elem2: T, elems: T*): thisEquiSets.SortedEquiSet
 
+    /** Creates a new `SortedEquiSet` by adding all elements contained in another collection to this `SortedEquiSet`.
+      *
+      *  @param elems     the collection containing the added elements.
+      *  @return          a new `SortedEquiSet` with the given elements added.
+      */
+    def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+
     /**
      * Creates a new `SortedEquiSet` with a given element removed from this `SortedEquiSet`.
      *
@@ -83,6 +90,88 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
      * except one less occurrence of each of the given elements.
      */
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.SortedEquiSet
+
+    /**
+     * Creates a new `SortedEquiSet` from this $coll by removing all elements of another
+     *  collection.
+     *
+     *  @param elems     the collection containing the removed elements.
+     *  @return a new `SortedEquiSet` that contains all elements of the current `SortedEquiSet`
+     *  except one less occurrence of each of the elements of `elems`.
+     */
+    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+
+    /**
+     * Applies a binary operator to a start value and all elements of this `SortedEquiSet`,
+     *  going left to right.
+     *
+     *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
+     *  `xs foldLeft z`.
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (5 /: a)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (5 /: a)((x,y) => x + y)
+     *      c: Int = 15
+     *  }}}
+     *
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  @param   z    the start value.
+     *  @param   op   the binary operator.
+     *  @tparam  B    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *           going left to right with the start value `z` on the left:
+     *           {{{
+     *             op(...op(op(z, x_1), x_2), ..., x_n)
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     */
+    def /:[B](z: B)(op: (B, T) => B): B
+
+    /**
+     * Applies a binary operator to all elements of this `SortedEquiSet` and a start value,
+     *  going right to left.
+     *
+     *  Note: `:\` is alternate syntax for `foldRight`; `xs :\ z` is the same as
+     *  `xs foldRight z`.
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (a :\ 5)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (a :\ 5)((x,y) => x + y)
+     *      c: Int = 15
+     *
+     *  }}}
+     *
+     *  @param   z    the start value
+     *  @param   op   the binary operator
+     *  @tparam  B    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *           going right to left with the start value `z` on the right:
+     *           {{{
+     *             op(x_1, op(x_2, ... op(x_n, z)...))
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     */
+    def :\[B](z: B)(op: (T, B) => B): B
 
     /**
      * Computes the union between this `SortedEquiSet` and another `EquiSet`.
