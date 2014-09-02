@@ -125,6 +125,10 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
     lower.EquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
   }
+  it should "have a ++ method that takes another EquiSet" in {
+    lower.EquiSet("hi", "ho") ++ lower.EquiSet("ha", "hey!") shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho") ++ lower.EquiSet("HO", "hoe", "Ho!") shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
+  }
   it should "have a -- method that takes a GenTraversableOnce" in {
     lower.EquiSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.EquiSet("hi", "ho")
     lower.EquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.EquiSet("hi", "fee", "foe")
@@ -164,6 +168,13 @@ class EquiSetSpec extends UnitSpec {
     lower.EquiSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
     number.EquiSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
     number.EquiSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
+  }
+  it should "have a aggregate method" in {
+    lower.EquiSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
+    lower.EquiSet("hi", "ho", "ha", "hey!").aggregate(lower.EquiSet())(_ + _, _ ++ _) shouldBe lower.EquiSet("hi", "ho", "ha", "hey!")
+
+    lower.EquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
+    lower.EquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquiSet())(_ + _, _ ++ _) shouldBe lower.EquiSet("hi", "ho", "hoe", "Ho!")
   }
 /*
 abstract def contains(elem: A): Boolean

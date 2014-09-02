@@ -62,6 +62,14 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
 
     /**
+     * Creates a new `EquiSet` by adding elements contained in another `EquiSet`.
+     *
+     * @param that     the other `EquiSet` containing the added elements.
+     * @return         a new `EquiSet` with the given elements added.
+     */
+    def ++ (that: EquiSet): thisEquiSets.EquiSet
+
+    /**
      * Creates a new `EquiSet` with a given element removed from this `EquiSet`.
      *
      * @param elem the element to be removed
@@ -279,6 +287,38 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder
 
     /**
+     * Aggregates the results of applying an operator to subsequent elements.
+     *
+     *  This is a more general form of `fold` and `reduce`. It has similar
+     *  semantics, but does not require the result to be a supertype of the
+     *  element type. It traverses the elements in different partitions
+     *  sequentially, using `seqop` to update the result, and then applies
+     *  `combop` to results from different partitions. The implementation of
+     *  this operation may operate on an arbitrary number of collection
+     *  partitions, so `combop` may be invoked an arbitrary number of times.
+     *
+     *  For example, one might want to process some elements and then produce
+     *  a `Set`. In this case, `seqop` would process an element and append it
+     *  to the list, while `combop` would concatenate two lists from different
+     *  partitions together. The initial value `z` would be an empty set.
+     *  {{{
+     *    pc.aggregate(Set[Int]())(_ += process(_), _ ++ _)
+     *  }}}
+     *
+     *  Another example is calculating geometric mean from a collection of doubles
+     *  (one would typically require big doubles for this).
+     *
+     *  @tparam B        the type of accumulated results
+     *  @param z         the initial value for the accumulated result of the partition - this
+     *                   will typically be the neutral element for the `seqop` operator (e.g.
+     *                   `Nil` for list concatenation or `0` for summation) and may be evaluated
+     *                   more than once
+     *  @param seqop     an operator used to accumulate results within a partition
+     *  @param combop    an associative operator used to combine results from different partitions
+     */
+    def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B
+
+    /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -308,6 +348,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
       new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
       new HashEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
+    def ++ (that: EquiSet): thisEquiSets.EquiSet = new HashEquiSet(underlying ++ that.toSet)
     def - (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
@@ -323,6 +364,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
+    def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

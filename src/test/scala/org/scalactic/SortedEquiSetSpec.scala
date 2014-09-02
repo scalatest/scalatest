@@ -126,6 +126,10 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
     lower.SortedEquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
   }
+  it should "have a ++ method that takes another EquiSet" in {
+    lower.SortedEquiSet("hi", "ho") ++ lower.SortedEquiSet("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+    lower.SortedEquiSet("hi", "ho") ++ lower.SortedEquiSet("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+  }
   it should "have a -- method that takes a GenTraversableOnce" in {
     lower.SortedEquiSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
     lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
@@ -165,6 +169,13 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
     number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
     number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
+  }
+  it should "have a aggregate method" in {
+    lower.SortedEquiSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
+    lower.SortedEquiSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquiSet())(_ + _, _ ++ _) shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+
+    lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
+    lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquiSet())(_ + _, _ ++ _) shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

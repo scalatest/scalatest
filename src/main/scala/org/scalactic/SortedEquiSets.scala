@@ -60,6 +60,14 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
 
     /**
+     * Creates a new `SortedEquiSet` by adding elements contained in another `EquiSet`.
+     *
+     * @param that     the other `EquiSet` containing the added elements.
+     * @return         a new `SortedEquiSet` with the given elements added.
+     */
+    def ++ (that: EquiSet): thisEquiSets.SortedEquiSet
+
+    /**
      * Creates a new `SortedEquiSet` with a given element removed from this `SortedEquiSet`.
      *
      * @param elem the element to be removed
@@ -233,6 +241,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
       new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
+    def ++ (that: EquiSet): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying ++ that.toSet)
     def - (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying - EquiBox(elem))
     def - (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
@@ -248,6 +257,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
+    def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =
