@@ -151,6 +151,8 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
       new TreeEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
+    def :\[B](z: B)(op: (T, B) => B): B =
+      underlying.:\(z)((e: EquiBox, b: B) => op(e.value, b))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this diff that

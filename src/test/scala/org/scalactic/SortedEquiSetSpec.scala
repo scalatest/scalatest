@@ -147,6 +147,13 @@ class SortedEquiSetSpec extends UnitSpec {
     (0 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 6
     (1 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 7
   }
+  it should "have a :\\ method" in {
+    (number.EquiSet(1) :\ 0)(_ + _) shouldBe 1
+    (number.EquiSet(1) :\ 1)(_ + _) shouldBe 2
+    (number.EquiSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
+    (number.EquiSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
+  }
+
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

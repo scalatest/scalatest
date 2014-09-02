@@ -140,6 +140,42 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def /:[B](z: B)(op: (B, T) => B): B
 
     /**
+     * Applies a binary operator to all elements of this `EquiSet` and a start value,
+     *  going right to left.
+     *
+     *  Note: `:\` is alternate syntax for `foldRight`; `xs :\ z` is the same as
+     *  `xs foldRight z`.
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (a :\ 5)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (a :\ 5)((x,y) => x + y)
+     *      c: Int = 15
+     *
+     *  }}}
+     *
+     *  @param   z    the start value
+     *  @param   op   the binary operator
+     *  @tparam  B    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *           going right to left with the start value `z` on the right:
+     *           {{{
+     *             op(x_1, op(x_2, ... op(x_n, z)...))
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     */
+    def :\[B](z: B)(op: (T, B) => B): B
+
+    /**
      * Computes the union between this `EquiSet` and another `EquiSet`.
      *
      * '''Note:''' Same as `union`.
@@ -206,6 +242,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
       new HashEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
+    def :\[B](z: B)(op: (T, B) => B): B =
+      underlying.:\(z)((e: EquiBox, b: B) => op(e.value, b))
     def | (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this diff that
