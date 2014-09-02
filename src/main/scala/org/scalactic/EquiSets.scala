@@ -357,6 +357,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def size: Int
     def toSet: Set[thisEquiSets.EquiBox]
     def union(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+
+    private[scalactic] def owner: EquiSets[T] = thisEquiSets
   }
 
   private class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
@@ -385,7 +387,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
-    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet]
+    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

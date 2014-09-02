@@ -210,7 +210,7 @@ class EquiSetSpec extends UnitSpec {
     number.EquiSet(1).canEqual("hi") shouldBe false
     number.EquiSet(1).canEqual(number.EquiSet(1)) shouldBe true
     number.EquiSet(1).canEqual(number.EquiSet(1, 2, 3)) shouldBe true
-    number.EquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe true  // Any other way we can make this false at runtime?
+    number.EquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe false
   }
 /*
 abstract def contains(elem: A): Boolean

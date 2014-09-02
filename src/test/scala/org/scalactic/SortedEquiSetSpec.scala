@@ -211,10 +211,10 @@ class SortedEquiSetSpec extends UnitSpec {
     number.SortedEquiSet(1).canEqual("hi") shouldBe false
     number.SortedEquiSet(1).canEqual(number.EquiSet(1)) shouldBe true
     number.SortedEquiSet(1).canEqual(number.EquiSet(1, 2, 3)) shouldBe true
-    number.SortedEquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe true  // Any other way we can make this false at runtime?
+    number.SortedEquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe false
     number.SortedEquiSet(1).canEqual(number.SortedEquiSet(1)) shouldBe true
     number.SortedEquiSet(1).canEqual(number.SortedEquiSet(1, 2, 3)) shouldBe true
-    number.SortedEquiSet(1).canEqual(lower.SortedEquiSet("hi")) shouldBe true  // Any other way we can make this false at runtime?
+    number.SortedEquiSet(1).canEqual(lower.SortedEquiSet("hi")) shouldBe false
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
