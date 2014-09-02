@@ -245,6 +245,9 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def | (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet = this diff that
+    def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
+    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
+    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

@@ -153,6 +153,18 @@ class EquiSetSpec extends UnitSpec {
     (number.EquiSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
     (number.EquiSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
+  it should "have 3 addString methods" in {
+    lower.EquiSet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
+    number.EquiSet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
+
+    lower.EquiSet("hi").addString(new StringBuilder, "#") shouldBe new StringBuilder("hi")
+    number.EquiSet(1, 2, 3).addString(new StringBuilder, "#") shouldBe new StringBuilder("1#2#3")
+    number.EquiSet(1, 2, 3).addString(new StringBuilder, ", ") shouldBe new StringBuilder("1, 2, 3")
+
+    lower.EquiSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
+    number.EquiSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
+    number.EquiSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

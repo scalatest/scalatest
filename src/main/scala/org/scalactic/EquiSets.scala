@@ -206,6 +206,79 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
 
     /**
+     * Appends all elements of this `EquiSet` to a string builder.
+     *  The written text consists of the string representations (w.r.t. the method
+     * `toString`) of all elements of this `EquiSet` without any separator string.
+     *
+     * Example:
+     *
+     * {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = new StringBuilder()
+     *      b: StringBuilder =
+     *
+     *      scala> val h = a.addString(b)
+     *      h: StringBuilder = 1234
+     * }}}
+     *
+     *  @param  b    the string builder to which elements are appended.
+     *  @return      the string builder `b` to which elements were appended.
+     */
+    def addString(b: StringBuilder): StringBuilder
+
+    /**
+     * Appends all elements of this `EquiSet` to a string builder using a separator string.
+     *  The written text consists of the string representations (w.r.t. the method `toString`)
+     *  of all elements of this $coll, separated by the string `sep`.
+     *
+     * Example:
+     *
+     * {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = new StringBuilder()
+     *      b: StringBuilder =
+     *
+     *      scala> a.addString(b, ", ")
+     *      res0: StringBuilder = 1, 2, 3, 4
+     * }}}
+     *
+     *  @param  b    the string builder to which elements are appended.
+     *  @param sep   the separator string.
+     *  @return      the string builder `b` to which elements were appended.
+     */
+    def addString(b: StringBuilder, sep: String): StringBuilder
+
+    /** Appends all elements of this $coll to a string builder using start, end, and separator strings.
+     *  The written text begins with the string `start` and ends with the string `end`.
+     *  Inside, the string representations (w.r.t. the method `toString`)
+     *  of all elements of this `EquiSet` are separated by the string `sep`.
+     *
+     * Example:
+     *
+     * {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = new StringBuilder()
+     *      b: StringBuilder =
+     *
+     *      scala> a.addString(b , "List(" , ", " , ")")
+     *      res5: StringBuilder = List(1, 2, 3, 4)
+     * }}}
+     *
+     *  @param  b    the string builder to which elements are appended.
+     *  @param start the starting string.
+     *  @param sep   the separator string.
+     *  @param end   the ending string.
+     *  @return      the string builder `b` to which elements were appended.
+     */
+    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder
+
+    /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -247,6 +320,9 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def | (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this union that
     def & (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this intersect that
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this diff that
+    def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
+    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
+    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

@@ -22,12 +22,13 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
 class SortedEquiSetSpec extends UnitSpec {
-  def normalHashingEquality[T] =
-    new HashingEquality[T] {
-      def hashCodeFor(a: T): Int = a.hashCode
-      def areEqual(a: T, b: Any): Boolean = a == b
+  val intEquality =
+    new OrderingEquality[Int] {
+      def hashCodeFor(a: Int): Int = a.hashCode
+      def areEqual(a: Int, b: Any): Boolean = a == b
+      def compare(a: Int, b: Int): Int = a - b
     }
-  val number = EquiSets[Int](normalHashingEquality[Int])
+  val number = SortedEquiSets[Int](intEquality)
   val lower = SortedEquiSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val trimmed = SortedEquiSets[String](StringNormalizations.trimmed.toOrderingEquality)
   "An SortedEquiSet" can "be constructed with empty" in {
@@ -142,18 +143,29 @@ class SortedEquiSetSpec extends UnitSpec {
     lower.SortedEquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.SortedEquiSet.empty
   }
   it should "have a /: method" in {
-    (0 /: number.EquiSet(1))(_ + _) shouldBe 1
-    (1 /: number.EquiSet(1))(_ + _) shouldBe 2
-    (0 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: number.EquiSet(1, 2, 3))(_ + _) shouldBe 7
+    (0 /: number.SortedEquiSet(1))(_ + _) shouldBe 1
+    (1 /: number.SortedEquiSet(1))(_ + _) shouldBe 2
+    (0 /: number.SortedEquiSet(1, 2, 3))(_ + _) shouldBe 6
+    (1 /: number.SortedEquiSet(1, 2, 3))(_ + _) shouldBe 7
   }
   it should "have a :\\ method" in {
-    (number.EquiSet(1) :\ 0)(_ + _) shouldBe 1
-    (number.EquiSet(1) :\ 1)(_ + _) shouldBe 2
-    (number.EquiSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (number.EquiSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
+    (number.SortedEquiSet(1) :\ 0)(_ + _) shouldBe 1
+    (number.SortedEquiSet(1) :\ 1)(_ + _) shouldBe 2
+    (number.SortedEquiSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
+    (number.SortedEquiSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
+  it should "have 3 addString methods" in {
+    lower.SortedEquiSet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
+    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
 
+    lower.SortedEquiSet("hi").addString(new StringBuilder, "#") shouldBe new StringBuilder("hi")
+    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, "#") shouldBe new StringBuilder("1#2#3")
+    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, ", ") shouldBe new StringBuilder("1, 2, 3")
+
+    lower.SortedEquiSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
+    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
+    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
