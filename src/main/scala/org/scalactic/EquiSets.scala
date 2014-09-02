@@ -327,6 +327,15 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B
 
     /**
+     * Composes two instances of Function1 in a new Function1, with this function applied first.
+     *
+     *  @tparam   A   the result type of function `g`
+     *  @param    g   a function Boolean => A
+     *  @return       a new function `f` such that `f(x) == g(apply(x))`
+     */
+    @annotation.unspecialized def andThen[A](g: Boolean => A): T => A = { x => g(apply(x)) }
+
+    /**
      * Tests if some element is contained in this set.
      *
      *  This method is equivalent to `contains`. It allows sets to be interpreted as predicates.

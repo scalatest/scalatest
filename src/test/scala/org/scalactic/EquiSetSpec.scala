@@ -194,6 +194,17 @@ class EquiSetSpec extends UnitSpec {
     b("HI") shouldEqual true
     b("he") shouldEqual false
   }
+  it should "have an andThen method (inherited from PartialFunction)" in {
+    val pf1 = number.EquiSet(1) andThen (!_)
+    pf1(1) shouldEqual false
+    pf1(2) shouldEqual true
+
+    val pf2 = number.EquiSet(1, 2, 3) andThen (!_)
+    pf2(1) shouldEqual false
+    pf2(2) shouldEqual false
+    pf2(3) shouldEqual false
+    pf2(0) shouldEqual true
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

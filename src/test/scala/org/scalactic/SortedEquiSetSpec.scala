@@ -195,6 +195,17 @@ class SortedEquiSetSpec extends UnitSpec {
     b("HI") shouldEqual true
     b("he") shouldEqual false
   }
+  it should "have an andThen method (inherited from PartialFunction)" in {
+    val pf1 = number.SortedEquiSet(1) andThen (!_)
+    pf1(1) shouldEqual false
+    pf1(2) shouldEqual true
+
+    val pf2 = number.SortedEquiSet(1, 2, 3) andThen (!_)
+    pf2(1) shouldEqual false
+    pf2(2) shouldEqual false
+    pf2(3) shouldEqual false
+    pf2(0) shouldEqual true
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
