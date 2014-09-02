@@ -205,6 +205,13 @@ class EquiSetSpec extends UnitSpec {
     pf2(3) shouldEqual false
     pf2(0) shouldEqual true
   }
+  it should "have a canEqual method" in {
+    number.EquiSet(1).canEqual(3) shouldBe false
+    number.EquiSet(1).canEqual("hi") shouldBe false
+    number.EquiSet(1).canEqual(number.EquiSet(1)) shouldBe true
+    number.EquiSet(1).canEqual(number.EquiSet(1, 2, 3)) shouldBe true
+    number.EquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe true  // Any other way we can make this false at runtime?
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

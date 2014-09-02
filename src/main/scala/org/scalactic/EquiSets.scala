@@ -29,7 +29,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     override def toString: String = s"EquiBox(${value.toString})"
   }
 
-  trait EquiSet extends Function1[T, Boolean] {
+  trait EquiSet extends Function1[T, Boolean] with Equals {
 
     /**
      * Creates a new `EquiSet` with an additional element, unless the element is
@@ -385,6 +385,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
+    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet]
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =
@@ -419,4 +420,3 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
 object EquiSets {
   def apply[T](equality: HashingEquality[T]): EquiSets[T] = new EquiSets(equality)
 }
-
