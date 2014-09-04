@@ -336,6 +336,21 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def apply(elem: T): Boolean
 
     /**
+     * Builds a new collection by applying a partial function to all elements of this `EquiSet`
+     * on which the function is defined.
+     *
+     * @param pf the partial function which filters and maps the `EquiSet`.
+     * @return a new collection of type `That` resulting from applying the partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     *
+     * @return a new `EquiSet` resulting from applying the given partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     */
+    def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet
+
+    /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -388,6 +403,8 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
+    def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet =
+      new HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

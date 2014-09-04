@@ -220,6 +220,21 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def &~ (that: thisEquiSets.EquiSet): thisEquiSets.SortedEquiSet
 
     /**
+     * Builds a new collection by applying a partial function to all elements of this `SortedEquiSet`
+     * on which the function is defined.
+     *
+     * @param pf the partial function which filters and maps the `SortedEquiSet`.
+     * @return a new collection of type `That` resulting from applying the partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     *
+     * @return a new `SortedEquiSet` resulting from applying the given partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     */
+    def collect(pf: PartialFunction[T, T]): thisEquiSets.SortedEquiSet
+
+    /**
      * Computes the difference of this `SortedEquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -272,6 +287,10 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
+    def collect(pf: PartialFunction[T, T]): thisEquiSets.SortedEquiSet = {
+      implicit val ord: Ordering[thisEquiSets.EquiBox] = ordering
+      new TreeEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
+    }
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

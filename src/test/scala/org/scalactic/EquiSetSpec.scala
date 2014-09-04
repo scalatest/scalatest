@@ -212,6 +212,17 @@ class EquiSetSpec extends UnitSpec {
     number.EquiSet(1).canEqual(number.EquiSet(1, 2, 3)) shouldBe true
     number.EquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe false
   }
+  it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
+    /*
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
+    res3: List[Int] = List(4, 8, 12, 16, 20)
+
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
+    res4: List[Int] = List()
+    */
+    number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.EquiSet(4, 8, 12, 16, 20)
+    number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquiSet.empty
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
