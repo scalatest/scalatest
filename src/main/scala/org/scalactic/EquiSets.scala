@@ -351,6 +351,23 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet
 
     /**
+     * Builds a new collection by applying a partial function to all elements of this `EquiSet`
+     * on which the function is defined.
+     *
+     * @param thatEquiSets the `EquiSets` into which to filter and maps the `EquiSet`.
+     * @param pf the partial function which filters and maps the `EquiSet`.
+     * @return a new collection of type `That` resulting from applying the partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     *
+     * @return a new `EquiSet` resulting from applying the given partial function
+     * `pf` to each element on which it is defined and collecting the results.
+     * The order of the elements is preserved.
+     */
+    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+
+    /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
      * @param that the `EquiSet` of elements to exclude.
@@ -376,7 +393,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     private[scalactic] def owner: EquiSets[T] = thisEquiSets
   }
 
-  private class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
+  private[scalactic] class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
     def + (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
@@ -405,6 +422,10 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
     def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet =
       new HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
+    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

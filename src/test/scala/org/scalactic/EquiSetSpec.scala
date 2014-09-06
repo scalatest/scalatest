@@ -30,6 +30,7 @@ class EquiSetSpec extends UnitSpec {
   val number = EquiSets[Int](normalHashingEquality[Int])
   val lower = EquiSets[String](StringNormalizations.lowerCased.toHashingEquality)
   val trimmed = EquiSets[String](StringNormalizations.trimmed.toHashingEquality)
+  val sortedLower = SortedEquiSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   "An EquiSet" can "be constructed with empty" in {
     val emptySet = lower.EquiSet.empty
     emptySet shouldBe empty
@@ -222,6 +223,28 @@ class EquiSetSpec extends UnitSpec {
     */
     number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.EquiSet(4, 8, 12, 16, 20)
     number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquiSet.empty
+  }
+  it should "have a collectInto method that accepts a EquiSets and functions that result in other than the path-enclosed type" in {
+    /*
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
+    res3: List[Int] = List(4, 8, 12, 16, 20)
+
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
+    res4: List[Int] = List()
+    */
+    number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquiSet("4", "8", "12", "16", "20")
+    number.EquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i > 10 => (i * 2).toString } shouldBe lower.EquiSet.empty
+  }
+  it should "have a collectInto method that accepts a SortedEquiSets and functions that result in a HashEquiSet other than the path-enclosed type" in {
+    /*
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
+    res3: List[Int] = List(4, 8, 12, 16, 20)
+
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
+    res4: List[Int] = List()
+    */
+    number.EquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.EquiSet("4", "8", "12", "16", "20")
+    number.EquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquiSet.empty
   }
 /*
 abstract def contains(elem: A): Boolean

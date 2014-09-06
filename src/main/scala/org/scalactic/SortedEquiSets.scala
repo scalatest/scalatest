@@ -234,6 +234,9 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
      */
     def collect(pf: PartialFunction[T, T]): thisEquiSets.SortedEquiSet
 
+    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet
+
     /**
      * Computes the difference of this `SortedEquiSet` and another `EquiSet`.
      *
@@ -260,7 +263,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     private[scalactic] override def owner: SortedEquiSets[T] = thisEquiSets
   }
 
-  private class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
+  private[scalactic] class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
     def + (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
@@ -291,6 +294,10 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
       implicit val ord: Ordering[thisEquiSets.EquiBox] = ordering
       new TreeEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
     }
+    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+      thatEquiSets.EquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet =
+      thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =
