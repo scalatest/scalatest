@@ -29,6 +29,15 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     override def toString: String = s"EquiBox(${value.toString})"
   }
 
+/*
+  case class EquaBridge[U](thatEquiSets: EquiSets[U]) {
+    def collect[U](pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+    def collect[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+  }
+*/
+
   trait EquiSet extends Function1[T, Boolean] with Equals {
 
     /**
@@ -367,6 +376,9 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
 
+    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+
     /**
      * Computes the difference of this `EquiSet` and another `EquiSet`.
      *
@@ -425,7 +437,11 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
       new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+      thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+    //  new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+    //  new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
       new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

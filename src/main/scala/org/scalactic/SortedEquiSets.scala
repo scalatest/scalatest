@@ -236,6 +236,8 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
 
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet
+    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet
 
     /**
      * Computes the difference of this `SortedEquiSet` and another `EquiSet`.
@@ -298,6 +300,10 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
       thatEquiSets.EquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet =
       thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
+    //  thatEquiSets.EquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet =
+    //  thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
     def diff(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =

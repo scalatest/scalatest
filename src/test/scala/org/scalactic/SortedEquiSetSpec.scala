@@ -238,6 +238,8 @@ class SortedEquiSetSpec extends UnitSpec {
     */
     number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquiSet("4", "8", "12", "16", "20")
     number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i > 10 => (i * 2).toString } shouldBe lower.EquiSet.empty
+    // number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquiSet("4", "8", "12", "16", "20")
+    // number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquiSet.empty
   }
   it should "have a collectInto method that accepts a SortedEquiSets and functions that result in a HashEquiSet other than the path-enclosed type" in {
     /*
@@ -249,6 +251,8 @@ class SortedEquiSetSpec extends UnitSpec {
     */
     number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquiSet("4", "8", "12", "16", "20")
     number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquiSet.empty
+    // number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquiSet("4", "8", "12", "16", "20")
+    // number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquiSet.empty
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
