@@ -32,9 +32,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
 /*
   case class EquaBridge[U](thatEquiSets: EquiSets[U]) {
     def collect[U](pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
-    def collect[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+      new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
   }
 */
 
@@ -405,27 +403,27 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     private[scalactic] def owner: EquiSets[T] = thisEquiSets
   }
 
-  private[scalactic] class HashEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
-    def + (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying + EquiBox(elem))
-    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
-      new HashEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+  class FastEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
+    def + (elem: T): thisEquiSets.FastEquiSet = new FastEquiSet(underlying + EquiBox(elem))
+    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.FastEquiSet =
+      new FastEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
-      new HashEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
-    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = new HashEquiSet(underlying ++ that.toSet)
-    def - (elem: T): thisEquiSets.HashEquiSet = new HashEquiSet(underlying - EquiBox(elem))
-    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.HashEquiSet =
-      new HashEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
+      new FastEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
+    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = new FastEquiSet(underlying ++ that.toSet)
+    def - (elem: T): thisEquiSets.FastEquiSet = new FastEquiSet(underlying - EquiBox(elem))
+    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.FastEquiSet =
+      new FastEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
     def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
-      new HashEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
+      new FastEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
     def --(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
-      new HashEquiSet(underlying -- that.toSet)
+      new FastEquiSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
     def :\[B](z: B)(op: (T, B) => B): B =
       underlying.:\(z)((e: EquiBox, b: B) => op(e.value, b))
-    def | (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this union that
-    def & (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this intersect that
-    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet = this diff that
+    def | (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this union that
+    def & (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this intersect that
+    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this diff that
     def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
@@ -433,43 +431,43 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
     def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet =
-      new HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
+      new FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+      new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
       thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
     //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-    //  new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+    //  new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-    //  new thatEquiSets.HashEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
-    def diff(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
-      new HashEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    //  new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+    def diff(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
+      new FastEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     override def equals(other: Any): Boolean =
       other match {
-        case equiSet: thisEquiSets.HashEquiSet => 
+        case equiSet: thisEquiSets.FastEquiSet => 
           underlying == equiSet.underlying
         case _ => false
       }
     override def hashCode: Int = underlying.hashCode
-    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
-      new HashEquiSet(underlying intersect that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
+      new FastEquiSet(underlying intersect that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
     def toSet: Set[thisEquiSets.EquiBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
-    def union(that: thisEquiSets.EquiSet): thisEquiSets.HashEquiSet =
-      new HashEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    def union(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
+      new FastEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
   }
-  private object HashEquiSet {
-    def empty: HashEquiSet = new HashEquiSet(Set.empty)
-    def apply(elems: T*): HashEquiSet = 
-      new HashEquiSet(Set(elems.map(EquiBox(_)): _*))
+  object FastEquiSet {
+    def empty: FastEquiSet = new FastEquiSet(Set.empty)
+    def apply(elems: T*): FastEquiSet = 
+      new FastEquiSet(Set(elems.map(EquiBox(_)): _*))
   }
   object EquiSet {
-    def empty: EquiSet = HashEquiSet.empty
-    def apply(elems: T*): EquiSet = HashEquiSet(elems: _*)
+    def empty: EquiSet = FastEquiSet.empty
+    def apply(elems: T*): EquiSet = FastEquiSet(elems: _*)
   }
 }
 
