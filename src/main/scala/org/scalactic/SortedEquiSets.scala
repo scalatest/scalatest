@@ -319,7 +319,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquiSets.EquiBox] = underlying
-    override def toString: String = s"SortedEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    override def toString: String = s"TreeEquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquiSets.EquiSet): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
   }
