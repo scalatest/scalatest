@@ -21,175 +21,174 @@ import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-class SortedEquiSetSpec extends UnitSpec {
-  val intEquality =
-    new OrderingEquality[Int] {
-      def hashCodeFor(a: Int): Int = a.hashCode
-      def areEqual(a: Int, b: Any): Boolean = a == b
-      def compare(a: Int, b: Int): Int = a - b
+class EquaSetSpec extends UnitSpec {
+  def normalHashingEquality[T] =
+    new HashingEquality[T] {
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
     }
-  val number = SortedEquiSets[Int](intEquality)
-  val lower = SortedEquiSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val sortedLower = SortedEquiSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val trimmed = SortedEquiSets[String](StringNormalizations.trimmed.toOrderingEquality)
-  "An SortedEquiSet" can "be constructed with empty" in {
-    val emptySet = lower.SortedEquiSet.empty
+  val number = EquaSets[Int](normalHashingEquality[Int])
+  val lower = EquaSets[String](StringNormalizations.lowerCased.toHashingEquality)
+  val trimmed = EquaSets[String](StringNormalizations.trimmed.toHashingEquality)
+  val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+  "An EquaSet" can "be constructed with empty" in {
+    val emptySet = lower.EquaSet.empty
     emptySet shouldBe empty
   }
   it can "be constructed with apply" in {
-    val nonEmptySet = lower.SortedEquiSet("one", "two", "three")
+    val nonEmptySet = lower.EquaSet("one", "two", "three")
     nonEmptySet should have size 3
     // TODO: After moving enablers to scalactic, make a nominal typeclass
-    // instance for Size and Length for SortedEquiSet.
+    // instance for Size and Length for EquaSet.
   }
   it should "construct only sets with appropriate element types" in {
-    "lower.SortedEquiSet(1, 2, 3)" shouldNot compile
+    "lower.EquaSet(1, 2, 3)" shouldNot compile
   }
   it should "eliminate 'duplicate' entries passed to the apply factory method" in {
-    val nonEmptySet = lower.SortedEquiSet("one", "two", "two", "three", "Three")
+    val nonEmptySet = lower.EquaSet("one", "two", "two", "three", "Three")
     nonEmptySet should have size 3
     // TODO: After moving enablers to scalactic, make a nominal typeclass
-    // instance for Size and Length for SortedEquiSet.
+    // instance for Size and Length for EquaSet.
   }
   it should "have a toString method" in {
-    lower.SortedEquiSet("hi", "ho").toString should === ("TreeEquiSet(hi, ho)")
+    lower.EquaSet("hi", "ho").toString should === ("EquaSet(hi, ho)")
   }
-  it should "have a diff method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") diff lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet()
-    trimmed.SortedEquiSet("hi", "ho") diff trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet()
-    """lower.SortedEquiSet(" hi ", "hi") diff trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
-    lower.SortedEquiSet("hi", "ho") diff lower.SortedEquiSet("ho") shouldBe lower.SortedEquiSet("hi")
-    lower.SortedEquiSet("hi", "ho", "let's", "go") diff lower.SortedEquiSet("bo", "no", "go", "ho") shouldBe lower.SortedEquiSet("hi", "let's")
+  it should "have a diff method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") diff lower.EquaSet("HI", "HO") shouldBe lower.EquaSet()
+    trimmed.EquaSet("hi", "ho") diff trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet()
+    """lower.EquaSet(" hi ", "hi") diff trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquaSet("hi", "ho") diff lower.EquaSet("ho") shouldBe lower.EquaSet("hi")
+    lower.EquaSet("hi", "ho", "let's", "go") diff lower.EquaSet("bo", "no", "go", "ho") shouldBe lower.EquaSet("hi", "let's")
   }
-  it should "have a &~ method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") &~ lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet()
-    trimmed.SortedEquiSet("hi", "ho") &~ trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet()
-    """lower.SortedEquiSet(" hi ", "hi") &~ trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
-    lower.SortedEquiSet("hi", "ho") &~ lower.SortedEquiSet("ho") shouldBe lower.SortedEquiSet("hi")
-    lower.SortedEquiSet("hi", "ho", "let's", "go") &~ lower.SortedEquiSet("bo", "no", "go", "ho") shouldBe lower.SortedEquiSet("hi", "let's")
+  it should "have a &~ method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") &~ lower.EquaSet("HI", "HO") shouldBe lower.EquaSet()
+    trimmed.EquaSet("hi", "ho") &~ trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet()
+    """lower.EquaSet(" hi ", "hi") &~ trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquaSet("hi", "ho") &~ lower.EquaSet("ho") shouldBe lower.EquaSet("hi")
+    lower.EquaSet("hi", "ho", "let's", "go") &~ lower.EquaSet("bo", "no", "go", "ho") shouldBe lower.EquaSet("hi", "let's")
   }
-  it should "have an intersect method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") intersect lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet("hi", "ho")
-    trimmed.SortedEquiSet("hi", "ho") intersect trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet("hi", "ho")
-    """lower.SortedEquiSet(" hi ", "hi") intersect trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
-    lower.SortedEquiSet("hi", "ho") intersect lower.SortedEquiSet("ho") shouldBe lower.SortedEquiSet("ho")
-    lower.SortedEquiSet("hi", "ho", "let's", "go") intersect lower.SortedEquiSet("bo", "no", "go", "ho") shouldBe lower.SortedEquiSet("ho", "go")
+  it should "have an intersect method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") intersect lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
+    trimmed.EquaSet("hi", "ho") intersect trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    """lower.EquaSet(" hi ", "hi") intersect trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquaSet("hi", "ho") intersect lower.EquaSet("ho") shouldBe lower.EquaSet("ho")
+    lower.EquaSet("hi", "ho", "let's", "go") intersect lower.EquaSet("bo", "no", "go", "ho") shouldBe lower.EquaSet("ho", "go")
   }
-  it should "have an & method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") & lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet("hi", "ho")
-    trimmed.SortedEquiSet("hi", "ho") & trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet("hi", "ho")
-    """lower.SortedEquiSet(" hi ", "hi") & trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
-    lower.SortedEquiSet("hi", "ho") & lower.SortedEquiSet("ho") shouldBe lower.SortedEquiSet("ho")
-    lower.SortedEquiSet("hi", "ho", "let's", "go") & lower.SortedEquiSet("bo", "no", "go", "ho") shouldBe lower.SortedEquiSet("ho", "go")
+  it should "have an & method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") & lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
+    trimmed.EquaSet("hi", "ho") & trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    """lower.EquaSet(" hi ", "hi") & trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+    lower.EquaSet("hi", "ho") & lower.EquaSet("ho") shouldBe lower.EquaSet("ho")
+    lower.EquaSet("hi", "ho", "let's", "go") & lower.EquaSet("bo", "no", "go", "ho") shouldBe lower.EquaSet("ho", "go")
   }
-  it should "have a union method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") union lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet("hi", "ho")
-    trimmed.SortedEquiSet("hi", "ho") union trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet("hi", "ho")
-    """lower.SortedEquiSet(" hi ", "hi") union trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
+  it should "have a union method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") union lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
+    trimmed.EquaSet("hi", "ho") union trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    """lower.EquaSet(" hi ", "hi") union trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
   }
-  it should "have a | method that takes another SortedEquiSet instance with the same path-dependant type" in {
-    lower.SortedEquiSet("hi", "ho") | lower.SortedEquiSet("HI", "HO") shouldBe lower.SortedEquiSet("hi", "ho")
-    trimmed.SortedEquiSet("hi", "ho") | trimmed.SortedEquiSet(" hi ", " ho ") shouldBe trimmed.SortedEquiSet("hi", "ho")
-    """lower.SortedEquiSet(" hi ", "hi") | trimmed.SortedEquiSet("hi", "HI")""" shouldNot typeCheck
+  it should "have a | method that takes another EquaSet instance with the same path-dependant type" in {
+    lower.EquaSet("hi", "ho") | lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
+    trimmed.EquaSet("hi", "ho") | trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    """lower.EquaSet(" hi ", "hi") | trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.SortedEquiSet("hi", "ho").toSet should === (Set(lower.EquiBox("hi"), lower.EquiBox("ho")))
+    lower.EquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
   }
   it should "have a + method that takes one argument" in {
-    lower.SortedEquiSet("hi", "ho") + "ha" shouldBe lower.SortedEquiSet("hi", "ho", "ha")
-    lower.SortedEquiSet("hi", "ho") + "HO" shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.EquaSet("hi", "ho") + "ha" shouldBe lower.EquaSet("hi", "ho", "ha")
+    lower.EquaSet("hi", "ho") + "HO" shouldBe lower.EquaSet("hi", "ho")
   }
   it should "have a + method that takes two or more arguments" in {
-    lower.SortedEquiSet("hi", "ho") + ("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho") + ("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho") + ("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho") + ("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
   }
   it should "have a - method that takes one argument" in {
-    lower.SortedEquiSet("hi", "ho", "ha") - "ha" shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") - "HO" shouldBe lower.SortedEquiSet("hi")
-    lower.SortedEquiSet("hi", "ho") - "who?" shouldBe lower.SortedEquiSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "ha") - "ha" shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") - "HO" shouldBe lower.EquaSet("hi")
+    lower.EquaSet("hi", "ho") - "who?" shouldBe lower.EquaSet("hi", "ho")
   }
   it should "have a - method that takes two or more arguments" in {
-    lower.SortedEquiSet("hi", "ho", "ha") - ("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
-    lower.SortedEquiSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") - ("HI", "HO") shouldBe lower.SortedEquiSet.empty
+    lower.EquaSet("hi", "ho", "ha") - ("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
+    lower.EquaSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") - ("HI", "HO") shouldBe lower.EquaSet.empty
   }
-  it should "return an iterator that returns elements in sorted order" in {
-    lower.SortedEquiSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
+  it should "return an iterator that returns the set's elements" in {
+    lower.EquaSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
   }
   it should "have a ++ method that takes a GenTraversableOnce" in {
-    lower.SortedEquiSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
 
-    lower.SortedEquiSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
 
-    lower.SortedEquiSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
   }
-  it should "have a ++ method that takes another EquiSet" in {
-    lower.SortedEquiSet("hi", "ho") ++ lower.SortedEquiSet("ha", "hey!") shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho") ++ lower.SortedEquiSet("HO", "hoe", "Ho!") shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+  it should "have a ++ method that takes another EquaSet" in {
+    lower.EquaSet("hi", "ho") ++ lower.EquaSet("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho") ++ lower.EquaSet("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
-    lower.SortedEquiSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
-    lower.SortedEquiSet("hi", "ho") -- List("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") -- List("HI", "HO") shouldBe lower.SortedEquiSet.empty
+    lower.EquaSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
+    lower.EquaSet("hi", "ho") -- List("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") -- List("HI", "HO") shouldBe lower.EquaSet.empty
 
-    lower.SortedEquiSet("hi", "ho", "ha") -- Set("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
-    lower.SortedEquiSet("hi", "ho") -- Set("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") -- Set("HI", "HO") shouldBe lower.SortedEquiSet.empty
+    lower.EquaSet("hi", "ho", "ha") -- Set("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
+    lower.EquaSet("hi", "ho") -- Set("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") -- Set("HI", "HO") shouldBe lower.EquaSet.empty
 
-    lower.SortedEquiSet("hi", "ho", "ha") -- Vector("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
-    lower.SortedEquiSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.SortedEquiSet.empty
+    lower.EquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
+    lower.EquaSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.EquaSet.empty
   }
-  it should "have a -- method that takes another EquiSet" in {
-    lower.SortedEquiSet("hi", "ho", "ha") -- lower.EquiSet("ha", "howdy!") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquiSet("HO", "FIE", "fUm")  shouldBe lower.SortedEquiSet("hi", "fee", "foe")
-    lower.SortedEquiSet("hi", "ho") -- lower.EquiSet("who", "goes", "thar") shouldBe lower.SortedEquiSet("hi", "ho")
-    lower.SortedEquiSet("hi", "ho") -- lower.EquiSet("HI", "HO") shouldBe lower.SortedEquiSet.empty
+  it should "have a -- method that takes another EquaSet" in {
+    lower.EquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
+    lower.EquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
+    lower.EquaSet("hi", "ho") -- lower.EquaSet("HI", "HO") shouldBe lower.EquaSet.empty
   }
   it should "have a /: method" in {
-    (0 /: number.SortedEquiSet(1))(_ + _) shouldBe 1
-    (1 /: number.SortedEquiSet(1))(_ + _) shouldBe 2
-    (0 /: number.SortedEquiSet(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: number.SortedEquiSet(1, 2, 3))(_ + _) shouldBe 7
+    (0 /: number.EquaSet(1))(_ + _) shouldBe 1
+    (1 /: number.EquaSet(1))(_ + _) shouldBe 2
+    (0 /: number.EquaSet(1, 2, 3))(_ + _) shouldBe 6
+    (1 /: number.EquaSet(1, 2, 3))(_ + _) shouldBe 7
   }
   it should "have a :\\ method" in {
-    (number.SortedEquiSet(1) :\ 0)(_ + _) shouldBe 1
-    (number.SortedEquiSet(1) :\ 1)(_ + _) shouldBe 2
-    (number.SortedEquiSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (number.SortedEquiSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
+    (number.EquaSet(1) :\ 0)(_ + _) shouldBe 1
+    (number.EquaSet(1) :\ 1)(_ + _) shouldBe 2
+    (number.EquaSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
+    (number.EquaSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
   it should "have 3 addString methods" in {
-    lower.SortedEquiSet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
-    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
+    lower.EquaSet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
+    number.EquaSet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
 
-    lower.SortedEquiSet("hi").addString(new StringBuilder, "#") shouldBe new StringBuilder("hi")
-    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, "#") shouldBe new StringBuilder("1#2#3")
-    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, ", ") shouldBe new StringBuilder("1, 2, 3")
+    lower.EquaSet("hi").addString(new StringBuilder, "#") shouldBe new StringBuilder("hi")
+    number.EquaSet(1, 2, 3).addString(new StringBuilder, "#") shouldBe new StringBuilder("1#2#3")
+    number.EquaSet(1, 2, 3).addString(new StringBuilder, ", ") shouldBe new StringBuilder("1, 2, 3")
 
-    lower.SortedEquiSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
-    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
-    number.SortedEquiSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
+    lower.EquaSet("hi").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<hi>")
+    number.EquaSet(1, 2, 3).addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
+    number.EquaSet(1, 2, 3).addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
   }
   it should "have a aggregate method" in {
-    lower.SortedEquiSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
-    lower.SortedEquiSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquiSet())(_ + _, _ ++ _) shouldBe lower.SortedEquiSet("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
+    lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(lower.EquaSet())(_ + _, _ ++ _) shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
 
-    lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
-    lower.SortedEquiSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquiSet())(_ + _, _ ++ _) shouldBe lower.SortedEquiSet("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
+    lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquaSet())(_ + _, _ ++ _) shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
   }
   it should "have an apply method" in {
-    val a = number.SortedEquiSet(1, 2, 3)
+    val a = number.EquaSet(1, 2, 3)
     a(2) shouldEqual true
     a(5) shouldEqual false
 
-    val b = lower.SortedEquiSet("hi")
+    val b = lower.EquaSet("hi")
     b("hi") shouldEqual true
     b("Hi") shouldEqual true
     b("hI") shouldEqual true
@@ -197,25 +196,22 @@ class SortedEquiSetSpec extends UnitSpec {
     b("he") shouldEqual false
   }
   it should "have an andThen method (inherited from PartialFunction)" in {
-    val pf1 = number.SortedEquiSet(1) andThen (!_)
+    val pf1 = number.EquaSet(1) andThen (!_)
     pf1(1) shouldEqual false
     pf1(2) shouldEqual true
 
-    val pf2 = number.SortedEquiSet(1, 2, 3) andThen (!_)
+    val pf2 = number.EquaSet(1, 2, 3) andThen (!_)
     pf2(1) shouldEqual false
     pf2(2) shouldEqual false
     pf2(3) shouldEqual false
     pf2(0) shouldEqual true
   }
   it should "have a canEqual method" in {
-    number.SortedEquiSet(1).canEqual(3) shouldBe false
-    number.SortedEquiSet(1).canEqual("hi") shouldBe false
-    number.SortedEquiSet(1).canEqual(number.EquiSet(1)) shouldBe true
-    number.SortedEquiSet(1).canEqual(number.EquiSet(1, 2, 3)) shouldBe true
-    number.SortedEquiSet(1).canEqual(lower.EquiSet("hi")) shouldBe false
-    number.SortedEquiSet(1).canEqual(number.SortedEquiSet(1)) shouldBe true
-    number.SortedEquiSet(1).canEqual(number.SortedEquiSet(1, 2, 3)) shouldBe true
-    number.SortedEquiSet(1).canEqual(lower.SortedEquiSet("hi")) shouldBe false
+    number.EquaSet(1).canEqual(3) shouldBe false
+    number.EquaSet(1).canEqual("hi") shouldBe false
+    number.EquaSet(1).canEqual(number.EquaSet(1)) shouldBe true
+    number.EquaSet(1).canEqual(number.EquaSet(1, 2, 3)) shouldBe true
+    number.EquaSet(1).canEqual(lower.EquaSet("hi")) shouldBe false
   }
   it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
     /*
@@ -225,10 +221,10 @@ class SortedEquiSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.SortedEquiSet(4, 8, 12, 16, 20)
-    number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.SortedEquiSet.empty
+    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.EquaSet(4, 8, 12, 16, 20)
+    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquaSet.empty
   }
-  it should "have a collectInto method that accepts a EquiSets and functions that result in other than the path-enclosed type" in {
+  it should "have a collectInto method that accepts a EquaSets and functions that result in other than the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
     res3: List[Int] = List(4, 8, 12, 16, 20)
@@ -236,12 +232,12 @@ class SortedEquiSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquiSet("4", "8", "12", "16", "20")
-    number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i > 10 => (i * 2).toString } shouldBe lower.EquiSet.empty
-    // number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquiSet("4", "8", "12", "16", "20")
-    // number.SortedEquiSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquiSet.empty
+    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
+    // number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    // number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
   }
-  it should "have a collectInto method that accepts a SortedEquiSets and functions that result in a HashEquiSet other than the path-enclosed type" in {
+  it should "have a collectInto method that accepts a SortedEquaSets and functions that result in a SortedEquaSet other than the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
     res3: List[Int] = List(4, 8, 12, 16, 20)
@@ -249,11 +245,137 @@ class SortedEquiSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquiSet("4", "8", "12", "16", "20")
-    number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquiSet.empty
-    // number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquiSet("4", "8", "12", "16", "20")
-    // number.SortedEquiSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquiSet.empty
+    number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
+    number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.SortedEquaSet.empty
+    // number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
+    // number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
+/*
+abstract def contains(elem: A): Boolean
+abstract def iterator: Iterator[A] 
+def &(that: GenSet[A]): Set[A]
+def &~(that: GenSet[A]): Set[A]
+def ++(elems: GenTraversableOnce[A]): Set[A]
+def ++[B](that: GenTraversableOnce[B]): Set[B]
+def ++:[B >: A, That](that: Traversable[B])(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def ++:[B](that: TraversableOnce[B]): Set[B]
+def -(elem1: A, elem2: A, elems: A*): Set[A]
+def --(xs: GenTraversableOnce[A]): Set[A]
+def /:[B](z: B)(op: (B, A) ⇒ B): B
+def :\[B](z: B)(op: (A, B) ⇒ B): B
+def addString(b: StringBuilder): StringBuilder
+def addString(b: StringBuilder, sep: String): StringBuilder
+def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder
+def aggregate[B](z: ⇒ B)(seqop: (B, A) ⇒ B, combop: (B, B) ⇒ B): B
+def andThen[A](g: (Boolean) ⇒ A): (A) ⇒ A
+def apply(elem: A): Boolean
+def canEqual(that: Any): Boolean
+def collect[B](pf: PartialFunction[A, B]): Set[B]
+def collectFirst[B](pf: PartialFunction[A, B]): Option[B]
+def companion: GenericCompanion[Set]
+def compose[A](g: (A) ⇒ A): (A) ⇒ Boolean
+def copyToArray(xs: Array[A], start: Int, len: Int): Unit
+def copyToArray(xs: Array[A]): Unit
+def copyToArray(xs: Array[A], start: Int): Unit
+def copyToBuffer[B >: A](dest: Buffer[B]): Unit
+def count(p: (A) ⇒ Boolean): Int
+def diff(that: GenSet[A]): Set[A]
+def drop(n: Int): Set[A]
+def dropRight(n: Int): Set[A]
+def dropWhile(p: (A) ⇒ Boolean): Set[A]
+def empty: Set[A]
+def equals(that: Any): Boolean
+def exists(p: (A) ⇒ Boolean): Boolean
+def filter(p: (A) ⇒ Boolean): Set[A]
+def filterNot(p: (A) ⇒ Boolean): Set[A]
+def find(p: (A) ⇒ Boolean): Option[A]
+def flatMap[B](f: (A) ⇒ GenTraversableOnce[B]): Set[B]
+def flatten[B]: Set[B]
+def fold[A1 >: A](z: A1)(op: (A1, A1) ⇒ A1): A1
+def foldLeft[B](z: B)(op: (B, A) ⇒ B): B
+def foldRight[B](z: B)(op: (A, B) ⇒ B): B
+def forall(p: (A) ⇒ Boolean): Boolean
+def foreach(f: (A) ⇒ Unit): Unit
+def genericBuilder[B]: Builder[B, Set[B]]
+def groupBy[K](f: (A) ⇒ K): immutable.Map[K, Set[A]]
+def grouped(size: Int): Iterator[Set[A]]
+def hasDefiniteSize: Boolean
+def hashCode(): Int
+def head: A
+def headOption: Option[A]
+def init: Set[A]
+def inits: Iterator[Set[A]]
+def intersect(that: GenSet[A]): Set[A]
+def isEmpty: Boolean
+final def isTraversableAgain: Boolean
+def last: A
+def lastOption: Option[A]
+def map[B](f: (A) ⇒ B): Set[B]
+def max: A
+def maxBy[B](f: (A) ⇒ B): A
+def min: A
+def minBy[B](f: (A) ⇒ B): A
+def mkString: String
+def mkString(sep: String): String
+def mkString(start: String, sep: String, end: String): String
+def nonEmpty: Boolean
+def par: ParSet[A]
+def partition(p: (A) ⇒ Boolean): (Set[A], Set[A])
+def product: A
+def reduce[A1 >: A](op: (A1, A1) ⇒ A1): A1
+def reduceLeft[B >: A](op: (B, A) ⇒ B): B
+def reduceLeftOption[B >: A](op: (B, A) ⇒ B): Option[B]
+def reduceOption[A1 >: A](op: (A1, A1) ⇒ A1): Option[A1]
+def reduceRight[B >: A](op: (A, B) ⇒ B): B
+def reduceRightOption[B >: A](op: (A, B) ⇒ B): Option[B]
+def repr: Set[A]
+def sameElements(that: GenIterable[A]): Boolean
+def scan[B >: A, That](z: B)(op: (B, B) ⇒ B)(implicit cbf: CanBuildFrom[Set[A], B, That]): That
+def scanLeft[B, That](z: B)(op: (B, A) ⇒ B)(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def scanRight[B, That](z: B)(op: (A, B) ⇒ B)(implicit bf: CanBuildFrom[Set[A], B, That]): That
+def seq: Set[A]
+def size: Int
+def slice(from: Int, until: Int): Set[A]
+def sliding(size: Int, step: Int): Iterator[Set[A]]
+def sliding(size: Int): Iterator[Set[A]]
+def span(p: (A) ⇒ Boolean): (Set[A], Set[A])
+def splitAt(n: Int): (Set[A], Set[A])
+def stringPrefix: String
+def subsetOf(that: GenSet[A]): Boolean
+def subsets: Iterator[Set[A]]
+def subsets(len: Int): Iterator[Set[A]]
+def sum: A
+def tail: Set[A]
+def tails: Iterator[Set[A]]
+def take(n: Int): Set[A]
+def takeRight(n: Int): Set[A]
+def takeWhile(p: (A) ⇒ Boolean): Set[A]
+def to[Col[_]]: Col[A]
+def toArray: Array[A]
+def toBuffer[A1 >: A]: Buffer[A1]
+def toIndexedSeq: immutable.IndexedSeq[A]
+def toIterable: Iterable[A]
+def toIterator: Iterator[A]
+def toList: List[A]
+def toMap[T, U]: Map[T, U]
+def toParArray: ParArray[T]
+def toSeq: Seq[A]
+def toSet[B >: A]: immutable.Set[B]
+def toStream: immutable.Stream[A]
+def toString(): String
+def toTraversable: Traversable[A]
+def toVector: Vector[A]
+def transpose[B](implicit asTraversable: (A) ⇒ GenTraversableOnce[B]): Set[Set[B]]
+def union(that: GenSet[A]): Set[A]
+def unzip[A1, A2](implicit asPair: (A) ⇒ (A1, A2)): (Set[A1], Set[A2])
+def unzip3[A1, A2, A3](implicit asTriple: (A) ⇒ (A1, A2, A3)): (Set[A1], Set[A2], Set[A3])
+def view(from: Int, until: Int): IterableView[A, Set[A]]
+def view: IterableView[A, Set[A]]
+def withFilter(p: (A) ⇒ Boolean): FilterMonadic[A, Set[A]]
+def zip[B](that: GenIterable[B]): Set[(A, B)]
+def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
+def zipWithIndex: Set[(A, Int)]
+*/
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

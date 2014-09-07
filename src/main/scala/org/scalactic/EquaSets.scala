@@ -19,39 +19,39 @@ import scala.collection.GenTraversableOnce
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 
-class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
+class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
-  case class EquiBox(value: T) {
+  case class EquaBox(value: T) {
     override def equals(o: Any): Boolean = 
       o match {
-        case other: EquiBox => equality.areEqual(value, other.value)
+        case other: EquaBox => equality.areEqual(value, other.value)
         case _ => false
       }
     override def hashCode: Int = equality.hashCodeFor(value)
-    override def toString: String = s"EquiBox(${value.toString})"
+    override def toString: String = s"EquaBox(${value.toString})"
   }
 
 /*
-  case class EquaBridge[U](thatEquiSets: EquiSets[U]) {
-    def collect[U](pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
+  case class EquaBridge[U](thatEquaSets: EquaSets[U]) {
+    def collect[U](pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+      new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
   }
 */
 
-  trait EquiSet extends Function1[T, Boolean] with Equals {
+  trait EquaSet extends Function1[T, Boolean] with Equals {
 
     /**
-     * Creates a new `EquiSet` with an additional element, unless the element is
+     * Creates a new `EquaSet` with an additional element, unless the element is
      * already present.
      *
      * @param elem the element to be added
-     * @return a new `EquiSet` that contains all elements of this `EquiSet` and that also
+     * @return a new `EquaSet` that contains all elements of this `EquaSet` and that also
      * contains `elem`.
      */
-    def + (elem: T): thisEquiSets.EquiSet
+    def + (elem: T): thisEquaSets.EquaSet
 
     /**
-     * Creates a new `EquiSet` with additional elements.
+     * Creates a new `EquaSet` with additional elements.
      *
      * This method takes two or more elements to be added. Another overloaded
      * variant of this method handles the case where a single element is added.
@@ -59,45 +59,45 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      * @param elem1 the first element to add.
      * @param elem2 the second element to add.
      * @param elems the remaining elements to add.
-     * @return a new `EquiSet` with the given elements added.
+     * @return a new `EquaSet` with the given elements added.
      */
-    def + (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
+    def + (elem1: T, elem2: T, elems: T*): thisEquaSets.EquaSet
 
-    /** Creates a new `EquiSet` by adding all elements contained in another collection to this `EquiSet`.
+    /** Creates a new `EquaSet` by adding all elements contained in another collection to this `EquaSet`.
       *
       *  @param elems     the collection containing the added elements.
-      *  @return          a new `EquiSet` with the given elements added.
+      *  @return          a new `EquaSet` with the given elements added.
       */
-    def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
 
     /**
-     * Creates a new `EquiSet` by adding elements contained in another `EquiSet`.
+     * Creates a new `EquaSet` by adding elements contained in another `EquaSet`.
      *
-     * @param that     the other `EquiSet` containing the added elements.
-     * @return         a new `EquiSet` with the given elements added.
+     * @param that     the other `EquaSet` containing the added elements.
+     * @return         a new `EquaSet` with the given elements added.
      */
-    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * Creates a new `EquiSet` with a given element removed from this `EquiSet`.
+     * Creates a new `EquaSet` with a given element removed from this `EquaSet`.
      *
      * @param elem the element to be removed
-     * @return a new `EquiSet` that contains all elements of this `EquiSet` but that does not
+     * @return a new `EquaSet` that contains all elements of this `EquaSet` but that does not
      * contain `elem`.
      */
-    def - (elem: T): thisEquiSets.EquiSet
+    def - (elem: T): thisEquaSets.EquaSet
 
     /* * USE LATER
-     * Creates a new `EquiSet` from this `EquiSet` by removing all elements of another
+     * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
      * collection.
      *
      * @param xs the collection containing the removed elements.
-     * @return a new `EquiSet` that contains all elements of the current `EquiSet`
+     * @return a new `EquaSet` that contains all elements of the current `EquaSet`
      * except one less occurrence of each of the elements of `elems`.
      */
 
     /**
-     * Creates a new `EquiSet` from this `EquiSet` with some elements removed.
+     * Creates a new `EquaSet` from this `EquaSet` with some elements removed.
      *
      * This method takes two or more elements to be removed. Another overloaded
      * variant of this method handles the case where a single element is
@@ -105,31 +105,31 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
      * @param elem1 the first element to remove.
      * @param elem2 the second element to remove.
      * @param elems the remaining elements to remove.
-     * @return a new `EquiSet` that contains all elements of the current `EquiSet`
+     * @return a new `EquaSet` that contains all elements of the current `EquaSet`
      * except one less occurrence of each of the given elements.
      */
-    def - (elem1: T, elem2: T, elems: T*): thisEquiSets.EquiSet
+    def - (elem1: T, elem2: T, elems: T*): thisEquaSets.EquaSet
 
     /**
-     * Creates a new `EquiSet` from this `EquiSet` by removing all elements of another
+     * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
      *  collection.
      *
      *  @param elems     the collection containing the removed elements.
-     *  @return a new `EquiSet` that contains all elements of the current `EquiSet`
+     *  @return a new `EquaSet` that contains all elements of the current `EquaSet`
      *  except one less occurrence of each of the elements of `elems`.
      */
-    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet
+    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
 
     /**
-     * Creates a new `EquiSet` from this `EquiSet` by removing all elements of another `EquiSet`
+     * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another `EquaSet`
      *
-     * @param that       the other `EquiSet` containing the removed elements.
-     * @return a new `EquiSet` that contains all elements of the current `EquiSet` minus elements contained in the passed in `EquiSet`.
+     * @param that       the other `EquaSet` containing the removed elements.
+     * @return a new `EquaSet` that contains all elements of the current `EquaSet` minus elements contained in the passed in `EquaSet`.
      */
-    def --(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def --(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * Applies a binary operator to a start value and all elements of this `EquiSet`,
+     * Applies a binary operator to a start value and all elements of this `EquaSet`,
      *  going left to right.
      *
      *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
@@ -165,7 +165,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def /:[B](z: B)(op: (B, T) => B): B
 
     /**
-     * Applies a binary operator to all elements of this `EquiSet` and a start value,
+     * Applies a binary operator to all elements of this `EquaSet` and a start value,
      *  going right to left.
      *
      *  Note: `:\` is alternate syntax for `foldRight`; `xs :\ z` is the same as
@@ -201,39 +201,39 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def :\[B](z: B)(op: (T, B) => B): B
 
     /**
-     * Computes the union between this `EquiSet` and another `EquiSet`.
+     * Computes the union between this `EquaSet` and another `EquaSet`.
      *
      * '''Note:''' Same as `union`.
-     * @param that the `EquiSet` to form the union with.
-     * @return a new `EquiSet` consisting of all elements that are in this
-     * `EquiSet` or in the given `EquiSet` `that`.
+     * @param that the `EquaSet` to form the union with.
+     * @return a new `EquaSet` consisting of all elements that are in this
+     * `EquaSet` or in the given `EquaSet` `that`.
      */
-    def | (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def | (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * Computes the intersection between this `EquiSet` and another `EquiSet`.
+     * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * '''Note:''' Same as `intersect`.
-     * @param that the `EquiSet` to intersect with.
-     * @return a new `EquiSet` consisting of all elements that are both in this
-     * `EquiSet` and in the given `EquiSet` `that`.
+     * @param that the `EquaSet` to intersect with.
+     * @return a new `EquaSet` consisting of all elements that are both in this
+     * `EquaSet` and in the given `EquaSet` `that`.
      */
-    def & (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def & (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * The difference of this `EquiSet` and another `EquiSet`.
+     * The difference of this `EquaSet` and another `EquaSet`.
      *
      * '''Note:''' Same as `diff`.
-     * @param that the `EquiSet` of elements to exclude.
-     * @return a `EquiSet` containing those elements of this
-     * `EquiSet` that are not also contained in the given `EquiSet` `that`.
+     * @param that the `EquaSet` of elements to exclude.
+     * @return a `EquaSet` containing those elements of this
+     * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
-    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def &~ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * Appends all elements of this `EquiSet` to a string builder.
+     * Appends all elements of this `EquaSet` to a string builder.
      *  The written text consists of the string representations (w.r.t. the method
-     * `toString`) of all elements of this `EquiSet` without any separator string.
+     * `toString`) of all elements of this `EquaSet` without any separator string.
      *
      * Example:
      *
@@ -254,7 +254,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def addString(b: StringBuilder): StringBuilder
 
     /**
-     * Appends all elements of this `EquiSet` to a string builder using a separator string.
+     * Appends all elements of this `EquaSet` to a string builder using a separator string.
      *  The written text consists of the string representations (w.r.t. the method `toString`)
      *  of all elements of this $coll, separated by the string `sep`.
      *
@@ -280,7 +280,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     /** Appends all elements of this $coll to a string builder using start, end, and separator strings.
      *  The written text begins with the string `start` and ends with the string `end`.
      *  Inside, the string representations (w.r.t. the method `toString`)
-     *  of all elements of this `EquiSet` are separated by the string `sep`.
+     *  of all elements of this `EquaSet` are separated by the string `sep`.
      *
      * Example:
      *
@@ -345,134 +345,134 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def apply(elem: T): Boolean
 
     /**
-     * Builds a new collection by applying a partial function to all elements of this `EquiSet`
+     * Builds a new collection by applying a partial function to all elements of this `EquaSet`
      * on which the function is defined.
      *
-     * @param pf the partial function which filters and maps the `EquiSet`.
+     * @param pf the partial function which filters and maps the `EquaSet`.
      * @return a new collection of type `That` resulting from applying the partial function
      * `pf` to each element on which it is defined and collecting the results.
      * The order of the elements is preserved.
      *
-     * @return a new `EquiSet` resulting from applying the given partial function
+     * @return a new `EquaSet` resulting from applying the given partial function
      * `pf` to each element on which it is defined and collecting the results.
      * The order of the elements is preserved.
      */
-    def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet
+    def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
 
     /**
-     * Builds a new collection by applying a partial function to all elements of this `EquiSet`
+     * Builds a new collection by applying a partial function to all elements of this `EquaSet`
      * on which the function is defined.
      *
-     * @param thatEquiSets the `EquiSets` into which to filter and maps the `EquiSet`.
-     * @param pf the partial function which filters and maps the `EquiSet`.
+     * @param thatEquaSets the `EquaSets` into which to filter and maps the `EquaSet`.
+     * @param pf the partial function which filters and maps the `EquaSet`.
      * @return a new collection of type `That` resulting from applying the partial function
      * `pf` to each element on which it is defined and collecting the results.
      * The order of the elements is preserved.
      *
-     * @return a new `EquiSet` resulting from applying the given partial function
+     * @return a new `EquaSet` resulting from applying the given partial function
      * `pf` to each element on which it is defined and collecting the results.
      * The order of the elements is preserved.
      */
-    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
-    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
+    def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
+    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
 
-    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
-    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet
-
-    /**
-     * Computes the difference of this `EquiSet` and another `EquiSet`.
-     *
-     * @param that the `EquiSet` of elements to exclude.
-     * @return a `EquiSet` containing those elements of this
-     * `EquiSet` that are not also contained in the given `EquiSet` `that`.
-     */
-    def diff(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
+    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
 
     /**
-     * Computes the intersection between this `EquiSet` and another `EquiSet`.
+     * Computes the difference of this `EquaSet` and another `EquaSet`.
      *
-     * @param that the `EquiSet` to intersect with.
-     * @return a new `EquiSet` consisting of all elements that are both in this
-     * `EquiSet` and in the given `EquiSet` `that`.
+     * @param that the `EquaSet` of elements to exclude.
+     * @return a `EquaSet` containing those elements of this
+     * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
-    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def diff(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+
+    /**
+     * Computes the intersection between this `EquaSet` and another `EquaSet`.
+     *
+     * @param that the `EquaSet` to intersect with.
+     * @return a new `EquaSet` consisting of all elements that are both in this
+     * `EquaSet` and in the given `EquaSet` `that`.
+     */
+    def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
     def isEmpty: Boolean
     def iterator: Iterator[T]
     def size: Int
-    def toSet: Set[thisEquiSets.EquiBox]
-    def union(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet
+    def toSet: Set[thisEquaSets.EquaBox]
+    def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
-    private[scalactic] def owner: EquiSets[T] = thisEquiSets
+    private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
-  class FastEquiSet private[scalactic] (private val underlying: Set[EquiBox]) extends EquiSet {
-    def + (elem: T): thisEquiSets.FastEquiSet = new FastEquiSet(underlying + EquiBox(elem))
-    def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.FastEquiSet =
-      new FastEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
-    def ++ (elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
-      new FastEquiSet(underlying ++ elems.toSeq.map(EquiBox(_)))
-    def ++ (that: thisEquiSets.EquiSet): thisEquiSets.EquiSet = new FastEquiSet(underlying ++ that.toSet)
-    def - (elem: T): thisEquiSets.FastEquiSet = new FastEquiSet(underlying - EquiBox(elem))
-    def - (elem1: T, elem2: T, elem3: T*): thisEquiSets.FastEquiSet =
-      new FastEquiSet(underlying - (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
-    def --(elems: GenTraversableOnce[T]): thisEquiSets.EquiSet =
-      new FastEquiSet(underlying -- elems.toSeq.map(EquiBox(_)))
-    def --(that: thisEquiSets.EquiSet): thisEquiSets.EquiSet =
-      new FastEquiSet(underlying -- that.toSet)
+  class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet {
+    def + (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
+    def + (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
+      new FastEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
+    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
+      new FastEquaSet(underlying ++ elems.toSeq.map(EquaBox(_)))
+    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet = new FastEquaSet(underlying ++ that.toSet)
+    def - (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
+    def - (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
+      new FastEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
+    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
+      new FastEquaSet(underlying -- elems.toSeq.map(EquaBox(_)))
+    def --(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      new FastEquaSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
-      underlying./:(z)((b: B, e: EquiBox) => op(b, e.value))
+      underlying./:(z)((b: B, e: EquaBox) => op(b, e.value))
     def :\[B](z: B)(op: (T, B) => B): B =
-      underlying.:\(z)((e: EquiBox, b: B) => op(e.value, b))
-    def | (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this union that
-    def & (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this intersect that
-    def &~ (that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet = this diff that
+      underlying.:\(z)((e: EquaBox, b: B) => op(e.value, b))
+    def | (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this union that
+    def & (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this intersect that
+    def &~ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this diff that
     def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
-    def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquiBox) => seqop(b, e.value), combop)
-    def apply(elem: T): Boolean = underlying.apply(EquiBox(elem))
-    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquiSets.EquiSet] && equality == that.asInstanceOf[thisEquiSets.EquiSet].owner.equality
-    def collect(pf: PartialFunction[T, T]): thisEquiSets.EquiSet =
-      new FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
-    def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
-    def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      new thatEquiSets.TreeEquiSet(TreeSet.empty(thatEquiSets.ordering) ++ (underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) }))
-    //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-    //  new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
-    //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-    //  new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
-    def diff(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
-      new FastEquiSet(underlying diff that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
+    def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
+    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
+    def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet =
+      new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
+    def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+      new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
+    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+      new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
+    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+    //  new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
+    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+    //  new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
+    def diff(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+      new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     override def equals(other: Any): Boolean =
       other match {
-        case equiSet: thisEquiSets.FastEquiSet => 
+        case equiSet: thisEquaSets.FastEquaSet => 
           underlying == equiSet.underlying
         case _ => false
       }
     override def hashCode: Int = underlying.hashCode
-    def intersect(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
-      new FastEquiSet(underlying intersect that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+      new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
-    def toSet: Set[thisEquiSets.EquiBox] = underlying
+    def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
-    override def toString: String = s"EquiSet(${underlying.toVector.map(_.value).mkString(", ")})"
-    def union(that: thisEquiSets.EquiSet): thisEquiSets.FastEquiSet =
-      new FastEquiSet(underlying union that.toSet.map((eb: EquiBox) => EquiBox(eb.value)))
+    override def toString: String = s"EquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+      new FastEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
   }
-  object FastEquiSet {
-    def empty: FastEquiSet = new FastEquiSet(Set.empty)
-    def apply(elems: T*): FastEquiSet = 
-      new FastEquiSet(Set(elems.map(EquiBox(_)): _*))
+  object FastEquaSet {
+    def empty: FastEquaSet = new FastEquaSet(Set.empty)
+    def apply(elems: T*): FastEquaSet = 
+      new FastEquaSet(Set(elems.map(EquaBox(_)): _*))
   }
-  object EquiSet {
-    def empty: EquiSet = FastEquiSet.empty
-    def apply(elems: T*): EquiSet = FastEquiSet(elems: _*)
+  object EquaSet {
+    def empty: EquaSet = FastEquaSet.empty
+    def apply(elems: T*): EquaSet = FastEquaSet(elems: _*)
   }
 }
 
-object EquiSets {
-  def apply[T](equality: HashingEquality[T]): EquiSets[T] = new EquiSets(equality)
+object EquaSets {
+  def apply[T](equality: HashingEquality[T]): EquaSets[T] = new EquaSets(equality)
 }
