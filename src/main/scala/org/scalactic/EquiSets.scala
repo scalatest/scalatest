@@ -16,6 +16,8 @@
 package org.scalactic
 
 import scala.collection.GenTraversableOnce
+import scala.collection.immutable.TreeSet
+import scala.collection.immutable.SortedSet
 
 class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
 
@@ -403,7 +405,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     private[scalactic] def owner: EquiSets[T] = thisEquiSets
   }
 
-  class FastEquiSet private (private val underlying: Set[EquiBox]) extends EquiSet {
+  class FastEquiSet private[scalactic] (private val underlying: Set[EquiBox]) extends EquiSet {
     def + (elem: T): thisEquiSets.FastEquiSet = new FastEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquiSets.FastEquiSet =
       new FastEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elem3.map(EquiBox(_)): _*))
@@ -435,7 +437,7 @@ class EquiSets[T](val equality: HashingEquality[T]) { thisEquiSets =>
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
       new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+      new thatEquiSets.TreeEquiSet(TreeSet.empty(thatEquiSets.ordering) ++ (underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) }))
     //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
     //  new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =

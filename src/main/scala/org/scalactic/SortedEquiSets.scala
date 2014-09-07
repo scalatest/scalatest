@@ -265,7 +265,7 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
     private[scalactic] override def owner: SortedEquiSets[T] = thisEquiSets
   }
 
-  class TreeEquiSet private (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
+  class TreeEquiSet private[scalactic] (private val underlying: TreeSet[EquiBox]) extends SortedEquiSet {
     def + (elem: T): thisEquiSets.TreeEquiSet = new TreeEquiSet(underlying + EquiBox(elem))
     def + (elem1: T, elem2: T, elems: T*): thisEquiSets.TreeEquiSet =
       new TreeEquiSet(underlying + (EquiBox(elem1), EquiBox(elem2), elems.map(EquiBox(_)): _*))
