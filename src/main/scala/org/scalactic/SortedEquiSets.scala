@@ -297,9 +297,9 @@ class SortedEquiSets[T](override val equality: OrderingEquality[T]) extends Equi
       new TreeEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => EquiBox(pf(hb.value)) })
     }
     def collectInto[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
-      thatEquiSets.EquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+      new thatEquiSets.FastEquiSet(underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) })
     def collectInto[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet =
-      thatEquiSets.SortedEquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+      new thatEquiSets.TreeEquiSet(TreeSet.empty(thatEquiSets.ordering) ++ (underlying collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => thatEquiSets.EquiBox(pf(hb.value)) }))
     //def into[U](thatEquiSets: EquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.EquiSet =
     //  thatEquiSets.EquiSet(underlying.toList collect { case hb: thisEquiSets.EquiBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
     //def into[U](thatEquiSets: SortedEquiSets[U])(pf: PartialFunction[T, U]): thatEquiSets.SortedEquiSet =
