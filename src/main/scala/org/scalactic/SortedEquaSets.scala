@@ -27,6 +27,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         equality.compare(a.value, b.value)
     }
 
+  class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
+  }
+
   trait SortedEquaSet extends EquaSet {
 
     /**
@@ -57,7 +62,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       *  @param elems     the collection containing the added elements.
       *  @return          a new `SortedEquaSet` with the given elements added.
       */
-    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
+    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.SortedEquaSet
 
     /**
      * Creates a new `SortedEquaSet` by adding elements contained in another `EquaSet`.
@@ -236,8 +241,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
 
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
-    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
+
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
 
     /**
      * Computes the difference of this `SortedEquaSet` and another `EquaSet`.
@@ -265,7 +271,13 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     private[scalactic] override def owner: SortedEquaSets[T] = thisEquaSets
   }
 
+  class TreeEquaBridge[S](from: List[S]) extends SortedEquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet.empty ++ (from collect pf)
+  }
+
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
+
     def + (elem: T): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying + EquaBox(elem))
     def + (elem1: T, elem2: T, elems: T*): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elems.map(EquaBox(_)): _*))
@@ -300,10 +312,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
       new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
-    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
-    //  thatEquaSets.EquaSet(underlying.toList collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
-    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
-    //  thatEquaSets.SortedEquaSet(underlying.toList collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => pf(hb.value) }: _*)
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value))
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     override def equals(other: Any): Boolean =

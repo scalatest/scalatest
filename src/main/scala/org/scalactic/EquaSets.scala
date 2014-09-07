@@ -18,6 +18,7 @@ package org.scalactic
 import scala.collection.GenTraversableOnce
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
+import scala.language.higherKinds
 
 class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
@@ -31,12 +32,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def toString: String = s"EquaBox(${value.toString})"
   }
 
-/*
-  case class EquaBridge[U](thatEquaSets: EquaSets[U]) {
-    def collect[U](pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
-      new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
+  class EquaBridge[S](from: List[S]) {
+    def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
+      thisEquaSets.FastEquaSet.empty ++ (from collect pf) // { case s if pf.isDefinedAt(s) => pf(s) })
   }
-*/
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
 
@@ -376,8 +375,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
-    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
 
     /**
      * Computes the difference of this `EquaSet` and another `EquaSet`.
@@ -405,13 +404,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
+  class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
+      thisEquaSets.FastEquaSet.empty ++ (from collect pf)
+  }
+
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet {
     def + (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
-    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
+    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying ++ elems.toSeq.map(EquaBox(_)))
-    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet = new FastEquaSet(underlying ++ that.toSet)
+    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying ++ that.toSet)
     def - (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
@@ -438,10 +442,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
       new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
-    //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
-    //  new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
-    //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
-    //  new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
+
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     override def equals(other: Any): Boolean =
