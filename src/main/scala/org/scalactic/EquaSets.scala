@@ -374,7 +374,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * The order of the elements is preserved.
      */
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
+    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
     //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
     //def into[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
@@ -436,7 +436,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
+    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
       new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
     //def into[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
     //  new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
