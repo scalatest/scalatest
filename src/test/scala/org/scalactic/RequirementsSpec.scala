@@ -17,6 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 import java.util.Date
+import Prettifier.lineSeparator
 
 class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
@@ -517,7 +518,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")))
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -528,7 +529,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)))
+      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1591,7 +1592,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude")
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -1602,7 +1603,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude")
+      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2625,7 +2626,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")))
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -2636,7 +2637,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)))
+      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -3699,7 +3700,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude")
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -3710,7 +3711,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude")
+      assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
