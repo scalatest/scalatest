@@ -252,6 +252,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     /**
+     * Selects all elements except first ''n'' ones.
+     *
+     * @param n the number of elements to drop from this `EquaSet`.
+     * @return a `EquaSet` consisting of all elements of this `EquaSet` except the first `n` ones, or else the
+     * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
+     */
+    def drop(n: Int): thisEquaSets.SortedEquaSet
+
+    /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -318,6 +327,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
+    def drop(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.drop(n))
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquaSets.EquaSet => 

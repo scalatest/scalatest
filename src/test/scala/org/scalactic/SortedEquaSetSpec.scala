@@ -286,7 +286,15 @@ class SortedEquaSetSpec extends UnitSpec {
     set.count(_ % 2 == 0) shouldBe 2
     set.count(_ % 2 == 1) shouldBe 3
   }
-
+  it should "have a drop method" in {
+    val set = number.SortedEquaSet(1, 2, 3, 4, 5)
+    set.drop(0) shouldBe number.EquaSet(1, 2, 3, 4, 5)
+    set.drop(1) shouldBe number.EquaSet(2, 3, 4, 5)
+    set.drop(2) shouldBe number.EquaSet(3, 4, 5)
+    set.drop(3) shouldBe number.EquaSet(4, 5)
+    set.drop(4) shouldBe number.EquaSet(5)
+    set.drop(5) shouldBe number.EquaSet()
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

@@ -285,6 +285,16 @@ class EquaSetSpec extends UnitSpec {
     set.count(_ % 2 == 0) shouldBe 2
     set.count(_ % 2 == 1) shouldBe 3
   }
+  it should "have a drop method" in {
+    val set = number.EquaSet(1, 2, 3, 4, 5)
+    val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
+    set.drop(0) shouldBe number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    set.drop(1) shouldBe number.EquaSet(seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    set.drop(2) shouldBe number.EquaSet(seq(2).value, seq(3).value, seq(4).value)
+    set.drop(3) shouldBe number.EquaSet(seq(3).value, seq(4).value)
+    set.drop(4) shouldBe number.EquaSet(seq(4).value)
+    set.drop(5) shouldBe number.EquaSet()
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
