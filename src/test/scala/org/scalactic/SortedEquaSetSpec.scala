@@ -275,6 +275,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).copyToArray(arr3, 1, 2)
     arr3 shouldEqual Array(number.EquaBox(-1), number.EquaBox(1), number.EquaBox(2), number.EquaBox(-1), number.EquaBox(-1))
   }
+  it should "have a copyToBuffer method" in {
+    val buf = ListBuffer.fill(3)(number.EquaBox(-1))
+    number.SortedEquaSet(1, 2, 3, 4, 5).copyToBuffer(buf)
+    buf shouldEqual Buffer(number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(1), number.EquaBox(2), number.EquaBox(3), number.EquaBox(4), number.EquaBox(5))
+  }
+
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

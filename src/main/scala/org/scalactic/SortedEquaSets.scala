@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.GenTraversableOnce
+import scala.collection.{mutable, GenTraversableOnce}
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
 
@@ -315,6 +315,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
+    def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit = underlying.copyToBuffer(dest)
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value))

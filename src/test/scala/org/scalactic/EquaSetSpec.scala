@@ -273,6 +273,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).copyToArray(arr3, 1, 2)
     arr3 shouldEqual Array(number.EquaBox(-1), seq(0), seq(1), number.EquaBox(-1), number.EquaBox(-1))
   }
+  it should "have a copyToBuffer method" in {
+    val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
+    val buf = ListBuffer.fill(3)(number.EquaBox(-1))
+    number.EquaSet(1, 2, 3, 4, 5).copyToBuffer(buf)
+    buf shouldEqual Buffer(number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(-1), seq(0), seq(1), seq(2), seq(3), seq(4))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

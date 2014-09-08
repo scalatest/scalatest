@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.GenTraversableOnce
+import scala.collection.{mutable, GenTraversableOnce}
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
@@ -410,6 +410,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit
 
+    /**
+     * Copies all elements of this `EquaSet` to a buffer.
+     *
+     * @param dest The buffer to which elements are copied.
+     */
+    def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit
+
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
 
@@ -480,6 +487,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
+    def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit = underlying.copyToBuffer(dest)
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
