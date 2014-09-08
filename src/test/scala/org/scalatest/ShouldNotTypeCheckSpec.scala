@@ -17,6 +17,7 @@ package org.scalatest
 
 import Matchers._
 import SharedHelpers.thisLineNumber
+import org.scalactic.Prettifier.lineSeparator
 
 class ShouldNotTypeCheckSpec extends FunSpec {
 
@@ -65,7 +66,7 @@ class ShouldNotTypeCheckSpec extends FunSpec {
             |val a = 1
             |""".stripMargin shouldNot typeCheck
         }
-        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "\nval a = 1\n")))
+        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", lineSeparator + "val a = 1" + lineSeparator)))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
