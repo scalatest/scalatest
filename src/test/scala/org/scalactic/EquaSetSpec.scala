@@ -305,6 +305,16 @@ class EquaSetSpec extends UnitSpec {
     set.dropRight(4) shouldBe number.EquaSet(seq(0).value)
     set.dropRight(5) shouldBe number.EquaSet()
   }
+  it should "have a dropWhile method" in {
+    val set = number.EquaSet(1, 2, 3, 4, 5)
+    val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
+    set.dropWhile(_ < 1) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 1): _*)
+    set.dropWhile(_ < 2) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 2): _*)
+    set.dropWhile(_ < 3) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 3): _*)
+    set.dropWhile(_ < 4) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 4): _*)
+    set.dropWhile(_ < 5) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
+    set.dropWhile(_ < 6) shouldBe number.EquaSet()
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

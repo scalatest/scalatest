@@ -269,6 +269,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def dropRight(n: Int): thisEquaSets.SortedEquaSet
 
     /**
+     * Drops longest prefix of elements that satisfy a predicate.
+     *
+     * @param pred The predicate used to test elements.
+     * @return the longest suffix of this `SortedEquiSet` whose first element
+     * does not satisfy the predicate `p`.
+     */
+    def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
+
+    /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -337,6 +346,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       new TreeEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def drop(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropRight(n))
+    def dropWhile(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquaSets.EquaSet => 

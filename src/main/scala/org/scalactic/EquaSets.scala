@@ -443,13 +443,23 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def drop(n: Int): thisEquaSets.EquaSet
 
-    /** Selects all elements except last ''n'' ones.
-      *
-      * @param n The number of elements to take
-      * @return a `EquiSet` consisting of all elements of this `EquiSet` except the last `n` ones, or else the
-      * empty `EquiSet`, if this `EquiSet` has less than `n` elements.
-      */
+    /**
+     * Selects all elements except last ''n'' ones.
+     *
+     * @param n The number of elements to take
+     * @return a `EquiSet` consisting of all elements of this `EquiSet` except the last `n` ones, or else the
+     * empty `EquiSet`, if this `EquiSet` has less than `n` elements.
+     */
     def dropRight(n: Int): thisEquaSets.EquaSet
+
+    /**
+     * Drops longest prefix of elements that satisfy a predicate.
+     *
+     * @param pred The predicate used to test elements.
+     * @return the longest suffix of this `EquiSet` whose first element
+     * does not satisfy the predicate `p`.
+     */
+    def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
 
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
@@ -519,6 +529,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def drop(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropRight(n))
+    def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquaSets.FastEquaSet => 
