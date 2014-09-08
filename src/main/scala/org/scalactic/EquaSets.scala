@@ -375,6 +375,41 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
+    /**
+     * Copies values of this `EquaSet` to an array.
+     * Fills the given array `xs` with values of this `EquaSet`.
+     * Copying will stop once either the end of the current `EquaSet` is reached,
+     * or the end of the array is reached.
+     *
+     * @param xs the array to fill.
+     *
+     */
+    def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit
+
+    /**
+     * Copies values of this `EquaSet` to an array.
+     * Fills the given array `xs` with values of this `EquaSet`, beginning at index `start`.
+     * Copying will stop once either the end of the current `EquaSet` is reached,
+     * or the end of the array is reached.
+     *
+     * @param xs the array to fill.
+     * @param start the starting index.
+     *
+     */
+    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit
+
+    /**
+     * Copies values of this `EquaSet` to an array.
+     * Fills the given array `xs` with values of this `EquaSet`, beginning at index `start`.
+     * Copying will stop once the count of element copied reach <code>len</code>.
+     *
+     * @param xs the array to fill.
+     * @param start the starting index.
+     * @param len the length of elements to copy
+     *
+     */
+    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit
+
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
 
@@ -442,6 +477,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
       new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
+    def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
+    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
+    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

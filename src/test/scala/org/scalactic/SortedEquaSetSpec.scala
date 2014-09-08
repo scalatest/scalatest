@@ -261,6 +261,20 @@ class SortedEquaSetSpec extends UnitSpec {
     fn(2) shouldBe true
     fn(3) shouldBe false
   }
+  it should "have 3 copyToArray methods" in {
+
+    val arr1 = Array.fill(5)(number.EquaBox(-1))
+    number.SortedEquaSet(1, 2, 3, 4, 5).copyToArray(arr1)
+    arr1 shouldEqual Array(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3), number.EquaBox(4), number.EquaBox(5))
+
+    val arr2 = Array.fill(5)(number.EquaBox(-1))
+    number.SortedEquaSet(1, 2, 3, 4, 5).copyToArray(arr2, 1)
+    arr2 shouldEqual Array(number.EquaBox(-1), number.EquaBox(1), number.EquaBox(2), number.EquaBox(3), number.EquaBox(4))
+
+    val arr3 = Array.fill(5)(number.EquaBox(-1))
+    number.SortedEquaSet(1, 2, 3, 4, 5).copyToArray(arr3, 1, 2)
+    arr3 shouldEqual Array(number.EquaBox(-1), number.EquaBox(1), number.EquaBox(2), number.EquaBox(-1), number.EquaBox(-1))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
