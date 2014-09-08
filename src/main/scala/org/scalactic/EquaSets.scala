@@ -425,9 +425,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def count(p: T => Boolean): Int
 
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
-
     /**
      * Computes the difference of this `EquaSet` and another `EquaSet`.
      *
@@ -445,6 +442,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * `EquaSet` and in the given `EquaSet` `that`.
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
+
     def isEmpty: Boolean
     def iterator: Iterator[T]
     def size: Int
@@ -497,10 +498,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
     def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit = underlying.copyToBuffer(dest)
     def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
-
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     override def equals(other: Any): Boolean =
@@ -512,6 +509,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
