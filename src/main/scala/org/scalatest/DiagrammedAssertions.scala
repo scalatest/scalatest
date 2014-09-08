@@ -219,7 +219,7 @@ trait DiagrammedAssertions extends Assertions {
 
       lines.prepend(intro)
       lines.append(new StringBuilder)
-      lines.mkString("\n")
+      lines.mkString(Prettifier.lineSeparator)
     }
 
     /**
@@ -234,7 +234,7 @@ trait DiagrammedAssertions extends Assertions {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage =
-          Some(clue + "\n\n" + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
         throw newAssertionFailedException(failureMessage, None, "Assertions.scala", "macroAssert", 2)
       }
     }
@@ -251,7 +251,7 @@ trait DiagrammedAssertions extends Assertions {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage =
-          Some(clue + "\n\n" + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
         throw newTestCanceledException(failureMessage, None, "Assertions.scala", "macroAssume", 2)
       }
     }

@@ -317,6 +317,8 @@ object Prettifier {
       }
       case _ => (a, b)
     }
+	
+  private[org] val lineSeparator: String = System.getProperty("line.separator")
 }
 
 private[scalactic] class BasicPrettifier extends Prettifier {
