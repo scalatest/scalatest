@@ -242,9 +242,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
     def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
-
     /**
      * Computes the difference of this `SortedEquaSet` and another `EquaSet`.
      *
@@ -262,6 +259,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * `SortedEquaSet` and in the given `EquaSet` `that`.
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
     def isEmpty: Boolean
     def iterator: Iterator[T]
     def size: Int
