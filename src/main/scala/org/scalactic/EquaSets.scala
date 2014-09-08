@@ -417,6 +417,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit
 
+    /**
+     * Counts the number of elements in the $coll which satisfy a predicate.
+     *
+     * @param p the predicate used to test elements.
+     * @return the number of elements satisfying the predicate `p`.
+     */
+    def count(p: T => Boolean): Int
+
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
 
@@ -488,6 +496,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
     def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit = underlying.copyToBuffer(dest)
+    def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

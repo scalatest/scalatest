@@ -280,6 +280,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).copyToBuffer(buf)
     buf shouldEqual Buffer(number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(1), number.EquaBox(2), number.EquaBox(3), number.EquaBox(4), number.EquaBox(5))
   }
+  it should "have a count method" in {
+    val set = number.SortedEquaSet(1, 2, 3, 4, 5)
+    set.count(_ > 10) shouldBe 0
+    set.count(_ % 2 == 0) shouldBe 2
+    set.count(_ % 2 == 1) shouldBe 3
+  }
 
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

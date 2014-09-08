@@ -279,6 +279,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).copyToBuffer(buf)
     buf shouldEqual Buffer(number.EquaBox(-1), number.EquaBox(-1), number.EquaBox(-1), seq(0), seq(1), seq(2), seq(3), seq(4))
   }
+  it should "have a count method" in {
+    val set = number.EquaSet(1, 2, 3, 4, 5)
+    set.count(_ > 10) shouldBe 0
+    set.count(_ % 2 == 0) shouldBe 2
+    set.count(_ % 2 == 1) shouldBe 3
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
