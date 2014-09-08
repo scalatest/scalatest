@@ -443,6 +443,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def drop(n: Int): thisEquaSets.EquaSet
 
+    /** Selects all elements except last ''n'' ones.
+      *
+      * @param n The number of elements to take
+      * @return a `EquiSet` consisting of all elements of this `EquiSet` except the last `n` ones, or else the
+      * empty `EquiSet`, if this `EquiSet` has less than `n` elements.
+      */
+    def dropRight(n: Int): thisEquaSets.EquaSet
+
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
@@ -510,6 +518,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def drop(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.drop(n))
+    def dropRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropRight(n))
     override def equals(other: Any): Boolean =
       other match {
         case equiSet: thisEquaSets.FastEquaSet => 
