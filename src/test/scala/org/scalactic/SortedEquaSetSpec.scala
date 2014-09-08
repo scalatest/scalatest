@@ -254,6 +254,13 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
     number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
+  it should "have an compose method, inherited from PartialFunction" in {
+    val fn: Int => Boolean = number.SortedEquaSet(1, 2, 3).compose(_ + 1)
+    fn(0) shouldBe true
+    fn(1) shouldBe true
+    fn(2) shouldBe true
+    fn(3) shouldBe false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
