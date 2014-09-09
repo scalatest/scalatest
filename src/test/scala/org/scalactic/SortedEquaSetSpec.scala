@@ -371,6 +371,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(5) foreach (num *= _)
     num shouldBe 60
   }
+  it should "have a groupBy method" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5), 0 -> number.SortedEquaSet(2, 4))
+    number.SortedEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 3, 3), 0 -> number.SortedEquaSet(2))
+    number.SortedEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 1, 3, 3, 3))
+    number.SortedEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5, 7), 0 -> number.SortedEquaSet(2))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

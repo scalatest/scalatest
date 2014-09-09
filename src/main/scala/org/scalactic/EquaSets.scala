@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.{mutable, GenTraversableOnce}
+import scala.collection.{GenMap, mutable, GenTraversableOnce}
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
@@ -551,6 +551,25 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foreach[U](f: T => U): Unit
 
     /**
+     * Partitions this $coll into a map of `EquaSet`s according to some discriminator function.
+     *
+     * Note: this method is not re-implemented by views. This means
+     * when applied to a view it will always force the view and
+     * return a new `EquaSet`.
+     *
+     * @param f the discriminator function.
+     * @tparam K the type of keys returned by the discriminator function.
+     * @return A map from keys to `EquaSet`s such that the following invariant holds:
+     * {{{
+     * (xs groupBy f)(k) = xs filter (x => f(x) == k)
+     * }}}
+     * That is, every key `k` is bound to a `EquaSet` of those elements `x`
+     * for which `f(x)` equals `k`.
+     *
+     */
+    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet]
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -634,6 +653,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
     def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
     def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
+    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

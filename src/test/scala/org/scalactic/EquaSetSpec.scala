@@ -373,6 +373,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(5) foreach (num *= _)
     num shouldBe 60
   }
+  it should "have a groupBy method" in {
+    number.EquaSet(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 5), 0 -> number.EquaSet(2, 4))
+    number.EquaSet(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 3, 3), 0 -> number.EquaSet(2))
+    number.EquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 1, 3, 3, 3))
+    number.EquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 5, 7), 0 -> number.EquaSet(2))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
