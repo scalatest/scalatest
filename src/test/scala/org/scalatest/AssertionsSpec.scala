@@ -827,7 +827,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}"))))
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -840,7 +840,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5))))
+      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2147,7 +2147,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude"))
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2160,7 +2160,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude"))
+      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3461,7 +3461,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}"))))
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3474,7 +3474,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5))))
+      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4781,7 +4781,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude"))
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4794,7 +4794,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude"))
+      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5621,7 +5621,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "\nval a = 1\n")))
+        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
@@ -5684,7 +5684,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "\nval a = 1\n")))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
@@ -5752,7 +5752,7 @@ class AssertionsSpec extends FunSpec {
         }
         val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
-        assert(e.message.get.indexOf("\nval a: String = 2\n") >= 0)
+        assert(e.message.get.indexOf("" + Prettifier.lineSeparator + "val a: String = 2" + Prettifier.lineSeparator + "") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
