@@ -304,7 +304,7 @@ class SortedEquaSetSpec extends UnitSpec {
     set.dropRight(4) shouldBe number.EquaSet(1)
     set.dropRight(5) shouldBe number.EquaSet()
   }
-  it should "have a drop method" in {
+  it should "have a dropWhile method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
     set.dropWhile(_ < 1) shouldBe number.EquaSet(1, 2, 3, 4, 5)
     set.dropWhile(_ < 2) shouldBe number.EquaSet(2, 3, 4, 5)
