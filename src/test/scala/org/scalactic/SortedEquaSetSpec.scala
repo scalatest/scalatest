@@ -442,6 +442,19 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).minBy(_.abs) shouldBe 1
     number.SortedEquaSet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
+  it should "have a 3 mkString method" in {
+
+    lower.SortedEquaSet("hi").mkString shouldBe "hi"
+    number.SortedEquaSet(1, 2, 3).mkString shouldBe "123"
+
+    lower.SortedEquaSet("hi").mkString("#") shouldBe "hi"
+    number.SortedEquaSet(1, 2, 3).mkString("#") shouldBe "1#2#3"
+    number.SortedEquaSet(1, 2, 3).mkString(", ") shouldBe "1, 2, 3"
+
+    lower.SortedEquaSet("hi").mkString("<", "#", ">") shouldBe "<hi>"
+    number.SortedEquaSet(1, 2, 3).mkString("<", "#", ">") shouldBe "<1#2#3>"
+    number.SortedEquaSet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

@@ -701,6 +701,43 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T
 
+    /**
+     * Displays all elements of this `EquaSet` in a string using start, end, and
+     * separator strings.
+     *
+     * @param start the starting string.
+     * @param sep the separator string.
+     * @param end the ending string.
+     * @return a string representation of this `EquaSet`. The resulting string
+     * begins with the string `start` and ends with the string
+     * `end`. Inside, the string representations (w.r.t. the method
+     * `toString`) of all elements of this $coll are separated by
+     * the string `sep`.
+     *
+     * @example `EquaSet(1, 2, 3).mkString("(", "; ", ")") = "(1; 2; 3)"`
+     */
+    def mkString(start: String, sep: String, end: String): String
+    /**
+     * Displays all elements of this `EquaSet` in a string using a separator string.
+     *
+     * @param sep the separator string.
+     * @return a string representation of this `EquaSet`. In the resulting string
+     * the string representations (w.r.t. the method `toString`)
+     * of all elements of this `EquaSet` are separated by the string `sep`.
+     *
+     * @example `EquaSet(1, 2, 3).mkString("|") = "1|2|3"`
+     */
+    def mkString(sep: String): String
+    /**
+     * Displays all elements of this `EquaSet` in a string.
+     *
+     * @return a string representation of this `EquaSet`. In the resulting string
+     * the string representations (w.r.t. the method `toString`)
+     * of all elements of this `EquaSet` follow each other without any
+     * separator string.
+     */
+    def mkString: String
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -800,6 +837,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).min(ord)
     def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).minBy(f)
+    def mkString(start: String, sep: String, end: String): String = underlying.map(_.value).mkString(start, sep, end)
+    def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
+    def mkString: String = underlying.map(_.value).mkString
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

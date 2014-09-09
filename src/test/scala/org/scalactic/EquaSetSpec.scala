@@ -446,6 +446,19 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).minBy(_.abs) shouldBe 1
     number.EquaSet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
+  it should "have a 3 mkString method" in {
+
+    lower.EquaSet("hi").mkString shouldBe "hi"
+    number.EquaSet(1, 2, 3).mkString shouldBe "123"
+
+    lower.EquaSet("hi").mkString("#") shouldBe "hi"
+    number.EquaSet(1, 2, 3).mkString("#") shouldBe "1#2#3"
+    number.EquaSet(1, 2, 3).mkString(", ") shouldBe "1, 2, 3"
+
+    lower.EquaSet("hi").mkString("<", "#", ">") shouldBe "<hi>"
+    number.EquaSet(1, 2, 3).mkString("<", "#", ">") shouldBe "<1#2#3>"
+    number.EquaSet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
