@@ -477,6 +477,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       */
     def filter(pred: T => Boolean): thisEquaSets.EquaSet
 
+    /** Selects all elements of this `EquaSets` which do not satisfy a predicate.
+      *
+      * @param pred the predicate used to test elements.
+      * @return a new `EquaSets` consisting of all elements of this `EquaSets` that do not satisfy the given
+      * predicate <code>pred</code>. Their order may not be preserved.
+      */
+    def filterNot(pred: T => Boolean): thisEquaSets.EquaSet
+
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
@@ -554,6 +562,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
+    def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

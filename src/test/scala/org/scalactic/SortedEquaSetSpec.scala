@@ -319,9 +319,15 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a filter method" in {
     val set = number.SortedEquaSet(1, 2, 3)
-    set.filter(_ == 1) shouldBe number.EquaSet(1)
-    set.filter(_ == 2) shouldBe number.EquaSet(2)
-    set.filter(_ == 3) shouldBe number.EquaSet(3)
+    set.filter(_ == 1) shouldBe number.SortedEquaSet(1)
+    set.filter(_ == 2) shouldBe number.SortedEquaSet(2)
+    set.filter(_ == 3) shouldBe number.SortedEquaSet(3)
+  }
+  it should "have a filterNot method" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    set.filterNot(_ == 1) shouldBe number.SortedEquaSet(2, 3)
+    set.filterNot(_ == 2) shouldBe number.SortedEquaSet(1, 3)
+    set.filterNot(_ == 3) shouldBe number.SortedEquaSet(1, 2)
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

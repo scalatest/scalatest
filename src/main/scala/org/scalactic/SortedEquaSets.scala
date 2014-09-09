@@ -285,6 +285,14 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       */
     def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet
 
+    /** Selects all elements of this `SortedEquaSets` which do not satisfy a predicate.
+      *
+      * @param pred the predicate used to test elements.
+      * @return a new `SortedEquaSets` consisting of all elements of this `SortedEquaSets` that do not satisfy the given
+      * predicate <code>pred</code>.
+      */
+    def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet
+
     /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
@@ -363,6 +371,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
+    def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
