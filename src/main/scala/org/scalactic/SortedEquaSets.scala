@@ -453,6 +453,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       }
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).maxBy(f)
+    def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).min(ord)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
