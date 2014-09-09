@@ -462,6 +462,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
 
     /**
+     * Check if this `EquaSet` contains element that fulfills the passed in predicate.
+     *
+     * @param pred predicate to be checked
+     * @return <code>true</code> if there's at least one element fulfills the passed in predicate
+     */
+    def exists(pred: T => Boolean): Boolean
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -536,6 +544,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
           underlying == equiSet.underlying
         case _ => false
       }
+    def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

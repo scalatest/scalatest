@@ -353,6 +353,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
           underlying == equiSet.toSet
         case _ => false
       }
+    def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

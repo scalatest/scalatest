@@ -313,6 +313,10 @@ class SortedEquaSetSpec extends UnitSpec {
     set.dropWhile(_ < 5) shouldBe number.EquaSet(5)
     set.dropWhile(_ < 6) shouldBe number.EquaSet()
   }
+  it should "have an exists method" in {
+    number.SortedEquaSet(1, 2, 3).exists(_ == 2) shouldBe true
+    number.SortedEquaSet(1, 2, 3).exists(_ == 5) shouldBe false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
