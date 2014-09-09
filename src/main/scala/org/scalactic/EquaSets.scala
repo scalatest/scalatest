@@ -486,6 +486,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet
 
     /**
+     * Finds the first element of the `EquaSet` satisfying a predicate, if any.
+     *
+     *
+     * @param pred the predicate used to test elements.
+     * @return an option value containing the first element in the `EquaSet`
+     * that satisfies <code>pred</code>, or <code>None</code> if none exists.
+     */
+    def find(pred: T => Boolean): Option[EquaBox]
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -563,6 +573,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
+    def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

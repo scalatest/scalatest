@@ -329,6 +329,10 @@ class SortedEquaSetSpec extends UnitSpec {
     set.filterNot(_ == 2) shouldBe number.SortedEquaSet(1, 3)
     set.filterNot(_ == 3) shouldBe number.SortedEquaSet(1, 2)
   }
+  it should "have a find method" in {
+    number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
+    number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

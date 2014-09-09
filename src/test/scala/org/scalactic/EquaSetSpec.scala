@@ -331,6 +331,10 @@ class EquaSetSpec extends UnitSpec {
     set.filterNot(_ == 2) shouldBe number.EquaSet(1, 3)
     set.filterNot(_ == 3) shouldBe number.EquaSet(1, 2)
   }
+  it should "have a find method" in {
+    number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
+    number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
