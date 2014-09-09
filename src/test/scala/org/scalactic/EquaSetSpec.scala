@@ -432,6 +432,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(-1).max shouldBe -1
     lower.EquaSet("aaa", "ccc", "bbb").max shouldBe "ccc"
   }
+  it should "have a maxBy method" in {
+    number.EquaSet(1, 2, 3, 4, 5).maxBy(_.abs) shouldBe 5
+    number.EquaSet(1, 2, 3, 4, -5).maxBy(_.abs) shouldBe -5
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
