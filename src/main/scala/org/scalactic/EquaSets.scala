@@ -525,6 +525,22 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foldLeft[B](z: B)(op: (B, T) => B): B
 
     /**
+     * Applies a binary operator to all elements of this `EquaSet` and a start value,
+     * going right to left.
+     *
+     * @param z the start value.
+     * @param op the binary operator.
+     * @tparam B the result type of the binary operator.
+     * @return the result of inserting `op` between consecutive elements of this `EquaSet`,
+     * going right to left with the start value `z` on the right:
+     * {{{
+     * op(x_1, op(x_2, ... op(x_n, z)...))
+     * }}}
+     * where `x,,1,,, ..., x,,n,,` are the elements of this `EquaSet`.
+     */
+    def foldRight[B](z: B)(op: (T, B) => B): B
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -605,6 +621,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
+    def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
