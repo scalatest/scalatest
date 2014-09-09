@@ -627,6 +627,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
 
     def isEmpty: Boolean
+
+    /** Tests whether this `EquaSet` can be repeatedly traversed. Always
+      * true for Traversables and false for Iterators unless overridden.
+      *
+      * @return `true` if it is repeatedly traversable, `false` otherwise.
+      */
+    def isTraversableAgain: Boolean
+
     def iterator: Iterator[T]
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
@@ -715,6 +723,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
+    def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying

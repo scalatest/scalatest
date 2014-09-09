@@ -414,6 +414,10 @@ class EquaSetSpec extends UnitSpec {
     inits.next shouldBe number.EquaSet()
     inits.hasNext shouldBe false
   }
+  it should "have an isTraversableAgain method" in {
+    lower.EquaSet("hi").isTraversableAgain shouldBe true
+    number.EquaSet(1, 2, 3).isTraversableAgain shouldBe true
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
