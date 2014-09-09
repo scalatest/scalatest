@@ -738,6 +738,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def mkString: String
 
+    /** Tests whether the `EquaSet` is not empty.
+      *
+      * @return `true` if the `EquaSet` contains at least one element, `false` otherwise.
+      */
+    def nonEmpty: Boolean
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -840,6 +846,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def mkString(start: String, sep: String, end: String): String = underlying.map(_.value).mkString(start, sep, end)
     def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
     def mkString: String = underlying.map(_.value).mkString
+    def nonEmpty: Boolean = underlying.nonEmpty
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

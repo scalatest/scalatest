@@ -459,6 +459,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).mkString("<", "#", ">") shouldBe "<1#2#3>"
     number.EquaSet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
   }
+  it should "have an nonEmpty method" in {
+    lower.EquaSet("hi").nonEmpty shouldBe true
+    number.EquaSet(1, 2, 3).nonEmpty shouldBe true
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

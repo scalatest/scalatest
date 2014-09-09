@@ -455,6 +455,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).mkString("<", "#", ">") shouldBe "<1#2#3>"
     number.SortedEquaSet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
   }
+  it should "have an nonEmpty method" in {
+    lower.SortedEquaSet("hi").nonEmpty shouldBe true
+    number.SortedEquaSet(1, 2, 3).nonEmpty shouldBe true
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

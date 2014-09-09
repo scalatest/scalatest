@@ -458,6 +458,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def mkString(start: String, sep: String, end: String): String = underlying.map(_.value).mkString(start, sep, end)
     def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
     def mkString: String = underlying.map(_.value).mkString
+    def nonEmpty: Boolean = underlying.nonEmpty
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
