@@ -363,6 +363,16 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).forall(_ > 0) shouldBe true
     number.EquaSet(1, 2, 3, 4, 5).forall(_ < 0) shouldBe false
   }
+  it should "have a foreach method" in {
+    var num = 0
+    number.EquaSet(1, 2, 3) foreach (num += _)
+    num shouldBe 6
+    for (i <- number.EquaSet(1, 2, 3))
+      num += i
+    num shouldBe 12
+    number.EquaSet(5) foreach (num *= _)
+    num shouldBe 60
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

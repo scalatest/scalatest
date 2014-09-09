@@ -548,6 +548,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def forall(pred: T => Boolean): Boolean
 
+    def foreach[U](f: T => U): Unit
+
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
@@ -631,6 +633,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
     def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
+    def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

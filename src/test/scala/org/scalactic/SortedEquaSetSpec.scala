@@ -361,6 +361,16 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).forall(_ > 0) shouldBe true
     number.SortedEquaSet(1, 2, 3, 4, 5).forall(_ < 0) shouldBe false
   }
+  it should "have a foreach method" in {
+    var num = 0
+    number.SortedEquaSet(1, 2, 3) foreach (num += _)
+    num shouldBe 6
+    for (i <- number.EquaSet(1, 2, 3))
+      num += i
+    num shouldBe 12
+    number.SortedEquaSet(5) foreach (num *= _)
+    num shouldBe 60
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
