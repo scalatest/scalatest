@@ -422,6 +422,12 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").lastOption shouldBe Some("hi")
     number.SortedEquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
+  it should "have a max method" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).max shouldBe 5
+    number.SortedEquaSet(1).max shouldBe 1
+    number.SortedEquaSet(-1).max shouldBe -1
+    lower.SortedEquaSet("aaa", "ccc", "bbb").max shouldBe "ccc"
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

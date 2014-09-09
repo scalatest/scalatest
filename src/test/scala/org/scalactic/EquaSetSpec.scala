@@ -426,6 +426,12 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi").lastOption shouldBe Some("hi")
     number.EquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
+  it should "have a max method" in {
+    number.EquaSet(1, 2, 3, 4, 5).max shouldBe 5
+    number.EquaSet(1).max shouldBe 1
+    number.EquaSet(-1).max shouldBe -1
+    lower.EquaSet("aaa", "ccc", "bbb").max shouldBe "ccc"
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
