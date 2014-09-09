@@ -333,6 +333,18 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
+  it should "have a fold method" in {
+    number.SortedEquaSet(1).fold(0)(_ + _) shouldBe 1
+    number.SortedEquaSet(1).fold(1)(_ * _) shouldBe 1
+    number.SortedEquaSet(2).fold(0)(_ + _) shouldBe 2
+    number.SortedEquaSet(2).fold(1)(_ * _) shouldBe 2
+    number.SortedEquaSet(3).fold(0)(_ + _) shouldBe 3
+    number.SortedEquaSet(3).fold(1)(_ * _) shouldBe 3
+    number.SortedEquaSet(1, 2, 3).fold(0)(_ + _) shouldBe 6
+    number.SortedEquaSet(1, 2, 3).fold(1)(_ * _) shouldBe 6
+    number.SortedEquaSet(1, 2, 3, 4, 5).fold(0)(_ + _) shouldBe 15
+    number.SortedEquaSet(1, 2, 3, 4, 5).fold(1)(_ * _) shouldBe 120
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

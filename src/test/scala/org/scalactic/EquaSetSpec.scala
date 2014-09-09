@@ -335,6 +335,18 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
+  it should "have a fold method" in {
+    number.EquaSet(1).fold(0)(_ + _) shouldBe 1
+    number.EquaSet(1).fold(1)(_ * _) shouldBe 1
+    number.EquaSet(2).fold(0)(_ + _) shouldBe 2
+    number.EquaSet(2).fold(1)(_ * _) shouldBe 2
+    number.EquaSet(3).fold(0)(_ + _) shouldBe 3
+    number.EquaSet(3).fold(1)(_ * _) shouldBe 3
+    number.EquaSet(1, 2, 3).fold(0)(_ + _) shouldBe 6
+    number.EquaSet(1, 2, 3).fold(1)(_ * _) shouldBe 6
+    number.EquaSet(1, 2, 3, 4, 5).fold(0)(_ + _) shouldBe 15
+    number.EquaSet(1, 2, 3, 4, 5).fold(1)(_ * _) shouldBe 120
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
