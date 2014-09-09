@@ -475,6 +475,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new TreeEquaSet(tuple2._1), new TreeEquaSet(tuple2._2))
     }
+    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

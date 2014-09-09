@@ -466,6 +466,12 @@ class EquaSetSpec extends UnitSpec {
   it should "have a partition method" in {
     number.EquaSet(1, 2, 3, 4).partition(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3, 4))
   }
+  it should "have a product method" in {
+    number.EquaSet(1, 2, 3).product shouldBe 6
+    number.EquaSet(3).product shouldBe 3
+    number.EquaSet(3, 4, 5).product shouldBe 60
+    number.EquaSet(3, 4, 5).product shouldBe 60
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

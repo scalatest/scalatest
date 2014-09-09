@@ -755,6 +755,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
 
+    /**
+     * Multiplies up the elements of this collection.
+     *
+     * @param num an implicit parameter defining a set of numeric operations
+     * which includes the `*` operator to be used in forming the product.
+     * @tparam T1 the result type of the `*` operator.
+     * @return the product of all elements of this `EquaSet` with respect to the `*` operator in `num`.
+     *
+     * @return the product of all elements in this `EquaSet` of numbers of type `Int`.
+     * Instead of `Int`, any other type `T` with an implicit `Numeric[T]` implementation
+     * can be used as element type of the `EquaSet` and as result type of `product`.
+     * Examples of such types are: `Long`, `Float`, `Double`, `BigInt`.
+     */
+    def product[T1 >: T](implicit num: Numeric[T1]): T1
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -862,6 +877,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
     }
+    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
