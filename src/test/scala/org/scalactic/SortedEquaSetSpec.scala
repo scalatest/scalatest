@@ -402,6 +402,14 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an init method" in {
     number.SortedEquaSet(1, 2, 3).init shouldBe number.SortedEquaSet(1, 2)
   }
+  it should "have an inits method" in {
+    val inits = number.SortedEquaSet(1, 2, 3).inits
+    inits.next shouldBe number.SortedEquaSet(1,2,3)
+    inits.next shouldBe number.SortedEquaSet(1,2)
+    inits.next shouldBe number.SortedEquaSet(1)
+    inits.next shouldBe number.SortedEquaSet()
+    inits.hasNext shouldBe false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

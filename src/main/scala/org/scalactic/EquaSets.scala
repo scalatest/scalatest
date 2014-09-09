@@ -605,6 +605,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def init: thisEquaSets.EquaSet
 
     /**
+     * Iterates over the inits of this `EquaSet`. The first value will be this
+     * `EquaSet` and the final one will be an empty `EquaSet`, with the intervening
+     * values the results of successive applications of `init`.
+     *
+     * @return an iterator over all the inits of this `EquaSet`
+     * @example EquaSet(1,2,3).inits = Iterator(EquaSet(1,2,3), EquaSet(1,2), EquaSet(1), EquaSet())
+     */
+    def inits: Iterator[thisEquaSets.EquaSet]
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -699,6 +709,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case None => None
       }
     def init: thisEquaSets.EquaSet = new FastEquaSet(underlying.init)
+    def inits: Iterator[thisEquaSets.EquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

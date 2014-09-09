@@ -406,6 +406,14 @@ class EquaSetSpec extends UnitSpec {
   it should "have an init method" in {
     number.EquaSet(1, 2, 3).init shouldBe number.EquaSet(1, 2)
   }
+  it should "have an inits method" in {
+    val inits = number.EquaSet(1, 2, 3).inits
+    inits.next shouldBe number.EquaSet(1,2,3)
+    inits.next shouldBe number.EquaSet(1,2)
+    inits.next shouldBe number.EquaSet(1)
+    inits.next shouldBe number.EquaSet()
+    inits.hasNext shouldBe false
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

@@ -332,6 +332,16 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def init: thisEquaSets.SortedEquaSet
 
     /**
+     * Iterates over the inits of this `SortedEquaSet`. The first value will be this
+     * `SortedEquaSet` and the final one will be an empty `SortedEquaSet`, with the intervening
+     * values the results of successive applications of `init`.
+     *
+     * @return an iterator over all the inits of this `SortedEquaSet`
+     * @example SortedEquaSet(1,2,3).inits = Iterator(SortedEquaSet(1,2,3), SortedEquaSet(1,2), SortedEquaSet(1), SortedEquaSet())
+     */
+    def inits: Iterator[thisEquaSets.SortedEquaSet]
+
+    /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -427,6 +437,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case None => None
       }
     def init: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.init)
+    def inits: Iterator[thisEquaSets.SortedEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
