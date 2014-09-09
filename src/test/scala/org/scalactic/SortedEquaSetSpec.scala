@@ -414,6 +414,10 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").isTraversableAgain shouldBe true
     number.SortedEquaSet(1, 2, 3).isTraversableAgain shouldBe true
   }
+  it should "have a last method" in {
+    lower.SortedEquaSet("hi").last shouldBe "hi"
+    number.SortedEquaSet(1, 2, 3).last shouldBe 3
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
