@@ -459,6 +459,9 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").nonEmpty shouldBe true
     number.SortedEquaSet(1, 2, 3).nonEmpty shouldBe true
   }
+  it should "have a partition method" in {
+    number.SortedEquaSet(1, 2, 3, 4).partition(_ < 3) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

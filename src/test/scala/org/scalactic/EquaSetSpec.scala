@@ -463,6 +463,9 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi").nonEmpty shouldBe true
     number.EquaSet(1, 2, 3).nonEmpty shouldBe true
   }
+  it should "have a partition method" in {
+    number.EquaSet(1, 2, 3, 4).partition(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3, 4))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

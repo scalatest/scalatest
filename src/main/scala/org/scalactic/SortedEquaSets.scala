@@ -353,6 +353,18 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
     def isEmpty: Boolean
     def iterator: Iterator[T]
+
+    /**
+     * Partitions this `SortedEquaSet` in two `SortedEquaSet`s according to a predicate.
+     *
+     * @param pred the predicate on which to partition.
+     * @return a pair of `SortedEquaSet`s: the first `SortedEquaSet` consists of all elements that
+     * satisfy the predicate `p` and the second `SortedEquaSet` consists of all elements
+     * that don't. The relative order of the elements in the resulting `SortedEquaSet`s
+     * may not be preserved.
+     */
+    def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
+
     def size: Int
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
@@ -459,6 +471,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
     def mkString: String = underlying.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
+    def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+      val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
+      (new TreeEquaSet(tuple2._1), new TreeEquaSet(tuple2._2))
+    }
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

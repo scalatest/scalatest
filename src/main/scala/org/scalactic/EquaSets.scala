@@ -744,6 +744,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       */
     def nonEmpty: Boolean
 
+    /**
+     * Partitions this `EquaSet` in two `EquaSet`s according to a predicate.
+     *
+     * @param pred the predicate on which to partition.
+     * @return a pair of `EquaSet`s: the first `EquaSet` consists of all elements that
+     * satisfy the predicate `p` and the second `EquaSet` consists of all elements
+     * that don't. The relative order of the elements in the resulting `EquaSet`s
+     * may not be preserved.
+     */
+    def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -847,6 +858,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
     def mkString: String = underlying.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
+    def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
+      val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
+      (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
+    }
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
