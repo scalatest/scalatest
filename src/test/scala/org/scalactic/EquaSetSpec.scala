@@ -379,6 +379,18 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 1, 3, 3, 3))
     number.EquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 5, 7), 0 -> number.EquaSet(2))
   }
+  it should "have a grouped method" in {
+    number.EquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).grouped(1).toList shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
+    an [IllegalArgumentException] should be thrownBy { number.EquaSet(1, 2, 3).grouped(0).toList }
+    val set = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    val seq = set.toSet.toSeq
+    set.grouped(2).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
+    set.grouped(3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(3).value, seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value, seq(8).value), number.EquaSet(seq(9).value))
+    set.grouped(4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value, seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
+    number.EquaSet(1).grouped(2).toList shouldBe List(number.EquaSet(1))
+    number.EquaSet(1).grouped(1).toList shouldBe List(number.EquaSet(1))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

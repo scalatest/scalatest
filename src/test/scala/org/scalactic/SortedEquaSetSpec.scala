@@ -377,6 +377,16 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 1, 3, 3, 3))
     number.SortedEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5, 7), 0 -> number.SortedEquaSet(2))
   }
+  it should "have a grouped method" in {
+    number.SortedEquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    number.SortedEquaSet(1, 2, 3).grouped(1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
+    an [IllegalArgumentException] should be thrownBy { number.SortedEquaSet(1, 2, 3).grouped(0).toList }
+    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5, 6), number.SortedEquaSet(7, 8), number.SortedEquaSet(9, 10))
+    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5, 6), number.SortedEquaSet(7, 8, 9), number.SortedEquaSet(10))
+    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(5, 6, 7, 8), number.SortedEquaSet(9, 10))
+    number.SortedEquaSet(1).grouped(2).toList shouldBe List(number.SortedEquaSet(1))
+    number.SortedEquaSet(1).grouped(1).toList shouldBe List(number.SortedEquaSet(1))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

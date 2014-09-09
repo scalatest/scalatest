@@ -570,6 +570,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet]
 
     /**
+     * Partitions elements in fixed size `EquaSet`s.
+     * @see [[scala.collection.Iterator]], method `grouped`
+     *
+     * @param size the number of elements per group
+     * @return An iterator producing `EquaSet`s of size `size`, except the
+     * last will be less than size `size` if the elements don't divide evenly.
+     */
+    def grouped(size: Int): Iterator[thisEquaSets.EquaSet]
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -654,6 +664,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
     def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
     def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
+    def grouped(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
