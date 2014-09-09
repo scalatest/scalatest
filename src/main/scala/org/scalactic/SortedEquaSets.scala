@@ -412,6 +412,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
     def head: T = underlying.head.value
+    def headOption: Option[T] =
+      underlying.headOption match {
+        case Some(head) => Some(head.value)
+        case None => None
+      }
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

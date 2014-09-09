@@ -588,6 +588,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       */
     def head: T
 
+    /** Optionally selects the first element.
+      *
+      * @return the first element of this `EquaSet` if it is nonempty,
+      * `None` if it is empty.
+      */
+    def headOption: Option[T]
+
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
@@ -677,6 +684,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
     def head: T = underlying.head.value
+    def headOption: Option[T] =
+      underlying.headOption match {
+        case Some(head) => Some(head.value)
+        case None => None
+      }
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

@@ -395,6 +395,10 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").head shouldBe "hi"
     number.SortedEquaSet(1, 2, 3).head shouldBe 1
   }
+  it should "have a headOption method" in {
+    lower.SortedEquaSet("hi").headOption shouldBe Some("hi")
+    number.SortedEquaSet(1, 2, 3).headOption shouldBe Some(1)
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
