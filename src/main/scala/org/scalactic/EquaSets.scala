@@ -645,6 +645,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def last: T
 
+    /**
+     * Optionally selects the last element.
+     *
+     * @return the last element of this `EquaSet` if it is nonempty,
+     * `None` if it is empty.
+     */
+    def lastOption: Option[T]
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -735,6 +743,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value
+    def lastOption: Option[T] =
+      underlying.lastOption match {
+        case Some(last) => Some(last.value)
+        case None => None
+      }
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

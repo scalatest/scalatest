@@ -446,6 +446,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value
+    def lastOption: Option[T] =
+      underlying.lastOption match {
+        case Some(last) => Some(last.value)
+        case None => None
+      }
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
