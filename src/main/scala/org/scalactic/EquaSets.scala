@@ -541,6 +541,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foldRight[B](z: B)(op: (T, B) => B): B
 
     /**
+     * Check if all elements in this `EquaSet` satisfy the predicate.
+     *
+     * @param pred the predicate to check for
+     * @return <code>true</code> if all elements satisfy the predicate, <code>false</code> otherwise.
+     */
+    def forall(pred: T => Boolean): Boolean
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -622,6 +630,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
+    def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

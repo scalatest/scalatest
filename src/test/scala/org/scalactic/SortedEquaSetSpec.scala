@@ -357,6 +357,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).foldRight(0)(_ + _) shouldBe 6
     number.SortedEquaSet(1, 2, 3).foldRight(1)(_ + _) shouldBe 7
   }
+  it should "have a forall method" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).forall(_ > 0) shouldBe true
+    number.SortedEquaSet(1, 2, 3, 4, 5).forall(_ < 0) shouldBe false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

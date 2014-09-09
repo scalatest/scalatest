@@ -376,6 +376,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
+    def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
