@@ -345,6 +345,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).fold(0)(_ + _) shouldBe 15
     number.SortedEquaSet(1, 2, 3, 4, 5).fold(1)(_ * _) shouldBe 120
   }
+  it should "have a foldLeft method" in {
+    number.SortedEquaSet(1).foldLeft(0)(_ + _) shouldBe 1
+    number.SortedEquaSet(1).foldLeft(1)(_ + _) shouldBe 2
+    number.SortedEquaSet(1, 2, 3).foldLeft(0)(_ + _) shouldBe 6
+    number.SortedEquaSet(1, 2, 3).foldLeft(1)(_ + _) shouldBe 7
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

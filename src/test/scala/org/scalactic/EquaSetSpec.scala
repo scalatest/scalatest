@@ -347,6 +347,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).fold(0)(_ + _) shouldBe 15
     number.EquaSet(1, 2, 3, 4, 5).fold(1)(_ * _) shouldBe 120
   }
+  it should "have a foldLeft method" in {
+    number.EquaSet(1).foldLeft(0)(_ + _) shouldBe 1
+    number.EquaSet(1).foldLeft(1)(_ + _) shouldBe 2
+    number.EquaSet(1, 2, 3).foldLeft(0)(_ + _) shouldBe 6
+    number.EquaSet(1, 2, 3).foldLeft(1)(_ + _) shouldBe 7
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
