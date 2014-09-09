@@ -442,6 +442,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(-1).min shouldBe -1
     lower.EquaSet("aaa", "ccc", "bbb").min shouldBe "aaa"
   }
+  it should "have a minBy method" in {
+    number.EquaSet(1, 2, 3, 4, 5).minBy(_.abs) shouldBe 1
+    number.EquaSet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

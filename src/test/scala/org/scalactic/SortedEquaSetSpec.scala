@@ -438,6 +438,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(-1).min shouldBe -1
     lower.SortedEquaSet("aaa", "ccc", "bbb").min shouldBe "aaa"
   }
+  it should "have a minBy method" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).minBy(_.abs) shouldBe 1
+    number.SortedEquaSet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

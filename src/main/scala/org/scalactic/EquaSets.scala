@@ -688,6 +688,19 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def min[T1 >: T](implicit ord: Ordering[T1]): T
 
+    /**
+     * Finds the first element which yields the smallest value measured by function f.
+     *
+     * @param cmp An ordering to be used for comparing elements.
+     * @tparam B The result type of the function f.
+     * @param f The measuring function.
+     * @return the first element of this `EquaSet` with the smallest value measured by function f
+     * with respect to the ordering `cmp`.
+     *
+     * @return the first element of this `EquaSet` with the smallest value measured by function f.
+     */
+    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -786,6 +799,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).min(ord)
+    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).minBy(f)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
