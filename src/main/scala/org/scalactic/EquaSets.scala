@@ -596,6 +596,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def headOption: Option[T]
 
     /**
+     * Selects all elements except the last.
+     *
+     * @return a `EquaSet` consisting of all elements of this `EquaSet`
+     * except the last one.
+     * @throws `UnsupportedOperationException` if the `EquaSet` is empty.
+     */
+    def init: thisEquaSets.EquaSet
+
+    /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -689,6 +698,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(head) => Some(head.value)
         case None => None
       }
+    def init: thisEquaSets.EquaSet = new FastEquaSet(underlying.init)
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

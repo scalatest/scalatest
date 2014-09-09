@@ -403,6 +403,9 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi").headOption shouldBe Some("hi")
     number.EquaSet(1, 2, 3).headOption shouldBe Some(1)
   }
+  it should "have an init method" in {
+    number.EquaSet(1, 2, 3).init shouldBe number.EquaSet(1, 2)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

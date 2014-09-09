@@ -323,6 +323,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def grouped(size: Int): Iterator[thisEquaSets.SortedEquaSet]
 
     /**
+     * Selects all elements except the last.
+     *
+     * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet`
+     * except the last one.
+     * @throws `UnsupportedOperationException` if the `SortedEquaSet` is empty.
+     */
+    def init: thisEquaSets.SortedEquaSet
+
+    /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` to intersect with.
@@ -417,6 +426,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(head) => Some(head.value)
         case None => None
       }
+    def init: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.init)
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
