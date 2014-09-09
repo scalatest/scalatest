@@ -317,6 +317,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).exists(_ == 2) shouldBe true
     number.SortedEquaSet(1, 2, 3).exists(_ == 5) shouldBe false
   }
+  it should "have a filter method" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    set.filter(_ == 1) shouldBe number.EquaSet(1)
+    set.filter(_ == 2) shouldBe number.EquaSet(2)
+    set.filter(_ == 3) shouldBe number.EquaSet(3)
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

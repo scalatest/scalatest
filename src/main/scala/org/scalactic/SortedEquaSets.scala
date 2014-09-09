@@ -277,6 +277,14 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
 
+    /** Selects all elements of this `SortedEquaSet` which satisfy a predicate.
+      *
+      * @param pred the predicate used to test elements.
+      * @return a new `SortedEquaSet` consisting of all elements of this `SortedEquaSet` that satisfy the given
+      * predicate <code>pred</code>.
+      */
+    def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet
+
     /**
      * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
      *
@@ -354,6 +362,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case _ => false
       }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
+    def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

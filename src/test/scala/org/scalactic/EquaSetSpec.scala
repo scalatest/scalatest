@@ -319,6 +319,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).exists(_ == 2) shouldBe true
     number.EquaSet(1, 2, 3).exists(_ == 5) shouldBe false
   }
+  it should "have a filter method" in {
+    val set = number.EquaSet(1, 2, 3)
+    set.filter(_ == 1) shouldBe number.EquaSet(1)
+    set.filter(_ == 2) shouldBe number.EquaSet(2)
+    set.filter(_ == 3) shouldBe number.EquaSet(3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
