@@ -411,6 +411,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def grouped(size: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.grouped(size).map(new TreeEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
+    def head: T = underlying.head.value
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))

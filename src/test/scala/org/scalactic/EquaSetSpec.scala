@@ -395,6 +395,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).hasDefiniteSize shouldBe true
     number.EquaSet(1, 2).hasDefiniteSize shouldBe true
   }
+  it should "have a head method" in {
+    lower.EquaSet("hi").head shouldBe "hi"
+    number.EquaSet(1, 2, 3).head shouldBe 1
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
