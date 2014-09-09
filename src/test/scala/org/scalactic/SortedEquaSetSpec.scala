@@ -387,6 +387,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).grouped(2).toList shouldBe List(number.SortedEquaSet(1))
     number.SortedEquaSet(1).grouped(1).toList shouldBe List(number.SortedEquaSet(1))
   }
+  it should "have a hasDefiniteSize method" in {
+    number.SortedEquaSet(1).hasDefiniteSize shouldBe true
+    number.SortedEquaSet(1, 2).hasDefiniteSize shouldBe true
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

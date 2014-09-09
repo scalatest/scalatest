@@ -391,6 +391,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).grouped(2).toList shouldBe List(number.EquaSet(1))
     number.EquaSet(1).grouped(1).toList shouldBe List(number.EquaSet(1))
   }
+  it should "have a hasDefiniteSize method" in {
+    number.EquaSet(1).hasDefiniteSize shouldBe true
+    number.EquaSet(1, 2).hasDefiniteSize shouldBe true
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

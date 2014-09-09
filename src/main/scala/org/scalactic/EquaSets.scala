@@ -579,6 +579,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def grouped(size: Int): Iterator[thisEquaSets.EquaSet]
 
+    def hasDefiniteSize: Boolean
+
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
      *
@@ -665,6 +667,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
     def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
     def grouped(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
+    def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
