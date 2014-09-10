@@ -20,6 +20,7 @@ import org.scalatest._
 import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
+import scala.collection.SortedSet
 
 class SortedEquaSetSpec extends UnitSpec {
   val intEquality =
@@ -32,6 +33,7 @@ class SortedEquaSetSpec extends UnitSpec {
   val lower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val trimmed = SortedEquaSets[String](StringNormalizations.trimmed.toOrderingEquality)
+
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
     emptySet shouldBe empty
@@ -506,6 +508,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).reduceRightOption(_ + _) shouldBe Some(6)
     number.SortedEquaSet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     number.SortedEquaSet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
+  }
+  it should "have a repr method" in {
+    implicit val numberOrdering = new Ordering[number.EquaBox] {
+      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    }
+    number.SortedEquaSet(1, 2, 3).repr shouldBe SortedSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

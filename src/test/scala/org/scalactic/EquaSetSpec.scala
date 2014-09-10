@@ -511,6 +511,9 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     number.EquaSet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
+  it should "have a repr method" in {
+    number.EquaSet(1, 2, 3).repr shouldBe Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

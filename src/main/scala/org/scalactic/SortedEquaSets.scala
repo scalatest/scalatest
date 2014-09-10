@@ -365,6 +365,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
 
+    /**
+     * The collection of type traversable collection underlying this TraversableLike object. By default this is implemented as the TraversableLike object itself, but this can be overridden.
+     */
+    def repr: SortedSet[EquaBox]
+
     def size: Int
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
@@ -482,6 +487,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
     def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.map(_.value).reduceRightOption(op)
+    def repr: SortedSet[EquaBox] = underlying
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

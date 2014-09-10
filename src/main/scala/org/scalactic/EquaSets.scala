@@ -843,6 +843,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1]
 
+    /**
+     * The collection of type traversable collection underlying this TraversableLike object. By default this is implemented as the TraversableLike object itself, but this can be overridden.
+     */
+    def repr: Set[EquaBox]
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -957,6 +962,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
     def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.map(_.value).reduceRightOption(op)
+    def repr: Set[EquaBox] = underlying
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
