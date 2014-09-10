@@ -1066,7 +1066,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def stringPrefix: String = "EquaSet"
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
-    override def toString: String = s"EquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
   }

@@ -571,7 +571,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def stringPrefix: String = "TreeEquaSet"
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
-    override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
+    override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
   }
