@@ -15,9 +15,11 @@
  */
 package org.scalactic
 
+import scala.collection.generic.CanBuildFrom
 import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
 class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends EquaSets[T](equality) { thisEquaSets =>
 
@@ -632,6 +634,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def tails: Iterator[thisEquaSets.SortedEquaSet] = underlying.tails.map(new TreeEquaSet(_))
     def take(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.takeRight(n))
+    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

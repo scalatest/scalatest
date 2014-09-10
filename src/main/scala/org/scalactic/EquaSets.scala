@@ -15,10 +15,12 @@
  */
 package org.scalactic
 
+import scala.collection.generic.CanBuildFrom
 import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
 class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
@@ -1013,6 +1015,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def takeRight(n: Int): thisEquaSets.EquaSet
 
+    /**
+     * Converts this `EquaSet` into another by copying all elements.
+     * @tparam Col The collection type to build.
+     * @return a new collection containing all elements of this `EquaSet`.
+     *
+     * @return a new collection containing all elements of this `EquaSet`.
+     */
+    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1150,6 +1161,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def tails: Iterator[thisEquaSets.EquaSet] = underlying.tails.map(new FastEquaSet(_))
     def take(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.takeRight(n))
+    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

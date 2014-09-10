@@ -625,6 +625,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).takeRight(2) shouldBe number.SortedEquaSet(2, 3)
     number.SortedEquaSet(1, 2, 3).takeRight(3) shouldBe number.SortedEquaSet(1, 2, 3)
   }
+  it should "have a to method" in {
+    number.SortedEquaSet(1).to[List] shouldBe List(number.EquaBox(1))
+    number.SortedEquaSet(1, 2, 3).to[List] shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    number.SortedEquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    number.SortedEquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
