@@ -792,8 +792,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * {{{
      * op( op( ... op(x_1, x_2) ..., x_{n-1}), x_n)
      * }}}
-     * where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
-     * @throws `UnsupportedOperationException` if this $coll is empty. */
+     * where `x,,1,,, ..., x,,n,,` are the elements of this `EquaSet`.
+     * @throws `UnsupportedOperationException` if this `EquaSet` is empty. */
     def reduceLeft[T1 >: T](op: (T1, T) => T1): T1
 
     /**
@@ -805,6 +805,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * `None` otherwise.
      */
     def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1]
+
+    /**
+     * Reduces the elements of this `EquaSet`, if any, using the specified
+     * associative binary operator.
+     *
+     * @tparam T1 A type parameter for the binary operator, a supertype of `T`.
+     * @param op A binary operator that must be associative.
+     * @return An option value containing result of applying reduce operator `op` between all
+     * the elements if the collection is nonempty, and `None` otherwise.
+     */
+    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1]
 
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
@@ -917,6 +928,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.map(_.value).reduce(op)
     def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.map(_.value).reduceLeft(op)
     def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.map(_.value).reduceLeftOption(op)
+    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

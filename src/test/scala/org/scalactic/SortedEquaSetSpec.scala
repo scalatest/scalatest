@@ -488,6 +488,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).reduceLeftOption(_ * _) shouldBe Some(6)
     number.SortedEquaSet(1, 2, 3, 4, 5).reduceLeftOption(_ * _) shouldBe Some(120)
   }
+  it should "have a reduceOption method" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).reduceOption(_ + _) shouldBe Some(15)
+    number.SortedEquaSet(1, 2, 3, 4, 5).reduceOption(_ * _) shouldBe Some(120)
+    number.SortedEquaSet(5).reduceOption(_ + _) shouldBe Some(5)
+    number.SortedEquaSet(5).reduceOption(_ * _) shouldBe Some(5)
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
