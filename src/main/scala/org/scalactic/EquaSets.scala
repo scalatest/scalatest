@@ -1038,6 +1038,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquiSet` to an indexed sequence.
+     *
+     * @return an indexed sequence containing all elements of this `EquiSet`.
+     */
+    def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1178,6 +1185,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
+    def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
