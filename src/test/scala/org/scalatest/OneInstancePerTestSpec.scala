@@ -208,5 +208,26 @@ class OneInstancePerTestSpec extends FunSpec {
         }
       }
     }
+
+    it("should only run before / after once per test") {
+      @volatile var x = 0
+      class FooSuite extends FunSuite with OneInstancePerTest with BeforeAndAfter {
+        before {
+          println("WHATEVER")
+          x += 1
+        }
+
+        test("x is 2") {
+          assert(x === 2)
+        }
+
+        override def newInstance = new FooSuite
+      }
+
+      val rep = new EventRecordingReporter
+      val outer = new FooSuite
+      outer.run(None, Args(rep))
+      assert(rep.testSucceededEventsReceived.size === 1)
+    }
   }
 }
