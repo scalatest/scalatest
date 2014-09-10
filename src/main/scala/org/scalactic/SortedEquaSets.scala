@@ -439,6 +439,22 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def splitAt(n: Int): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
 
+    /**
+     * An iterator over all subsets of this set of the given size.
+     * If the requested size is impossible, an empty iterator is returned.
+     *
+     * @param len the size of the subsets.
+     * @return the iterator.
+     */
+    def subsets(len: Int): Iterator[thisEquaSets.SortedEquaSet]
+
+    /**
+     * An iterator over all subsets of this set.
+     *
+     * @return the iterator.
+     */
+    def subsets: Iterator[thisEquaSets.SortedEquaSet]
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -571,6 +587,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def stringPrefix: String = "TreeEquaSet"
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
+    def subsets(len: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets(len).map(new TreeEquaSet(_))
+    def subsets: Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

@@ -944,6 +944,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def subsetOf(that: thisEquaSets.EquaSet): Boolean
 
+    /**
+     * An iterator over all subsets of this set of the given size.
+     * If the requested size is impossible, an empty iterator is returned.
+     *
+     * @param len the size of the subsets.
+     * @return the iterator.
+     */
+    def subsets(len: Int): Iterator[thisEquaSets.EquaSet]
+
+    /**
+     * An iterator over all subsets of this set.
+     *
+     * @return the iterator.
+     */
+    def subsets: Iterator[thisEquaSets.EquaSet]
 
     def toSet: Set[thisEquaSets.EquaBox]
 
@@ -1075,6 +1090,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def stringPrefix: String = "EquaSet"
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
+    def subsets(len: Int): Iterator[thisEquaSets.EquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
+    def subsets: Iterator[thisEquaSets.EquaSet] = underlying.subsets.map(new FastEquaSet(_))
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

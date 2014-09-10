@@ -584,6 +584,24 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("aa", "bb").subsetOf(lower.EquaSet("aA", "Bb", "cC")) shouldBe true
     lower.EquaSet("aa", "bc").subsetOf(lower.EquaSet("aa", "bb", "cc")) shouldBe false
   }
+  it should "have a 2 subsets method" in {
+    val subsets = number.EquaSet(1, 2, 3).subsets.toList
+    subsets should have length 8
+    subsets should contain (number.EquaSet())
+    subsets should contain (number.EquaSet(1))
+    subsets should contain (number.EquaSet(2))
+    subsets should contain (number.EquaSet(3))
+    subsets should contain (number.EquaSet(1, 2))
+    subsets should contain (number.EquaSet(1, 3))
+    subsets should contain (number.EquaSet(2, 3))
+    subsets should contain (number.EquaSet(1, 2, 3))
+
+    val subsets2 = number.EquaSet(1, 2, 3).subsets(2).toList
+    subsets2 should have length 3
+    subsets2 should contain (number.EquaSet(1, 2))
+    subsets2 should contain (number.EquaSet(1, 3))
+    subsets2 should contain (number.EquaSet(2, 3))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

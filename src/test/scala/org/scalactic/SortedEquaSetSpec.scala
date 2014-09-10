@@ -583,6 +583,24 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("aa", "bb").subsetOf(lower.SortedEquaSet("aA", "Bb", "cC")) shouldBe true
     lower.SortedEquaSet("aa", "bc").subsetOf(lower.SortedEquaSet("aa", "bb", "cc")) shouldBe false
   }
+  it should "have a subsets method" in {
+    val subsets = number.SortedEquaSet(1, 2, 3).subsets.toList
+    subsets should have length 8
+    subsets should contain (number.SortedEquaSet())
+    subsets should contain (number.SortedEquaSet(1))
+    subsets should contain (number.SortedEquaSet(2))
+    subsets should contain (number.SortedEquaSet(3))
+    subsets should contain (number.SortedEquaSet(1, 2))
+    subsets should contain (number.SortedEquaSet(1, 3))
+    subsets should contain (number.SortedEquaSet(2, 3))
+    subsets should contain (number.SortedEquaSet(1, 2, 3))
+
+    val subsets2 = number.SortedEquaSet(1, 2, 3).subsets(2).toList
+    subsets2 should have length 3
+    subsets2 should contain (number.SortedEquaSet(1, 2))
+    subsets2 should contain (number.SortedEquaSet(1, 3))
+    subsets2 should contain (number.SortedEquaSet(2, 3))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
