@@ -472,6 +472,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(3, 4, 5).product shouldBe 60
     number.EquaSet(3, 4, 5).product shouldBe 60
   }
+  it should "have a reduce method" in {
+    number.EquaSet(1, 2, 3, 4, 5).reduce(_ + _) shouldBe 15
+    number.EquaSet(1, 2, 3, 4, 5).reduce(_ * _) shouldBe 120
+    number.EquaSet(5).reduce(_ + _) shouldBe 5
+    number.EquaSet(5).reduce(_ * _) shouldBe 5
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

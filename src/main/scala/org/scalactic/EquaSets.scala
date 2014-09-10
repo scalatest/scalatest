@@ -770,6 +770,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def product[T1 >: T](implicit num: Numeric[T1]): T1
 
+    /**
+     * Reduces the elements of this `EquaSet` using the specified associative binary operator.
+     *
+     * @tparam T1 A type parameter for the binary operator, a supertype of `T`.
+     * @param op A binary operator that must be associative.
+     * @return The result of applying reduce operator `op` between all the elements if the `EquaSet` is nonempty.
+     * @throws UnsupportedOperationException
+     * if this `EquaSet` is empty.
+     */
+    def reduce[T1 >: T](op: (T1, T1) => T1): T1
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -878,6 +889,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
     }
     def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
+    def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.map(_.value).reduce(op)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
