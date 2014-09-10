@@ -529,6 +529,35 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).slice(2, 1) shouldBe number.SortedEquaSet()
     number.SortedEquaSet(1, 2, 3).slice(1, 3) shouldBe number.SortedEquaSet(2, 3)
   }
+  it should "have 2 sliding methods" in {
+
+    number.SortedEquaSet(1).sliding(1).toList shouldBe List(number.SortedEquaSet(1))
+    number.SortedEquaSet(1).sliding(2).toList shouldBe List(number.SortedEquaSet(1))
+    number.SortedEquaSet(1, 2, 3).sliding(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
+    number.SortedEquaSet(1, 2, 3).sliding(1).toList shouldBe List(number.SortedEquaSet(1), number.EquaSet(2), number.SortedEquaSet(3))
+    number.SortedEquaSet(1, 2, 3).sliding(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3), number.SortedEquaSet(3, 4), number.SortedEquaSet(4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3), number.SortedEquaSet(4), number.SortedEquaSet(5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(4).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(2, 3, 4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(5).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4, 5))
+
+    number.SortedEquaSet(1).sliding(1, 1).toList shouldBe List(number.SortedEquaSet(1))
+    number.SortedEquaSet(1).sliding(1, 2).toList shouldBe List(number.SortedEquaSet(1))
+    number.SortedEquaSet(1, 2, 3).sliding(1, 1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
+    number.SortedEquaSet(1, 2, 3).sliding(2, 1).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
+    number.SortedEquaSet(1, 2, 3).sliding(2, 2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    number.SortedEquaSet(1, 2, 3).sliding(3, 2).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
+    number.SortedEquaSet(1, 2, 3).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(3, 4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5))
+    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(5))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

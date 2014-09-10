@@ -387,6 +387,32 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.SortedEquaSet
 
+    /**
+     * Groups elements in fixed size blocks by passing a "sliding window"
+     * over them (as opposed to partitioning them, as is done in grouped.)
+     * @see [[scala.collection.Iterator]], method `sliding`
+     *
+     * @param size the number of elements per group
+     * @return An iterator producing `SortedEquaSet`s of size `size`, except the
+     * last and the only element will be truncated if there are
+     * fewer elements than size.
+     */
+    def sliding(size: Int): Iterator[thisEquaSets.SortedEquaSet]
+
+    /**
+     * Groups elements in fixed size blocks by passing a "sliding window"
+     * over them (as opposed to partitioning them, as is done in grouped.)
+     * @see [[scala.collection.Iterator]], method `sliding`
+     *
+     * @param size the number of elements per group
+     * @param step the distance between the first elements of successive
+     * groups (defaults to 1)
+     * @return An iterator producing `SortedEquiSet`s of size `size`, except the
+     * last and the only element will be truncated if there are
+     * fewer elements than size.
+     */
+    def sliding(size: Int, step: Int): Iterator[thisEquaSets.SortedEquaSet]
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -507,6 +533,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.slice(unc_from, unc_until))
+    def sliding(size: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.sliding(size).map(new TreeEquaSet(_))
+    def sliding(size: Int, step: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.sliding(size, step).map(new TreeEquaSet(_))
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

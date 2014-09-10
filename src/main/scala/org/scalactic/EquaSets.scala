@@ -874,6 +874,32 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.EquaSet
 
+    /**
+     * Groups elements in fixed size blocks by passing a "sliding window"
+     * over them (as opposed to partitioning them, as is done in grouped.)
+     * @see [[scala.collection.Iterator]], method `sliding`
+     *
+     * @param size the number of elements per group
+     * @return An iterator producing `SortedEquaSet`s of size `size`, except the
+     * last and the only element will be truncated if there are
+     * fewer elements than size.
+     */
+    def sliding(size: Int): Iterator[thisEquaSets.EquaSet]
+
+    /**
+     * Groups elements in fixed size blocks by passing a "sliding window"
+     * over them (as opposed to partitioning them, as is done in grouped.)
+     * @see [[scala.collection.Iterator]], method `sliding`
+     *
+     * @param size the number of elements per group
+     * @param step the distance between the first elements of successive
+     * groups (defaults to 1)
+     * @return An iterator producing `EquiSet`s of size `size`, except the
+     * last and the only element will be truncated if there are
+     * fewer elements than size.
+     */
+    def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet]
+
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
@@ -991,6 +1017,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
+    def sliding(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
+    def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"EquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

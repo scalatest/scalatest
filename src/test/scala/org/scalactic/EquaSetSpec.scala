@@ -528,6 +528,37 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).slice(2, 1) shouldBe number.EquaSet()
     number.EquaSet(1, 2, 3).slice(1, 3) shouldBe number.EquaSet(2, 3)
   }
+  it should "have 2 sliding methods" in {
+
+    val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
+
+    number.EquaSet(1).sliding(1).toList shouldBe List(number.EquaSet(1))
+    number.EquaSet(1).sliding(2).toList shouldBe List(number.EquaSet(1))
+    number.EquaSet(1, 2, 3).sliding(2).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(2, 3))
+    number.EquaSet(1, 2, 3).sliding(1).toList shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).sliding(3).toList shouldBe List(number.EquaSet(1, 2, 3))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(2).value, seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(2).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(1).value, seq(2).value), number.EquaSet(seq(2).value, seq(3).value), number.EquaSet(seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(1).toList shouldBe List(number.EquaSet(seq(0).value), number.EquaSet(seq(1).value), number.EquaSet(seq(2).value), number.EquaSet(seq(3).value), number.EquaSet(seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(1).value, seq(2).value, seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(5).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value, seq(4).value))
+
+    number.EquaSet(1).sliding(1, 1).toList shouldBe List(number.EquaSet(1))
+    number.EquaSet(1).sliding(1, 2).toList shouldBe List(number.EquaSet(1))
+    number.EquaSet(1, 2, 3).sliding(1, 1).toList shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).sliding(2, 1).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(2, 3))
+    number.EquaSet(1, 2, 3).sliding(2, 2).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).sliding(3, 2).toList shouldBe List(number.EquaSet(1, 2, 3))
+    number.EquaSet(1, 2, 3).sliding(3, 1).toList shouldBe List(number.EquaSet(1, 2, 3))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(2).value, seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(2).value, seq(3).value), number.EquaSet(seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(2).value, seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(2).value, seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(3).value, seq(4).value))
+    number.EquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(4).value))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
