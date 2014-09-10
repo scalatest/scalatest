@@ -562,6 +562,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).span(_ < 3) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
     number.SortedEquaSet(1, 2, 3).span(_ > 3) shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
   }
+  it should "have a splitAt method" in {
+    number.SortedEquaSet(1, 2, 3).splitAt(0) shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
+    number.SortedEquaSet(1, 2, 3).splitAt(1) shouldBe (number.SortedEquaSet(1), number.SortedEquaSet(2, 3))
+    number.SortedEquaSet(1, 2, 3).splitAt(2) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    number.SortedEquaSet(1, 2, 3).splitAt(3) shouldBe (number.SortedEquaSet(1, 2, 3), number.SortedEquaSet())
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

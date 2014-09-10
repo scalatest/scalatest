@@ -914,6 +914,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
 
+    /**
+     * Splits this `EquaSet` into two at a given position.
+     * Note: `c splitAt n` is equivalent to (but possibly more efficient than)
+     * `(c take n, c drop n)`.
+     *
+     *
+     * @param n the position at which to split.
+     * @return a pair of `EquaSet`s consisting of the first `n`
+     * elements of this `EquaSet`, and the other elements.
+     */
+    def splitAt(n: Int): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
@@ -1035,6 +1047,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
     def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
+      (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
+    }
+    def splitAt(n: Int): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
+      val (trueSet, falseSet) = underlying.splitAt(n)
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
     def toSet: Set[thisEquaSets.EquaBox] = underlying

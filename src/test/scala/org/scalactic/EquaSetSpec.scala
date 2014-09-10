@@ -563,6 +563,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).span(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
     number.EquaSet(1, 2, 3).span(_ > 3) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
   }
+  it should "have a splitAt method" in {
+    number.EquaSet(1, 2, 3).splitAt(0) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
+    number.EquaSet(1, 2, 3).splitAt(1) shouldBe (number.EquaSet(1), number.EquaSet(2, 3))
+    number.EquaSet(1, 2, 3).splitAt(2) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).splitAt(3) shouldBe (number.EquaSet(1, 2, 3), number.EquaSet())
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

@@ -427,6 +427,18 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def span(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
 
+    /**
+     * Splits this `SortedEquaSet` into two at a given position.
+     * Note: `c splitAt n` is equivalent to (but possibly more efficient than)
+     * `(c take n, c drop n)`.
+     *
+     *
+     * @param n the position at which to split.
+     * @return a pair of `SortedEquaSet`s consisting of the first `n`
+     * elements of this `SortedEquaSet`, and the other elements.
+     */
+    def splitAt(n: Int): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -551,6 +563,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.sliding(size, step).map(new TreeEquaSet(_))
     def span(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
+      (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
+    }
+    def splitAt(n: Int): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+      val (trueSet, falseSet) = underlying.splitAt(n)
       (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
     }
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
