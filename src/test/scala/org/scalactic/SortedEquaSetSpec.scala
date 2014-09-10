@@ -568,6 +568,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).splitAt(2) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
     number.SortedEquaSet(1, 2, 3).splitAt(3) shouldBe (number.SortedEquaSet(1, 2, 3), number.SortedEquaSet())
   }
+  it should "have a stringPrefix method" in {
+    number.SortedEquaSet(1).stringPrefix shouldBe "TreeEquaSet"
+    number.SortedEquaSet(1, 2, 3).stringPrefix shouldBe "TreeEquaSet"
+    lower.SortedEquaSet("1").stringPrefix shouldBe "TreeEquaSet"
+    lower.SortedEquaSet("1", "2", "3").stringPrefix shouldBe "TreeEquaSet"
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

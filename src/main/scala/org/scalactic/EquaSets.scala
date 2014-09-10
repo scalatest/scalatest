@@ -926,7 +926,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def splitAt(n: Int): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
 
+    /**
+     * Defines the prefix of this object's `toString` representation.
+     *
+     * @return a string representation which starts the result of `toString`
+     * applied to this `EquaSet`. By default the string prefix is the
+     * simple name of the collection class `EquaSet`.
+     */
+    def stringPrefix: String
+
     def toSet: Set[thisEquaSets.EquaBox]
+
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
@@ -1053,6 +1063,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (trueSet, falseSet) = underlying.splitAt(n)
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
+    def stringPrefix: String = "EquaSet"
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"EquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

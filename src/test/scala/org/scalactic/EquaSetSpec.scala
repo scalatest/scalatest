@@ -569,6 +569,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).splitAt(2) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
     number.EquaSet(1, 2, 3).splitAt(3) shouldBe (number.EquaSet(1, 2, 3), number.EquaSet())
   }
+  it should "have a stringPrefix method" in {
+    number.EquaSet(1).stringPrefix shouldBe "EquaSet"
+    number.EquaSet(1, 2, 3).stringPrefix shouldBe "EquaSet"
+    lower.EquaSet("1").stringPrefix shouldBe "EquaSet"
+    lower.EquaSet("1", "2", "3").stringPrefix shouldBe "EquaSet"
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
