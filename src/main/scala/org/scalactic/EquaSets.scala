@@ -994,6 +994,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def tails: Iterator[thisEquaSets.EquaSet]
 
+    /**
+     * Selects first ''n'' elements.
+     *
+     * @param n the number of elements to take from this `EquaSet`.
+     * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
+     * or else the whole $coll, if it has less than `n` elements.
+     */
+    def take(n: Int): thisEquaSets.EquaSet
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1129,6 +1138,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.EquaSet = new FastEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.EquaSet] = underlying.tails.map(new FastEquaSet(_))
+    def take(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.take(n))
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

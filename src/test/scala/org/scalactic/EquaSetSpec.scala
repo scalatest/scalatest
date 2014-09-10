@@ -614,6 +614,12 @@ class EquaSetSpec extends UnitSpec {
   it should "have an tails method" in {
     number.EquaSet(1, 2, 3).tails.toList shouldBe List(number.EquaSet(1,2,3), number.EquaSet(2,3), number.EquaSet(3), number.EquaSet())
   }
+  it should "have a take method" in {
+    number.EquaSet(1, 2, 3).take(0) shouldBe number.EquaSet()
+    number.EquaSet(1, 2, 3).take(1) shouldBe number.EquaSet(1)
+    number.EquaSet(1, 2, 3).take(2) shouldBe number.EquaSet(1, 2)
+    number.EquaSet(1, 2, 3).take(3) shouldBe number.EquaSet(1, 2, 3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

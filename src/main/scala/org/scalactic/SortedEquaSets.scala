@@ -474,6 +474,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def tails: Iterator[thisEquaSets.EquaSet]
 
+    /**
+     * Selects first ''n'' elements.
+     *
+     * @param n the number of elements to take from this `EquaSet`.
+     * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
+     * or else the whole $coll, if it has less than `n` elements.
+     */
+    def take(n: Int): thisEquaSets.EquaSet
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -611,6 +620,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.SortedEquaSet] = underlying.tails.map(new TreeEquaSet(_))
+    def take(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.take(n))
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
