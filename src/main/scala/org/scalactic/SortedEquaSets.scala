@@ -641,6 +641,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
+    def toList: List[thisEquaSets.EquaBox] = underlying.toList
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

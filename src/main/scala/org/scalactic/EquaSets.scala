@@ -1063,6 +1063,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toIterator: Iterator[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a list.
+     *
+     * @return a list containing all elements of this `EquaSet`.
+     */
+    def toList: List[thisEquaSets.EquaBox]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1206,6 +1213,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
+    def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
