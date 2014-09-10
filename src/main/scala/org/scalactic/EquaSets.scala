@@ -1039,11 +1039,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox]
 
     /**
-     * Converts this `EquiSet` to an indexed sequence.
+     * Converts this `EquaSet` to an indexed sequence.
      *
-     * @return an indexed sequence containing all elements of this `EquiSet`.
+     * @return an indexed sequence containing all elements of this `EquaSet`.
      */
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox]
+
+    /**
+     * Converts this `EquaSet` to an iterable collection. Note that
+     * the choice of target `Iterable` is lazy in this default implementation
+     * as this `TraversableOnce` may be lazy and unevaluated (i.e. it may
+     * be an iterator which is only traversable once).
+     *
+     * @return an `Iterable` containing all elements of this `EquaSet`.
+     */
+    def toIterable: GenIterable[thisEquaSets.EquaBox]
 
     def toSet: Set[thisEquaSets.EquaBox]
 
@@ -1186,6 +1196,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toArray: Array[EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
+    def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
