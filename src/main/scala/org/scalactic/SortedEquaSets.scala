@@ -589,6 +589,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
     def subsets(len: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets(len).map(new TreeEquaSet(_))
     def subsets: Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
+    def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

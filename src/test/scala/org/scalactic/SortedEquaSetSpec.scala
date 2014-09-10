@@ -601,6 +601,12 @@ class SortedEquaSetSpec extends UnitSpec {
     subsets2 should contain (number.SortedEquaSet(1, 3))
     subsets2 should contain (number.SortedEquaSet(2, 3))
   }
+  it should "have a sum method" in {
+    number.SortedEquaSet(1).sum shouldBe 1
+    number.SortedEquaSet(5).sum shouldBe 5
+    number.SortedEquaSet(1, 2, 3).sum shouldBe 6
+    number.SortedEquaSet(1, 2, 3, 4, 5).sum shouldBe 15
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

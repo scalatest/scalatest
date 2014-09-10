@@ -602,6 +602,12 @@ class EquaSetSpec extends UnitSpec {
     subsets2 should contain (number.EquaSet(1, 3))
     subsets2 should contain (number.EquaSet(2, 3))
   }
+  it should "have a sum method" in {
+    number.EquaSet(1).sum shouldBe 1
+    number.EquaSet(5).sum shouldBe 5
+    number.EquaSet(1, 2, 3).sum shouldBe 6
+    number.EquaSet(1, 2, 3, 4, 5).sum shouldBe 15
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

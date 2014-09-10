@@ -960,6 +960,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def subsets: Iterator[thisEquaSets.EquaSet]
 
+    /** Sums up the elements of this collection.
+      *
+      * @param num an implicit parameter defining a set of numeric operations
+      * which includes the `+` operator to be used in forming the sum.
+      * @tparam T1 the result type of the `+` operator.
+      * @return the sum of all elements of this `EquaSet` with respect to the `+` operator in `num`.
+      *
+      * @return the sum of all elements in this `EquaSet` of numbers of type `Int`.
+      * Instead of `Int`, any other type `T` with an implicit `Numeric[T]` implementation
+      * can be used as element type of the `EquaSet` and as result type of `sum`.
+      * Examples of such types are: `Long`, `Float`, `Double`, `BigInt`.
+      *
+      */
+    def sum[T1 >: T](implicit num: Numeric[T1]): T1
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1092,6 +1107,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
     def subsets(len: Int): Iterator[thisEquaSets.EquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
     def subsets: Iterator[thisEquaSets.EquaSet] = underlying.subsets.map(new FastEquaSet(_))
+    def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
