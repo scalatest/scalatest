@@ -832,6 +832,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def reduceRight[T1 >: T](op: (T, T1) => T1): T1
 
+    /**
+     * Optionally applies a binary operator to all elements of this `EquaSet`, going
+     * right to left.
+     *
+     * @param op the binary operator.
+     * @tparam T1 the result type of the binary operator.
+     * @return an option value containing the result of `reduceRight(op)` is this `EquaSet` is nonempty,
+     * `None` otherwise.
+     */
+    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1]
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -945,6 +956,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.map(_.value).reduceLeftOption(op)
     def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
     def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
+    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.map(_.value).reduceRightOption(op)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
