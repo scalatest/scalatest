@@ -413,6 +413,20 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.SortedEquaSet]
 
+    /**
+     * Splits this `SortedEquaSet` into a prefix/suffix pair according to a predicate.
+     *
+     * Note: `c span p` is equivalent to (but possibly more efficient than)
+     * `(c takeWhile p, c dropWhile p)`, provided the evaluation of the
+     * predicate `p` does not cause any side-effects.
+     *
+     *
+     * @param pred the test predicate
+     * @return a pair consisting of the longest prefix of this `SortedEquaSet` whose
+     * elements all satisfy `p`, and the rest of this `SortedEquaSet`.
+     */
+    def span(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -535,6 +549,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.sliding(size).map(new TreeEquaSet(_))
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.sliding(size, step).map(new TreeEquaSet(_))
+    def span(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+      val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
+      (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
+    }
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

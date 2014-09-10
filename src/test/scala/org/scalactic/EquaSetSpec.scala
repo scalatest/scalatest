@@ -559,6 +559,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(3).value, seq(4).value))
     number.EquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(4).value))
   }
+  it should "have a span method" in {
+    number.EquaSet(1, 2, 3).span(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
+    number.EquaSet(1, 2, 3).span(_ > 3) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

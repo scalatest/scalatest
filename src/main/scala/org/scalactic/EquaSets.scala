@@ -900,6 +900,20 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet]
 
+    /**
+     * Splits this `EquaSet` into a prefix/suffix pair according to a predicate.
+     *
+     * Note: `c span p` is equivalent to (but possibly more efficient than)
+     * `(c takeWhile p, c dropWhile p)`, provided the evaluation of the
+     * predicate `p` does not cause any side-effects.
+     *
+     *
+     * @param pred the test predicate
+     * @return a pair consisting of the longest prefix of this `EquaSet` whose
+     * elements all satisfy `p`, and the rest of this `EquaSet`.
+     */
+    def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
@@ -1019,6 +1033,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
+    def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
+      val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
+      (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
+    }
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"EquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
