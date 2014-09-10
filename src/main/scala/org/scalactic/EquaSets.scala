@@ -781,6 +781,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def reduce[T1 >: T](op: (T1, T1) => T1): T1
 
+    /**
+     * Applies a binary operator to all elements of this `EquaSet`,
+     * going left to right.
+     *
+     * @param op the binary operator.
+     * @tparam T1 the result type of the binary operator.
+     * @return the result of inserting `op` between consecutive elements of this `EquaSet`,
+     * going left to right:
+     * {{{
+     * op( op( ... op(x_1, x_2) ..., x_{n-1}), x_n)
+     * }}}
+     * where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     * @throws `UnsupportedOperationException` if this $coll is empty. */
+    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -890,6 +905,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
     def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.map(_.value).reduce(op)
+    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.map(_.value).reduceLeft(op)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

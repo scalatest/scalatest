@@ -478,6 +478,13 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(5).reduce(_ + _) shouldBe 5
     number.EquaSet(5).reduce(_ * _) shouldBe 5
   }
+  it should "have a reduceLeft method" in {
+    number.EquaSet(1).reduceLeft(_ + _) shouldBe 1
+    number.EquaSet(1).reduceLeft(_ * _) shouldBe 1
+    number.EquaSet(1, 2, 3).reduceLeft(_ + _) shouldBe 6
+    number.EquaSet(1, 2, 3).reduceLeft(_ * _) shouldBe 6
+    number.EquaSet(1, 2, 3, 4, 5).reduceLeft(_ * _) shouldBe 120
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
