@@ -464,6 +464,16 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def tail: thisEquaSets.SortedEquaSet
 
+    /**
+     * Iterates over the tails of this `SortedEquaSet`. The first value will be this
+     * `SortedEquaSet` and the final one will be an empty `SortedEquaSet`, with the intervening
+     * values the results of successive applications of `tail`.
+     *
+     * @return an iterator over all the tails of this `SortedEquaSet`
+     * @example `SortedEquaSet(1,2,3).tails = Iterator(SortedEquaSet(1,2,3), SortedEquaSet(2,3), SortedEquaSet(3), SortedEquaSet())`
+     */
+    def tails: Iterator[thisEquaSets.EquaSet]
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -600,6 +610,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def subsets: Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.tail)
+    def tails: Iterator[thisEquaSets.SortedEquaSet] = underlying.tails.map(new TreeEquaSet(_))
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

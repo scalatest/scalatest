@@ -984,6 +984,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def tail: thisEquaSets.EquaSet
 
+    /**
+     * Iterates over the tails of this `EquaSet`. The first value will be this
+     * `EquaSet` and the final one will be an empty `EquaSet`, with the intervening
+     * values the results of successive applications of `tail`.
+     *
+     * @return an iterator over all the tails of this `EquaSet`
+     * @example `EquaSet(1,2,3).tails = Iterator(EquaSet(1,2,3), EquaSet(2,3), EquaSet(3), EquaSet())`
+     */
+    def tails: Iterator[thisEquaSets.EquaSet]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1118,6 +1128,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def subsets: Iterator[thisEquaSets.EquaSet] = underlying.subsets.map(new FastEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.EquaSet = new FastEquaSet(underlying.tail)
+    def tails: Iterator[thisEquaSets.EquaSet] = underlying.tails.map(new FastEquaSet(_))
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

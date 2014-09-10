@@ -610,6 +610,9 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an tail method" in {
     number.SortedEquaSet(1, 2, 3).tail shouldBe number.SortedEquaSet(2, 3)
   }
+  it should "have an tails method" in {
+    number.SortedEquaSet(1, 2, 3).tails.toList shouldBe List(number.SortedEquaSet(1,2,3), number.SortedEquaSet(2,3), number.SortedEquaSet(3), number.SortedEquaSet())
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
