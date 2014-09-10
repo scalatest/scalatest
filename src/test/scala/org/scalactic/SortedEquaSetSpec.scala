@@ -524,6 +524,11 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(3).sameElements(List(1)) shouldBe false
     number.SortedEquaSet(3).sameElements(List(3)) shouldBe true
   }
+  it should "have a slice method" in {
+    number.SortedEquaSet(3).slice(0, 0) shouldBe number.SortedEquaSet()
+    number.SortedEquaSet(1, 2, 3).slice(2, 1) shouldBe number.SortedEquaSet()
+    number.SortedEquaSet(1, 2, 3).slice(1, 3) shouldBe number.SortedEquaSet(2, 3)
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

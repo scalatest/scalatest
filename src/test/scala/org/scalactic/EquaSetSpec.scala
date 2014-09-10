@@ -523,6 +523,11 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(3).sameElements(List(1)) shouldBe false
     number.EquaSet(3).sameElements(List(3)) shouldBe true
   }
+  it should "have a slice method" in {
+    number.EquaSet(3).slice(0, 0) shouldBe number.EquaSet()
+    number.EquaSet(1, 2, 3).slice(2, 1) shouldBe number.EquaSet()
+    number.EquaSet(1, 2, 3).slice(1, 3) shouldBe number.EquaSet(2, 3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

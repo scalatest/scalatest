@@ -371,6 +371,22 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def repr: SortedSet[EquaBox]
 
     def size: Int
+
+    /**
+     * Selects an interval of elements. The returned collection is made up
+     * of all elements `x` which satisfy the invariant:
+     * {{{
+     * from <= indexOf(x) < until
+     * }}}
+     *
+     * @param unc_from the lowest index to include from this `EquaSet`.
+     * @param unc_until the lowest index to EXCLUDE from this `EquaSet`.
+     * @return a `EquaSet` containing the elements greater than or equal to
+     * index `from` extending up to (but not including) index `until`
+     * of this `EquaSet`.
+     */
+    def slice(unc_from: Int, unc_until: Int): thisEquaSets.SortedEquaSet
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -490,6 +506,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def repr: SortedSet[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def size: Int = underlying.size
+    def slice(unc_from: Int, unc_until: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.slice(unc_from, unc_until))
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
