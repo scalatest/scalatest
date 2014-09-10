@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.{GenMap, mutable, GenTraversableOnce}
+import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
 
@@ -404,9 +404,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def | (that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet = this union that
     def & (that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet = this intersect that
     def &~ (that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet = this diff that
-    def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
-    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
-    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
+    def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
+    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
+    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
@@ -438,11 +438,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
-    def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.map(_.value).fold[T1](z)(op)
-    def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
-    def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
-    def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
-    def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
+    def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
+    def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
+    def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
+    def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
+    def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
     def groupBy[K](f: T => K): GenMap[K, thisEquaSets.SortedEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new TreeEquaSet(t._2)))
     def grouped(size: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.grouped(size).map(new TreeEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
@@ -468,26 +468,27 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(last) => Some(last.value)
         case None => None
       }
-    def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).max(ord)
-    def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).maxBy(f)
-    def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).min(ord)
-    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).minBy(f)
-    def mkString(start: String, sep: String, end: String): String = underlying.map(_.value).mkString(start, sep, end)
-    def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
-    def mkString: String = underlying.map(_.value).mkString
+    def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
+    def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
+    def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
+    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
+    def mkString(start: String, sep: String, end: String): String = underlying.toList.map(_.value).mkString(start, sep, end)
+    def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
+    def mkString: String = underlying.toList.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
     def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new TreeEquaSet(tuple2._1), new TreeEquaSet(tuple2._2))
     }
-    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
-    def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.map(_.value).reduce(op)
-    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.map(_.value).reduceLeft(op)
-    def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.map(_.value).reduceLeftOption(op)
-    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
-    def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
-    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.map(_.value).reduceRightOption(op)
+    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.toList.map(_.value).product(num)
+    def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).reduce(op)
+    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.toList.map(_.value).reduceLeft(op)
+    def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.toList.map(_.value).reduceLeftOption(op)
+    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceOption(op)
+    def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.toList.map(_.value).reduceRight(op)
+    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: SortedSet[EquaBox] = underlying
+    def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"

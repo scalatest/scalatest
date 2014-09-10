@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.{GenMap, mutable, GenTraversableOnce}
+import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
@@ -848,6 +848,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def repr: Set[EquaBox]
 
+    /**
+     * Checks if the other iterable collection contains the same elements in the same order as this `EquaSet`.
+     *
+     * @param that the collection to compare with.
+     * @tparam T1 the type of the elements of collection `that`.
+     * @return `true`, if both collections contain the same elements in the same order, `false` otherwise.
+     */
+    def sameElements[T1 >: T](that: GenIterable[T1]): Boolean
+
     def size: Int
     def toSet: Set[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -865,13 +874,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def + (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
     def ++ (elems: GenTraversableOnce[T]): thisEquaSets.FastEquaSet =
-      new FastEquaSet(underlying ++ elems.toSeq.map(EquaBox(_)))
+      new FastEquaSet(underlying ++ elems.toList.map(EquaBox(_)))
     def ++ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying ++ that.toSet)
     def - (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
     def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
-      new FastEquaSet(underlying -- elems.toSeq.map(EquaBox(_)))
+      new FastEquaSet(underlying -- elems.toList.map(EquaBox(_)))
     def --(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       new FastEquaSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
@@ -881,9 +890,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def | (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this union that
     def & (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this intersect that
     def &~ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this diff that
-    def addString(b: StringBuilder): StringBuilder = underlying.map(_.value).addString(b)
-    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.map(_.value).addString(b, sep)
-    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.map(_.value).addString(b, start, sep, end)
+    def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
+    def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
+    def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
@@ -913,11 +922,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
-    def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.map(_.value).fold[T1](z)(op)
-    def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.map(_.value).foldLeft[B](z)(op)
-    def foldRight[B](z: B)(op: (T, B) => B): B = underlying.map(_.value).foldRight[B](z)(op)
-    def forall(pred: T => Boolean): Boolean = underlying.map(_.value).forall(pred)
-    def foreach[U](f: T => U): Unit = underlying.map(_.value).foreach(f)
+    def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
+    def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
+    def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
+    def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
+    def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
     def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
     def grouped(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
@@ -943,26 +952,27 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(last) => Some(last.value)
         case None => None
       }
-    def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).max(ord)
-    def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).maxBy(f)
-    def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.map(_.value).min(ord)
-    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.map(_.value).minBy(f)
-    def mkString(start: String, sep: String, end: String): String = underlying.map(_.value).mkString(start, sep, end)
-    def mkString(sep: String): String = underlying.map(_.value).mkString(sep)
-    def mkString: String = underlying.map(_.value).mkString
+    def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
+    def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
+    def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
+    def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
+    def mkString(start: String, sep: String, end: String): String = underlying.toList.map(_.value).mkString(start, sep, end)
+    def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
+    def mkString: String = underlying.toList.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
     def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
     }
-    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).product(num)
-    def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.map(_.value).reduce(op)
-    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.map(_.value).reduceLeft(op)
-    def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.map(_.value).reduceLeftOption(op)
-    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
-    def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
-    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.map(_.value).reduceRightOption(op)
+    def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.toList.map(_.value).product(num)
+    def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).reduce(op)
+    def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.toList.map(_.value).reduceLeft(op)
+    def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.toList.map(_.value).reduceLeftOption(op)
+    def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceOption(op)
+    def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.toList.map(_.value).reduceRight(op)
+    def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
+    def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def size: Int = underlying.size
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)

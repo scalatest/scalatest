@@ -515,6 +515,15 @@ class SortedEquaSetSpec extends UnitSpec {
     }
     number.SortedEquaSet(1, 2, 3).repr shouldBe SortedSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
+  it should "have a sameElements method that takes a GenIterable" in {
+    number.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5)) shouldBe true
+    number.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4)) shouldBe false
+    number.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5, 6)) shouldBe false
+    number.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 4)) shouldBe false
+    number.SortedEquaSet(3).sameElements(List(1, 2, 3, 4, 5)) shouldBe false
+    number.SortedEquaSet(3).sameElements(List(1)) shouldBe false
+    number.SortedEquaSet(3).sameElements(List(3)) shouldBe true
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

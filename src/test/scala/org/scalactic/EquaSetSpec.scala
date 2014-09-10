@@ -514,6 +514,15 @@ class EquaSetSpec extends UnitSpec {
   it should "have a repr method" in {
     number.EquaSet(1, 2, 3).repr shouldBe Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
+  it should "have a sameElements method that takes a GenIterable" in {
+    number.EquaSet(1, 2, 3, 4, 5).sameElements(number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq.map(_.value)) shouldBe true
+    number.EquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4)) shouldBe false
+    number.EquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5, 6)) shouldBe false
+    number.EquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 4)) shouldBe false
+    number.EquaSet(3).sameElements(List(1, 2, 3, 4, 5)) shouldBe false
+    number.EquaSet(3).sameElements(List(1)) shouldBe false
+    number.EquaSet(3).sameElements(List(3)) shouldBe true
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
