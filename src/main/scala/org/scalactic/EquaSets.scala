@@ -1031,6 +1031,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toArray: Array[EquaBox]
 
+    /**
+     * Uses the contents of this `EquaSet` to create a new mutable buffer.
+     *
+     * @return a buffer containing all elements of this `EquaSet`.
+     */
+    def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1170,6 +1177,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def takeRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[EquaBox] = underlying.toArray
+    def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

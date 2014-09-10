@@ -637,6 +637,11 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toArray shouldBe (Array(lower.EquaBox("a"), lower.EquaBox("b")))
     number.EquaSet(1).toArray shouldBe (Array(number.EquaBox(1)))
   }
+  it should "have a toBuffer method" in {
+    number.EquaSet(1, 2, 3).toBuffer shouldBe (Buffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toBuffer shouldBe (Buffer(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toBuffer shouldBe (Buffer(number.EquaBox(1)))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
