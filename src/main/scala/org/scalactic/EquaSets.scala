@@ -935,6 +935,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def stringPrefix: String
 
+    /**
+     * Tests whether this set is a subset of another set.
+     *
+     * @param that the set to test.
+     * @return `true` if this set is a subset of `that`, i.e. if
+     * every element of this set is also an element of `that`.
+     */
+    def subsetOf(that: thisEquaSets.EquaSet): Boolean
+
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1064,6 +1074,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
     def stringPrefix: String = "EquaSet"
+    def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

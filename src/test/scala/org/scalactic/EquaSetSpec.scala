@@ -575,6 +575,15 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("1").stringPrefix shouldBe "EquaSet"
     lower.EquaSet("1", "2", "3").stringPrefix shouldBe "EquaSet"
   }
+  it should "have a subsetOf method" in {
+    number.EquaSet(2, 3).subsetOf(number.EquaSet(1, 2, 3, 4, 5)) shouldBe true
+    number.EquaSet(2).subsetOf(number.EquaSet(1, 2, 3, 4, 5)) shouldBe true
+    number.EquaSet(2, 0).subsetOf(number.EquaSet(1, 2, 3, 4, 5)) shouldBe false
+    lower.EquaSet("aa", "bb").subsetOf(lower.EquaSet("aa", "bb", "cc")) shouldBe true
+    lower.EquaSet("aA", "Bb").subsetOf(lower.EquaSet("aa", "bb", "cc")) shouldBe true
+    lower.EquaSet("aa", "bb").subsetOf(lower.EquaSet("aA", "Bb", "cC")) shouldBe true
+    lower.EquaSet("aa", "bc").subsetOf(lower.EquaSet("aa", "bb", "cc")) shouldBe false
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

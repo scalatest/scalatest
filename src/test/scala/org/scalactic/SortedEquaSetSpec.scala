@@ -574,6 +574,15 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("1").stringPrefix shouldBe "TreeEquaSet"
     lower.SortedEquaSet("1", "2", "3").stringPrefix shouldBe "TreeEquaSet"
   }
+  it should "have a subsetOf method" in {
+    number.SortedEquaSet(2, 3).subsetOf(number.SortedEquaSet(1, 2, 3, 4, 5)) shouldBe true
+    number.SortedEquaSet(2).subsetOf(number.SortedEquaSet(1, 2, 3, 4, 5)) shouldBe true
+    number.SortedEquaSet(2, 0).subsetOf(number.SortedEquaSet(1, 2, 3, 4, 5)) shouldBe false
+    lower.SortedEquaSet("aa", "bb").subsetOf(lower.SortedEquaSet("aa", "bb", "cc")) shouldBe true
+    lower.SortedEquaSet("aA", "Bb").subsetOf(lower.SortedEquaSet("aa", "bb", "cc")) shouldBe true
+    lower.SortedEquaSet("aa", "bb").subsetOf(lower.SortedEquaSet("aA", "Bb", "cC")) shouldBe true
+    lower.SortedEquaSet("aa", "bc").subsetOf(lower.SortedEquaSet("aa", "bb", "cc")) shouldBe false
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
