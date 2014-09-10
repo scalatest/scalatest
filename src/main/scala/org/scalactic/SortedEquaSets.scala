@@ -480,6 +480,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def reduceLeft[T1 >: T](op: (T1, T) => T1): T1 = underlying.map(_.value).reduceLeft(op)
     def reduceLeftOption[T1 >: T](op: (T1, T) => T1): Option[T1] = underlying.map(_.value).reduceLeftOption(op)
     def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.map(_.value).reduceOption(op)
+    def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.map(_.value).reduceRight(op)
     def size: Int = underlying.size
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"TreeEquaSet(${underlying.toVector.map(_.value).mkString(", ")})"
