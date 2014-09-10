@@ -455,6 +455,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def subsets: Iterator[thisEquaSets.SortedEquaSet]
 
+    /**
+     * Selects all elements except the first.
+     *
+     * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet`
+     * except the first one.
+     * @throws `UnsupportedOperationException` if the `SortedEquaSet` is empty.
+     */
+    def tail: thisEquaSets.SortedEquaSet
+
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
@@ -590,6 +599,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def subsets(len: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets(len).map(new TreeEquaSet(_))
     def subsets: Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
+    def tail: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.tail)
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =

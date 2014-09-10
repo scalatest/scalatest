@@ -608,6 +608,9 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).sum shouldBe 6
     number.EquaSet(1, 2, 3, 4, 5).sum shouldBe 15
   }
+  it should "have an tail method" in {
+    number.EquaSet(1, 2, 3).tail shouldBe number.EquaSet(2, 3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
