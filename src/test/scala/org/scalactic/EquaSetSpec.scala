@@ -632,6 +632,11 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
     number.EquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
+  it should "have a toArray method" in {
+    number.EquaSet(1, 2, 3).toArray shouldBe (Array(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toArray shouldBe (Array(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toArray shouldBe (Array(number.EquaBox(1)))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

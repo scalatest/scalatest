@@ -21,6 +21,7 @@ import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.reflect.ClassTag
 
 class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
@@ -1019,10 +1020,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Converts this `EquaSet` into another by copying all elements.
      * @tparam Col The collection type to build.
      * @return a new collection containing all elements of this `EquaSet`.
-     *
-     * @return a new collection containing all elements of this `EquaSet`.
      */
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV]
+
+    /**
+     * Converts this `EquaSet` to an array.
+     *
+     * this type must be available.
+     * @return an array containing all elements of this `EquaSet`.
+     */
+    def toArray: Array[EquaBox]
 
     def toSet: Set[thisEquaSets.EquaBox]
 
@@ -1162,6 +1169,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def take(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
+    def toArray: Array[EquaBox] = underlying.toArray
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
