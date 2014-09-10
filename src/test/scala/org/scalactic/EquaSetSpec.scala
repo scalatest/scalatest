@@ -620,6 +620,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).take(2) shouldBe number.EquaSet(1, 2)
     number.EquaSet(1, 2, 3).take(3) shouldBe number.EquaSet(1, 2, 3)
   }
+  it should "have a takeRight method" in {
+    number.EquaSet(1, 2, 3).takeRight(0) shouldBe number.EquaSet()
+    number.EquaSet(1, 2, 3).takeRight(1) shouldBe number.EquaSet(3)
+    number.EquaSet(1, 2, 3).takeRight(2) shouldBe number.EquaSet(2, 3)
+    number.EquaSet(1, 2, 3).takeRight(3) shouldBe number.EquaSet(1, 2, 3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

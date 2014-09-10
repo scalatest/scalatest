@@ -619,6 +619,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).take(2) shouldBe number.SortedEquaSet(1, 2)
     number.SortedEquaSet(1, 2, 3).take(3) shouldBe number.SortedEquaSet(1, 2, 3)
   }
+  it should "have a takeRight method" in {
+    number.SortedEquaSet(1, 2, 3).takeRight(0) shouldBe number.SortedEquaSet()
+    number.SortedEquaSet(1, 2, 3).takeRight(1) shouldBe number.SortedEquaSet(3)
+    number.SortedEquaSet(1, 2, 3).takeRight(2) shouldBe number.SortedEquaSet(2, 3)
+    number.SortedEquaSet(1, 2, 3).takeRight(3) shouldBe number.SortedEquaSet(1, 2, 3)
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

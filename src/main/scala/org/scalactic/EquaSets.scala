@@ -1003,6 +1003,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def take(n: Int): thisEquaSets.EquaSet
 
+    /**
+     * Selects last ''n'' elements.
+     *
+     *
+     * @param n the number of elements to take
+     * @return a `EquaSet` consisting only of the last `n` elements of this `EquaSet`, or else the
+     * whole `EquaSet`, if it has less than `n` elements.
+     */
+    def takeRight(n: Int): thisEquaSets.EquaSet
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1139,6 +1149,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def tail: thisEquaSets.EquaSet = new FastEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.EquaSet] = underlying.tails.map(new FastEquaSet(_))
     def take(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.take(n))
+    def takeRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.takeRight(n))
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
