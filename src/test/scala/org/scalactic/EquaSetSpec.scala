@@ -652,6 +652,14 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toIterable should === (Set(lower.EquaBox("a"), lower.EquaBox("b")))
     number.EquaSet(1).toIterable should === (Set(number.EquaBox(1)))
   }
+  it should "have a toIterator method" in {
+    number.EquaSet(1, 2, 3).toIterator.toList should === (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
+    lower.EquaSet("a", "b").toIterator.toList should === (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
+    number.EquaSet(1).toIterator.toList should === (Iterator(number.EquaBox(1)).toList)
+    number.EquaSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
+    lower.EquaSet("a", "b").toIterator shouldBe an [Iterator[_]]
+    number.EquaSet(1).toIterator shouldBe an [Iterator[_]]
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

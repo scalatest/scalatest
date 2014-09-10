@@ -651,6 +651,14 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("a", "b").toIterable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
     number.SortedEquaSet(1).toIterable shouldBe (Set(number.EquaBox(1)))
   }
+  it should "have a toIterator method" in {
+    number.SortedEquaSet(1, 2, 3).toIterator.toList should === (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
+    lower.SortedEquaSet("a", "b").toIterator.toList should === (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
+    number.SortedEquaSet(1).toIterator.toList should === (Iterator(number.EquaBox(1)).toList)
+    number.SortedEquaSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
+    lower.SortedEquaSet("a", "b").toIterator shouldBe an [Iterator[_]]
+    number.SortedEquaSet(1).toIterator shouldBe an [Iterator[_]]
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
