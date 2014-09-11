@@ -1222,6 +1222,20 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def view(from: Int, until: Int): TraversableView[T, Set[T]]
 
+    /**
+     * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
+     * by combining corresponding elements in pairs.
+     * If one of the two collections is longer than the other, its remaining elements are ignored.
+     *
+     * @param that The iterable providing the second half of each result pair
+     * @tparam U the type of the second half of the returned pairs
+     * @return a `Set` containing pairs consisting of
+     * corresponding elements of this `EquaSet` and that`. The length
+     * of the returned collection is the minimum of the lengths of this `EquaSet` and `that`.
+     *
+     */
+    def zip[U](that: GenIterable[U]): Set[(T, U)]
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1385,6 +1399,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def view: TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view
     def view(from: Int, until: Int): TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view(from, until)
+    def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)

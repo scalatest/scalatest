@@ -746,6 +746,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).view(1, 3).toList shouldBe List(2, 3)
     number.SortedEquaSet(1, 2, 3).view.toList shouldBe List(1, 2, 3)
   }
+  it should "have a zip method" in {
+    number.SortedEquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))
+    number.SortedEquaSet(1, 2, 3).zip(List("4", "5")) shouldBe Set((1, "4"), (2, "5"))
+  }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None

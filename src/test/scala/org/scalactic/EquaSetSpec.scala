@@ -711,6 +711,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(2, 3)
     number.EquaSet(1, 2, 3).view.toList shouldBe List(1, 2, 3)
   }
+  it should "have a zip method" in {
+    number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))
+    number.EquaSet(1, 2, 3).zip(List("4", "5")) shouldBe Set((1, "4"), (2, "5"))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
