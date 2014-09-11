@@ -538,6 +538,13 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.SortedEquaSet
 
+    /**
+     * Computes the union between of set and another set.
+     *
+     * @param that the set to form the union with.
+     * @return a new set consisting of all elements that are in this
+     * set or in the given set `that`.
+     */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     private[scalactic] override def owner: SortedEquaSets[T] = thisEquaSets

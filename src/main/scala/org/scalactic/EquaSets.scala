@@ -1144,6 +1144,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.EquaSet
 
+    /**
+     * Computes the union between of set and another set.
+     *
+     * @param that the set to form the union with.
+     * @return a new set consisting of all elements that are in this
+     * set or in the given set `that`.
+     */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
