@@ -1102,6 +1102,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toTraversable: GenTraversable[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a Vector.
+     *
+     * @return a vector containing all elements of this `EquaSet`.
+     */
+    def toVector: Vector[thisEquaSets.EquaBox]
+
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
@@ -1248,6 +1255,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
     def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
+    def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =

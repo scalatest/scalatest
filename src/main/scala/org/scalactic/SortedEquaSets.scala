@@ -651,6 +651,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
     def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
+    def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

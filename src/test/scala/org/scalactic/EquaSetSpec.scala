@@ -680,6 +680,11 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toTraversable should === (Set(lower.EquaBox("a"), lower.EquaBox("b")))
     number.EquaSet(1).toTraversable should === (Set(number.EquaBox(1)))
   }
+  it should "have a toVector method" in {
+    number.EquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
