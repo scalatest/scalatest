@@ -1175,6 +1175,30 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet)
 
+    /**
+     * Converts this `EquaSet` of triples into three collections of the first, second,
+     * and third element of each triple.
+     *
+     * {{{
+     * val xs = `EquaSet`(
+     * (1, "one", '1'),
+     * (2, "two", '2'),
+     * (3, "three", '3')).unzip3
+     * // xs == (`EquaSet`(1, 2, 3),
+     * // `EquaSet`(one, two, three),
+     * // `EquaSet`(1, 2, 3))
+     * }}}
+     *
+     * @tparam T1 the type of the first member of the element triples
+     * @tparam T2 the type of the second member of the element triples
+     * @tparam T3 the type of the third member of the element triples
+     * @param asTriple an implicit conversion which asserts that the element type
+     * of this `EquaSet` is a triple.
+     * @return a triple of `EquaSet`s, containing the first, second, respectively
+     * third member of each element triple of this `EquaSet`.
+     */
+    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet)
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1331,6 +1355,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet) = {
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
       (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))
+    }
+    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet) = {
+      val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
+      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*), t3EquaSets.EquaSet(t3: _*))
     }
   }
   object FastEquaSet {

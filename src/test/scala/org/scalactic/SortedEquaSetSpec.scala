@@ -45,6 +45,19 @@ class SortedEquaSetSpec extends UnitSpec {
           a._2 compareTo b._2
     }
   val numberLower = SortedEquaSets(intStringEquality)
+  val intStringStringEquality =
+    new OrderingEquality[(Int, String, String)] {
+      def hashCodeFor(a: (Int, String, String)): Int = a.hashCode
+      def areEqual(a: (Int, String, String), b: Any): Boolean = a == b
+      def compare(a: (Int, String, String), b: (Int, String, String)): Int =
+        if (a._1 != b._1)
+          a._1 - b._1
+        else if (a._2 != b._2)
+          a._2 compareTo b._2
+        else
+          a._3 compareTo b._3
+    }
+  val numberLowerTrimmed = SortedEquaSets(intStringStringEquality)
 
   def numberListEquality[T] =
     new OrderingEquality[List[Int]] {
@@ -721,6 +734,11 @@ class SortedEquaSetSpec extends UnitSpec {
     numberLower.SortedEquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
     numberLower.SortedEquaSet((1, "2"), (3, "4")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3), lower.EquaSet("2", "4")))
     numberLower.SortedEquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3, 5), lower.EquaSet("2", "4", "6")))
+  }
+  it should "have an unzip3 method" in {
+    numberLowerTrimmed.SortedEquaSet((1, "2", "3")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
+    numberLowerTrimmed.SortedEquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
+    numberLowerTrimmed.SortedEquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

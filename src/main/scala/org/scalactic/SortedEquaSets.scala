@@ -706,6 +706,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
       (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))
     }
+    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet) = {
+      val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
+      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*), t3EquaSets.EquaSet(t3: _*))
+    }
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

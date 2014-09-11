@@ -33,6 +33,7 @@ class EquaSetSpec extends UnitSpec {
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val numberList = EquaSets[List[Int]](normalHashingEquality[List[Int]])
   val numberLower = EquaSets[(Int, String)](normalHashingEquality[(Int, String)])
+  val numberLowerTrimmed = EquaSets[(Int, String, String)](normalHashingEquality[(Int, String, String)])
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
@@ -698,6 +699,11 @@ class EquaSetSpec extends UnitSpec {
     numberLower.EquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
     numberLower.EquaSet((1, "2"), (3, "4")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3), lower.EquaSet("2", "4")))
     numberLower.EquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3, 5), lower.EquaSet("2", "4", "6")))
+  }
+  it should "have an unzip3 method" in {
+    numberLowerTrimmed.EquaSet((1, "2", "3")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
+    numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
+    numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
   }
 /*
 abstract def contains(elem: A): Boolean
