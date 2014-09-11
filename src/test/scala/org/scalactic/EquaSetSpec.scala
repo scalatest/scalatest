@@ -705,6 +705,12 @@ class EquaSetSpec extends UnitSpec {
     numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
     numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
   }
+  it should "have 2 views method" in {
+    number.EquaSet(3).view(0, 0).toList shouldBe List()
+    number.EquaSet(1, 2, 3).view(2, 1).toList shouldBe List()
+    number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(2, 3)
+    number.EquaSet(1, 2, 3).view.toList shouldBe List(1, 2, 3)
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

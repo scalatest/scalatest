@@ -1199,6 +1199,29 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet)
 
+    /**
+     * Creates a non-strict view of this `EquaSet`.
+     *
+     * @return a non-strict view of this `EquaSet`.
+     */
+    def view: TraversableView[T, Set[T]]
+
+    /**
+     * Creates a non-strict view of a slice of this `EquaSet`.
+     *
+     * Note: the difference between `view` and `slice` is that `view` produces
+     * a view of the current `EquaSet`, whereas `slice` produces a new `EquaSet`.
+     *
+     * Note: `view(from, to)` is equivalent to `view.slice(from, to)`
+     * $orderDependent
+     *
+     * @param from the index of the first element of the view
+     * @param until the index of the element following the view
+     * @return a non-strict view of a slice of this $coll, starting at index `from`
+     * and extending up to (but not including) index `until`.
+     */
+    def view(from: Int, until: Int): TraversableView[T, Set[T]]
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1360,6 +1383,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
       (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*), t3EquaSets.EquaSet(t3: _*))
     }
+    def view: TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view
+    def view(from: Int, until: Int): TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view(from, until)
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
