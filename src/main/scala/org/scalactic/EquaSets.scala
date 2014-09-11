@@ -1153,6 +1153,28 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
+    /**
+     * Converts this `EquaSet` of pairs into two collections of the first and second
+     * half of each pair.
+     *
+     * {{{
+     * val xs = `EquaSet`(
+     * (1, "one"),
+     * (2, "two"),
+     * (3, "three")).unzip
+     * // xs == (`EquaSet`(1, 2, 3),
+     * // `EquaSet`(one, two, three))
+     * }}}
+     *
+     * @tparam T1 the type of the first half of the element pairs
+     * @tparam T2 the type of the second half of the element pairs
+     * @param asPair an implicit conversion which asserts that the element type
+     * of this `EquaSet` is a pair.
+     * @return a pair of `EquaSet`s, containing the first, respectively second
+     * half of each element pair of this `EquaSet`.
+     */
+    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet)
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1306,6 +1328,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
+    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet) = {
+      val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
+      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))
+    }
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)

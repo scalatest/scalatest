@@ -702,6 +702,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
+    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet) = {
+      val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
+      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))
+    }
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty
