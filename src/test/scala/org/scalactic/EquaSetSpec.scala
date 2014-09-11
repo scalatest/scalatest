@@ -643,32 +643,37 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).toBuffer shouldBe (Buffer(number.EquaBox(1)))
   }
   it should "have a toIndexedSeq method" in {
-    number.EquaSet(1, 2, 3).toIndexedSeq should === (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toIndexedSeq should === (IndexedSeq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toIndexedSeq should === (IndexedSeq(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toIndexedSeq shouldBe (IndexedSeq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1)))
   }
   it should "have a toIterable method" in {
-    number.EquaSet(1, 2, 3).toIterable should === (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toIterable should === (Set(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toIterable should === (Set(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toIterable shouldBe (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toIterable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toIterable shouldBe (Set(number.EquaBox(1)))
   }
   it should "have a toIterator method" in {
-    number.EquaSet(1, 2, 3).toIterator.toList should === (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
-    lower.EquaSet("a", "b").toIterator.toList should === (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
-    number.EquaSet(1).toIterator.toList should === (Iterator(number.EquaBox(1)).toList)
+    number.EquaSet(1, 2, 3).toIterator.toList shouldBe (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
+    lower.EquaSet("a", "b").toIterator.toList shouldBe (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
+    number.EquaSet(1).toIterator.toList shouldBe (Iterator(number.EquaBox(1)).toList)
     number.EquaSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
     lower.EquaSet("a", "b").toIterator shouldBe an [Iterator[_]]
     number.EquaSet(1).toIterator shouldBe an [Iterator[_]]
   }
   it should "have a toList method" in {
-    number.EquaSet(1, 2, 3).toList should === (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toList should === (List(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toList should === (List(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toList shouldBe (List(number.EquaBox(1)))
   }
   it should "have a toSeq method" in {
-    number.EquaSet(1, 2, 3).toSeq should === (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toSeq should === (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toSeq should === (Seq(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toSeq shouldBe (Seq(number.EquaBox(1)))
+  }
+  it should "have a toStream method" in {
+    number.EquaSet(1, 2, 3).toStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toStream shouldBe(Stream(number.EquaBox(1)))
   }
 /*
 abstract def contains(elem: A): Boolean

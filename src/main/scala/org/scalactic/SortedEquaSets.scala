@@ -641,7 +641,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def take(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
-    def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     def toArray: Array[EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
@@ -649,6 +648,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
+    def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
+    def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

@@ -1088,6 +1088,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toSet: Set[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a stream.
+     * @return a stream containing all elements of this `EquaSet`.
+     */
+    def toStream: Stream[thisEquaSets.EquaBox]
+
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
@@ -1232,6 +1238,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: Set[thisEquaSets.EquaBox] = underlying
+    def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =

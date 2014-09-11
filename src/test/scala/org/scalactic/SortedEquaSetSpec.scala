@@ -652,22 +652,27 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).toIterable shouldBe (Set(number.EquaBox(1)))
   }
   it should "have a toIterator method" in {
-    number.SortedEquaSet(1, 2, 3).toIterator.toList should === (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
-    lower.SortedEquaSet("a", "b").toIterator.toList should === (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
-    number.SortedEquaSet(1).toIterator.toList should === (Iterator(number.EquaBox(1)).toList)
+    number.SortedEquaSet(1, 2, 3).toIterator.toList shouldBe (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
+    lower.SortedEquaSet("a", "b").toIterator.toList shouldBe (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
+    number.SortedEquaSet(1).toIterator.toList shouldBe (Iterator(number.EquaBox(1)).toList)
     number.SortedEquaSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
     lower.SortedEquaSet("a", "b").toIterator shouldBe an [Iterator[_]]
     number.SortedEquaSet(1).toIterator shouldBe an [Iterator[_]]
   }
   it should "have a toList method" in {
-    number.SortedEquaSet(1, 2, 3).toList should === (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toList should === (List(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toList should === (List(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toList shouldBe (List(number.EquaBox(1)))
   }
   it should "have a toSeq method" in {
-    number.SortedEquaSet(1, 2, 3).toSeq should === (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toSeq should === (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toSeq should === (Seq(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toSeq shouldBe (Seq(number.EquaBox(1)))
+  }
+  it should "have a toStream method" in {
+    number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toStream shouldBe(Stream(number.EquaBox(1)))
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
