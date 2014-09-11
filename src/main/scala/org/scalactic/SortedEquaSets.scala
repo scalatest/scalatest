@@ -496,6 +496,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def takeRight(n: Int): thisEquaSets.EquaSet
 
+    /**
+     * Converts this `SortedEquaSet` to a set.
+     *
+     * @return a set containing all elements of this `SortedEquaSet`.
+     */
     def toSet: SortedSet[thisEquaSets.EquaBox]
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 

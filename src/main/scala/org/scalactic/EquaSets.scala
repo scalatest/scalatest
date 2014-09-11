@@ -1081,6 +1081,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toSeq: GenSeq[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a set.
+     *
+     * @return a set containing all elements of this `EquaSet`.
+     */
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
