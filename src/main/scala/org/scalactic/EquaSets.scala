@@ -1254,6 +1254,20 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)]
 
+    /**
+     * Zips this `EquaSet` with its indices.
+     *
+     * @return A `Set` containing pairs consisting of all elements of this
+     * `EquaSet` paired with their index. Indices start at `0`.
+     *
+     * @return A new `EquaSet` containing pairs consisting of all elements of this
+     * `EquaSet` paired with their index. Indices start at `0`.
+     * @example
+     * `List("a", "b", "c").zipWithIndex = List(("a", 0), ("b", 1), ("c", 2))`
+     *
+     */
+    def zipWithIndex: Set[(T, Int)]
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1419,6 +1433,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def view(from: Int, until: Int): TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
+    def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
