@@ -1236,6 +1236,24 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zip[U](that: GenIterable[U]): Set[(T, U)]
 
+    /**
+     * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
+     * by combining corresponding elements in pairs.
+     * If one of the two collections is shorter than the other,
+     * placeholder elements are used to extend the shorter collection to the length of the longer.
+     *
+     * @param that the iterable providing the second half of each result pair
+     * @param thisElem the element to be used to fill up the result if this $coll is shorter than `that`.
+     * @param thatElem the element to be used to fill up the result if `that` is shorter than this $coll.
+     * @return a new collection of type `That` containing pairs consisting of
+     * corresponding elements of this $coll and `that`. The length
+     * of the returned collection is the maximum of the lengths of this $coll and `that`.
+     * If this $coll is shorter than `that`, `thisElem` values are used to pad the result.
+     * If `that` is shorter than this $coll, `thatElem` values are used to pad the result.
+     *
+     */
+    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)]
+
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
@@ -1400,6 +1418,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def view: TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view
     def view(from: Int, until: Int): TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
+    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
