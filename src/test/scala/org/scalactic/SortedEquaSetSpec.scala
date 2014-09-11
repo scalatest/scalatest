@@ -18,6 +18,7 @@ package org.scalactic
 import java.text._
 import org.scalatest._
 import scala.collection.GenTraversable
+import scala.collection.immutable.TreeSet
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 import scala.collection.SortedSet
@@ -673,6 +674,17 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
     lower.SortedEquaSet("a", "b").toStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
     number.SortedEquaSet(1).toStream shouldBe(Stream(number.EquaBox(1)))
+  }
+  it should "have a toTraversable method" in {
+    implicit val numberOrdering = new Ordering[number.EquaBox] {
+      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    }
+    implicit val lowerOrdering = new Ordering[lower.EquaBox] {
+      def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
+    }
+    number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toTraversable should === (TreeSet(number.EquaBox(1)))
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {
