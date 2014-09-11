@@ -35,6 +35,15 @@ class SortedEquaSetSpec extends UnitSpec {
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val trimmed = SortedEquaSets[String](StringNormalizations.trimmed.toOrderingEquality)
 
+  def numberListEquality[T] =
+    new OrderingEquality[List[Int]] {
+      def hashCodeFor(a: List[Int]): Int = a.hashCode
+      def areEqual(a: List[Int], b: Any): Boolean = a == b
+      def compare(a: List[Int], b: List[Int]): Int = a.mkString compareTo b.mkString
+    }
+
+  val numberList = SortedEquaSets[List[Int]](numberListEquality)
+
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
     emptySet shouldBe empty
@@ -690,6 +699,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
     lower.SortedEquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
     number.SortedEquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+  }
+  it should "have a transpose method" in {
+    numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose shouldBe numberList.SortedEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose shouldBe numberList.SortedEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose shouldBe numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose shouldBe numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
   }
 /*
   it can "be constructed from a GenTraversable via the from method on Every singleton" in {

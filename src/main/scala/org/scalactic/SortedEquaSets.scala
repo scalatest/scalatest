@@ -502,6 +502,42 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @return a set containing all elements of this `SortedEquaSet`.
      */
     def toSet: SortedSet[thisEquaSets.EquaBox]
+
+    /**
+     * Transposes this `SortedEquaSet` of traversable collections into
+     * a `EquaSet` of `SortedEquaSet`s.
+     *
+     * The resulting collection's type will be guided by the
+     * static type of `EquaSet`. For example:
+     *
+     * {{{
+     * val xs = SortedEquaSet(
+     * List(1, 2, 3),
+     * List(4, 5, 6)).transpose
+     * // xs == SortedEquaSet(
+     * // List(1, 4),
+     * // List(2, 5),
+     * // List(3, 6))
+     *
+     * val ys = SortedEquaSet(
+     * List(1, 2, 3),
+     * List(4, 5, 6)).transpose
+     * // ys == SortedEquaSet(
+     * // Vector(1, 4),
+     * // Vector(2, 5),
+     * // Vector(3, 6))
+     * }}}
+     *
+     * @tparam B the type of the elements of each traversable collection.
+     * @param asTraversable an implicit conversion which asserts that the
+     * element type of this `SortedEquaSet` is a `Traversable`.
+     * @return a two-dimensional `SortedEquaSet` of ${coll}s which has as ''n''th row
+     * the ''n''th column of this `SortedEquaSet`.
+     * @throws `IllegalArgumentException` if all collections in this `SortedEquaSet`
+     * are not of the same size.
+     */
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.SortedEquaSet
+
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     private[scalactic] override def owner: SortedEquaSets[T] = thisEquaSets
@@ -653,6 +689,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
     def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.SortedEquaSet = {
+      val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
+      new TreeEquaSet(TreeSet(listList.map(EquaBox(_)): _ *)(ordering))
+    }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
   }

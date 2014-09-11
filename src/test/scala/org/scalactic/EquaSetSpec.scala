@@ -31,6 +31,8 @@ class EquaSetSpec extends UnitSpec {
   val lower = EquaSets[String](StringNormalizations.lowerCased.toHashingEquality)
   val trimmed = EquaSets[String](StringNormalizations.trimmed.toHashingEquality)
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val numberList = EquaSets[List[Int]](normalHashingEquality[List[Int]])
+
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
     emptySet shouldBe empty
@@ -684,6 +686,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
     lower.EquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
     number.EquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+  }
+  it should "have a transpose method" in {
+    numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose shouldBe numberList.EquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose shouldBe numberList.EquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose shouldBe numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose shouldBe numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
   }
 /*
 abstract def contains(elem: A): Boolean

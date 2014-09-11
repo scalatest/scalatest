@@ -1109,6 +1109,41 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toVector: Vector[thisEquaSets.EquaBox]
 
+    /**
+     * Transposes this `EquaSet` of traversable collections into
+     * a `EquaSet` of `EquaSet`s.
+     *
+     * The resulting collection's type will be guided by the
+     * static type of `EquaSet`. For example:
+     *
+     * {{{
+     * val xs = EquaSet(
+     * EquaSet(1, 2, 3),
+     * EquaSet(4, 5, 6)).transpose
+     * // xs == List(
+     * // List(1, 4),
+     * // List(2, 5),
+     * // List(3, 6))
+     *
+     * val ys = Vector(
+     * List(1, 2, 3),
+     * List(4, 5, 6)).transpose
+     * // ys == Vector(
+     * // Vector(1, 4),
+     * // Vector(2, 5),
+     * // Vector(3, 6))
+     * }}}
+     *
+     * @tparam B the type of the elements of each traversable collection.
+     * @param asTraversable an implicit conversion which asserts that the
+     * element type of this `EquaSet` is a `Traversable`.
+     * @return a two-dimensional `EquaSet` of ${coll}s which has as ''n''th row
+     * the ''n''th column of this `EquaSet`.
+     * @throws `IllegalArgumentException` if all collections in this `EquaSet`
+     * are not of the same size.
+     */
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.EquaSet
+
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
@@ -1258,6 +1293,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.EquaSet = {
+      val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
+      new FastEquaSet(listList.map(EquaBox(_)).toSet)
+    }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
   }
