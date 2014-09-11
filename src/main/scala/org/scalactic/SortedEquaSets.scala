@@ -357,6 +357,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def isEmpty: Boolean
     def iterator: Iterator[T]
 
+    def map(f: T => T): thisEquaSets.SortedEquaSet
+
     /**
      * Partitions this `SortedEquaSet` in two `SortedEquaSet`s according to a predicate.
      *
@@ -641,6 +643,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(last) => Some(last.value)
         case None => None
       }
+    def map(f: T => T): thisEquaSets.SortedEquaSet = SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet = thatEquaSets.SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)

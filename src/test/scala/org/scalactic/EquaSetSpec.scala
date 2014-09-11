@@ -430,6 +430,16 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi").lastOption shouldBe Some("hi")
     number.EquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
+  it should "have a map method" in {
+    number.EquaSet(1, 2, 3) .map (_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
+    number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)
+  }
+  it should "have a mapInto method" in {
+    number.EquaSet(1, 2, 3).mapInto (number)(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5).mapInto (number)(_ + 3) shouldBe number.EquaSet(8)
+    number.EquaSet(8).mapInto (lower)(_.toString) shouldBe lower.EquaSet("8")
+  }
   it should "have a max method" in {
     number.EquaSet(1, 2, 3, 4, 5).max shouldBe 5
     number.EquaSet(1).max shouldBe 1

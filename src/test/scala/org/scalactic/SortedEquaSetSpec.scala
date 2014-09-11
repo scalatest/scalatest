@@ -458,6 +458,16 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").lastOption shouldBe Some("hi")
     number.SortedEquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
+  it should "have a map method" in {
+    number.SortedEquaSet(1, 2, 3) .map (_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
+    (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)
+    number.SortedEquaSet(5) map (_ + 3) shouldBe number.SortedEquaSet(8)
+  }
+  it should "have a mapInto method" in {
+    number.SortedEquaSet(1, 2, 3).mapInto (number)(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
+    number.SortedEquaSet(5).mapInto (number)(_ + 3) shouldBe number.SortedEquaSet(8)
+    number.SortedEquaSet(8).mapInto (lower)(_.toString) shouldBe lower.SortedEquaSet("8")
+  }
   it should "have a max method" in {
     number.SortedEquaSet(1, 2, 3, 4, 5).max shouldBe 5
     number.SortedEquaSet(1).max shouldBe 1

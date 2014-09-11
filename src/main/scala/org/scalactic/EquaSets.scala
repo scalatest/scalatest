@@ -658,6 +658,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def lastOption: Option[T]
 
+    def map(f: T => T): thisEquaSets.EquaSet
+
+    def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet
+
+    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet
+
     /**
      * Finds the largest element.
       *
@@ -1359,6 +1365,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(last) => Some(last.value)
         case None => None
       }
+    def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet = thatEquaSets.SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
