@@ -15,8 +15,10 @@
  */
 package org.scalactic
 
+import scala.Iterator
+import scala.Predef.Set
 import scala.collection.generic.CanBuildFrom
-import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
+import scala.collection._
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.SortedSet
 import scala.language.higherKinds
@@ -1070,6 +1072,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toList: List[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
+     * in this default implementation, as this `TraversableOnce` may be
+     * lazy and unevaluated.
+     *
+     * @return a sequence containing all elements of this `EquaSet`.
+     */
+    def toSeq: GenSeq[thisEquaSets.EquaBox]
+
     def toSet: Set[thisEquaSets.EquaBox]
 
     def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -1214,6 +1225,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

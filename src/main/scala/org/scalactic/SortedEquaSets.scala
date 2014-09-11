@@ -15,8 +15,9 @@
  */
 package org.scalactic
 
+import scala.Iterator
 import scala.collection.generic.CanBuildFrom
-import scala.collection.{GenIterable, GenMap, mutable, GenTraversableOnce}
+import scala.collection._
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
@@ -642,6 +643,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
