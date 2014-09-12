@@ -339,6 +339,17 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
+  it should "have a flatMap method" in {
+    number.EquaSet(1, 2, 3) flatMap (i => number.EquaSet(i + 1)) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5) flatMap (i => number.EquaSet(i + 3)) shouldBe number.EquaSet(8)
+    val ss = number.EquaSet(1, 2)
+    val is = number.EquaSet(1, 2, 3)
+    (for (s <- ss; i <- is) yield s + i) shouldBe number.EquaSet(2, 3, 4, 3, 4, 5)
+  }
+  it should "have 2 flatMapInto method" in {
+    number.EquaSet(8).flatMapInto (lower)(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
+    number.EquaSet(8).flatMapInto (sortedLower)(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+  }
   it should "have a fold method" in {
     number.EquaSet(1).fold(0)(_ + _) shouldBe 1
     number.EquaSet(1).fold(1)(_ * _) shouldBe 1

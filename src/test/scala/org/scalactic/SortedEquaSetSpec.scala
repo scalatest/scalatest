@@ -369,6 +369,18 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
+  it should "have a flatMap method" in {
+    number.SortedEquaSet(1, 2, 3) flatMap (i => number.SortedEquaSet(i + 1)) shouldBe number.SortedEquaSet(2, 3, 4)
+    number.SortedEquaSet(5) flatMap (i => number.SortedEquaSet(i + 3)) shouldBe number.SortedEquaSet(8)
+    val ss = number.SortedEquaSet(1, 2)
+    val is = number.SortedEquaSet(1, 2, 3)
+    (for (s <- ss; i <- is) yield s + i) shouldBe number.SortedEquaSet(2, 3, 4, 3, 4, 5)
+  }
+  it should "have 2 flatMapInto method" in {
+    val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+    number.SortedEquaSet(8).flatMapInto (nonSortedlower)(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
+    number.SortedEquaSet(8).flatMapInto (sortedLower)(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+  }
   it should "have a fold method" in {
     number.SortedEquaSet(1).fold(0)(_ + _) shouldBe 1
     number.SortedEquaSet(1).fold(1)(_ * _) shouldBe 1

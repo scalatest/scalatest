@@ -500,6 +500,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def find(pred: T => Boolean): Option[EquaBox]
 
+    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet
+
+    def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet
+
+    def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet
+
     /**
      * Folds the elements of this `EquiSet` using the specified associative
      * binary operator.
@@ -1335,6 +1341,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
+    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toList))
+    def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet = {
+      val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
+      thatEquaSets.EquaSet(set.toList.map(_.value): _*)
+    }
+    def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet = {
+      val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
+      thatEquaSets.SortedEquaSet(set.toList.map(_.value): _*)
+    }
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
