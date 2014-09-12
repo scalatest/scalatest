@@ -33,6 +33,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
   class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
+    override def map(f: S => T): thisEquaSets.EquaSet =
+      thisEquaSets.SortedEquaSet.empty ++ (from map f)
   }
 
   trait SortedEquaSet extends EquaSet {

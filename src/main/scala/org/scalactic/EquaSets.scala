@@ -39,7 +39,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
   class EquaBridge[S](from: List[S]) {
     def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
-      thisEquaSets.FastEquaSet.empty ++ (from collect pf) // { case s if pf.isDefinedAt(s) => pf(s) })
+      thisEquaSets.EquaSet.empty ++ (from collect pf) // { case s if pf.isDefinedAt(s) => pf(s) })
+    def map(f: S => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet.empty ++ (from map f)
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {

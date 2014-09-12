@@ -474,6 +474,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3) .map (_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
     (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)
     number.SortedEquaSet(5) map (_ + 3) shouldBe number.SortedEquaSet(8)
+
+    number.SortedEquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
+    number.SortedEquaSet(5).into(number).map(_ + 3) shouldBe number.SortedEquaSet(8)
+    number.SortedEquaSet(8).into(lower).map(_.toString) shouldBe lower.SortedEquaSet("8")
   }
   it should "have a mapInto method" in {
     number.SortedEquaSet(1, 2, 3).mapInto (number)(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)

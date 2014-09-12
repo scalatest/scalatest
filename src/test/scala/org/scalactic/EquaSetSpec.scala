@@ -445,6 +445,10 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3) .map (_ + 1) shouldBe number.EquaSet(2, 3, 4)
     (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
     number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)
+
+    number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
+    number.EquaSet(8).into(lower).map(_.toString) shouldBe lower.EquaSet("8")
   }
   it should "have a mapInto method" in {
     number.EquaSet(1, 2, 3).mapInto (number)(_ + 1) shouldBe number.EquaSet(2, 3, 4)
