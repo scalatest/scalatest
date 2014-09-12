@@ -331,6 +331,10 @@ class EquaSetSpec extends UnitSpec {
     set.dropWhile(_ < 5) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
     set.dropWhile(_ < 6) shouldBe number.EquaSet()
   }
+  it should "have an equals method" in {
+    sortedLower.SortedEquaSet("one", "two", "three") shouldEqual sortedLower.EquaSet("Three", "Two", "One")
+    sortedLower.EquaSet("one", "two", "three") shouldEqual sortedLower.SortedEquaSet("Three", "Two", "One")
+  }
   it should "have an exists method" in {
     number.EquaSet(1, 2, 3).exists(_ == 2) shouldBe true
     number.EquaSet(1, 2, 3).exists(_ == 5) shouldBe false
