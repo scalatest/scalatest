@@ -1460,6 +1460,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case None => None
       }
     def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def potentialMap[U](f: T => U)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet = into(thatEquaSets).map(f)
     def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet = thatEquaSets.SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
