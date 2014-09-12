@@ -47,6 +47,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       flatMap((s: S) => s.asInstanceOf[thisEquaSets.EquaSet])
     def scan(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+    def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
@@ -914,6 +916,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
 
+    /**
+     * Produces a collection containing cumulative results of applying the
+     * operator going left to right.
+     *
+     * @param z the initial value
+     * @param op the binary operator applied to the intermediate result and the element
+     * @return `EquaSet` with intermediate results
+     */
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
+
     def size: Int
 
     /**
@@ -1456,6 +1468,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
       val set = underlying.scan(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
+      new FastEquaSet(set)
+    }
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
+      val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
     def size: Int = underlying.size

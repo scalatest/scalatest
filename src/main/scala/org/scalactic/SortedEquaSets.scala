@@ -39,6 +39,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     override def scan(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
   }
 
   trait SortedEquaSet extends EquaSet {
@@ -395,6 +397,16 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def scan(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet
 
+    /**
+     * Produces a collection containing cumulative results of applying the
+     * operator going left to right.
+     *
+     * @param z the initial value
+     * @param op the binary operator applied to the intermediate result and the element
+     * @return `SortedEquaSet` with intermediate results
+     */
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet
+
     def size: Int
 
     /**
@@ -701,6 +713,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
     def scan(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
       val set = underlying.scan(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
+      new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
+    }
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
+      val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }
     def size: Int = underlying.size
