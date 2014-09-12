@@ -42,6 +42,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet.empty ++ (from collect pf) // { case s if pf.isDefinedAt(s) => pf(s) })
     def map(f: S => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet.empty ++ (from map f)
+    def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
@@ -637,7 +639,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
 
     def isEmpty: Boolean
 
@@ -1371,8 +1373,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def inits: Iterator[thisEquaSets.EquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)

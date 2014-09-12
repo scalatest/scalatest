@@ -345,6 +345,9 @@ class EquaSetSpec extends UnitSpec {
     val ss = number.EquaSet(1, 2)
     val is = number.EquaSet(1, 2, 3)
     (for (s <- ss; i <- is) yield s + i) shouldBe number.EquaSet(2, 3, 4, 3, 4, 5)
+
+    number.EquaSet(8).into(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
+    number.EquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
   }
   it should "have 2 flatMapInto method" in {
     number.EquaSet(8).flatMapInto (lower)(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")

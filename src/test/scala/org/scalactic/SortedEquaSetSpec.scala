@@ -375,6 +375,10 @@ class SortedEquaSetSpec extends UnitSpec {
     val ss = number.SortedEquaSet(1, 2)
     val is = number.SortedEquaSet(1, 2, 3)
     (for (s <- ss; i <- is) yield s + i) shouldBe number.SortedEquaSet(2, 3, 4, 3, 4, 5)
+
+    val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+    number.SortedEquaSet(8).into(nonSortedlower).flatMap(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
+    number.SortedEquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
   }
   it should "have 2 flatMapInto method" in {
     val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
