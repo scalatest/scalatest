@@ -1400,9 +1400,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def drop(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropRight(n))
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
-    override def equals(other: Any): Boolean = {
+    override def equals(other: Any): Boolean = { 
       other match {
-        case equiSet: thisEquaSets.FastEquaSet =>
+        case equiSet: thisEquaSets.FastEquaSet => // This is over specific. Should compare against any EquaSet of this same path-dependent type. Double check hashCode is correct.
           underlying == equiSet.underlying
         case _ => false
       }

@@ -35,6 +35,17 @@ class EquaSetSpec extends UnitSpec {
   val numberLower = EquaSets[(Int, String)](normalHashingEquality[(Int, String)])
   val numberLowerTrimmed = EquaSets[(Int, String, String)](normalHashingEquality[(Int, String, String)])
   val numberNumber = EquaSets[number.EquaSet](normalHashingEquality[number.EquaSet])
+  def upperCharHashingEquality =
+    new HashingEquality[Char] {
+      def hashCodeFor(a: Char): Int = a.toUpper.hashCode
+      def areEqual(a: Char, b: Any): Boolean =
+        b match {
+          case bChar: Char => a.toUpper == bChar.toUpper
+          case _ => false
+        }
+    }
+  val upperChar = EquaSets[Char](upperCharHashingEquality)
+  val regularChar = EquaSets[Char](normalHashingEquality[Char])
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
@@ -349,6 +360,24 @@ class EquaSetSpec extends UnitSpec {
 
     number.EquaSet(8).into(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
     number.EquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+
+    number.EquaSet(9, 8, 7).into(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("9", "8", "7")
+    number.EquaSet(9, 8, 7).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.EquaSet("9", "8", "7")
+
+    val cis = number.EquaSet('c'.toInt, 'C'.toInt, 'b'.toInt, 'B'.toInt, 'a'.toInt, 'A'.toInt)
+    cis.into(regularChar).map(i => i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+    (for (i <- cis.into(regularChar)) yield i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+
+    val regChars = cis.into(regularChar).flatMap(i => regularChar.EquaSet(i.toChar))
+    regChars shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+    regChars.into(upperChar).flatMap(c => upperChar.EquaSet(c)) shouldBe upperChar.EquaSet('A', 'b', 'C')
+    val regCharsFromFor =
+      for {
+        u <- (
+          for (c <- cis into regularChar) yield c.toChar
+        ) into upperChar
+      } yield u
+    regCharsFromFor shouldBe upperChar.EquaSet('A', 'B', 'C')
   }
   it should "have 2 flatMapInto method" in {
     number.EquaSet(8).flatMapInto (lower)(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
