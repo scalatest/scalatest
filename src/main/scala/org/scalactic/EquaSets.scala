@@ -49,6 +49,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
     def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+    def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet(from.scanRight(z)((s: Any, t: Any) => op(s.asInstanceOf[S], t.asInstanceOf[T])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
@@ -926,6 +928,21 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
 
+    /**
+     * Produces a collection containing cumulative results of applying the operator going right to left.
+     * The head of the collection is the last cumulative result.
+     *
+     * Example:
+     * {{{
+     * `EquaSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `EquaSet`(10, 9, 7, 4, 0)
+     * }}}
+     *
+     * @param z the initial value
+     * @param op the binary operator applied to the intermediate result and the element
+     * @return `EquaSet` with intermediate results
+     */
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
+
     def size: Int
 
     /**
@@ -1472,6 +1489,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
+      new FastEquaSet(set)
+    }
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
+      val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
     def size: Int = underlying.size

@@ -623,6 +623,12 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).into(lower).scanLeft("z")(_ + _) shouldBe lower.SortedEquaSet("z", "z1", "z12", "z123")
     number.SortedEquaSet(0).into(lower).scanLeft("z")(_ + _) shouldBe lower.SortedEquaSet("z", "z0")
   }
+  it should "have a scanRight method" in {
+    number.SortedEquaSet(1).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(1, 0)
+    number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(6, 5, 3, 0)
+    number.SortedEquaSet(1, 2, 3).into(lower).scanRight("z")(_ + _) shouldBe lower.SortedEquaSet("123z", "23z", "3z", "z")
+    number.SortedEquaSet(0).into(lower).scanRight("z")(_ + _) shouldBe lower.SortedEquaSet("0z", "z")
+  }
   it should "have a slice method" in {
     number.SortedEquaSet(3).slice(0, 0) shouldBe number.SortedEquaSet()
     number.SortedEquaSet(1, 2, 3).slice(2, 1) shouldBe number.SortedEquaSet()

@@ -583,6 +583,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).into(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z1", "z12", "z123")
     number.EquaSet(0).into(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z0")
   }
+  it should "have a scanRight method" in {
+    number.EquaSet(1).scanRight(0)(_ + _) shouldBe number.EquaSet(1, 0)
+    number.EquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.EquaSet(6, 5, 3, 0)
+    number.EquaSet(1, 2, 3).into(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("123z", "23z", "3z", "z")
+    number.EquaSet(0).into(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("0z", "z")
+  }
   it should "have a slice method" in {
     number.EquaSet(3).slice(0, 0) shouldBe number.EquaSet()
     number.EquaSet(1, 2, 3).slice(2, 1) shouldBe number.EquaSet()

@@ -41,6 +41,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.SortedEquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
     override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet(from.scanRight(z)((s: Any, t: Any) => op(s.asInstanceOf[S], t.asInstanceOf[T])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
   }
 
   trait SortedEquaSet extends EquaSet {
@@ -407,6 +409,21 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet
 
+    /**
+     * Produces a collection containing cumulative results of applying the operator going right to left.
+     * The head of the collection is the last cumulative result.
+     *
+     * Example:
+     * {{{
+     * `SortedEquaSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `SortedEquaSet`(10, 9, 7, 4, 0)
+     * }}}
+     *
+     * @param z the initial value
+     * @param op the binary operator applied to the intermediate result and the element
+     * @return `SortedEquaSet` with intermediate results
+     */
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet
+
     def size: Int
 
     /**
@@ -717,6 +734,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
+      new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
+    }
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
+      val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }
     def size: Int = underlying.size
