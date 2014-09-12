@@ -389,7 +389,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * The order of the elements is preserved.
      */
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
     /**
      * Copies values of this `EquaSet` to an array.
@@ -514,8 +513,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet
-
-    def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet
 
     /**
      * Converts this `EquaSet` of `EquaSet` into
@@ -699,8 +696,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def map(f: T => T): thisEquaSets.EquaSet
 
     def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet
-
-    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet
 
     /**
      * Finds the largest element.
@@ -1388,8 +1383,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
-      new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
@@ -1415,10 +1408,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet = {
       val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
       thatEquaSets.EquaSet(set.toList.map(_.value): _*)
-    }
-    def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet = {
-      val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
-      thatEquaSets.SortedEquaSet(set.toList.map(_.value): _*)
     }
     /*def flatten[T >: EquaSets[].EquaSet]: EquaSet = {
       new FastEquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _).toSet)
@@ -1462,7 +1451,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def potentialMap[U](f: T => U)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet = into(thatEquaSets).map(f)
     def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
-    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet = thatEquaSets.SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)

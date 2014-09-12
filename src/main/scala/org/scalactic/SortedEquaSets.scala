@@ -253,7 +253,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def collect(pf: PartialFunction[T, T]): thisEquaSets.SortedEquaSet
 
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet
 
     /**
      * Computes the difference of this `SortedEquaSet` and another `SortedEquaSet`.
@@ -640,8 +639,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
       new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
-    def collectInto[U](thatEquaSets: SortedEquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.SortedEquaSet =
-      new thatEquaSets.TreeEquaSet(TreeSet.empty(thatEquaSets.ordering) ++ (underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) }))
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
@@ -669,10 +666,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet = {
       val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
       thatEquaSets.EquaSet(set.toList.map(_.value): _*)
-    }
-    def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet = {
-      val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
-      thatEquaSets.SortedEquaSet(set.toList.map(_.value): _*)
     }
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
@@ -706,7 +699,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       }
     def map(f: T => T): thisEquaSets.SortedEquaSet = SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
-    def mapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => U): thatEquaSets.SortedEquaSet = thatEquaSets.SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
