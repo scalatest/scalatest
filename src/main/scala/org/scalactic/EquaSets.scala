@@ -45,6 +45,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     def flatten(implicit ev: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       flatMap((s: S) => s.asInstanceOf[thisEquaSets.EquaSet])
+    def scan(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
@@ -900,6 +902,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean
 
+    /**
+     * Computes a prefix scan of the elements of the collection.
+     *
+     * Note: The neutral element `z` may be applied more than once.
+     *
+     * @param z neutral element for the operator `op`
+     * @param op the associative operator for the scan
+     *
+     * @return a new `EquaSet` containing the prefix scan of the elements in this `EquaSet`
+     */
+    def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
+
     def size: Int
 
     /**
@@ -1440,6 +1454,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
+    def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
+      val set = underlying.scan(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
+      new FastEquaSet(set)
+    }
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
