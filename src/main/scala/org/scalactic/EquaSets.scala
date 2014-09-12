@@ -16,7 +16,6 @@
 package org.scalactic
 
 import scala.Iterator
-import scala.Predef.Set
 import scala.collection.generic.CanBuildFrom
 import scala.collection._
 import scala.collection.immutable.TreeSet
@@ -44,6 +43,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet.empty ++ (from map f)
     def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
+    def flatten(implicit ev: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      flatMap((s: S) => s.asInstanceOf[thisEquaSets.EquaSet])
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
@@ -509,6 +510,27 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet
 
     def flatMapInto[U](thatEquaSets: SortedEquaSets[U])(f: T => thatEquaSets.SortedEquaSet): thatEquaSets.SortedEquaSet
+
+    /**
+     * Converts this `EquaSet` of `EquaSet` into
+     * a `EquaSet` formed by the elements of these `EquaSet`.
+     *
+     *
+     * @return a new `EquaSet` resulting from concatenating all element `EquaSet`s.
+     *
+     * The resulting collection's type will be guided by the
+     * static type of `EquaSet`. For example:
+     *
+     * {{{
+     *
+     * val ys = `EquaSet`(
+     * `EquaSet`(1, 2, 3),
+     * `EquaSet`(3, 2, 1)
+     * ).flatten
+     * // ys == `EquaSet`(1, 2, 3)
+     * }}}
+     */
+    //def flatten[S, T >: EquaSets[S]#EquaSet]: EquaSets[S]#EquaSet
 
     /**
      * Folds the elements of this `EquiSet` using the specified associative
@@ -1335,12 +1357,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def drop(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropRight(n))
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
-    override def equals(other: Any): Boolean =
+    override def equals(other: Any): Boolean = {
       other match {
-        case equiSet: thisEquaSets.FastEquaSet => 
+        case equiSet: thisEquaSets.FastEquaSet =>
           underlying == equiSet.underlying
         case _ => false
       }
+    }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
@@ -1354,6 +1377,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
       thatEquaSets.SortedEquaSet(set.toList.map(_.value): _*)
     }
+    /*def flatten[T >: EquaSets[].EquaSet]: EquaSet = {
+      new FastEquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _).toSet)
+    }*/
+    /*def flatten[S, T >: EquaSets[S]#EquaSet]: EquaSets[S]#EquaSet = {
+      if (underlying.isEmpty)
+        new EquaSets()
+
+      EquaSets[S]#EquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _): _*)
+    }*/
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
@@ -1471,6 +1503,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   object EquaSet {
     def empty: EquaSet = FastEquaSet.empty
     def apply(elems: T*): EquaSet = FastEquaSet(elems: _*)
+    import scala.language.implicitConversions
+    implicit def equaSetToGenTraversableOnce(equaSet: EquaSet): scala.collection.immutable.IndexedSeq[T] = equaSet.toVector.map(_.value)
+    implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
+      new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
   }
 }
 

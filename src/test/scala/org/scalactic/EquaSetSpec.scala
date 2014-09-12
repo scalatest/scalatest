@@ -34,6 +34,7 @@ class EquaSetSpec extends UnitSpec {
   val numberList = EquaSets[List[Int]](normalHashingEquality[List[Int]])
   val numberLower = EquaSets[(Int, String)](normalHashingEquality[(Int, String)])
   val numberLowerTrimmed = EquaSets[(Int, String, String)](normalHashingEquality[(Int, String, String)])
+  val numberNumber = EquaSets[number.EquaSet](normalHashingEquality[number.EquaSet])
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
@@ -352,6 +353,21 @@ class EquaSetSpec extends UnitSpec {
   it should "have 2 flatMapInto method" in {
     number.EquaSet(8).flatMapInto (lower)(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
     number.EquaSet(8).flatMapInto (sortedLower)(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+  }
+  it should "have a flatten method that works on nested EquaSet" in {
+    numberNumber.EquaSet(number.EquaSet(1, 2), number.EquaSet(3)).into(number).flatten shouldBe number.EquaSet(1, 2, 3)
+    numberNumber.EquaSet(number.EquaSet(1)).into(number).flatten shouldBe number.EquaSet(1)
+  }
+  it can "be flattened when in a GenTraversableOnce" in {
+    // need to keep this commented out until finish implementing all methods
+    Vector(number.EquaSet(1, 2, 3), number.EquaSet(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
+    List(number.EquaSet(1, 2, 3), number.EquaSet(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
+    List(number.EquaSet(1, 2, 3), number.EquaSet(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    List(number.EquaSet(1, 2, 3), number.EquaSet(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
+  }
+  it should "have a flatten method that works on nested GenTraversable" in {
+    numberList.EquaSet(List(1, 2), List(3)).flatten shouldBe List(1, 2, 3)
+    numberList.EquaSet(List(1)).flatten shouldBe List(1)
   }
   it should "have a fold method" in {
     number.EquaSet(1).fold(0)(_ + _) shouldBe 1

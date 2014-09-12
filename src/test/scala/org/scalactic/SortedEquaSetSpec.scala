@@ -68,6 +68,14 @@ class SortedEquaSetSpec extends UnitSpec {
 
   val numberList = SortedEquaSets[List[Int]](numberListEquality)
 
+  val numberNumberEquality =
+    new OrderingEquality[number.SortedEquaSet] {
+      def hashCodeFor(a: number.SortedEquaSet): Int = a.hashCode
+      def areEqual(a: number.SortedEquaSet, b: Any): Boolean = a == b
+      def compare(a: number.SortedEquaSet, b: number.SortedEquaSet): Int = a.mkString compareTo b.mkString
+    }
+  val numberNumber = SortedEquaSets[number.SortedEquaSet](numberNumberEquality)
+
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
     emptySet shouldBe empty
@@ -384,6 +392,21 @@ class SortedEquaSetSpec extends UnitSpec {
     val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
     number.SortedEquaSet(8).flatMapInto (nonSortedlower)(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
     number.SortedEquaSet(8).flatMapInto (sortedLower)(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+  }
+  it should "have a flatten method that works on nested SortedEquaSet" in {
+    numberNumber.SortedEquaSet(number.SortedEquaSet(1, 2), number.SortedEquaSet(3)).into(number).flatten shouldBe number.SortedEquaSet(1, 2, 3)
+    numberNumber.SortedEquaSet(number.SortedEquaSet(1)).into(number).flatten shouldBe number.SortedEquaSet(1)
+  }
+  it can "be flattened when in a GenTraversableOnce" in {
+    // need to keep this commented out until finish implementing all methods
+    Vector(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
+    List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
+    List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
+  }
+  it should "have a flatten method that works on nested GenTraversable" in {
+    numberList.SortedEquaSet(List(1, 2), List(3)).flatten shouldBe List(1, 2, 3)
+    numberList.SortedEquaSet(List(1)).flatten shouldBe List(1)
   }
   it should "have a fold method" in {
     number.SortedEquaSet(1).fold(0)(_ + _) shouldBe 1
