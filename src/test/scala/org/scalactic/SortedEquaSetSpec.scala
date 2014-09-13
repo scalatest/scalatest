@@ -272,7 +272,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.SortedEquaSet(4, 8, 12, 16, 20)
     number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.SortedEquaSet.empty
   }
-  it should "have a collectInto method that accepts a EquaSets and functions that result in other than the path-enclosed type" in {
+  it should "have a into(...).collect method that accepts a EquaSets and functions that result in other than the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
     res3: List[Int] = List(4, 8, 12, 16, 20)
@@ -280,12 +280,10 @@ class SortedEquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquaSet("4", "8", "12", "16", "20")
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collectInto(lower) { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
     number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquaSet("4", "8", "12", "16", "20")
     number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
   }
-  it should "have a collectInto method that accepts a SortedEquaSets and functions that result in a HashEquaSet other than the path-enclosed type" in {
+  it should "have a into(...).collect method that accepts a SortedEquaSets and functions that result in a HashEquaSet other than the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
     res3: List[Int] = List(4, 8, 12, 16, 20)
@@ -293,8 +291,6 @@ class SortedEquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
-    number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).collectInto(sortedLower) { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
     number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
     number.SortedEquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
@@ -387,11 +383,6 @@ class SortedEquaSetSpec extends UnitSpec {
     val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
     number.SortedEquaSet(8).into(nonSortedlower).flatMap(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
     number.SortedEquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
-  }
-  it should "have 2 flatMapInto method" in {
-    val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-    number.SortedEquaSet(8).flatMapInto (nonSortedlower)(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
-    number.SortedEquaSet(8).flatMapInto (sortedLower)(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
   }
   it should "have a flatten method that works on nested SortedEquaSet" in {
     numberNumber.SortedEquaSet(number.SortedEquaSet(1, 2), number.SortedEquaSet(3)).into(number).flatten shouldBe number.SortedEquaSet(1, 2, 3)
@@ -505,11 +496,6 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
     number.SortedEquaSet(5).into(number).map(_ + 3) shouldBe number.SortedEquaSet(8)
     number.SortedEquaSet(8).into(lower).map(_.toString) shouldBe lower.SortedEquaSet("8")
-  }
-  it should "have a mapInto method" in {
-    number.SortedEquaSet(1, 2, 3).mapInto (number)(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
-    number.SortedEquaSet(5).mapInto (number)(_ + 3) shouldBe number.SortedEquaSet(8)
-    number.SortedEquaSet(8).mapInto (lower)(_.toString) shouldBe lower.SortedEquaSet("8")
   }
   it should "have a max method" in {
     number.SortedEquaSet(1, 2, 3, 4, 5).max shouldBe 5

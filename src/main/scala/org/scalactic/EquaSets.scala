@@ -375,22 +375,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
 
     /**
-     * Builds a new collection by applying a partial function to all elements of this `EquaSet`
-     * on which the function is defined.
-     *
-     * @param thatEquaSets the `EquaSets` into which to filter and maps the `EquaSet`.
-     * @param pf the partial function which filters and maps the `EquaSet`.
-     * @return a new collection of type `That` resulting from applying the partial function
-     * `pf` to each element on which it is defined and collecting the results.
-     * The order of the elements is preserved.
-     *
-     * @return a new `EquaSet` resulting from applying the given partial function
-     * `pf` to each element on which it is defined and collecting the results.
-     * The order of the elements is preserved.
-     */
-    def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet
-
-    /**
      * Copies values of this `EquaSet` to an array.
      * Fills the given array `xs` with values of this `EquaSet`.
      * Copying will stop once either the end of the current `EquaSet` is reached,
@@ -511,8 +495,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def find(pred: T => Boolean): Option[EquaBox]
 
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet
-
-    def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet
 
     /**
      * Converts this `EquaSet` of `EquaSet` into
@@ -694,8 +676,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def lastOption: Option[T]
 
     def map(f: T => T): thisEquaSets.EquaSet
-
-    def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet
 
     /**
      * Finds the largest element.
@@ -1381,8 +1361,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
-    def collectInto[U](thatEquaSets: EquaSets[U])(pf: PartialFunction[T, U]): thatEquaSets.EquaSet =
-      new thatEquaSets.FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => thatEquaSets.EquaBox(pf(hb.value)) })
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
@@ -1405,10 +1383,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toList))
-    def flatMapInto[U](thatEquaSets: EquaSets[U])(f: T => thatEquaSets.EquaSet): thatEquaSets.EquaSet = {
-      val set: Set[thatEquaSets.EquaBox] = underlying.flatMap((box: EquaBox) => f(box.value).toList)
-      thatEquaSets.EquaSet(set.toList.map(_.value): _*)
-    }
+    /*
+    // This is the problem with using an implicit EquaSet. We need the path defined before we can use
+    // it in the function. So into is the only way to get for expressions.
+    def potentialFlatMap[U](f: T => thatEquaSets.EquaSet)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet
+    */
     /*def flatten[T >: EquaSets[].EquaSet]: EquaSet = {
       new FastEquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _).toSet)
     }*/
@@ -1450,7 +1429,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       }
     def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def potentialMap[U](f: T => U)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet = into(thatEquaSets).map(f)
-    def mapInto[U](thatEquaSets: EquaSets[U])(f: T => U): thatEquaSets.EquaSet = thatEquaSets.EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
