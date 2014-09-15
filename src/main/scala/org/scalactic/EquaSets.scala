@@ -43,8 +43,34 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet.empty ++ (from map f)
     def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
-    def flatten(implicit ev: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
-      flatMap((s: S) => s.asInstanceOf[thisEquaSets.EquaSet])
+
+    // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
+    // method here that works if S is a GenTraversable[T]. That means that they have
+    // say a val xss = x.EquaSet(List(1), List(2, 3)). Since the element type is Int, then they
+    // can say xss.into(number).flatten and you'd end up with a number.EquaSet(1, 2, 3)
+    // for consistency I'd probably say flattenTrav for this one.
+    def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      flatMap((s: S) => cvt(s))
+    // The above then makes me wonder if there's not another potential method here that is
+    // def flatMapTrav(f: S => GenTraversable[T]): thisEquaSets.EquaSet
+    // that way you can say something like:
+    // val ss = lower.EquaSet("hi", "ha")
+    // ss.into(number).flatMapTrav((s: String) => s.toList.map(_.toInt)))
+    // and you'd end up with number.EquaSet(104, 97, 105)
+    //
+    // scala> 'h'.toInt
+    // res1: Int = 104
+    //
+    // scala> 'a'.toInt
+    // res2: Int = 97
+    //
+    // scala> 'i'.toInt
+    // res3: Int = 105
+
+    // What's missing is a flatten on Bridge that let's you go to a different EquaSets than the
+    // current one so long as the type parameter is the same. So if you have an x.EquaSet[number.EquaSet], and
+    // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
+    // it would be never invoked.
     def scan(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
     def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
