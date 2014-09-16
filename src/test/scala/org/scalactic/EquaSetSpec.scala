@@ -21,7 +21,40 @@ import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
+/*
+val t = EquaSets[String](StringNormalizations.trimmed.toHashingEquality)
+val w = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+val tes = t.EquaSet("tes")
+val tfes = t.FastEquaSet("tfes")
+val wes = w.EquaSet("les")
+val wfes = w.FastEquaSet("lfes")
+val wses = w.SortedEquaSet("lses")
+val wtes = w.TreeEquaSet("ltes")
+
+EquaBridge[F, EquaSets#EquaSet, EquaSets] // EquaSets#EquaSet
+EquaBridge[F, EquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet
+
+EquaBridge[F, EquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet
+EquaBridge[F, EquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet
+
+EquaBridge[F, SortedEquaSets#EquaSet, EquaSets] // EquaSets#EquaSet
+EquaBridge[F, SortedEquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet
+
+EquaBridge[F, SortedEquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet
+EquaBridge[F, SortedEquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet
+
+EquaBridge[F, SortedEquaSets#SortedEquaSet, EquaSets] // EquaSets#EquaSet
+EquaBridge[F, SortedEquaSets#SortedEquaSet, SortedEquaSets] // SortedEquaSets#SortedEquaSet
+
+EquaBridge[F, SortedEquaSets#TreeEquaSet, EquaSets] // EquaSets#EquaSet
+EquaBridge[F, SortedEquaSets#TreeEquaSet, SortedEquaSets] // SortedEquaSets#TreeEquaSet
+
+// def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U]): thatEquaSets.EquaBridgeResult[T]
+*/
 class EquaSetSpec extends UnitSpec {
+  implicit class HasExactType[T](o: T) {
+    def shouldHaveExactType[U](implicit ev: T =:= U): Unit = ()
+  }
   def normalHashingEquality[T] =
     new HashingEquality[T] {
       def hashCodeFor(a: T): Int = a.hashCode
@@ -248,8 +281,11 @@ class EquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    val result = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString }
+    result shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    // result.shouldHaveExactType[lower.EquaSet]
     number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
+    
   }
   it should "have a into(...).collect method that accepts a SortedEquaSets and functions that result in a SortedEquaSet other than the path-enclosed type" in {
     /*
@@ -259,7 +295,9 @@ class EquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString } shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
+    val result = number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString }
+    result shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
+    // result.shouldHaveExactType[sortedLower.EquaSet]
     number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
   it should "have an compose method, inherited from PartialFunction" in {
