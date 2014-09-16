@@ -24,6 +24,9 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.SortedSet
 
 class SortedEquaSetSpec extends UnitSpec {
+  implicit class HasExactType[T](o: T) {
+    def shouldHaveExactType[U](implicit ev: T =:= U): Unit = ()
+  }
   val intEquality =
     new OrderingEquality[Int] {
       def hashCodeFor(a: Int): Int = a.hashCode
@@ -32,6 +35,7 @@ class SortedEquaSetSpec extends UnitSpec {
     }
   val number = SortedEquaSets[Int](intEquality)
   val lower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val plainLower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val trimmed = SortedEquaSets[String](StringNormalizations.trimmed.toOrderingEquality)
   val intStringEquality =
@@ -487,6 +491,36 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an lastOption method" in {
     lower.SortedEquaSet("hi").lastOption shouldBe Some("hi")
     number.SortedEquaSet(1, 2, 3).lastOption shouldBe Some(3)
+  }
+  it should "have an into.map method" in { // XXX
+    // Can map directly if want to stay in same SortedEquaSets
+    number.SortedEquaSet(1, 2, 3).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
+    (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)
+    number.SortedEquaSet(5) map (_ + 3) shouldBe number.SortedEquaSet(8)
+
+    // Can map into self explicitly too
+    number.SortedEquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
+    number.SortedEquaSet(5).into(number).map(_ + 3) shouldBe number.SortedEquaSet(8)
+
+    // SortedEquaSet into EquaSets => EquaSet
+    val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).map(_.toString)
+    result1 shouldBe plainLower.EquaSet("7", "8", "9")
+    result1.shouldHaveExactType[plainLower.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
+    result2 shouldBe sortedLower.SortedEquaSet("7", "8", "9")
+    result2.shouldHaveExactType[sortedLower.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).map(_.toString)
+    result3 shouldBe plainLower.EquaSet("7", "8", "9")
+    result3.shouldHaveExactType[plainLower.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
+    result4 shouldBe sortedLower.TreeEquaSet("7", "8", "9")
+    result4.shouldHaveExactType[sortedLower.TreeEquaSet]
   }
   it should "have a map method" in {
     number.SortedEquaSet(1, 2, 3) .map (_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)

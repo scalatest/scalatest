@@ -31,23 +31,23 @@ val wfes = w.FastEquaSet("lfes")
 val wses = w.SortedEquaSet("lses")
 val wtes = w.TreeEquaSet("ltes")
 
-EquaBridge[F, EquaSets#EquaSet, EquaSets] // EquaSets#EquaSet
-EquaBridge[F, EquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet
+EquaBridge[F, EquaSets#EquaSet, EquaSets] // EquaSets#EquaSet                      thatEquaSets.EquaSetBridge
+EquaBridge[F, EquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet          thatEquaSets.EquaSetBridge
 
-EquaBridge[F, EquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet
-EquaBridge[F, EquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet
+EquaBridge[F, EquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet              thatEquaSets.FastEquaSetBridge
+EquaBridge[F, EquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet  thatEquaSets.FastEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#EquaSet, EquaSets] // EquaSets#EquaSet
-EquaBridge[F, SortedEquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet
+EquaBridge[F, SortedEquaSets#EquaSet, EquaSets] // EquaSets#EquaSet                thatEquaSets.EquaSetBridge
+EquaBridge[F, SortedEquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet    thatEquaSets.EquaSetBridge
 
-EquaBridge[F, SortedEquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet
-EquaBridge[F, SortedEquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet
+EquaBridge[F, SortedEquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet               thatEquaSets.FastEquaSetBridge
+EquaBridge[F, SortedEquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet   thatEquaSets.FastEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#SortedEquaSet, EquaSets] // EquaSets#EquaSet
-EquaBridge[F, SortedEquaSets#SortedEquaSet, SortedEquaSets] // SortedEquaSets#SortedEquaSet
+EquaBridge[F, SortedEquaSets#SortedEquaSet, EquaSets] // EquaSets#EquaSet                    thatEquaSets.EquaSetBridge
+EquaBridge[F, SortedEquaSets#SortedEquaSet, SortedEquaSets] // SortedEquaSets#SortedEquaSet  thatEquaSets.SortedEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#TreeEquaSet, EquaSets] // EquaSets#EquaSet
-EquaBridge[F, SortedEquaSets#TreeEquaSet, SortedEquaSets] // SortedEquaSets#TreeEquaSet
+EquaBridge[F, SortedEquaSets#TreeEquaSet, EquaSets] // EquaSets#EquaSet                      thatEquaSets.EquaSetBridge
+EquaBridge[F, SortedEquaSets#TreeEquaSet, SortedEquaSets] // SortedEquaSets#TreeEquaSet      thatEquaSets.TreeEquaSetBridge
 
 // def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U]): thatEquaSets.EquaBridgeResult[T]
 */
@@ -523,7 +523,37 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi").lastOption shouldBe Some("hi")
     number.EquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
-  it should "have a map method" in {
+  it should "have an into.map method" in { // XXX
+    // Can map directly if want to stay in same EquaSets
+    number.EquaSet(1, 2, 3).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
+    number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)
+
+    // Can map into self explicitly too
+    number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
+
+    // EquaSet into EquaSets => EquaSet
+    val result1 = number.EquaSet(7, 8, 9).into(lower).map(_.toString)
+    result1 shouldBe lower.EquaSet("7", "8", "9")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    // EquaSet into SortedEquaSets => EquaSet
+    val result2 = number.EquaSet(7, 8, 9).into(sortedLower).map(_.toString)
+    result2 shouldBe sortedLower.EquaSet("7", "8", "9")
+    result2.shouldHaveExactType[sortedLower.EquaSet]
+
+    // FastEquaSet into EquaSets => EquaSet
+    val result3 = number.FastEquaSet(7, 8, 9).into(lower).map(_.toString)
+    result3 shouldBe lower.FastEquaSet("7", "8", "9")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    // FastEquaSet into SortedEquaSets => EquaSet
+    val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
+    result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
+    result4.shouldHaveExactType[sortedLower.FastEquaSet]
+  }
+  it should "have an oldInto.map method" in {
     number.EquaSet(1, 2, 3) .map (_ + 1) shouldBe number.EquaSet(2, 3, 4)
     (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
     number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)

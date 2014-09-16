@@ -21,6 +21,7 @@ import scala.collection._
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.TreeSet
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.language.higherKinds
 
 class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends EquaSets[T](equality) { thisEquaSets =>
 
@@ -29,6 +30,16 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       def compare(a: thisEquaSets.EquaBox, b: thisEquaSets.EquaBox): Int =
         equality.compare(a.value, b.value)
     }
+
+  class NewSortedEquaBridge[S](from: List[S]) extends NewEquaBridge[S](from) {
+    override def map(f: S => T): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet.empty ++ (from map f)
+  }
+
+  class NewTreeEquaBridge[S](from: List[S]) extends NewSortedEquaBridge[S](from) {
+    override def map(f: S => T): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet.empty ++ (from map f)
+  }
 
   class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
@@ -361,6 +372,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * `SortedEquaSet` and in the given `EquaSet` `that`.
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
+    // def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U])(implicit cbf: CanBridgeFrom[thisEquaSets.EquaSet, U, EQUASETS]): thatEquaSets.NewEquaBridge[T, cbf.R]
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.NewEquaBridge[T]
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.NewSortedEquaBridge[T]
     def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
     def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
     def isEmpty: Boolean
@@ -678,6 +692,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def inits: Iterator[thisEquaSets.SortedEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
+    // def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U])(implicit cbf: CanBridgeFrom[thisEquaSets.EquaSet, U, EQUASETS]): thatEquaSets.NewEquaBridge[T, cbf.R] = ???
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.NewEquaBridge[T] = new thatEquaSets.NewEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.NewTreeEquaBridge[T] = new thatEquaSets.NewTreeEquaBridge[T](underlying.toList.map(_.value))
     def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
