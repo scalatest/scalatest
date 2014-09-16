@@ -671,8 +671,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
+    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
 
     def isEmpty: Boolean
 
@@ -1442,8 +1442,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def inits: Iterator[thisEquaSets.EquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
+    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
@@ -1454,7 +1454,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case None => None
       }
     def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
-    def potentialMap[U](f: T => U)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet = into(thatEquaSets).map(f)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)

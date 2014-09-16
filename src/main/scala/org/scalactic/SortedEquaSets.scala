@@ -361,8 +361,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * `SortedEquaSet` and in the given `EquaSet` `that`.
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
+    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
     def isEmpty: Boolean
     def iterator: Iterator[T]
 
@@ -678,8 +678,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def inits: Iterator[thisEquaSets.SortedEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
+    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T] = new thatEquaSets.SortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
