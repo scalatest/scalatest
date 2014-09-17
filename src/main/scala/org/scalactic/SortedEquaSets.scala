@@ -61,19 +61,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.TreeEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
-  class OldSortedEquaBridge[S](from: List[S]) extends OldEquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
-    override def map(f: S => T): thisEquaSets.EquaSet =
-      thisEquaSets.SortedEquaSet.empty ++ (from map f)
-    override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
-    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-  }
-
   trait SortedEquaSet extends EquaSet {
 
     /**
@@ -392,8 +379,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
-    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T]
-    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T]
     def isEmpty: Boolean
     def iterator: Iterator[T]
 
@@ -617,11 +602,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     private[scalactic] override def owner: SortedEquaSets[T] = thisEquaSets
   }
 
-  class OldTreeEquaBridge[S](from: List[S]) extends OldSortedEquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaSets.TreeEquaSet =
-      thisEquaSets.TreeEquaSet.empty ++ (from collect pf)
-  }
-
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
 
     def + (elem: T): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying + EquaBox(elem))
@@ -699,8 +679,6 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.EquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value))
-    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T] = new thatEquaSets.OldFastEquaBridge[T](underlying.toList.map(_.value))
-    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T] = new thatEquaSets.OldSortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)

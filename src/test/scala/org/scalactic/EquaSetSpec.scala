@@ -293,6 +293,30 @@ class EquaSetSpec extends UnitSpec {
     val result4 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result4 shouldBe sortedLower.FastEquaSet("4", "8", "12", "16", "20")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
+
+    // Extra stuff from oldInto tests
+    /*
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
+    res3: List[Int] = List(4, 8, 12, 16, 20)
+
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
+    res4: List[Int] = List()
+    */
+    val result = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i % 2 == 0 => (i * 2).toString }
+    result shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    // result.shouldHaveExactType[lower.EquaSet]
+    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
+    /*
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
+    res3: List[Int] = List(4, 8, 12, 16, 20)
+
+    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
+    res4: List[Int] = List()
+    */
+    val resultB = number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString }
+    resultB shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
+    // result.shouldHaveExactType[sortedLower.EquaSet]
+    number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).into(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
   it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
     /*
@@ -304,33 +328,6 @@ class EquaSetSpec extends UnitSpec {
     */
     number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.EquaSet(4, 8, 12, 16, 20)
     number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquaSet.empty
-  }
-  it should "have a oldInto(...).collect method that accepts a EquaSets and functions that result in other than the path-enclosed type" in {
-    /*
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
-    res3: List[Int] = List(4, 8, 12, 16, 20)
-
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
-    res4: List[Int] = List()
-    */
-    val result = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).oldInto(lower) collect { case i if i % 2 == 0 => (i * 2).toString }
-    result shouldBe lower.EquaSet("4", "8", "12", "16", "20")
-    // result.shouldHaveExactType[lower.EquaSet]
-    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).oldInto(lower) collect { case i if i > 10 => (i * 2).toString } shouldBe lower.EquaSet.empty
-    
-  }
-  it should "have a oldInto(...).collect method that accepts a SortedEquaSets and functions that result in a SortedEquaSet other than the path-enclosed type" in {
-    /*
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
-    res3: List[Int] = List(4, 8, 12, 16, 20)
-
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
-    res4: List[Int] = List()
-    */
-    val result = number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).oldInto(sortedLower) collect { case i if i % 2 == 0 => (i * 2).toString }
-    result shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
-    // result.shouldHaveExactType[sortedLower.EquaSet]
-    number.EquaSet(10, 9, 8, 7, 6, 5, 4, 3, 2, 1).oldInto(sortedLower) collect { case i if i > 10 => (i * 2).toString } shouldBe sortedLower.EquaSet.empty
   }
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.EquaSet(1, 2, 3).compose(_ + 1)
@@ -442,6 +439,28 @@ class EquaSetSpec extends UnitSpec {
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.FastEquaSet(i.toString))
     result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
+
+    // Extra stuff from oldInto test
+    number.EquaSet(8).into(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
+    number.EquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+
+    number.EquaSet(9, 8, 7).into(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("9", "8", "7")
+    number.EquaSet(9, 8, 7).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.EquaSet("9", "8", "7")
+
+    val cis = number.EquaSet('c'.toInt, 'C'.toInt, 'b'.toInt, 'B'.toInt, 'a'.toInt, 'A'.toInt)
+    cis.into(regularChar).map(i => i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+    (for (i <- cis.into(regularChar)) yield i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+
+    val regChars = cis.into(regularChar).flatMap(i => regularChar.EquaSet(i.toChar))
+    regChars shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
+    regChars.into(upperChar).flatMap(c => upperChar.EquaSet(c)) shouldBe upperChar.EquaSet('A', 'b', 'C')
+    val regCharsFromFor =
+      for {
+        u <- (
+          for (c <- cis into regularChar) yield c.toChar
+        ) into upperChar
+      } yield u
+    regCharsFromFor shouldBe upperChar.EquaSet('A', 'B', 'C')
   }
   it should "have a flatMap method" in {
     number.EquaSet(1, 2, 3) flatMap (i => number.EquaSet(i + 1)) shouldBe number.EquaSet(2, 3, 4)
@@ -449,27 +468,6 @@ class EquaSetSpec extends UnitSpec {
     val ss = number.EquaSet(1, 2)
     val is = number.EquaSet(1, 2, 3)
     (for (s <- ss; i <- is) yield s + i) shouldBe number.EquaSet(2, 3, 4, 3, 4, 5)
-
-    number.EquaSet(8).oldInto(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("8")
-    number.EquaSet(8).oldInto(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
-
-    number.EquaSet(9, 8, 7).oldInto(lower).flatMap(i => lower.EquaSet(i.toString)) shouldBe lower.EquaSet("9", "8", "7")
-    number.EquaSet(9, 8, 7).oldInto(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.EquaSet("9", "8", "7")
-
-    val cis = number.EquaSet('c'.toInt, 'C'.toInt, 'b'.toInt, 'B'.toInt, 'a'.toInt, 'A'.toInt)
-    cis.oldInto(regularChar).map(i => i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
-    (for (i <- cis.oldInto(regularChar)) yield i.toChar) shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
-
-    val regChars = cis.oldInto(regularChar).flatMap(i => regularChar.EquaSet(i.toChar))
-    regChars shouldBe regularChar.EquaSet('A', 'a', 'b', 'B', 'C', 'c')
-    regChars.oldInto(upperChar).flatMap(c => upperChar.EquaSet(c)) shouldBe upperChar.EquaSet('A', 'b', 'C')
-    val regCharsFromFor =
-      for {
-        u <- (
-          for (c <- cis oldInto regularChar) yield c.toChar
-        ) oldInto upperChar
-      } yield u
-    regCharsFromFor shouldBe upperChar.EquaSet('A', 'B', 'C')
   }
   it should "have an into.flatten method that works on nested EquaSet" in {
 /*
@@ -502,10 +500,10 @@ class EquaSetSpec extends UnitSpec {
     val result4 = numberNumber4.FastEquaSet(sortedNumber.EquaSet(1, 2), sortedNumber.EquaSet(3)).into(sortedNumber).flatten
     result4 shouldBe sortedNumber.FastEquaSet(1, 2, 3)
     result4.shouldHaveExactType[sortedNumber.FastEquaSet]
-  }
-  it should "have a flatten method that works on nested EquaSet" in {
-    numberNumber.EquaSet(number.EquaSet(1, 2), number.EquaSet(3)).oldInto(number).flatten shouldBe number.EquaSet(1, 2, 3)
-    numberNumber.EquaSet(number.EquaSet(1)).oldInto(number).flatten shouldBe number.EquaSet(1)
+
+    // Extra stuff from oldInto test
+    numberNumber.EquaSet(number.EquaSet(1, 2), number.EquaSet(3)).into(number).flatten shouldBe number.EquaSet(1, 2, 3)
+    numberNumber.EquaSet(number.EquaSet(1)).into(number).flatten shouldBe number.EquaSet(1)
   }
   it can "be flattened when in a GenTraversableOnce" in {
     // need to keep this commented out until finish implementing all methods
@@ -638,15 +636,16 @@ class EquaSetSpec extends UnitSpec {
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
     result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
+
+    // Extra stuff from oldInto test
+    number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
+    number.EquaSet(8).into(lower).map(_.toString) shouldBe lower.EquaSet("8")
   }
-  it should "have an oldInto.map method" in {
+  it should "have a map method" in {
     number.EquaSet(1, 2, 3) .map (_ + 1) shouldBe number.EquaSet(2, 3, 4)
     (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
     number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)
-
-    number.EquaSet(1, 2, 3).oldInto(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
-    number.EquaSet(5).oldInto(number).map(_ + 3) shouldBe number.EquaSet(8)
-    number.EquaSet(8).oldInto(lower).map(_.toString) shouldBe lower.EquaSet("8")
   }
   it should "have a max method" in {
     number.EquaSet(1, 2, 3, 4, 5).max shouldBe 5
@@ -766,18 +765,18 @@ class EquaSetSpec extends UnitSpec {
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
     result4 shouldBe sortedLower.FastEquaSet("z", "z7", "z78", "z789")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
+
+    // Extra stuff from oldInto test
+    number.EquaSet(1, 2, 3).into(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z1", "z12", "z123")
+    number.EquaSet(0).into(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z0")
   }
   it should "have a scanLeft method" in {
     number.EquaSet(1).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1)
     number.EquaSet(1, 2, 3).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1, 3, 6)
-    number.EquaSet(1, 2, 3).oldInto(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z1", "z12", "z123")
-    number.EquaSet(0).oldInto(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z0")
   }
   it should "have a scanRight method" in {
     number.EquaSet(1).scanRight(0)(_ + _) shouldBe number.EquaSet(1, 0)
     number.EquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.EquaSet(6, 5, 3, 0)
-    number.EquaSet(1, 2, 3).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("123z", "23z", "3z", "z")
-    number.EquaSet(0).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("0z", "z")
   }
   it should "have an into.scanRight method" in {
 
@@ -800,6 +799,10 @@ class EquaSetSpec extends UnitSpec {
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
     result4 shouldBe sortedLower.FastEquaSet("789z", "89z", "9z", "z")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
+
+    // Extra stuff from oldInto test
+    number.EquaSet(1, 2, 3).into(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("123z", "23z", "3z", "z")
+    number.EquaSet(0).into(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("0z", "z")
   }
   it should "have a slice method" in {
     number.EquaSet(3).slice(0, 0) shouldBe number.EquaSet()

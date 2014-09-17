@@ -51,21 +51,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
-  class OldEquaBridge[S](from: List[S]) {
-    def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet.empty ++ (from collect pf) // { case s if pf.isDefinedAt(s) => pf(s) })
-    def map(f: S => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet.empty ++ (from map f)
-    def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
-
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
     // method here that works if S is a GenTraversable[T]. That means that they have
     // say a val xss = x.EquaSet(List(1), List(2, 3)). Since the element type is Int, then they
     // can say xss.into(number).flatten and you'd end up with a number.EquaSet(1, 2, 3)
     // for consistency I'd probably say flattenTrav for this one.
-    def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
-      flatMap((s: S) => cvt(s))
+    //
     // The above then makes me wonder if there's not another potential method here that is
     // def flatMapTrav(f: S => GenTraversable[T]): thisEquaSets.EquaSet
     // that way you can say something like:
@@ -86,11 +77,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // current one so long as the type parameter is the same. So if you have an x.EquaSet[number.EquaSet], and
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
-    def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-  }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
 
@@ -685,9 +671,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
-
-    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T]
-    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T]
 
     def isEmpty: Boolean
 
@@ -1356,11 +1339,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     private[scalactic] def owner: EquaSets[T] = thisEquaSets
   }
 
-  class OldFastEquaBridge[S](from: List[S]) extends OldEquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet.empty ++ (from collect pf)
-  }
-
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet.empty ++ (from collect pf)
@@ -1461,8 +1439,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
-    def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T] = new thatEquaSets.OldFastEquaBridge[T](underlying.toList.map(_.value))
-    def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T] = new thatEquaSets.OldSortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def isTraversableAgain: Boolean = underlying.isTraversableAgain
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
