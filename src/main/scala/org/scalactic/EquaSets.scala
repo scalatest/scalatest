@@ -82,8 +82,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // current one so long as the type parameter is the same. So if you have an x.EquaSet[number.EquaSet], and
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
-    def scan(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*) // Not sure if this is correct. Can't call scan here. Why?
     def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
@@ -921,18 +919,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean
 
     /**
-     * Computes a prefix scan of the elements of the collection.
-     *
-     * Note: The neutral element `z` may be applied more than once.
-     *
-     * @param z neutral element for the operator `op`
-     * @param op the associative operator for the scan
-     *
-     * @return a new `EquaSet` containing the prefix scan of the elements in this `EquaSet`
-     */
-    def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
-
-    /**
      * Produces a collection containing cumulative results of applying the
      * operator going left to right.
      *
@@ -1500,10 +1486,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scan(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
-      val set = underlying.scan(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
-      new FastEquaSet(set)
-    }
     def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)

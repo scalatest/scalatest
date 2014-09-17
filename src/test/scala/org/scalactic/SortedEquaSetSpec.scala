@@ -734,12 +734,6 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(3).sameElements(List(1)) shouldBe false
     number.SortedEquaSet(3).sameElements(List(3)) shouldBe true
   }
-  it should "have a scan method" in {
-    number.SortedEquaSet(1).scan(0)(_ + _) shouldBe number.SortedEquaSet(0, 1)
-    number.SortedEquaSet(1, 2, 3).scan(0)(_ + _) shouldBe number.SortedEquaSet(0, 1, 3, 6)
-    number.SortedEquaSet(1, 2, 3).oldInto(lower).scan("z")(_ + _.toString) shouldBe lower.SortedEquaSet("z", "z1", "z12", "z123")
-    number.SortedEquaSet(0).oldInto(lower).scan("z")(_ + _.toString) shouldBe lower.SortedEquaSet("z", "z0")
-  }
   it should "have a scanLeft method" in {
     number.SortedEquaSet(1).scanLeft(0)(_ + _) shouldBe number.SortedEquaSet(0, 1)
     number.SortedEquaSet(1, 2, 3).scanLeft(0)(_ + _) shouldBe number.SortedEquaSet(0, 1, 3, 6)
