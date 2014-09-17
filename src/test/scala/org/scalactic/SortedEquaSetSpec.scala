@@ -27,13 +27,26 @@ class SortedEquaSetSpec extends UnitSpec {
   implicit class HasExactType[T](o: T) {
     def shouldHaveExactType[U](implicit ev: T =:= U): Unit = ()
   }
+  def normalHashingEquality[T] =
+    new HashingEquality[T] {
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
+  def normalOrderingEquality[T](implicit ord: Ordering[T]) =
+    new OrderingEquality[T] {
+      def compare(a: T, b: T): Int = ord.compare(a, b)
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
   val intEquality =
     new OrderingEquality[Int] {
       def hashCodeFor(a: Int): Int = a.hashCode
       def areEqual(a: Int, b: Any): Boolean = a == b
       def compare(a: Int, b: Int): Int = a - b
     }
+  val plainNumber = EquaSets[Int](intEquality)
   val number = SortedEquaSets[Int](intEquality)
+  val sortedNumber = SortedEquaSets[Int](normalOrderingEquality[Int])
   val lower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val plainLower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
   val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
@@ -399,7 +412,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
-  it should "have an into.flatMap method" in { // XXX
+  it should "have an into.flatMap method" in {
 
     // SortedEquaSet into EquaSets => EquaSet
     val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).flatMap(i => plainLower.EquaSet(i.toString))
@@ -431,6 +444,52 @@ class SortedEquaSetSpec extends UnitSpec {
     val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
     number.SortedEquaSet(8).oldInto(nonSortedlower).flatMap(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
     number.SortedEquaSet(8).oldInto(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
+  }
+  it should "have an into.flatten method that works on nested EquaSet" in {
+
+    implicit def plainOrdering: Ordering[plainNumber.EquaSet] =
+      new Ordering[plainNumber.EquaSet] {
+        def compare(x: plainNumber.EquaSet, y: plainNumber.EquaSet): Int = x.size - y.size
+      }
+    implicit def plainFastOrdering: Ordering[plainNumber.FastEquaSet] =
+      new Ordering[plainNumber.FastEquaSet] {
+        def compare(x: plainNumber.FastEquaSet, y: plainNumber.FastEquaSet): Int = x.size - y.size
+      }
+    implicit def sortedOrdering: Ordering[sortedNumber.EquaSet] =
+      new Ordering[sortedNumber.EquaSet] {
+        def compare(x: sortedNumber.EquaSet, y: sortedNumber.EquaSet): Int = x.size - y.size
+      }
+    implicit def sortedSortedOrdering: Ordering[sortedNumber.SortedEquaSet] =
+      new Ordering[sortedNumber.SortedEquaSet] {
+        def compare(x: sortedNumber.SortedEquaSet, y: sortedNumber.SortedEquaSet): Int = x.size - y.size
+      }
+// XXX
+    // SortedEquaSet into EquaSets => EquaSet
+    val numberNumber1 = SortedEquaSets[plainNumber.EquaSet](normalOrderingEquality[plainNumber.EquaSet])
+    val result1 = numberNumber1.SortedEquaSet(plainNumber.EquaSet(1, 2), plainNumber.EquaSet(3)).into(plainNumber).flatten
+    result1 shouldBe plainNumber.EquaSet(1, 2, 3)
+    result1.shouldHaveExactType[plainNumber.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // EquaSet into SortedEquaSets => EquaSet
+    val numberNumber2 = SortedEquaSets[sortedNumber.SortedEquaSet](normalOrderingEquality[sortedNumber.SortedEquaSet])
+    val result2 = numberNumber2.SortedEquaSet(sortedNumber.SortedEquaSet(1, 2), sortedNumber.SortedEquaSet(3)).into(sortedNumber).flatten
+    result2 shouldBe sortedNumber.SortedEquaSet(1, 2, 3)
+    result2.shouldHaveExactType[sortedNumber.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    // FastEquaSet into EquaSets => FastEquaSet
+    val numberNumber3 = SortedEquaSets[plainNumber.FastEquaSet](normalOrderingEquality[plainNumber.FastEquaSet])
+    val result3 = numberNumber3.TreeEquaSet(plainNumber.FastEquaSet(1, 2), plainNumber.FastEquaSet(3)).into(plainNumber).flatten // What about into EquaSets.EquaSet?
+    result3 shouldBe plainNumber.EquaSet(1, 2, 3)
+    result3.shouldHaveExactType[plainNumber.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // FastEquaSet into SortedEquaSets => FastEquaSet
+    val numberNumber4 = SortedEquaSets[sortedNumber.EquaSet](normalOrderingEquality[sortedNumber.EquaSet])
+    val result4 = numberNumber4.TreeEquaSet(sortedNumber.EquaSet(1, 2), sortedNumber.EquaSet(3)).into(sortedNumber).flatten
+    result4 shouldBe sortedNumber.TreeEquaSet(1, 2, 3)
+    result4.shouldHaveExactType[sortedNumber.TreeEquaSet]
   }
   it should "have a flatten method that works on nested SortedEquaSet" in {
     numberNumber.SortedEquaSet(number.SortedEquaSet(1, 2), number.SortedEquaSet(3)).oldInto(number).flatten shouldBe number.SortedEquaSet(1, 2, 3)
