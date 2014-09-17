@@ -265,7 +265,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).canEqual(number.SortedEquaSet(1, 2, 3)) shouldBe true
     number.SortedEquaSet(1).canEqual(lower.SortedEquaSet("hi")) shouldBe false
   }
-  it should "have an into.collect method" in { // XXX
+  it should "have an into.collect method" in {
 
     // SortedEquaSet into EquaSets => EquaSet
     val result1 = number.SortedEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(plainLower).collect { case i if i % 2 == 0 => (i * 2).toString }
@@ -399,6 +399,28 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
   }
+  it should "have an into.flatMap method" in { // XXX
+
+    // SortedEquaSet into EquaSets => EquaSet
+    val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).flatMap(i => plainLower.EquaSet(i.toString))
+    result1 shouldBe plainLower.EquaSet("7", "8", "9")
+    result1.shouldHaveExactType[plainLower.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString))
+    result2 shouldBe sortedLower.SortedEquaSet("7", "8", "9")
+    result2.shouldHaveExactType[sortedLower.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).flatMap(i => plainLower.EquaSet(i.toString))
+    result3 shouldBe plainLower.EquaSet("7", "8", "9")
+    result3.shouldHaveExactType[plainLower.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.TreeEquaSet(i.toString))
+    result4 shouldBe sortedLower.TreeEquaSet("7", "8", "9")
+    result4.shouldHaveExactType[sortedLower.TreeEquaSet]
+  }
   it should "have a flatMap method" in {
     number.SortedEquaSet(1, 2, 3) flatMap (i => number.SortedEquaSet(i + 1)) shouldBe number.SortedEquaSet(2, 3, 4)
     number.SortedEquaSet(5) flatMap (i => number.SortedEquaSet(i + 3)) shouldBe number.SortedEquaSet(8)
@@ -514,7 +536,7 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi").lastOption shouldBe Some("hi")
     number.SortedEquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
-  it should "have an into.map method" in { // XXX
+  it should "have an into.map method" in {
     // Can map directly if want to stay in same SortedEquaSets
     number.SortedEquaSet(1, 2, 3).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
     (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)

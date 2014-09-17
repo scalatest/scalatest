@@ -262,7 +262,7 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).canEqual(number.EquaSet(1, 2, 3)) shouldBe true
     number.EquaSet(1).canEqual(lower.EquaSet("hi")) shouldBe false
   }
-  it should "have an into.collect method" in { // XXX
+  it should "have an into.collect method" in {
     // Can map into self explicitly too
     number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
     number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
@@ -413,6 +413,28 @@ class EquaSetSpec extends UnitSpec {
   it should "have a find method" in {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
     number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
+  }
+  it should "have an into.flatMap method" in { // XXX
+
+    // EquaSet into EquaSets => EquaSet
+    val result1 = number.EquaSet(7, 8, 9).into(lower).flatMap(i => lower.EquaSet(i.toString))
+    result1 shouldBe lower.EquaSet("7", "8", "9")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    // EquaSet into SortedEquaSets => EquaSet
+    val result2 = number.EquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.EquaSet(i.toString))
+    result2 shouldBe sortedLower.EquaSet("7", "8", "9")
+    result2.shouldHaveExactType[sortedLower.EquaSet]
+
+    // FastEquaSet into EquaSets => EquaSet
+    val result3 = number.FastEquaSet(7, 8, 9).into(lower).flatMap(i => lower.FastEquaSet(i.toString))
+    result3 shouldBe lower.FastEquaSet("7", "8", "9")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    // FastEquaSet into SortedEquaSets => EquaSet
+    val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.FastEquaSet(i.toString))
+    result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
+    result4.shouldHaveExactType[sortedLower.FastEquaSet]
   }
   it should "have a flatMap method" in {
     number.EquaSet(1, 2, 3) flatMap (i => number.EquaSet(i + 1)) shouldBe number.EquaSet(2, 3, 4)

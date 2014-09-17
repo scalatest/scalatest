@@ -36,6 +36,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet.empty ++ (from map f)
+    override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
   }
 
   class NewTreeEquaBridge[S](from: List[S]) extends NewSortedEquaBridge[S](from) {
@@ -43,6 +45,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.TreeEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.TreeEquaSet =
       thisEquaSets.TreeEquaSet.empty ++ (from map f)
+    override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
   }
 
   class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
