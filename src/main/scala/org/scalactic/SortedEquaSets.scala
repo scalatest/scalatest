@@ -61,11 +61,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     override def scan(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*) // Why doesn't scan work here? I had to call scanLeft.
     override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet(from.scanRight(z)((s: Any, t: Any) => op(s.asInstanceOf[S], t.asInstanceOf[T])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.SortedEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   trait SortedEquaSet extends EquaSet {

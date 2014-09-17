@@ -83,11 +83,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
     def scan(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scan(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*) // Not sure if this is correct. Can't call scan here. Why?
     def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanLeft(z)((t: Any, s: Any) => op(t.asInstanceOf[T], s.asInstanceOf[S])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanRight(z)((s: Any, t: Any) => op(s.asInstanceOf[S], t.asInstanceOf[T])).toSeq.asInstanceOf[Seq[T]]: _*)  // ugle but should be safe cast here
+      thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   trait EquaSet extends Function1[T, Boolean] with Equals {
