@@ -262,6 +262,31 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).canEqual(number.EquaSet(1, 2, 3)) shouldBe true
     number.EquaSet(1).canEqual(lower.EquaSet("hi")) shouldBe false
   }
+  it should "have an into.collect method" in { // XXX
+    // Can map into self explicitly too
+    number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
+    number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
+
+    // EquaSet into EquaSets => EquaSet
+    val result1 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result1 shouldBe lower.EquaSet("4", "8", "12", "16", "20")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    // EquaSet into SortedEquaSets => EquaSet
+    val result2 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result2 shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
+    result2.shouldHaveExactType[sortedLower.EquaSet]
+
+    // FastEquaSet into EquaSets => EquaSet
+    val result3 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result3 shouldBe lower.FastEquaSet("4", "8", "12", "16", "20")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    // FastEquaSet into SortedEquaSets => EquaSet
+    val result4 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result4 shouldBe sortedLower.FastEquaSet("4", "8", "12", "16", "20")
+    result4.shouldHaveExactType[sortedLower.FastEquaSet]
+  }
   it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }

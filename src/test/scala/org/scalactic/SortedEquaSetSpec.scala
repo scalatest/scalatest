@@ -265,6 +265,28 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).canEqual(number.SortedEquaSet(1, 2, 3)) shouldBe true
     number.SortedEquaSet(1).canEqual(lower.SortedEquaSet("hi")) shouldBe false
   }
+  it should "have an into.collect method" in { // XXX
+
+    // SortedEquaSet into EquaSets => EquaSet
+    val result1 = number.SortedEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(plainLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result1 shouldBe plainLower.EquaSet("4", "8", "12", "16", "20")
+    result1.shouldHaveExactType[plainLower.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    val result2 = number.SortedEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result2 shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
+    result2.shouldHaveExactType[sortedLower.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    val result3 = number.TreeEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(plainLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result3 shouldBe plainLower.EquaSet("4", "8", "12", "16", "20")
+    result3.shouldHaveExactType[plainLower.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    val result4 = number.TreeEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
+    result4 shouldBe sortedLower.TreeEquaSet("4", "8", "12", "16", "20")
+    result4.shouldHaveExactType[sortedLower.TreeEquaSet]
+  }
   it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
     /*
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }

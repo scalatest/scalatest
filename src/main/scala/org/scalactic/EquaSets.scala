@@ -37,6 +37,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   }
 
   class NewEquaBridge[S](from: List[S]) {
+    def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet.empty ++ (from collect pf)
     def map(f: S => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet.empty ++ (from map f)
   }
@@ -1367,6 +1369,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   }
 
   class NewFastEquaBridge[S](from: List[S]) extends NewEquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
+      thisEquaSets.FastEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet.empty ++ (from map f)
   }

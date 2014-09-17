@@ -32,11 +32,15 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
 
   class NewSortedEquaBridge[S](from: List[S]) extends NewEquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet.empty ++ (from map f)
   }
 
   class NewTreeEquaBridge[S](from: List[S]) extends NewSortedEquaBridge[S](from) {
+    override def collect(pf: PartialFunction[S, T]): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.TreeEquaSet =
       thisEquaSets.TreeEquaSet.empty ++ (from map f)
   }
