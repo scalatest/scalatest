@@ -40,6 +40,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
       flatMap((s: S) => cvt(s))
+    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.SortedEquaSet =
+      thisEquaSets.SortedEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   class TreeEquaBridge[S](from: List[S]) extends SortedEquaBridge[S](from) {
@@ -51,6 +55,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.TreeEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       flatMap((s: S) => cvt(s))
+    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.TreeEquaSet =
+      thisEquaSets.TreeEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   class OldSortedEquaBridge[S](from: List[S]) extends OldEquaBridge[S](from) {

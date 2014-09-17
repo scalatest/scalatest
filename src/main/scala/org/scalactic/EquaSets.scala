@@ -45,6 +45,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       flatMap((s: S) => cvt(s))
+    def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
+      thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   class OldEquaBridge[S](from: List[S]) {
@@ -1366,6 +1370,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.FastEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       flatMap((s: S) => cvt(s))
+    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.FastEquaSet =
+      thisEquaSets.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.FastEquaSet =
+      thisEquaSets.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet {

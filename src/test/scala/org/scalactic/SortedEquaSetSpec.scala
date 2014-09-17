@@ -740,11 +740,55 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).oldInto(lower).scanLeft("z")(_ + _) shouldBe lower.SortedEquaSet("z", "z1", "z12", "z123")
     number.SortedEquaSet(0).oldInto(lower).scanLeft("z")(_ + _) shouldBe lower.SortedEquaSet("z", "z0")
   }
+  it should "have an into.scanLeft method" in {
+
+    // SortedEquaSet into EquaSets => EquaSet
+    val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).scanLeft("z")(_ + _)
+    result1 shouldBe plainLower.EquaSet("z", "z7", "z78", "z789")
+    result1.shouldHaveExactType[plainLower.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
+    result2 shouldBe sortedLower.SortedEquaSet("z", "z7", "z78", "z789")
+    result2.shouldHaveExactType[sortedLower.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).scanLeft("z")(_ + _)
+    result3 shouldBe plainLower.EquaSet("z", "z7", "z78", "z789")
+    result3.shouldHaveExactType[plainLower.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
+    result4 shouldBe sortedLower.TreeEquaSet("z", "z7", "z78", "z789")
+    result4.shouldHaveExactType[sortedLower.TreeEquaSet]
+  }
   it should "have a scanRight method" in {
     number.SortedEquaSet(1).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(1, 0)
     number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(6, 5, 3, 0)
     number.SortedEquaSet(1, 2, 3).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.SortedEquaSet("123z", "23z", "3z", "z")
     number.SortedEquaSet(0).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.SortedEquaSet("0z", "z")
+  }
+  it should "have an into.scanRight method" in {
+
+    // SortedEquaSet into EquaSets => EquaSet
+    val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).scanRight("z")(_ + _)
+    result1 shouldBe plainLower.EquaSet("789z", "89z", "9z", "z")
+    result1.shouldHaveExactType[plainLower.EquaSet]
+
+    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
+    result2 shouldBe sortedLower.SortedEquaSet("789z", "89z", "9z", "z")
+    result2.shouldHaveExactType[sortedLower.SortedEquaSet]
+
+    // TreeEquaSet into EquaSets => EquaSet
+    val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).scanRight("z")(_ + _)
+    result3 shouldBe plainLower.EquaSet("789z", "89z", "9z", "z")
+    result3.shouldHaveExactType[plainLower.EquaSet]
+
+    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
+    result4 shouldBe sortedLower.TreeEquaSet("789z", "89z", "9z", "z")
+    result4.shouldHaveExactType[sortedLower.TreeEquaSet]
   }
   it should "have a slice method" in {
     number.SortedEquaSet(3).slice(0, 0) shouldBe number.SortedEquaSet()

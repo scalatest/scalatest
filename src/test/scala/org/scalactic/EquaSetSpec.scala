@@ -745,6 +745,28 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(3).sameElements(List(1)) shouldBe false
     number.EquaSet(3).sameElements(List(3)) shouldBe true
   }
+  it should "have an into.scanLeft method" in {
+
+    // EquaSet into EquaSets => EquaSet
+    val result1 = number.EquaSet(7, 8, 9).into(lower).scanLeft("z")(_ + _)
+    result1 shouldBe lower.EquaSet("z", "z7", "z78", "z789")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    // EquaSet into SortedEquaSets => EquaSet
+    val result2 = number.EquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
+    result2 shouldBe sortedLower.EquaSet("z", "z7", "z78", "z789")
+    result2.shouldHaveExactType[sortedLower.EquaSet]
+
+    // FastEquaSet into EquaSets => FastEquaSet
+    val result3 = number.FastEquaSet(7, 8, 9).into(lower).scanLeft("z")(_ + _)
+    result3 shouldBe lower.FastEquaSet("z", "z7", "z78", "z789")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    // FastEquaSet into SortedEquaSets => FastEquaSet
+    val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
+    result4 shouldBe sortedLower.FastEquaSet("z", "z7", "z78", "z789")
+    result4.shouldHaveExactType[sortedLower.FastEquaSet]
+  }
   it should "have a scanLeft method" in {
     number.EquaSet(1).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1)
     number.EquaSet(1, 2, 3).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1, 3, 6)
@@ -756,6 +778,28 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.EquaSet(6, 5, 3, 0)
     number.EquaSet(1, 2, 3).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("123z", "23z", "3z", "z")
     number.EquaSet(0).oldInto(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("0z", "z")
+  }
+  it should "have an into.scanRight method" in {
+
+    // EquaSet into EquaSets => EquaSet
+    val result1 = number.EquaSet(7, 8, 9).into(lower).scanRight("z")(_ + _)
+    result1 shouldBe lower.EquaSet("789z", "89z", "9z", "z")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    // EquaSet into SortedEquaSets => EquaSet
+    val result2 = number.EquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
+    result2 shouldBe sortedLower.EquaSet("789z", "89z", "9z", "z")
+    result2.shouldHaveExactType[sortedLower.EquaSet]
+
+    // FastEquaSet into EquaSets => FastEquaSet
+    val result3 = number.FastEquaSet(7, 8, 9).into(lower).scanRight("z")(_ + _)
+    result3 shouldBe lower.FastEquaSet("789z", "89z", "9z", "z")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    // FastEquaSet into SortedEquaSets => FastEquaSet
+    val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
+    result4 shouldBe sortedLower.FastEquaSet("789z", "89z", "9z", "z")
+    result4.shouldHaveExactType[sortedLower.FastEquaSet]
   }
   it should "have a slice method" in {
     number.EquaSet(3).slice(0, 0) shouldBe number.EquaSet()
