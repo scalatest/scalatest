@@ -36,7 +36,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def toString: String = s"EquaBox(${value.toString})"
   }
 
-  class NewEquaBridge[S](from: List[S]) {
+  class EquaBridge[S](from: List[S]) {
     def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet.empty ++ (from collect pf)
     def map(f: S => T): thisEquaSets.EquaSet =
@@ -680,8 +680,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
-    // def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U])(implicit cbf: CanBridgeFrom[thisEquaSets.EquaSet, EQUASETS[U].type]): thatEquaSets.NewEquaBridge[T, cbf.R]
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.NewEquaBridge[T]
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
 
     def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T]
     def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T]
@@ -1370,7 +1369,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.FastEquaSet.empty ++ (from collect pf)
   }
 
-  class NewFastEquaBridge[S](from: List[S]) extends NewEquaBridge[S](from) {
+  class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.FastEquaSet =
@@ -1463,7 +1462,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def inits: Iterator[thisEquaSets.EquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.NewFastEquaBridge[T] = new thatEquaSets.NewFastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def oldInto[U](thatEquaSets: EquaSets[U]): thatEquaSets.OldEquaBridge[T] = new thatEquaSets.OldFastEquaBridge[T](underlying.toList.map(_.value))
     def oldInto[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.OldSortedEquaBridge[T] = new thatEquaSets.OldSortedEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
