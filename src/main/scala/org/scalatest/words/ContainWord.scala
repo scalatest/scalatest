@@ -488,6 +488,28 @@ final class ContainWord {
       override def toString: String = "contain inOrder (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def inOrderElementsOf[R](elements: GenTraversable[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("ContainWord.scala", "inOrderElementsOf"))
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+      def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              sequencing.containsInOrder(left, right),
+              Resources("didNotContainAllElementsOfInOrder"),
+              Resources("containedAllElementsOfInOrder"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
+        }
+      }
+      override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
+    }
+  }
   
   def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
     val right = firstEle :: secondEle :: remainingEles.toList
