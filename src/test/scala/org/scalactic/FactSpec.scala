@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.matchers
+package org.scalactic
 
 import org.scalatest._
 import Inside._
-import org.scalactic.{PrettyMethods, Prettifier}
 
-/*
 class FactResultSpec extends FreeSpec with Matchers with PrettyMethods {
 
   "A Fact" - {
@@ -27,7 +25,7 @@ class FactResultSpec extends FreeSpec with Matchers with PrettyMethods {
     "can be negated" in {
       fact should equal (No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
       !fact should equal (Yes("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
-      val fact2 = No("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
+      val fact2 = Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
       fact2 should have (
         'failureMessage ("\"howdy\" did not equal null"),
         'negatedFailureMessage ("The reference equaled null"),
@@ -43,7 +41,7 @@ class FactResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
       val fact2Negated = !fact2
-       fact2Negated should equal (Yes("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+       fact2Negated should equal (No("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
       fact2Negated should have (
         'failureMessage ("The reference equaled null"),
         'negatedFailureMessage ("\"howdy\" did not equal null"),
@@ -283,4 +281,3 @@ class FactResultSpec extends FreeSpec with Matchers with PrettyMethods {
     }
   }
 }
-*/
