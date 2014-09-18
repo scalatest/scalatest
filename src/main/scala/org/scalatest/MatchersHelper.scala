@@ -183,7 +183,7 @@ private[scalatest] object MatchersHelper {
   def orMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
     val leftMatchResult = leftMatcher(left)
     val rightMatchResult = rightMatcher(left) // Not short circuiting anymore
-    if (leftMatchResult.matches) leftMatchResult.negated.copy(matches = true)
+    if (leftMatchResult.matches) leftMatchResult.copy(matches = true)
     else {
       MatchResult(
         rightMatchResult.matches,
