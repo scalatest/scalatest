@@ -17,6 +17,7 @@ package org.scalatest
 
 import Matchers._
 import SharedHelpers.thisLineNumber
+import org.scalactic.Prettifier.lineSeparator
 
 class ShouldNotCompileSpec extends FunSpec {
 
@@ -58,7 +59,7 @@ class ShouldNotCompileSpec extends FunSpec {
             |val a = 1
             |""".stripMargin shouldNot compile
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "\nval a = 1\n")))
+        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", lineSeparator + "val a = 1" + lineSeparator)))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
