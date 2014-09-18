@@ -29,11 +29,21 @@ sealed abstract class Fact {
     val prettifier: Prettifier
 
 
-    def unary_!(): Fact
   /**
-   * Construct failure message to report if a match fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
+   * Get a negated version of this Fact, sub type will be negated and all messages field will be substituted with its counter-part.
    *
-   * @return failure message to report if a match fails
+   * @return a negated version of this Fact
+   */
+    def unary_!(): Fact
+
+    def ||(rhs: => Fact): Fact
+
+    def &&(rhs: => Fact): Fact
+
+  /**
+   * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return failure message to report if a fact fails
    */
   def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
 
@@ -57,13 +67,6 @@ sealed abstract class Fact {
    * @return negated failure message suitable for appearing mid-sentence
    */
   def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
-
-  /**
-   * Get a negated version of this MatchResult, matches field will be negated and all messages field will be substituted with its counter-part.
-   *
-   * @return a negated version of this MatchResult
-   */
-//  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs, midSentenceNegatedFailureMessageArgs, midSentenceFailureMessageArgs)
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
     val msgFmt = new MessageFormat(rawString)
@@ -92,6 +95,30 @@ case class No(
     midSentenceNegatedFailureMessageArgs,
     midSentenceFailureMessageArgs,
     prettifier)
+
+  def &&(rhs: => Fact) = this
+  def ||(rhs: => Fact) = rhs match {
+      case yes: Yes => Yes(
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Vector(FailureMessage(this), MidSentenceFailureMessage(yes)),
+        Vector(FailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
+        Vector(MidSentenceFailureMessage(this), MidSentenceFailureMessage(yes)),
+        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(yes))
+      )
+      case no:  No  =>  No(
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Vector(FailureMessage(this), MidSentenceFailureMessage(no)),
+        Vector(FailureMessage(this), MidSentenceNegatedFailureMessage(no)),
+        Vector(MidSentenceFailureMessage(this), MidSentenceFailureMessage(no)),
+        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(no))
+      )
+}
 }
 
 /**
@@ -102,13 +129,12 @@ case class No(
 object No {
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>matches</code>, <code>failureMessage</code>, 
+   * Factory method that constructs a new <code>No</code> with passed <code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
    * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
    * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
    * and <code>midSentenceNegatedFailureMessageArgs</code>.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
@@ -122,12 +148,11 @@ object No {
     new No(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
    * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
    * This is suitable to create No with eager error messages, and its mid-sentence messages need to be different.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
@@ -139,13 +164,12 @@ object No {
     new No(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>matches</code>, <code>rawFailureMessage</code>, and
+   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>, and
    * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
    * This is suitable to create No with eager error messages that have same mid-sentence messages.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>No</code> instance
@@ -154,13 +178,12 @@ object No {
     new No(rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
    * This is suitable to create No with lazy error messages that have same mid-sentence messages and arguments.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param args arguments for error messages construction
@@ -180,7 +203,7 @@ object No {
     )
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
    * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
    * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
@@ -189,7 +212,6 @@ object No {
    * This is suitable to create No with lazy error messages that have same mid-sentence and use different arguments for
    * negated messages.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
@@ -233,6 +255,30 @@ case class Yes(
       midSentenceFailureMessageArgs,
       prettifier)
 
+  def &&(rhs: => Fact) = rhs match {
+      case yes: Yes => Yes(
+        Resources("commaBut"),
+        Resources("commaAnd"),
+        Resources("commaBut"),
+        Resources("commaAnd"),
+        Vector(NegatedFailureMessage(this), MidSentenceFailureMessage(yes)),
+        Vector(NegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceFailureMessage(yes)),
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes))
+      )
+      case no: No  =>  No(
+        Resources("commaBut"),
+        Resources("commaAnd"),
+        Resources("commaBut"),
+        Resources("commaAnd"),
+        Vector(NegatedFailureMessage(this), MidSentenceFailureMessage(no)),
+        Vector(NegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceFailureMessage(no)),
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no))
+      )
+  }
+
+  def ||(rhs: => Fact) = this
 }
 
 /**
@@ -243,13 +289,12 @@ case class Yes(
 object Yes {
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>matches</code>, <code>failureMessage</code>, 
+   * Factory method that constructs a new <code>Yes</code> with passed code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
    * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
    * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
    * and <code>midSentenceNegatedFailureMessageArgs</code>.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
@@ -263,12 +308,11 @@ object Yes {
     new Yes(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
    * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
    * This is suitable to create Yes with eager error messages, and its mid-sentence messages need to be different.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
@@ -280,13 +324,12 @@ object Yes {
     new Yes(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>matches</code>, <code>rawFailureMessage</code>, and
+   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>, and
    * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
    * This is suitable to create Yes with eager error messages that have same mid-sentence messages.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>Yes</code> instance
@@ -295,13 +338,12 @@ object Yes {
     new Yes(rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
    * This is suitable to create Yes with lazy error messages that have same mid-sentence messages and arguments.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param args arguments for error messages construction
@@ -321,7 +363,7 @@ object Yes {
     )
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
    * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
    * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
@@ -330,7 +372,6 @@ object Yes {
    * This is suitable to create Yes with lazy error messages that have same mid-sentence and use different arguments for
    * negated messages.
    *
-   * @param matches indicates whether or not the matcher matched
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
@@ -349,4 +390,31 @@ object Yes {
       negatedFailureMessageArgs,
       Prettifier.default
     )
+}
+
+
+
+// Idea is to override toString each time it is used.
+sealed private[scalactic] abstract class LazyMessage {
+  val nestedArgs: IndexedSeq[Any]
+}
+
+private[scalactic] case class FailureMessage(fact: Fact) extends LazyMessage {
+  val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+  override def toString: String = fact.failureMessage
+}
+
+private[scalactic] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
+  val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+  override def toString: String = fact.negatedFailureMessage
+}
+
+private[scalactic] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
+  val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+  override def toString: String = fact.midSentenceFailureMessage
+}
+
+private[scalactic] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
+  val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+  override def toString: String = fact.midSentenceNegatedFailureMessage
 }
