@@ -26,6 +26,7 @@ sealed abstract class Fact {
     val negatedFailureMessageArgs: IndexedSeq[Any]
     val midSentenceFailureMessageArgs: IndexedSeq[Any]
     val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
+    val composite: Boolean
     val prettifier: Prettifier
 
 
@@ -73,6 +74,23 @@ sealed abstract class Fact {
     msgFmt.format(args.map(prettifier).toArray)
   }
 }
+private[scalactic] object Fact {
+  def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+    case (false,false) => Resources("commaAnd")
+    case (false,true) => Resources("rightParensCommaAnd")
+    case (true,false) => Resources("leftParensCommaAnd")
+    case (true,true) => Resources("bothParensCommaAnd")
+  }
+
+  def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+    case (false,false) => Resources("commaBut")
+    case (false,true) => Resources("rightParensCommaBut")
+    case (true,false) => Resources("leftParensCommaBut")
+    case (true,true) => Resources("bothParensCommaBut")
+  }
+}
+
+import Fact._
 
 case class No(
 	rawFailureMessage: String,
@@ -83,6 +101,7 @@ case class No(
     negatedFailureMessageArgs: IndexedSeq[Any],
     midSentenceFailureMessageArgs: IndexedSeq[Any],
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+    composite: Boolean = false,
     prettifier: Prettifier = Prettifier.default
 ) extends Fact {
 	def unary_!() = Yes(
@@ -94,29 +113,32 @@ case class No(
     failureMessageArgs,
     midSentenceNegatedFailureMessageArgs,
     midSentenceFailureMessageArgs,
+    composite,
     prettifier)
 
   def &&(rhs: => Fact) = this
   def ||(rhs: => Fact) = rhs match {
       case yes: Yes => Yes(
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
+        commaAnd(this.composite, yes.composite),
+        commaAnd(this.composite, yes.composite),
+        commaAnd(this.composite, yes.composite),
+        commaAnd(this.composite, yes.composite),
         Vector(FailureMessage(this), MidSentenceFailureMessage(yes)),
         Vector(FailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
         Vector(MidSentenceFailureMessage(this), MidSentenceFailureMessage(yes)),
-        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(yes))
+        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
+        true
       )
       case no:  No  =>  No(
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
+        commaAnd(this.composite, no.composite),
+        commaAnd(this.composite, no.composite),
+        commaAnd(this.composite, no.composite),
+        commaAnd(this.composite, no.composite),
         Vector(FailureMessage(this), MidSentenceFailureMessage(no)),
         Vector(FailureMessage(this), MidSentenceNegatedFailureMessage(no)),
         Vector(MidSentenceFailureMessage(this), MidSentenceFailureMessage(no)),
-        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(no))
+        Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
+        true
       )
 }
 }
@@ -145,7 +167,18 @@ object No {
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): No =
-    new No(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
+    new No(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawMidSentenceFailureMessage,
+      rawMidSentenceNegatedFailureMessage,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
@@ -161,7 +194,18 @@ object No {
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): No =
-    new No(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
+    new No(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawMidSentenceFailureMessage,
+      rawMidSentenceNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>, and
@@ -175,7 +219,18 @@ object No {
    * @return a <code>No</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): No =
-    new No(rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
+    new No(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
@@ -199,6 +254,7 @@ object No {
       args,
       args,
       args,
+      false,
       Prettifier.default
     )
 
@@ -228,6 +284,7 @@ object No {
       negatedFailureMessageArgs,
       failureMessageArgs,
       negatedFailureMessageArgs,
+      false,
       Prettifier.default
     )
 }
@@ -242,6 +299,7 @@ case class Yes(
     negatedFailureMessageArgs: IndexedSeq[Any],
     midSentenceFailureMessageArgs: IndexedSeq[Any],
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+    composite: Boolean = false,
     prettifier: Prettifier = Prettifier.default) extends Fact {
 
 	def unary_!() = No(
@@ -253,28 +311,31 @@ case class Yes(
       failureMessageArgs,
       midSentenceNegatedFailureMessageArgs,
       midSentenceFailureMessageArgs,
+      composite,
       prettifier)
 
   def &&(rhs: => Fact) = rhs match {
       case yes: Yes => Yes(
-        Resources("commaBut"),
-        Resources("commaAnd"),
-        Resources("commaBut"),
-        Resources("commaAnd"),
+        commaBut(this.composite, yes.composite),
+        commaAnd(this.composite, yes.composite),
+        commaBut(this.composite, yes.composite),
+        commaAnd(this.composite, yes.composite),
         Vector(NegatedFailureMessage(this), MidSentenceFailureMessage(yes)),
         Vector(NegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
         Vector(MidSentenceNegatedFailureMessage(this), MidSentenceFailureMessage(yes)),
-        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes))
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
+        true
       )
       case no: No  =>  No(
-        Resources("commaBut"),
-        Resources("commaAnd"),
-        Resources("commaBut"),
-        Resources("commaAnd"),
+        commaBut(this.composite, no.composite),
+        commaAnd(this.composite, no.composite),
+        commaBut(this.composite, no.composite),
+        commaAnd(this.composite, no.composite),
         Vector(NegatedFailureMessage(this), MidSentenceFailureMessage(no)),
         Vector(NegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
         Vector(MidSentenceNegatedFailureMessage(this), MidSentenceFailureMessage(no)),
-        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no))
+        Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
+        true
       )
   }
 
@@ -305,7 +366,18 @@ object Yes {
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): Yes =
-    new Yes(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
+    new Yes(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawMidSentenceFailureMessage,
+      rawMidSentenceNegatedFailureMessage,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
@@ -321,7 +393,18 @@ object Yes {
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): Yes =
-    new Yes(rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
+    new Yes(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawMidSentenceFailureMessage,
+      rawMidSentenceNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>, and
@@ -335,7 +418,18 @@ object Yes {
    * @return a <code>Yes</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): Yes =
-    new Yes(rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
+    new Yes(
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      Vector.empty,
+      false,
+      Prettifier.default
+    )
 
   /**
    * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
@@ -359,6 +453,7 @@ object Yes {
       args,
       args,
       args,
+      false,
       Prettifier.default
     )
 
@@ -388,6 +483,7 @@ object Yes {
       negatedFailureMessageArgs,
       failureMessageArgs,
       negatedFailureMessageArgs,
+      false,
       Prettifier.default
     )
 }
