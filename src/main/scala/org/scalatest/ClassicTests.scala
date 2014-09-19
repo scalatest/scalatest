@@ -15,4 +15,9 @@
  */
 package org.scalatest
 
-trait WordSpecLike extends WordSpecRegistration with ClassicTests
+/**
+ * Trait for classic tests that returns `Unit` from test..
+ */
+trait ClassicTests extends TestRegistration { this: Suite =>
+  type Registration = Unit
+}
