@@ -866,7 +866,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-class PropSpec extends PropSpecLike {
+class PropSpec extends PropSpecLike with ClassicTests {
 
   /**
    * Returns a user friendly string for this suite, composed of the

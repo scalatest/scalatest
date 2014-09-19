@@ -1680,7 +1680,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-class FlatSpec extends FlatSpecLike {
+class FlatSpec extends FlatSpecLike with ClassicTests {
 
   /**
    * Returns a user friendly string for this suite, composed of the

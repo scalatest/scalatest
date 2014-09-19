@@ -86,11 +86,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
     engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
     engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
@@ -108,7 +108,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def test(testName: String, testTags: Tag*)(testFun: => Unit) {
+  protected def test(testName: String, testTags: Tag*)(testFun: => Registration) {
     engine.registerTest(testName, Transformer(testFun _), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
   }
 
