@@ -2938,6 +2938,58 @@ class NotWordSpec extends Spec with FileMocks {
         )
       }
     }
+
+    object `contain(ResultOfInOrderElementsOfApplication) method returns MatcherFactory1` {
+
+      val mtf = not contain inOrderElementsOf (List(1, 2))
+      val mt = mtf.matcher[List[Int]]
+
+      def `should have pretty toString` {
+        mtf.toString should be ("not contain inOrderElementsOf (List(1, 2))")
+        mt.toString should be ("not contain inOrderElementsOf (List(1, 2))")
+      }
+
+      val lhs = List(1, 2, 3)
+      val mr = mt(lhs)
+
+      def `should have correct MatcherResult` {
+        mr should have (
+          'matches (false),
+          'failureMessage (lhs + " contained all elements of List(1, 2) in order"),
+          'negatedFailureMessage (lhs + " did not contain all elements of List(1, 2) in order"),
+          'midSentenceFailureMessage (lhs + " contained all elements of List(1, 2) in order"),
+          'midSentenceNegatedFailureMessage (lhs + " did not contain all elements of List(1, 2) in order"),
+          'rawFailureMessage ("{0} contained all elements of {1} in order"),
+          'rawNegatedFailureMessage ("{0} did not contain all elements of {1} in order"),
+          'rawMidSentenceFailureMessage ("{0} contained all elements of {1} in order"),
+          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all elements of {1} in order"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+
+      val nmr = mr.negated
+
+      def `should have correct negated MatcherResult` {
+        nmr should have (
+          'matches (true),
+          'failureMessage (lhs + " did not contain all elements of List(1, 2) in order"),
+          'negatedFailureMessage (lhs + " contained all elements of List(1, 2) in order"),
+          'midSentenceFailureMessage (lhs + " did not contain all elements of List(1, 2) in order"),
+          'midSentenceNegatedFailureMessage (lhs + " contained all elements of List(1, 2) in order"),
+          'rawFailureMessage ("{0} did not contain all elements of {1} in order"),
+          'rawNegatedFailureMessage ("{0} contained all elements of {1} in order"),
+          'rawMidSentenceFailureMessage ("{0} did not contain all elements of {1} in order"),
+          'rawMidSentenceNegatedFailureMessage ("{0} contained all elements of {1} in order"),
+          'failureMessageArgs(Vector(lhs, List(1, 2))),
+          'negatedFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceFailureMessageArgs(Vector(lhs, List(1, 2))),
+          'midSentenceNegatedFailureMessageArgs(Vector(lhs, List(1, 2)))
+        )
+      }
+    }
     
     object `contain(ResultOfAtMostOneOfApplication) method returns MatcherFactory1` {
       

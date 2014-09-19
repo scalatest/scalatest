@@ -3112,6 +3112,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
     new ResultOfInOrderApplication(xs)
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (inOrderElementsOf List(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def inOrderElementsOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    if (xs.distinct.size != xs.size)
+      throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
+    new ResultOfInOrderElementsOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -4276,6 +4291,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain inOrderElementsOf (List("one"))
+     *                     ^
+     * </pre>
+     */
+    def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+
+      val right = inOrderElementsOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsInOrder(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAllElementsOfInOrder" else "containedAllElementsOfInOrder",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
     
     /**
      * This method enables the following syntax:
@@ -4896,6 +4937,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain inOrderElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+      val right = elements.toList
+      if (right.distinct.size != right.size)
+        throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
+      doCollected(collected, xs, original, "inOrderElementsOf", 1) { e =>
+        if (sequencing.containsInOrder(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAllElementsOfInOrder" else "containedAllElementsOfInOrder",
+              e,
+              right
+            ),
+            None,
+            6
+          )
       }
     }
 

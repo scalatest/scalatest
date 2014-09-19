@@ -18,24 +18,24 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfInOrderApplicationSpec extends Spec {
-  
-  object `ResultOfInOrderApplication ` {
-    
+class ResultOfInOrderElementsOfApplicationSpec extends Spec {
+
+  object `ResultOfInOrderElementsOfApplication ` {
+
     def `should have pretty toString when right is empty` {
-      val result = new ResultOfInOrderApplication(Vector.empty)
-      result.toString should be ("inOrder ()")
+      val result = new ResultOfInOrderElementsOfApplication(Vector.empty)
+      result.toString should be ("inOrderElementsOf (Vector())")
     }
-    
+
     def `should have pretty toString when right contains 1 element` {
-      val result = new ResultOfInOrderApplication(Vector("Bob"))
-      result.toString should be ("inOrder (\"Bob\")")
+      val result = new ResultOfInOrderElementsOfApplication(Vector("Bob"))
+      result.toString should be ("inOrderElementsOf (Vector(\"Bob\"))")
     }
-    
+
     def `should have pretty toString when right contains > 1 elements` {
-      val result = new ResultOfInOrderApplication(Vector("Bob", "Alice"))
-      result.toString should be ("inOrder (\"Bob\", \"Alice\")")
+      val result = new ResultOfInOrderElementsOfApplication(Vector("Bob", "Alice"))
+      result.toString should be ("inOrderElementsOf (Vector(\"Bob\", \"Alice\"))")
     }
   }
-  
+
 }

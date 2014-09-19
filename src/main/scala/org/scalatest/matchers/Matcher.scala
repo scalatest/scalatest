@@ -752,6 +752,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
       outerInstance.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain inOrderElementsOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def inOrderElementsOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
+      outerInstance.and(MatcherWords.contain.inOrderElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -1788,6 +1799,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain[R](right: ResultOfInOrderApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
       outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain inOrderElementsOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfInOrderElementsOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
+      outerInstance.and(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -2018,6 +2040,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
       outerInstance.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain inOrderElementsOf List(1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def inOrderElementsOf[R](elements: GenTraversable[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
+      outerInstance.or(MatcherWords.contain.inOrderElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -3064,6 +3097,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain[R](right: ResultOfInOrderApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain inOrderElementsOf (List(8, 1, 2))
+     *                 ^
+     * </pre>
+     */
+    def contain[R](right: ResultOfInOrderElementsOfApplication[R]): MatcherFactory1[T, EvidenceThat[R]#CanBeContainedInSequence] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**

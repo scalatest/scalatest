@@ -1427,6 +1427,36 @@ final class NotWord {
       override def toString: String = "not contain " + Prettifier.default(inOrder)
     }
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain inOrderElementsOf (List(1, 2, 3)) and not contain (3))
+   *                                 ^
+   * </pre>
+   */
+  def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
+    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+      def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = inOrderElementsOf.right
+
+            MatchResult(
+              !sequencing.containsInOrder(left, right),
+              Resources("containedAllElementsOfInOrder"),
+              Resources("didNotContainAllElementsOfInOrder"),
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(inOrderElementsOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(inOrderElementsOf)
+    }
+  }
   
   /**
    * This method enables the following syntax: 
