@@ -140,7 +140,8 @@ case class No(
         Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
         true
       )
-}
+  }
+  override def toString: String = s"No($failureMessage)"
 }
 
 /**
@@ -340,6 +341,8 @@ case class Yes(
   }
 
   def ||(rhs: => Fact) = this
+
+  override def toString: String = s"Yes($negatedFailureMessage)"
 }
 
 /**
