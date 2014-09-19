@@ -1623,7 +1623,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-class FunSpec extends FunSpecLike with ClassicTests {
+class FunSpec extends FunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

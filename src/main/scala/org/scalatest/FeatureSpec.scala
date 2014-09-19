@@ -1833,7 +1833,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-class FeatureSpec extends FeatureSpecLike with ClassicTests {
+class FeatureSpec extends FeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
