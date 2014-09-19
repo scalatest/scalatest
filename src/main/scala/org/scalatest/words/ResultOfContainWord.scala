@@ -381,6 +381,28 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain atMostOneElementOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneElementOf"))
+    if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtMostOneElementOf" else "containedAtMostOneElementOf",
+          left,
+          right
+        )
+      )
+  }
   
   override def toString: String = "ResultOfContainWord(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }

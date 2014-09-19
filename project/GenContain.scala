@@ -1445,6 +1445,22 @@ object GenContain {
     generateFile("ListShouldContainAtMostOneOfSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
+
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
   }
   
   def main(args: Array[String]) {
