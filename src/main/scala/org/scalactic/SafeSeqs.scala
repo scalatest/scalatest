@@ -17,10 +17,11 @@ package org.scalactic
 
 import enablers.ContainingConstraint
 
-trait SafeContains {
+trait SafeSeqs {
   implicit class Containifier[L](leftSide: L) {
-    def safeContains[R](rightSide: R)(implicit ev: ContainingConstraint[L, R]): Boolean = ev.contains(leftSide, rightSide)
+    def sContains[R](rightSide: R)(implicit ev: ContainingConstraint[L, R]): Boolean = ev.contains(leftSide, rightSide)
   }
 }
 
-object SafeContains extends SafeContains
+object SafeSeqs extends SafeSeqs
+
