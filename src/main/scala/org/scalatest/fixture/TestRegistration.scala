@@ -19,8 +19,28 @@ import org.scalatest.Tag
 
 trait TestRegistration { theSuite: Suite =>
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any)
+  /**
+   * The return type of the registered test.
+   */
+  type Registration
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any)
+  /**
+   * Register a test.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
+
+  /**
+   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
+   * event to be fired.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
 
 }

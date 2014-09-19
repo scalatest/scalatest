@@ -15,4 +15,9 @@
  */
 package org.scalatest.fixture
 
-trait FeatureSpecLike extends FeatureSpecRegistration with ClassicTests
+/**
+ * Trait for classic tests that returns `Any` from test..
+ */
+trait ClassicTests extends TestRegistration { this: Suite =>
+  type Registration = Any
+}
