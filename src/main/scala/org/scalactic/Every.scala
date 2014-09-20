@@ -25,7 +25,7 @@ import scala.collection.GenIterable
 import scala.collection.generic.CanBuildFrom
 import Every.fromNonEmptyVector
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import enablers.ContainingConstraint
+import enablers.SafeSeqsConstraint
 
 // Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
 /**
@@ -296,7 +296,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @param elem the element to look for
    * @return true if this <code>Every</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
    */ 
-  final def contains[U](elem: U)(implicit ev: ContainingConstraint[Every[T], U]): Boolean = ev.contains(this, elem)
+  final def contains[U](elem: U)(implicit ev: SafeSeqsConstraint[Every[T], U]): Boolean = ev.contains(this, elem)
 
   /**
    * Indicates whether this <code>Every</code> contains a given <code>GenSeq</code> as a slice.

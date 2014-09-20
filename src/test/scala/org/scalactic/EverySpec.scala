@@ -247,14 +247,16 @@ class EverySpec extends UnitSpec {
     e.contains(2) shouldBe true
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
-    e.contains("five") shouldBe false
+    """e.contains("five") shouldBe false""" shouldNot typeCheck
     new CheckedEquality {
       """e.contains("five")""" shouldNot typeCheck
       val es = Every("one", "two", "three")
+      es.contains("one") shouldBe true;
       es.contains("ONE") shouldBe false;
       {
         implicit val strEq = StringNormalizations.lowerCased.toEquality
-        es.contains("ONE") shouldBe true
+        es.contains("one") shouldBe true;
+        es.contains("ONE") shouldBe false
       }
     }
   }
