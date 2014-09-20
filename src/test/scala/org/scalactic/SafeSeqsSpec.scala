@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class SafeSeqsUnderCheckedEqualitySpec extends Spec with Matchers with SafeSeqs {
+class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
   abstract class Fruit
   case class Apple(name: String) extends Fruit
