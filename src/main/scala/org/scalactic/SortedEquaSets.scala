@@ -139,7 +139,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def - (elem1: T, elem2: T, elems: T*): thisEquaSets.SortedEquaSet
 
     /**
-     * Creates a new `SortedEquaSet` from this $coll by removing all elements of another
+     * Creates a new `SortedEquaSet` from this `SortedEquaSet` by removing all elements of another
      *  collection.
      *
      *  @param elems     the collection containing the removed elements.
@@ -183,12 +183,12 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      *  @param   z    the start value.
      *  @param   op   the binary operator.
      *  @tparam  B    the result type of the binary operator.
-     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *  @return  the result of inserting `op` between consecutive elements of this `SortedEquaSet`,
      *           going left to right with the start value `z` on the left:
      *           {{{
      *             op(...op(op(z, x_1), x_2), ..., x_n)
      *           }}}
-     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this `SortedEquaSet`.
      */
     def /:[B](z: B)(op: (B, T) => B): B
 
@@ -219,12 +219,12 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      *  @param   z    the start value
      *  @param   op   the binary operator
      *  @tparam  B    the result type of the binary operator.
-     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *  @return  the result of inserting `op` between consecutive elements of this `SortedEquaSet`,
      *           going right to left with the start value `z` on the right:
      *           {{{
      *             op(x_1, op(x_2, ... op(x_n, z)...))
      *           }}}
-     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this `SortedEquaSet`.
      */
     def :\[B](z: B)(op: (T, B) => B): B
 
@@ -327,7 +327,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     /**
-     * Partitions this $coll into a map of `SortedEquaSet`s according to some discriminator function.
+     * Partitions this `SortedEquaSet` into a map of `SortedEquaSet`s according to some discriminator function.
      *
      * Note: this method is not re-implemented by views. This means
      * when applied to a view it will always force the view and
@@ -539,7 +539,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      *
      * @param n the number of elements to take from this `EquaSet`.
      * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
-     * or else the whole $coll, if it has less than `n` elements.
+     * or else the whole `SortedEquaSet`, if it has less than `n` elements.
      */
     def take(n: Int): thisEquaSets.EquaSet
 
@@ -604,7 +604,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
-    private[scalactic] override def owner: SortedEquaSets[T] = thisEquaSets
+    private[scalactic] override def containingEquaSets: SortedEquaSets[T] = thisEquaSets
   }
 
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
@@ -634,7 +634,14 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
-    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
+    // What this one is saying is that two different EquaSets instances can contain equal EquaSets so
+    // long as the Equality discriminator is the same instance.
+    def canEqual(that: Any): Boolean =
+      that match {
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.containingEquaSets.equality eq thisEquaSets.equality
+        case _ => false
+      }
+      // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].containingEquaSets.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.SortedEquaSet = {
       implicit val ord: Ordering[thisEquaSets.EquaBox] = ordering
       new TreeEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })

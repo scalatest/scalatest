@@ -277,6 +277,9 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).canEqual(number.SortedEquaSet(1)) shouldBe true
     number.SortedEquaSet(1).canEqual(number.SortedEquaSet(1, 2, 3)) shouldBe true
     number.SortedEquaSet(1).canEqual(lower.SortedEquaSet("hi")) shouldBe false
+    number.EquaSet(1).canEqual(number.SortedEquaSet(1)) shouldBe true
+    number.EquaSet(1).canEqual(number.SortedEquaSet(1, 2, 3)) shouldBe true
+    number.EquaSet(1).canEqual(lower.SortedEquaSet("hi")) shouldBe false
   }
   it should "have an into.collect method" in {
 

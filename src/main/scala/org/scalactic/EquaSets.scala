@@ -200,12 +200,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *  @param   z    the start value.
      *  @param   op   the binary operator.
      *  @tparam  B    the result type of the binary operator.
-     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *  @return  the result of inserting `op` between consecutive elements of this `EquaSet`,
      *           going left to right with the start value `z` on the left:
      *           {{{
      *             op(...op(op(z, x_1), x_2), ..., x_n)
      *           }}}
-     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this `EquaSet`.
      */
     def /:[B](z: B)(op: (B, T) => B): B
 
@@ -236,12 +236,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *  @param   z    the start value
      *  @param   op   the binary operator
      *  @tparam  B    the result type of the binary operator.
-     *  @return  the result of inserting `op` between consecutive elements of this $coll,
+     *  @return  the result of inserting `op` between consecutive elements of this `EquaSet`,
      *           going right to left with the start value `z` on the right:
      *           {{{
      *             op(x_1, op(x_2, ... op(x_n, z)...))
      *           }}}
-     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this `EquaSet`.
      */
     def :\[B](z: B)(op: (T, B) => B): B
 
@@ -301,7 +301,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     /**
      * Appends all elements of this `EquaSet` to a string builder using a separator string.
      *  The written text consists of the string representations (w.r.t. the method `toString`)
-     *  of all elements of this $coll, separated by the string `sep`.
+     *  of all elements of this `EquaSet`, separated by the string `sep`.
      *
      * Example:
      *
@@ -322,7 +322,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def addString(b: StringBuilder, sep: String): StringBuilder
 
-    /** Appends all elements of this $coll to a string builder using start, end, and separator strings.
+    /** Appends all elements of this `EquaSet` to a string builder using start, end, and separator strings.
      *  The written text begins with the string `start` and ends with the string `end`.
      *  Inside, the string representations (w.r.t. the method `toString`)
      *  of all elements of this `EquaSet` are separated by the string `sep`.
@@ -447,7 +447,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit
 
     /**
-     * Counts the number of elements in the $coll which satisfy a predicate.
+     * Counts the number of elements in the `EquaSet` which satisfy a predicate.
      *
      * @param p the predicate used to test elements.
      * @return the number of elements satisfying the predicate `p`.
@@ -603,7 +603,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foreach[U](f: T => U): Unit
 
     /**
-     * Partitions this $coll into a map of `EquaSet`s according to some discriminator function.
+     * Partitions this `EquaSet` into a map of `EquaSet`s according to some discriminator function.
      *
      * Note: this method is not re-implemented by views. This means
      * when applied to a view it will always force the view and
@@ -764,7 +764,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a string representation of this `EquaSet`. The resulting string
      * begins with the string `start` and ends with the string
      * `end`. Inside, the string representations (w.r.t. the method
-     * `toString`) of all elements of this $coll are separated by
+     * `toString`) of all elements of this `EquaSet` are separated by
      * the string `sep`.
      *
      * @example `EquaSet(1, 2, 3).mkString("(", "; ", ")") = "(1; 2; 3)"`
@@ -880,7 +880,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * {{{
      * op(x_1, op(x_2, ..., op(x_{n-1}, x_n)...))
      * }}}
-     * where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
+     * where `x,,1,,, ..., x,,n,,` are the elements of this `EquaSet`.
      * @throws `UnsupportedOperationException` if this `EquaSet` is empty.
      */
     def reduceRight[T1 >: T](op: (T, T1) => T1): T1
@@ -1077,7 +1077,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @param n the number of elements to take from this `EquaSet`.
      * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
-     * or else the whole $coll, if it has less than `n` elements.
+     * or else the whole `EquaSet`, if it has less than `n` elements.
      */
     def take(n: Int): thisEquaSets.EquaSet
 
@@ -1290,7 +1290,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @param from the index of the first element of the view
      * @param until the index of the element following the view
-     * @return a non-strict view of a slice of this $coll, starting at index `from`
+     * @return a non-strict view of a slice of this `EquaSet`, starting at index `from`
      * and extending up to (but not including) index `until`.
      */
     def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
@@ -1316,13 +1316,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * placeholder elements are used to extend the shorter collection to the length of the longer.
      *
      * @param that the iterable providing the second half of each result pair
-     * @param thisElem the element to be used to fill up the result if this $coll is shorter than `that`.
-     * @param thatElem the element to be used to fill up the result if `that` is shorter than this $coll.
+     * @param thisElem the element to be used to fill up the result if this `EquaSet` is shorter than `that`.
+     * @param thatElem the element to be used to fill up the result if `that` is shorter than this `EquaSet`.
      * @return a new collection of type `That` containing pairs consisting of
-     * corresponding elements of this $coll and `that`. The length
-     * of the returned collection is the maximum of the lengths of this $coll and `that`.
-     * If this $coll is shorter than `that`, `thisElem` values are used to pad the result.
-     * If `that` is shorter than this $coll, `thatElem` values are used to pad the result.
+     * corresponding elements of this `EquaSet` and `that`. The length
+     * of the returned collection is the maximum of the lengths of this `EquaSet` and `that`.
+     * If this `EquaSet` is shorter than `that`, `thisElem` values are used to pad the result.
+     * If `that` is shorter than this `EquaSet`, `thatElem` values are used to pad the result.
      *
      */
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)]
@@ -1341,7 +1341,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipWithIndex: Set[(T, Int)]
 
-    private[scalactic] def owner: EquaSets[T] = thisEquaSets
+    private[scalactic] def containingEquaSets: EquaSets[T] = thisEquaSets
   }
 
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
@@ -1385,7 +1385,12 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
-    def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].owner.equality
+    def canEqual(that: Any): Boolean =
+      that match {
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.containingEquaSets.equality eq thisEquaSets.equality
+        case _ => false
+      }
+    // def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].containingEquaSets.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
