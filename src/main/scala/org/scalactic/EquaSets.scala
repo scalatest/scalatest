@@ -1272,7 +1272,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a non-strict view of this `EquaSet`.
      */
-    def view: TraversableView[T, Set[T]]
+    def view: TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
 
     /**
      * Creates a non-strict view of a slice of this `EquaSet`.
@@ -1288,7 +1288,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a non-strict view of a slice of this $coll, starting at index `from`
      * and extending up to (but not including) index `until`.
      */
-    def view(from: Int, until: Int): TraversableView[T, Set[T]]
+    def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
 
     /**
      * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
@@ -1527,8 +1527,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
       (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*), t3EquaSets.EquaSet(t3: _*))
     }
-    def view: TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view
-    def view(from: Int, until: Int): TraversableView[T, Set[T]] = underlying.toList.map(_.value).toSet.view(from, until)
+    def view: TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view
+    def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet

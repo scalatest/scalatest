@@ -985,8 +985,8 @@ class EquaSetSpec extends UnitSpec {
   it should "have 2 views method" in {
     number.EquaSet(3).view(0, 0).toList shouldBe List()
     number.EquaSet(1, 2, 3).view(2, 1).toList shouldBe List()
-    number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(2, 3)
-    number.EquaSet(1, 2, 3).view.toList shouldBe List(1, 2, 3)
+    number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(number.EquaBox(2), number.EquaBox(3))
+    number.EquaSet(1, 2, 3).view.toList shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
   it should "have a zip method" in {
     number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))
