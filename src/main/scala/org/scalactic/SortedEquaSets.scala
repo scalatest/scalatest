@@ -17,9 +17,14 @@ package org.scalactic
 
 import scala.Iterator
 import scala.collection.generic.CanBuildFrom
-import scala.collection._
-import scala.collection.immutable.SortedSet
-import scala.collection.immutable.TreeSet
+import scala.collection.immutable._
+import scala.collection.mutable
+import scala.collection.GenTraversableOnce
+import scala.collection.GenTraversable
+import scala.collection.GenSeq
+import scala.collection.GenMap
+import scala.collection.GenIterable
+import scala.collection.TraversableView
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
 
