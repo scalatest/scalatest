@@ -366,6 +366,21 @@ class EquaSetSpec extends UnitSpec {
     fn(2) shouldBe true
     fn(3) shouldBe false
   }
+  it should "have an contains method that does a type check" in {
+    val e = number.EquaSet(1, 2, 3)
+    e.contains(-1) shouldBe false
+    e.contains(0) shouldBe false
+    e.contains(1) shouldBe true
+    e.contains(2) shouldBe true
+    e.contains(3) shouldBe true
+    e.contains(4) shouldBe false
+    """e.contains("five")""" shouldNot typeCheck
+    new CheckedEquality {
+      val es = lower.EquaSet("one", "two", "three")
+      """es.contains(5)""" shouldNot typeCheck
+      es.contains("ONE") shouldBe true;
+    }
+  }
   it should "have 3 copyToArray methods" in {
 
     val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq

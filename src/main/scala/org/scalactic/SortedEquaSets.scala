@@ -273,6 +273,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def collect(pf: PartialFunction[T, T]): thisEquaSets.SortedEquaSet
 
+    def contains[U](elem: U)(implicit ev: U =:= T): Boolean
+
     /**
      * Computes the difference of this `SortedEquaSet` and another `SortedEquaSet`.
      *
@@ -646,6 +648,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       implicit val ord: Ordering[thisEquaSets.EquaBox] = ordering
       new TreeEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     }
+    def contains[U](elem: U)(implicit ev: U =:= T): Boolean = underlying.contains(EquaBox(elem))
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)

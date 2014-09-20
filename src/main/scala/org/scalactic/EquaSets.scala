@@ -42,6 +42,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def toString: String = s"EquaBox(${value.toString})"
     def enclosingEquaSets: EquaSets[T] = thisEquaSets
   }
+  object EquaBox {
+    import scala.language.implicitConversions
+    implicit def equaBoxToGenTraversableOnce(equaBox: EquaBox): scala.collection.immutable.IndexedSeq[T] =
+      Vector(equaBox.value)
+  }
 
   class EquaBridge[S](from: List[S]) {
     def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
@@ -406,6 +411,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * The order of the elements is preserved.
      */
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
+
+    def contains[U](elem: U)(implicit ev: U =:= T): Boolean
 
     /**
      * Copies values of this `EquaSet` to an array.
@@ -1395,6 +1402,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       }
     def collect(pf: PartialFunction[T, T]): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
+    def contains[U](elem: U)(implicit ev: U =:= T): Boolean = underlying.contains(EquaBox(elem))
+
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
@@ -1411,13 +1420,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
           (thisEquaSets.equality eq thatEquaSet.enclosingEquaSets.equality) && underlying == thatEquaSet.toSet
         case _ => false
       }
-/*
-      other match {
-        case equaSet: thisEquaSets.EquaSet =>
-          underlying == equaSet.toSet
-        case _ => false
-      }
-*/
     }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
@@ -1564,6 +1566,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def apply(elems: T*): EquaSet = FastEquaSet(elems: _*)
     import scala.language.implicitConversions
     implicit def equaSetToGenTraversableOnce(equaSet: EquaSet): scala.collection.immutable.IndexedSeq[T] = equaSet.toVector.map(_.value)
+    // TODO: Study this one...
     implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
       new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
   }
