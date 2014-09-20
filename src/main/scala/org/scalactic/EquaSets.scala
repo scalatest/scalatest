@@ -412,7 +412,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
 
-    def contains[U](elem: U)(implicit ev: U =:= T): Boolean
+    def contains[U](elem: U)(implicit ev: U <:< T): Boolean
 
     /**
      * Copies values of this `EquaSet` to an array.
@@ -1402,7 +1402,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       }
     def collect(pf: PartialFunction[T, T]): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
-    def contains[U](elem: U)(implicit ev: U =:= T): Boolean = underlying.contains(EquaBox(elem))
+    def contains[U](elem: U)(implicit ev: U <:< T): Boolean = underlying.contains(EquaBox(elem))
 
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)

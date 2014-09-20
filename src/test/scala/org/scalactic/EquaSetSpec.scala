@@ -380,6 +380,26 @@ class EquaSetSpec extends UnitSpec {
       """es.contains(5)""" shouldNot typeCheck
       es.contains("ONE") shouldBe true;
     }
+    abstract class Fruit {
+      val name: String
+    }
+    case class Apple(name: String) extends Fruit
+    case class Orange(name: String) extends Fruit
+    val mac = Apple("Mcintosh")
+    val navel = Orange("Navel") 
+    val equalityOfFruit =
+      new HashingEquality[Fruit] {
+        private val nameEquality = StringNormalizations.lowerCased.toHashingEquality
+        def areEqual(a: Fruit, b: Any): Boolean =
+          b match {
+            case bFruit: Fruit => nameEquality.areEqual(a.name, bFruit.name)
+            case _ => false
+          }
+        def hashCodeFor(a: Fruit): Int = nameEquality.hashCodeFor(a.name)
+      }
+    val fruitEquaSets = EquaSets(equalityOfFruit)
+    val fruits = fruitEquaSets.EquaSet(mac, navel)
+    fruits.contains(mac) shouldBe true
   }
   it should "have 3 copyToArray methods" in {
 
