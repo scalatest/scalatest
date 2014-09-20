@@ -332,8 +332,13 @@ class SortedEquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.SortedEquaSet(4, 8, 12, 16, 20)
+    val result1 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
+    result1 shouldBe number.SortedEquaSet(4, 8, 12, 16, 20)
+    result1.shouldHaveExactType[number.SortedEquaSet]
     number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.SortedEquaSet.empty
+    val result2 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
+    result2 shouldBe number.TreeEquaSet(4, 8, 12, 16, 20)
+    result2.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.SortedEquaSet(1, 2, 3).compose(_ + 1)

@@ -642,7 +642,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case _ => false
       }
       // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].enclosingEquaSets.equality
-    def collect(pf: PartialFunction[T, T]): thisEquaSets.SortedEquaSet = {
+    def collect(pf: PartialFunction[T, T]): thisEquaSets.TreeEquaSet = {
       implicit val ord: Ordering[thisEquaSets.EquaBox] = ordering
       new TreeEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     }
