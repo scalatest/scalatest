@@ -412,6 +412,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
 
+    /*
+      The reason I don't just do this:
+
+      def contains(elem: T): Boolean
+
+      Is because that indeed fails to type check, but before the compiler gives up, it looks around
+      for an implicit that solves the problem and finds the one to IndexedSeq[T] named,
+      equaSetToGenTraversableOnce, which works so it compiles.
+    */
     def contains[U](elem: U)(implicit ev: U <:< T): Boolean
 
     /**
