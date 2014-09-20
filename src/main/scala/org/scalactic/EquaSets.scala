@@ -1393,8 +1393,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.enclosingEquaSets.equality eq thisEquaSets.equality
         case _ => false
       }
-    // def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].enclosingEquaSets.equality
-    def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet =
+    def collect(pf: PartialFunction[T, T]): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
     def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)

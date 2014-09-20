@@ -351,8 +351,13 @@ class EquaSetSpec extends UnitSpec {
     scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
     res4: List[Int] = List()
     */
-    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 } shouldBe number.EquaSet(4, 8, 12, 16, 20)
+    val result1 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
+    result1 shouldBe number.EquaSet(4, 8, 12, 16, 20)
+    result1.shouldHaveExactType[number.EquaSet]
     number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquaSet.empty
+    val result2 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
+    result2 shouldBe number.FastEquaSet(4, 8, 12, 16, 20)
+    result2.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.EquaSet(1, 2, 3).compose(_ + 1)
