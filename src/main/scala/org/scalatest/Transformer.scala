@@ -17,7 +17,7 @@ package org.scalatest
 
 import OutcomeOf.outcomeOf
 
-private[scalatest] case class Transformer[FixtureParam](exceptionalTestFun: () => Any) extends (() => Outcome) {
+private[scalatest] case class Transformer(exceptionalTestFun: () => Any) extends (() => Outcome) {
   def apply(): Outcome = {
     outcomeOf { exceptionalTestFun() }
   }
