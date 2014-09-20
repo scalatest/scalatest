@@ -16,10 +16,21 @@
 package org.scalactic
 
 import enablers.ContainingConstraint
+import scala.language.higherKinds
+import scala.collection.GenSeq
+import scala.collection.Seq
 
 trait SafeSeqs {
-  implicit class Containifier[L](leftSide: L) {
-    def sContains[R](rightSide: R)(implicit ev: ContainingConstraint[L, R]): Boolean = ev.contains(leftSide, rightSide)
+  implicit class SeqContainifier[E, SEQ[e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
+    def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
+      leftSideGenSeq match {
+        case seq: Seq[_] => seq.contains(rightSideEle)
+        case _ => leftSideGenSeq.exists(_ == rightSideEle)
+      }
+  }
+  implicit class ArrayContainifier[E, ARRAY[e] <: Array[e]](leftSideArray: ARRAY[E]) {
+    def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
+      leftSideArray.contains(rightSideEle)
   }
 }
 
