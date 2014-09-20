@@ -294,8 +294,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     /** Selects all elements except last ''n'' ones.
       *
       * @param n The number of elements to take
-      * @return a `SortedEquiSet` consisting of all elements of this `SortedEquiSet` except the last `n` ones, or else the
-      * empty `SortedEquiSet`, if this `SortedEquiSet` has less than `n` elements.
+      * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet` except the last `n` ones, or else the
+      * empty `SortedEquaSet`, if this `SortedEquaSet` has less than `n` elements.
       */
     def dropRight(n: Int): thisEquaSets.SortedEquaSet
 
@@ -303,7 +303,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * Drops longest prefix of elements that satisfy a predicate.
      *
      * @param pred The predicate used to test elements.
-     * @return the longest suffix of this `SortedEquiSet` whose first element
+     * @return the longest suffix of this `SortedEquaSet` whose first element
      * does not satisfy the predicate `p`.
      */
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
@@ -467,7 +467,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @param size the number of elements per group
      * @param step the distance between the first elements of successive
      * groups (defaults to 1)
-     * @return An iterator producing `SortedEquiSet`s of size `size`, except the
+     * @return An iterator producing `SortedEquaSet`s of size `size`, except the
      * last and the only element will be truncated if there are
      * fewer elements than size.
      */
@@ -604,7 +604,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
-    private[scalactic] override def containingEquaSets: SortedEquaSets[T] = thisEquaSets
+    override def enclosingEquaSets: SortedEquaSets[T]
   }
 
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
@@ -638,10 +638,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     // long as the Equality discriminator is the same instance.
     def canEqual(that: Any): Boolean =
       that match {
-        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.containingEquaSets.equality eq thisEquaSets.equality
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.enclosingEquaSets.equality eq thisEquaSets.equality
         case _ => false
       }
-      // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].containingEquaSets.equality
+      // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].enclosingEquaSets.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.SortedEquaSet = {
       implicit val ord: Ordering[thisEquaSets.EquaBox] = ordering
       new TreeEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
@@ -656,12 +656,20 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def drop(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropRight(n))
     def dropWhile(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
+    // Two EquaSets whose containing EquaSets have identical equalities can be equal
     override def equals(other: Any): Boolean =
       other match {
-        case equiSet: thisEquaSets.EquaSet => 
-          underlying == equiSet.toSet
+        case thatEquaSet: EquaSets[_]#EquaSet => 
+          (thisEquaSets.equality eq thatEquaSet.enclosingEquaSets.equality) && underlying == thatEquaSet.toSet
         case _ => false
       }
+/*
+      other match {
+        case equaSet: thisEquaSets.EquaSet => 
+          underlying == equaSet.toSet
+        case _ => false
+      }
+*/
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
@@ -783,6 +791,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
+    def enclosingEquaSets: SortedEquaSets[T] = thisEquaSets
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

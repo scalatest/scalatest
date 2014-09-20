@@ -394,6 +394,12 @@ class SortedEquaSetSpec extends UnitSpec {
     set.dropWhile(_ < 5) shouldBe number.EquaSet(5)
     set.dropWhile(_ < 6) shouldBe number.EquaSet()
   }
+  it should "have an enclosingEquaSets method" in {
+    trimmed.EquaSet("hi").enclosingEquaSets shouldBe trimmed
+    trimmed.FastEquaSet("hi").enclosingEquaSets shouldBe trimmed
+    trimmed.SortedEquaSet("hi").enclosingEquaSets shouldBe trimmed
+    trimmed.TreeEquaSet("hi").enclosingEquaSets shouldBe trimmed
+  }
   it should "have an exists method" in {
     number.SortedEquaSet(1, 2, 3).exists(_ == 2) shouldBe true
     number.SortedEquaSet(1, 2, 3).exists(_ == 5) shouldBe false

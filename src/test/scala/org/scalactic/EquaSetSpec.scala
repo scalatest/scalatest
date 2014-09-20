@@ -268,6 +268,31 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).canEqual(number.EquaSet(1)) shouldBe true
     number.EquaSet(1).canEqual(number.EquaSet(1, 2, 3)) shouldBe true
     number.EquaSet(1).canEqual(lower.EquaSet("hi")) shouldBe false
+    val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
+    val equaSets = EquaSets[String](orderingEquality) // Two different EquaSets instances
+    val sortedEquaSets = SortedEquaSets[String](orderingEquality)
+    val equaSet = equaSets.EquaSet("hi", "ho")
+    val fastEquaSet = equaSets.FastEquaSet("Bi", "Bo")
+    val sortedEquaSet = sortedEquaSets.SortedEquaSet("cI", "cO")
+    val treeEquaSet = sortedEquaSets.TreeEquaSet("DI", "DO")
+    equaSet.canEqual(equaSet) shouldBe true
+    equaSet.canEqual(equaSets.FastEquaSet("Hi", "Ho")) shouldBe true
+    equaSets.FastEquaSet("Hi", "Ho").canEqual(equaSet) shouldBe true
+    equaSet.canEqual(fastEquaSet) shouldBe true
+    fastEquaSet.canEqual(equaSet) shouldBe true
+    equaSet.canEqual(sortedEquaSet) shouldBe true
+    sortedEquaSet.canEqual(equaSet) shouldBe true
+    equaSet.canEqual(treeEquaSet) shouldBe true
+    treeEquaSet.canEqual(equaSet) shouldBe true
+    fastEquaSet.canEqual(fastEquaSet) shouldBe true
+    fastEquaSet.canEqual(sortedEquaSet) shouldBe true
+    sortedEquaSet.canEqual(fastEquaSet) shouldBe true
+    fastEquaSet.canEqual(treeEquaSet) shouldBe true
+    treeEquaSet.canEqual(fastEquaSet) shouldBe true
+    sortedEquaSet.canEqual(sortedEquaSet) shouldBe true
+    sortedEquaSet.canEqual(treeEquaSet) shouldBe true
+    treeEquaSet.canEqual(sortedEquaSet) shouldBe true
+    treeEquaSet.canEqual(treeEquaSet) shouldBe true
   }
   it should "have an into.collect method" in {
     // Can map into self explicitly too
@@ -394,9 +419,38 @@ class EquaSetSpec extends UnitSpec {
     set.dropWhile(_ < 5) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
     set.dropWhile(_ < 6) shouldBe number.EquaSet()
   }
+  it should "have an enclosingEquaSets method" in {
+    lower.EquaSet("hi").enclosingEquaSets shouldBe lower
+    lower.FastEquaSet("hi").enclosingEquaSets shouldBe lower
+  }
   it should "have an equals method" in {
     sortedLower.SortedEquaSet("one", "two", "three") shouldEqual sortedLower.EquaSet("Three", "Two", "One")
     sortedLower.EquaSet("one", "two", "three") shouldEqual sortedLower.SortedEquaSet("Three", "Two", "One")
+    val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
+    val equaSets = EquaSets[String](orderingEquality) // Two different EquaSets instances
+    val sortedEquaSets = SortedEquaSets[String](orderingEquality)
+    val equaSet = equaSets.EquaSet("hi", "ho")
+    val fastEquaSet = equaSets.FastEquaSet("Hi", "Ho")
+    val sortedEquaSet = sortedEquaSets.SortedEquaSet("hI", "hO")
+    val treeEquaSet = sortedEquaSets.TreeEquaSet("HI", "HO")
+    equaSet shouldEqual equaSet
+    equaSet shouldEqual equaSets.FastEquaSet("Hi", "Ho")
+    equaSets.FastEquaSet("Hi", "Ho") shouldEqual equaSet
+    equaSet shouldEqual fastEquaSet
+    fastEquaSet shouldEqual equaSet
+    equaSet shouldEqual sortedEquaSet
+    sortedEquaSet shouldEqual equaSet
+    equaSet shouldEqual treeEquaSet
+    treeEquaSet shouldEqual equaSet
+    fastEquaSet shouldEqual fastEquaSet
+    fastEquaSet shouldEqual sortedEquaSet
+    sortedEquaSet shouldEqual fastEquaSet
+    fastEquaSet shouldEqual treeEquaSet
+    treeEquaSet shouldEqual fastEquaSet
+    sortedEquaSet shouldEqual sortedEquaSet
+    sortedEquaSet shouldEqual treeEquaSet
+    treeEquaSet shouldEqual sortedEquaSet
+    treeEquaSet shouldEqual treeEquaSet
   }
   it should "have an exists method" in {
     number.EquaSet(1, 2, 3).exists(_ == 2) shouldBe true

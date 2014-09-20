@@ -34,11 +34,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   case class EquaBox(value: T) {
     override def equals(o: Any): Boolean = 
       o match {
-        case other: EquaBox => equality.areEqual(value, other.value)
+        case other: EquaSets[_]#EquaBox if equality eq other.enclosingEquaSets.equality =>
+          equality.areEqual(value, other.value)
         case _ => false
       }
     override def hashCode: Int = equality.hashCodeFor(value)
     override def toString: String = s"EquaBox(${value.toString})"
+    def enclosingEquaSets: EquaSets[T] = thisEquaSets
   }
 
   class EquaBridge[S](from: List[S]) {
@@ -54,6 +56,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    def enclosingEquaSets: EquaSets[T] = thisEquaSets
   }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
@@ -476,8 +479,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Selects all elements except last ''n'' ones.
      *
      * @param n The number of elements to take
-     * @return a `EquiSet` consisting of all elements of this `EquiSet` except the last `n` ones, or else the
-     * empty `EquiSet`, if this `EquiSet` has less than `n` elements.
+     * @return a `EquaSet` consisting of all elements of this `EquaSet` except the last `n` ones, or else the
+     * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
      */
     def dropRight(n: Int): thisEquaSets.EquaSet
 
@@ -485,7 +488,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Drops longest prefix of elements that satisfy a predicate.
      *
      * @param pred The predicate used to test elements.
-     * @return the longest suffix of this `EquiSet` whose first element
+     * @return the longest suffix of this `EquaSet` whose first element
      * does not satisfy the predicate `p`.
      */
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
@@ -548,7 +551,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     //def flatten[S, T >: EquaSets[S]#EquaSet]: EquaSets[S]#EquaSet
 
     /**
-     * Folds the elements of this `EquiSet` using the specified associative
+     * Folds the elements of this `EquaSet` using the specified associative
      * binary operator.
      *
      * @tparam T1 a type parameter for the binary operator, a supertype of `A`.
@@ -972,7 +975,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param size the number of elements per group
      * @param step the distance between the first elements of successive
      * groups (defaults to 1)
-     * @return An iterator producing `EquiSet`s of size `size`, except the
+     * @return An iterator producing `EquaSet`s of size `size`, except the
      * last and the only element will be truncated if there are
      * fewer elements than size.
      */
@@ -1131,10 +1134,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterable: GenIterable[thisEquaSets.EquaBox]
 
     /**
-     * Returns an Iterator over the elements in this `EquiSet`. Will return
+     * Returns an Iterator over the elements in this `EquaSet`. Will return
      * the same Iterator if this instance is already an Iterator.
      *
-     * @return an Iterator containing all elements of this  `EquiSet`.
+     * @return an Iterator containing all elements of this  `EquaSet`.
      */
     def toIterator: Iterator[thisEquaSets.EquaBox]
 
@@ -1341,7 +1344,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipWithIndex: Set[(T, Int)]
 
-    private[scalactic] def containingEquaSets: EquaSets[T] = thisEquaSets
+    def enclosingEquaSets: EquaSets[T]
   }
 
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
@@ -1387,10 +1390,10 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean =
       that match {
-        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.containingEquaSets.equality eq thisEquaSets.equality
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.enclosingEquaSets.equality eq thisEquaSets.equality
         case _ => false
       }
-    // def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].containingEquaSets.equality
+    // def canEqual(that: Any): Boolean = that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].enclosingEquaSets.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet =
       new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
@@ -1405,10 +1408,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     override def equals(other: Any): Boolean = { 
       other match {
-        case equiSet: thisEquaSets.EquaSet =>
-          underlying == equiSet.toSet
+        case thatEquaSet: EquaSets[_]#EquaSet => 
+          (thisEquaSets.equality eq thatEquaSet.enclosingEquaSets.equality) && underlying == thatEquaSet.toSet
         case _ => false
       }
+/*
+      other match {
+        case equaSet: thisEquaSets.EquaSet =>
+          underlying == equaSet.toSet
+        case _ => false
+      }
+*/
     }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
@@ -1542,6 +1552,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
+
+    def enclosingEquaSets: EquaSets[T] = thisEquaSets
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
