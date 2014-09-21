@@ -311,14 +311,18 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   }
   it can "be created from a Try via the from(Try) factory method" in {
     Or.from(Success(12)) shouldBe Good(12)
+    Or.from(Success(12): Try[Int]) shouldBe Good(12)
     val ex = new Exception("oops")
     Or.from(Failure(ex)) shouldBe Bad(ex)
+    Or.from(Failure(ex): Try[Int]) shouldBe Bad(ex)
   }
   it can "be created with the from(Either) factory method" in {
     Or.from(Right(12)) shouldBe Good(12)
+    Or.from(Right(12): Either[String, Int]) shouldBe Good(12)
     val ex = new Exception("oops")
     Or.from(Left(ex)) shouldBe Bad(ex)
     Or.from(Left("oops")) shouldBe Bad("oops")
+    Or.from(Left("oops"): Either[String, String]) shouldBe Bad("oops")
   }
   it can "be created with the from(Option, BadIfNone) factory method" in {
     Or.from(Some(12), "won't be used") shouldBe Good(12)
