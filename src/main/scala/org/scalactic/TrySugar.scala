@@ -22,6 +22,9 @@ trait TrySugar {
   implicit class Tryizer[G](theTry: Try[G]) {
     def toOr: G Or Throwable = Or.from(theTry)
   }
+  implicit class NothingSuccessTryizer(theTry: Try[Nothing]) {
+    def toOr: Nothing Or Throwable = Or.from(theTry)
+  } 
 } 
 
 object TrySugar extends TrySugar
