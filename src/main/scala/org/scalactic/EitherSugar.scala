@@ -20,6 +20,12 @@ trait EitherSugar {
   implicit class Eitherizer[L, R](either: Either[L, R]) {
     def toOr: R Or L = Or.from(either)
   }
+  implicit class NothingLeftEitherizer[R](either: Either[Nothing, R]) {
+    def toOr: R Or Nothing = Or.from(either)
+  }
+  implicit class NothingRightEitherizer[L](either: Either[L, Nothing]) {
+    def toOr: Nothing Or L = Or.from(either)
+  }
 } 
 
 object EitherSugar extends EitherSugar
