@@ -301,22 +301,48 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
 
-    try {
+    val outcome =
+      try {
+        invokeWithFixture(theTest)
+      }
+      catch {
+        case ex: exceptions.TestCanceledException => Canceled(ex)
+         case _: exceptions.TestPendingException => Pending
+         case tfe: exceptions.TestFailedException => Failed(tfe)
+         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+      }
+      finally {
+        val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
+        if (shouldBeInformerForThisTest ne informerForThisTest)
+          throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
 
-      invokeWithFixture(theTest).toUnit
+        val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
+        if (shouldBeNotifierForThisTest ne updaterForThisTest)
+          throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
 
-      val duration = System.currentTimeMillis - testStartTime
-      val durationToReport = theTest.recordedDuration.getOrElse(duration)
-      val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
+        val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
+        if (shouldBeAlerterForThisTest ne alerterForThisTest)
+          throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+
+        val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
+        if (shouldBeDocumenterForThisTest ne documenterForThisTest)
+          throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+      }
+
+    outcome match {
+
+      case Succeeded =>
+        val duration = System.currentTimeMillis - testStartTime
+        val durationToReport = theTest.recordedDuration.getOrElse(duration)
+        val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
                          (if (theTest.recordedMessages.isDefined) 
                             theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
                           else
                             Vector.empty)
-      reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
-      SucceededStatus
-    }
-    catch {
-      case _: TestPendingException =>
+        reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
+        SucceededStatus
+
+      case Pending =>
         val duration = System.currentTimeMillis - testStartTime
         // testWasPending = true so info's printed out in the finally clause show up yellow
         val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) ++ 
@@ -326,7 +352,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
                              Vector.empty)
         reportTestPending(theSuite, report, tracker, testName, theTest.testText, recordEvents, duration, formatter, theTest.location)
         SucceededStatus
-      case e: TestCanceledException =>
+
+      case Canceled(e) =>
         val duration = System.currentTimeMillis - testStartTime
         // testWasCanceled = true so info's printed out in the finally clause show up yellow
         val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) ++ 
@@ -336,7 +363,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
                              Vector.empty)
         reportTestCanceled(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, duration, formatter, theTest.location)
         SucceededStatus
-      case e if !anExceptionThatShouldCauseAnAbort(e) =>
+
+      case Failed(e) =>
         val duration = System.currentTimeMillis - testStartTime
         val durationToReport = theTest.recordedDuration.getOrElse(duration)
         val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
@@ -346,24 +374,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
                              Vector.empty)
         reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
         FailedStatus
-      case e: Throwable => throw e
-    }
-    finally {
-      val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-      if (shouldBeInformerForThisTest ne informerForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
-
-      val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
-      if (shouldBeNotifierForThisTest ne updaterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
-
-      val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
-      if (shouldBeAlerterForThisTest ne alerterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
-
-      val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
-      if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
     }
   }
 
