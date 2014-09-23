@@ -190,18 +190,20 @@ trait FeatureSpecRegistration extends Suite with TestRegistration with Informing
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
-    def invokeWithFixture(theTest: TestLeaf): Outcome = {
+    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      withFixture(
-        new NoArgTest {
-          val name = testData.name
-          def apply(): Outcome = { theTest.testFun() }
-          val configMap = testData.configMap
-          val scopes = testData.scopes
-          val text = testData.text
-          val tags = testData.tags
-        }
+      PastOutcome(
+        withFixture(
+          new NoArgTest {
+            val name = testData.name
+            def apply(): Outcome = { theTest.testFun().toOutcome }
+            val configMap = testData.configMap
+            val scopes = testData.scopes
+            val text = testData.text
+            val tags = testData.tags
+          }
+        )
       )
     }
 
