@@ -333,6 +333,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
       }
 
+    ////////////////////////////
+    // TODO: REMOVE THIS!!!  This is here to block and force test (run in future) to run in sequence becauase the futures here are executing in concurrent
+    // within the same Suite isntance and stepping each other toes.  This should be removed after we figure the way to let the tests run correctly with Future.
+    asyncOutcome.toOutcome
+
+    ////////////////////////////
+
     asyncOutcome.onComplete { trial =>
 
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
