@@ -277,19 +277,21 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
     ensureScopesAndTestsRegistered()
 
-    def invokeWithFixture(theTest: TestLeaf): Outcome = {
+    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      withFixture(
-        new OneArgTest {
-          val name = testData.name
-          def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture) }
-          val configMap = testData.configMap
-          val scopes = testData.scopes
-          val text = testData.text
-          val tags = testData.tags
-        }
-        //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
+      PastOutcome(
+        withFixture(
+          new OneArgTest {
+            val name = testData.name
+            def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture).toOutcome }
+            val configMap = testData.configMap
+            val scopes = testData.scopes
+            val text = testData.text
+            val tags = testData.tags
+          }
+          //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
+        )
       )
     }
 

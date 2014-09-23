@@ -12,7 +12,9 @@ trait AsyncOutcome {
 }
 
 case class PastOutcome(past: Outcome) extends AsyncOutcome {
-  def onComplete(f: Try[Outcome] => Unit) = new Success(past)
+  def onComplete(f: Try[Outcome] => Unit) = {
+    f(new Success(past))
+  }
   def toStatus: Status =
     past match {
       case _: Failed => FailedStatus
