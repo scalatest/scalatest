@@ -501,7 +501,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
 
     ensureTestResultsRegistered(thisSuite)
     
-    def dontInvokeWithFixture(theTest: TestLeaf): Outcome = {
+    def dontInvokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       theTest.testFun()
     }
 

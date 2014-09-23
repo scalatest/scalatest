@@ -161,21 +161,23 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
-    def invokeWithFixture(theTest: TestLeaf): Outcome = {
-      theTest.testFun match {
-        case transformer: org.scalatest.fixture.Transformer[_] => 
-          transformer.exceptionalTestFun match {
-            case wrapper: NoArgTestWrapper[_] =>
-              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
-          }
-        case other => 
-          other match {
-            case wrapper: NoArgTestWrapper[_] =>
-              withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-            case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
-          }
-      }
+    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
+      PastOutcome(
+        theTest.testFun match {
+          case transformer: org.scalatest.fixture.Transformer[_] => 
+            transformer.exceptionalTestFun match {
+              case wrapper: NoArgTestWrapper[_] =>
+                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+            }
+          case other => 
+            other match {
+              case wrapper: NoArgTestWrapper[_] =>
+                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+            }
+        }
+      )
     }
 
     runTestImpl(thisSuite, testName, args, true, invokeWithFixture)

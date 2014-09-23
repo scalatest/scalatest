@@ -32,6 +32,8 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import scala.util.Success
+import scala.util.Failure
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResourceName: String, simpleClassName: String)  {
@@ -249,7 +251,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     testName: String,
     args: Args,
     includeIcon: Boolean,
-    invokeWithFixture: TestLeaf => Outcome
+    invokeWithFixture: TestLeaf => AsyncOutcome
   ): Status = {
 
     if (testName == null)
@@ -304,80 +306,87 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
 
-    val outcome =
+    val asyncOutcome: AsyncOutcome =
       try {
         invokeWithFixture(theTest)
       }
       catch {
-        case ex: exceptions.TestCanceledException => Canceled(ex)
-         case _: exceptions.TestPendingException => Pending
-         case tfe: exceptions.TestFailedException => Failed(tfe)
-         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-      }
-      finally {
-        val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-        if (shouldBeInformerForThisTest ne informerForThisTest)
-          throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
-
-        val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
-        if (shouldBeNotifierForThisTest ne updaterForThisTest)
-          throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
-
-        val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
-        if (shouldBeAlerterForThisTest ne alerterForThisTest)
-          throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
-
-        val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
-        if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-          throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+        case ex: exceptions.TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
+        case _: exceptions.TestPendingException => PastOutcome(Pending)
+        case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
+        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
       }
 
-    outcome match {
+    asyncOutcome.onComplete { trial => 
 
-      case Succeeded =>
-        val duration = System.currentTimeMillis - testStartTime
-        val durationToReport = theTest.recordedDuration.getOrElse(duration)
-        val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
-                         (if (theTest.recordedMessages.isDefined) 
-                            theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                          else
-                            Vector.empty)
-        reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
-        SucceededStatus
+      val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
+      if (shouldBeInformerForThisTest ne informerForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
 
-      case Pending =>
-        val duration = System.currentTimeMillis - testStartTime
-        // testWasPending = true so info's printed out in the finally clause show up yellow
-        val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) ++ 
-                           (if (theTest.recordedMessages.isDefined) 
-                             theTest.recordedMessages.get.recordedEvents(true, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                           else
-                             Vector.empty)
-        reportTestPending(theSuite, report, tracker, testName, theTest.testText, recordEvents, duration, formatter, theTest.location)
-        SucceededStatus
+      val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
+      if (shouldBeNotifierForThisTest ne updaterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
 
-      case Canceled(e) =>
-        val duration = System.currentTimeMillis - testStartTime
-        // testWasCanceled = true so info's printed out in the finally clause show up yellow
-        val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) ++ 
-                           (if (theTest.recordedMessages.isDefined) 
-                             theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                           else
-                             Vector.empty)
-        reportTestCanceled(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, duration, formatter, theTest.location)
-        SucceededStatus
+      val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
+      if (shouldBeAlerterForThisTest ne alerterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
 
-      case Failed(e) =>
-        val duration = System.currentTimeMillis - testStartTime
-        val durationToReport = theTest.recordedDuration.getOrElse(duration)
-        val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
-                           (if (theTest.recordedMessages.isDefined)
-                             theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                           else
-                             Vector.empty)
-        reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
-        FailedStatus
+      val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
+      if (shouldBeDocumenterForThisTest ne documenterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+
+      trial match {
+        case Success(outcome) => 
+          outcome match {
+      
+            case Succeeded =>
+              val duration = System.currentTimeMillis - testStartTime
+              val durationToReport = theTest.recordedDuration.getOrElse(duration)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
+                               (if (theTest.recordedMessages.isDefined) 
+                                  theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
+                                else
+                                  Vector.empty)
+              reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
+              SucceededStatus
+      
+            case Pending =>
+              val duration = System.currentTimeMillis - testStartTime
+              // testWasPending = true so info's printed out in the finally clause show up yellow
+              val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) ++ 
+                                 (if (theTest.recordedMessages.isDefined) 
+                                   theTest.recordedMessages.get.recordedEvents(true, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
+                                 else
+                                   Vector.empty)
+              reportTestPending(theSuite, report, tracker, testName, theTest.testText, recordEvents, duration, formatter, theTest.location)
+              SucceededStatus
+      
+            case Canceled(e) =>
+              val duration = System.currentTimeMillis - testStartTime
+              // testWasCanceled = true so info's printed out in the finally clause show up yellow
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) ++ 
+                                 (if (theTest.recordedMessages.isDefined) 
+                                   theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
+                                 else
+                                   Vector.empty)
+              reportTestCanceled(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, duration, formatter, theTest.location)
+              SucceededStatus
+      
+            case Failed(e) =>
+              val duration = System.currentTimeMillis - testStartTime
+              val durationToReport = theTest.recordedDuration.getOrElse(duration)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++ 
+                                 (if (theTest.recordedMessages.isDefined)
+                                   theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
+                                 else
+                                   Vector.empty)
+              reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
+              FailedStatus
+          }
+        case Failure(ex) => throw ex
+      }
     }
+    asyncOutcome.toStatus
   }
 
   private def runTestsInBranch(
@@ -817,10 +826,10 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 }
 
 private[scalatest] class Engine(concurrentBundleModResourceName: String, simpleClassName: String)
-    extends SuperEngine[() => Outcome](concurrentBundleModResourceName, simpleClassName)
+    extends SuperEngine[() => AsyncOutcome](concurrentBundleModResourceName, simpleClassName)
 
 private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModResourceName: String, simpleClassName: String)
-    extends SuperEngine[FixtureParam => Outcome](concurrentBundleModResourceName, simpleClassName)
+    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModResourceName, simpleClassName)
 
 
 
@@ -899,7 +908,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
  * 
  * 
  */
-  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def handleTest(handlingSuite: Suite, testText: String, testFun: () => AsyncOutcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
@@ -1140,7 +1149,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
     }
   }
    
-  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def handleIgnoredTest(testText: String, f: () => AsyncOutcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
