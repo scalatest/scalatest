@@ -19,6 +19,7 @@ import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import Eventually._
 
 class AsyncFunSpecSpec extends FunSpec {
 
@@ -26,7 +27,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSpec extends AsyncFunSpec {
+      class ExampleSpec(a: String) extends AsyncFunSpec {
 
         it("test 1") {
           Future {}
@@ -40,11 +41,15 @@ class AsyncFunSpecSpec extends FunSpec {
           Future {}
         }
 
+        override def newInstance = new ExampleSpec("sub")
       }
 
       val rep = new EventRecordingReporter
-      val spec = new ExampleSpec
+      val spec = new ExampleSpec("main")
       spec.run(None, Args(reporter = rep))
+      eventually {
+        assert(rep.testSucceededEventsReceived.length == 3)
+      }
     }
 
   }
