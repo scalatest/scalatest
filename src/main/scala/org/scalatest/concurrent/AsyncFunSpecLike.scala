@@ -15,7 +15,23 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.{OneInstancePerTest, Finders}
+import org.scalatest._
+import scala.concurrent.Future
 
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncFunSpecRegistration with OneInstancePerTest
+trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with OneInstancePerTest {
+
+  override protected def transformFun(testFun: => Future[Unit]): () => AsyncOutcome =
+    () => {
+      val futureUnit = testFun
+      FutureOutcome(
+        futureUnit.map(u => Succeeded).recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+}
