@@ -81,6 +81,52 @@ class AsyncFunSpecLikeSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
+    it("can be used for tests that did not return Future") {
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        val a = 1
+
+        it("test 1") {
+          assert(a == 1)
+        }
+
+        it("test 2") {
+          assert(a == 2)
+        }
+
+        it("test 3") {
+          pending
+        }
+
+        it("test 4") {
+          cancel
+        }
+
+        ignore("test 5") {
+          cancel
+        }
+
+        override def newInstance = new ExampleSpec
+      }
+
+      val rep = new EventRecordingReporter
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+      assert(rep.testStartingEventsReceived.length == 4)
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testCanceledEventsReceived.length == 1)
+      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+    }
+
   }
 
 }

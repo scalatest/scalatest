@@ -18,6 +18,10 @@ class AsyncFunSpecRegistrationSpec extends FunSpec {
 
         type Registration = Future[ConcurrentTestResult]
 
+        import scala.language.implicitConversions
+
+        implicit def convertToFuture(o: ConcurrentTestResult): Future[ConcurrentTestResult] = Future { o }
+
         override protected def transformFun(testFun: => Future[ConcurrentTestResult]): () => AsyncOutcome =
           () => {
             val futureResult = testFun
@@ -34,7 +38,7 @@ class AsyncFunSpecRegistrationSpec extends FunSpec {
           }
       }
 
-      it("ConcurrentTestsLike which handles custom result type correctly.") {
+      it("ConcurrentTestsLike which handles custom result type from Future correctly.") {
 
         class ExampleSpec extends ConcurrentTestsLike {
 
@@ -72,9 +76,41 @@ class AsyncFunSpecRegistrationSpec extends FunSpec {
         assert(t.getMessage == "an error message")
       }
 
+      it("ConcurrentTestsLike which handles custom result type correctly.") {
+
+        class ExampleSpec extends ConcurrentTestsLike {
+
+          it("test 1") {
+            Done
+          }
+
+          it("test 2") {
+            Done
+          }
+
+          it("test 3") {
+            AsyncErrorReporter("an error message")
+          }
+
+          override def newInstance = new ExampleSpec
+        }
+
+        val rep = new EventRecordingReporter
+        val spec = new ExampleSpec
+        val status = spec.run(None, Args(reporter = rep))
+        status.waitUntilCompleted()
+        assert(rep.testSucceededEventsReceived.length == 2)
+        assert(rep.testFailedEventsReceived.length == 1)
+        val ex = rep.testFailedEventsReceived(0).throwable
+        assert(ex.isDefined)
+        val t = ex.get
+        assert(t.isInstanceOf[RuntimeException])
+        assert(t.getMessage == "an error message")
+      }
+
       class ConcurrentTests extends ConcurrentTestsLike
 
-      it("ConcurrentTests which handles custom result type correctly.") {
+      it("ConcurrentTests which handles custom result type from Future correctly.") {
 
         class ExampleSpec extends ConcurrentTests {
 
@@ -94,6 +130,38 @@ class AsyncFunSpecRegistrationSpec extends FunSpec {
             Future {
               AsyncErrorReporter("an error message")
             }
+          }
+
+          override def newInstance = new ExampleSpec
+        }
+
+        val rep = new EventRecordingReporter
+        val spec = new ExampleSpec
+        val status = spec.run(None, Args(reporter = rep))
+        status.waitUntilCompleted()
+        assert(rep.testSucceededEventsReceived.length == 2)
+        assert(rep.testFailedEventsReceived.length == 1)
+        val ex = rep.testFailedEventsReceived(0).throwable
+        assert(ex.isDefined)
+        val t = ex.get
+        assert(t.isInstanceOf[RuntimeException])
+        assert(t.getMessage == "an error message")
+      }
+
+      it("ConcurrentTests which handles custom result type correctly.") {
+
+        class ExampleSpec extends ConcurrentTests {
+
+          it("test 1") {
+            Done
+          }
+
+          it("test 2") {
+            Done
+          }
+
+          it("test 3") {
+            AsyncErrorReporter("an error message")
           }
 
           override def newInstance = new ExampleSpec
