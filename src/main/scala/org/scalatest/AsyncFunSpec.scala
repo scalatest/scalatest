@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest._
-import scala.concurrent.{Future, ExecutionContext}
+class AsyncFunSpec extends AsyncFunSpecLike {
 
-trait AsyncTests extends SuiteMixin with AsyncFixtures { this: Suite with TestRegistration =>
-  type Registration = Future[Unit]
-
-  import scala.language.implicitConversions
-
-  implicit def convertToFuture(o: Any): Future[Unit] = Future { o }
+  /**
+   * Returns a user friendly string for this suite, composed of the
+   * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite
+   * contains nested suites, the result of invoking <code>toString</code> on each
+   * of the nested suites, separated by commas and surrounded by parentheses.
+   *
+   * @return a user-friendly string for this suite
+   */
+  override def toString: String = Suite.suiteToString(None, this)
 }
