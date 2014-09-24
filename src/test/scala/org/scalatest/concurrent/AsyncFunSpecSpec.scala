@@ -27,7 +27,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSpec(a: String) extends AsyncFunSpec {
+      class ExampleSpec extends AsyncFunSpec {
 
         it("test 1") {
           Future {}
@@ -41,15 +41,14 @@ class AsyncFunSpecSpec extends FunSpec {
           Future {}
         }
 
-        override def newInstance = new ExampleSpec("sub")
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val spec = new ExampleSpec("main")
-      spec.run(None, Args(reporter = rep))
-      eventually {
-        assert(rep.testSucceededEventsReceived.length == 3)
-      }
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+      assert(rep.testSucceededEventsReceived.length == 3)
     }
 
   }
