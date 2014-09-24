@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import Eventually._
 
 class AsyncFunSpecLikeSpec extends FunSpec {
 

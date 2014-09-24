@@ -1,7 +1,6 @@
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
-import org.scalatest._
+import SharedHelpers.EventRecordingReporter
 import scala.concurrent.Future
 
 class AsyncFunSpecRegistrationSpec extends FunSpec {

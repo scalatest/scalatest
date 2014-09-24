@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
-import org.scalatest._
-import exceptions.NotAllowedException
+import SharedHelpers.EventRecordingReporter
 
 class AsyncFixturesSpec extends FunSpec {
 
@@ -32,7 +30,7 @@ class AsyncFixturesSpec extends FunSpec {
       assert(rep.testFailedEventsReceived.size == 1)
       val tfe = rep.testFailedEventsReceived(0)
       assert(tfe.throwable.isDefined)
-      assert(tfe.throwable.get.isInstanceOf[NotAllowedException])
+      assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
   }

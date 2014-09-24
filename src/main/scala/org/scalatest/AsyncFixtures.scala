@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest._
-import exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper._
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
   final override def withFixture(test: NoArgTest): Outcome = {
