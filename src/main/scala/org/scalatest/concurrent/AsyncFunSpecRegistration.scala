@@ -18,7 +18,7 @@ package org.scalatest.concurrent
 import org.scalatest._
 import scala.concurrent.Future
 
-trait AsyncFunSpecRegistration extends FunSpecRegistration with AsyncFixtures { thisSuite =>
+trait AsyncFunSpecRegistration extends FunSpecRegistration with AsyncTests { thisSuite =>
 
   import engine._
 
@@ -43,5 +43,18 @@ trait AsyncFunSpecRegistration extends FunSpecRegistration with AsyncFixtures { 
 
     runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
   }
+
+  override protected def transformFun(testFun: => Future[Unit]): () => AsyncOutcome =
+    () => {
+      val futureUnit = testFun
+      FutureOutcome(
+        futureUnit.map(u => Succeeded).recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
 
 }
