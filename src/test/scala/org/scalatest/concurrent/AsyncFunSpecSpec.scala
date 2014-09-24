@@ -29,16 +29,36 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
+        val a = 1
+
         it("test 1") {
-          Future {}
+          Future {
+            assert(a == 1)
+          }
         }
 
         it("test 2") {
-          Future {}
+          Future {
+            assert(a == 2)
+          }
         }
 
         it("test 3") {
-          Future {}
+          Future {
+            pending
+          }
+        }
+
+        it("test 4") {
+          Future {
+            cancel
+          }
+        }
+
+        ignore("test 5") {
+          Future {
+            cancel
+          }
         }
 
         override def newInstance = new ExampleSpec
@@ -48,7 +68,17 @@ class AsyncFunSpecSpec extends FunSpec {
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
       status.waitUntilCompleted()
-      assert(rep.testSucceededEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived.length == 4)
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testCanceledEventsReceived.length == 1)
+      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
   }

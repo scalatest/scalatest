@@ -18,4 +18,4 @@ package org.scalatest.concurrent
 import org.scalatest.{OneInstancePerTest, Finders}
 
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with OneInstancePerTest
+trait AsyncFunSpecLike extends AsyncFunSpecRegistration with OneInstancePerTest
