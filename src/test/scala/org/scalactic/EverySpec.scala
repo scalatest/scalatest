@@ -488,9 +488,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf(6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
 
-    """Every(1, 2, 3, 4, 5).indexOf("five") shouldBe false""" shouldNot typeCheck
+    """Every(1, 2, 3, 4, 5).indexOf("5") shouldBe 4""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).contains("five")""" shouldNot typeCheck
+      """Every(1, 2, 3, 4, 5).indexOf("5")""" shouldNot typeCheck
       val es = Every("one", "two", "three")
       es.indexOf("one") shouldBe 0;
       es.indexOf("one", 1) shouldBe -1
@@ -605,6 +605,22 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 3) shouldBe 1
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 0) shouldBe -1
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 1) shouldBe 1
+
+    """Every(1, 2, 3, 4, 5).lastIndexOf("5") shouldBe 4""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).lastIndexOf("5")""" shouldNot typeCheck
+      val es = Every("one", "two", "three")
+      es.lastIndexOf("one") shouldBe 0
+      es.lastIndexOf("two") shouldBe 1
+      es.lastIndexOf("three") shouldBe 2
+      es.lastIndexOf("three", 1) shouldBe -1
+      es.lastIndexOf("ONE") shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.lastIndexOf("one") shouldBe 0;
+        es.lastIndexOf("ONE") shouldBe -1
+      }
+    }
 
 /*
     Every(1, 2, 3, 4, 5).lastIndexOf("six") shouldBe -1

@@ -126,6 +126,71 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         ListBuffer(mac, navel).sIndexOf(navel, 1) shouldBe 1
       }
     }
+
+    object `allow type checked lastIndexOf` {
+      def `on Array` {
+
+        Array(1, 2, 3).sLastIndexOf(1) shouldBe 0
+        Array(1, 2, 3).sLastIndexOf(2) shouldBe 1
+        Array(1, 2, 3).sLastIndexOf(3) shouldBe 2
+        Array(1, 2, 3).sLastIndexOf(1, 0) shouldBe 0
+        Array(1, 2, 3).sLastIndexOf(3, 1) shouldBe -1
+        Array(1, 2, 3).sLastIndexOf(5) shouldBe -1
+        """Array(1, 2, 3).sLastIndexOf("1")""" shouldNot typeCheck
+
+        Array(mac, navel).sLastIndexOf(mac) shouldBe 0
+        Array(mac, navel).sLastIndexOf(navel) shouldBe 1
+        Array(mac, navel).sLastIndexOf(mac, 1) shouldBe 0
+        Array(mac, navel).sLastIndexOf(navel, 0) shouldBe -1
+      }
+      def `on List` {
+
+        List(1, 2, 3).sLastIndexOf(1) shouldBe 0
+        List(1, 2, 3).sLastIndexOf(2) shouldBe 1
+        List(1, 2, 3).sLastIndexOf(3) shouldBe 2
+        List(1, 2, 3).sLastIndexOf(1, 0) shouldBe 0
+        List(1, 2, 3).sLastIndexOf(3, 1) shouldBe -1
+        List(1, 2, 3).sLastIndexOf(5) shouldBe -1
+        """List(1, 2, 3).sLastIndexOf("1")""" shouldNot typeCheck
+
+        List(mac, navel).sLastIndexOf(mac) shouldBe 0
+        List(mac, navel).sLastIndexOf(navel) shouldBe 1
+        List(mac, navel).sLastIndexOf(mac, 1) shouldBe 0
+        List(mac, navel).sLastIndexOf(navel, 0) shouldBe -1
+      }
+      def `on Vector` {
+
+        Vector(1, 2, 3).sLastIndexOf(1) shouldBe 0
+        Vector(1, 2, 3).sLastIndexOf(2) shouldBe 1
+        Vector(1, 2, 3).sLastIndexOf(3) shouldBe 2
+        Vector(1, 2, 3).sLastIndexOf(1, 0) shouldBe 0
+        Vector(1, 2, 3).sLastIndexOf(3, 1) shouldBe -1
+        Vector(1, 2, 3).sLastIndexOf(5) shouldBe -1
+        """Vector(1, 2, 3).sLastIndexOf("1")""" shouldNot typeCheck
+
+        Vector(mac, navel).sLastIndexOf(mac) shouldBe 0
+        Vector(mac, navel).sLastIndexOf(navel) shouldBe 1
+        Vector(mac, navel).sLastIndexOf(mac, 1) shouldBe 0
+        Vector(mac, navel).sLastIndexOf(navel, 0) shouldBe -1
+      }
+      def `on ListBuffer` {
+
+        import scala.collection.mutable.ListBuffer
+
+        ListBuffer(1, 2, 3).sLastIndexOf(1) shouldBe 0
+        ListBuffer(1, 2, 3).sLastIndexOf(2) shouldBe 1
+        ListBuffer(1, 2, 3).sLastIndexOf(3) shouldBe 2
+        ListBuffer(1, 2, 3).sLastIndexOf(1, 0) shouldBe 0
+        ListBuffer(1, 2, 3).sLastIndexOf(3, 1) shouldBe -1
+        ListBuffer(1, 2, 3).sLastIndexOf(5) shouldBe -1
+        """ListBuffer(1, 2, 3).sLastIndexOf("1")""" shouldNot typeCheck
+
+        ListBuffer(mac, navel).sLastIndexOf(mac) shouldBe 0
+        ListBuffer(mac, navel).sLastIndexOf(navel) shouldBe 1
+        ListBuffer(mac, navel).sLastIndexOf(mac, 1) shouldBe 0
+        ListBuffer(mac, navel).sLastIndexOf(navel, 0) shouldBe -1
+      }
+    }
   }
 }
 

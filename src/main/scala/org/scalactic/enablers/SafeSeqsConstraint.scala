@@ -26,10 +26,9 @@ trait SafeSeqsConstraint[-C, R] {
 
   def contains(container: C, element: R): Boolean
   def indexOf(container: C, element: R, from: Int): Int
+  def lastIndexOf(container: C, element: R, end: Int): Int
 
 /*
-
-  def lastIndexOf(container: C, element: R, from: Int): Boolean
   def indexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
   def lastIndexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
 */
@@ -48,6 +47,8 @@ object SafeSeqsConstraint {
       }
       def indexOf(genSeq: GENSEQ[E], element: R, from: Int): Int =
         genSeq.indexOf(element, from)
+      def lastIndexOf(genSeq: GENSEQ[E], element: R, end: Int): Int =
+        genSeq.lastIndexOf(element, end)
     }
   implicit def containingNatureOfArray[E, ARRAY[e] <: Array[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[ARRAY[E], R] = 
     new SafeSeqsConstraint[ARRAY[E], R] {
@@ -56,6 +57,8 @@ object SafeSeqsConstraint {
       }
       def indexOf(array: ARRAY[E], element: R, from: Int): Int =
         array.indexOf(element, from)
+      def lastIndexOf(array: ARRAY[E], element: R, end: Int): Int =
+        array.lastIndexOf(element, end)
     }
   implicit def containingNatureOfEvery[E, EVERY[e] <: Every[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[EVERY[E], R] = 
     new SafeSeqsConstraint[EVERY[E], R] {
@@ -64,6 +67,8 @@ object SafeSeqsConstraint {
       }
       def indexOf(every: EVERY[E], element: R, from: Int): Int =
         every.toVector.indexOf(element, from)
+      def lastIndexOf(every: EVERY[E], element: R, end: Int): Int =
+        every.toVector.lastIndexOf(element, end)
     }
 }
 

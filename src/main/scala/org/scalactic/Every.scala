@@ -702,7 +702,8 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return the index of the last element of this <code>Every</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def lastIndexOf[U >: T](elem: U): Int = underlying.lastIndexOf(elem)
+  final def lastIndexOf[U >: T](elem: U)(implicit ev: SafeSeqsConstraint[Every[T], U]): Int =
+    ev.lastIndexOf(this, elem, length - 1)
 
   /**
    * Finds the index of the last occurrence of some value in this <code>Every</code> before or at a given <code>end</code> index.
@@ -712,7 +713,8 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>Every</code> that is equal (as determined by <code>==</code>)
    *     to <code>elem</code>, or <code>-1</code>, if none exists.
    */
-  final def lastIndexOf[U >: T](elem: U, end: Int): Int = underlying.lastIndexOf(elem, end)
+  final def lastIndexOf[U >: T](elem: U, end: Int)(implicit ev: SafeSeqsConstraint[Every[T], U]): Int =
+    ev.lastIndexOf(this, elem, end)
 
   /**
    * Finds the last index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice. 

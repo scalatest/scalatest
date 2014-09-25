@@ -31,6 +31,10 @@ trait SafeSeqs {
       ev.indexOf(leftSideGenSeq, rightSideEle, from)
     def sIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.indexOf(leftSideGenSeq, rightSideEle, 0)
+    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+      ev.lastIndexOf(leftSideGenSeq, rightSideEle, end)
+    def sLastIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+      ev.lastIndexOf(leftSideGenSeq, rightSideEle, leftSideGenSeq.length - 1)
   }
   implicit class InvariantSeqContainifier[E, SEQ[e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
     def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
@@ -42,6 +46,10 @@ trait SafeSeqs {
       leftSideGenSeq.indexOf(rightSideEle, from)
     def sIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideGenSeq.indexOf(rightSideEle, 0)
+    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
+      leftSideGenSeq.lastIndexOf(rightSideEle, end)
+    def sLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+      leftSideGenSeq.lastIndexOf(rightSideEle, leftSideGenSeq.length - 1)
   }
   implicit class ArrayContainifier[E, ARRAY[e] <: Array[e]](leftSideArray: ARRAY[E]) {
     def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
@@ -50,6 +58,10 @@ trait SafeSeqs {
       leftSideArray.indexOf(rightSideEle, from)
     def sIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideArray.indexOf(rightSideEle)
+    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
+      leftSideArray.lastIndexOf(rightSideEle, end)
+    def sLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+      leftSideArray.lastIndexOf(rightSideEle)
   }
 }
 
