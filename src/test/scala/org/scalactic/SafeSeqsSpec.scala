@@ -26,7 +26,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
   val navel = Orange("Navel")
 
   object `The sContains syntax should` {
-    def `allow type checked containership tests` {
+    object `allow type checked containership tests` {
       def `on Array` {
 
         (Array(1, 2, 3) sContains 1) shouldBe true
@@ -60,6 +60,70 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         """ListBuffer(1, 2, 3) sContains "1"""" shouldNot typeCheck
 
         ListBuffer(mac, navel) sContains mac
+      }
+    }
+    object `allow type checked indexOf` {
+      def `on Array` {
+
+        Array(1, 2, 3).sIndexOf(1) shouldBe 0
+        Array(1, 2, 3).sIndexOf(2) shouldBe 1
+        Array(1, 2, 3).sIndexOf(3) shouldBe 2
+        Array(1, 2, 3).sIndexOf(1, 0) shouldBe 0
+        Array(1, 2, 3).sIndexOf(1, 1) shouldBe -1
+        Array(1, 2, 3).sIndexOf(5) shouldBe -1
+        """Array(1, 2, 3).sIndexOf("1")""" shouldNot typeCheck
+
+        Array(mac, navel).sIndexOf(mac) shouldBe 0
+        Array(mac, navel).sIndexOf(navel) shouldBe 1
+        Array(mac, navel).sIndexOf(mac, 1) shouldBe -1
+        Array(mac, navel).sIndexOf(navel, 1) shouldBe 1
+      }
+      def `on List` {
+
+        List(1, 2, 3).sIndexOf(1) shouldBe 0
+        List(1, 2, 3).sIndexOf(2) shouldBe 1
+        List(1, 2, 3).sIndexOf(3) shouldBe 2
+        List(1, 2, 3).sIndexOf(1, 0) shouldBe 0
+        List(1, 2, 3).sIndexOf(1, 1) shouldBe -1
+        List(1, 2, 3).sIndexOf(5) shouldBe -1
+        """List(1, 2, 3).sIndexOf("1")""" shouldNot typeCheck
+
+        List(mac, navel).sIndexOf(mac) shouldBe 0
+        List(mac, navel).sIndexOf(navel) shouldBe 1
+        List(mac, navel).sIndexOf(mac, 1) shouldBe -1
+        List(mac, navel).sIndexOf(navel, 1) shouldBe 1
+      }
+      def `on Vector` {
+
+        Vector(1, 2, 3).sIndexOf(1) shouldBe 0
+        Vector(1, 2, 3).sIndexOf(2) shouldBe 1
+        Vector(1, 2, 3).sIndexOf(3) shouldBe 2
+        Vector(1, 2, 3).sIndexOf(1, 0) shouldBe 0
+        Vector(1, 2, 3).sIndexOf(1, 1) shouldBe -1
+        Vector(1, 2, 3).sIndexOf(5) shouldBe -1
+        """Vector(1, 2, 3).sIndexOf("1")""" shouldNot typeCheck
+
+        Vector(mac, navel).sIndexOf(mac) shouldBe 0
+        Vector(mac, navel).sIndexOf(navel) shouldBe 1
+        Vector(mac, navel).sIndexOf(mac, 1) shouldBe -1
+        Vector(mac, navel).sIndexOf(navel, 1) shouldBe 1
+      }
+      def `on ListBuffer` {
+
+        import scala.collection.mutable.ListBuffer
+
+        ListBuffer(1, 2, 3).sIndexOf(1) shouldBe 0
+        ListBuffer(1, 2, 3).sIndexOf(2) shouldBe 1
+        ListBuffer(1, 2, 3).sIndexOf(3) shouldBe 2
+        ListBuffer(1, 2, 3).sIndexOf(1, 0) shouldBe 0
+        ListBuffer(1, 2, 3).sIndexOf(1, 1) shouldBe -1
+        ListBuffer(1, 2, 3).sIndexOf(5) shouldBe -1
+        """ListBuffer(1, 2, 3).sIndexOf("1")""" shouldNot typeCheck
+
+        ListBuffer(mac, navel).sIndexOf(mac) shouldBe 0
+        ListBuffer(mac, navel).sIndexOf(navel) shouldBe 1
+        ListBuffer(mac, navel).sIndexOf(mac, 1) shouldBe -1
+        ListBuffer(mac, navel).sIndexOf(navel, 1) shouldBe 1
       }
     }
   }

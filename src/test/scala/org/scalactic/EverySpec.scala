@@ -488,6 +488,20 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf(6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
 
+    """Every(1, 2, 3, 4, 5).indexOf("five") shouldBe false""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).contains("five")""" shouldNot typeCheck
+      val es = Every("one", "two", "three")
+      es.indexOf("one") shouldBe 0;
+      es.indexOf("one", 1) shouldBe -1
+      es.indexOf("ONE") shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.indexOf("one") shouldBe 0;
+        es.indexOf("ONE") shouldBe -1
+      }
+    }
+
 /*
     Every(1, 2, 3, 4, 5).indexOf("six") shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf("five", 3) shouldBe -1

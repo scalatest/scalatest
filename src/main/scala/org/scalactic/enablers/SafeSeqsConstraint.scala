@@ -25,9 +25,10 @@ import scala.language.higherKinds
 trait SafeSeqsConstraint[-C, R] {
 
   def contains(container: C, element: R): Boolean
+  def indexOf(container: C, element: R, from: Int): Int
 
 /*
-  def indexOf(container: C, element: R, from: Int): Boolean
+
   def lastIndexOf(container: C, element: R, from: Int): Boolean
   def indexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
   def lastIndexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
@@ -45,18 +46,24 @@ object SafeSeqsConstraint {
           case _ => genSeq.exists(_ == ele)
         }
       }
+      def indexOf(genSeq: GENSEQ[E], element: R, from: Int): Int =
+        genSeq.indexOf(element, from)
     }
   implicit def containingNatureOfArray[E, ARRAY[e] <: Array[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[ARRAY[E], R] = 
     new SafeSeqsConstraint[ARRAY[E], R] {
       def contains(array: ARRAY[E], ele: R): Boolean = {
         array.contains(ele)
       }
+      def indexOf(array: ARRAY[E], element: R, from: Int): Int =
+        array.indexOf(element, from)
     }
   implicit def containingNatureOfEvery[E, EVERY[e] <: Every[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[EVERY[E], R] = 
     new SafeSeqsConstraint[EVERY[E], R] {
       def contains(every: EVERY[E], ele: R): Boolean = {
         every.toVector.contains(ele)
       }
+      def indexOf(every: EVERY[E], element: R, from: Int): Int =
+        every.toVector.indexOf(element, from)
     }
 }
 
