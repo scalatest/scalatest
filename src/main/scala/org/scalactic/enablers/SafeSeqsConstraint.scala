@@ -27,16 +27,16 @@ trait SafeSeqsConstraint[-C, R] {
   def contains(container: C, element: R): Boolean
   def indexOf(container: C, element: R, from: Int): Int
   def lastIndexOf(container: C, element: R, end: Int): Int
+  def indexOfSlice(container: C, slice: scala.collection.GenSeq[R], from: Int): Int
 
 /*
-  def indexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
   def lastIndexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
 */
 }
 
 
 object SafeSeqsConstraint {
-  
+
   implicit def containingNatureOfGenSeq[E, GENSEQ[e] <: scala.collection.GenSeq[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[GENSEQ[E], R] = 
     new SafeSeqsConstraint[GENSEQ[E], R] {
       def contains(genSeq: GENSEQ[E], ele: R): Boolean = {
@@ -49,6 +49,8 @@ object SafeSeqsConstraint {
         genSeq.indexOf(element, from)
       def lastIndexOf(genSeq: GENSEQ[E], element: R, end: Int): Int =
         genSeq.lastIndexOf(element, end)
+      def indexOfSlice(genSeq: GENSEQ[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        genSeq.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
     }
   implicit def containingNatureOfArray[E, ARRAY[e] <: Array[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[ARRAY[E], R] = 
     new SafeSeqsConstraint[ARRAY[E], R] {
@@ -59,6 +61,8 @@ object SafeSeqsConstraint {
         array.indexOf(element, from)
       def lastIndexOf(array: ARRAY[E], element: R, end: Int): Int =
         array.lastIndexOf(element, end)
+      def indexOfSlice(array: ARRAY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        array.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
     }
   implicit def containingNatureOfEvery[E, EVERY[e] <: Every[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[EVERY[E], R] = 
     new SafeSeqsConstraint[EVERY[E], R] {
@@ -69,6 +73,8 @@ object SafeSeqsConstraint {
         every.toVector.indexOf(element, from)
       def lastIndexOf(every: EVERY[E], element: R, end: Int): Int =
         every.toVector.lastIndexOf(element, end)
+      def indexOfSlice(every: EVERY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        every.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
     }
 }
 

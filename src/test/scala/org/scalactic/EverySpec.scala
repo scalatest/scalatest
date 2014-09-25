@@ -533,6 +533,20 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
     Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+
+    """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.indexOfSlice(List("one", "two")) shouldBe 0;
+      es.indexOfSlice(List("one", "two"), 1) shouldBe -1
+      es.indexOfSlice(List("ONE", "TWO")) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.indexOfSlice(List("one", "two")) shouldBe 0;
+        es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
+      }
+    }
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
@@ -544,6 +558,20 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
+
+    """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.indexOfSlice(Every("one", "two")) shouldBe 0;
+      es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
+      es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.indexOfSlice(Every("one", "two")) shouldBe 0;
+        es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
+      }
+    }
   }
   it should "have 2 indexWhere methods" in {
     Every(1, 2, 3, 4, 5).indexWhere(_ == 3) shouldBe 2
