@@ -27,6 +27,12 @@ trait TestRegistration { theSuite: Suite =>
    */
   type Registration
 
+  /**
+   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
+   *
+   * @param testFun test function
+   * @return function that returns `AsyncOutcome`
+   */
   protected def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
     () =>
       PastOutcome {
