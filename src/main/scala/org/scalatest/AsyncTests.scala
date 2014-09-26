@@ -20,5 +20,7 @@ import scala.concurrent.Future
 trait AsyncTests extends SuiteMixin with AsyncFixtures { this: Suite with TestRegistration =>
   type Registration = Future[Unit]
 
+  import scala.language.implicitConversions
+
   implicit def convertToFuture(o: Any): Future[Unit] = Future { o }
 }
