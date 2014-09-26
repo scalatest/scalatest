@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalatest.OutcomeOf._
+
 /**
  * Trait for test registration support.
  */
@@ -24,6 +26,12 @@ trait TestRegistration { theSuite: Suite =>
    * The return type of the registered test.
    */
   type Registration
+
+  protected def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
+    () =>
+      PastOutcome {
+        outcomeOf { testFun }
+      }
 
   /**
    * Register a test.
