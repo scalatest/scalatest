@@ -51,7 +51,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait FunSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureSpecMod", "FixtureFunSpec")
+  protected[scalatest] final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureSpecMod", "FixtureFunSpec")
   import engine._
   
   private[scalatest] val sourceFileName = "FunSpecRegistration.scala"
@@ -99,11 +99,11 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 1, 0, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 1, 0, None, testTags: _*)
   }
 
   /**
@@ -148,8 +148,8 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+      engine.registerTest(specText, transformToOutcome(testFun), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -261,8 +261,8 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+      engine.registerTest(specText, transformToOutcome(testFun), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -350,8 +350,8 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 6, -2, None, testTags: _*)
+  protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 6, -2, None, testTags: _*)
   }
 
   /**
@@ -371,7 +371,7 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String)(testFun: FixtureParam => Any) {
+  protected def ignore(specText: String)(testFun: FixtureParam => Registration) {
     if (atomic.get.registrationClosed)
       throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideAnItOrAThey"), getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
