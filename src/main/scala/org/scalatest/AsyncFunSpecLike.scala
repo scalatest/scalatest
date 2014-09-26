@@ -20,7 +20,7 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with OneInstancePerTest {
 
-  override protected def transformFun(testFun: => Future[Unit]): () => AsyncOutcome =
+  override protected def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
     () => {
       val futureUnit = testFun
       FutureOutcome(

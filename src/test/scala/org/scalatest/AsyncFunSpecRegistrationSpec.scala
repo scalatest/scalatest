@@ -21,7 +21,7 @@ class AsyncFunSpecRegistrationSpec extends FunSpec {
 
         implicit def convertToFuture(o: ConcurrentTestResult): Future[ConcurrentTestResult] = Future { o }
 
-        override protected def transformFun(testFun: => Future[ConcurrentTestResult]): () => AsyncOutcome =
+        override protected def transformToOutcome(testFun: => Future[ConcurrentTestResult]): () => AsyncOutcome =
           () => {
             val futureResult = testFun
             FutureOutcome(
