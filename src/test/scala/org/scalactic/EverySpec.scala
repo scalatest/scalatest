@@ -681,6 +681,20 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List.empty) shouldBe 5
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List.empty, 6) shouldBe 5
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List.empty, 4) shouldBe 4
+
+    """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.lastIndexOfSlice(List("one", "two")) shouldBe 0;
+      es.lastIndexOfSlice(List("two", "three"), 0) shouldBe -1
+      es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.lastIndexOfSlice(List("one", "two")) shouldBe 0;
+        es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
+      }
+    }
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(2, 3)) shouldBe 1
@@ -692,6 +706,20 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe 0
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe -1
+
+    """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+    new CheckedEquality {
+      """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+      val es = Every("one", "two", "three", "four", "five")
+      es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
+      es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
+      es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1;
+      {
+        implicit val strEq = StringNormalizations.lowerCased.toEquality
+        es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
+        es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
+      }
+    }
   }
   it should "have 2 lastIndexWhere methods" in {
     Every(1, 2, 3, 4, 5).lastIndexWhere(_ == 2) shouldBe 1

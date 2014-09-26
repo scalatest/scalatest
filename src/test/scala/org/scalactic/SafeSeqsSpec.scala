@@ -300,6 +300,139 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         """ListBuffer("1", "2", "3", "4", "5").sIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
     }
+
+    object `allow type checked lastIndexOfSlice` {
+      def `on Array` {
+
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3)) shouldBe 1
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3), 3) shouldBe 1
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5), 3) shouldBe -1
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5)) shouldBe -1
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(5)) shouldBe 4
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe 0
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe -1
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty) shouldBe 5
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty, 6) shouldBe 5
+        Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty, 4) shouldBe 4
+
+        """Array(1, 2, 3, 4, 5).sLastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3")) shouldBe 1
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3"), 3) shouldBe 1
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5"), 3) shouldBe -1
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5")) shouldBe -1
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("5")) shouldBe 4
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5")) shouldBe 0
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 0) shouldBe 0
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 1) shouldBe 0
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), -1) shouldBe -1
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty) shouldBe 5
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty, 6) shouldBe 5
+        Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty, 4) shouldBe 4
+
+        """Array("1", "2", "3", "4", "5").sLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
+      }
+      def `on List` {
+
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3)) shouldBe 1
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3), 3) shouldBe 1
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5), 3) shouldBe -1
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5)) shouldBe -1
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(5)) shouldBe 4
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe 0
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe -1
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int]) shouldBe 5
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int], 6) shouldBe 5
+        List(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int], 4) shouldBe 4
+
+        """List(1, 2, 3, 4, 5).sLastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3")) shouldBe 1
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3"), 3) shouldBe 1
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5"), 3) shouldBe -1
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5")) shouldBe -1
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("5")) shouldBe 4
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5")) shouldBe 0
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 0) shouldBe 0
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 1) shouldBe 0
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), -1) shouldBe -1
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String]) shouldBe 5
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String], 6) shouldBe 5
+        List("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String], 4) shouldBe 4
+
+        """List("1", "2", "3", "4", "5").sLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
+      }
+      def `on Vector` {
+
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3)) shouldBe 1
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3), 3) shouldBe 1
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5), 3) shouldBe -1
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5)) shouldBe -1
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(5)) shouldBe 4
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe 0
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe -1
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int]) shouldBe 5
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int], 6) shouldBe 5
+        Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty[Int], 4) shouldBe 4
+
+        """Vector(1, 2, 3, 4, 5).sLastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3")) shouldBe 1
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3"), 3) shouldBe 1
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5"), 3) shouldBe -1
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5")) shouldBe -1
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("5")) shouldBe 4
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5")) shouldBe 0
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 0) shouldBe 0
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 1) shouldBe 0
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), -1) shouldBe -1
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String]) shouldBe 5
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String], 6) shouldBe 5
+        Vector("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty[String], 4) shouldBe 4
+
+        """List("1", "2", "3", "4", "5").sLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
+      }
+      def `on ListBuffer` {
+
+        import scala.collection.mutable.ListBuffer
+
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3)) shouldBe 1
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3), 3) shouldBe 1
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5), 3) shouldBe -1
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(2, 3, 5)) shouldBe -1
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(5)) shouldBe 4
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe 0
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe -1
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty) shouldBe 5
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty, 6) shouldBe 5
+        ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List.empty, 4) shouldBe 4
+
+        """ListBuffer(1, 2, 3, 4, 5).sLastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3")) shouldBe 1
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3"), 3) shouldBe 1
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5"), 3) shouldBe -1
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("2", "3", "5")) shouldBe -1
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("5")) shouldBe 4
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5")) shouldBe 0
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 0) shouldBe 0
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), 1) shouldBe 0
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List("1", "2", "3", "4", "5"), -1) shouldBe -1
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty) shouldBe 5
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty, 6) shouldBe 5
+        ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List.empty, 4) shouldBe 4
+
+        """ListBuffer("1", "2", "3", "4", "5").sLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
+      }
+    }
   }
 }
 

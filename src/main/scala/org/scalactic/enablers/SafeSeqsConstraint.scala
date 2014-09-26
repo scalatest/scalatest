@@ -28,10 +28,8 @@ trait SafeSeqsConstraint[-C, R] {
   def indexOf(container: C, element: R, from: Int): Int
   def lastIndexOf(container: C, element: R, end: Int): Int
   def indexOfSlice(container: C, slice: scala.collection.GenSeq[R], from: Int): Int
+  def lastIndexOfSlice(container: C, slice: scala.collection.GenSeq[R], from: Int): Int
 
-/*
-  def lastIndexOfSlice(container: C, slice: GenTraversable[R], from: Int): Boolean
-*/
 }
 
 
@@ -51,6 +49,8 @@ object SafeSeqsConstraint {
         genSeq.lastIndexOf(element, end)
       def indexOfSlice(genSeq: GENSEQ[E], slice: scala.collection.GenSeq[R], from: Int): Int =
         genSeq.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
+      def lastIndexOfSlice(genSeq: GENSEQ[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        genSeq.toStream.lastIndexOfSlice(slice, if (from < 0) 0 else from)
     }
   implicit def containingNatureOfArray[E, ARRAY[e] <: Array[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[ARRAY[E], R] = 
     new SafeSeqsConstraint[ARRAY[E], R] {
@@ -62,7 +62,9 @@ object SafeSeqsConstraint {
       def lastIndexOf(array: ARRAY[E], element: R, end: Int): Int =
         array.lastIndexOf(element, end)
       def indexOfSlice(array: ARRAY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
-        array.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
+        array.indexOfSlice(slice, if (from < 0) 0 else from)
+      def lastIndexOfSlice(array: ARRAY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        array.lastIndexOfSlice(slice, if (from < 0) 0 else from)
     }
   implicit def containingNatureOfEvery[E, EVERY[e] <: Every[e], R](implicit constraint: R <:< E): SafeSeqsConstraint[EVERY[E], R] = 
     new SafeSeqsConstraint[EVERY[E], R] {
@@ -75,6 +77,8 @@ object SafeSeqsConstraint {
         every.toVector.lastIndexOf(element, end)
       def indexOfSlice(every: EVERY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
         every.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
+      def lastIndexOfSlice(every: EVERY[E], slice: scala.collection.GenSeq[R], from: Int): Int =
+        every.toStream.lastIndexOfSlice(slice, if (from < 0) 0 else from)
     }
 }
 
