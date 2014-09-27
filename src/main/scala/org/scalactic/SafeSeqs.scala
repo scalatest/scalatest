@@ -22,72 +22,72 @@ import scala.collection.Seq
 
 trait SafeSeqs {
   implicit class CovariantSeqContainifier[E, SEQ[+e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
-    def sContains[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Boolean =
+    def safeContains[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Boolean =
       leftSideGenSeq match {
         case seq: Seq[_] => seq.contains(rightSideEle)
         case _ => leftSideGenSeq.exists(_ == rightSideEle)
       }
-    def sIndexOf[R](rightSideEle: R, from: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeIndexOf[R](rightSideEle: R, from: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.indexOf(leftSideGenSeq, rightSideEle, from)
-    def sIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.indexOf(leftSideGenSeq, rightSideEle, 0)
-    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.lastIndexOf(leftSideGenSeq, rightSideEle, end)
-    def sLastIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeLastIndexOf[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.lastIndexOf(leftSideGenSeq, rightSideEle, leftSideGenSeq.length - 1)
-    def sIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.indexOfSlice(leftSideGenSeq, slice, if (from < 0) 0 else from)
-    def sIndexOfSlice[R](slice: GenSeq[R])(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R])(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.indexOfSlice(leftSideGenSeq, slice, 0)
-    def sLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       ev.lastIndexOfSlice(leftSideGenSeq, slice, leftSideGenSeq.length)
-    def sLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Int =
       if (end < 0)
         -1
       else
         ev.lastIndexOfSlice(leftSideGenSeq, slice, end)
   }
   implicit class InvariantSeqContainifier[E, SEQ[e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
-    def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
+    def safeContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
       leftSideGenSeq match {
         case seq: Seq[_] => seq.contains(rightSideEle)
         case _ => leftSideGenSeq.exists(_ == rightSideEle)
       }
-    def sIndexOf[R](rightSideEle: R, from: Int)(implicit ev: R <:< E): Int =
+    def safeIndexOf[R](rightSideEle: R, from: Int)(implicit ev: R <:< E): Int =
       leftSideGenSeq.indexOf(rightSideEle, from)
-    def sIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+    def safeIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideGenSeq.indexOf(rightSideEle, 0)
-    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
+    def safeLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
       leftSideGenSeq.lastIndexOf(rightSideEle, end)
-    def sLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+    def safeLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideGenSeq.lastIndexOf(rightSideEle, leftSideGenSeq.length - 1)
-    def sIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: R <:< E): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: R <:< E): Int =
       leftSideGenSeq.toStream.indexOfSlice(slice, if (from < 0) 0 else from)
-    def sIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
       leftSideGenSeq.toStream.indexOfSlice(slice, 0)
-    def sLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
       leftSideGenSeq.toStream.lastIndexOfSlice(slice, leftSideGenSeq.length)
-    def sLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: R <:< E): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: R <:< E): Int =
       leftSideGenSeq.toStream.lastIndexOfSlice(slice, end)
   }
   implicit class ArrayContainifier[E, ARRAY[e] <: Array[e]](leftSideArray: ARRAY[E]) {
-    def sContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
+    def safeContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
       leftSideArray.contains(rightSideEle)
-    def sIndexOf[R](rightSideEle: R, from: Int)(implicit ev: R <:< E): Int =
+    def safeIndexOf[R](rightSideEle: R, from: Int)(implicit ev: R <:< E): Int =
       leftSideArray.indexOf(rightSideEle, from)
-    def sIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+    def safeIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideArray.indexOf(rightSideEle)
-    def sLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
+    def safeLastIndexOf[R](rightSideEle: R, end: Int)(implicit ev: R <:< E): Int =
       leftSideArray.lastIndexOf(rightSideEle, end)
-    def sLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
+    def safeLastIndexOf[R](rightSideEle: R)(implicit ev: R <:< E): Int =
       leftSideArray.lastIndexOf(rightSideEle)
-    def sIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: R <:< E): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R], from: Int)(implicit ev: R <:< E): Int =
       leftSideArray.indexOfSlice(slice, if (from < 0) 0 else from)
-    def sIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
+    def safeIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
       leftSideArray.indexOfSlice(slice, 0)
-    def sLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R])(implicit ev: R <:< E): Int =
       leftSideArray.lastIndexOfSlice(slice, leftSideArray.length)
-    def sLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: R <:< E): Int =
+    def safeLastIndexOfSlice[R](slice: GenSeq[R], end: Int)(implicit ev: R <:< E): Int =
       leftSideArray.lastIndexOfSlice(slice, end)
   }
 }
