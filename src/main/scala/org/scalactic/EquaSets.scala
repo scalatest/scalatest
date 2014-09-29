@@ -1434,7 +1434,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filter(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
-    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toList))
+    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toList))
     /*
     // This is the problem with using an implicit EquaSet. We need the path defined before we can use
     // it in the function. So into is the only way to get for expressions.
