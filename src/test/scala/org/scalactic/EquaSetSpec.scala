@@ -173,7 +173,7 @@ class EquaSetSpec extends UnitSpec {
     result6 shouldBe trimmed.FastEquaSet()
     result6.shouldHaveExactType[trimmed.FastEquaSet]
 
-    """lower.EquaSet(" hi ", "hi") &~ trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+    """lower.FastEquaSet(" hi ", "hi") &~ trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.FastEquaSet("hi", "ho") &~ lower.FastEquaSet("ho")
     result7 shouldBe lower.FastEquaSet("hi")
@@ -184,11 +184,41 @@ class EquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have an intersect method that takes another EquaSet instance with the same path-dependant type" in {
-    lower.EquaSet("hi", "ho") intersect lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
-    trimmed.EquaSet("hi", "ho") intersect trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    val result1 = lower.EquaSet("hi", "ho") intersect lower.EquaSet("HI", "HO")
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = trimmed.EquaSet("hi", "ho") intersect trimmed.EquaSet(" hi ", " ho ")
+    result2 shouldBe trimmed.EquaSet("hi", "ho")
+    result2.shouldHaveExactType[trimmed.EquaSet]
+
     """lower.EquaSet(" hi ", "hi") intersect trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
-    lower.EquaSet("hi", "ho") intersect lower.EquaSet("ho") shouldBe lower.EquaSet("ho")
-    lower.EquaSet("hi", "ho", "let's", "go") intersect lower.EquaSet("bo", "no", "go", "ho") shouldBe lower.EquaSet("ho", "go")
+
+    val result3 = lower.EquaSet("hi", "ho") intersect lower.EquaSet("ho")
+    result3 shouldBe lower.EquaSet("ho")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.EquaSet("hi", "ho", "let's", "go") intersect lower.EquaSet("bo", "no", "go", "ho")
+    result4 shouldBe lower.EquaSet("ho", "go")
+    result4.shouldHaveExactType[lower.EquaSet]
+
+    val result5 = lower.FastEquaSet("hi", "ho") intersect lower.FastEquaSet("HI", "HO")
+    result5 shouldBe lower.FastEquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.FastEquaSet]
+
+    val result6 = trimmed.FastEquaSet("hi", "ho") intersect trimmed.FastEquaSet(" hi ", " ho ")
+    result6 shouldBe trimmed.FastEquaSet("hi", "ho")
+    result6.shouldHaveExactType[trimmed.FastEquaSet]
+
+    """lower.FastEquaSet(" hi ", "hi") intersect trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
+
+    val result7 = lower.FastEquaSet("hi", "ho") intersect lower.FastEquaSet("ho")
+    result7 shouldBe lower.FastEquaSet("ho")
+    result7.shouldHaveExactType[lower.FastEquaSet]
+
+    val result8 = lower.FastEquaSet("hi", "ho", "let's", "go") intersect lower.FastEquaSet("bo", "no", "go", "ho")
+    result8 shouldBe lower.FastEquaSet("ho", "go")
+    result8.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have an & method that takes another EquaSet instance with the same path-dependant type" in {
     lower.EquaSet("hi", "ho") & lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
