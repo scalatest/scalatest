@@ -431,13 +431,56 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have a drop method" in {
     val set = number.EquaSet(1, 2, 3, 4, 5)
+    val fastSet = number.FastEquaSet(1, 2, 3, 4, 5)
     val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
-    set.drop(0) shouldBe number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value, seq(4).value)
-    set.drop(1) shouldBe number.EquaSet(seq(1).value, seq(2).value, seq(3).value, seq(4).value)
-    set.drop(2) shouldBe number.EquaSet(seq(2).value, seq(3).value, seq(4).value)
-    set.drop(3) shouldBe number.EquaSet(seq(3).value, seq(4).value)
-    set.drop(4) shouldBe number.EquaSet(seq(4).value)
-    set.drop(5) shouldBe number.EquaSet()
+
+    val result1 = set.drop(0)
+    result1 shouldBe number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = set.drop(1)
+    result2 shouldBe number.EquaSet(seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = set.drop(2)
+    result3 shouldBe number.EquaSet(seq(2).value, seq(3).value, seq(4).value)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = set.drop(3)
+    result4 shouldBe number.EquaSet(seq(3).value, seq(4).value)
+    result4.shouldHaveExactType[number.EquaSet]
+
+    val result5 = set.drop(4)
+    result5 shouldBe number.EquaSet(seq(4).value)
+    result5.shouldHaveExactType[number.EquaSet]
+
+    val result6 = set.drop(5)
+    result6 shouldBe number.EquaSet()
+    result6.shouldHaveExactType[number.EquaSet]
+
+    val result7 = fastSet.drop(0)
+    result7 shouldBe number.FastEquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    result7.shouldHaveExactType[number.FastEquaSet]
+
+    val result8 = fastSet.drop(1)
+    result8 shouldBe number.FastEquaSet(seq(1).value, seq(2).value, seq(3).value, seq(4).value)
+    result8.shouldHaveExactType[number.FastEquaSet]
+
+    val result9 = fastSet.drop(2)
+    result9 shouldBe number.FastEquaSet(seq(2).value, seq(3).value, seq(4).value)
+    result9.shouldHaveExactType[number.FastEquaSet]
+
+    val result10 = fastSet.drop(3)
+    result10 shouldBe number.FastEquaSet(seq(3).value, seq(4).value)
+    result10.shouldHaveExactType[number.FastEquaSet]
+
+    val result11 = fastSet.drop(4)
+    result11 shouldBe number.FastEquaSet(seq(4).value)
+    result11.shouldHaveExactType[number.FastEquaSet]
+
+    val result12 = fastSet.drop(5)
+    result12 shouldBe number.FastEquaSet()
+    result12.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a dropRight method" in {
     val set = number.EquaSet(1, 2, 3, 4, 5)
