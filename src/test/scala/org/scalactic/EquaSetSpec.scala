@@ -1129,11 +1129,29 @@ class EquaSetSpec extends UnitSpec {
     regCharsFromFor shouldBe upperChar.EquaSet('A', 'B', 'C')
   }
   it should "have a flatMap method" in {
-    number.EquaSet(1, 2, 3) flatMap (i => number.EquaSet(i + 1)) shouldBe number.EquaSet(2, 3, 4)
-    number.EquaSet(5) flatMap (i => number.EquaSet(i + 3)) shouldBe number.EquaSet(8)
+    val result1 = number.EquaSet(1, 2, 3) flatMap (i => number.EquaSet(i + 1))
+    result1 shouldBe number.EquaSet(2, 3, 4)
+
+    val result2 = number.EquaSet(5) flatMap (i => number.EquaSet(i + 3))
+    result2 shouldBe number.EquaSet(8)
+
     val ss = number.EquaSet(1, 2)
     val is = number.EquaSet(1, 2, 3)
-    (for (s <- ss; i <- is) yield s + i) shouldBe number.EquaSet(2, 3, 4, 3, 4, 5)
+
+    val result3 = (for (s <- ss; i <- is) yield s + i)
+    result3 shouldBe number.EquaSet(2, 3, 4, 3, 4, 5)
+
+    val result4 = number.FastEquaSet(1, 2, 3) flatMap (i => number.FastEquaSet(i + 1))
+    result4 shouldBe number.FastEquaSet(2, 3, 4)
+
+    val result5 = number.FastEquaSet(5) flatMap (i => number.FastEquaSet(i + 3))
+    result5 shouldBe number.FastEquaSet(8)
+
+    val fss = number.FastEquaSet(1, 2)
+    val fis = number.FastEquaSet(1, 2, 3)
+
+    val result6 = (for (s <- fss; i <- fis) yield s + i)
+    result6 shouldBe number.FastEquaSet(2, 3, 4, 3, 4, 5)
   }
   it should "have an into.flatten method that works on nested EquaSet" in {
 /*
