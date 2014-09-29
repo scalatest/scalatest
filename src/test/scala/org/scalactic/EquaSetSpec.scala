@@ -279,9 +279,25 @@ class EquaSetSpec extends UnitSpec {
     """lower.FastEquaSet(" hi ", "hi") union trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a | method that takes another EquaSet instance with the same path-dependant type" in {
-    lower.EquaSet("hi", "ho") | lower.EquaSet("HI", "HO") shouldBe lower.EquaSet("hi", "ho")
-    trimmed.EquaSet("hi", "ho") | trimmed.EquaSet(" hi ", " ho ") shouldBe trimmed.EquaSet("hi", "ho")
+    val result1 = lower.EquaSet("hi", "ho") | lower.EquaSet("HI", "HO")
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = trimmed.EquaSet("hi", "ho") | trimmed.EquaSet(" hi ", " ho ")
+    result2 shouldBe trimmed.EquaSet("hi", "ho")
+    result2.shouldHaveExactType[trimmed.EquaSet]
+
     """lower.EquaSet(" hi ", "hi") | trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
+
+    val result3 = lower.FastEquaSet("hi", "ho") | lower.FastEquaSet("HI", "HO")
+    result3 shouldBe lower.FastEquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    val result4 = trimmed.FastEquaSet("hi", "ho") | trimmed.FastEquaSet(" hi ", " ho ")
+    result4 shouldBe trimmed.FastEquaSet("hi", "ho")
+    result4.shouldHaveExactType[trimmed.FastEquaSet]
+
+    """lower.FastEquaSet(" hi ", "hi") | trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
     lower.EquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
