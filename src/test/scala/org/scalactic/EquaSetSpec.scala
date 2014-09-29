@@ -1278,16 +1278,67 @@ class EquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
   }
   it should "have a grouped method" in {
-    number.EquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
-    number.EquaSet(1, 2, 3).grouped(1).toList shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
+    val result1 = number.EquaSet(1, 2, 3).grouped(2).toList
+    result1 shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
+    result1.shouldHaveExactType[List[number.EquaSet]]
+
+    val result2 = number.EquaSet(1, 2, 3).grouped(1).toList
+    result2 shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
+    result2.shouldHaveExactType[List[number.EquaSet]]
+
     an [IllegalArgumentException] should be thrownBy { number.EquaSet(1, 2, 3).grouped(0).toList }
+
     val set = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    val fastSet = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     val seq = set.toSet.toSeq
-    set.grouped(2).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
-    set.grouped(3).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(3).value, seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value, seq(8).value), number.EquaSet(seq(9).value))
-    set.grouped(4).toList shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value, seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
-    number.EquaSet(1).grouped(2).toList shouldBe List(number.EquaSet(1))
-    number.EquaSet(1).grouped(1).toList shouldBe List(number.EquaSet(1))
+
+    val result3 = set.grouped(2).toList
+    result3 shouldBe List(number.EquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
+    result3.shouldHaveExactType[List[number.EquaSet]]
+
+    val result4 = set.grouped(3).toList
+    result4 shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value), number.EquaSet(seq(3).value, seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value, seq(8).value), number.EquaSet(seq(9).value))
+    result4.shouldHaveExactType[List[number.EquaSet]]
+
+    val result5 = set.grouped(4).toList
+    result5 shouldBe List(number.EquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value), number.EquaSet(seq(4).value, seq(5).value, seq(6).value, seq(7).value), number.EquaSet(seq(8).value, seq(9).value))
+    result5.shouldHaveExactType[List[number.EquaSet]]
+
+    val result6 = number.EquaSet(1).grouped(2).toList
+    result6 shouldBe List(number.EquaSet(1))
+    result6.shouldHaveExactType[List[number.EquaSet]]
+
+    val result7 = number.EquaSet(1).grouped(1).toList
+    result7 shouldBe List(number.EquaSet(1))
+    result7.shouldHaveExactType[List[number.EquaSet]]
+
+    val result8 = number.FastEquaSet(1, 2, 3).grouped(2).toList
+    result8 shouldBe List(number.FastEquaSet(1, 2), number.FastEquaSet(3))
+    result8.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result9 = number.FastEquaSet(1, 2, 3).grouped(1).toList
+    result9 shouldBe List(number.FastEquaSet(1), number.EquaSet(2), number.FastEquaSet(3))
+    result9.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result10 = fastSet.grouped(2).toList
+    result10 shouldBe List(number.FastEquaSet(seq(0).value, seq(1).value), number.EquaSet(seq(2).value, seq(3).value), number.FastEquaSet(seq(4).value, seq(5).value), number.EquaSet(seq(6).value, seq(7).value), number.FastEquaSet(seq(8).value, seq(9).value))
+    result10.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result11 = fastSet.grouped(3).toList
+    result11 shouldBe List(number.FastEquaSet(seq(0).value, seq(1).value, seq(2).value), number.FastEquaSet(seq(3).value, seq(4).value, seq(5).value), number.FastEquaSet(seq(6).value, seq(7).value, seq(8).value), number.FastEquaSet(seq(9).value))
+    result11.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result12 = fastSet.grouped(4).toList
+    result12 shouldBe List(number.FastEquaSet(seq(0).value, seq(1).value, seq(2).value, seq(3).value), number.FastEquaSet(seq(4).value, seq(5).value, seq(6).value, seq(7).value), number.FastEquaSet(seq(8).value, seq(9).value))
+    result12.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result13 = number.FastEquaSet(1).grouped(2).toList
+    result13 shouldBe List(number.FastEquaSet(1))
+    result13.shouldHaveExactType[List[number.FastEquaSet]]
+
+    val result14 = number.FastEquaSet(1).grouped(1).toList
+    result14 shouldBe List(number.FastEquaSet(1))
+    result14.shouldHaveExactType[List[number.FastEquaSet]]
   }
   it should "have a hasDefiniteSize method" in {
     number.EquaSet(1).hasDefiniteSize shouldBe true
