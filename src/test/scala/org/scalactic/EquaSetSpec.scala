@@ -303,8 +303,21 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
   }
   it should "have a + method that takes one argument" in {
-    lower.EquaSet("hi", "ho") + "ha" shouldBe lower.EquaSet("hi", "ho", "ha")
-    lower.EquaSet("hi", "ho") + "HO" shouldBe lower.EquaSet("hi", "ho")
+    val result1 = lower.EquaSet("hi", "ho") + "ha"
+    result1 shouldBe lower.EquaSet("hi", "ho", "ha")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho") + "HO"
+    result2 shouldBe lower.EquaSet("hi", "ho")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.FastEquaSet("hi", "ho") + "ha"
+    result3 shouldBe lower.FastEquaSet("hi", "ho", "ha")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    val result4 = lower.FastEquaSet("hi", "ho") + "HO"
+    result4 shouldBe lower.FastEquaSet("hi", "ho")
+    result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a + method that takes two or more arguments" in {
     lower.EquaSet("hi", "ho") + ("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
