@@ -1388,9 +1388,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def - (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
     def - (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
-    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
+    def --(elems: GenTraversableOnce[T]): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying -- elems.toList.map(EquaBox(_)))
-    def --(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+    def --(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquaBox) => op(b, e.value))

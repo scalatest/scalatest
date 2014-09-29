@@ -464,26 +464,134 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
-    lower.EquaSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
-    lower.EquaSet("hi", "ho") -- List("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") -- List("HI", "HO") shouldBe lower.EquaSet.empty
+    val result1 = lower.EquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
 
-    lower.EquaSet("hi", "ho", "ha") -- Set("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
-    lower.EquaSet("hi", "ho") -- Set("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") -- Set("HI", "HO") shouldBe lower.EquaSet.empty
+    val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
+    result2 shouldBe lower.EquaSet("hi", "fee", "foe")
+    result2.shouldHaveExactType[lower.EquaSet]
 
-    lower.EquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
-    lower.EquaSet("hi", "ho") -- Vector("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") -- Vector("HI", "HO") shouldBe lower.EquaSet.empty
+    val result3 = lower.EquaSet("hi", "ho") -- List("who", "goes", "thar")
+    result3 shouldBe lower.EquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.EquaSet("hi", "ho") -- List("HI", "HO")
+    result4 shouldBe lower.EquaSet.empty
+    result4.shouldHaveExactType[lower.EquaSet]
+
+    val result5 = lower.EquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
+    result5 shouldBe lower.EquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.EquaSet]
+
+    val result6 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
+    result6 shouldBe lower.EquaSet("hi", "fee", "foe")
+    result6.shouldHaveExactType[lower.EquaSet]
+
+    val result7 = lower.EquaSet("hi", "ho") -- Set("who", "goes", "thar")
+    result7 shouldBe lower.EquaSet("hi", "ho")
+    result7.shouldHaveExactType[lower.EquaSet]
+
+    val result8 = lower.EquaSet("hi", "ho") -- Set("HI", "HO")
+    result8 shouldBe lower.EquaSet.empty
+    result8.shouldHaveExactType[lower.EquaSet]
+
+    val result9 = lower.EquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
+    result9 shouldBe lower.EquaSet("hi", "ho")
+    result9.shouldHaveExactType[lower.EquaSet]
+
+    val result10 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
+    result10 shouldBe lower.EquaSet("hi", "fee", "foe")
+    result10.shouldHaveExactType[lower.EquaSet]
+
+    val result11 = lower.EquaSet("hi", "ho") -- Vector("who", "goes", "thar")
+    result11 shouldBe lower.EquaSet("hi", "ho")
+    result11.shouldHaveExactType[lower.EquaSet]
+
+    val result12 = lower.EquaSet("hi", "ho") -- Vector("HI", "HO")
+    result12 shouldBe lower.EquaSet.empty
+    result12.shouldHaveExactType[lower.EquaSet]
+
+    val result13 = lower.FastEquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
+    result13 shouldBe lower.FastEquaSet("hi", "ho")
+    result13.shouldHaveExactType[lower.FastEquaSet]
+
+    val result14 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
+    result14 shouldBe lower.FastEquaSet("hi", "fee", "foe")
+    result14.shouldHaveExactType[lower.FastEquaSet]
+
+    val result15 = lower.FastEquaSet("hi", "ho") -- List("who", "goes", "thar")
+    result15 shouldBe lower.FastEquaSet("hi", "ho")
+    result15.shouldHaveExactType[lower.FastEquaSet]
+
+    val result16 = lower.FastEquaSet("hi", "ho") -- List("HI", "HO")
+    result16 shouldBe lower.FastEquaSet.empty
+    result16.shouldHaveExactType[lower.FastEquaSet]
+
+    val result17 = lower.FastEquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
+    result17 shouldBe lower.FastEquaSet("hi", "ho")
+    result17.shouldHaveExactType[lower.FastEquaSet]
+
+    val result18 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
+    result18 shouldBe lower.FastEquaSet("hi", "fee", "foe")
+    result18.shouldHaveExactType[lower.FastEquaSet]
+
+    val result19 = lower.FastEquaSet("hi", "ho") -- Set("who", "goes", "thar")
+    result19 shouldBe lower.FastEquaSet("hi", "ho")
+    result19.shouldHaveExactType[lower.FastEquaSet]
+
+    val result20 = lower.FastEquaSet("hi", "ho") -- Set("HI", "HO")
+    result20 shouldBe lower.FastEquaSet.empty
+    result20.shouldHaveExactType[lower.FastEquaSet]
+
+    val result21 = lower.FastEquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
+    result21 shouldBe lower.FastEquaSet("hi", "ho")
+    result21.shouldHaveExactType[lower.FastEquaSet]
+
+    val result22 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
+    result22 shouldBe lower.FastEquaSet("hi", "fee", "foe")
+    result22.shouldHaveExactType[lower.FastEquaSet]
+
+    val result23 = lower.FastEquaSet("hi", "ho") -- Vector("who", "goes", "thar")
+    result23 shouldBe lower.FastEquaSet("hi", "ho")
+    result23.shouldHaveExactType[lower.FastEquaSet]
+
+    val result24 = lower.FastEquaSet("hi", "ho") -- Vector("HI", "HO")
+    result24 shouldBe lower.FastEquaSet.empty
+    result24.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a -- method that takes another EquaSet" in {
-    lower.EquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
-    lower.EquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") -- lower.EquaSet("HI", "HO") shouldBe lower.EquaSet.empty
+    val result1 = lower.EquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!")
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")
+    result2 shouldBe lower.EquaSet("hi", "fee", "foe")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.EquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar")
+    result3 shouldBe lower.EquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.EquaSet("hi", "ho") -- lower.EquaSet("HI", "HO")
+    result4 shouldBe lower.EquaSet.empty
+    result4.shouldHaveExactType[lower.EquaSet]
+
+    val result5 = lower.FastEquaSet("hi", "ho", "ha") -- lower.FastEquaSet("ha", "howdy!")
+    result5 shouldBe lower.FastEquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.FastEquaSet]
+
+    val result6 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.FastEquaSet("HO", "FIE", "fUm")
+    result6 shouldBe lower.FastEquaSet("hi", "fee", "foe")
+    result6.shouldHaveExactType[lower.FastEquaSet]
+
+    val result7 = lower.FastEquaSet("hi", "ho") -- lower.FastEquaSet("who", "goes", "thar")
+    result7 shouldBe lower.FastEquaSet("hi", "ho")
+    result7.shouldHaveExactType[lower.FastEquaSet]
+
+    val result8 = lower.FastEquaSet("hi", "ho") -- lower.FastEquaSet("HI", "HO")
+    result8 shouldBe lower.FastEquaSet.empty
+    result8.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a /: method" in {
     (0 /: number.EquaSet(1))(_ + _) shouldBe 1
