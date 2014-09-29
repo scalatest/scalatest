@@ -1363,11 +1363,44 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an inits method" in {
     val inits = number.EquaSet(1, 2, 3).inits
-    inits.next shouldBe number.EquaSet(1,2,3)
-    inits.next shouldBe number.EquaSet(1,2)
-    inits.next shouldBe number.EquaSet(1)
-    inits.next shouldBe number.EquaSet()
-    inits.hasNext shouldBe false
+    val result1 = inits.next
+    result1 shouldBe number.EquaSet(1,2,3)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = inits.next
+    result2 shouldBe number.EquaSet(1,2)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = inits.next
+    result3 shouldBe number.EquaSet(1)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = inits.next
+    result4 shouldBe number.EquaSet()
+    result4.shouldHaveExactType[number.EquaSet]
+
+    val result5 = inits.hasNext
+    result5 shouldBe false
+
+    val fastInits = number.FastEquaSet(1, 2, 3).inits
+    val result6 = fastInits.next
+    result6 shouldBe number.FastEquaSet(1,2,3)
+    result6.shouldHaveExactType[number.FastEquaSet]
+
+    val result7 = fastInits.next
+    result7 shouldBe number.FastEquaSet(1,2)
+    result7.shouldHaveExactType[number.FastEquaSet]
+
+    val result8 = fastInits.next
+    result8 shouldBe number.FastEquaSet(1)
+    result8.shouldHaveExactType[number.FastEquaSet]
+
+    val result9 = fastInits.next
+    result9 shouldBe number.FastEquaSet()
+    result9.shouldHaveExactType[number.FastEquaSet]
+
+    val result10 = fastInits.hasNext
+    result10 shouldBe false
   }
   it should "have an isTraversableAgain method" in {
     lower.EquaSet("hi").isTraversableAgain shouldBe true
