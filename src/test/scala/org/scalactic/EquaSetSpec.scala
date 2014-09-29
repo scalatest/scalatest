@@ -619,10 +619,24 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have a aggregate method" in {
     lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(lower.EquaSet())(_ + _, _ ++ _) shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
 
     lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
-    lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquaSet())(_ + _, _ ++ _) shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+
+    val result1 = lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(lower.EquaSet())(_ + _, _ ++ _)
+    result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquaSet())(_ + _, _ ++ _)
+    result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.FastEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.FastEquaSet())(_ + _, _ ++ _)
+    result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    val result4 = lower.FastEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.FastEquaSet())(_ + _, _ ++ _)
+    result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have an apply method" in {
     val a = number.EquaSet(1, 2, 3)
