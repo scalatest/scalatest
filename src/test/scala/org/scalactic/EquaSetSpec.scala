@@ -1054,9 +1054,31 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have a filterNot method" in {
     val set = number.EquaSet(1, 2, 3)
-    set.filterNot(_ == 1) shouldBe number.EquaSet(2, 3)
-    set.filterNot(_ == 2) shouldBe number.EquaSet(1, 3)
-    set.filterNot(_ == 3) shouldBe number.EquaSet(1, 2)
+    val fastSet = number.FastEquaSet(1, 2, 3)
+
+    val result1 = set.filterNot(_ == 1)
+    result1 shouldBe number.EquaSet(2, 3)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = set.filterNot(_ == 2)
+    result2 shouldBe number.EquaSet(1, 3)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = set.filterNot(_ == 3)
+    result3 shouldBe number.EquaSet(1, 2)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = fastSet.filterNot(_ == 1)
+    result4 shouldBe number.FastEquaSet(2, 3)
+    result4.shouldHaveExactType[number.FastEquaSet]
+
+    val result5 = fastSet.filterNot(_ == 2)
+    result5 shouldBe number.FastEquaSet(1, 3)
+    result5.shouldHaveExactType[number.FastEquaSet]
+
+    val result6 = fastSet.filterNot(_ == 3)
+    result6 shouldBe number.FastEquaSet(1, 2)
+    result6.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a find method" in {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
