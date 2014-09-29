@@ -1478,7 +1478,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(last) => Some(last.value)
         case None => None
       }
-    def map(f: T => T): thisEquaSets.EquaSet = EquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def map(f: T => T): thisEquaSets.FastEquaSet = FastEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
