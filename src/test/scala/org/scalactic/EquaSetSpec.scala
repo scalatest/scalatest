@@ -337,15 +337,62 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a - method that takes one argument" in {
-    lower.EquaSet("hi", "ho", "ha") - "ha" shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") - "HO" shouldBe lower.EquaSet("hi")
-    lower.EquaSet("hi", "ho") - "who?" shouldBe lower.EquaSet("hi", "ho")
+    val result1 = lower.EquaSet("hi", "ho", "ha") - "ha"
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho") - "HO"
+    result2 shouldBe lower.EquaSet("hi")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.EquaSet("hi", "ho") - "who?"
+    result3 shouldBe lower.EquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.FastEquaSet("hi", "ho", "ha") - "ha"
+    result4 shouldBe lower.FastEquaSet("hi", "ho")
+    result4.shouldHaveExactType[lower.FastEquaSet]
+
+    val result5 = lower.FastEquaSet("hi", "ho") - "HO"
+    result5 shouldBe lower.FastEquaSet("hi")
+    result5.shouldHaveExactType[lower.FastEquaSet]
+
+    val result6 = lower.FastEquaSet("hi", "ho") - "who?"
+    result6 shouldBe lower.FastEquaSet("hi", "ho")
+    result6.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a - method that takes two or more arguments" in {
-    lower.EquaSet("hi", "ho", "ha") - ("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.EquaSet("hi", "fee", "foe")
-    lower.EquaSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.EquaSet("hi", "ho")
-    lower.EquaSet("hi", "ho") - ("HI", "HO") shouldBe lower.EquaSet.empty
+    val result1 = lower.EquaSet("hi", "ho", "ha") - ("ha", "howdy!")
+    result1 shouldBe lower.EquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
+    result2 shouldBe lower.EquaSet("hi", "fee", "foe")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.EquaSet("hi", "ho") - ("who", "goes", "thar")
+    result3 shouldBe lower.EquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.EquaSet("hi", "ho") - ("HI", "HO")
+    result4 shouldBe lower.EquaSet.empty
+    result4.shouldHaveExactType[lower.EquaSet]
+
+    val result5 = lower.FastEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
+    result5 shouldBe lower.FastEquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.FastEquaSet]
+
+    val result6 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
+    result6 shouldBe lower.FastEquaSet("hi", "fee", "foe")
+    result6.shouldHaveExactType[lower.FastEquaSet]
+
+    val result7 = lower.FastEquaSet("hi", "ho") - ("who", "goes", "thar")
+    result7 shouldBe lower.FastEquaSet("hi", "ho")
+    result7.shouldHaveExactType[lower.FastEquaSet]
+
+    val result8 = lower.FastEquaSet("hi", "ho") - ("HI", "HO")
+    result8 shouldBe lower.FastEquaSet.empty
+    result8.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "return an iterator that returns the set's elements" in {
     lower.EquaSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
