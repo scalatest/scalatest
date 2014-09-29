@@ -1245,10 +1245,37 @@ class EquaSetSpec extends UnitSpec {
     num shouldBe 60
   }
   it should "have a groupBy method" in {
-    number.EquaSet(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 5), 0 -> number.EquaSet(2, 4))
-    number.EquaSet(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 3, 3), 0 -> number.EquaSet(2))
-    number.EquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 1, 3, 3, 3))
-    number.EquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.EquaSet(1, 3, 5, 7), 0 -> number.EquaSet(2))
+    val result1 = number.EquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
+    result1 shouldBe Map(1 -> number.EquaSet(1, 3, 5), 0 -> number.EquaSet(2, 4))
+    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+
+    val result2 = number.EquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
+    result2 shouldBe Map(1 -> number.EquaSet(1, 3, 3, 3), 0 -> number.EquaSet(2))
+    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+
+    val result3 = number.EquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
+    result3 shouldBe Map(1 -> number.EquaSet(1, 1, 3, 3, 3))
+    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+
+    val result4 = number.EquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
+    result4 shouldBe Map(1 -> number.EquaSet(1, 3, 5, 7), 0 -> number.EquaSet(2))
+    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+
+    val result5 = number.FastEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
+    result5 shouldBe Map(1 -> number.FastEquaSet(1, 3, 5), 0 -> number.FastEquaSet(2, 4))
+    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+
+    val result6 = number.FastEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
+    result6 shouldBe Map(1 -> number.FastEquaSet(1, 3, 3, 3), 0 -> number.FastEquaSet(2))
+    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+
+    val result7 = number.FastEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
+    result7 shouldBe Map(1 -> number.FastEquaSet(1, 1, 3, 3, 3))
+    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+
+    val result8 = number.FastEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
+    result8 shouldBe Map(1 -> number.FastEquaSet(1, 3, 5, 7), 0 -> number.FastEquaSet(2))
+    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
   }
   it should "have a grouped method" in {
     number.EquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))

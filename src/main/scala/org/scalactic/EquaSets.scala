@@ -1454,7 +1454,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
     def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
     def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
-    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
+    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.FastEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
     def grouped(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
