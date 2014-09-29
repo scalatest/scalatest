@@ -936,13 +936,56 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have a dropWhile method" in {
     val set = number.EquaSet(1, 2, 3, 4, 5)
+    val fastSet = number.FastEquaSet(1, 2, 3, 4, 5)
     val seq = number.EquaSet(1, 2, 3, 4, 5).toSet.toSeq
-    set.dropWhile(_ < 1) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 1): _*)
-    set.dropWhile(_ < 2) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 2): _*)
-    set.dropWhile(_ < 3) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 3): _*)
-    set.dropWhile(_ < 4) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 4): _*)
-    set.dropWhile(_ < 5) shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
-    set.dropWhile(_ < 6) shouldBe number.EquaSet()
+
+    val result1 = set.dropWhile(_ < 1)
+    result1 shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 1): _*)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = set.dropWhile(_ < 2)
+    result2 shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 2): _*)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = set.dropWhile(_ < 3)
+    result3 shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 3): _*)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = set.dropWhile(_ < 4)
+    result4 shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 4): _*)
+    result4.shouldHaveExactType[number.EquaSet]
+
+    val result5 = set.dropWhile(_ < 5)
+    result5 shouldBe number.EquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
+    result5.shouldHaveExactType[number.EquaSet]
+
+    val result6 = set.dropWhile(_ < 6)
+    result6 shouldBe number.EquaSet()
+    result6.shouldHaveExactType[number.EquaSet]
+
+    val result7 = fastSet.dropWhile(_ < 1)
+    result7 shouldBe number.FastEquaSet(seq.map(_.value).dropWhile(_ < 1): _*)
+    result7.shouldHaveExactType[number.FastEquaSet]
+
+    val result8 = fastSet.dropWhile(_ < 2)
+    result8 shouldBe number.FastEquaSet(seq.map(_.value).dropWhile(_ < 2): _*)
+    result8.shouldHaveExactType[number.FastEquaSet]
+
+    val result9 = fastSet.dropWhile(_ < 3)
+    result9 shouldBe number.FastEquaSet(seq.map(_.value).dropWhile(_ < 3): _*)
+    result9.shouldHaveExactType[number.FastEquaSet]
+
+    val result10 = fastSet.dropWhile(_ < 4)
+    result10 shouldBe number.FastEquaSet(seq.map(_.value).dropWhile(_ < 4): _*)
+    result10.shouldHaveExactType[number.FastEquaSet]
+
+    val result11 = fastSet.dropWhile(_ < 5)
+    result11 shouldBe number.FastEquaSet(seq.map(_.value).dropWhile(_ < 5): _*)
+    result11.shouldHaveExactType[number.FastEquaSet]
+
+    val result12 = fastSet.dropWhile(_ < 6)
+    result12 shouldBe number.FastEquaSet()
+    result12.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an enclosingEquaSets method" in {
     lower.EquaSet("hi").enclosingEquaSets shouldBe lower

@@ -1422,7 +1422,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new FastEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def drop(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.drop(n))
     def dropRight(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.dropRight(n))
-    def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
+    def dropWhile(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     override def equals(other: Any): Boolean = { 
       other match {
         case thatEquaSet: EquaSets[_]#EquaSet => 
