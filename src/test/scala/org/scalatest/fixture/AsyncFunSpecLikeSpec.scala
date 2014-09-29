@@ -83,9 +83,13 @@ class AsyncFunSpecLikeSpec extends org.scalatest.FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    /*it("can be used for tests that did not return Future") {
+    it("can be used for tests that did not return Future") {
 
       class ExampleSpec extends AsyncFunSpecLike {
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
 
         val a = 1
 
@@ -127,7 +131,7 @@ class AsyncFunSpecLikeSpec extends org.scalatest.FunSpec {
       assert(rep.testCanceledEventsReceived(0).testName == "test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
-    }*/
+    }
 
   }
 
