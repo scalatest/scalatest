@@ -16,7 +16,23 @@
 package org.scalatest.fixture
 
 import scala.concurrent.Future
-import org.scalatest.Finders
+import org.scalatest._
 
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with org.scalatest.OneInstancePerTest
+trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with org.scalatest.OneInstancePerTest {
+
+  override protected def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
+  //override protected def transformToOutcome(testFun: FixtureParam => Future[Unit]): FixtureParam => AsyncOutcome =
+    (fixture: FixtureParam) => {
+      val futureUnit = testFun(fixture)
+      FutureOutcome(
+        futureUnit.map(u => Succeeded).recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+}

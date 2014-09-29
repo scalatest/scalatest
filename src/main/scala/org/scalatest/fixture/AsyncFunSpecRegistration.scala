@@ -25,23 +25,20 @@ trait AsyncFunSpecRegistration extends FunSpecRegistration with AsyncFixtures { 
   protected override def runTest(testName: String, args: Args): Status = {
 
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+      val theConfigMap = args.configMap
+      val testData = testDataFor(testName, theConfigMap)
       FutureOutcome(
-        theTest.testFun match {
-          case transformer: org.scalatest.fixture.Transformer[_] =>
-            transformer.exceptionalTestFun match {
-              case wrapper: NoArgAsyncTestWrapper[_] =>
-                withAsyncFixture(new FixturelessAsyncTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-              case fun: (FixtureParam => Future[_]) => withAsyncFixture(new AsyncTestFunAndConfigMap(testName, fun, args.configMap))
-              //case fun => withAsyncFixture(new AsyncTestFunAndConfigMap(testName, fun, args.configMap))
-            }
-          case other =>
-            other match {
-              case wrapper: NoArgAsyncTestWrapper[_] =>
-                withAsyncFixture(new FixturelessAsyncTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-              case fun: (FixtureParam => Future[_]) => withAsyncFixture(new AsyncTestFunAndConfigMap(testName, fun, args.configMap))
-              //case fun => withAsyncFixture(new AsyncTestFunAndConfigMap(testName, fun, args.configMap))
-            }
-        }
+        withAsyncFixture(
+          new OneArgAsyncTest {
+            val name = testData.name
+            def apply(fixture: FixtureParam): Future[Outcome] =
+              theTest.testFun(fixture).toFutureOutcome
+            val configMap = testData.configMap
+            val scopes = testData.scopes
+            val text = testData.text
+            val tags = testData.tags
+          }
+        )
       )
     }
 

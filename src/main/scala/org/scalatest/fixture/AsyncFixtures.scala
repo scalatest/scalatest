@@ -32,30 +32,6 @@ trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
 
   implicit def defaultExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
 
-  trait NoArgAsyncTest extends (() => Future[Outcome]) with TestData {
-    /**
-     * Runs the body of the test, returning an <code>Future[Outcome]</code>.
-     */
-    def apply(): Future[Outcome]
-  }
-
-  private[fixture] class FixturelessAsyncTestFunAndConfigMap(override val name: String, test: () => Future[Any], override val configMap: ConfigMap)
-    extends NoArgAsyncTest {
-
-    def apply(): Future[Outcome] = {
-      test().map(any => Succeeded).recover {
-        case ex: exceptions.TestCanceledException => Canceled(ex)
-        case _: exceptions.TestPendingException => Pending
-        case tfe: exceptions.TestFailedException => Failed(tfe)
-        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-      }
-    }
-    private val testData = testDataFor(name, configMap)
-    val scopes = testData.scopes
-    val text = testData.text
-    val tags = testData.tags
-  }
-
   /**
    * A test function taking no arguments and returning an <code>Future[Outcome]</code>.
    *
@@ -69,27 +45,6 @@ trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
      * Runs the body of the test, returning an <code>Future[Outcome]</code>.
      */
     def apply(fixture: FixtureParam): Future[Outcome]
-  }
-
-  private[fixture] class AsyncTestFunAndConfigMap(val name: String, test: FixtureParam => Future[Any], val configMap: ConfigMap)
-    extends OneArgAsyncTest {
-
-    def apply(fixture: FixtureParam): Future[Outcome] = {
-      test(fixture).map(any => Succeeded).recover {
-        case ex: exceptions.TestCanceledException => Canceled(ex)
-        case _: exceptions.TestPendingException => Pending
-        case tfe: exceptions.TestFailedException => Failed(tfe)
-        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-      }
-    }
-    private val testData = testDataFor(name, configMap)
-    val scopes = testData.scopes
-    val text = testData.text
-    val tags = testData.tags
-  }
-
-  def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
-    test()
   }
 
   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome]
