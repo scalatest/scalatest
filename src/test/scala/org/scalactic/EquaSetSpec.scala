@@ -320,8 +320,21 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a + method that takes two or more arguments" in {
-    lower.EquaSet("hi", "ho") + ("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho") + ("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.EquaSet("hi", "ho") + ("ha", "hey!")
+    result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
+    result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.FastEquaSet("hi", "ho") + ("ha", "hey!")
+    result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    val result4 = lower.FastEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
+    result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a - method that takes one argument" in {
     lower.EquaSet("hi", "ho", "ha") - "ha" shouldBe lower.EquaSet("hi", "ho")
