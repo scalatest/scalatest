@@ -1464,7 +1464,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(head) => Some(head.value)
         case None => None
       }
-    def init: thisEquaSets.EquaSet = new FastEquaSet(underlying.init)
+    def init: thisEquaSets.FastEquaSet = new FastEquaSet(underlying.init)
     def inits: Iterator[thisEquaSets.EquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))

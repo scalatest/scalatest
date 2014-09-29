@@ -1353,7 +1353,13 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).headOption shouldBe Some(1)
   }
   it should "have an init method" in {
-    number.EquaSet(1, 2, 3).init shouldBe number.EquaSet(1, 2)
+    val result1 = number.EquaSet(1, 2, 3).init
+    result1 shouldBe number.EquaSet(1, 2)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.FastEquaSet(1, 2, 3).init
+    result2 shouldBe number.FastEquaSet(1, 2)
+    result2.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an inits method" in {
     val inits = number.EquaSet(1, 2, 3).inits
