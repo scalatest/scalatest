@@ -398,18 +398,70 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
   }
   it should "have a ++ method that takes a GenTraversableOnce" in {
-    lower.EquaSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.EquaSet("hi", "ho") ++ List("ha", "hey!")
+    result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.EquaSet]
 
-    lower.EquaSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    val result2 = lower.EquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
+    result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.EquaSet]
 
-    lower.EquaSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    val result3 = lower.EquaSet("hi", "ho") ++ Set("ha", "hey!")
+    result3 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.EquaSet]
+
+    val result4 = lower.EquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
+    result4 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.EquaSet]
+
+    val result5 = lower.EquaSet("hi", "ho") ++ Vector("ha", "hey!")
+    result5 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result5.shouldHaveExactType[lower.EquaSet]
+
+    val result6 = lower.EquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
+    result6 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result6.shouldHaveExactType[lower.EquaSet]
+
+    val result7 = lower.FastEquaSet("hi", "ho") ++ List("ha", "hey!")
+    result7 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result7.shouldHaveExactType[lower.FastEquaSet]
+
+    val result8 = lower.FastEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
+    result8 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result8.shouldHaveExactType[lower.FastEquaSet]
+
+    val result9 = lower.FastEquaSet("hi", "ho") ++ Set("ha", "hey!")
+    result9 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result9.shouldHaveExactType[lower.FastEquaSet]
+
+    val result10 = lower.FastEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
+    result10 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result10.shouldHaveExactType[lower.FastEquaSet]
+
+    val result11 = lower.FastEquaSet("hi", "ho") ++ Vector("ha", "hey!")
+    result11 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result11.shouldHaveExactType[lower.FastEquaSet]
+
+    val result12 = lower.FastEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
+    result12 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result12.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a ++ method that takes another EquaSet" in {
-    lower.EquaSet("hi", "ho") ++ lower.EquaSet("ha", "hey!") shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    lower.EquaSet("hi", "ho") ++ lower.EquaSet("HO", "hoe", "Ho!") shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.EquaSet("hi", "ho") ++ lower.EquaSet("ha", "hey!")
+    result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.EquaSet]
+
+    val result2 = lower.EquaSet("hi", "ho") ++ lower.EquaSet("HO", "hoe", "Ho!")
+    result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val result3 = lower.FastEquaSet("hi", "ho") ++ lower.FastEquaSet("ha", "hey!")
+    result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.FastEquaSet]
+
+    val result4 = lower.FastEquaSet("hi", "ho") ++ lower.FastEquaSet("HO", "hoe", "Ho!")
+    result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.FastEquaSet]
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
     lower.EquaSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.EquaSet("hi", "ho")
