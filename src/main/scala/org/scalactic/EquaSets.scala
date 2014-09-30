@@ -1504,7 +1504,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
-    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.FastEquaSet = {
       val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }

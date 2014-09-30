@@ -1621,8 +1621,21 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a scanRight method" in {
-    number.EquaSet(1).scanRight(0)(_ + _) shouldBe number.EquaSet(1, 0)
-    number.EquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.EquaSet(6, 5, 3, 0)
+    val result1 = number.EquaSet(1).scanRight(0)(_ + _)
+    result1 shouldBe number.EquaSet(1, 0)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.EquaSet(1, 2, 3).scanRight(0)(_ + _)
+    result2 shouldBe number.EquaSet(6, 5, 3, 0)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = number.FastEquaSet(1).scanRight(0)(_ + _)
+    result3 shouldBe number.FastEquaSet(1, 0)
+    result3.shouldHaveExactType[number.FastEquaSet]
+
+    val result4 = number.FastEquaSet(1, 2, 3).scanRight(0)(_ + _)
+    result4 shouldBe number.FastEquaSet(6, 5, 3, 0)
+    result4.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an into.scanRight method" in {
 
