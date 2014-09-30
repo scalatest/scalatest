@@ -422,18 +422,70 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
   }
   it should "have a ++ method that takes a GenTraversableOnce" in {
-    lower.SortedEquaSet("hi", "ho") ++ List("ha", "hey!") shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!") shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.SortedEquaSet("hi", "ho") ++ List("ha", "hey!")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
 
-    lower.SortedEquaSet("hi", "ho") ++ Set("ha", "hey!") shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!") shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    val result2 = lower.SortedEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
+    result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
 
-    lower.SortedEquaSet("hi", "ho") ++ Vector("ha", "hey!") shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!") shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    val result3 = lower.SortedEquaSet("hi", "ho") ++ Set("ha", "hey!")
+    result3 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result4 = lower.SortedEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
+    result4 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result5 = lower.SortedEquaSet("hi", "ho") ++ Vector("ha", "hey!")
+    result5 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result5.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result6 = lower.SortedEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
+    result6 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result6.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result7 = lower.TreeEquaSet("hi", "ho") ++ List("ha", "hey!")
+    result7 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result7.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result8 = lower.TreeEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
+    result8 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result8.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result9 = lower.TreeEquaSet("hi", "ho") ++ Set("ha", "hey!")
+    result9 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result9.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result10 = lower.TreeEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
+    result10 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result10.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result11 = lower.TreeEquaSet("hi", "ho") ++ Vector("ha", "hey!")
+    result11 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result11.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result12 = lower.TreeEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
+    result12 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result12.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a ++ method that takes another EquaSet" in {
-    lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("ha", "hey!") shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("HO", "hoe", "Ho!") shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("ha", "hey!")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("HO", "hoe", "Ho!")
+    result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.TreeEquaSet("hi", "ho") ++ lower.TreeEquaSet("ha", "hey!")
+    result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result4 = lower.TreeEquaSet("hi", "ho") ++ lower.TreeEquaSet("HO", "hoe", "Ho!")
+    result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
     lower.SortedEquaSet("hi", "ho", "ha") -- List("ha", "howdy!") shouldBe lower.SortedEquaSet("hi", "ho")
