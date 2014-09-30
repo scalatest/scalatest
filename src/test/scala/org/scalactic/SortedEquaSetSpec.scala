@@ -1602,32 +1602,205 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have 2 sliding methods" in {
 
-    number.SortedEquaSet(1).sliding(1).toList shouldBe List(number.SortedEquaSet(1))
-    number.SortedEquaSet(1).sliding(2).toList shouldBe List(number.SortedEquaSet(1))
-    number.SortedEquaSet(1, 2, 3).sliding(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
-    number.SortedEquaSet(1, 2, 3).sliding(1).toList shouldBe List(number.SortedEquaSet(1), number.EquaSet(2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).sliding(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3), number.SortedEquaSet(3, 4), number.SortedEquaSet(4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3), number.SortedEquaSet(4), number.SortedEquaSet(5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(4).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(2, 3, 4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(5).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4, 5))
+    val result1 = number.SortedEquaSet(1).sliding(1).toList
+    result1 shouldBe List(number.SortedEquaSet(1))
+    result1.shouldHaveExactType[List[number.SortedEquaSet]]
 
-    number.SortedEquaSet(1).sliding(1, 1).toList shouldBe List(number.SortedEquaSet(1))
-    number.SortedEquaSet(1).sliding(1, 2).toList shouldBe List(number.SortedEquaSet(1))
-    number.SortedEquaSet(1, 2, 3).sliding(1, 1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).sliding(2, 1).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
-    number.SortedEquaSet(1, 2, 3).sliding(2, 2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).sliding(3, 2).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
-    number.SortedEquaSet(1, 2, 3).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(3, 4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5))
-    number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(5))
+    val result2 = number.SortedEquaSet(1).sliding(2).toList
+    result2 shouldBe List(number.SortedEquaSet(1))
+    result2.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result3 = number.SortedEquaSet(1, 2, 3).sliding(2).toList
+    result3 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
+    result3.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result4 = number.SortedEquaSet(1, 2, 3).sliding(1).toList
+    result4 shouldBe List(number.SortedEquaSet(1), number.EquaSet(2), number.SortedEquaSet(3))
+    result4.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result5 = number.SortedEquaSet(1, 2, 3).sliding(3).toList
+    result5 shouldBe List(number.SortedEquaSet(1, 2, 3))
+    result5.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result6 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3).toList
+    result6 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    result6.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result7 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2).toList
+    result7 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3), number.SortedEquaSet(3, 4), number.SortedEquaSet(4, 5))
+    result7.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result8 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(1).toList
+    result8 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3), number.SortedEquaSet(4), number.SortedEquaSet(5))
+    result8.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result9 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(4).toList
+    result9 shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(2, 3, 4, 5))
+    result9.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result10 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(5).toList
+    result10 shouldBe List(number.SortedEquaSet(1, 2, 3, 4, 5))
+    result10.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result11 = number.SortedEquaSet(1).sliding(1, 1).toList
+    result11 shouldBe List(number.SortedEquaSet(1))
+    result11.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result12 = number.SortedEquaSet(1).sliding(1, 2).toList
+    result12 shouldBe List(number.SortedEquaSet(1))
+    result12.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result13 = number.SortedEquaSet(1, 2, 3).sliding(1, 1).toList
+    result13 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
+    result13.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result14 = number.SortedEquaSet(1, 2, 3).sliding(2, 1).toList
+    result14 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
+    result14.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result15 = number.SortedEquaSet(1, 2, 3).sliding(2, 2).toList
+    result15 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    result15.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result16 = number.SortedEquaSet(1, 2, 3).sliding(3, 2).toList
+    result16 shouldBe List(number.SortedEquaSet(1, 2, 3))
+    result16.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result17 = number.SortedEquaSet(1, 2, 3).sliding(3, 1).toList
+    result17 shouldBe List(number.SortedEquaSet(1, 2, 3))
+    result17.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result18 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    result18 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    result18.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result19 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
+    result19 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5))
+    result19.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result20 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
+    result20 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(4, 5))
+    result20.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result21 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
+    result21 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(5))
+    result21.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result22 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    result22 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
+    result22.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result23 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
+    result23 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(3, 4, 5))
+    result23.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result24 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
+    result24 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5))
+    result24.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result25 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
+    result25 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(5))
+    result25.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result26 = number.TreeEquaSet(1).sliding(1).toList
+    result26 shouldBe List(number.TreeEquaSet(1))
+    result26.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result27 = number.TreeEquaSet(1).sliding(2).toList
+    result27 shouldBe List(number.TreeEquaSet(1))
+    result27.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result28 = number.TreeEquaSet(1, 2, 3).sliding(2).toList
+    result28 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3))
+    result28.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result29 = number.TreeEquaSet(1, 2, 3).sliding(1).toList
+    result29 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
+    result29.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result30 = number.TreeEquaSet(1, 2, 3).sliding(3).toList
+    result30 shouldBe List(number.TreeEquaSet(1, 2, 3))
+    result30.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result31 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3).toList
+    result31 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
+    result31.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result32 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2).toList
+    result32 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3), number.TreeEquaSet(3, 4), number.TreeEquaSet(4, 5))
+    result32.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result33 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(1).toList
+    result33 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3), number.TreeEquaSet(4), number.TreeEquaSet(5))
+    result33.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result34 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(4).toList
+    result34 shouldBe List(number.TreeEquaSet(1, 2, 3, 4), number.TreeEquaSet(2, 3, 4, 5))
+    result34.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result35 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(5).toList
+    result35 shouldBe List(number.TreeEquaSet(1, 2, 3, 4, 5))
+    result35.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result36 = number.TreeEquaSet(1).sliding(1, 1).toList
+    result36 shouldBe List(number.TreeEquaSet(1))
+    result36.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result37 = number.TreeEquaSet(1).sliding(1, 2).toList
+    result37 shouldBe List(number.TreeEquaSet(1))
+    result37.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result38 = number.TreeEquaSet(1, 2, 3).sliding(1, 1).toList
+    result38 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
+    result38.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result39 = number.TreeEquaSet(1, 2, 3).sliding(2, 1).toList
+    result39 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3))
+    result39.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result40 = number.TreeEquaSet(1, 2, 3).sliding(2, 2).toList
+    result40 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
+    result40.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result41 = number.TreeEquaSet(1, 2, 3).sliding(3, 2).toList
+    result41 shouldBe List(number.TreeEquaSet(1, 2, 3))
+    result41.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result42 = number.TreeEquaSet(1, 2, 3).sliding(3, 1).toList
+    result42 shouldBe List(number.TreeEquaSet(1, 2, 3))
+    result42.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result43 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    result43 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
+    result43.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result44 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
+    result44 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4), number.TreeEquaSet(5))
+    result44.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result45 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
+    result45 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(4, 5))
+    result45.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result46 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
+    result46 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(5))
+    result46.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result47 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    result47 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
+    result47.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result48 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
+    result48 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(3, 4, 5))
+    result48.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result49 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
+    result49 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(4, 5))
+    result49.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result50 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
+    result50 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(5))
+    result50.shouldHaveExactType[List[number.TreeEquaSet]]
   }
   it should "have a span method" in {
     number.SortedEquaSet(1, 2, 3).span(_ < 3) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
