@@ -1012,7 +1012,8 @@ class Framework extends SbtFramework {
       val thread = new Thread(skeleton)
       thread.start()
       serverThread.set(Some(thread))
-      Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
+      Array("127.0.0.1", skeleton.port.toString)
+      // Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
   }
 
