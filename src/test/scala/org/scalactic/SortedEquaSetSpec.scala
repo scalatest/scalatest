@@ -1213,14 +1213,65 @@ class SortedEquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
   }
   it should "have a grouped method" in {
-    number.SortedEquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).grouped(1).toList shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
+    val result1 = number.SortedEquaSet(1, 2, 3).grouped(2).toList
+    result1 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    result1.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).grouped(1).toList
+    result2 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
+    result2.shouldHaveExactType[List[number.SortedEquaSet]]
+
     an [IllegalArgumentException] should be thrownBy { number.SortedEquaSet(1, 2, 3).grouped(0).toList }
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5, 6), number.SortedEquaSet(7, 8), number.SortedEquaSet(9, 10))
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5, 6), number.SortedEquaSet(7, 8, 9), number.SortedEquaSet(10))
-    number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(5, 6, 7, 8), number.SortedEquaSet(9, 10))
-    number.SortedEquaSet(1).grouped(2).toList shouldBe List(number.SortedEquaSet(1))
-    number.SortedEquaSet(1).grouped(1).toList shouldBe List(number.SortedEquaSet(1))
+
+    val result3 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
+    result3 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5, 6), number.SortedEquaSet(7, 8), number.SortedEquaSet(9, 10))
+    result3.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result4 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
+    result4 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5, 6), number.SortedEquaSet(7, 8, 9), number.SortedEquaSet(10))
+    result4.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result5 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
+    result5 shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(5, 6, 7, 8), number.SortedEquaSet(9, 10))
+    result5.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result6 = number.SortedEquaSet(1).grouped(2).toList
+    result6 shouldBe List(number.SortedEquaSet(1))
+    result6.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result7 = number.SortedEquaSet(1).grouped(1).toList
+    result7 shouldBe List(number.SortedEquaSet(1))
+    result7.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result8 = number.TreeEquaSet(1, 2, 3).grouped(2).toList
+    result8 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
+    result8.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result9 = number.TreeEquaSet(1, 2, 3).grouped(1).toList
+    result9 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
+    result9.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    an [IllegalArgumentException] should be thrownBy { number.TreeEquaSet(1, 2, 3).grouped(0).toList }
+
+    val result10 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
+    result10 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4), number.TreeEquaSet(5, 6), number.TreeEquaSet(7, 8), number.TreeEquaSet(9, 10))
+    result10.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result11 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
+    result11 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(4, 5, 6), number.TreeEquaSet(7, 8, 9), number.TreeEquaSet(10))
+    result11.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result12 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
+    result12 shouldBe List(number.TreeEquaSet(1, 2, 3, 4), number.TreeEquaSet(5, 6, 7, 8), number.TreeEquaSet(9, 10))
+    result12.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result13 = number.TreeEquaSet(1).grouped(2).toList
+    result13 shouldBe List(number.TreeEquaSet(1))
+    result13.shouldHaveExactType[List[number.TreeEquaSet]]
+
+    val result14 = number.TreeEquaSet(1).grouped(1).toList
+    result14 shouldBe List(number.TreeEquaSet(1))
+    result14.shouldHaveExactType[List[number.TreeEquaSet]]
   }
   it should "have a hasDefiniteSize method" in {
     number.SortedEquaSet(1).hasDefiniteSize shouldBe true
