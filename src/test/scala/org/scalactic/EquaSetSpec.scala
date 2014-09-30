@@ -1604,8 +1604,21 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(0).into(lower).scanLeft("z")(_ + _) shouldBe lower.EquaSet("z", "z0")
   }
   it should "have a scanLeft method" in {
-    number.EquaSet(1).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1)
-    number.EquaSet(1, 2, 3).scanLeft(0)(_ + _) shouldBe number.EquaSet(0, 1, 3, 6)
+    val result1 = number.EquaSet(1).scanLeft(0)(_ + _)
+    result1 shouldBe number.EquaSet(0, 1)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.EquaSet(1, 2, 3).scanLeft(0)(_ + _)
+    result2 shouldBe number.EquaSet(0, 1, 3, 6)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = number.FastEquaSet(1).scanLeft(0)(_ + _)
+    result3 shouldBe number.FastEquaSet(0, 1)
+    result3.shouldHaveExactType[number.FastEquaSet]
+
+    val result4 = number.FastEquaSet(1, 2, 3).scanLeft(0)(_ + _)
+    result4 shouldBe number.FastEquaSet(0, 1, 3, 6)
+    result4.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a scanRight method" in {
     number.EquaSet(1).scanRight(0)(_ + _) shouldBe number.EquaSet(1, 0)

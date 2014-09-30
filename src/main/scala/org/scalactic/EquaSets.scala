@@ -1500,7 +1500,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet = {
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.FastEquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
