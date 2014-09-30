@@ -749,7 +749,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
       (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
     }
-    def splitAt(n: Int): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+    def splitAt(n: Int): (thisEquaSets.TreeEquaSet, thisEquaSets.TreeEquaSet) = {
       val (trueSet, falseSet) = underlying.splitAt(n)
       (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
     }

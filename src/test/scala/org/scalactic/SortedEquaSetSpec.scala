@@ -1820,10 +1820,37 @@ class SortedEquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
   }
   it should "have a splitAt method" in {
-    number.SortedEquaSet(1, 2, 3).splitAt(0) shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
-    number.SortedEquaSet(1, 2, 3).splitAt(1) shouldBe (number.SortedEquaSet(1), number.SortedEquaSet(2, 3))
-    number.SortedEquaSet(1, 2, 3).splitAt(2) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).splitAt(3) shouldBe (number.SortedEquaSet(1, 2, 3), number.SortedEquaSet())
+    val result1 = number.SortedEquaSet(1, 2, 3).splitAt(0)
+    result1 shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
+    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).splitAt(1)
+    result2 shouldBe (number.SortedEquaSet(1), number.SortedEquaSet(2, 3))
+    result2.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result3 = number.SortedEquaSet(1, 2, 3).splitAt(2)
+    result3 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    result3.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result4 = number.SortedEquaSet(1, 2, 3).splitAt(3)
+    result4 shouldBe (number.SortedEquaSet(1, 2, 3), number.SortedEquaSet())
+    result4.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result5 = number.TreeEquaSet(1, 2, 3).splitAt(0)
+    result5 shouldBe (number.TreeEquaSet(), number.TreeEquaSet(1, 2, 3))
+    result5.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+
+    val result6 = number.TreeEquaSet(1, 2, 3).splitAt(1)
+    result6 shouldBe (number.TreeEquaSet(1), number.TreeEquaSet(2, 3))
+    result6.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+
+    val result7 = number.TreeEquaSet(1, 2, 3).splitAt(2)
+    result7 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
+    result7.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+
+    val result8 = number.TreeEquaSet(1, 2, 3).splitAt(3)
+    result8 shouldBe (number.TreeEquaSet(1, 2, 3), number.TreeEquaSet())
+    result8.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
   }
   it should "have a stringPrefix method" in {
     number.SortedEquaSet(1).stringPrefix shouldBe "TreeEquaSet"
