@@ -720,7 +720,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
     def mkString: String = underlying.toList.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
-    def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+    def partition(pred: T => Boolean): (thisEquaSets.TreeEquaSet, thisEquaSets.TreeEquaSet) = {
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new TreeEquaSet(tuple2._1), new TreeEquaSet(tuple2._2))
     }
@@ -733,7 +733,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: SortedSet[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.TreeEquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }

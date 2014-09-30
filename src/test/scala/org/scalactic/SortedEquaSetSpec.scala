@@ -1421,7 +1421,13 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).nonEmpty shouldBe true
   }
   it should "have a partition method" in {
-    number.SortedEquaSet(1, 2, 3, 4).partition(_ < 3) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4))
+    val result1 = number.SortedEquaSet(1, 2, 3, 4).partition(_ < 3)
+    result1 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4))
+    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result2 = number.TreeEquaSet(1, 2, 3, 4).partition(_ < 3)
+    result2 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4))
+    result2.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
   }
   it should "have a product method" in {
     number.SortedEquaSet(1, 2, 3).product shouldBe 6
@@ -1484,8 +1490,21 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(3).sameElements(List(3)) shouldBe true
   }
   it should "have a scanLeft method" in {
-    number.SortedEquaSet(1).scanLeft(0)(_ + _) shouldBe number.SortedEquaSet(0, 1)
-    number.SortedEquaSet(1, 2, 3).scanLeft(0)(_ + _) shouldBe number.SortedEquaSet(0, 1, 3, 6)
+    val result1 = number.SortedEquaSet(1).scanLeft(0)(_ + _)
+    result1 shouldBe number.SortedEquaSet(0, 1)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).scanLeft(0)(_ + _)
+    result2 shouldBe number.SortedEquaSet(0, 1, 3, 6)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = number.TreeEquaSet(1).scanLeft(0)(_ + _)
+    result3 shouldBe number.TreeEquaSet(0, 1)
+    result3.shouldHaveExactType[number.TreeEquaSet]
+
+    val result4 = number.TreeEquaSet(1, 2, 3).scanLeft(0)(_ + _)
+    result4 shouldBe number.TreeEquaSet(0, 1, 3, 6)
+    result4.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an into.scanLeft method" in {
 
