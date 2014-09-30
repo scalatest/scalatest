@@ -657,7 +657,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying diff that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
     def drop(n: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.drop(n))
-    def dropRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropRight(n))
+    def dropRight(n: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.dropRight(n))
     def dropWhile(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     // Two EquaSets whose containing EquaSets have identical equalities can be equal
     override def equals(other: Any): Boolean =

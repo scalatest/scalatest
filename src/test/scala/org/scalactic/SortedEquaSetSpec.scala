@@ -878,12 +878,55 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a dropRight method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
-    set.dropRight(0) shouldBe number.EquaSet(1, 2, 3, 4, 5)
-    set.dropRight(1) shouldBe number.EquaSet(1, 2, 3, 4)
-    set.dropRight(2) shouldBe number.EquaSet(1, 2, 3)
-    set.dropRight(3) shouldBe number.EquaSet(1, 2)
-    set.dropRight(4) shouldBe number.EquaSet(1)
-    set.dropRight(5) shouldBe number.EquaSet()
+    val treeSet = number.TreeEquaSet(1, 2, 3, 4, 5)
+
+    val result1 = set.dropRight(0)
+    result1 shouldBe number.SortedEquaSet(1, 2, 3, 4, 5)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = set.dropRight(1)
+    result2 shouldBe number.SortedEquaSet(1, 2, 3, 4)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = set.dropRight(2)
+    result3 shouldBe number.SortedEquaSet(1, 2, 3)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = set.dropRight(3)
+    result4 shouldBe number.SortedEquaSet(1, 2)
+    result4.shouldHaveExactType[number.SortedEquaSet]
+
+    val result5 = set.dropRight(4)
+    result5 shouldBe number.SortedEquaSet(1)
+    result5.shouldHaveExactType[number.SortedEquaSet]
+
+    val result6 = set.dropRight(5)
+    result6 shouldBe number.SortedEquaSet()
+    result6.shouldHaveExactType[number.SortedEquaSet]
+
+    val result7 = treeSet.dropRight(0)
+    result7 shouldBe number.TreeEquaSet(1, 2, 3, 4, 5)
+    result7.shouldHaveExactType[number.TreeEquaSet]
+
+    val result8 = treeSet.dropRight(1)
+    result8 shouldBe number.TreeEquaSet(1, 2, 3, 4)
+    result8.shouldHaveExactType[number.TreeEquaSet]
+
+    val result9 = treeSet.dropRight(2)
+    result9 shouldBe number.TreeEquaSet(1, 2, 3)
+    result9.shouldHaveExactType[number.TreeEquaSet]
+
+    val result10 = treeSet.dropRight(3)
+    result10 shouldBe number.TreeEquaSet(1, 2)
+    result10.shouldHaveExactType[number.TreeEquaSet]
+
+    val result11 = treeSet.dropRight(4)
+    result11 shouldBe number.TreeEquaSet(1)
+    result11.shouldHaveExactType[number.TreeEquaSet]
+
+    val result12 = treeSet.dropRight(5)
+    result12 shouldBe number.TreeEquaSet()
+    result12.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have a dropWhile method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
