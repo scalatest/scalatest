@@ -96,6 +96,12 @@ class SortedEquaSetSpec extends UnitSpec {
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
     emptySet shouldBe empty
+
+    val treeEmptySet = lower.TreeEquaSet.empty
+    treeEmptySet shouldBe empty
+
+    lower.SortedEquaSet.empty.shouldHaveExactType[lower.SortedEquaSet]
+    lower.TreeEquaSet.empty.shouldHaveExactType[lower.TreeEquaSet]
   }
   it can "be constructed with apply" in {
     val nonEmptySet = lower.SortedEquaSet("one", "two", "three")
