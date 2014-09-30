@@ -208,11 +208,41 @@ class SortedEquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have an intersect method that takes another SortedEquaSet instance with the same path-dependant type" in {
-    lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("HI", "HO") shouldBe lower.SortedEquaSet("hi", "ho")
-    trimmed.SortedEquaSet("hi", "ho") intersect trimmed.SortedEquaSet(" hi ", " ho ") shouldBe trimmed.SortedEquaSet("hi", "ho")
+    val result1 = lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("HI", "HO")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = trimmed.SortedEquaSet("hi", "ho") intersect trimmed.SortedEquaSet(" hi ", " ho ")
+    result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
+    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+
     """lower.SortedEquaSet(" hi ", "hi") intersect trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
-    lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("ho") shouldBe lower.SortedEquaSet("ho")
-    lower.SortedEquaSet("hi", "ho", "let's", "go") intersect lower.SortedEquaSet("bo", "no", "go", "ho") shouldBe lower.SortedEquaSet("ho", "go")
+
+    val result3 = lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("ho")
+    result3 shouldBe lower.SortedEquaSet("ho")
+    result3.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result4 = lower.SortedEquaSet("hi", "ho", "let's", "go") intersect lower.SortedEquaSet("bo", "no", "go", "ho")
+    result4 shouldBe lower.SortedEquaSet("ho", "go")
+    result4.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result5 = lower.TreeEquaSet("hi", "ho") intersect lower.TreeEquaSet("HI", "HO")
+    result5 shouldBe lower.TreeEquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result6 = trimmed.TreeEquaSet("hi", "ho") intersect trimmed.TreeEquaSet(" hi ", " ho ")
+    result6 shouldBe trimmed.TreeEquaSet("hi", "ho")
+    result6.shouldHaveExactType[trimmed.TreeEquaSet]
+
+    """lower.TreeEquaSet(" hi ", "hi") intersect trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
+
+    val result7 = lower.TreeEquaSet("hi", "ho") intersect lower.TreeEquaSet("ho")
+    result7 shouldBe lower.TreeEquaSet("ho")
+    result7.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result8 = lower.TreeEquaSet("hi", "ho", "let's", "go") intersect lower.TreeEquaSet("bo", "no", "go", "ho")
+    result8 shouldBe lower.TreeEquaSet("ho", "go")
+    result8.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have an & method that takes another SortedEquaSet instance with the same path-dependant type" in {
     lower.SortedEquaSet("hi", "ho") & lower.SortedEquaSet("HI", "HO") shouldBe lower.SortedEquaSet("hi", "ho")
