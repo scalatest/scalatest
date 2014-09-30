@@ -1898,7 +1898,13 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).sum shouldBe 15
   }
   it should "have an tail method" in {
-    number.SortedEquaSet(1, 2, 3).tail shouldBe number.SortedEquaSet(2, 3)
+    val result1 = number.SortedEquaSet(1, 2, 3).tail
+    result1 shouldBe number.SortedEquaSet(2, 3)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.TreeEquaSet(1, 2, 3).tail
+    result2 shouldBe number.TreeEquaSet(2, 3)
+    result2.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an tails method" in {
     number.SortedEquaSet(1, 2, 3).tails.toList shouldBe List(number.SortedEquaSet(1,2,3), number.SortedEquaSet(2,3), number.SortedEquaSet(3), number.SortedEquaSet())
