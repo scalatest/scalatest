@@ -643,10 +643,23 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a aggregate method" in {
     lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _) shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-
     lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
-    lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _) shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+
+    val result1 = lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _)
+    result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _)
+    result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.TreeEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.TreeEquaSet())(_ + _, _ ++ _)
+    result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result4 = lower.TreeEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.TreeEquaSet())(_ + _, _ ++ _)
+    result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have an apply method" in {
     val a = number.SortedEquaSet(1, 2, 3)
