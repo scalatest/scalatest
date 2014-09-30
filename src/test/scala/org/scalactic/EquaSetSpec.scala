@@ -2006,10 +2006,37 @@ class EquaSetSpec extends UnitSpec {
     result2.shouldHaveExactType[Iterator[number.FastEquaSet]]
   }
   it should "have a take method" in {
-    number.EquaSet(1, 2, 3).take(0) shouldBe number.EquaSet()
-    number.EquaSet(1, 2, 3).take(1) shouldBe number.EquaSet(1)
-    number.EquaSet(1, 2, 3).take(2) shouldBe number.EquaSet(1, 2)
-    number.EquaSet(1, 2, 3).take(3) shouldBe number.EquaSet(1, 2, 3)
+    val result1 = number.EquaSet(1, 2, 3).take(0)
+    result1 shouldBe number.EquaSet()
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.EquaSet(1, 2, 3).take(1)
+    result2 shouldBe number.EquaSet(1)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = number.EquaSet(1, 2, 3).take(2)
+    result3 shouldBe number.EquaSet(1, 2)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = number.EquaSet(1, 2, 3).take(3)
+    result4 shouldBe number.EquaSet(1, 2, 3)
+    result4.shouldHaveExactType[number.EquaSet]
+
+    val result5 = number.FastEquaSet(1, 2, 3).take(0)
+    result5 shouldBe number.FastEquaSet()
+    result5.shouldHaveExactType[number.FastEquaSet]
+
+    val result6 = number.FastEquaSet(1, 2, 3).take(1)
+    result6 shouldBe number.FastEquaSet(1)
+    result6.shouldHaveExactType[number.FastEquaSet]
+
+    val result7 = number.FastEquaSet(1, 2, 3).take(2)
+    result7 shouldBe number.FastEquaSet(1, 2)
+    result7.shouldHaveExactType[number.FastEquaSet]
+
+    val result8 = number.FastEquaSet(1, 2, 3).take(3)
+    result8 shouldBe number.FastEquaSet(1, 2, 3)
+    result8.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a takeRight method" in {
     number.EquaSet(1, 2, 3).takeRight(0) shouldBe number.EquaSet()
