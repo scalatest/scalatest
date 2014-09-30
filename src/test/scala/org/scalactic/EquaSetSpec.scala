@@ -1988,7 +1988,13 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3, 4, 5).sum shouldBe 15
   }
   it should "have an tail method" in {
-    number.EquaSet(1, 2, 3).tail shouldBe number.EquaSet(2, 3)
+    val result1 = number.EquaSet(1, 2, 3).tail
+    result1 shouldBe number.EquaSet(2, 3)
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.FastEquaSet(1, 2, 3).tail
+    result2 shouldBe number.FastEquaSet(2, 3)
+    result2.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an tails method" in {
     number.EquaSet(1, 2, 3).tails.toList shouldBe List(number.EquaSet(1,2,3), number.EquaSet(2,3), number.EquaSet(3), number.EquaSet())
