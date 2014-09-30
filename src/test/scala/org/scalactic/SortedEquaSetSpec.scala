@@ -361,15 +361,62 @@ class SortedEquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a - method that takes one argument" in {
-    lower.SortedEquaSet("hi", "ho", "ha") - "ha" shouldBe lower.SortedEquaSet("hi", "ho")
-    lower.SortedEquaSet("hi", "ho") - "HO" shouldBe lower.SortedEquaSet("hi")
-    lower.SortedEquaSet("hi", "ho") - "who?" shouldBe lower.SortedEquaSet("hi", "ho")
+    val result1 = lower.SortedEquaSet("hi", "ho", "ha") - "ha"
+    result1 shouldBe lower.SortedEquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho") - "HO"
+    result2 shouldBe lower.SortedEquaSet("hi")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.SortedEquaSet("hi", "ho") - "who?"
+    result3 shouldBe lower.SortedEquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result4 = lower.TreeEquaSet("hi", "ho", "ha") - "ha"
+    result4 shouldBe lower.TreeEquaSet("hi", "ho")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result5 = lower.TreeEquaSet("hi", "ho") - "HO"
+    result5 shouldBe lower.TreeEquaSet("hi")
+    result5.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result6 = lower.TreeEquaSet("hi", "ho") - "who?"
+    result6 shouldBe lower.TreeEquaSet("hi", "ho")
+    result6.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a - method that takes two or more arguments" in {
-    lower.SortedEquaSet("hi", "ho", "ha") - ("ha", "howdy!") shouldBe lower.SortedEquaSet("hi", "ho")
-    lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")  shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    lower.SortedEquaSet("hi", "ho") - ("who", "goes", "thar") shouldBe lower.SortedEquaSet("hi", "ho")
-    lower.SortedEquaSet("hi", "ho") - ("HI", "HO") shouldBe lower.SortedEquaSet.empty
+    val result1 = lower.SortedEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
+    result2 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.SortedEquaSet("hi", "ho") - ("who", "goes", "thar")
+    result3 shouldBe lower.SortedEquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result4 = lower.SortedEquaSet("hi", "ho") - ("HI", "HO")
+    result4 shouldBe lower.SortedEquaSet.empty
+    result4.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result5 = lower.TreeEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
+    result5 shouldBe lower.TreeEquaSet("hi", "ho")
+    result5.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result6 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
+    result6 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
+    result6.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result7 = lower.TreeEquaSet("hi", "ho") - ("who", "goes", "thar")
+    result7 shouldBe lower.TreeEquaSet("hi", "ho")
+    result7.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result8 = lower.TreeEquaSet("hi", "ho") - ("HI", "HO")
+    result8 shouldBe lower.TreeEquaSet.empty
+    result8.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "return an iterator that returns elements in sorted order" in {
     lower.SortedEquaSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
