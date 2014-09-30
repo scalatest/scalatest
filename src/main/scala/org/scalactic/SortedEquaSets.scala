@@ -737,7 +737,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }
-    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet = {
+    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.TreeEquaSet = {
       val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }

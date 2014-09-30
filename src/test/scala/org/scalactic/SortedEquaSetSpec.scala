@@ -1533,8 +1533,21 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(0).into(lower).scanLeft("z")(_ + _) shouldBe lower.SortedEquaSet("z", "z0")
   }
   it should "have a scanRight method" in {
-    number.SortedEquaSet(1).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(1, 0)
-    number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _) shouldBe number.SortedEquaSet(6, 5, 3, 0)
+    val result1 = number.SortedEquaSet(1).scanRight(0)(_ + _)
+    result1 shouldBe number.SortedEquaSet(1, 0)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _)
+    result2 shouldBe number.SortedEquaSet(6, 5, 3, 0)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = number.TreeEquaSet(1).scanRight(0)(_ + _)
+    result3 shouldBe number.TreeEquaSet(1, 0)
+    result3.shouldHaveExactType[number.TreeEquaSet]
+
+    val result4 = number.TreeEquaSet(1, 2, 3).scanRight(0)(_ + _)
+    result4 shouldBe number.TreeEquaSet(6, 5, 3, 0)
+    result4.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an into.scanRight method" in {
 
