@@ -1296,11 +1296,20 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an inits method" in {
     val inits = number.SortedEquaSet(1, 2, 3).inits
+    inits.shouldHaveExactType[Iterator[number.SortedEquaSet]]
     inits.next shouldBe number.SortedEquaSet(1,2,3)
     inits.next shouldBe number.SortedEquaSet(1,2)
     inits.next shouldBe number.SortedEquaSet(1)
     inits.next shouldBe number.SortedEquaSet()
     inits.hasNext shouldBe false
+
+    val treeInits = number.TreeEquaSet(1, 2, 3).inits
+    treeInits.shouldHaveExactType[Iterator[number.TreeEquaSet]]
+    treeInits.next shouldBe number.TreeEquaSet(1,2,3)
+    treeInits.next shouldBe number.TreeEquaSet(1,2)
+    treeInits.next shouldBe number.TreeEquaSet(1)
+    treeInits.next shouldBe number.TreeEquaSet()
+    treeInits.hasNext shouldBe false
   }
   it should "have an isTraversableAgain method" in {
     lower.SortedEquaSet("hi").isTraversableAgain shouldBe true
