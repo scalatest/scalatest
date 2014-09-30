@@ -1803,8 +1803,21 @@ class SortedEquaSetSpec extends UnitSpec {
     result50.shouldHaveExactType[List[number.TreeEquaSet]]
   }
   it should "have a span method" in {
-    number.SortedEquaSet(1, 2, 3).span(_ < 3) shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    number.SortedEquaSet(1, 2, 3).span(_ > 3) shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
+    val result1 = number.SortedEquaSet(1, 2, 3).span(_ < 3)
+    result1 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
+    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).span(_ > 3)
+    result2 shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
+    result2.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+
+    val result3 = number.TreeEquaSet(1, 2, 3).span(_ < 3)
+    result3 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
+    result3.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+
+    val result4 = number.TreeEquaSet(1, 2, 3).span(_ > 3)
+    result4 shouldBe (number.TreeEquaSet(), number.TreeEquaSet(1, 2, 3))
+    result4.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
   }
   it should "have a splitAt method" in {
     number.SortedEquaSet(1, 2, 3).splitAt(0) shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))

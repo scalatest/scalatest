@@ -745,7 +745,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaSets.TreeEquaSet] = underlying.sliding(size).map(new TreeEquaSet(_))
     def sliding(size: Int, step: Int): Iterator[thisEquaSets.TreeEquaSet] = underlying.sliding(size, step).map(new TreeEquaSet(_))
-    def span(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet) = {
+    def span(pred: T => Boolean): (thisEquaSets.TreeEquaSet, thisEquaSets.TreeEquaSet) = {
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
       (new TreeEquaSet(trueSet), new TreeEquaSet(falseSet))
     }
