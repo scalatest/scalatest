@@ -1528,7 +1528,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def tail: thisEquaSets.FastEquaSet = new FastEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.FastEquaSet] = underlying.tails.map(new FastEquaSet(_))
     def take(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.take(n))
-    def takeRight(n: Int): thisEquaSets.EquaSet = new FastEquaSet(underlying.takeRight(n))
+    def takeRight(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
@@ -1543,7 +1543,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
-    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.EquaSet = {
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.FastEquaSet = {
       val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
       new FastEquaSet(listList.map(EquaBox(_)).toSet)
     }

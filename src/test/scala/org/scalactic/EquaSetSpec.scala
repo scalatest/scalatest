@@ -2039,10 +2039,37 @@ class EquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a takeRight method" in {
-    number.EquaSet(1, 2, 3).takeRight(0) shouldBe number.EquaSet()
-    number.EquaSet(1, 2, 3).takeRight(1) shouldBe number.EquaSet(3)
-    number.EquaSet(1, 2, 3).takeRight(2) shouldBe number.EquaSet(2, 3)
-    number.EquaSet(1, 2, 3).takeRight(3) shouldBe number.EquaSet(1, 2, 3)
+    val result1 = number.EquaSet(1, 2, 3).takeRight(0)
+    result1 shouldBe number.EquaSet()
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.EquaSet(1, 2, 3).takeRight(1)
+    result2 shouldBe number.EquaSet(3)
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = number.EquaSet(1, 2, 3).takeRight(2)
+    result3 shouldBe number.EquaSet(2, 3)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = number.EquaSet(1, 2, 3).takeRight(3)
+    result4 shouldBe number.EquaSet(1, 2, 3)
+    result4.shouldHaveExactType[number.EquaSet]
+
+    val result5 = number.FastEquaSet(1, 2, 3).takeRight(0)
+    result5 shouldBe number.FastEquaSet()
+    result5.shouldHaveExactType[number.FastEquaSet]
+
+    val result6 = number.FastEquaSet(1, 2, 3).takeRight(1)
+    result6 shouldBe number.FastEquaSet(3)
+    result6.shouldHaveExactType[number.FastEquaSet]
+
+    val result7 = number.FastEquaSet(1, 2, 3).takeRight(2)
+    result7 shouldBe number.FastEquaSet(2, 3)
+    result7.shouldHaveExactType[number.FastEquaSet]
+
+    val result8 = number.FastEquaSet(1, 2, 3).takeRight(3)
+    result8 shouldBe number.FastEquaSet(1, 2, 3)
+    result8.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have a to method" in {
     number.EquaSet(1).to[List] shouldBe List(number.EquaBox(1))
@@ -2104,10 +2131,37 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).toVector should === (Vector(number.EquaBox(1)))
   }
   it should "have a transpose method" in {
-    numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose shouldBe numberList.EquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose shouldBe numberList.EquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose shouldBe numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose shouldBe numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    val result1 = numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
+    result1 shouldBe numberList.EquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    result1.shouldHaveExactType[numberList.EquaSet]
+
+    val result2 = numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
+    result2 shouldBe numberList.EquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    result2.shouldHaveExactType[numberList.EquaSet]
+
+    val result3 = numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
+    result3 shouldBe numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    result3.shouldHaveExactType[numberList.EquaSet]
+
+    val result4 = numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
+    result4 shouldBe numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    result4.shouldHaveExactType[numberList.EquaSet]
+
+    val result5 = numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
+    result5 shouldBe numberList.FastEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    result5.shouldHaveExactType[numberList.FastEquaSet]
+
+    val result6 = numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
+    result6 shouldBe numberList.FastEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    result6.shouldHaveExactType[numberList.FastEquaSet]
+
+    val result7 = numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
+    result7 shouldBe numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    result7.shouldHaveExactType[numberList.FastEquaSet]
+
+    val result8 = numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
+    result8 shouldBe numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    result8.shouldHaveExactType[numberList.FastEquaSet]
   }
   it should "have an unzip method" in {
     numberLower.EquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
