@@ -327,12 +327,38 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
   }
   it should "have a + method that takes one argument" in {
-    lower.SortedEquaSet("hi", "ho") + "ha" shouldBe lower.SortedEquaSet("hi", "ho", "ha")
-    lower.SortedEquaSet("hi", "ho") + "HO" shouldBe lower.SortedEquaSet("hi", "ho")
+    val result1 = lower.SortedEquaSet("hi", "ho") + "ha"
+    result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho") + "HO"
+    result2 shouldBe lower.SortedEquaSet("hi", "ho")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.TreeEquaSet("hi", "ho") + "ha"
+    result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha")
+    result3.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result4 = lower.TreeEquaSet("hi", "ho") + "HO"
+    result4 shouldBe lower.TreeEquaSet("hi", "ho")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a + method that takes two or more arguments" in {
-    lower.SortedEquaSet("hi", "ho") + ("ha", "hey!") shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    lower.SortedEquaSet("hi", "ho") + ("HO", "hoe", "Ho!") shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    val result1 = lower.SortedEquaSet("hi", "ho") + ("ha", "hey!")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.SortedEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
+    result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result3 = lower.TreeEquaSet("hi", "ho") + ("ha", "hey!")
+    result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
+    result3.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result4 = lower.TreeEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
+    result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
   }
   it should "have a - method that takes one argument" in {
     lower.SortedEquaSet("hi", "ho", "ha") - "ha" shouldBe lower.SortedEquaSet("hi", "ho")
