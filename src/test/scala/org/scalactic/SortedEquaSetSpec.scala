@@ -992,9 +992,31 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a filter method" in {
     val set = number.SortedEquaSet(1, 2, 3)
-    set.filter(_ == 1) shouldBe number.SortedEquaSet(1)
-    set.filter(_ == 2) shouldBe number.SortedEquaSet(2)
-    set.filter(_ == 3) shouldBe number.SortedEquaSet(3)
+    val treeSet = number.TreeEquaSet(1, 2, 3)
+
+    val result1 = set.filter(_ == 1)
+    result1 shouldBe number.SortedEquaSet(1)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = set.filter(_ == 2)
+    result2 shouldBe number.SortedEquaSet(2)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = set.filter(_ == 3)
+    result3 shouldBe number.SortedEquaSet(3)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = treeSet.filter(_ == 1)
+    result4 shouldBe number.TreeEquaSet(1)
+    result4.shouldHaveExactType[number.TreeEquaSet]
+
+    val result5 = treeSet.filter(_ == 2)
+    result5 shouldBe number.TreeEquaSet(2)
+    result5.shouldHaveExactType[number.TreeEquaSet]
+
+    val result6 = treeSet.filter(_ == 3)
+    result6 shouldBe number.TreeEquaSet(3)
+    result6.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have a filterNot method" in {
     val set = number.SortedEquaSet(1, 2, 3)
