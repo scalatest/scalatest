@@ -553,7 +553,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @return a `SortedEquaSet` consisting only of the last `n` elements of this `SortedEquaSet`, or else the
      * whole `SortedEquaSet`, if it has less than `n` elements.
      */
-    def takeRight(n: Int): thisEquaSets.EquaSet
+    def takeRight(n: Int): thisEquaSets.SortedEquaSet
 
     /**
      * Converts this `SortedEquaSet` to a set.
@@ -761,7 +761,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def tail: thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.TreeEquaSet] = underlying.tails.map(new TreeEquaSet(_))
     def take(n: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.take(n))
-    def takeRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.takeRight(n))
+    def takeRight(n: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer

@@ -1949,10 +1949,37 @@ class SortedEquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have a takeRight method" in {
-    number.SortedEquaSet(1, 2, 3).takeRight(0) shouldBe number.SortedEquaSet()
-    number.SortedEquaSet(1, 2, 3).takeRight(1) shouldBe number.SortedEquaSet(3)
-    number.SortedEquaSet(1, 2, 3).takeRight(2) shouldBe number.SortedEquaSet(2, 3)
-    number.SortedEquaSet(1, 2, 3).takeRight(3) shouldBe number.SortedEquaSet(1, 2, 3)
+    val result1 = number.SortedEquaSet(1, 2, 3).takeRight(0)
+    result1 shouldBe number.SortedEquaSet()
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.SortedEquaSet(1, 2, 3).takeRight(1)
+    result2 shouldBe number.SortedEquaSet(3)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = number.SortedEquaSet(1, 2, 3).takeRight(2)
+    result3 shouldBe number.SortedEquaSet(2, 3)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = number.SortedEquaSet(1, 2, 3).takeRight(3)
+    result4 shouldBe number.SortedEquaSet(1, 2, 3)
+    result4.shouldHaveExactType[number.SortedEquaSet]
+
+    val result5 = number.TreeEquaSet(1, 2, 3).takeRight(0)
+    result5 shouldBe number.TreeEquaSet()
+    result5.shouldHaveExactType[number.TreeEquaSet]
+
+    val result6 = number.TreeEquaSet(1, 2, 3).takeRight(1)
+    result6 shouldBe number.TreeEquaSet(3)
+    result6.shouldHaveExactType[number.TreeEquaSet]
+
+    val result7 = number.TreeEquaSet(1, 2, 3).takeRight(2)
+    result7 shouldBe number.TreeEquaSet(2, 3)
+    result7.shouldHaveExactType[number.TreeEquaSet]
+
+    val result8 = number.TreeEquaSet(1, 2, 3).takeRight(3)
+    result8 shouldBe number.TreeEquaSet(1, 2, 3)
+    result8.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have a to method" in {
     number.SortedEquaSet(1).to[List] shouldBe List(number.EquaBox(1))
