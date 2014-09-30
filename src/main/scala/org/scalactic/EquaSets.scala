@@ -1549,9 +1549,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying union that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
-    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet) = {
+    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.FastEquaSet, t2EquaSets.FastEquaSet) = {
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
-      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))
+      (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*))
     }
     def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet) = {
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)

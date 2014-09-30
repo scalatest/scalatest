@@ -2164,9 +2164,29 @@ class EquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[numberList.FastEquaSet]
   }
   it should "have an unzip method" in {
-    numberLower.EquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
-    numberLower.EquaSet((1, "2"), (3, "4")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3), lower.EquaSet("2", "4")))
-    numberLower.EquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3, 5), lower.EquaSet("2", "4", "6")))
+    val result1 = numberLower.EquaSet((1, "2")).unzip(number, lower)
+    result1 shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
+    result1.shouldHaveExactType[(number.EquaSet, lower.EquaSet)]
+
+    val result2 = numberLower.EquaSet((1, "2"), (3, "4")).unzip(number, lower)
+    result2 shouldBe ((number.EquaSet(1, 3), lower.EquaSet("2", "4")))
+    result2.shouldHaveExactType[(number.EquaSet, lower.EquaSet)]
+
+    val result3 = numberLower.EquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower)
+    result3 shouldBe ((number.EquaSet(1, 3, 5), lower.EquaSet("2", "4", "6")))
+    result3.shouldHaveExactType[(number.EquaSet, lower.EquaSet)]
+
+    val result4 = numberLower.FastEquaSet((1, "2")).unzip(number, lower)
+    result4 shouldBe ((number.FastEquaSet(1), lower.FastEquaSet("2")))
+    result4.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet)]
+
+    val result5 = numberLower.FastEquaSet((1, "2"), (3, "4")).unzip(number, lower)
+    result5 shouldBe ((number.FastEquaSet(1, 3), lower.FastEquaSet("2", "4")))
+    result5.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet)]
+
+    val result6 = numberLower.FastEquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower)
+    result6 shouldBe ((number.FastEquaSet(1, 3, 5), lower.FastEquaSet("2", "4", "6")))
+    result6.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet)]
   }
   it should "have an unzip3 method" in {
     numberLowerTrimmed.EquaSet((1, "2", "3")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
