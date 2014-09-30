@@ -1664,9 +1664,29 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(0).into(lower).scanRight("z")(_ + _) shouldBe lower.EquaSet("0z", "z")
   }
   it should "have a slice method" in {
-    number.EquaSet(3).slice(0, 0) shouldBe number.EquaSet()
-    number.EquaSet(1, 2, 3).slice(2, 1) shouldBe number.EquaSet()
-    number.EquaSet(1, 2, 3).slice(1, 3) shouldBe number.EquaSet(2, 3)
+    val result1 = number.EquaSet(3).slice(0, 0)
+    result1 shouldBe number.EquaSet()
+    result1.shouldHaveExactType[number.EquaSet]
+
+    val result2 = number.EquaSet(1, 2, 3).slice(2, 1)
+    result2 shouldBe number.EquaSet()
+    result2.shouldHaveExactType[number.EquaSet]
+
+    val result3 = number.EquaSet(1, 2, 3).slice(1, 3)
+    result3 shouldBe number.EquaSet(2, 3)
+    result3.shouldHaveExactType[number.EquaSet]
+
+    val result4 = number.FastEquaSet(3).slice(0, 0)
+    result4 shouldBe number.FastEquaSet()
+    result4.shouldHaveExactType[number.FastEquaSet]
+
+    val result5 = number.FastEquaSet(1, 2, 3).slice(2, 1)
+    result5 shouldBe number.FastEquaSet()
+    result5.shouldHaveExactType[number.FastEquaSet]
+
+    val result6 = number.FastEquaSet(1, 2, 3).slice(1, 3)
+    result6 shouldBe number.FastEquaSet(2, 3)
+    result6.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have 2 sliding methods" in {
 
