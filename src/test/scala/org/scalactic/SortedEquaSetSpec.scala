@@ -303,9 +303,25 @@ class SortedEquaSetSpec extends UnitSpec {
     """lower.TreeEquaSet(" hi ", "hi") union trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a | method that takes another SortedEquaSet instance with the same path-dependant type" in {
-    lower.SortedEquaSet("hi", "ho") | lower.SortedEquaSet("HI", "HO") shouldBe lower.SortedEquaSet("hi", "ho")
-    trimmed.SortedEquaSet("hi", "ho") | trimmed.SortedEquaSet(" hi ", " ho ") shouldBe trimmed.SortedEquaSet("hi", "ho")
+    val result1 = lower.SortedEquaSet("hi", "ho") | lower.SortedEquaSet("HI", "HO")
+    result1 shouldBe lower.SortedEquaSet("hi", "ho")
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = trimmed.SortedEquaSet("hi", "ho") | trimmed.SortedEquaSet(" hi ", " ho ")
+    result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
+    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+
     """lower.SortedEquaSet(" hi ", "hi") | trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
+
+    val result3 = lower.TreeEquaSet("hi", "ho") | lower.TreeEquaSet("HI", "HO")
+    result3 shouldBe lower.TreeEquaSet("hi", "ho")
+    result3.shouldHaveExactType[lower.TreeEquaSet]
+
+    val result4 = trimmed.TreeEquaSet("hi", "ho") | trimmed.TreeEquaSet(" hi ", " ho ")
+    result4 shouldBe trimmed.TreeEquaSet("hi", "ho")
+    result4.shouldHaveExactType[trimmed.TreeEquaSet]
+
+    """lower.TreeEquaSet(" hi ", "hi") | trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
     lower.SortedEquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
