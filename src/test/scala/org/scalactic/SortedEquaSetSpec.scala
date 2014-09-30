@@ -1286,7 +1286,13 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).headOption shouldBe Some(1)
   }
   it should "have an init method" in {
-    number.SortedEquaSet(1, 2, 3).init shouldBe number.SortedEquaSet(1, 2)
+    val result1 = number.SortedEquaSet(1, 2, 3).init
+    result1 shouldBe number.SortedEquaSet(1, 2)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.TreeEquaSet(1, 2, 3).init
+    result2 shouldBe number.TreeEquaSet(1, 2)
+    result2.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an inits method" in {
     val inits = number.SortedEquaSet(1, 2, 3).inits

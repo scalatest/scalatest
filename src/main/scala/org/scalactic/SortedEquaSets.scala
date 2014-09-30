@@ -696,7 +696,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(head) => Some(head.value)
         case None => None
       }
-    def init: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.init)
+    def init: thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.init)
     def inits: Iterator[thisEquaSets.SortedEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toSet.map((eb: EquaBox) => EquaBox(eb.value)))
