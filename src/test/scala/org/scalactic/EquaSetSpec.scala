@@ -1893,8 +1893,21 @@ class EquaSetSpec extends UnitSpec {
     result50.shouldHaveExactType[List[number.FastEquaSet]]
   }
   it should "have a span method" in {
-    number.EquaSet(1, 2, 3).span(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
-    number.EquaSet(1, 2, 3).span(_ > 3) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
+    val result1 = number.EquaSet(1, 2, 3).span(_ < 3)
+    result1 shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
+    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result2 = number.EquaSet(1, 2, 3).span(_ > 3)
+    result2 shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
+    result2.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result3 = number.FastEquaSet(1, 2, 3).span(_ < 3)
+    result3 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3))
+    result3.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+
+    val result4 = number.FastEquaSet(1, 2, 3).span(_ > 3)
+    result4 shouldBe (number.FastEquaSet(), number.FastEquaSet(1, 2, 3))
+    result4.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
   }
   it should "have a splitAt method" in {
     number.EquaSet(1, 2, 3).splitAt(0) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
