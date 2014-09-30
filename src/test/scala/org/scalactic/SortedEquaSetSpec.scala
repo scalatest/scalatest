@@ -2047,10 +2047,37 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).toVector should === (Vector(number.EquaBox(1)))
   }
   it should "have a transpose method" in {
-    numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose shouldBe numberList.SortedEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose shouldBe numberList.SortedEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose shouldBe numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose shouldBe numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    val result1 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
+    result1 shouldBe numberList.SortedEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    result1.shouldHaveExactType[numberList.SortedEquaSet]
+
+    val result2 = numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
+    result2 shouldBe numberList.SortedEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    result2.shouldHaveExactType[numberList.SortedEquaSet]
+
+    val result3 = numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
+    result3 shouldBe numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    result3.shouldHaveExactType[numberList.SortedEquaSet]
+
+    val result4 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
+    result4 shouldBe numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    result4.shouldHaveExactType[numberList.SortedEquaSet]
+
+    val result5 = numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
+    result5 shouldBe numberList.TreeEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
+    result5.shouldHaveExactType[numberList.TreeEquaSet]
+
+    val result6 = numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
+    result6 shouldBe numberList.TreeEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
+    result6.shouldHaveExactType[numberList.TreeEquaSet]
+
+    val result7 = numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
+    result7 shouldBe numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
+    result7.shouldHaveExactType[numberList.TreeEquaSet]
+
+    val result8 = numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
+    result8 shouldBe numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
+    result8.shouldHaveExactType[numberList.TreeEquaSet]
   }
   it should "have an unzip method" in {
     numberLower.SortedEquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
