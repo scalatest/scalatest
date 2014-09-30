@@ -1510,8 +1510,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
-    def sliding(size: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
-    def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
+    def sliding(size: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
+    def sliding(size: Int, step: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
     def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
