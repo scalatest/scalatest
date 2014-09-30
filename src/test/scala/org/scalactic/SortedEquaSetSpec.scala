@@ -1884,6 +1884,12 @@ class SortedEquaSetSpec extends UnitSpec {
     subsets2 should contain (number.SortedEquaSet(1, 2))
     subsets2 should contain (number.SortedEquaSet(1, 3))
     subsets2 should contain (number.SortedEquaSet(2, 3))
+
+    number.SortedEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.SortedEquaSet]]
+    number.SortedEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.SortedEquaSet]]
+
+    number.TreeEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.TreeEquaSet]]
+    number.TreeEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.TreeEquaSet]]
   }
   it should "have a sum method" in {
     number.SortedEquaSet(1).sum shouldBe 1

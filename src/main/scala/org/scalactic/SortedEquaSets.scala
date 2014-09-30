@@ -755,8 +755,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def stringPrefix: String = "TreeEquaSet"
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
-    def subsets(len: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets(len).map(new TreeEquaSet(_))
-    def subsets: Iterator[thisEquaSets.SortedEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
+    def subsets(len: Int): Iterator[thisEquaSets.TreeEquaSet] = underlying.subsets(len).map(new TreeEquaSet(_))
+    def subsets: Iterator[thisEquaSets.TreeEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.SortedEquaSet] = underlying.tails.map(new TreeEquaSet(_))
