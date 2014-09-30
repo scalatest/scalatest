@@ -960,7 +960,7 @@ trait Assertions extends TripleEquals {
       case None =>
         val message = messagePrefix + Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
 THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR JUST LEAVE IT OUT. FOR NOW I'LL LEAVE IT OUT.
@@ -1012,7 +1012,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       case None =>
         val message = Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
 
@@ -1580,7 +1580,7 @@ object Assertions extends Assertions {
       case None =>
         val message = Resources(exceptionExpectedResourceName, clazz.getName)
         throw newAssertionFailedException(Some(message), None, stackDepth)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
   private[scalatest] def checkNoException(fun: => Any) {
