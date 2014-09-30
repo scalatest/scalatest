@@ -686,7 +686,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
     def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
     def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
-    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.SortedEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new TreeEquaSet(t._2)))
+    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.TreeEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new TreeEquaSet(t._2)))
     def grouped(size: Int): Iterator[thisEquaSets.SortedEquaSet] = underlying.grouped(size).map(new TreeEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode

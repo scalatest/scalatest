@@ -1180,10 +1180,37 @@ class SortedEquaSetSpec extends UnitSpec {
     num shouldBe 60
   }
   it should "have a groupBy method" in {
-    number.SortedEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5), 0 -> number.SortedEquaSet(2, 4))
-    number.SortedEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 3, 3), 0 -> number.SortedEquaSet(2))
-    number.SortedEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 1, 3, 3, 3))
-    number.SortedEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5, 7), 0 -> number.SortedEquaSet(2))
+    val result1 = number.SortedEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
+    result1 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5), 0 -> number.SortedEquaSet(2, 4))
+    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+
+    val result2 = number.SortedEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
+    result2 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 3, 3), 0 -> number.SortedEquaSet(2))
+    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+
+    val result3 = number.SortedEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
+    result3 shouldBe Map(1 -> number.SortedEquaSet(1, 1, 3, 3, 3))
+    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+
+    val result4 = number.SortedEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
+    result4 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5, 7), 0 -> number.SortedEquaSet(2))
+    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+
+    val result5 = number.TreeEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
+    result5 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 5), 0 -> number.TreeEquaSet(2, 4))
+    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+
+    val result6 = number.TreeEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
+    result6 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 3, 3), 0 -> number.TreeEquaSet(2))
+    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+
+    val result7 = number.TreeEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
+    result7 shouldBe Map(1 -> number.TreeEquaSet(1, 1, 3, 3, 3))
+    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+
+    val result8 = number.TreeEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
+    result8 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 5, 7), 0 -> number.TreeEquaSet(2))
+    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
   }
   it should "have a grouped method" in {
     number.SortedEquaSet(1, 2, 3).grouped(2).toList shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
