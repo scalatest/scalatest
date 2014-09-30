@@ -1910,10 +1910,37 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
   }
   it should "have a splitAt method" in {
-    number.EquaSet(1, 2, 3).splitAt(0) shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
-    number.EquaSet(1, 2, 3).splitAt(1) shouldBe (number.EquaSet(1), number.EquaSet(2, 3))
-    number.EquaSet(1, 2, 3).splitAt(2) shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
-    number.EquaSet(1, 2, 3).splitAt(3) shouldBe (number.EquaSet(1, 2, 3), number.EquaSet())
+    val result1 = number.EquaSet(1, 2, 3).splitAt(0)
+    result1 shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
+    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result2 = number.EquaSet(1, 2, 3).splitAt(1)
+    result2 shouldBe (number.EquaSet(1), number.EquaSet(2, 3))
+    result2.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result3 = number.EquaSet(1, 2, 3).splitAt(2)
+    result3 shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
+    result3.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result4 = number.EquaSet(1, 2, 3).splitAt(3)
+    result4 shouldBe (number.EquaSet(1, 2, 3), number.EquaSet())
+    result4.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result5 = number.FastEquaSet(1, 2, 3).splitAt(0)
+    result5 shouldBe (number.FastEquaSet(), number.FastEquaSet(1, 2, 3))
+    result5.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+
+    val result6 = number.FastEquaSet(1, 2, 3).splitAt(1)
+    result6 shouldBe (number.FastEquaSet(1), number.FastEquaSet(2, 3))
+    result6.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+
+    val result7 = number.FastEquaSet(1, 2, 3).splitAt(2)
+    result7 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3))
+    result7.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+
+    val result8 = number.FastEquaSet(1, 2, 3).splitAt(3)
+    result8 shouldBe (number.FastEquaSet(1, 2, 3), number.FastEquaSet())
+    result8.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
   }
   it should "have a stringPrefix method" in {
     number.EquaSet(1).stringPrefix shouldBe "EquaSet"

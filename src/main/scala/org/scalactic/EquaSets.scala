@@ -1516,7 +1516,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
-    def splitAt(n: Int): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
+    def splitAt(n: Int): (thisEquaSets.FastEquaSet, thisEquaSets.FastEquaSet) = {
       val (trueSet, falseSet) = underlying.splitAt(n)
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
