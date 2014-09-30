@@ -1974,6 +1974,12 @@ class EquaSetSpec extends UnitSpec {
     subsets2 should contain (number.EquaSet(1, 2))
     subsets2 should contain (number.EquaSet(1, 3))
     subsets2 should contain (number.EquaSet(2, 3))
+
+    number.EquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.EquaSet]]
+    number.EquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.EquaSet]]
+
+    number.FastEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.FastEquaSet]]
+    number.FastEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.FastEquaSet]]
   }
   it should "have a sum method" in {
     number.EquaSet(1).sum shouldBe 1

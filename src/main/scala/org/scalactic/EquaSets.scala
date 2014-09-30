@@ -1522,8 +1522,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def stringPrefix: String = "EquaSet"
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
-    def subsets(len: Int): Iterator[thisEquaSets.EquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
-    def subsets: Iterator[thisEquaSets.EquaSet] = underlying.subsets.map(new FastEquaSet(_))
+    def subsets(len: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
+    def subsets: Iterator[thisEquaSets.FastEquaSet] = underlying.subsets.map(new FastEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.EquaSet = new FastEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.EquaSet] = underlying.tails.map(new FastEquaSet(_))
