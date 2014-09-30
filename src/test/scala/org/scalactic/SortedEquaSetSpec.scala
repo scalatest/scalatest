@@ -1056,11 +1056,33 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
   }
   it should "have a flatMap method" in {
-    number.SortedEquaSet(1, 2, 3) flatMap (i => number.SortedEquaSet(i + 1)) shouldBe number.SortedEquaSet(2, 3, 4)
-    number.SortedEquaSet(5) flatMap (i => number.SortedEquaSet(i + 3)) shouldBe number.SortedEquaSet(8)
+    val result1 = number.SortedEquaSet(1, 2, 3) flatMap (i => number.SortedEquaSet(i + 1))
+    result1 shouldBe number.SortedEquaSet(2, 3, 4)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = number.SortedEquaSet(5) flatMap (i => number.SortedEquaSet(i + 3))
+    result2 shouldBe number.SortedEquaSet(8)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
     val ss = number.SortedEquaSet(1, 2)
     val is = number.SortedEquaSet(1, 2, 3)
-    (for (s <- ss; i <- is) yield s + i) shouldBe number.SortedEquaSet(2, 3, 4, 3, 4, 5)
+    val result3 = (for (s <- ss; i <- is) yield s + i)
+    result3 shouldBe number.SortedEquaSet(2, 3, 4, 3, 4, 5)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = number.TreeEquaSet(1, 2, 3) flatMap (i => number.TreeEquaSet(i + 1))
+    result4 shouldBe number.TreeEquaSet(2, 3, 4)
+    result4.shouldHaveExactType[number.TreeEquaSet]
+
+    val result5 = number.TreeEquaSet(5) flatMap (i => number.TreeEquaSet(i + 3))
+    result5 shouldBe number.TreeEquaSet(8)
+    result5.shouldHaveExactType[number.TreeEquaSet]
+
+    val tss = number.TreeEquaSet(1, 2)
+    val tis = number.TreeEquaSet(1, 2, 3)
+    val result6 = (for (s <- tss; i <- tis) yield s + i)
+    result6 shouldBe number.TreeEquaSet(2, 3, 4, 3, 4, 5)
+    result6.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an into.flatten method that works on nested EquaSet" in {
 
