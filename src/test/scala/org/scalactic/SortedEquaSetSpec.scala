@@ -1907,7 +1907,13 @@ class SortedEquaSetSpec extends UnitSpec {
     result2.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an tails method" in {
-    number.SortedEquaSet(1, 2, 3).tails.toList shouldBe List(number.SortedEquaSet(1,2,3), number.SortedEquaSet(2,3), number.SortedEquaSet(3), number.SortedEquaSet())
+    val result1 = number.SortedEquaSet(1, 2, 3).tails.toList
+    result1 shouldBe List(number.SortedEquaSet(1,2,3), number.SortedEquaSet(2,3), number.SortedEquaSet(3), number.SortedEquaSet())
+    result1.shouldHaveExactType[List[number.SortedEquaSet]]
+
+    val result2 = number.TreeEquaSet(1, 2, 3).tails.toList
+    result2 shouldBe List(number.TreeEquaSet(1,2,3), number.TreeEquaSet(2,3), number.TreeEquaSet(3), number.TreeEquaSet())
+    result2.shouldHaveExactType[List[number.TreeEquaSet]]
   }
   it should "have a take method" in {
     number.SortedEquaSet(1, 2, 3).take(0) shouldBe number.SortedEquaSet()

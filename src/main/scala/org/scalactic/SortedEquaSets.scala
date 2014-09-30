@@ -534,7 +534,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @return an iterator over all the tails of this `SortedEquaSet`
      * @example `SortedEquaSet(1,2,3).tails = Iterator(SortedEquaSet(1,2,3), SortedEquaSet(2,3), SortedEquaSet(3), SortedEquaSet())`
      */
-    def tails: Iterator[thisEquaSets.EquaSet]
+    def tails: Iterator[thisEquaSets.SortedEquaSet]
 
     /**
      * Selects first ''n'' elements.
@@ -759,7 +759,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def subsets: Iterator[thisEquaSets.TreeEquaSet] = underlying.subsets.map(new TreeEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.tail)
-    def tails: Iterator[thisEquaSets.SortedEquaSet] = underlying.tails.map(new TreeEquaSet(_))
+    def tails: Iterator[thisEquaSets.TreeEquaSet] = underlying.tails.map(new TreeEquaSet(_))
     def take(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
