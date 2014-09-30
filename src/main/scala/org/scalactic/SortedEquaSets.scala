@@ -543,7 +543,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
      * or else the whole `SortedEquaSet`, if it has less than `n` elements.
      */
-    def take(n: Int): thisEquaSets.EquaSet
+    def take(n: Int): thisEquaSets.SortedEquaSet
 
     /**
      * Selects last ''n'' elements.
@@ -760,7 +760,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
     def tail: thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.tail)
     def tails: Iterator[thisEquaSets.TreeEquaSet] = underlying.tails.map(new TreeEquaSet(_))
-    def take(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.take(n))
+    def take(n: Int): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[EquaBox] = underlying.toArray
