@@ -116,15 +116,22 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "construct only sets with appropriate element types" in {
     "lower.SortedEquaSet(1, 2, 3)" shouldNot compile
+    "lower.TreeEquaSet(1, 2, 3)" shouldNot compile
   }
   it should "eliminate 'duplicate' entries passed to the apply factory method" in {
-    val nonEmptySet = lower.SortedEquaSet("one", "two", "two", "three", "Three")
-    nonEmptySet should have size 3
+    val result1 = lower.SortedEquaSet("one", "two", "two", "three", "Three")
+    result1 should have size 3
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.TreeEquaSet("one", "two", "two", "three", "Three")
+    result2 should have size 3
+    result2.shouldHaveExactType[lower.TreeEquaSet]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedEquaSet.
   }
   it should "have a toString method" in {
     lower.SortedEquaSet("hi", "ho").toString should === ("TreeEquaSet(hi, ho)")
+    lower.TreeEquaSet("hi", "ho").toString should === ("TreeEquaSet(hi, ho)")
   }
   it should "have a diff method that takes another SortedEquaSet instance with the same path-dependant type" in {
     lower.SortedEquaSet("hi", "ho") diff lower.SortedEquaSet("HI", "HO") shouldBe lower.SortedEquaSet()
