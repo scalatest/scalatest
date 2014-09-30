@@ -1997,7 +1997,13 @@ class EquaSetSpec extends UnitSpec {
     result2.shouldHaveExactType[number.FastEquaSet]
   }
   it should "have an tails method" in {
-    number.EquaSet(1, 2, 3).tails.toList shouldBe List(number.EquaSet(1,2,3), number.EquaSet(2,3), number.EquaSet(3), number.EquaSet())
+    val result1 = number.EquaSet(1, 2, 3).tails
+    result1.toList shouldBe List(number.EquaSet(1,2,3), number.EquaSet(2,3), number.EquaSet(3), number.EquaSet())
+    result1.shouldHaveExactType[Iterator[number.EquaSet]]
+
+    val result2 = number.FastEquaSet(1, 2, 3).tails
+    result2.toList shouldBe List(number.FastEquaSet(1,2,3), number.FastEquaSet(2,3), number.FastEquaSet(3), number.FastEquaSet())
+    result2.shouldHaveExactType[Iterator[number.FastEquaSet]]
   }
   it should "have a take method" in {
     number.EquaSet(1, 2, 3).take(0) shouldBe number.EquaSet()
