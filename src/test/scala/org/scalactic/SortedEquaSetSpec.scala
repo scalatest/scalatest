@@ -104,8 +104,13 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.TreeEquaSet.empty.shouldHaveExactType[lower.TreeEquaSet]
   }
   it can "be constructed with apply" in {
-    val nonEmptySet = lower.SortedEquaSet("one", "two", "three")
-    nonEmptySet should have size 3
+    val result1 = lower.SortedEquaSet("one", "two", "three")
+    result1 should have size 3
+    result1.shouldHaveExactType[lower.SortedEquaSet]
+
+    val result2 = lower.TreeEquaSet("one", "two", "three")
+    result2 should have size 3
+    result2.shouldHaveExactType[lower.TreeEquaSet]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedEquaSet.
   }
