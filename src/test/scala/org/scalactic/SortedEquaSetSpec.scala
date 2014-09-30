@@ -930,12 +930,55 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a dropWhile method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
-    set.dropWhile(_ < 1) shouldBe number.EquaSet(1, 2, 3, 4, 5)
-    set.dropWhile(_ < 2) shouldBe number.EquaSet(2, 3, 4, 5)
-    set.dropWhile(_ < 3) shouldBe number.EquaSet(3, 4, 5)
-    set.dropWhile(_ < 4) shouldBe number.EquaSet(4, 5)
-    set.dropWhile(_ < 5) shouldBe number.EquaSet(5)
-    set.dropWhile(_ < 6) shouldBe number.EquaSet()
+    val treeSet = number.TreeEquaSet(1, 2, 3, 4, 5)
+
+    val result1 = set.dropWhile(_ < 1)
+    result1 shouldBe number.SortedEquaSet(1, 2, 3, 4, 5)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = set.dropWhile(_ < 2)
+    result2 shouldBe number.SortedEquaSet(2, 3, 4, 5)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = set.dropWhile(_ < 3)
+    result3 shouldBe number.SortedEquaSet(3, 4, 5)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = set.dropWhile(_ < 4)
+    result4 shouldBe number.SortedEquaSet(4, 5)
+    result4.shouldHaveExactType[number.SortedEquaSet]
+
+    val result5 = set.dropWhile(_ < 5)
+    result5 shouldBe number.SortedEquaSet(5)
+    result5.shouldHaveExactType[number.SortedEquaSet]
+
+    val result6 = set.dropWhile(_ < 6)
+    result6 shouldBe number.SortedEquaSet()
+    result6.shouldHaveExactType[number.SortedEquaSet]
+
+    val result7 = treeSet.dropWhile(_ < 1)
+    result7 shouldBe number.TreeEquaSet(1, 2, 3, 4, 5)
+    result7.shouldHaveExactType[number.TreeEquaSet]
+
+    val result8 = treeSet.dropWhile(_ < 2)
+    result8 shouldBe number.TreeEquaSet(2, 3, 4, 5)
+    result8.shouldHaveExactType[number.TreeEquaSet]
+
+    val result9 = treeSet.dropWhile(_ < 3)
+    result9 shouldBe number.TreeEquaSet(3, 4, 5)
+    result9.shouldHaveExactType[number.TreeEquaSet]
+
+    val result10 = treeSet.dropWhile(_ < 4)
+    result10 shouldBe number.TreeEquaSet(4, 5)
+    result10.shouldHaveExactType[number.TreeEquaSet]
+
+    val result11 = treeSet.dropWhile(_ < 5)
+    result11 shouldBe number.TreeEquaSet(5)
+    result11.shouldHaveExactType[number.TreeEquaSet]
+
+    val result12 = treeSet.dropWhile(_ < 6)
+    result12 shouldBe number.TreeEquaSet()
+    result12.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have an enclosingEquaSets method" in {
     trimmed.EquaSet("hi").enclosingEquaSets shouldBe trimmed
