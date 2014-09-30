@@ -1512,7 +1512,13 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).nonEmpty shouldBe true
   }
   it should "have a partition method" in {
-    number.EquaSet(1, 2, 3, 4).partition(_ < 3) shouldBe (number.EquaSet(1, 2), number.EquaSet(3, 4))
+    val result1 = number.EquaSet(1, 2, 3, 4).partition(_ < 3)
+    result1 shouldBe (number.EquaSet(1, 2), number.EquaSet(3, 4))
+    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+
+    val result2 = number.FastEquaSet(1, 2, 3, 4).partition(_ < 3)
+    result2 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3, 4))
+    result2.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
   }
   it should "have a product method" in {
     number.EquaSet(1, 2, 3).product shouldBe 6

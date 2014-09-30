@@ -1487,7 +1487,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
     def mkString: String = underlying.toList.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
-    def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet) = {
+    def partition(pred: T => Boolean): (thisEquaSets.FastEquaSet, thisEquaSets.FastEquaSet) = {
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
     }
