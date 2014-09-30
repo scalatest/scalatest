@@ -1359,9 +1359,29 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(8).into(lower).map(_.toString) shouldBe lower.SortedEquaSet("8")
   }
   it should "have a map method" in {
-    number.SortedEquaSet(1, 2, 3) .map (_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
-    (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)
-    number.SortedEquaSet(5) map (_ + 3) shouldBe number.SortedEquaSet(8)
+    val result1 = number.SortedEquaSet(1, 2, 3) .map (_ + 1)
+    result1 shouldBe number.SortedEquaSet(2, 3, 4)
+    result1.shouldHaveExactType[number.SortedEquaSet]
+
+    val result2 = (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2)
+    result2 shouldBe number.SortedEquaSet(2, 4, 6)
+    result2.shouldHaveExactType[number.SortedEquaSet]
+
+    val result3 = number.SortedEquaSet(5) map (_ + 3)
+    result3 shouldBe number.SortedEquaSet(8)
+    result3.shouldHaveExactType[number.SortedEquaSet]
+
+    val result4 = number.TreeEquaSet(1, 2, 3) .map (_ + 1)
+    result4 shouldBe number.TreeEquaSet(2, 3, 4)
+    result4.shouldHaveExactType[number.TreeEquaSet]
+
+    val result5 = (for (ele <- number.TreeEquaSet(1, 2, 3)) yield ele * 2)
+    result5 shouldBe number.TreeEquaSet(2, 4, 6)
+    result5.shouldHaveExactType[number.TreeEquaSet]
+
+    val result6 = number.TreeEquaSet(5) map (_ + 3)
+    result6 shouldBe number.TreeEquaSet(8)
+    result6.shouldHaveExactType[number.TreeEquaSet]
   }
   it should "have a max method" in {
     number.SortedEquaSet(1, 2, 3, 4, 5).max shouldBe 5

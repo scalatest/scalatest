@@ -711,7 +711,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(last) => Some(last.value)
         case None => None
       }
-    def map(f: T => T): thisEquaSets.SortedEquaSet = SortedEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def map(f: T => T): thisEquaSets.TreeEquaSet = TreeEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
