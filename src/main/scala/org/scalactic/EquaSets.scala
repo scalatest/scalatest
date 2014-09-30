@@ -1553,9 +1553,9 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
       (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*))
     }
-    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet) = {
+    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.FastEquaSet, t2EquaSets.FastEquaSet, t3EquaSets.FastEquaSet) = {
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
-      (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*), t3EquaSets.EquaSet(t3: _*))
+      (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*), t3EquaSets.FastEquaSet(t3: _*))
     }
     def view: TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view
     def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view(from, until)

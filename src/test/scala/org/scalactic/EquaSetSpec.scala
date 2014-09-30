@@ -2189,9 +2189,29 @@ class EquaSetSpec extends UnitSpec {
     result6.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet)]
   }
   it should "have an unzip3 method" in {
-    numberLowerTrimmed.EquaSet((1, "2", "3")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
-    numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
-    numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
+    val result1 = numberLowerTrimmed.EquaSet((1, "2", "3")).unzip3(number, lower, trimmed)
+    result1 shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
+    result1.shouldHaveExactType[(number.EquaSet, lower.EquaSet, trimmed.EquaSet)]
+
+    val result2 = numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed)
+    result2 shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
+    result2.shouldHaveExactType[(number.EquaSet, lower.EquaSet, trimmed.EquaSet)]
+
+    val result3 = numberLowerTrimmed.EquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed)
+    result3 shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
+    result3.shouldHaveExactType[(number.EquaSet, lower.EquaSet, trimmed.EquaSet)]
+
+    val result4 = numberLowerTrimmed.FastEquaSet((1, "2", "3")).unzip3(number, lower, trimmed)
+    result4 shouldBe (number.FastEquaSet(1), lower.FastEquaSet("2"), trimmed.FastEquaSet("3"))
+    result4.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet, trimmed.FastEquaSet)]
+
+    val result5 = numberLowerTrimmed.FastEquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed)
+    result5 shouldBe (number.FastEquaSet(1, 4), lower.FastEquaSet("2", "5"), trimmed.FastEquaSet("3", "6"))
+    result5.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet, trimmed.FastEquaSet)]
+
+    val result6 = numberLowerTrimmed.FastEquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed)
+    result6 shouldBe (number.FastEquaSet(1, 4, 7), lower.FastEquaSet("2", "5", "8"), trimmed.FastEquaSet("3", "6", "9"))
+    result6.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet, trimmed.FastEquaSet)]
   }
   it should "have 2 views method" in {
     number.EquaSet(3).view(0, 0).toList shouldBe List()
