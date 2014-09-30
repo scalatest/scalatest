@@ -146,7 +146,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      *  @return a new `SortedEquaSet` that contains all elements of the current `SortedEquaSet`
      *  except one less occurrence of each of the elements of `elems`.
      */
-    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
+    def --(elems: GenTraversableOnce[T]): thisEquaSets.SortedEquaSet
 
     /**
      * Creates a new `SortedEquaSet` from this `SortedEquaSet` by removing all elements of another `EquaSet`
@@ -620,9 +620,9 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def - (elem: T): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying - EquaBox(elem))
     def - (elem1: T, elem2: T, elems: T*): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elems.map(EquaBox(_)): _*))
-    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet =
+    def --(elems: GenTraversableOnce[T]): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying -- elems.toSeq.map(EquaBox(_)))
-    def --(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
+    def --(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying -- that.toSet)
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquaBox) => op(b, e.value))
