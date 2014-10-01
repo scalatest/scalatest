@@ -676,7 +676,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
     def filter(pred: T => Boolean): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
-    def find(pred: T => Boolean): Option[EquaBox] = underlying.find((box: EquaBox) => pred(box.value))
+    def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet = {
       val set = underlying.flatMap((box: EquaBox) => f(box.value).toList)
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))

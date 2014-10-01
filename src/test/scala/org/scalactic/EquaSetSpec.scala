@@ -1082,7 +1082,7 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have a find method" in {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
-    number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
+    number.EquaSet(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }
   it should "have an into.flatMap method" in {
 
