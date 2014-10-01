@@ -425,7 +425,14 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * @return an instance of `thatEquaSets`.`SortedEquaBridge`
      */
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
+
+    /**
+     * Tests if this `SortedEquaSet` is empty.
+     *
+     * @return `true` if there is no element in the set, `false` otherwise.
+     */
     def isEmpty: Boolean
+
     def iterator: Iterator[T]
 
     /**

@@ -736,6 +736,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
 
+    /**
+     * Tests if this `EquaSet` is empty.
+     *
+     * @return `true` if there is no element in the set, `false` otherwise.
+     */
     def isEmpty: Boolean
 
     /** Tests whether this `EquaSet` can be repeatedly traversed. Always
