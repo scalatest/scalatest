@@ -53,6 +53,23 @@ class PrettifierSpec extends Spec with Matchers {
     }
   }
 
+  def normalHashingEquality[T] =
+    new HashingEquality[T] {
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
+  def normalOrderingEquality[T](implicit ord: Ordering[T]) =
+    new OrderingEquality[T] {
+      def compare(a: T, b: T): Int = ord.compare(a, b)
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
+
+  val numberEquaSet = EquaSets[Int](normalHashingEquality[Int])
+  val numberSortedEquaSet = SortedEquaSets[Int](normalOrderingEquality[Int])
+  val lowerEquaSet = EquaSets[String](StringNormalizations.lowerCased.toHashingEquality)
+  val lowerSortedEquaSet = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+
   object `the basic Prettifier` {
     def `should put double quotes around strings` {
       Prettifier.basic("hi") should be ("\"hi\"")
@@ -182,6 +199,22 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested string Java Map` {
       Prettifier.basic(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{akey={1=one, 2=two, 3=three}}")
+    }
+    def `should pretty print EquaSet(Int)`: Unit = {
+      Prettifier.basic(numberEquaSet.EquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.basic(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+    }
+    def `should pretty print SortedEquaSet(Int)`: Unit = {
+      Prettifier.basic(numberSortedEquaSet.SortedEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
+      Prettifier.basic(numberSortedEquaSet.TreeEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
+    }
+    def `should pretty print EquaSet(String)`: Unit = {
+      Prettifier.basic(lowerEquaSet.EquaSet("1", "2", "3")) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.basic(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("FastEquaSet(1, 2, 3)")
+    }
+    def `should pretty print SortedEquaSet(String)`: Unit = {
+      Prettifier.basic(lowerSortedEquaSet.SortedEquaSet("1", "2", "3")) should be ("TreeEquaSet(1, 2, 3)")
+      Prettifier.basic(lowerSortedEquaSet.TreeEquaSet("1", "2", "3")) should be ("TreeEquaSet(1, 2, 3)")
     }
   }
 
@@ -366,6 +399,22 @@ class PrettifierSpec extends Spec with Matchers {
         override def toString = "It's Fred all the way down"
       }
       Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
+    }
+    def `should pretty print EquaSet(Int)`: Unit = {
+      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+    }
+    def `should pretty print SortedEquaSet(Int)`: Unit = {
+      Prettifier.default(numberSortedEquaSet.SortedEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
+      Prettifier.default(numberSortedEquaSet.TreeEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
+    }
+    def `should pretty print EquaSet(String)`: Unit = {
+      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3")) should be ("FastEquaSet(\"1\", \"2\", \"3\")")
+      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("FastEquaSet(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print SortedEquaSet(String)`: Unit = {
+      Prettifier.default(lowerSortedEquaSet.SortedEquaSet("1", "2", "3")) should be ("TreeEquaSet(\"1\", \"2\", \"3\")")
+      Prettifier.default(lowerSortedEquaSet.TreeEquaSet("1", "2", "3")) should be ("TreeEquaSet(\"1\", \"2\", \"3\")")
     }
   }
 }

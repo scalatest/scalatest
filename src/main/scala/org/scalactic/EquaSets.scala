@@ -1520,7 +1520,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       val (trueSet, falseSet) = underlying.splitAt(n)
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
-    def stringPrefix: String = "EquaSet"
+    def stringPrefix: String = "FastEquaSet"
     def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toSet)
     def subsets(len: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
     def subsets: Iterator[thisEquaSets.FastEquaSet] = underlying.subsets.map(new FastEquaSet(_))
