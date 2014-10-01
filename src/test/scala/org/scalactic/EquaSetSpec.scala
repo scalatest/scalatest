@@ -2240,6 +2240,14 @@ class EquaSetSpec extends UnitSpec {
     }
     a shouldBe 6  // 3 + 3
     c shouldBe 3
+
+    val result1 = withFilter.map(_ * 2)
+    result1 shouldBe number.EquaSet(4, 6)
+    a shouldBe 9
+
+    val result2 = withFilter.flatMap(e => number.EquaSet(e * 2, e * 3))
+    result2 shouldBe number.EquaSet(4, 6, 9)
+    a shouldBe 12
   }
   it should "have a zip method" in {
     number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))

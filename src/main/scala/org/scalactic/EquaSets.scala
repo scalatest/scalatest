@@ -1371,38 +1371,74 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
 
+    /**
+     * A class supporting filtered operations. Instances of this class are
+     * returned by method `withFilter`.
+     */
     class WithFilter(p: T=> Boolean) {
 
+      /**
+       * Applies a function `f` to all elements of the outer `EquaSet` containing
+       * this `WithFilter` instance that satisfy predicate `p`.
+       *
+       * @param f the function that is applied for its side-effect to every element.
+       * The result of function `f` is discarded.
+       *
+       * @tparam U the type parameter describing the result of function `f`.
+       * This result will always be ignored. Typically `U` is `Unit`,
+       * but this is not necessary.
+       *
+       */
       def foreach[U](f: T => U): Unit =
         filter(p).foreach(f)
 
+      /**
+       * Builds a new `EquaSet` by applying a function to all elements of the
+       * outer `EquaSet` containing this `WithFilter` instance that satisfy predicate `p`.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `EquaSet` resulting from applying
+       * the given function `f` to each element of the outer `EquaSet`
+       * that satisfies predicate `p` and collecting the results.
+       *
+       * @return a new `EquaSet` resulting from applying the given function
+       * `f` to each element of the outer `EquaSet` that satisfies
+       * predicate `p` and collecting the results.
+       */
+      def map(f: T => T): thisEquaSets.EquaSet =
+        filter(p).map(f)
+
+      /**
+       * Builds a new `EquaSet` by applying a function to all elements of the
+       * outer `EquaSet` containing this `WithFilter` instance that satisfy
+       * predicate `p` and concatenating the results.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `EquaSet` resulting from applying
+       * the given `EquaSet`-valued function `f` to each element
+       * of the outer `EquaSet` that satisfies predicate `p` and
+       * concatenating the results.
+       *
+       * @return a new `EquaSet` resulting from applying the given
+       * `EquaSet`-valued function `f` to each element of the
+       * outer `EquaSet` that satisfies predicate `p` and concatenating
+       * the results.
+       */
+      def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+        filter(p).flatMap(f)
+
+      /**
+       * Further refines the filter for this `EquaSet`.
+       *
+       * @param q the predicate used to test elements.
+       * @return an object of class `WithFilter`, which supports
+       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
+       * All these operations apply to those elements of this `EquaSet` which
+       * satisfy the predicate `q` in addition to the predicate `p`.
+       */
       def withFilter(q: T => Boolean): WithFilter =
         new WithFilter(x => p(x) && q(x))
     }
-
-    /*class WithFilter(p: A => Boolean) extends FilterMonadic[T, thisEquaSets.EquaSet] {
-
-      def map[B, That](f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): That = {
-        val b = bf(repr)
-        for (x <- self)
-          if (p(x)) b += f(x)
-        b.result
-      }
-
-      def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit bf: CanBuildFrom[Repr, B, That]): That = {
-        val b = bf(repr)
-        for (x <- self)
-          if (p(x)) b ++= f(x).seq
-        b.result
-      }
-
-      def foreach[U](f: A => U): Unit =
-        for (x <- self)
-          if (p(x)) f(x)
-
-      def withFilter(q: A => Boolean): WithFilter =
-        new WithFilter(x => p(x) && q(x))
-    }*/
 
     /**
      * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
