@@ -17,6 +17,7 @@ package org.scalactic
 
 import scala.Iterator
 import scala.collection.generic.CanBuildFrom
+import scala.collection.generic.FilterMonadic
 import scala.collection.immutable._
 import scala.collection.mutable
 import scala.collection.GenTraversableOnce
@@ -1353,6 +1354,55 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * and extending up to (but not including) index `until`.
      */
     def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
+
+    /**
+     * Creates a non-strict filter of this `EquaSet`.
+     *
+     * Note: the difference between `c filter p` and `c withFilter p` is that
+     * the former creates a new `EquaSet`, whereas the latter only
+     * restricts the domain of subsequent `map`, `flatMap`, `foreach`,
+     * and `withFilter` operations.
+     *
+     * @param p the predicate used to test elements.
+     * @return an object of class `FilterMonadic`, which supports
+     * `map`, `flatMap`, `foreach`, and `withFilter` operations.
+     * All these operations apply to those elements of this `EquaSet`
+     * which satisfy the predicate `p`.
+     */
+    def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
+
+    class WithFilter(p: T=> Boolean) {
+
+      def foreach[U](f: T => U): Unit =
+        filter(p).foreach(f)
+
+      def withFilter(q: T => Boolean): WithFilter =
+        new WithFilter(x => p(x) && q(x))
+    }
+
+    /*class WithFilter(p: A => Boolean) extends FilterMonadic[T, thisEquaSets.EquaSet] {
+
+      def map[B, That](f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): That = {
+        val b = bf(repr)
+        for (x <- self)
+          if (p(x)) b += f(x)
+        b.result
+      }
+
+      def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit bf: CanBuildFrom[Repr, B, That]): That = {
+        val b = bf(repr)
+        for (x <- self)
+          if (p(x)) b ++= f(x).seq
+        b.result
+      }
+
+      def foreach[U](f: A => U): Unit =
+        for (x <- self)
+          if (p(x)) f(x)
+
+      def withFilter(q: A => Boolean): WithFilter =
+        new WithFilter(x => p(x) && q(x))
+    }*/
 
     /**
      * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection

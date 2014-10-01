@@ -2219,6 +2219,21 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(number.EquaBox(2), number.EquaBox(3))
     number.EquaSet(1, 2, 3).view.toList shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
+  it should "have a withFilter method" in {
+    var a = 0
+    var b = 0
+    val set = number.EquaSet(1, 2, 3)
+    val withFilter = set.withFilter { e =>
+      a = 1
+      e > 1
+    }
+    a shouldBe 0
+    withFilter.foreach { e =>
+      b += e
+    }
+    a shouldBe 1
+    b shouldBe 5
+  }
   it should "have a zip method" in {
     number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))
     number.EquaSet(1, 2, 3).zip(List("4", "5")) shouldBe Set((1, "4"), (2, "5"))
