@@ -452,7 +452,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def partition(pred: T => Boolean): (thisEquaSets.SortedEquaSet, thisEquaSets.SortedEquaSet)
 
     /**
-     * The collection of type traversable collection underlying this TraversableLike object. By default this is implemented as the TraversableLike object itself, but this can be overridden.
+     * The `SortedSet[EquaBox]` underlying this `SortedEquaSet` object.
      */
     def repr: SortedSet[EquaBox]
 

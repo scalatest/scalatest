@@ -966,7 +966,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1]
 
     /**
-     * The collection of type traversable collection underlying this TraversableLike object. By default this is implemented as the TraversableLike object itself, but this can be overridden.
+     * The `Set[EquaBox]` underlying this `EquaSet` object.
      */
     def repr: Set[EquaBox]
 
