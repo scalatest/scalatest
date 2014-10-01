@@ -2224,15 +2224,22 @@ class EquaSetSpec extends UnitSpec {
     var b = 0
     val set = number.EquaSet(1, 2, 3)
     val withFilter = set.withFilter { e =>
-      a = 1
+      a += 1
       e > 1
     }
     a shouldBe 0
     withFilter.foreach { e =>
       b += e
     }
-    a shouldBe 1
+    a shouldBe 3  // increase when doing the filter of the elements
     b shouldBe 5
+
+    var c = 0
+    withFilter.withFilter(_ > 2).foreach { e =>
+      c += e
+    }
+    a shouldBe 6  // 3 + 3
+    c shouldBe 3
   }
   it should "have a zip method" in {
     number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) shouldBe Set((1, "4"), (2, "5"), (3, "6"))
