@@ -1014,6 +1014,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def scanRight(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
 
+    /**
+     * The size of this `EquaSet`.
+     *
+     * @return the number of elements in this `EquaSet`.
+     */
     def size: Int
 
     /**

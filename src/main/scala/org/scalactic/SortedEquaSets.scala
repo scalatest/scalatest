@@ -493,6 +493,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def scanRight(z: T)(op: (T, T) => T): thisEquaSets.SortedEquaSet
 
+    /**
+     * The size of this `SortedEquaSet`.
+     *
+     * @return the number of elements in this `SortedEquaSet`.
+     */
     def size: Int
 
     /**
