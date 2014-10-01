@@ -433,6 +433,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def isEmpty: Boolean
 
+    /**
+     * Get an instance of `Iterator` for elements of this `SortedEquaSet`.
+     *
+     * @return an instance of `Iterator` for elements of this `SortedEquaSet`
+     */
     def iterator: Iterator[T]
 
     /**

@@ -750,6 +750,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       */
     def isTraversableAgain: Boolean
 
+    /**
+     * Get an instance of `Iterator` for elements of this `EquaSet`.
+     *
+     * @return an instance of `Iterator` for elements of this `EquaSet`
+     */
     def iterator: Iterator[T]
 
     /**
