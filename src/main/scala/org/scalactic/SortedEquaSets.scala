@@ -405,7 +405,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     /**
-     * Make a `EquaBridge` between this `SortedEquaSet` and the given `thatEquaSets`.
+     * Make an `EquaBridge` between this `SortedEquaSet` and the given `thatEquaSets`.
      * `EquaBridge` enables this `SortedEquaSet` to transform into `thatEquaSets`.`EquaSet`
      * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
      *
@@ -509,7 +509,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      *
      * @param unc_from the lowest index to include from this `EquaSet`.
      * @param unc_until the lowest index to EXCLUDE from this `EquaSet`.
-     * @return a `EquaSet` containing the elements greater than or equal to
+     * @return an `EquaSet` containing the elements greater than or equal to
      * index `from` extending up to (but not including) index `until`
      * of this `EquaSet`.
      */
@@ -605,8 +605,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     /**
      * Selects first ''n'' elements.
      *
-     * @param n the number of elements to take from this `EquaSet`.
-     * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
+     * @param n the number of elements to take from this `SortedEquaSet`.
+     * @return a `SortedEquaSet` consisting only of the first `n` elements of this `SortedEquaSet`,
      * or else the whole `SortedEquaSet`, if it has less than `n` elements.
      */
     def take(n: Int): thisEquaSets.SortedEquaSet
@@ -630,7 +630,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
 
     /**
      * Transposes this `SortedEquaSet` of traversable collections into
-     * a `EquaSet` of `SortedEquaSet`s.
+     * a `SortedEquaSet` of `GenTraversableOnce`s.
      *
      * The resulting collection's type will be guided by the
      * static type of `EquaSet`. For example:

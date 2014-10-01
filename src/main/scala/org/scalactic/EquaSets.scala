@@ -279,7 +279,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * '''Note:''' Same as `diff`.
      * @param that the `EquaSet` of elements to exclude.
-     * @return a `EquaSet` containing those elements of this
+     * @return an `EquaSet` containing those elements of this
      * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
     def &~ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -478,7 +478,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Computes the difference of this `EquaSet` and another `EquaSet`.
      *
      * @param that the `EquaSet` of elements to exclude.
-     * @return a `EquaSet` containing those elements of this
+     * @return an `EquaSet` containing those elements of this
      * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
     def diff(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
@@ -487,7 +487,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Selects all elements except first ''n'' ones.
      *
      * @param n the number of elements to drop from this `EquaSet`.
-     * @return a `EquaSet` consisting of all elements of this `EquaSet` except the first `n` ones, or else the
+     * @return an `EquaSet` consisting of all elements of this `EquaSet` except the first `n` ones, or else the
      * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
      */
     def drop(n: Int): thisEquaSets.EquaSet
@@ -496,7 +496,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Selects all elements except last ''n'' ones.
      *
      * @param n The number of elements to take
-     * @return a `EquaSet` consisting of all elements of this `EquaSet` except the last `n` ones, or else the
+     * @return an `EquaSet` consisting of all elements of this `EquaSet` except the last `n` ones, or else the
      * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
      */
     def dropRight(n: Int): thisEquaSets.EquaSet
@@ -567,7 +567,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
     /**
      * Converts this `EquaSet` of `EquaSet` into
-     * a `EquaSet` formed by the elements of these `EquaSet`.
+     * an `EquaSet` formed by the elements of these `EquaSet`.
      *
      *
      * @return a new `EquaSet` resulting from concatenating all element `EquaSet`s.
@@ -665,7 +665,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * {{{
      * (xs groupBy f)(k) = xs filter (x => f(x) == k)
      * }}}
-     * That is, every key `k` is bound to a `EquaSet` of those elements `x`
+     * That is, every key `k` is bound to an `EquaSet` of those elements `x`
      * for which `f(x)` equals `k`.
      *
      */
@@ -700,7 +700,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     /**
      * Selects all elements except the last.
      *
-     * @return a `EquaSet` consisting of all elements of this `EquaSet`
+     * @return an `EquaSet` consisting of all elements of this `EquaSet`
      * except the last one.
      * @throws `UnsupportedOperationException` if the `EquaSet` is empty.
      */
@@ -726,7 +726,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
-     * Make a `EquaBridge` between this `EquaSet` and the given `thatEquaSets`.
+     * Make an `EquaBridge` between this `EquaSet` and the given `thatEquaSets`.
      * `EquaBridge` enables this `EquaSet` to transform into `thatEquaSets`.`EquaSet`
      * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
      *
@@ -1031,7 +1031,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @param unc_from the lowest index to include from this `EquaSet`.
      * @param unc_until the lowest index to EXCLUDE from this `EquaSet`.
-     * @return a `EquaSet` containing the elements greater than or equal to
+     * @return an `EquaSet` containing the elements greater than or equal to
      * index `from` extending up to (but not including) index `until`
      * of this `EquaSet`.
      */
@@ -1141,7 +1141,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     /**
      * Selects all elements except the first.
      *
-     * @return a `EquaSet` consisting of all elements of this `EquaSet`
+     * @return an `EquaSet` consisting of all elements of this `EquaSet`
      * except the first one.
      * @throws `UnsupportedOperationException` if the `EquaSet` is empty.
      */
@@ -1161,7 +1161,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Selects first ''n'' elements.
      *
      * @param n the number of elements to take from this `EquaSet`.
-     * @return a `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
+     * @return an `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
      * or else the whole `EquaSet`, if it has less than `n` elements.
      */
     def take(n: Int): thisEquaSets.EquaSet
@@ -1171,7 +1171,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      *
      * @param n the number of elements to take
-     * @return a `EquaSet` consisting only of the last `n` elements of this `EquaSet`, or else the
+     * @return an `EquaSet` consisting only of the last `n` elements of this `EquaSet`, or else the
      * whole `EquaSet`, if it has less than `n` elements.
      */
     def takeRight(n: Int): thisEquaSets.EquaSet
@@ -1269,7 +1269,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
 
     /**
      * Transposes this `EquaSet` of traversable collections into
-     * a `EquaSet` of `EquaSet`s.
+     * an `EquaSet` of `EquaSet`s.
      *
      * The resulting collection's type will be guided by the
      * static type of `EquaSet`. For example:
@@ -1466,7 +1466,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
 
     /**
-     * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
+     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
      * by combining corresponding elements in pairs.
      * If one of the two collections is longer than the other, its remaining elements are ignored.
      *
@@ -1480,7 +1480,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zip[U](that: GenIterable[U]): Set[(T, U)]
 
     /**
-     * Returns a `EquaSet` formed from this `EquaSet` and another iterable collection
+     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
      * by combining corresponding elements in pairs.
      * If one of the two collections is shorter than the other,
      * placeholder elements are used to extend the shorter collection to the length of the longer.
