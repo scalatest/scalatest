@@ -517,20 +517,22 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def exists(pred: T => Boolean): Boolean
 
-    /** Selects all elements of this `EquaSet` which satisfy a predicate.
-      *
-      * @param pred the predicate used to test elements.
-      * @return a new `EquaSet` consisting of all elements of this `EquaSet` that satisfy the given
-      * predicate <code>pred</code>. Their order may not be preserved.
-      */
+    /**
+     * Selects all elements of this `EquaSet` which satisfy a predicate.
+     *
+     * @param pred the predicate used to test elements.
+     * @return a new `EquaSet` consisting of all elements of this `EquaSet` that satisfy the given
+     * predicate <code>pred</code>. Their order may not be preserved.
+     */
     def filter(pred: T => Boolean): thisEquaSets.EquaSet
 
-    /** Selects all elements of this `EquaSets` which do not satisfy a predicate.
-      *
-      * @param pred the predicate used to test elements.
-      * @return a new `EquaSets` consisting of all elements of this `EquaSets` that do not satisfy the given
-      * predicate <code>pred</code>. Their order may not be preserved.
-      */
+    /**
+     * Selects all elements of this `EquaSets` which do not satisfy a predicate.
+     *
+     * @param pred the predicate used to test elements.
+     * @return a new `EquaSets` consisting of all elements of this `EquaSets` that do not satisfy the given
+     * predicate <code>pred</code>. Their order may not be preserved.
+     */
     def filterNot(pred: T => Boolean): thisEquaSets.EquaSet
 
     /**
@@ -543,6 +545,23 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def find(pred: T => Boolean): Option[T]
 
+    /**
+     * Builds a new `EquaSet` by applying a function to all elements of this `EquaSet`
+     * and using the elements of the resulting `EquaSet`.
+     *
+     * @param f the function to apply to each element.
+     * @return a new `EquaSet` resulting from applying the given `EquaSet`-valued function
+     * `f` to each element of this `EquaSet` and concatenating the results.
+     *
+     * For example:
+     *
+     * {{{
+     * def getWords(lines: EquaSet[String]): EquaSet[String] = lines flatMap (line => equaSets.EquaSet(line.split("\\W+"): _*))
+     * }}}
+     *
+     * @return a new `EquaSet` resulting from applying the given `EquaSet`-valued function
+     * `f` to each element of this `EquaSet` and concatenating the results.
+     */
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
     /**
@@ -619,6 +638,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def forall(pred: T => Boolean): Boolean
 
+    /**
+     * Applies a function `f` to all elements of this `EquaSet`.
+     *
+     * @param f the function that is applied for its side-effect to every element.
+     * The result of function `f` is discarded.
+     *
+     * @tparam U the type parameter describing the result of function `f`.
+     * This result will always be ignored. Typically `U` is `Unit`,
+     * but this is not necessary.
+     *
+     */
     def foreach[U](f: T => U): Unit
 
     /**
@@ -723,6 +753,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def lastOption: Option[T]
 
+    /**
+     * Builds a new `EquaSet` by applying a function to all elements of this `EquaSet`.
+     *
+     * @param f the function to apply to each element.
+     * @return a new `EquaSet` resulting from applying the given function
+     * `f` to each element of this `EquaSet` and collecting the results.
+     *
+     * @return a new `EquaSet` resulting from applying the given function
+     * `f` to each element of this `EquaSet` and collecting the results.
+     */
     def map(f: T => T): thisEquaSets.EquaSet
 
     /**

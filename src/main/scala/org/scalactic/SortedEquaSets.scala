@@ -310,22 +310,41 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def dropWhile(pred: T => Boolean): thisEquaSets.SortedEquaSet
 
-    /** Selects all elements of this `SortedEquaSet` which satisfy a predicate.
-      *
-      * @param pred the predicate used to test elements.
-      * @return a new `SortedEquaSet` consisting of all elements of this `SortedEquaSet` that satisfy the given
-      * predicate <code>pred</code>.
-      */
+    /**
+     * Selects all elements of this `SortedEquaSet` which satisfy a predicate.
+     *
+     * @param pred the predicate used to test elements.
+     * @return a new `SortedEquaSet` consisting of all elements of this `SortedEquaSet` that satisfy the given
+     * predicate <code>pred</code>.
+     */
     def filter(pred: T => Boolean): thisEquaSets.SortedEquaSet
 
-    /** Selects all elements of this `SortedEquaSets` which do not satisfy a predicate.
-      *
-      * @param pred the predicate used to test elements.
-      * @return a new `SortedEquaSets` consisting of all elements of this `SortedEquaSets` that do not satisfy the given
-      * predicate <code>pred</code>.
-      */
+    /**
+     * Selects all elements of this `SortedEquaSets` which do not satisfy a predicate.
+     *
+     * @param pred the predicate used to test elements.
+     * @return a new `SortedEquaSets` consisting of all elements of this `SortedEquaSets` that do not satisfy the given
+     * predicate <code>pred</code>.
+     */
     def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet
 
+    /**
+     * Builds a new `SortedEquaSet` by applying a function to all elements of this `SortedEquaSet`
+     * and using the elements of the resulting `EquaSet`.
+     *
+     * @param f the function to apply to each element.
+     * @return a new `SortedEquaSet` resulting from applying the given `EquaSet`-valued function
+     * `f` to each element of this `SortedEquaSet` and concatenating the results.
+     *
+     * For example:
+     *
+     * {{{
+     * def getWords(lines: EquaSet[String]): EquaSet[String] = lines flatMap (line => equaSets.SortedEquaSet(line.split("\\W+"): _*))
+     * }}}
+     *
+     * @return a new `SortedEquaSet` resulting from applying the given `EquaSet`-valued function
+     * `f` to each element of this `SortedEquaSet` and concatenating the results.
+     */
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     /**
@@ -389,6 +408,16 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def isEmpty: Boolean
     def iterator: Iterator[T]
 
+    /**
+     * Builds a new `SortedEquaSet` by applying a function to all elements of this `SortedEquaSet`.
+     *
+     * @param f the function to apply to each element.
+     * @return a new `SortedEquaSet` resulting from applying the given function
+     * `f` to each element of this `SortedEquaSet` and collecting the results.
+     *
+     * @return a new `SortedEquaSet` resulting from applying the given function
+     * `f` to each element of this `SortedEquaSet` and collecting the results.
+     */
     def map(f: T => T): thisEquaSets.SortedEquaSet
 
     /**
