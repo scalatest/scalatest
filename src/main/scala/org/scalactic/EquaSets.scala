@@ -725,6 +725,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
 
+    /**
+     * Make a `EquaBridge` between this `EquaSet` and the given `thatEquaSets`.
+     * `EquaBridge` enables this `EquaSet` to transform into `thatEquaSets`.`EquaSet`
+     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
+     *
+     * @param thatEquaSets that `EquaSets` to bridge to
+     * @tparam U the type of `thatEquaSets`
+     * @return an instance of `thatEquaSets`.`EquaBridge`
+     */
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
 
     def isEmpty: Boolean

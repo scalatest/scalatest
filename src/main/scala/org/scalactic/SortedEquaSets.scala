@@ -403,7 +403,27 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      * `SortedEquaSet` and in the given `EquaSet` `that`.
      */
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
+
+    /**
+     * Make a `EquaBridge` between this `SortedEquaSet` and the given `thatEquaSets`.
+     * `EquaBridge` enables this `SortedEquaSet` to transform into `thatEquaSets`.`EquaSet`
+     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
+     *
+     * @param thatEquaSets that `EquaSets` to bridge to
+     * @tparam U the type of `thatEquaSets`
+     * @return an instance of `thatEquaSets`.`EquaBridge`
+     */
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+
+    /**
+     * Make a `SortedEquaBridge` between this `SortedEquaSet` and the given `thatEquaSets`.
+     * `SortedEquaBridge` enables this `SortedEquaSet` to transform into `thatEquaSets`.`SortedEquaSet`
+     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
+     *
+     * @param thatEquaSets that `SortedEquaSets` to bridge to
+     * @tparam U the type of `thatEquaSets`
+     * @return an instance of `thatEquaSets`.`SortedEquaBridge`
+     */
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.SortedEquaBridge[T]
     def isEmpty: Boolean
     def iterator: Iterator[T]
