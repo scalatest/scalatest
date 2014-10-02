@@ -834,6 +834,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream

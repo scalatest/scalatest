@@ -1230,6 +1230,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toList: List[thisEquaSets.EquaBox]
 
+    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
+
     /**
      * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
      * in this default implementation, as this `TraversableOnce` may be
@@ -1686,6 +1688,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream

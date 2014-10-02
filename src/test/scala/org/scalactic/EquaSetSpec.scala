@@ -86,6 +86,7 @@ class EquaSetSpec extends UnitSpec {
     }
   val upperChar = EquaSets[Char](upperCharHashingEquality)
   val regularChar = EquaSets[Char](normalHashingEquality[Char])
+  val tuple = EquaSets[(Int, String)](normalHashingEquality)
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
@@ -2109,6 +2110,9 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).toList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
     lower.EquaSet("a", "b").toList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
     number.EquaSet(1).toList shouldBe (List(number.EquaBox(1)))
+  }
+  it should "have a toMap method" in {
+    tuple.EquaSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
   }
   it should "have a toSeq method" in {
     number.EquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
