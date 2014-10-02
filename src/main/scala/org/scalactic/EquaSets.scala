@@ -1230,6 +1230,17 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toList: List[thisEquaSets.EquaBox]
 
+    /**
+     * Converts this `EquaSet` to a map. This method is unavailable unless
+     * the elements are members of Tuple2, each ((K, V)) becoming a key-value
+     * pair in the map. Duplicate keys will be overwritten by later keys:
+     * if this is an unordered `EquaSet`, which key is in the resulting map
+     * is undefined.
+     * @return a map containing all elements of this `EquaSet`.
+     *
+     * @return a map of type `immutable.Map[K, V]`
+     * containing all key/value pairs of type `(K, V)` of this `EquaSet`.
+     */
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
 
     /**
