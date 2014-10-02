@@ -325,7 +325,10 @@ class SortedEquaSetSpec extends UnitSpec {
     """lower.TreeEquaSet(" hi ", "hi") | trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.SortedEquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
+    lower.SortedEquaSet("hi", "ho").toSet should === (Set("hi", "ho"))
+  }
+  it should "have a toEquaBoxSet method" in {
+    lower.SortedEquaSet("hi", "ho").toEquaBoxSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
   }
   it should "have a + method that takes one argument" in {
     val result1 = lower.SortedEquaSet("hi", "ho") + "ha"
