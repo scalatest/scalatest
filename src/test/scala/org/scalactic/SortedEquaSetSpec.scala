@@ -2033,9 +2033,9 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
   }
   it should "have a toSeq method" in {
-    number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toSeq shouldBe (Seq(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))
+    number.SortedEquaSet(1).toSeq shouldBe (Seq(1))
   }
   it should "have a toStream method" in {
     number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))

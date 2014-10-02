@@ -1260,7 +1260,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a sequence containing all elements of this `EquaSet`.
      */
-    def toSeq: GenSeq[thisEquaSets.EquaBox]
+    def toSeq: GenSeq[T]
 
     /**
      * Converts this `EquaSet` to a set.
@@ -1718,7 +1718,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
-    def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
+    def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
     def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
