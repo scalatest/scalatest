@@ -25,6 +25,7 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import scala.collection.GenIterable
 import scala.collection.TraversableView
+import scala.collection.parallel.mutable.ParArray
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
 
@@ -835,6 +836,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
+    def toParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: TreeSet[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream

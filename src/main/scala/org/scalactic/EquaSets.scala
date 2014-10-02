@@ -26,6 +26,7 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import scala.collection.GenIterable
 import scala.collection.TraversableView
+import scala.collection.parallel.mutable.ParArray
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
@@ -1243,6 +1244,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
 
+    def toParArray: ParArray[thisEquaSets.EquaBox]
+
     /**
      * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
      * in this default implementation, as this `TraversableOnce` may be
@@ -1700,6 +1703,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
+    def toParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
@@ -1742,8 +1746,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // TODO: Study this one...
     implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
       new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
-    implicit def equaSetToCollectionsHaveToParArray(equaSet: EquaSet): scala.collection.parallel.CollectionsHaveToParArray[EquaSet, T] =
-      new scala.collection.parallel.CollectionsHaveToParArray(equaSet)
   }
 }
 

@@ -2024,8 +2024,8 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a toMap method" in {
     numberLower.SortedEquaSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
   }
-  it should "have a toParArray method through implicit conversion" in {
-    number.SortedEquaSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
+  it should "have a toParArray method" in {
+    number.SortedEquaSet(1, 2, 3).toParArray shouldBe ParArray(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
   it should "have a toSeq method" in {
     number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
