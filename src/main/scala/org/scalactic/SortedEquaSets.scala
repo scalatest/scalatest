@@ -43,7 +43,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     override def map(f: S => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet.empty ++ (from map f)
     override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
-      thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
+      thisEquaSets.SortedEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet =
       flatMap((s: S) => cvt(s))
     override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.SortedEquaSet =
@@ -58,7 +58,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     override def map(f: S => T): thisEquaSets.TreeEquaSet =
       thisEquaSets.TreeEquaSet.empty ++ (from map f)
     override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
-      thisEquaSets.TreeEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
+      thisEquaSets.TreeEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       flatMap((s: S) => cvt(s))
     override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.TreeEquaSet =
@@ -745,7 +745,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def filterNot(pred: T => Boolean): thisEquaSets.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
     def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet = {
-      val set = underlying.flatMap((box: EquaBox) => f(box.value).toList)
+      val set = underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList)
       new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
     }
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
@@ -840,7 +840,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-    def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq

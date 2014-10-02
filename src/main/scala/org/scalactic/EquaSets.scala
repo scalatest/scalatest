@@ -56,7 +56,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def map(f: S => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet.empty ++ (from map f)
     def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
+      thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)): _*)
     def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
       flatMap((s: S) => cvt(s))
     def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
@@ -1225,11 +1225,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterator: Iterator[T]
 
     /**
+     * Converts this `EquaSet` to a list of `EquaBox`.
+     *
+     * @return a list containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxList: List[thisEquaSets.EquaBox]
+
+    /**
      * Converts this `EquaSet` to a list.
      *
      * @return a list containing all elements of this `EquaSet`.
      */
-    def toList: List[thisEquaSets.EquaBox]
+    def toList: List[T]
 
     /**
      * Converts this `EquaSet` to a map. This method is unavailable unless
@@ -1536,7 +1543,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def map(f: S => T): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet.empty ++ (from map f)
     override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet((from flatMap ((s: S) => f(s).toList)).map(_.value): _*)
+      thisEquaSets.FastEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
     override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       flatMap((s: S) => cvt(s))
     override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.FastEquaSet =
@@ -1601,7 +1608,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def filter(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
-    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toList))
+    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList))
     /*
     // This is the problem with using an implicit EquaSet. We need the path defined before we can use
     // it in the function. So into is the only way to get for expressions.
@@ -1707,7 +1714,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-    def toList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq

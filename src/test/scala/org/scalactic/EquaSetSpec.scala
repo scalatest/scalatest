@@ -2108,9 +2108,14 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).toIterator shouldBe an [Iterator[_]]
   }
   it should "have a toList method" in {
-    number.EquaSet(1, 2, 3).toList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toList shouldBe (List(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toList shouldBe (List(1, 2, 3))
+    lower.EquaSet("a", "b").toList shouldBe (List("a", "b"))
+    number.EquaSet(1).toList shouldBe (List(1))
+  }
+  it should "have a toEquaBoxList method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxList shouldBe (List(number.EquaBox(1)))
   }
   it should "have a toMap method" in {
     tuple.EquaSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
