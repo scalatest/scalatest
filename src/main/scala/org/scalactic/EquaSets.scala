@@ -1273,7 +1273,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * Converts this `EquaSet` to a stream.
      * @return a stream containing all elements of this `EquaSet`.
      */
-    def toStream: Stream[thisEquaSets.EquaBox]
+    def toStream: Stream[T]
 
     /**
      * Converts this `EquaSet` to an unspecified Traversable. Will return
@@ -1720,7 +1720,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
     def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
     def toSet: Set[thisEquaSets.EquaBox] = underlying
-    def toStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
+    def toStream: Stream[T] = underlying.toStream.map(_.value)
     def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
     def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
