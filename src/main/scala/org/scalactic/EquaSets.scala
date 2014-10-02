@@ -1214,7 +1214,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an `Iterable` containing all elements of this `EquaSet`.
      */
-    def toIterable: GenIterable[thisEquaSets.EquaBox]
+    def toIterable: GenIterable[T]
 
     /**
      * Returns an Iterator over the elements in this `EquaSet`. Will return
@@ -1705,7 +1705,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     }
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.toStream.map(_.value).toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.toStream.map(_.value).toIndexedSeq
-    def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
+    def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
