@@ -201,16 +201,16 @@ class PrettifierSpec extends Spec with Matchers {
       Prettifier.basic(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{akey={1=one, 2=two, 3=three}}")
     }
     def `should pretty print EquaSet(Int)`: Unit = {
-      Prettifier.basic(numberEquaSet.EquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
-      Prettifier.basic(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.basic(numberEquaSet.EquaSet(1, 2, 3)) should be ("EquaSet(1, 2, 3)")
+      Prettifier.basic(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("EquaSet(1, 2, 3)")
     }
     def `should pretty print SortedEquaSet(Int)`: Unit = {
       Prettifier.basic(numberSortedEquaSet.SortedEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
       Prettifier.basic(numberSortedEquaSet.TreeEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
     }
     def `should pretty print EquaSet(String)`: Unit = {
-      Prettifier.basic(lowerEquaSet.EquaSet("1", "2", "3")) should be ("FastEquaSet(1, 2, 3)")
-      Prettifier.basic(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.basic(lowerEquaSet.EquaSet("1", "2", "3")) should be ("EquaSet(1, 2, 3)")
+      Prettifier.basic(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("EquaSet(1, 2, 3)")
     }
     def `should pretty print SortedEquaSet(String)`: Unit = {
       Prettifier.basic(lowerSortedEquaSet.SortedEquaSet("1", "2", "3")) should be ("TreeEquaSet(1, 2, 3)")
@@ -401,20 +401,20 @@ class PrettifierSpec extends Spec with Matchers {
       Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
     }
     def `should pretty print EquaSet(Int)`: Unit = {
-      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
-      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("FastEquaSet(1, 2, 3)")
+      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3)) should be ("EquaSet(EquaBox(1), EquaBox(2), EquaBox(3))")
+      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("EquaSet(EquaBox(1), EquaBox(2), EquaBox(3))")
     }
     def `should pretty print SortedEquaSet(Int)`: Unit = {
-      Prettifier.default(numberSortedEquaSet.SortedEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
-      Prettifier.default(numberSortedEquaSet.TreeEquaSet(1, 2, 3)) should be ("TreeEquaSet(1, 2, 3)")
+      Prettifier.default(numberSortedEquaSet.SortedEquaSet(1, 2, 3)) should be ("TreeEquaSet(EquaBox(1), EquaBox(2), EquaBox(3))")
+      Prettifier.default(numberSortedEquaSet.TreeEquaSet(1, 2, 3)) should be ("TreeEquaSet(EquaBox(1), EquaBox(2), EquaBox(3))")
     }
     def `should pretty print EquaSet(String)`: Unit = {
-      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3")) should be ("FastEquaSet(\"1\", \"2\", \"3\")")
-      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("FastEquaSet(\"1\", \"2\", \"3\")")
+      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3")) should be ("EquaSet(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
+      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3")) should be ("EquaSet(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
     }
     def `should pretty print SortedEquaSet(String)`: Unit = {
-      Prettifier.default(lowerSortedEquaSet.SortedEquaSet("1", "2", "3")) should be ("TreeEquaSet(\"1\", \"2\", \"3\")")
-      Prettifier.default(lowerSortedEquaSet.TreeEquaSet("1", "2", "3")) should be ("TreeEquaSet(\"1\", \"2\", \"3\")")
+      Prettifier.default(lowerSortedEquaSet.SortedEquaSet("1", "2", "3")) should be ("TreeEquaSet(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
+      Prettifier.default(lowerSortedEquaSet.TreeEquaSet("1", "2", "3")) should be ("TreeEquaSet(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
     }
   }
 }

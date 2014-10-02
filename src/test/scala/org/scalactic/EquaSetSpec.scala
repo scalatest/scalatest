@@ -107,7 +107,7 @@ class EquaSetSpec extends UnitSpec {
     // instance for Size and Length for EquaSet.
   }
   it should "have a toString method" in {
-    lower.EquaSet("hi", "ho").toString should === ("FastEquaSet(hi, ho)")
+    lower.EquaSet("hi", "ho").toString should === ("EquaSet(hi, ho)")
   }
   it should "have a diff method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") diff lower.EquaSet("HI", "HO")
@@ -1943,10 +1943,10 @@ class EquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
   }
   it should "have a stringPrefix method" in {
-    number.EquaSet(1).stringPrefix shouldBe "FastEquaSet"
-    number.EquaSet(1, 2, 3).stringPrefix shouldBe "FastEquaSet"
-    lower.EquaSet("1").stringPrefix shouldBe "FastEquaSet"
-    lower.EquaSet("1", "2", "3").stringPrefix shouldBe "FastEquaSet"
+    number.EquaSet(1).stringPrefix shouldBe "EquaSet"
+    number.EquaSet(1, 2, 3).stringPrefix shouldBe "EquaSet"
+    lower.EquaSet("1").stringPrefix shouldBe "EquaSet"
+    lower.EquaSet("1", "2", "3").stringPrefix shouldBe "EquaSet"
   }
   it should "have a subsetOf method" in {
     number.EquaSet(2, 3).subsetOf(number.EquaSet(1, 2, 3, 4, 5)) shouldBe true
