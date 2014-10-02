@@ -1742,6 +1742,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // TODO: Study this one...
     implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
       new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
+    implicit def equaSetToCollectionsHaveToParArray(equaSet: EquaSet): scala.collection.parallel.CollectionsHaveToParArray[EquaSet, T] =
+      new scala.collection.parallel.CollectionsHaveToParArray(equaSet)
   }
 }
 
