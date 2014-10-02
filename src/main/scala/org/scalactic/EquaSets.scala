@@ -1204,7 +1204,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an indexed sequence containing all elements of this `EquaSet`.
      */
-    def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox]
+    def toIndexedSeq: scala.collection.immutable.IndexedSeq[T]
 
     /**
      * Converts this `EquaSet` to an iterable collection. Note that
@@ -1704,7 +1704,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       arr.asInstanceOf[Array[T]]
     }
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.toStream.map(_.value).toBuffer
-    def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
+    def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.toStream.map(_.value).toIndexedSeq
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
