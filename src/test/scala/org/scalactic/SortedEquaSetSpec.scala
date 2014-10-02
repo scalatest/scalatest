@@ -1994,9 +1994,9 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).toArray shouldBe Array(1)
   }
   it should "have a toBuffer method" in {
-    number.SortedEquaSet(1, 2, 3).toBuffer shouldBe (Buffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toBuffer shouldBe (Buffer(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toBuffer shouldBe (Buffer(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toBuffer shouldBe (Buffer(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toBuffer shouldBe (Buffer("a", "b"))
+    number.SortedEquaSet(1).toBuffer shouldBe (Buffer(1))
   }
   it should "have a toIndexedSeq method" in {
     number.SortedEquaSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
