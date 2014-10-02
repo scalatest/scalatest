@@ -1190,7 +1190,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * this type must be available.
      * @return an array containing all elements of this `EquaSet`.
      */
-    def toArray: Array[EquaBox]
+    def toArray: Array[T]
 
     /**
      * Uses the contents of this `EquaSet` to create a new mutable buffer.
@@ -1696,7 +1696,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def take(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.take(n))
     def takeRight(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
-    def toArray: Array[EquaBox] = underlying.toArray
+    def toArray: Array[T] = {
+      // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
+      // No ClassTag available for T
+      val arr = new Array[Any](underlying.size)
+      underlying.map(_.value).copyToArray(arr)
+      arr.asInstanceOf[Array[T]]
+    }
     def toBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
