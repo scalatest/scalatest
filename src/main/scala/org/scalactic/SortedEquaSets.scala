@@ -833,11 +833,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
       // No ClassTag available for T
       val arr = new Array[Any](underlying.size)
-      underlying.toStream.map(_.value).copyToArray(arr)
+      underlying.map(_.value).copyToArray(arr)
       arr.asInstanceOf[Array[T]]
     }
-    def toBuffer: scala.collection.mutable.Buffer[T] = underlying.toStream.map(_.value).toBuffer
-    def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.toStream.map(_.value).toIndexedSeq
+    def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
+    def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toList: List[thisEquaSets.EquaBox] = underlying.toList
