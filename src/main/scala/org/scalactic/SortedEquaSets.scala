@@ -773,7 +773,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def init: thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying.init)
     def inits: Iterator[thisEquaSets.TreeEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
-      new TreeEquaSet(underlying intersect that.toEquaBoxSet.map((eb: EquaBox) => EquaBox(eb.value)))  // TODO: Another one, unnecessary map.
+      new TreeEquaSet(underlying intersect that.toEquaBoxSet)
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.EquaBridge[T](underlying.toList.map(_.value))
     def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
@@ -870,7 +870,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       new TreeEquaSet(TreeSet(listList.map(EquaBox(_)): _ *)(ordering))
     }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
-      new TreeEquaSet(underlying union that.toEquaBoxSet.map((eb: EquaBox) => EquaBox(eb.value)))  // TODO: another one, unnecessary map
+      new TreeEquaSet(underlying union that.toEquaBoxSet)
     def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet) = {
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
       (t1EquaSets.EquaSet(t1: _*), t2EquaSets.EquaSet(t2: _*))

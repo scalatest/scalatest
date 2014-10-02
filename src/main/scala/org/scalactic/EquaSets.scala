@@ -1648,7 +1648,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def init: thisEquaSets.FastEquaSet = new FastEquaSet(underlying.init)
     def inits: Iterator[thisEquaSets.FastEquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
-      new FastEquaSet(underlying intersect that.toEquaBoxSet.map((eb: EquaBox) => EquaBox(eb.value)))  // TODO: the map seems unnecessary, should try remove after this
+      new FastEquaSet(underlying intersect that.toEquaBoxSet)
     def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
@@ -1738,7 +1738,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       new FastEquaSet(listList.map(EquaBox(_)).toSet)
     }
     def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
-      new FastEquaSet(underlying union that.toEquaBoxSet.map((eb: EquaBox) => EquaBox(eb.value)))  // TODO: This one too, map seems unnecessary
+      new FastEquaSet(underlying union that.toEquaBoxSet)
     def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.FastEquaSet, t2EquaSets.FastEquaSet) = {
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
       (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*))
