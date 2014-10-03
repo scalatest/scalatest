@@ -1187,10 +1187,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     /**
      * Converts this `EquaSet` to an array.
      *
-     * this type must be available.
      * @return an array containing all elements of this `EquaSet`.
      */
     def toArray: Array[T]
+
+    /**
+     * Converts this `EquaSet` to an array of `EquaBox`es containing the elements.
+     *
+     * @return an array containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxArray: Array[thisEquaSets.EquaBox]
 
     /**
      * Uses the contents of this `EquaSet` to create a new mutable buffer.
@@ -1730,6 +1736,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       underlying.map(_.value).copyToArray(arr)
       arr.asInstanceOf[Array[T]]
     }
+    def toEquaBoxArray: Array[thisEquaSets.EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
