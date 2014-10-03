@@ -2081,6 +2081,11 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("a", "b").toStream shouldBe (Stream("a", "b"))
     number.SortedEquaSet(1).toStream shouldBe(Stream(1))
   }
+  it should "have a toEquaBoxStream method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxStream shouldBe(Stream(number.EquaBox(1)))
+  }
   it should "have a toTraversable method" in {
     implicit val numberOrdering = new Ordering[number.EquaBox] {
       def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
