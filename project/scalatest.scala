@@ -355,12 +355,20 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
-  lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
+  lazy val genContainTests1 = Project("genContainTests1", file("gentests/GenContain1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genContainTask,
+      genContainTask1,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain2", "GenContain1.scala")(GenContain1.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genContainTests2 = Project("genContainTests2", file("gentests/GenContain2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genContainTask2,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain2", "GenContain2.scala")(GenContain2.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
@@ -389,7 +397,7 @@ object ScalatestBuild extends Build {
 
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
-               genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
+               genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
@@ -462,9 +470,14 @@ object ScalatestBuild extends Build {
     GenVersions.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
   
-  val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
-  val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenContain.genTest(new File(testTargetDir, "scala/gencontain"), theVersion, theScalaVersion)
+  val genContain1 = TaskKey[Unit]("gencontain1", "Generate contain matcher tests 1")
+  val genContainTask1 = genContain1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenContain1.genTest(new File(testTargetDir, "scala/gencontain1"), theVersion, theScalaVersion)
+  }
+
+  val genContain2 = TaskKey[Unit]("gencontain2", "Generate contain matcher tests 2")
+  val genContainTask2 = genContain2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenContain2.genTest(new File(testTargetDir, "scala/gencontain2"), theVersion, theScalaVersion)
   }
   
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")

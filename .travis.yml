@@ -23,7 +23,8 @@ env:
     - MODE=genInspectorsTests
     - MODE=genInspectorsShorthandsTests
     - MODE=genTheyTests
-    - MODE=genContainTests
+    - MODE=genContainTests1
+    - MODE=genContainTests2
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests

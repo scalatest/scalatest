@@ -102,13 +102,25 @@ if [[ $MODE = 'genTheyTests' ]] ; then
   exit $rc
 fi
 
-if [[ $MODE = 'genContainTests' ]] ; then
-  echo "Doing 'sbt genContainTests/test'"
+if [[ $MODE = 'genContainTests1' ]] ; then
+  echo "Doing 'sbt genContainTests1/test'"
   export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
-  sbt ++$TRAVIS_SCALA_VERSION genContainTests/test
+  sbt ++$TRAVIS_SCALA_VERSION genContainTests1/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'genContainTests2' ]] ; then
+  echo "Doing 'sbt genContainTests2/test'"
+  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genContainTests2/test
   rc=$?
   kill %1
   exit $rc
