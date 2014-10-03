@@ -2154,6 +2154,9 @@ class EquaSetSpec extends UnitSpec {
   it should "have a toParArray method" in {
     number.EquaSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
   }
+  it should "have a toEquaBoxParArray method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxParArray shouldBe ParArray(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+  }
   it should "have a toSeq method" in {
     number.EquaSet(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
     lower.EquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))

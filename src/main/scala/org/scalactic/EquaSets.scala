@@ -1288,7 +1288,19 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
 
+    /**
+     * Converts this `EquaSet` to a `ParArray`.
+     *
+     * @return a `ParArray` containing all elements of this `EquaSet`.
+     */
     def toParArray: ParArray[T]
+
+    /**
+     * Converts this `EquaSet` to a `ParArray` containing `EquaBox`es of elements.
+     *
+     * @return a `ParArray` containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox]
 
     /**
      * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
@@ -1780,6 +1792,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
+    def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
     def toSet: Set[T] = underlying.map(_.value)
     def toEquaBoxSet: Set[thisEquaSets.EquaBox] = underlying
