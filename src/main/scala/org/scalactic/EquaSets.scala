@@ -1283,12 +1283,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toStream: Stream[T]
 
     /**
-     * Converts this `EquaSet` to an unspecified Traversable. Will return
-     * the same collection if this instance is already Traversable.
+     * Converts this `EquaSet` to a `Traversable`.
      *
      * @return a Traversable containing all elements of this `EquaSet`.
      */
-    def toTraversable: GenTraversable[thisEquaSets.EquaBox]
+    def toTraversable: GenTraversable[T]
+
+    /**
+     * Converts this `EquaSet` to a `Traversable` of `EquaBox`s containing the elements.
+     *
+     * @return a Traversable containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox]
 
     /**
      * Converts this `EquaSet` to a Vector.
@@ -1729,7 +1735,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toSet: Set[T] = underlying.map(_.value)
     def toEquaBoxSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[T] = underlying.toStream.map(_.value)
-    def toTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
+    def toTraversable: GenTraversable[T] = underlying.map(_.value)
+    def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
     def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"

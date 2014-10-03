@@ -2052,9 +2052,20 @@ class SortedEquaSetSpec extends UnitSpec {
     implicit val lowerOrdering = new Ordering[lower.EquaBox] {
       def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
     }
-    number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toTraversable should === (TreeSet(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet("a", "b"))
+    number.SortedEquaSet(1).toTraversable should === (TreeSet(1))
+  }
+  it should "have a toEquaBoxTraversable method" in {
+    implicit val numberOrdering = new Ordering[number.EquaBox] {
+      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    }
+    implicit val lowerOrdering = new Ordering[lower.EquaBox] {
+      def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
+    }
+    number.SortedEquaSet(1, 2, 3).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1)))
   }
   it should "have a toVector method" in {
     number.SortedEquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))

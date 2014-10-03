@@ -2136,10 +2136,15 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toStream shouldBe (Stream("a", "b"))
     number.EquaSet(1).toStream shouldBe(Stream(1))
   }
+  it should "have a toEquaBoxTraversable method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxTraversable shouldBe (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxTraversable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxTraversable shouldBe (Set(number.EquaBox(1)))
+  }
   it should "have a toTraversable method" in {
-    number.EquaSet(1, 2, 3).toTraversable should === (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toTraversable should === (Set(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toTraversable should === (Set(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toTraversable shouldBe (Set(1, 2, 3))
+    lower.EquaSet("a", "b").toTraversable shouldBe (Set("a", "b"))
+    number.EquaSet(1).toTraversable shouldBe (Set(1))
   }
   it should "have a toVector method" in {
     number.EquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
