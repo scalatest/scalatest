@@ -22,6 +22,7 @@ import scala.collection.immutable.TreeSet
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 import scala.collection.SortedSet
+import scala.collection.parallel.mutable.ParArray
 
 class SortedEquaSetSpec extends UnitSpec {
   implicit class HasExactType[T](o: T) {
@@ -324,7 +325,10 @@ class SortedEquaSetSpec extends UnitSpec {
     """lower.TreeEquaSet(" hi ", "hi") | trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.SortedEquaSet("hi", "ho").toSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
+    lower.SortedEquaSet("hi", "ho").toSet should === (Set("hi", "ho"))
+  }
+  it should "have a toEquaBoxSet method" in {
+    lower.SortedEquaSet("hi", "ho").toEquaBoxSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
   }
   it should "have a + method that takes one argument" in {
     val result1 = lower.SortedEquaSet("hi", "ho") + "ha"
@@ -1026,7 +1030,7 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a find method" in {
     number.SortedEquaSet(1, 2, 3).find(_ == 5) shouldBe None
-    number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(number.EquaBox(2))
+    number.SortedEquaSet(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }
   it should "have an into.flatMap method" in {
 
@@ -1988,47 +1992,99 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
   it should "have a toArray method" in {
-    number.SortedEquaSet(1, 2, 3).toArray shouldBe (Array(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toArray shouldBe (Array(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toArray shouldBe (Array(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toArray shouldBe Array(1, 2, 3)
+    lower.SortedEquaSet("a", "b").toArray shouldBe Array("a", "b")
+    number.SortedEquaSet(1).toArray shouldBe Array(1)
+  }
+  it should "have a toEquaBoxArray method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxArray shouldBe Array(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    lower.SortedEquaSet("a", "b").toEquaBoxArray shouldBe Array(lower.EquaBox("a"), lower.EquaBox("b"))
+    number.SortedEquaSet(1).toEquaBoxArray shouldBe Array(number.EquaBox(1))
   }
   it should "have a toBuffer method" in {
-    number.SortedEquaSet(1, 2, 3).toBuffer shouldBe (Buffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toBuffer shouldBe (Buffer(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toBuffer shouldBe (Buffer(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toBuffer shouldBe (Buffer(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toBuffer shouldBe (Buffer("a", "b"))
+    number.SortedEquaSet(1).toBuffer shouldBe (Buffer(1))
+  }
+  it should "have a toEquaBoxBuffer method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxBuffer shouldBe (Buffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxBuffer shouldBe (Buffer(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxBuffer shouldBe (Buffer(number.EquaBox(1)))
   }
   it should "have a toIndexedSeq method" in {
-    number.SortedEquaSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toIndexedSeq shouldBe (IndexedSeq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toIndexedSeq shouldBe (IndexedSeq("a", "b"))
+    number.SortedEquaSet(1).toIndexedSeq shouldBe (IndexedSeq(1))
+  }
+  it should "have a toEquaBoxIndexedSeq method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxIndexedSeq shouldBe (IndexedSeq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1)))
   }
   it should "have a toIterable method" in {
-    number.SortedEquaSet(1, 2, 3).toIterable shouldBe (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toIterable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toIterable shouldBe (Set(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toIterable shouldBe (Set(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toIterable shouldBe (Set("a", "b"))
+    number.SortedEquaSet(1).toIterable shouldBe (Set(1))
+  }
+  it should "have a toEquaBoxIterable method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxIterable shouldBe (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxIterable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxIterable shouldBe (Set(number.EquaBox(1)))
   }
   it should "have a toIterator method" in {
-    number.SortedEquaSet(1, 2, 3).toIterator.toList shouldBe (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
-    lower.SortedEquaSet("a", "b").toIterator.toList shouldBe (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
-    number.SortedEquaSet(1).toIterator.toList shouldBe (Iterator(number.EquaBox(1)).toList)
+    number.SortedEquaSet(1, 2, 3).toIterator.toList shouldBe (Iterator(1, 2, 3).toList)
+    lower.SortedEquaSet("a", "b").toIterator.toList shouldBe (Iterator("a", "b").toList)
+    number.SortedEquaSet(1).toIterator.toList shouldBe (Iterator(1).toList)
     number.SortedEquaSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
     lower.SortedEquaSet("a", "b").toIterator shouldBe an [Iterator[_]]
     number.SortedEquaSet(1).toIterator shouldBe an [Iterator[_]]
   }
+  it should "have a toEquaBoxIterator method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxIterator.toList shouldBe (Iterator(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)).toList)
+    lower.SortedEquaSet("a", "b").toEquaBoxIterator.toList shouldBe (Iterator(lower.EquaBox("a"), lower.EquaBox("b")).toList)
+    number.SortedEquaSet(1).toEquaBoxIterator.toList shouldBe (Iterator(number.EquaBox(1)).toList)
+    number.SortedEquaSet(1, 2, 3).toEquaBoxIterator shouldBe an [Iterator[_]]
+    lower.SortedEquaSet("a", "b").toEquaBoxIterator shouldBe an [Iterator[_]]
+    number.SortedEquaSet(1).toEquaBoxIterator shouldBe an [Iterator[_]]
+  }
   it should "have a toList method" in {
-    number.SortedEquaSet(1, 2, 3).toList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toList shouldBe (List(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toList shouldBe (List(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toList shouldBe (List("a", "b"))
+    number.SortedEquaSet(1).toList shouldBe (List(1))
+  }
+  it should "have a toEquaBoxList method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxList shouldBe (List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxList shouldBe (List(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxList shouldBe (List(number.EquaBox(1)))
+  }
+  it should "have a toMap method" in {
+    numberLower.SortedEquaSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
+  }
+  it should "have a toParArray method" in {
+    number.SortedEquaSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
+  }
+  it should "have a toEquaBoxParArray method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxParArray shouldBe ParArray(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
   it should "have a toSeq method" in {
-    number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toSeq shouldBe (Seq(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))
+    number.SortedEquaSet(1).toSeq shouldBe (Seq(1))
+  }
+  it should "have a toEquaBoxSeq method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1)))
   }
   it should "have a toStream method" in {
-    number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toStream shouldBe(Stream(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toStream shouldBe (Stream("a", "b"))
+    number.SortedEquaSet(1).toStream shouldBe(Stream(1))
+  }
+  it should "have a toEquaBoxStream method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxStream shouldBe (Stream(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxStream shouldBe (Stream(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxStream shouldBe(Stream(number.EquaBox(1)))
   }
   it should "have a toTraversable method" in {
     implicit val numberOrdering = new Ordering[number.EquaBox] {
@@ -2037,14 +2093,30 @@ class SortedEquaSetSpec extends UnitSpec {
     implicit val lowerOrdering = new Ordering[lower.EquaBox] {
       def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
     }
-    number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toTraversable should === (TreeSet(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet("a", "b"))
+    number.SortedEquaSet(1).toTraversable should === (TreeSet(1))
+  }
+  it should "have a toEquaBoxTraversable method" in {
+    implicit val numberOrdering = new Ordering[number.EquaBox] {
+      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    }
+    implicit val lowerOrdering = new Ordering[lower.EquaBox] {
+      def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
+    }
+    number.SortedEquaSet(1, 2, 3).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1)))
+  }
+  it should "have a toEquaBoxVector method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxVector should === (Vector(number.EquaBox(1)))
   }
   it should "have a toVector method" in {
-    number.SortedEquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toVector should === (Vector(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toVector should === (Vector("a", "b"))
+    number.SortedEquaSet(1).toVector should === (Vector(1))
   }
   it should "have a transpose method" in {
     val result1 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
