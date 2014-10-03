@@ -2067,10 +2067,15 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("a", "b").toEquaBoxTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
     number.SortedEquaSet(1).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1)))
   }
+  it should "have a toEquaBoxVector method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxVector should === (Vector(number.EquaBox(1)))
+  }
   it should "have a toVector method" in {
-    number.SortedEquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.SortedEquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.SortedEquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+    number.SortedEquaSet(1, 2, 3).toVector should === (Vector(1, 2, 3))
+    lower.SortedEquaSet("a", "b").toVector should === (Vector("a", "b"))
+    number.SortedEquaSet(1).toVector should === (Vector(1))
   }
   it should "have a transpose method" in {
     val result1 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose

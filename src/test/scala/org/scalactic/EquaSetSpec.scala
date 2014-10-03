@@ -2146,10 +2146,15 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toTraversable shouldBe (Set("a", "b"))
     number.EquaSet(1).toTraversable shouldBe (Set(1))
   }
+  it should "have a toEquaBoxVector method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxVector should === (Vector(number.EquaBox(1)))
+  }
   it should "have a toVector method" in {
-    number.EquaSet(1, 2, 3).toVector should === (Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
-    lower.EquaSet("a", "b").toVector should === (Vector(lower.EquaBox("a"), lower.EquaBox("b")))
-    number.EquaSet(1).toVector should === (Vector(number.EquaBox(1)))
+    number.EquaSet(1, 2, 3).toVector should === (Vector(1, 2, 3))
+    lower.EquaSet("a", "b").toVector should === (Vector("a", "b"))
+    number.EquaSet(1).toVector should === (Vector(1))
   }
   it should "have a transpose method" in {
     val result1 = numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose

@@ -864,7 +864,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toStream: Stream[T] = underlying.toStream.map(_.value)
     def toTraversable: GenTraversable[T] = underlying.map(_.value)
     def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
-    def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
+    def toVector: Vector[T] = underlying.toVector.map(_.value)
+    def toEquaBoxVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.TreeEquaSet = {
       val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast

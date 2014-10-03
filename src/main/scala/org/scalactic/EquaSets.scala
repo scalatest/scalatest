@@ -1290,7 +1290,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toTraversable: GenTraversable[T]
 
     /**
-     * Converts this `EquaSet` to a `Traversable` of `EquaBox`s containing the elements.
+     * Converts this `EquaSet` to a `Traversable` of `EquaBox`es containing the elements.
      *
      * @return a Traversable containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
@@ -1301,7 +1301,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a vector containing all elements of this `EquaSet`.
      */
-    def toVector: Vector[thisEquaSets.EquaBox]
+    def toVector: Vector[T]
+
+    /**
+     * Converts this `EquaSet` to a Vector of `EquaBox`es containing the elements.
+     *
+     * @return a vector containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxVector: Vector[thisEquaSets.EquaBox]
 
     /**
      * Transposes this `EquaSet` of traversable collections into
@@ -1737,7 +1744,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toStream: Stream[T] = underlying.toStream.map(_.value)
     def toTraversable: GenTraversable[T] = underlying.map(_.value)
     def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
-    def toVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
+    def toVector: Vector[T] = underlying.toVector.map(_.value)
+    def toEquaBoxVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
     def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.FastEquaSet = {
@@ -1771,7 +1779,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def empty: EquaSet = FastEquaSet.empty
     def apply(elems: T*): EquaSet = FastEquaSet(elems: _*)
     import scala.language.implicitConversions
-    implicit def equaSetToGenTraversableOnce(equaSet: EquaSet): scala.collection.immutable.IndexedSeq[T] = equaSet.toVector.map(_.value)
+    implicit def equaSetToGenTraversableOnce(equaSet: EquaSet): scala.collection.immutable.IndexedSeq[T] = equaSet.toVector
     // TODO: Study this one...
     implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
       new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
