@@ -858,6 +858,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
     def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
+    def toEquaBoxSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: TreeSet[T] = {
       val valueOrdering: Ordering[T] =
         new Ordering[T] {

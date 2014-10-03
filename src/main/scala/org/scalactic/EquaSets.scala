@@ -1312,6 +1312,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toSeq: GenSeq[T]
 
     /**
+     * Converts this `EquaSet` to a sequence containing `EquaBox`es of elements.
+     * As with `toIterable`, it's lazy in this default implementation, as this
+     * `TraversableOnce` may be lazy and unevaluated.
+     *
+     * @return a sequence containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxSeq: GenSeq[thisEquaSets.EquaBox]
+
+    /**
      * Converts this `EquaSet` to a set.
      *
      * @return a set containing all elements of this `EquaSet`.
@@ -1794,6 +1803,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
     def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
+    def toEquaBoxSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
     def toSet: Set[T] = underlying.map(_.value)
     def toEquaBoxSet: Set[thisEquaSets.EquaBox] = underlying
     def toStream: Stream[T] = underlying.toStream.map(_.value)

@@ -2162,6 +2162,11 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))
     number.EquaSet(1).toSeq shouldBe (Seq(1))
   }
+  it should "have a toEquaBoxSeq method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1)))
+  }
   it should "have a toStream method" in {
     number.EquaSet(1, 2, 3).toStream shouldBe (Stream(1, 2, 3))
     lower.EquaSet("a", "b").toStream shouldBe (Stream("a", "b"))

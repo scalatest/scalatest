@@ -2071,6 +2071,11 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))
     number.SortedEquaSet(1).toSeq shouldBe (Seq(1))
   }
+  it should "have a toEquaBoxSeq method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxSeq shouldBe (Seq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxSeq shouldBe (Seq(number.EquaBox(1)))
+  }
   it should "have a toStream method" in {
     number.SortedEquaSet(1, 2, 3).toStream shouldBe (Stream(1, 2, 3))
     lower.SortedEquaSet("a", "b").toStream shouldBe (Stream("a", "b"))
