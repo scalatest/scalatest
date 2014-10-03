@@ -1237,6 +1237,15 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterable: GenIterable[T]
 
     /**
+     * Converts this `EquaSet` to an iterable collection of `EquaBox`es containing the elements. Note that
+     * the choice of target `Iterable` is lazy in this default implementation as this `TraversableOnce` may
+     * be lazy and unevaluated (i.e. it may be an iterator which is only traversable once).
+     *
+     * @return an `Iterable` containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox]
+
+    /**
      * Returns an Iterator over the elements in this `EquaSet`. Will return
      * the same Iterator if this instance is already an Iterator.
      *
@@ -1756,6 +1765,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
+    def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
     def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
     def toList: List[T] = underlying.toList.map(_.value)

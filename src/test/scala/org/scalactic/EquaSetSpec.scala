@@ -2117,6 +2117,11 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toIterable shouldBe (Set("a", "b"))
     number.EquaSet(1).toIterable shouldBe (Set(1))
   }
+  it should "have a toEquaBoxIterable method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxIterable shouldBe (Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxIterable shouldBe (Set(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxIterable shouldBe (Set(number.EquaBox(1)))
+  }
   it should "have a toIterator method" in {
     number.EquaSet(1, 2, 3).toIterator.toList shouldBe (Iterator(1, 2, 3).toList)
     lower.EquaSet("a", "b").toIterator.toList shouldBe (Iterator("a", "b").toList)
