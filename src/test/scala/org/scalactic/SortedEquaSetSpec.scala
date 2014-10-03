@@ -2016,6 +2016,11 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("a", "b").toIndexedSeq shouldBe (IndexedSeq("a", "b"))
     number.SortedEquaSet(1).toIndexedSeq shouldBe (IndexedSeq(1))
   }
+  it should "have a toEquaBoxIndexedSeq method" in {
+    number.SortedEquaSet(1, 2, 3).toEquaBoxIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.SortedEquaSet("a", "b").toEquaBoxIndexedSeq shouldBe (IndexedSeq(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.SortedEquaSet(1).toEquaBoxIndexedSeq shouldBe (IndexedSeq(number.EquaBox(1)))
+  }
   it should "have a toIterable method" in {
     number.SortedEquaSet(1, 2, 3).toIterable shouldBe (Set(1, 2, 3))
     lower.SortedEquaSet("a", "b").toIterable shouldBe (Set("a", "b"))

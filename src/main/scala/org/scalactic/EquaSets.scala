@@ -1220,6 +1220,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T]
 
     /**
+     * Converts this `EquaSet` to an indexed sequence containing `EquaBox`es of elements.
+     *
+     * @return an indexed sequence containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox]
+
+    /**
      * Converts this `EquaSet` to an iterable collection. Note that
      * the choice of target `Iterable` is lazy in this default implementation
      * as this `TraversableOnce` may be lazy and unevaluated (i.e. it may
@@ -1747,6 +1754,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
     def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
+    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
     def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList

@@ -847,6 +847,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
     def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
+    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
     def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
