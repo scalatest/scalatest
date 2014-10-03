@@ -2097,6 +2097,11 @@ class EquaSetSpec extends UnitSpec {
     lower.EquaSet("a", "b").toBuffer shouldBe (Buffer("a", "b"))
     number.EquaSet(1).toBuffer shouldBe (Buffer(1))
   }
+  it should "have a toEquaBoxBuffer method" in {
+    number.EquaSet(1, 2, 3).toEquaBoxBuffer shouldBe (Buffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
+    lower.EquaSet("a", "b").toEquaBoxBuffer shouldBe (Buffer(lower.EquaBox("a"), lower.EquaBox("b")))
+    number.EquaSet(1).toEquaBoxBuffer shouldBe (Buffer(number.EquaBox(1)))
+  }
   it should "have a toIndexedSeq method" in {
     number.EquaSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
     lower.EquaSet("a", "b").toIndexedSeq shouldBe (IndexedSeq("a", "b"))
