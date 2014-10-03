@@ -195,7 +195,7 @@ object Prettifier {
               if (isSelf)
                 equaSet.toString
               else
-                equaSet.stringPrefix + "(" + equaSet.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+                equaSet.stringPrefix + "(" + equaSet.toIterator.map(b => apply(b  .value)).mkString(", ") + ")" // toIterator is needed for consistent ordering
 
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
