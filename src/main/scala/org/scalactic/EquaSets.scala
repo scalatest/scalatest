@@ -1246,12 +1246,20 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox]
 
     /**
-     * Returns an Iterator over the elements in this `EquaSet`. Will return
+     * Returns an Iterator over the elements in this `EquaSet`.  Will return
      * the same Iterator if this instance is already an Iterator.
      *
      * @return an Iterator containing all elements of this  `EquaSet`.
      */
     def toIterator: Iterator[T]
+
+    /**
+     * Returns an Iterator over the `EquaBox`es in this `EquaSet`.  Will return
+     * the same Iterator if this instance is already an Iterator.
+     *
+     * @return an Iterator containing all elements of this  `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxIterator: Iterator[thisEquaSets.EquaBox]
 
     /**
      * Converts this `EquaSet` to a list of `EquaBox`.
@@ -1767,6 +1775,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
     def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
+    def toEquaBoxIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
     def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
