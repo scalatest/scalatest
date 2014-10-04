@@ -417,10 +417,16 @@ class PrettifierSpec extends Spec with Matchers {
       Prettifier.default(lowerSortedEquaSet.TreeEquaSet("1", "2", "3")) should be ("TreeEquaSet(\"1\", \"2\", \"3\")")
     }
     def `should pretty print Set(EquaBox)`: Unit = {
-      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3).toSet) should be ("Set(EquaBox(1), EquaBox(2), EquaBox(3))")  // should change toSet -> toEquaBoxSet when merged with the other branch
-      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3).toSet) should be ("Set(EquaBox(1), EquaBox(2), EquaBox(3))")  // should change toSet -> toEquaBoxSet when merged with the other branch
-      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3").toSet) should be ("Set(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")  // should change toSet -> toEquaBoxSet when merged with the other branch
-      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3").toSet) should be ("Set(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")  // should change toSet -> toEquaBoxSet when merged with the other branch
+      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3).toSet) should be ("Set(1, 2, 3)") 
+      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3).toSet) should be ("Set(1, 2, 3)") 
+      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3").toSet) should be ("Set(\"1\", \"2\", \"3\")")
+      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3").toSet) should be ("Set(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print Set(Int)`: Unit = {
+      Prettifier.default(numberEquaSet.EquaSet(1, 2, 3).toEquaBoxSet) should be ("Set(EquaBox(1), EquaBox(2), EquaBox(3))")
+      Prettifier.default(numberEquaSet.FastEquaSet(1, 2, 3).toEquaBoxSet) should be ("Set(EquaBox(1), EquaBox(2), EquaBox(3))")
+      Prettifier.default(lowerEquaSet.EquaSet("1", "2", "3").toEquaBoxSet) should be ("Set(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
+      Prettifier.default(lowerEquaSet.FastEquaSet("1", "2", "3").toEquaBoxSet) should be ("Set(EquaBox(\"1\"), EquaBox(\"2\"), EquaBox(\"3\"))")
     }
   }
 }
