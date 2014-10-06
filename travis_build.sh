@@ -12,16 +12,34 @@ if [[ $MODE = 'Compile' ]] ; then
   exit $rc
 fi
 
-if [[ $MODE = 'Main' ]] ; then
-  echo "Doing 'sbt test'"
+if [[ $MODE = 'RegularTests1' ]] ; then
+  echo "Doing 'sbt genRegularTests1/test'"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
-  sbt ++$TRAVIS_SCALA_VERSION testQuick
+  sbt ++$TRAVIS_SCALA_VERSION genRegularTests1/test
   rc=$?
   echo first try, exitcode $rc      
   if [[ $rc != 0 ]] ; then
-    sbt ++$TRAVIS_SCALA_VERSION testQuick
+    sbt ++$TRAVIS_SCALA_VERSION genRegularTests1/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
+if [[ $MODE = 'RegularTests2' ]] ; then
+  echo "Doing 'sbt genRegularTests2/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genRegularTests2/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION genRegularTests2/testQuick
     rc=$?
     echo second try, exitcode $rc
   fi

@@ -16,7 +16,8 @@ env:
     - SCALATEST_GPG_PASSPHASE=tbd
 
   matrix:
-    - MODE=Main
+    - MODE=RegularTests1
+    - MODE=RegularTests2
     - MODE=genMustMatchersTests
     - MODE=genGenTests
     - MODE=genTablesTests

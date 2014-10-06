@@ -155,6 +155,32 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
+  def scalatestTestOptions =
+    Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.testng",
+      "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.mock",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.selenium",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-m", "org.scalautils",
+      "-oDI",
+      "-h", "target/html",
+      "-u", "target/junit",
+      "-fW", "target/result.txt"))
+
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
    .settings(
@@ -187,30 +213,7 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genMain),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
-                                               "-m", "org.scalatest",
-                                               "-m", "org.scalactic",
-                                               "-m", "org.scalatest.fixture",
-                                               "-m", "org.scalatest.concurrent",
-                                               "-m", "org.scalatest.testng",
-                                               "-m", "org.scalatest.junit",
-                                               "-m", "org.scalatest.events",
-                                               "-m", "org.scalatest.prop",
-                                               "-m", "org.scalatest.tools",
-                                               "-m", "org.scalatest.matchers",
-                                               "-m", "org.scalatest.suiteprop",
-                                               "-m", "org.scalatest.mock",
-                                               "-m", "org.scalatest.path",
-                                               "-m", "org.scalatest.selenium",
-                                               "-m", "org.scalatest.exceptions",
-                                               "-m", "org.scalatest.time",
-                                               "-m", "org.scalatest.words",
-                                               "-m", "org.scalatest.enablers",
-                                               "-m", "org.scalautils",
-                                               "-oDI",
-                                               "-h", "target/html",
-                                               "-u", "target/junit",
-                                               "-fW", "target/result.txt")),
+     testOptions in Test := scalatestTestOptions,
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -307,6 +310,24 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest)
     ).dependsOn(scalatest)
 
+  lazy val genRegularTests1 = Project("genRegularTests1", file("gentests/GenRegular1"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask1,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular1", "GenRegular1.scala")(GenRegularTests1.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genRegularTests2 = Project("genRegularTests2", file("gentests/GenRegular2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask2,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := scalatestTestOptions,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
   lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
     .settings(gentestsSharedSettings: _*)
     .settings(
@@ -360,7 +381,7 @@ object ScalatestBuild extends Build {
     .settings(
       genContainTask1,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain2", "GenContain1.scala")(GenContain1.genTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain1", "GenContain1.scala")(GenContain1.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genContainTests2 = Project("genContainTests2", file("gentests/GenContain2"))
@@ -401,13 +422,37 @@ object ScalatestBuild extends Build {
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
+    val jdir = outDir / "java" / name
     val genSource = basedir / "project" / generatorSource
-    def results = (tdir ** "*.scala").get
+
+    def results = (tdir ** "*.scala").get ++ (jdir ** "*.java").get
     if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
       tdir.mkdirs()
       gen(tdir, theVersion, theScalaVersion)
     }
     results
+  }
+
+  def genJavaFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
+    val tdir = outDir / "java" / name
+    val genSource = basedir / "project" / generatorSource
+
+    def results = (tdir ** "*.java").get
+    if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
+      tdir.mkdirs()
+      gen(tdir, theVersion, theScalaVersion)
+    }
+    results
+  }
+
+  val genRegular1 = TaskKey[Unit]("genregular1", "Generate regular tests 1")
+  val genRegularTask1 = genRegular1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests1.genTest(new File(testTargetDir, "scala/genregular1"), theVersion, theScalaVersion)
+  }
+
+  val genRegular2 = TaskKey[Unit]("genregular2", "Generate regular tests 2")
+  val genRegularTask2 = genRegular2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests2.genTest(new File(testTargetDir, "scala/genregular2"), theVersion, theScalaVersion)
   }
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
