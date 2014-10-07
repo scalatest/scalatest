@@ -328,6 +328,14 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
+  lazy val genRegularTests3 = Project("genRegularTests3", file("gentests/GenRegular3"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask3,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
   lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
     .settings(gentestsSharedSettings: _*)
     .settings(
@@ -453,6 +461,11 @@ object ScalatestBuild extends Build {
   val genRegular2 = TaskKey[Unit]("genregular2", "Generate regular tests 2")
   val genRegularTask2 = genRegular2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenRegularTests2.genTest(new File(testTargetDir, "scala/genregular2"), theVersion, theScalaVersion)
+  }
+
+  val genRegular3 = TaskKey[Unit]("genregular3", "Generate regular tests 3")
+  val genRegularTask3 = genRegular3 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests3.genTest(new File(testTargetDir, "scala/genregular3"), theVersion, theScalaVersion)
   }
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")

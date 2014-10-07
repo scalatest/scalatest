@@ -18,7 +18,7 @@ import collection.mutable.ListBuffer
 import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
-object GenRegularTests1 {
+object GenRegularTests3 {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
@@ -40,7 +40,7 @@ object GenRegularTests1 {
     }
 
     def isShouldFile(file: File): Boolean =
-      file.isFile && (file.getName.startsWith("Should"))
+      file.isFile && (file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould"))
 
     def processDir(dir: File, targetDir: File): Unit = {
       targetDir.mkdirs()
