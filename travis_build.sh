@@ -80,7 +80,7 @@ fi
 
 if [[ $MODE = 'genGenTests' ]] ; then
   echo "Doing 'sbt genGenTests/test'"
-  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export JVM_OPTS="-server -Xms1G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
@@ -92,7 +92,7 @@ fi
 
 if [[ $MODE = 'genTablesTests' ]] ; then
   echo "Doing 'sbt genTablesTests/test'"
-  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export JVM_OPTS="-server -Xms1G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
@@ -104,7 +104,7 @@ fi
 
 if [[ $MODE = 'genInspectorsTests' ]] ; then
   echo "Doing 'sbt genInspectorsTests/test'"
-  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export JVM_OPTS="-server -Xms1G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
@@ -116,7 +116,7 @@ fi
 
 if [[ $MODE = 'genInspectorsShorthandsTests' ]] ; then
   echo "Doing 'sbt genInspectorsShorthandsTests/test'"
-  export JVM_OPTS="-server -Xms1G -Xmx3G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export JVM_OPTS="-server -Xms1G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
