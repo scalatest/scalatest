@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export JVM_OPTS="-server -Xms2G -Xmx4G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export JVM_OPTS="-server -Xms2G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'Compile' ]] ; then
