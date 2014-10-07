@@ -22,7 +22,7 @@ object GenRegularTests3 {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
-    val regularDir = new File(targetBaseDir, "regular1")
+    val regularDir = new File(targetBaseDir, "regular3")
 
     def copyFile(inputFile: File, outputFile: File) {
       val writer = new BufferedWriter(new FileWriter(outputFile))
