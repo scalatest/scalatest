@@ -18,6 +18,7 @@ env:
   matrix:
     - MODE=RegularTests1
     - MODE=RegularTests2
+    - MODE=RegularTests3
     - MODE=genMustMatchersTests
     - MODE=genGenTests
     - MODE=genTablesTests
