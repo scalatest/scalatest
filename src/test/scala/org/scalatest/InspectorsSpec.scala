@@ -26,6 +26,7 @@ import collection._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import org.scalactic.Entry
 
 class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks {
   

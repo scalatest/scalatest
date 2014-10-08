@@ -19,6 +19,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import FailureMessages.decorateToStringValue
+import org.scalactic.Entry
 
 class OneElementOfContainMatcherSpec extends Spec {
 

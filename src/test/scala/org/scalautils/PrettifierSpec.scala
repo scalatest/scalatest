@@ -16,6 +16,7 @@
 package org.scalautils
 
 import org.scalatest._
+import org.scalactic.Entry
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}

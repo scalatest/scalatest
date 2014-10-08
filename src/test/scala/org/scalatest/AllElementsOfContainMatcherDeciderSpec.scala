@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{Prettifier, Equality, Explicitly, Uniformity}
+import org.scalactic.{Prettifier, Equality, Explicitly, Uniformity, Entry}
 import org.scalactic.StringNormalizations._
 import collection.GenTraversable
 import SharedHelpers._

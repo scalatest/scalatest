@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Explicitly
+import org.scalactic.Entry
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
 import collection.GenTraversable
