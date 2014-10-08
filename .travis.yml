@@ -35,6 +35,11 @@ env:
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
 
+notifications:
+  email:
+    - bill@artima.com
+    - cheeseng@amaseng.com
+
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node
 #  - |
