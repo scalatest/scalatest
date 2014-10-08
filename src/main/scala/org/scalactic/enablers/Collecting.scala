@@ -18,7 +18,6 @@ package org.scalactic.enablers
 import org.scalactic.Every
 import scala.collection.GenTraversable
 import scala.language.higherKinds
-import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 
 /**
