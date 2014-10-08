@@ -66,6 +66,24 @@ if [[ $MODE = 'RegularTests3' ]] ; then
 
 fi
 
+if [[ $MODE = 'ScalacticTests' ]] ; then
+  echo "Doing 'sbt scalactic/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION scalactic/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION scalactic/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
 if [[ $MODE = 'genMustMatchersTests' ]] ; then
   echo "Doing 'sbt genMustMatchersTests/test'"
   export JVM_OPTS="-server -Xms1G -Xmx4G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
