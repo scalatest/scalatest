@@ -19,6 +19,7 @@ import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
+import org.scalactic.Entry
 import SharedHelpers._
 import Matchers._
 

@@ -15,7 +15,7 @@
 */
 package org.scalatest
 
-import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.{Equality, Every, One, Many, Entry}
 import org.scalactic.Uniformity
 import org.scalactic.StringNormalizations._
 import SharedHelpers._

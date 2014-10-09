@@ -93,25 +93,25 @@ object EvidenceThat {
     (new EvidenceThat[R]).canBeContainedIn[L](cvt(equality))
 
   // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
-  implicit def enableScalaTestEntryContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedIn[JMAP[K, V]] = {
-    (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedIn[JMAP[K, V]] {
-      // Here I need a ContainingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
-      new ContainingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]] {
+  implicit def enableScalaTestEntryContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalactic.Entry[K, V]]#CanBeContainedIn[JMAP[K, V]] = {
+    (new EvidenceThat[org.scalactic.Entry[K, V]]).canBeContainedIn[JMAP[K, V]] {
+      // Here I need a ContainingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]]
+      new ContainingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]] {
 
         import scala.collection.JavaConverters._
 
-        def contains(map: JMAP[K, V], ele: org.scalatest.Entry[K, V]): Boolean = {
+        def contains(map: JMAP[K, V], ele: org.scalactic.Entry[K, V]): Boolean = {
           map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
         }
 
-        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalactic.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
 
-        def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
-          val foundSet = ContainingConstraint.checkOneOf[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]](map.entrySet.asScala, elements, constraint)
+        def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
+          val foundSet = ContainingConstraint.checkOneOf[java.util.Map.Entry[K, V], org.scalactic.Entry[K, V]](map.entrySet.asScala, elements, constraint)
           foundSet.size == 1
         }
-        def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
-          val found = ContainingConstraint.checkNoneOf[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]](map.entrySet.asScala, elements, constraint)
+        def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
+          val found = ContainingConstraint.checkNoneOf[java.util.Map.Entry[K, V], org.scalactic.Entry[K, V]](map.entrySet.asScala, elements, constraint)
           !found.isDefined
         }
       }
@@ -125,28 +125,28 @@ object EvidenceThat {
     (new EvidenceThat[R]).canBeContainedInAggregation[L](cvt(equality))
 
   // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
-  implicit def enableScalaTestEntryAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedInAggregation[JMAP[K, V]] = {
-    (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedInAggregation[JMAP[K, V]] {
-      // Here I need an AggregatingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
-      new AggregatingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]] {
+  implicit def enableScalaTestEntryAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalactic.Entry[K, V]]#CanBeContainedInAggregation[JMAP[K, V]] = {
+    (new EvidenceThat[org.scalactic.Entry[K, V]]).canBeContainedInAggregation[JMAP[K, V]] {
+      // Here I need an AggregatingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]]
+      new AggregatingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]] {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalactic.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
 
-        def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
-          map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: org.scalatest.Entry[K, V]) => constraint.areEqual(e, ele)))
+        def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
+          map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: org.scalactic.Entry[K, V]) => constraint.areEqual(e, ele)))
         }
-        def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[org.scalactic.Entry[K, V]]): Boolean = {
           AggregatingConstraint.checkTheSameElementsAs(map.entrySet.asScala, elements, constraint)
         }
-        def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
           AggregatingConstraint.checkOnly(map.entrySet.asScala, elements, constraint)
         }
-        def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
           AggregatingConstraint.checkAllOf(map.entrySet.asScala, elements, constraint)
         }
-        def containsAtMostOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsAtMostOneOf(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
           AggregatingConstraint.checkAtMostOneOf(map.entrySet.asScala, elements, constraint)
         }
       }
@@ -159,28 +159,27 @@ object EvidenceThat {
     (new EvidenceThat[R]).canBeContainedInSequence[L](cvt(equality))
 
   // Converts an explicitly given Equality[Entry] to the required EvidenceThat...
-  implicit def enableScalaTestEntrySequencing[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalatest.Entry[K, V]]#CanBeContainedInSequence[JMAP[K, V]] = {
-    (new EvidenceThat[org.scalatest.Entry[K, V]]).canBeContainedInSequence[JMAP[K, V]] {
-      // Here I need an SequencingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]]
-      new SequencingConstraint[JMAP[K, V], org.scalatest.Entry[K, V]] {
+  implicit def enableScalaTestEntrySequencing[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): EvidenceThat[org.scalactic.Entry[K, V]]#CanBeContainedInSequence[JMAP[K, V]] = {
+    (new EvidenceThat[org.scalactic.Entry[K, V]]).canBeContainedInSequence[JMAP[K, V]] {
+      // Here I need an SequencingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]]
+      new SequencingConstraint[JMAP[K, V], org.scalactic.Entry[K, V]] {
 
         import scala.collection.JavaConverters._
 
-        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalatest.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
+        private val constraint: EqualityConstraint[java.util.Map.Entry[K, V], org.scalactic.Entry[K, V]] = new org.scalactic.EqualityPolicy.BasicEqualityConstraint(equality)
 
-        def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
           SequencingConstraint.checkInOrder(map.entrySet.iterator.asScala.toVector, elements, constraint)
         }
 
-        def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[org.scalactic.Entry[K, V]]): Boolean = {
           SequencingConstraint.checkInOrderOnly(map.entrySet.iterator.asScala.toVector, elements, constraint)
         }
 
-        def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[org.scalatest.Entry[K, V]]): Boolean = {
+        def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[org.scalactic.Entry[K, V]]): Boolean = {
           SequencingConstraint.checkTheSameElementsInOrderAs(map.entrySet.iterator.asScala.toVector, elements, constraint)
         }
       }
     }
   }
 }
-

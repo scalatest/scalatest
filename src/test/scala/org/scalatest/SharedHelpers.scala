@@ -24,6 +24,7 @@ import scala.collection.GenMap
 import scala.collection.SortedSet
 import scala.collection.SortedMap
 import FailureMessages.decorateToStringValue
+import org.scalactic.Entry
 
 object SharedHelpers extends Assertions {
 
@@ -970,7 +971,7 @@ object SharedHelpers extends Assertions {
 
   //##################################
 
-  def javaMapEntry[K, V](key: K, value: V): java.util.Map.Entry[K, V] = org.scalatest.Entry(key, value)
+  def javaMapEntry[K, V](key: K, value: V): java.util.Map.Entry[K, V] = org.scalactic.Entry(key, value)
 
   def indexElementEqual[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): Array[String] =
     indexElementForJavaIterator[K, V](itr, xs, (e: java.util.Map.Entry[K, V]) => e.getKey == right.getKey && e.getValue == right.getValue)
@@ -1167,7 +1168,7 @@ object SharedHelpers extends Assertions {
 
   private def succeededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean): String = {
     import collection.JavaConverters._
-    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).toList.map(_._1)
+    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalactic.Entry(e._1, e._2))).toList.map(_._1)
     if (passedList.size > 1)
       "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
     else if (passedList.size == 1)
@@ -1210,7 +1211,7 @@ object SharedHelpers extends Assertions {
 
   private def failEarlySucceededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean, maxSucceed: Int): String = {
     import collection.JavaConverters._
-    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
+    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalactic.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
     if (passedList.size > 1)
       "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
     else if (passedList.size == 1)

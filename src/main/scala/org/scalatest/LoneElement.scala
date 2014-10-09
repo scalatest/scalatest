@@ -140,7 +140,7 @@ trait LoneElement {
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
-   * an implicit <code>Collecting[org.scalatest.Entry, java.util.Map]</code> is available.
+   * an implicit <code>Collecting[org.scalactic.Entry, java.util.Map]</code> is available.
    *
    * <p>
    * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
@@ -155,9 +155,9 @@ trait LoneElement {
    * @tparam JMAP the "Java Map type constructor" for the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
 
-    def loneElement: org.scalatest.Entry[K, V] = {
+    def loneElement: org.scalactic.Entry[K, V] = {
       collecting.loneElementOf(jmap) match {
         case Some(ele) => ele
         case None =>
@@ -174,7 +174,7 @@ trait LoneElement {
   }
 
   // Needed for Java Map to work, any better solution?
-  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): LoneElementJavaMapWrapper[K, V, JMAP]  = {
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): LoneElementJavaMapWrapper[K, V, JMAP]  = {
     new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting)
   }
 

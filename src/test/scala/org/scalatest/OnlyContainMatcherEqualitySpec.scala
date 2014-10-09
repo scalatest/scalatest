@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Explicitly
+import org.scalactic.Entry
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._

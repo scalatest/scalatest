@@ -35,24 +35,29 @@ object GenScalactic {
     }
   }
 
+  private def copyDir(sourceDir: File, targetDir: File): Unit = {
+    targetDir.mkdirs()
+    sourceDir.listFiles.foreach { sourceFile =>
+      if (sourceFile.isFile) {
+        val destFile = new File(targetDir, sourceFile.getName)
+        copyFile(sourceFile, destFile)
+      }
+      else if (sourceFile.isDirectory)
+        copyDir(sourceFile, new File(targetDir, sourceFile.getName))
+    }
+  }
+
   def genMain(targetDir: File, version: String, scalaVersion: String) {
 
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    scalacticPackageDir.mkdirs()
     val scalacticSourceDir = new File("src/main/scala/org/scalactic")
-    scalacticSourceDir.listFiles.foreach { sourceFile =>
-      val destFile = new File(scalacticPackageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
-    }
+    val scalacticPackageDir = new File(targetDir, "org/scalactic")
+    copyDir(scalacticSourceDir, scalacticPackageDir)
+
     GenVersions.genMain(scalacticPackageDir, version, scalaVersion)
 
-    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
-    scalautilsPackageDir.mkdirs()
     val scalautilsSourceDir = new File("src/main/scala/org/scalautils")
-    scalautilsSourceDir.listFiles.foreach { sourceFile =>
-      val destFile = new File(scalautilsPackageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
-    }
+    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
+    copyDir(scalautilsSourceDir, scalautilsPackageDir)
 
     val sourceResourceFile = new File("src/main/resources/org/scalactic/ScalacticBundle.properties")
     val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
@@ -74,13 +79,13 @@ object GenScalactic {
     val sharedHelpersTargetFile = new File(scalatestDir, sharedHelpersSourceFile.getName)
     copyFile(sharedHelpersSourceFile, sharedHelpersTargetFile)
 
-    val packageDir = new File(targetDir, "org/scalactic")
-    packageDir.mkdirs()
-    val sourceDir = new File("src/test/scala/org/scalactic")
-    sourceDir.listFiles.foreach { sourceFile =>
-      val destFile = new File(packageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
-    }
+    val scalacticPackageDir = new File(targetDir, "org/scalactic")
+    val scalacticSourceDir = new File("src/test/scala/org/scalactic")
+    copyDir(scalacticSourceDir, scalacticPackageDir)
+
+    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
+    val scalautilsSourceDir = new File("src/test/scala/org/scalautils")
+    copyDir(scalautilsSourceDir, scalautilsPackageDir)
   }
 
 

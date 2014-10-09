@@ -1,7 +1,7 @@
 language: scala
 scala:
-  - 2.10.4
   - 2.11.2
+  - 2.10.4
 jdk:
   - oraclejdk7
   - openjdk6
@@ -16,20 +16,29 @@ env:
     - SCALATEST_GPG_PASSPHASE=tbd
 
   matrix:
-    - MODE=Main
+    - MODE=RegularTests1
+    - MODE=RegularTests2
+    - MODE=RegularTests3
+    - MODE=ScalacticTests
     - MODE=genMustMatchersTests
     - MODE=genGenTests
     - MODE=genTablesTests
     - MODE=genInspectorsTests
     - MODE=genInspectorsShorthandsTests
     - MODE=genTheyTests
-    - MODE=genContainTests
+    - MODE=genContainTests1
+    - MODE=genContainTests2
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
 
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
+
+notifications:
+  email:
+    - bill@artima.com
+    - cheeseng@amaseng.com
 
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node

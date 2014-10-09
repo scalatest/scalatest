@@ -26,7 +26,7 @@ import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
-import org.scalactic.Equality
+import org.scalactic.{Equality, Entry}
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._

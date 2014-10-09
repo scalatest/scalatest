@@ -16,9 +16,8 @@
 package org.scalactic.enablers
 
 import org.scalactic.Equality
-import org.scalatest.words.ArrayWrapper
+import org.scalactic.ArrayWrapper
 import scala.collection.GenTraversable
-import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 

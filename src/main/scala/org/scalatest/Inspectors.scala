@@ -242,7 +242,7 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
@@ -292,7 +292,7 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]]) {
+  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V],JMAP[K, V]]) {
     doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
   }
 
@@ -343,7 +343,7 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
@@ -384,7 +384,7 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
 
@@ -404,7 +404,7 @@ trait Inspectors {
     doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
   }
 
-  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
   }
 
@@ -439,7 +439,7 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
 
@@ -493,7 +493,7 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
 
@@ -574,7 +574,7 @@ private[scalatest] object InspectorsHelper {
           case e if !shouldPropagate(e) => 
             val messageKey = head match {
               case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
-              case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
+              case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
               case _ => index.toString
             }
             result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, resourceNamePrefix), failedElements = result.failedElements :+ (index, head, e))
@@ -641,7 +641,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
-                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
+                case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               (passedCount, messageAcc :+ createMessage(messageKey, e, resourceNamePrefix))
@@ -688,7 +688,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
-                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
+                case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               messageList :+ createMessage(messageKey, e, resourceNamePrefix)

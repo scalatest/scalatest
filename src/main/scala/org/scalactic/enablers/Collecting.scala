@@ -18,7 +18,6 @@ package org.scalactic.enablers
 import org.scalactic.Every
 import scala.collection.GenTraversable
 import scala.language.higherKinds
-import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 
 /**
@@ -166,30 +165,30 @@ object Collecting {
       }
     }
 
-  // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
+  // Wrap the extracted entry in an org.scalactic.Entry so people can call key and value methods instead of getKey and getValue
   /**
    * Implicit to support <code>Collecting</code> nature of <code>java.util.Map</code>.
    *
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
-   * @return <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
+   * @return <code>Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
    */
-  implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
-    new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
-      def loneElementOf(jmap: JMAP[K, V]): Option[org.scalatest.Entry[K, V]] = {
+  implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]] =
+    new Collecting[org.scalactic.Entry[K, V], JMAP[K, V]] {
+      def loneElementOf(jmap: JMAP[K, V]): Option[org.scalactic.Entry[K, V]] = {
         if (jmap.size == 1) {
           val loneEntry = jmap.entrySet.iterator.next
-          Some(org.scalatest.Entry(loneEntry.getKey, loneEntry.getValue))
+          Some(org.scalactic.Entry(loneEntry.getKey, loneEntry.getValue))
         } else None
       }
       def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
         /*
         Original order needs to be preserved
         */
-      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.GenTraversable[org.scalatest.Entry[K, V]] = {
+      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.GenTraversable[org.scalactic.Entry[K, V]] = {
         import scala.collection.JavaConverters._
-        collection.entrySet.iterator.asScala.map(entry => org.scalatest.Entry(entry.getKey, entry.getValue)).toList
+        collection.entrySet.iterator.asScala.map(entry => org.scalactic.Entry(entry.getKey, entry.getValue)).toList
       }
     }
 

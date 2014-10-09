@@ -21,7 +21,8 @@ import scala.collection.GenSeq
 import scala.collection.Seq
 
 trait SafeSeqs {
-  implicit class CovariantSeqContainifier[E, SEQ[+e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
+  // this does not work in 2.10, we could add this back when we no longer support 2.10.
+  /*implicit class CovariantSeqContainifier[E, SEQ[+e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
     def safeContains[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Boolean =
       leftSideGenSeq match {
         case seq: Seq[_] => seq.contains(rightSideEle)
@@ -46,7 +47,7 @@ trait SafeSeqs {
         -1
       else
         ev.lastIndexOfSlice(leftSideGenSeq, slice, end)
-  }
+  }*/
   implicit class InvariantSeqContainifier[E, SEQ[e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
     def safeContains[R](rightSideEle: R)(implicit ev: R <:< E): Boolean =
       leftSideGenSeq match {

@@ -15,9 +15,8 @@
  */
 package org.scalactic.enablers
 
-import org.scalactic.{Equality, Every, EqualityConstraint}
+import org.scalactic.{Equality, Every, EqualityConstraint, ArrayWrapper}
 import org.scalactic.EqualityPolicy.BasicEqualityConstraint
-import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._

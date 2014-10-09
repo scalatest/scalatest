@@ -1131,7 +1131,7 @@ import scala.language.higherKinds
  * a collection of <code>Entry</code>. To make Java <code>Map</code>s easier to work with, however,
  * ScalaTest matchers allows you to treat a Java <code>Map</code> as a collection of <code>Entry</code>,
  * and defines a convenience implementation of <code>java.util.Map.Entry</code> in
- * <a href="Entry.html"><code>org.scalatest.Entry</code></a>. Here's how you use it:
+ * <a href="Entry.html"><code>org.scalactic.Entry</code></a>. Here's how you use it:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -6689,7 +6689,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6722,7 +6722,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6755,7 +6755,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6788,7 +6788,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6821,7 +6821,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6854,7 +6854,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -6887,7 +6887,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalactic.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalactic.Entry[K, V]] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**

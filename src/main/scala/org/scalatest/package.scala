@@ -149,6 +149,24 @@ package object scalatest {
   type TimesOnInt = org.scalactic.TimesOnInt
 
   /**
+   * <p>
+   * <strong>This class has been moved to the <code>org.scalactic</code> package. The deprecated type alias that has been left in its place will
+   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.Entry</code> to <code>org.scalactic.Entry</code>.</strong>
+   * </p>
+   */
+  @deprecated("Please use org.scalactic.Entry instead.")
+  type Entry[K, V] = org.scalactic.Entry[K, V]
+
+  /**
+   * <p>
+   * <strong>This class has been moved to the <code>org.scalactic</code> package. The deprecated type alias that has been left in its place will
+   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.Entry</code> to <code>org.scalactic.Entry</code>.</strong>
+   * </p>
+   */
+  @deprecated("Please use org.scalactic.Entry instead.")
+  val Entry = org.scalactic.Entry
+
+  /**
    * The version number of ScalaTest.
    *
    * @return the ScalaTest version number.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalactic
 
 /**
  * A case class implementation of <code>java.util.Map.Entry</code> to make it easier to
