@@ -66,6 +66,42 @@ if [[ $MODE = 'RegularTests3' ]] ; then
 
 fi
 
+if [[ $MODE = 'RegularTests4' ]] ; then
+  echo "Doing 'sbt genRegularTests4/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genRegularTests4/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION genRegularTests4/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
+if [[ $MODE = 'RegularTests5' ]] ; then
+  echo "Doing 'sbt genRegularTests5/test'"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genRegularTests5/test
+  rc=$?
+  echo first try, exitcode $rc
+  if [[ $rc != 0 ]] ; then
+    sbt ++$TRAVIS_SCALA_VERSION genRegularTests5/testQuick
+    rc=$?
+    echo second try, exitcode $rc
+  fi
+  echo final, exitcode $rc
+  exit $rc
+
+fi
+
 if [[ $MODE = 'ScalacticTests' ]] ; then
   echo "Doing 'sbt scalactic/test'"
 
