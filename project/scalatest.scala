@@ -289,6 +289,8 @@ object ScalatestBuild extends Build {
     Seq(
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
+      "org.testng" % "testng" % "6.8.7" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
@@ -322,8 +324,6 @@ object ScalatestBuild extends Build {
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask2,
-      libraryDependencies ++= scalatestLibraryDependencies,
-      testOptions in Test := scalatestTestOptions,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
@@ -334,6 +334,26 @@ object ScalatestBuild extends Build {
       genRegularTask3,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genRegularTests4 = Project("genRegularTests4", file("gentests/GenRegular4"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask4,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := scalatestTestOptions,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular4", "GenRegularTests1.scala")(GenRegularTests4.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genRegularTests5 = Project("genRegularTests5", file("gentests/GenRegular5"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask5,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := scalatestTestOptions,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
@@ -466,6 +486,16 @@ object ScalatestBuild extends Build {
   val genRegular3 = TaskKey[Unit]("genregular3", "Generate regular tests 3")
   val genRegularTask3 = genRegular3 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenRegularTests3.genTest(new File(testTargetDir, "scala/genregular3"), theVersion, theScalaVersion)
+  }
+
+  val genRegular4 = TaskKey[Unit]("genregular4", "Generate regular tests 4")
+  val genRegularTask4 = genRegular4 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests4.genTest(new File(testTargetDir, "scala/genregular4"), theVersion, theScalaVersion)
+  }
+
+  val genRegular5 = TaskKey[Unit]("genregular5", "Generate regular tests 5")
+  val genRegularTask5 = genRegular5 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests5.genTest(new File(testTargetDir, "scala/genregular5"), theVersion, theScalaVersion)
   }
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")

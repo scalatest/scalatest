@@ -35,50 +35,32 @@ object GenTestsHelper {
     }
   }
 
+  private def copyFile(targetBaseDir: File, filePath: String): Unit = {
+    val source = new File(filePath)
+    val targetDir = new File(targetBaseDir, source.getPath.substring("src/test/scala/".length, source.getPath.lastIndexOf("/")))
+    targetDir.mkdirs()
+    val target = new File(targetDir, source.getName)
+    copyFile(source, target)
+  }
 
+  val fileList: List[String] =
+    List(
+      "src/test/scala/org/scalatest/SharedHelpers.scala",
+      "src/test/scala/org/scalatest/FruitMocks.scala",
+      "src/test/scala/org/scalatest/BookPropertyMatchers.scala",
+      "src/test/scala/org/scalatest/EmptyMocks.scala",
+      "src/test/scala/org/scalatest/ReturnsNormallyThrowsAssertion.scala",
+      "src/test/scala/org/scalatest/OperatorNames.scala",
+      "src/test/scala/org/scalatest/FileMocks.scala",
+      "src/test/scala/org/scalatest/StubReporter.scala",
+      "src/test/scala/org/scalatest/mytags.scala",
+      "src/test/scala/org/scalatest/path/ExampleLikeSpecs.scala"
+    )
 
-  def genTest(targetDir: File, version: String, scalaVersion: String) {
-
-    val sharedHelpersSource = new File("src/test/scala/org/scalatest/SharedHelpers.scala")
-    val sharedHelpersTarget = new File(targetDir, sharedHelpersSource.getName)
-    copyFile(sharedHelpersSource, sharedHelpersTarget)
-
-    val fruitMocksSource = new File("src/test/scala/org/scalatest/FruitMocks.scala")
-    val fruitMocksTarget = new File(targetDir, fruitMocksSource.getName)
-    copyFile(fruitMocksSource, fruitMocksTarget)
-
-    val bookPropertyMatchersSource = new File("src/test/scala/org/scalatest/BookPropertyMatchers.scala")
-    val bookPropertyMatchersTarget = new File(targetDir, bookPropertyMatchersSource.getName)
-    copyFile(bookPropertyMatchersSource, bookPropertyMatchersTarget)
-
-    val emptyMocksSource = new File("src/test/scala/org/scalatest/EmptyMocks.scala")
-    val emptyMocksTarget = new File(targetDir, emptyMocksSource.getName)
-    copyFile(emptyMocksSource, emptyMocksTarget)
-
-    val returnsNormallyThrowsAssertionSource = new File("src/test/scala/org/scalatest/ReturnsNormallyThrowsAssertion.scala")
-    val returnsNormallyThrowsAssertionTarget = new File(targetDir, returnsNormallyThrowsAssertionSource.getName)
-    copyFile(returnsNormallyThrowsAssertionSource, returnsNormallyThrowsAssertionTarget)
-
-    val operatorNamesSource = new File("src/test/scala/org/scalatest/OperatorNames.scala")
-    val operatorNamesTarget = new File(targetDir, operatorNamesSource.getName)
-    copyFile(operatorNamesSource, operatorNamesTarget)
-
-    val fileMocksSource = new File("src/test/scala/org/scalatest/FileMocks.scala")
-    val fileMocksTarget = new File(targetDir, fileMocksSource.getName)
-    copyFile(fileMocksSource, fileMocksTarget)
-
-    val stubReporterSource = new File("src/test/scala/org/scalatest/StubReporter.scala")
-    val stubReporterTarget = new File(targetDir, stubReporterSource.getName)
-    copyFile(stubReporterSource, stubReporterTarget)
-
-    val mytagsSource = new File("src/test/scala/org/scalatest/mytags.scala")
-    val mytagsTarget = new File(targetDir, mytagsSource.getName)
-    copyFile(mytagsSource, mytagsTarget)
-
-    val pathExampleLikeSpecsSource = new File("src/test/scala/org/scalatest/path/ExampleLikeSpecs.scala")
-    val pathExampleLikeSpecsTarget = new File(targetDir, pathExampleLikeSpecsSource.getName)
-    copyFile(pathExampleLikeSpecsSource, pathExampleLikeSpecsTarget)
-
+  def genTest(targetDir: File, version: String, scalaVersion: String): Unit = {
+    fileList.foreach { filePath =>
+      copyFile(targetDir, filePath)
+    }
   }
 
   def main(args: Array[String]) {
