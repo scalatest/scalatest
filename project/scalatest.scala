@@ -356,12 +356,20 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
-  lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
+  lazy val genMustMatchersTests1 = Project("genMustMatchersTests1", file("gentests/MustMatchers1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers1", "GenMustMatchersTests.scala")(GenMustMatchersTests1.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genMustMatchersTests2 = Project("genMustMatchersTests2", file("gentests/MustMatchers2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers2", "GenMustMatchersTests.scala")(GenMustMatchersTests2.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
@@ -445,7 +453,7 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val gentests = Project("gentests", file("gentests"))
-    .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
+    .aggregate(genMustMatchersTests1, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
                genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
@@ -500,14 +508,16 @@ object ScalatestBuild extends Build {
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
   val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+    println("###projName: " + projName)
     projName match {
       case "scalatest" =>
         GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
-      case "gentests" =>
-        GenMatchers.genTest(new File(testTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
+      case "genMustMatchersTests1" =>
+        GenMustMatchersTests1.genTest(new File(testTargetDir, "scala/genmatchers1"), theVersion, theScalaVersion)
+      case "genMustMatchersTests2" =>
+        GenMustMatchersTests2.genTest(new File(testTargetDir, "scala/genmatchers2"), theVersion, theScalaVersion)
     }
   }
-  
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
   val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     projName match {
