@@ -17,7 +17,7 @@
 import java.io.File
 import scala.annotation.tailrec
 
-object GenInspectorsShorthands {
+trait GenInspectorsShorthandsBase {
 
   import Generator._
   import GenInspectors._
@@ -54,12 +54,12 @@ object GenInspectorsShorthands {
   }
 
   class DynamicFirstElementGetKeyTemplate(colType: String, colText: String, errorFun: String, errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template) extends
-    ErrorDetailTemplate("\" + " + errorFun + "(xs, " + errorValue + ")." + (if (colText.contains("java")) "getKey" else "_1") + " + \"", fileName, lineNumber, messageTemplate) {
+  ErrorDetailTemplate("\" + " + errorFun + "(xs, " + errorValue + ")." + (if (colText.contains("java")) "getKey" else "_1") + " + \"", fileName, lineNumber, messageTemplate) {
     override val at: String = "key"
   }
 
   class DynamicNextIndexErrorDetailTemplate(errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template, messageValuesFunName: String, useIndex: Boolean) extends
-    DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")", useIndex)
+  DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")", useIndex)
 
   class DynamicNextElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
@@ -91,15 +91,15 @@ object GenInspectorsShorthands {
                                                          fileName: String, colType: String, errorFun: String,
                                                          errorValue: String, causeErrMsg: String, xsText: String,
                                                          useIndex: Boolean
-                                                       ) extends Template {
+                                                         ) extends Template {
 
     val causeErrorMessage = new SimpleMessageTemplate(causeErrMsg)
     val errorMessage = new ForAllErrMsgTemplate("'all' inspection",
-                                                 if (useIndex)
-                                                   new DynamicFirstIndexErrorDetailTemplate(colType, getErrorMessageValuesFunName(colType, errorFun), errorValue, fileName, "assertLineNumber", causeErrorMessage)
-                                                 else
-                                                   new DynamicFirstElementGetKeyTemplate(colType, colText, errorFun, errorValue, fileName, "assertLineNumber", causeErrorMessage)
-                                               )
+      if (useIndex)
+        new DynamicFirstIndexErrorDetailTemplate(colType, getErrorMessageValuesFunName(colType, errorFun), errorValue, fileName, "assertLineNumber", causeErrorMessage)
+      else
+        new DynamicFirstElementGetKeyTemplate(colType, colText, errorFun, errorValue, fileName, "assertLineNumber", causeErrorMessage)
+    )
     val testName = colText + " should throw TestFailedException with correct stack depth and message when " + condition
 
     override def toString =
@@ -199,7 +199,7 @@ object GenInspectorsShorthands {
     val keyIndexFun =
       if (useIndex)
         "getIndex(xs, getFirst" + getErrorMessageValuesFunName(colType, okFun) + "(xs, " + errorValue + "))"
-       else
+      else
         "getFirst" + getErrorMessageValuesFunName(colType, okFun) + "(xs, " + errorValue + ")." + (if (colText.contains("java")) "getKey" else "_1")
     val errorMessage = new ForNoErrMsgTemplate("'no' inspection", "\" + " + keyIndexFun + " + \"", useIndex)
 
@@ -368,7 +368,7 @@ object GenInspectorsShorthands {
   // Helper methods
 
   @tailrec
-  def buildList[T](size: Int, element: T, list: List[T] = List.empty[T]): List[T] =
+  private def buildList[T](size: Int, element: T, list: List[T] = List.empty[T]): List[T] =
     if (list.size < size) {
       buildList(size, element, element :: list)
     }
@@ -811,45 +811,45 @@ object GenInspectorsShorthands {
 
   def filterJavaColLength(colText: String, condition: String): Boolean =
     !(colText.contains("javaHashSet") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaHashSet") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaTreeSet") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaTreeSet") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaLinkedHashSet") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaLinkedHashSet") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaArrayDeque") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaArrayDeque") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaPriorityQueue") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaPriorityQueue") && condition == "'java collection should not have length' failed") &&
-    !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should have length' failed") &&
-    !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should not have length' failed")
+      !(colText.contains("javaHashSet") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaTreeSet") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaTreeSet") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaLinkedHashSet") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaLinkedHashSet") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaArrayDeque") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaArrayDeque") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaPriorityQueue") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaPriorityQueue") && condition == "'java collection should not have length' failed") &&
+      !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should have length' failed") &&
+      !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should not have length' failed")
 
   def filterJavaMapLength(colText: String, condition: String): Boolean =
     !(colText.contains("javaHashMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaHashMap") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaTreeMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaTreeMap") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaHashtable") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaHashtable") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaConcurrentHashMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaConcurrentHashMap") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaLinkedHashMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaLinkedHashMap") && condition == "'java map should not have length' failed") &&
-    !(colText.contains("javaWeakHashMap") && condition == "'java map should have length' failed") &&
-    !(colText.contains("javaWeakHashMap") && condition == "'java map should not have length' failed")
+      !(colText.contains("javaHashMap") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaTreeMap") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaTreeMap") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaHashtable") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaHashtable") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaConcurrentHashMap") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaConcurrentHashMap") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaLinkedHashMap") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaLinkedHashMap") && condition == "'java map should not have length' failed") &&
+      !(colText.contains("javaWeakHashMap") && condition == "'java map should have length' failed") &&
+      !(colText.contains("javaWeakHashMap") && condition == "'java map should not have length' failed")
 
   def filterArraySymbol(colText: String, condition: String): Boolean =
     !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
@@ -1294,8 +1294,8 @@ object GenInspectorsShorthands {
             val errorAssertFun = getJavaMapFun(errorFun, right)
             import collection.JavaConversions._
             val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                       Map("b" -> "boom!"),
-                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("b" -> "boom!"),
+              Map("h" -> "hello!")).filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -1533,8 +1533,8 @@ object GenInspectorsShorthands {
             val errorAssertFun = getJavaMapFun(errorFun, right)
             import collection.JavaConversions._
             val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                       Map("b" -> "boom!"),
-                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("b" -> "boom!"),
+              Map("h" -> "hello!")).filter(errorAssertFun).length
             (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -1772,8 +1772,8 @@ object GenInspectorsShorthands {
             val errorAssertFun = getJavaMapFun(errorFun, right)
             import collection.JavaConversions._
             val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                       Map("b" -> "boom!"),
-                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("b" -> "boom!"),
+              Map("h" -> "hello!")).filter(errorAssertFun).length
             (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -2366,8 +2366,8 @@ object GenInspectorsShorthands {
     val stringTypes =
       stdStringTypes(simpleMessageFun, '3', "indexElement", true, true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-        condition != "'should be' failed" &&
-        condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+          condition != "'should be' failed" &&
+          condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
       }
 
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5"))
@@ -2549,21 +2549,25 @@ object GenInspectorsShorthands {
     targetDir
   }
 
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String)
+
+}
+
+object GenInspectorsShorthands1 extends GenInspectorsShorthandsBase {
+
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"))
     genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"))
     genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"))
     genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"))
+  }
+}
+
+object GenInspectorsShorthands2 extends GenInspectorsShorthandsBase {
+
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"))
     genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"))
     genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"))
   }
-
-  def main(args: Array[String]) {
-    val targetBaseDir = args(0)
-    val version = args(1)
-    val scalaVersion = args(2)
-    genTest(new File(targetBaseDir), version, scalaVersion)
-  }
-
 }

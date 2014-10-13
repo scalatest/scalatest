@@ -396,12 +396,20 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
-  lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
+  lazy val genInspectorsShorthandsTests1 = Project("genInspectorsShorthandsTests1", file("gentests/GenInspectorsShorthands1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genInspectorsShorthandsTask,
+      genInspectorsShorthandsTask1,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands1", "GenInspectorsShorthands.scala")(GenInspectorsShorthands1.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genInspectorsShorthandsTests2 = Project("genInspectorsShorthandsTests2", file("gentests/GenInspectorsShorthands2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genInspectorsShorthandsTask2,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands2", "GenInspectorsShorthands.scala")(GenInspectorsShorthands2.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
@@ -453,8 +461,8 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val gentests = Project("gentests", file("gentests"))
-    .aggregate(genMustMatchersTests1, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
-               genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
+    .aggregate(genMustMatchersTests1, genMustMatchersTests2, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
@@ -548,9 +556,14 @@ object ScalatestBuild extends Build {
     GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), theVersion, theScalaVersion)
   }
 
-  val genInspectorsShorthands = TaskKey[Unit]("geninspectorsshorthands", "Generate Inspectors Shorthands tests")
-  val genInspectorsShorthandsTask = genInspectorsShorthands <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
-    GenInspectorsShorthands.genTest(new File(testTargetDir, "scala/geninspectorsshorthands"), theVersion, theScalaVersion)
+  val genInspectorsShorthands1 = TaskKey[Unit]("geninspectorsshorthands1", "Generate Inspectors Shorthands tests 1")
+  val genInspectorsShorthandsTask1 = genInspectorsShorthands1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+    GenInspectorsShorthands1.genTest(new File(testTargetDir, "scala/geninspectorsshorthands1"), theVersion, theScalaVersion)
+  }
+
+  val genInspectorsShorthands2 = TaskKey[Unit]("geninspectorsshorthands2", "Generate Inspectors Shorthands tests 2")
+  val genInspectorsShorthandsTask2 = genInspectorsShorthands2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+    GenInspectorsShorthands2.genTest(new File(testTargetDir, "scala/geninspectorsshorthands2"), theVersion, theScalaVersion)
   }
   
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
