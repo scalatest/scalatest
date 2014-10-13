@@ -22,11 +22,13 @@ env:
     - MODE=RegularTests4
     - MODE=RegularTests5
     - MODE=ScalacticTests
-    - MODE=genMustMatchersTests
+    - MODE=genMustMatchersTests1
+    - MODE=genMustMatchersTests2
     - MODE=genGenTests
     - MODE=genTablesTests
     - MODE=genInspectorsTests
-    - MODE=genInspectorsShorthandsTests
+    - MODE=genInspectorsShorthandsTests1
+    - MODE=genInspectorsShorthandsTests2
     - MODE=genTheyTests
     - MODE=genContainTests1
     - MODE=genContainTests2
