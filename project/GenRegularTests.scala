@@ -23,7 +23,7 @@ object GenRegularTests1 extends GenRegularTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
     (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode % 4 == 0)
+    (file.getName.hashCode.abs % 4 == 0)
 
   val baseDirPath: String = "src/test/scala/org/scalatest"
   val name: String = "genregular1"
@@ -34,7 +34,7 @@ object GenRegularTests2 extends GenRegularTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
     (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode % 3 == 1)
+    (file.getName.hashCode.abs % 3 == 1)
 
   val baseDirPath: String = "src/test/scala/org/scalatest"
   val name: String = "genregular2"
@@ -45,7 +45,7 @@ object GenRegularTests3 extends GenRegularTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
     (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode % 3 == 2)
+    (file.getName.hashCode.abs % 3 == 2)
 
   val baseDirPath: String = "src/test/scala/org/scalatest"
   val name: String = "genregular3"
@@ -56,7 +56,7 @@ object GenRegularTests4 extends GenRegularTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
     !(file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode % 2 == 0)
+    (file.getName.hashCode.abs % 2 == 0)
 
   val baseDirPath: String = "src/test/scala/org/scalatest"
   val name: String = "genregular4"
@@ -105,7 +105,7 @@ object GenRegularTests5 extends GenRegularTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
       !(file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-      (file.getName.hashCode % 2 == 1)
+      (file.getName.hashCode % 2.abs == 1)
 
   val baseDirPath: String = "src/test/scala/org/scalatest"
   val name: String = "genregular5"
