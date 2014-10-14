@@ -20,12 +20,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with OneInstancePerTest { thisSuite =>
 
-  def executionContext: ExecutionContext
+  implicit def executionContext: ExecutionContext
 
   override protected def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
     () => {
       val futureUnit = testFun
-      implicit val ctx = executionContext
       FutureOutcome(
         futureUnit.map(u => Succeeded).recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
@@ -50,7 +49,6 @@ trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with OneInsta
       def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
         val theConfigMap = args.configMap
         val testData = testDataFor(testName, theConfigMap)
-        implicit val ctx = executionContext
         FutureOutcome(
           withAsyncFixture(
             new NoArgAsyncTest {
