@@ -15,16 +15,18 @@
  */
 package org.scalatest.fixture
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with org.scalatest.OneInstancePerTest {
+trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with org.scalatest.OneInstancePerTest { thisSuite =>
+
+  def executionContext: ExecutionContext
 
   override protected def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
-  //override protected def transformToOutcome(testFun: FixtureParam => Future[Unit]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
+      implicit val ctx = executionContext
       FutureOutcome(
         futureUnit.map(u => Succeeded).recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
@@ -34,5 +36,41 @@ trait AsyncFunSpecLike extends AsyncFunSpecRegistration with AsyncTests with org
         }
       )
     }
+
+  import engine._
+
+  protected override def runTest(testName: String, args: Args): Status = {
+
+    if (args.runTestInNewInstance) {
+      // In initial instance, so create a new test-specific instance for this test and invoke run on it.
+      val oneInstance = newInstance
+      oneInstance.run(Some(testName), args)
+    }
+    else {
+      // Therefore, in test-specific instance, so run the test.
+      def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+        val theConfigMap = args.configMap
+        val testData = testDataFor(testName, theConfigMap)
+        implicit val ctx = executionContext
+        FutureOutcome(
+          withAsyncFixture(
+            new OneArgAsyncTest {
+              val name = testData.name
+
+              def apply(fixture: FixtureParam): Future[Outcome] =
+                theTest.testFun(fixture).toFutureOutcome
+
+              val configMap = testData.configMap
+              val scopes = testData.scopes
+              val text = testData.text
+              val tags = testData.tags
+            }
+          )
+        )
+      }
+
+      runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    }
+  }
 
 }

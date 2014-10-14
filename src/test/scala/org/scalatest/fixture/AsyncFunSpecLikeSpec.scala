@@ -15,7 +15,7 @@
  */
 package org.scalatest.fixture
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 
@@ -26,6 +26,8 @@ class AsyncFunSpecLikeSpec extends org.scalatest.FunSpec {
     it("can be used for tests that return Future") {
 
       class ExampleSpec extends AsyncFunSpecLike {
+
+        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -86,6 +88,8 @@ class AsyncFunSpecLikeSpec extends org.scalatest.FunSpec {
     it("can be used for tests that did not return Future") {
 
       class ExampleSpec extends AsyncFunSpecLike {
+
+        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

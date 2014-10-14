@@ -16,7 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
 class AsyncFunSpecSpec extends FunSpec {
 
@@ -25,6 +25,8 @@ class AsyncFunSpecSpec extends FunSpec {
     it("can be used for tests that return Future") {
 
       class ExampleSpec extends AsyncFunSpec {
+
+        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -81,6 +83,8 @@ class AsyncFunSpecSpec extends FunSpec {
     it("can be used for tests that did not return Future") {
 
       class ExampleSpec extends AsyncFunSpec {
+
+        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
 
         val a = 1
 
