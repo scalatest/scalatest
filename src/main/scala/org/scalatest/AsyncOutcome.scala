@@ -12,7 +12,7 @@ trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
   def toOutcome: Outcome // may block
-  def toFutureOutcome(implicit ctx: ExecutionContext): Future[Outcome]
+  def toFutureOutcome: Future[Outcome]
 }
 
 case class PastOutcome(past: Outcome) extends AsyncOutcome {
@@ -25,7 +25,7 @@ case class PastOutcome(past: Outcome) extends AsyncOutcome {
       case _ => SucceededStatus
     }
   def toOutcome: Outcome = past
-  def toFutureOutcome(implicit ctx: ExecutionContext): Future[Outcome] = Future { past }
+  def toFutureOutcome: Future[Outcome] = Future.successful(past)
 }
 
 case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
@@ -62,5 +62,5 @@ case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext
   }
   def toStatus: Status = status
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
-  def toFutureOutcome(implicit ctx: ExecutionContext): Future[Outcome] = future
+  def toFutureOutcome: Future[Outcome] = future
 }
