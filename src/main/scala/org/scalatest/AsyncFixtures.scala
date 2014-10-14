@@ -23,8 +23,6 @@ trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
     throw new NotAllowedException(FailureMessages("withFixtureNotAllowedInAsyncFixtures"), getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }
 
-  implicit def defaultExecutionContext: ExecutionContext = ExecutionContext.Implicits.global
-
   /**
    * A test function taking no arguments and returning an <code>Future[Outcome]</code>.
    *

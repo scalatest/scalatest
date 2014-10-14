@@ -22,5 +22,5 @@ trait AsyncTests extends SuiteMixin with AsyncFixtures { this: Suite with TestRe
 
   import scala.language.implicitConversions
 
-  implicit def convertToFuture(o: Any): Future[Unit] = Future { o }
+  implicit def convertToFuture(o: Any): Future[Unit] = Future.successful(o)
 }
