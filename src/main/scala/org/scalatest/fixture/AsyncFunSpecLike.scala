@@ -23,7 +23,7 @@ trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with org.scal
 
   implicit def executionContext: ExecutionContext
 
-  override protected def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
+  override private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
       FutureOutcome(

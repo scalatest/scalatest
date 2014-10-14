@@ -33,7 +33,7 @@ trait TestRegistration { theSuite: Suite =>
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  protected def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
+  private[scalatest] def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
     () =>
       PastOutcome {
         outcomeOf { testFun }

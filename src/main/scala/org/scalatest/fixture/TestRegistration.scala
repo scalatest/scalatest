@@ -31,7 +31,7 @@ trait TestRegistration { theSuite: Suite =>
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  protected def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome = {
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome = {
     Transformer(testFun)
     // The following does not work, why??
     /*(fixture: FixtureParam) => {
