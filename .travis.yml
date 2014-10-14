@@ -24,6 +24,8 @@ env:
     - MODE=ScalacticTests
     - MODE=genMustMatchersTests1
     - MODE=genMustMatchersTests2
+    - MODE=genMustMatchersTests3
+    - MODE=genMustMatchersTests4
     - MODE=genGenTests
     - MODE=genTablesTests
     - MODE=genInspectorsTests

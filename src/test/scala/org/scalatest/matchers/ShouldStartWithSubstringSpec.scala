@@ -22,11 +22,11 @@ import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 
-class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStartWithSubstringSpec extends FunSpec with ShouldMatchers with Checkers with ReturnsNormallyThrowsAssertion {
 
-  object `The startWith substring syntax` {
+  describe("The startWith substring syntax") {
 
-    def `should do nothing if the string starts with the specified substring` {
+    it("should do nothing if the string starts with the specified substring") {
 
       "1.78" should startWith ("1.7")
       "21.7" should startWith ("2")
@@ -34,7 +34,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String, t: String) => returnsNormally(s + t should startWith (s)))
     }
 
-    def `should do nothing if the string does not start with the specified substring when used with not` {
+    it("should do nothing if the string does not start with the specified substring when used with not") {
 
       "eight" should not { startWith ("1.7") }
       "eight" should not startWith ("1.7")
@@ -42,7 +42,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String, t: String) => (s + t).indexOf(t) != 0 ==> returnsNormally(s + t should not startWith (t)))
     }
 
-    def `should do nothing if the string does not start with the specified substring when used in a logical-and expression` {
+    it("should do nothing if the string does not start with the specified substring when used in a logical-and expression") {
 
       "1.7b" should (startWith ("1.7") and (startWith ("1.7b")))
       "1.7b" should ((startWith ("1.7")) and (startWith ("1.7b")))
@@ -51,7 +51,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String, t: String) => returnsNormally(s + t should (startWith (s) and startWith (s))))
     }
 
-    def `should do nothing if the string does not start with the specified substring when used in a logical-or expression` {
+    it("should do nothing if the string does not start with the specified substring when used in a logical-or expression") {
 
       "1.7" should (startWith ("hello") or (startWith ("1")))
       "1.7" should ((startWith ("hello")) or (startWith ("1")))
@@ -64,21 +64,21 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String, t: String) => returnsNormally(s + t should (startWith ("hi") or startWith (s))))
     }
 
-    def `should do nothing if the string does not start with the specified substring when used in a logical-and expression with not` {
+    it("should do nothing if the string does not start with the specified substring when used in a logical-and expression with not") {
       "fred" should (not (startWith ("red")) and not (startWith ("1.7")))
       "fred" should ((not startWith ("red")) and (not startWith ("1.7")))
       "fred" should (not startWith ("red") and not startWith ("1.7"))
       check((s: String) => s.indexOf("bob") != 0 && s.indexOf("1.7") != 0 ==> returnsNormally(s should (not startWith ("bob") and not startWith ("1.7"))))
     }
 
-    def `should do nothing if the string does not start with the specified substring when used in a logical-or expression with not` {
+    it("should do nothing if the string does not start with the specified substring when used in a logical-or expression with not") {
       "fred" should (not (startWith ("fred")) or not (startWith ("1.7")))
       "fred" should ((not startWith ("fred")) or (not startWith ("1.7")))
       "fred" should (not startWith ("fred") or not startWith ("1.7"))
       check((s: String) => s.indexOf("a") != 0 || s.indexOf("b") != 0 ==> returnsNormally(s should (not startWith ("a") or not startWith ("b"))))
     }
 
-    def `should throw TestFailedException if the string does not match substring specified as a string` {
+    it("should throw TestFailedException if the string does not match substring specified as a string") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should startWith ("1.78")
@@ -118,7 +118,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String) => s.indexOf("1.7") == -1 ==> throwsTestFailedException(s should startWith ("1.7")))
     }
 
-    def `should throw TestFailedException if the string does matches substring specified as a string when used with not` {
+    it("should throw TestFailedException if the string does matches substring specified as a string when used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should not { startWith ("1.7") }
@@ -183,7 +183,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String) => s.length != 0 ==> throwsTestFailedException(s should not startWith (s.substring(0, 1))))
     }
 
-    def `should throw TestFailedException if the string starts with the specified substring when used in a logical-and expression` {
+    it("should throw TestFailedException if the string starts with the specified substring when used in a logical-and expression") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (startWith ("1.7") and (startWith ("1.8")))
@@ -219,7 +219,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       check((s: String, t: String, u: String) => (s + u).indexOf(t) != 0 ==> throwsTestFailedException(s + u should (startWith (s) and startWith (t))))
     }
 
-    def `should throw TestFailedException if the string starts with the specified substring when used in a logical-or expression` {
+    it("should throw TestFailedException if the string starts with the specified substring when used in a logical-or expression") {
 
       val caught1 = intercept[TestFailedException] {
         "one.seven" should (startWith ("1.7") or (startWith ("1.8")))
@@ -244,7 +244,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       )
     }
 
-    def `should throw TestFailedException if the string starts with the specified substring when used in a logical-and expression used with not` {
+    it("should throw TestFailedException if the string starts with the specified substring when used in a logical-and expression used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (not startWith ("1.8") and (not startWith ("1.7")))
@@ -283,7 +283,7 @@ class ShouldStartWithSubstringSpec extends Spec with ShouldMatchers with Checker
       )
     }
 
-    def `should throw TestFailedException if the string starts with the specified substring when used in a logical-or expression used with not` {
+    it("should throw TestFailedException if the string starts with the specified substring when used in a logical-or expression used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (not startWith ("1.7") or (not startWith ("1.7")))

@@ -144,6 +144,30 @@ if [[ $MODE = 'genMustMatchersTests2' ]] ; then
   exit $rc
 fi
 
+if [[ $MODE = 'genMustMatchersTests3' ]] ; then
+  echo "Doing 'sbt genMustMatchersTests3/test'"
+  export JVM_OPTS="-server -Xms2G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests3/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'genMustMatchersTests4' ]] ; then
+  echo "Doing 'sbt genMustMatchersTests4/test'"
+  export JVM_OPTS="-server -Xms2G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION compile
+  sbt ++$TRAVIS_SCALA_VERSION genMustMatchersTests4/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
 if [[ $MODE = 'genGenTests' ]] ; then
   echo "Doing 'sbt genGenTests/test'"
   export JVM_OPTS="-server -Xms1G -Xmx2G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"

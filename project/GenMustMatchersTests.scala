@@ -95,7 +95,7 @@ object GenMustMatchersTests1 extends GenMustMatchersTestsBase {
   def includeFile(file: File): Boolean =
     file.isFile &&
     (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode.abs % 2 == 0)
+    (file.getName.hashCode.abs % 4 == 0)
 
 }
 
@@ -104,7 +104,27 @@ object GenMustMatchersTests2 extends GenMustMatchersTestsBase {
   def includeFile(file: File): Boolean = {
     file.isFile &&
     (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
-    (file.getName.hashCode.abs % 2 == 1)
+    (file.getName.hashCode.abs % 4 == 1)
+  }
+
+}
+
+object GenMustMatchersTests3 extends GenMustMatchersTestsBase {
+
+  def includeFile(file: File): Boolean = {
+    file.isFile &&
+      (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
+      (file.getName.hashCode.abs % 4 == 2)
+  }
+
+}
+
+object GenMustMatchersTests4 extends GenMustMatchersTestsBase {
+
+  def includeFile(file: File): Boolean = {
+    file.isFile &&
+      (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould")) &&
+      (file.getName.hashCode.abs % 4 == 3)
   }
 
 }

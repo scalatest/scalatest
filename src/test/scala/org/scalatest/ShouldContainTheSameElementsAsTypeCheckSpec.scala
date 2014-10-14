@@ -20,14 +20,14 @@ import FailureMessages._
 import Matchers._
 import org.scalactic.CheckedEquality
 
-class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEquality {
+class ShouldContainTheSameElementsAsTypeCheckSpec extends FunSpec with CheckedEquality {
 
   // Checking for a specific size
-  object `The 'contain oneOf (1, <element>)' syntax` {
+  describe("The 'contain oneOf (1, <element>)' syntax") {
 
-    object `should give a type error if the types are not compatible` {
+    describe("should give a type error if the types are not compatible") {
 
-      def `on Array` {
+      it("on Array") {
 
         """Array(1, 2) should contain oneOf ("1", "2")""" shouldNot typeCheck
         """Array(1, 2) should (contain oneOf ("1", "2"))""" shouldNot typeCheck
@@ -64,7 +64,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """Array(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
 /*
-      def `on scala.collection.immutable.Set` {
+      it("on scala.collection.immutable.Set") {
 
         """Set(1, 2) should contain oneOf ("1", "2")""" shouldNot typeCheck
         """Set(1, 2) should (contain oneOf ("1", "2"))""" shouldNot typeCheck
@@ -100,7 +100,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """Set(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """Set(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on scala.collection.mutable.Set` {
+      it("on scala.collection.mutable.Set") {
 
         import scala.collection.mutable
 
@@ -138,7 +138,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """mutable.Set(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """mutable.Set(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on scala.collection.Set` {
+      it("on scala.collection.Set") {
 
         val set: scala.collection.Set[Int] = Set(1, 2)
 
@@ -176,7 +176,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """set should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """set should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on scala.collection.immutable.HashSet` {
+      it("on scala.collection.immutable.HashSet") {
 
         import scala.collection.immutable.HashSet
 
@@ -214,7 +214,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """HashSet(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """HashSet(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on scala.collection.mutable.HashSet` {
+      it("on scala.collection.mutable.HashSet") {
 
         import scala.collection.mutable
 
@@ -252,7 +252,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """mutable.HashSet(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """mutable.HashSet(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on List` {
+      it("on List") {
 
         """List(1, 2) should contain oneOf ("1", "2")""" shouldNot typeCheck
         """List(1, 2) should (contain oneOf ("1", "2"))""" shouldNot typeCheck
@@ -288,7 +288,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """List(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """List(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on Vector` {
+      it("on Vector") {
 
         """Vector(1, 2) should contain oneOf ("1", "2")""" shouldNot typeCheck
         """Vector(1, 2) should (contain oneOf ("1", "2"))""" shouldNot typeCheck
@@ -324,7 +324,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """Vector(1, 2) should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """Vector(1, 2) should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on java.util.List` {
+      it("on java.util.List") {
 
         val javaList: java.util.List[Int] = new java.util.ArrayList
         javaList.add(1)
@@ -364,7 +364,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """javaList should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """javaList should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on scala.collection.immutable.Map ` {
+      it("on scala.collection.immutable.Map ") {
 
         """Map("one" -> 1, "two" -> 2) should contain oneOf (1 -> 1, 2 -> 2)""" shouldNot typeCheck
         """Map("one" -> 1, "two" -> 2) should (contain oneOf (1 -> 1, 2 -> 2))""" shouldNot typeCheck
@@ -408,7 +408,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """Map("one" -> 1, "two" -> 2) should ((not contain oneOf ("1" -> 1, "two" -> 2)) or (not contain oneOf ("1" -> "1", "three" -> "three")))""" shouldNot typeCheck
         """Map("one" -> 1, "two" -> 2) should (not contain oneOf ("1" -> 1, "two" -> 2) or not contain oneOf ("1" -> "1", "three" -> "three"))""" shouldNot typeCheck
       }
-      def `on scala.collection.mutable.Map ` {
+      it("on scala.collection.mutable.Map ") {
 
         import scala.collection.mutable
 
@@ -454,7 +454,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """mutable.Map("one" -> 1, "two" -> 2) should ((not contain oneOf ("1" -> 1, "two" -> 2)) or (not contain oneOf ("1" -> "1", "three" -> "three")))""" shouldNot typeCheck
         """mutable.Map("one" -> 1, "two" -> 2) should (not contain oneOf ("1" -> 1, "two" -> 2) or not contain oneOf ("1" -> "1", "three" -> "three"))""" shouldNot typeCheck
       }
-      def `on scala.collection.Map ` {
+      it("on scala.collection.Map ") {
 
         val map: scala.collection.Map[String, Int] = Map("one" -> 1, "two" -> 2)
 
@@ -500,7 +500,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """map("one" -> 1, "two" -> 2) should ((not contain oneOf ("1" -> 1, "two" -> 2)) or (not contain oneOf ("1" -> "1", "three" -> "three")))""" shouldNot typeCheck
         """map("one" -> 1, "two" -> 2) should (not contain oneOf ("1" -> 1, "two" -> 2) or not contain oneOf ("1" -> "1", "three" -> "three"))""" shouldNot typeCheck
       }
-      def `on scala.collection.immutable.HashMap ` {
+      it("on scala.collection.immutable.HashMap ") {
 
         import scala.collection.immutable.HashMap
 
@@ -546,7 +546,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """HashMap("one" -> 1, "two" -> 2) should ((not contain oneOf ("1" -> 1, "two" -> 2)) or (not contain oneOf ("1" -> "1", "three" -> "three")))""" shouldNot typeCheck
         """HashMap("one" -> 1, "two" -> 2) should (not contain oneOf ("1" -> 1, "two" -> 2) or not contain oneOf ("1" -> "1", "three" -> "three"))""" shouldNot typeCheck
       }
-      def `on scala.collection.mutable.HashMap ` {
+      it("on scala.collection.mutable.HashMap ") {
 
         import scala.collection.mutable
 
@@ -592,7 +592,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """mutable.HashMap("one" -> 1, "two" -> 2) should ((not contain oneOf ("1" -> 1, "two" -> 2)) or (not contain oneOf ("1" -> "1", "three" -> "three")))""" shouldNot typeCheck
         """mutable.HashMap("one" -> 1, "two" -> 2) should (not contain oneOf ("1" -> 1, "two" -> 2) or not contain oneOf ("1" -> "1", "three" -> "three"))""" shouldNot typeCheck
       }
-      def `on java.util.Set` {
+      it("on java.util.Set") {
 
         val javaSet: java.util.Set[Int] = new java.util.HashSet
         javaSet.add(1)
@@ -632,7 +632,7 @@ class ShouldContainTheSameElementsAsTypeCheckSpec extends Spec with CheckedEqual
         """javaSet should (not contain oneOf (1, 3) or not contain oneOf ("1", "2"))""" shouldNot typeCheck
         """javaSet should (not contain oneOf (1, 5) and not contain oneOf ("1", "3"))""" shouldNot typeCheck
       }
-      def `on java.util.Map` {
+      it("on java.util.Map") {
 
         val javaMap: java.util.Map[String, Int] = new java.util.HashMap
         javaMap.put("one",1)
