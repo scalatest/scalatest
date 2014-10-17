@@ -7246,90 +7246,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory2 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_]](rightMatcherFactory3: MatcherFactory3[T, TYPECLASS1, TYPECLASS2, TYPECLASS3])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory3.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory3 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_]](rightMatcherFactory4: MatcherFactory4[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory4.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory4 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_]](rightMatcherFactory5: MatcherFactory5[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory5.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory5 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_]](rightMatcherFactory6: MatcherFactory6[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory6.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory6 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_]](rightMatcherFactory7: MatcherFactory7[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory7.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory7 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_]](rightMatcherFactory8: MatcherFactory8[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory8.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot (aMatcherFactory8 and have length 3)
-     *        ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory9.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * result shouldNot have length (3)
      *        ^
      * result shouldNot have size (3)
@@ -7997,6 +7913,90 @@ private[scalatest] trait LowPriorityShouldMethods { thisMatchers: Matchers =>
      */
     def should[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory9.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory2 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_]](rightMatcherFactory3: MatcherFactory3[T, TYPECLASS1, TYPECLASS2, TYPECLASS3])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory3.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory3 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_]](rightMatcherFactory4: MatcherFactory4[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory4.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory4 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_]](rightMatcherFactory5: MatcherFactory5[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory5.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory5 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_]](rightMatcherFactory6: MatcherFactory6[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory6.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory6 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_]](rightMatcherFactory7: MatcherFactory7[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory7.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory7 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_]](rightMatcherFactory8: MatcherFactory8[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory8.matcher)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (aMatcherFactory8 and have length 3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory9.matcher)
     }
   }
 
