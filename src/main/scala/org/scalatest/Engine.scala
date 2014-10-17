@@ -312,9 +312,28 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
         case _: exceptions.TestPendingException => PastOutcome(Pending)
         case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
+        case ex: Throwable =>
+          val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
+          if (shouldBeInformerForThisTest ne informerForThisTest)
+            throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+
+          val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
+          if (shouldBeNotifierForThisTest ne updaterForThisTest)
+            throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
+
+          val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
+          if (shouldBeAlerterForThisTest ne alerterForThisTest)
+            throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+
+          val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
+          if (shouldBeDocumenterForThisTest ne documenterForThisTest)
+            throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+
+          throw ex
+
       }
 
-    asyncOutcome.onComplete { trial => 
+    asyncOutcome.onComplete { trial =>
 
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
       if (shouldBeInformerForThisTest ne informerForThisTest)
@@ -560,10 +579,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
     atomicDocumenter.set(documenterForThisSuite)
 
-    try {
-      superRun(testName, args.copy(reporter = report))
-    }
-    finally {
+    val status = superRun(testName, args.copy(reporter = report))
+    status.whenCompleted { r =>
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
         throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
@@ -580,6 +597,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
         throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
     }
+
+    status
   }
 
   /*

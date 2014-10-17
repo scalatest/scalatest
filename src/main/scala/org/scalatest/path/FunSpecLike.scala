@@ -502,8 +502,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
 
     ensureTestResultsRegistered(thisSuite)
     
-    def dontInvokeWithFixture(theTest: TestLeaf): Outcome = {
-      theTest.testFun()
+    def dontInvokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
+      PastOutcome(theTest.testFun().toOutcome)
     }
 
     runTestImpl(thisSuite, testName, args, true, dontInvokeWithFixture)

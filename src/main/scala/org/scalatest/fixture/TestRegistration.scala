@@ -15,7 +15,8 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.Tag
+import org.scalatest.OutcomeOf._
+import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
 
 trait TestRegistration { theSuite: Suite =>
 
@@ -23,6 +24,24 @@ trait TestRegistration { theSuite: Suite =>
    * The return type of the registered test.
    */
   type Registration
+
+  /**
+   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
+   *
+   * @param testFun test function
+   * @return function that returns `AsyncOutcome`
+   */
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome = {
+    Transformer(testFun)
+    // The following does not work, why??
+    /*(fixture: FixtureParam) => {
+      PastOutcome {
+        outcomeOf {
+          testFun(fixture)
+        }
+      }
+    }*/
+  }
 
   /**
    * Register a test.

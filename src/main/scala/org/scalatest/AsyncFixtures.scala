@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.concurrent
+package org.scalatest
 
-import org.scalatest._
-import exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper._
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
   final override def withFixture(test: NoArgTest): Outcome = {
     throw new NotAllowedException(FailureMessages("withFixtureNotAllowedInAsyncFixtures"), getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }
-  // This NoArgAsyncTest is more involved. Needs to extend TestData for one. Not sure what else.
-  trait NoArgAsyncTest extends (() => Future[Outcome])
+
+  /**
+   * A test function taking no arguments and returning an <code>Future[Outcome]</code>.
+   *
+   * <p>
+   * For more detail and examples, see the relevant section in the
+   * <a href="FlatSpec.html#withFixtureNoArgTest">documentation for trait <code>fixture.FlatSpec</code></a>.
+   * </p>
+   */
+  trait NoArgAsyncTest extends (() => Future[Outcome]) with TestData {
+    /**
+     * Runs the body of the test, returning an <code>Future[Outcome]</code>.
+     */
+    def apply(): Future[Outcome]
+  }
+
   def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
     test()
   }
