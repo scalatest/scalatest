@@ -5876,139 +5876,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory2 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_]](rightMatcherFactory3: MatcherFactory3[T, TYPECLASS1, TYPECLASS2, TYPECLASS3])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T]) {
-      val rightMatcher = rightMatcherFactory3.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory3 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_]](rightMatcherFactory4: MatcherFactory4[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T]) {
-      val rightMatcher = rightMatcherFactory4.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory4 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_]](rightMatcherFactory5: MatcherFactory5[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T]) {
-      val rightMatcher = rightMatcherFactory5.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory5 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_]](rightMatcherFactory6: MatcherFactory6[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T]) {
-      val rightMatcher = rightMatcherFactory6.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory6 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_]](rightMatcherFactory7: MatcherFactory7[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T]) {
-      val rightMatcher = rightMatcherFactory7.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory7 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_]](rightMatcherFactory8: MatcherFactory8[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T]) {
-      val rightMatcher = rightMatcherFactory8.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all (xs) shouldNot (aMatcherFactory8 and have length 12)
-     *          ^
-     * </pre>
-     */
-    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
-      val rightMatcher = rightMatcherFactory9.matcher
-      doCollected(collected, xs, original, "shouldNot", 1) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) =>
-            throw newTestFailedException(negatedFailureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all (xs) should === (b)
      *          ^
      * </pre>
@@ -8137,7 +8004,140 @@ private[scalatest] trait LowPriorityShouldMethods { thisMatchers: Matchers =>
       }
     }
 
-    implicit def convertToAdditionalAnyShouldWrapper[T](resultOfCollectedAny: ResultOfCollectedAny[T]): AdditionalResultOfCollectedAny[T] = new AdditionalResultOfCollectedAny[T](resultOfCollectedAny)
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory2 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_]](rightMatcherFactory3: MatcherFactory3[T, TYPECLASS1, TYPECLASS2, TYPECLASS3])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T]) {
+      val rightMatcher = rightMatcherFactory3.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory3 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_]](rightMatcherFactory4: MatcherFactory4[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T]) {
+      val rightMatcher = rightMatcherFactory4.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory4 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_]](rightMatcherFactory5: MatcherFactory5[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T]) {
+      val rightMatcher = rightMatcherFactory5.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory5 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_]](rightMatcherFactory6: MatcherFactory6[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T]) {
+      val rightMatcher = rightMatcherFactory6.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory6 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_]](rightMatcherFactory7: MatcherFactory7[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T]) {
+      val rightMatcher = rightMatcherFactory7.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory7 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_]](rightMatcherFactory8: MatcherFactory8[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T]) {
+      val rightMatcher = rightMatcherFactory8.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) shouldNot (aMatcherFactory8 and have length 12)
+     *          ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
+      val rightMatcher = rightMatcherFactory9.matcher
+      doCollected(left.collected, left.xs, left.original, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchSucceeded(negatedFailureMessage) =>
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    implicit def convertToAdditionalResultOfCollectedAny[T](resultOfCollectedAny: ResultOfCollectedAny[T]): AdditionalResultOfCollectedAny[T] = new AdditionalResultOfCollectedAny[T](resultOfCollectedAny)
 
   }
 }
