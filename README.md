@@ -28,15 +28,15 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 6, 7 or 8
-*   [SBT 0.13.2](http://www.scala-sbt.org/0.13.2/docs/Getting-Started/Setup.html)
+*   [SBT 0.13.5](http://www.scala-sbt.org/0.13.5/docs/Getting-Started/Setup.html)
 
 for JDK 6 or 7, use the following options in your SBT launch file:
 
-    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
+    SBT_OPTS="-server -Xms512M -Xmx3000M -XX:MaxPermSize=512M -Xss1m -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -XX:NewRatio=9 -XX:ReservedCodeCacheSize=100m"
 
 for JDK 8, use the following SBT options instead:
 
-    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M  -XX:+UseConcMarkSweepGC -XX:NewRatio=8"
+    SBT_OPTS="-server -Xms512M -Xmx3G -Xss1m -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -XX:NewRatio=9 -XX:ReservedCodeCacheSize=100m"
 
 ### Building and Running Tests
 
@@ -97,4 +97,4 @@ To publish ScalaTest, use the following command:
 
 To publish Scalactic, use the following command:
 
-  `$ sbt scalalactic/publishSigned`
+  `$ sbt scalactic/publishSigned`
