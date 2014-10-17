@@ -1782,7 +1782,7 @@ import scala.language.higherKinds
  * @author Bill Venners
  * @author Chua Chee Seng
  */
-trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly with ShouldLowPriorityStuff { matchers =>
+trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly with LowPriorityShouldMethods { matchers =>
 
   import scala.language.implicitConversions
 
@@ -7913,7 +7913,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  */
 object Matchers extends Matchers
 
-trait ShouldLowPriorityStuff { thisMatchers: Matchers =>
+private[scalatest] trait LowPriorityShouldMethods { thisMatchers: Matchers =>
   sealed class AdditionalAnyShouldWrapper[T](val leftSideValue: T) {
     /**
      * This method enables syntax such as the following:
