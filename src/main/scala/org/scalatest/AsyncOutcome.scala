@@ -8,14 +8,14 @@ import scala.concurrent.duration._
 import java.util.concurrent.ConcurrentLinkedQueue
 import collection.JavaConverters._
 
-trait AsyncOutcome {
+private[scalatest] trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
   def toOutcome: Outcome // may block
   def toFutureOutcome: Future[Outcome]
 }
 
-case class PastOutcome(past: Outcome) extends AsyncOutcome {
+private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit) = {
     f(new Success(past))
   }
@@ -28,7 +28,7 @@ case class PastOutcome(past: Outcome) extends AsyncOutcome {
   def toFutureOutcome: Future[Outcome] = Future.successful(past)
 }
 
-case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
