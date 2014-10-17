@@ -7697,6 +7697,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 object Matchers extends Matchers
 
 private[scalatest] trait LowPriorityShouldMethods { thisMatchers: Matchers =>
+
+  import scala.language.implicitConversions
+
   sealed class AdditionalAnyShouldWrapper[T](val leftSideValue: T) {
     /**
      * This method enables syntax such as the following:
