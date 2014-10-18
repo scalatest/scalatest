@@ -41,6 +41,7 @@ object GenMatchers {
       .replaceAll("import Matchers._", "import MustMatchers._")
       .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.MustMatchers._")
       .replaceAll("Matchers.scala", "MustMatchers.scala")
+      .replaceAll("thisMatchers: Matchers =>", "thisMatchers: MustMatchers =>")
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {
