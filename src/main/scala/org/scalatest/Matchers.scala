@@ -5517,6 +5517,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+/*
     /**
      * This method enables syntax such as the following:
      *
@@ -5630,6 +5631,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
       }
     }
+*/
 
     /**
      * This method enables syntax such as the following:
@@ -6024,6 +6026,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+/*
     /**
      * This method enables syntax such as the following:
      *
@@ -6137,6 +6140,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
       }
     }
+*/
 
     /**
      * This method enables syntax such as the following:
@@ -7012,6 +7016,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory3.matcher)
     }
 
+/*
     /**
      * This method enables syntax such as the following:
      *
@@ -7083,6 +7088,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory9.matcher)
     }
+*/
 
     /**
      * This method enables syntax such as the following:
@@ -7471,6 +7477,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory3.matcher)
     }
 
+/*
     /**
      * This method enables syntax such as the following:
      *
@@ -7542,6 +7549,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldNot[TYPECLASS1[_], TYPECLASS2[_], TYPECLASS3[_], TYPECLASS4[_], TYPECLASS5[_], TYPECLASS6[_], TYPECLASS7[_], TYPECLASS8[_], TYPECLASS9[_]](rightMatcherFactory9: MatcherFactory9[T, TYPECLASS1, TYPECLASS2, TYPECLASS3, TYPECLASS4, TYPECLASS5, TYPECLASS6, TYPECLASS7, TYPECLASS8, TYPECLASS9])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T], typeClass3: TYPECLASS3[T], typeClass4: TYPECLASS4[T], typeClass5: TYPECLASS5[T], typeClass6: TYPECLASS6[T], typeClass7: TYPECLASS7[T], typeClass8: TYPECLASS8[T], typeClass9: TYPECLASS9[T]) {
       ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory9.matcher)
     }
+*/
 
     /**
      * This method enables syntax such as the following:
