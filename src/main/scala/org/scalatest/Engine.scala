@@ -29,6 +29,7 @@ import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.Event
 import org.scalatest.events.Location
 import collection.mutable.ListBuffer
+import org.scalatest.exceptions.DuplicateTestNameException
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResourceName: String, simpleClassName: String)  {

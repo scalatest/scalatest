@@ -26,6 +26,7 @@ import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, 
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
 import org.scalatest.SharedHelpers._
 import org.scalatest.tools.Runner.CHOSEN_STYLES
+import org.scalatest.exceptions.DuplicateTestNameException
 
 class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 

@@ -18,8 +18,8 @@ package org.scalatest
 // elements
 import org.scalatest.events._
 import SharedHelpers._
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.DuplicateTestNameException
+/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.exceptions.TestFailedException
 */

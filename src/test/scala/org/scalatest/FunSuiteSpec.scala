@@ -18,8 +18,8 @@ package org.scalatest
 import SharedHelpers._
 import org.scalatest.events._
 import tools.Runner.CHOSEN_STYLES
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.DuplicateTestNameException
+/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
