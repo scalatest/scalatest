@@ -20,8 +20,8 @@ import org.scalatest.events.TestStarting
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.MarkupProvided
 import org.scalatest.exceptions.DuplicateTestNameException
-/* Uncomment once remove deprecated type aliases in org.scalatest
 import org.scalatest.exceptions.NotAllowedException
+/* Uncomment once remove deprecated type aliases in org.scalatest
 import org.scalatest.exceptions.TestFailedException
 */
 

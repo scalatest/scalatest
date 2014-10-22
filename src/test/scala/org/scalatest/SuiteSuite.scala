@@ -26,6 +26,7 @@ import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
 import org.scalatest.Suite.formatterForSuiteStarting
 import PrivateMethodTester._
+import org.scalatest.exceptions.NotAllowedException
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException

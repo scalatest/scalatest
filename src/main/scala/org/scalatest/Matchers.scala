@@ -51,6 +51,7 @@ import org.scalactic.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.NotAllowedException
 import scala.language.experimental.macros
 import scala.language.higherKinds
 

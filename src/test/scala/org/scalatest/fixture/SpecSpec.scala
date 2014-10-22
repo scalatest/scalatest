@@ -22,7 +22,7 @@ import collection.immutable.TreeSet
 import org.scalatest.Suite._
 import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
                         Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, Specs, 
-                        Reporter, Distributor, OptionValues, NotAllowedException, Resources, DoNotDiscover, WrapWith, 
+                        Reporter, Distributor, OptionValues, Resources, DoNotDiscover, WrapWith, 
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
 import org.scalatest.SharedHelpers._
 import org.scalatest.tools.Runner.CHOSEN_STYLES

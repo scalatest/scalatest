@@ -22,6 +22,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
+import org.scalatest.exceptions.NotAllowedException
 
 /**
  * Implementation trait for class <code>FeatureSpec</code>, which represents
