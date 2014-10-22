@@ -23,10 +23,10 @@ import prop.TableFor1
 import time.{Second, Span}
 import SharedHelpers.EventRecordingReporter
 import TableDrivenPropertyChecks._
+import org.scalatest.exceptions.ModifiableMessage
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.ModifiableMessage
 */
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
