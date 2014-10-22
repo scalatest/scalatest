@@ -44,6 +44,7 @@ import java.net.URL
 import scala.io.Source
 import java.nio.channels.Channels
 import java.text.DecimalFormat
+import org.scalatest.exceptions.StackDepth
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.

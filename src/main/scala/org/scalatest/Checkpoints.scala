@@ -23,6 +23,7 @@ import exceptions.TestRegistrationClosedException
 import exceptions.TestRegistrationClosedException
 import exceptions.NotAllowedException
 import exceptions.DuplicateTestNameException
+import exceptions.StackDepth
 
 /**
  * Trait providing class <code>Checkpoint</code>, which enables multiple assertions

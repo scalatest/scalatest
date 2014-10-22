@@ -75,15 +75,6 @@ package object scalatest {
 
   /**
    * <p>
-   * <strong>This trait has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.StackDepth</code> to <code>org.scalatest.exceptions.StackDepth</code>.</strong>
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.exceptions.StackDepth instead.")
-  type StackDepth = exceptions.StackDepth
-
-  /**
-   * <p>
    * <strong>This class has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
    * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.StackDepthException</code> to <code>org.scalatest.exceptions.StackDepthException</code>.</strong>
    * </p>
