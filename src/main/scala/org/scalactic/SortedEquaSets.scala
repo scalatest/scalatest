@@ -680,7 +680,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
-    override def enclosingEquaSets: SortedEquaSets[T]
+    override def enclosingEquaSets: thisEquaSets.type
   }
 
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
@@ -894,7 +894,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
-    def enclosingEquaSets: SortedEquaSets[T] = thisEquaSets
+    def enclosingEquaSets: thisEquaSets.type = thisEquaSets
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

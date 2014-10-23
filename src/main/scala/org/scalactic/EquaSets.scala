@@ -42,7 +42,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       }
     override def hashCode: Int = equality.hashCodeFor(value)
     override def toString: String = s"EquaBox(${value.toString})"
-    def enclosingEquaSets: EquaSets[T] = thisEquaSets
+    def enclosingEquaSets: thisEquaSets.type = thisEquaSets
   }
   object EquaBox {
     import scala.language.implicitConversions
@@ -63,7 +63,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    def enclosingEquaSets: EquaSets[T] = thisEquaSets
+    def enclosingEquaSets: thisEquaSets.type = thisEquaSets
   }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
@@ -1620,7 +1620,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipWithIndex: Set[(T, Int)]
 
-    def enclosingEquaSets: EquaSets[T]
+    def enclosingEquaSets: thisEquaSets.type
   }
 
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
@@ -1842,7 +1842,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
 
-    def enclosingEquaSets: EquaSets[T] = thisEquaSets
+    def enclosingEquaSets: thisEquaSets.type = thisEquaSets
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
