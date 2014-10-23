@@ -2359,6 +2359,33 @@ class EquaSetSpec extends UnitSpec {
     result4 shouldBe lower.FastEquaSet("2")
     result4.shouldHaveExactType[lower.FastEquaSet]
   }
+  it should "have a withFilter method after it is converted into EquaBridge with into" in {
+    val set = number.EquaSet(1, 2, 3)
+    val fastSet = number.FastEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    var count = 0
+    val result1 = bridge1.withFilter { i =>
+      count += 1
+      i == 1
+    }
+    count shouldBe 0
+    result1.map(_.toString) shouldBe lower.EquaSet("1")
+    count shouldBe 3
+    result1.shouldHaveExactType[bridge1.WithFilter]
+
+    val bridge2 = fastSet.into(lower)
+
+    val result2 = bridge2.withFilter { i =>
+      count += 1
+      i == 2
+    }
+    count shouldBe 3
+    result2.map(_.toString) shouldBe lower.FastEquaSet("2")
+    count shouldBe 6
+    result2.shouldHaveExactType[bridge2.FastWithFilter]
+  }
 
 /*
 abstract def contains(elem: A): Boolean

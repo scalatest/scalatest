@@ -2211,5 +2211,32 @@ class SortedEquaSetSpec extends UnitSpec {
     result4 shouldBe lower.TreeEquaSet("2")
     result4.shouldHaveExactType[lower.TreeEquaSet]
   }
+  it should "have a withFilter method after it is converted into EquaBridge with into" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    val fastSet = number.TreeEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    var count = 0
+    val result1 = bridge1.withFilter { i =>
+      count += 1
+      i == 1
+    }
+    count shouldBe 0
+    result1.map(_.toString) shouldBe lower.SortedEquaSet("1")
+    count shouldBe 3
+    result1.shouldHaveExactType[bridge1.SortedWithFilter]
+
+    val bridge2 = fastSet.into(lower)
+
+    val result2 = bridge2.withFilter { i =>
+      count += 1
+      i == 2
+    }
+    count shouldBe 3
+    result2.map(_.toString) shouldBe lower.TreeEquaSet("2")
+    count shouldBe 6
+    result2.shouldHaveExactType[bridge2.TreeWithFilter]
+  }
 }
 
