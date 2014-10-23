@@ -2187,5 +2187,35 @@ class SortedEquaSetSpec extends UnitSpec {
     equaSet.copyInto(number) shouldEqual number.EquaSet(1, 2, 3)
     equaSet.copyInto(sortedNumber) should be theSameInstanceAs equaSet
   }
+  it should "have a filter method after it is converted into EquaBridge with into" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    val treeSet = number.TreeEquaSet(1, 2, 3)
+
+    val bridge1: lower.SortedEquaBridge[Int] = set.into(lower)
+    bridge1.fromEquaSets shouldBe number
+
+    val result1 = bridge1.filter(_ == 1)
+    result1 shouldBe number.SortedEquaSet(1)
+    result1 shouldBe bridge1.fromEquaSets.SortedEquaSet(1)
+    result1.shouldHaveExactType[bridge1.fromEquaSets.SortedEquaSet]
+
+    val result2 = for (e <- bridge1 if e == 1) yield e
+    result2 shouldBe number.SortedEquaSet(1)
+    result2 shouldBe bridge1.fromEquaSets.SortedEquaSet(1)
+    result2.shouldHaveExactType[bridge1.fromEquaSets.SortedEquaSet]
+
+    val bridge2 = treeSet.into(lower)
+    bridge2.fromEquaSets shouldBe number
+
+    val result3 = bridge2.filter(_ == 2)
+    result3 shouldBe number.SortedEquaSet(2)
+    result3 shouldBe bridge2.fromEquaSets.SortedEquaSet(2)
+    result3.shouldHaveExactType[bridge2.fromEquaSets.TreeEquaSet]
+
+    val result4 = for (e <- bridge2 if e == 2) yield e
+    result4 shouldBe number.SortedEquaSet(2)
+    result4 shouldBe bridge2.fromEquaSets.SortedEquaSet(2)
+    result4.shouldHaveExactType[bridge2.fromEquaSets.TreeEquaSet]
+  }
 }
 

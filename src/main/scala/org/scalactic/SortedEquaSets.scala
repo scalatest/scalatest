@@ -37,7 +37,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
         equality.compare(a.value, b.value)
     }
 
-  class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
+  class SortedEquaBridge[S](from: List[S], override val fromEquaSets: SortedEquaSets[S]) extends EquaBridge[S](from, fromEquaSets) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.SortedEquaSet =
@@ -50,9 +50,11 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.SortedEquaSet =
       thisEquaSets.SortedEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    override def filter(pred: S => Boolean): fromEquaSets.SortedEquaSet =
+      fromEquaSets.SortedEquaSet(from.filter(pred).toSeq: _*)
   }
 
-  class TreeEquaBridge[S](from: List[S]) extends SortedEquaBridge[S](from) {
+  class TreeEquaBridge[S](from: List[S], override val fromEquaSets: SortedEquaSets[S]) extends SortedEquaBridge[S](from, fromEquaSets) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.TreeEquaSet =
       thisEquaSets.TreeEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.TreeEquaSet =
@@ -65,6 +67,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
       thisEquaSets.TreeEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.TreeEquaSet =
       thisEquaSets.TreeEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    override def filter(pred: S => Boolean): fromEquaSets.TreeEquaSet =
+      fromEquaSets.TreeEquaSet(from.filter(pred).toSeq: _*)
   }
 
   trait SortedEquaSet extends EquaSet {
@@ -778,8 +782,8 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def inits: Iterator[thisEquaSets.TreeEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toEquaBoxSet)
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.EquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T] = new thatEquaSets.EquaBridge[T](underlying.toList.map(_.value), thisEquaSets)
+    def into[U](thatEquaSets: SortedEquaSets[U]): thatEquaSets.TreeEquaBridge[T] = new thatEquaSets.TreeEquaBridge[T](underlying.toList.map(_.value), thisEquaSets)
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value

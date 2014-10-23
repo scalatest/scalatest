@@ -2335,6 +2335,36 @@ class EquaSetSpec extends UnitSpec {
     equaSet.copyInto(sortedNumber) shouldEqual sortedNumber.EquaSet(1, 2, 3)
     equaSet.copyInto(number) should be theSameInstanceAs equaSet
   }
+  it should "have a filter method after it is converted into EquaBridge with into" in {
+    val set = number.EquaSet(1, 2, 3)
+    val fastSet = number.FastEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+    bridge1.fromEquaSets shouldBe number
+
+    val result1 = bridge1.filter(_ == 1)
+    result1 shouldBe number.EquaSet(1)
+    result1 shouldBe bridge1.fromEquaSets.EquaSet(1)
+    result1.shouldHaveExactType[bridge1.fromEquaSets.EquaSet]
+
+    val result2 = for (e <- bridge1 if e == 1) yield e
+    result2 shouldBe number.EquaSet(1)
+    result2 shouldBe bridge1.fromEquaSets.EquaSet(1)
+    result2.shouldHaveExactType[bridge1.fromEquaSets.EquaSet]
+
+    val bridge2 = fastSet.into(lower)
+    bridge2.fromEquaSets shouldBe number
+
+    val result3 = bridge2.filter(_ == 2)
+    result3 shouldBe number.EquaSet(2)
+    result3 shouldBe bridge2.fromEquaSets.EquaSet(2)
+    result3.shouldHaveExactType[bridge2.fromEquaSets.FastEquaSet]
+
+    val result4 = for (e <- bridge2 if e == 2) yield e
+    result4 shouldBe number.EquaSet(2)
+    result4 shouldBe bridge2.fromEquaSets.EquaSet(2)
+    result4.shouldHaveExactType[bridge2.fromEquaSets.FastEquaSet]
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
