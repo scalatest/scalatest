@@ -43,6 +43,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def hashCode: Int = equality.hashCodeFor(value)
     override def toString: String = s"EquaBox(${value.toString})"
     val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    // def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaBox
   }
   object EquaBox {
     import scala.language.implicitConversions
@@ -1621,6 +1622,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zipWithIndex: Set[(T, Int)]
 
     val enclosingEquaSets: thisEquaSets.type
+
+    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
   }
 
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
@@ -1638,7 +1641,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
   }
 
-  class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet {
+  class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet { thisFastEquaSet =>
     def + (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
@@ -1843,6 +1846,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
 
     val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.FastEquaSet =
+      if (thatEquaSets eq thisEquaSets)
+        thisFastEquaSet.asInstanceOf[thatEquaSets.FastEquaSet]
+      else
+        thisFastEquaSet.into(thatEquaSets).map(t => t)
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)

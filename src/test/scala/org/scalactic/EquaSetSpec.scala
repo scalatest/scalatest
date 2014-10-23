@@ -2330,6 +2330,11 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(99).zipWithIndex shouldBe Set((99,0))
     number.EquaSet(1, 2, 3).zipWithIndex shouldBe Set((1,0), (2,1), (3,2))
   }
+  it should "have an copyInto method" in {
+    val equaSet = number.EquaSet(1, 2, 3)
+    equaSet.copyInto(sortedNumber) shouldEqual sortedNumber.EquaSet(1, 2, 3)
+    equaSet.copyInto(number) should be theSameInstanceAs equaSet
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

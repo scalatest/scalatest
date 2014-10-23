@@ -681,9 +681,13 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
     override val enclosingEquaSets: thisEquaSets.type
+
+    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
+
+    def copyInto(thatEquaSets: SortedEquaSets[T]): thatEquaSets.SortedEquaSet
   }
 
-  class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet {
+  class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet { thisTreeEquaSet =>
 
     def + (elem: T): thisEquaSets.TreeEquaSet = new TreeEquaSet(underlying + EquaBox(elem))
     def + (elem1: T, elem2: T, elems: T*): thisEquaSets.TreeEquaSet =
@@ -895,6 +899,12 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
     val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet = thisTreeEquaSet.into(thatEquaSets).map(t => t)
+    def copyInto(thatEquaSets: SortedEquaSets[T]): thatEquaSets.TreeEquaSet =
+      if (thatEquaSets eq thisEquaSets)
+        thisTreeEquaSet.asInstanceOf[thatEquaSets.TreeEquaSet]
+      else
+        thisTreeEquaSet.into(thatEquaSets).map(t => t)
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

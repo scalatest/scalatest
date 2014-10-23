@@ -2181,5 +2181,11 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(99).zipWithIndex shouldBe Set((99,0))
     number.SortedEquaSet(1, 2, 3).zipWithIndex shouldBe Set((1,0), (2,1), (3,2))
   }
+  it should "have a two overloaded copyInto method" in {
+    val equaSet: sortedNumber.SortedEquaSet = sortedNumber.SortedEquaSet(1, 2, 3)
+    equaSet.copyInto(plainNumber) shouldEqual number.EquaSet(1, 2, 3)
+    equaSet.copyInto(number) shouldEqual number.EquaSet(1, 2, 3)
+    equaSet.copyInto(sortedNumber) should be theSameInstanceAs equaSet
+  }
 }
 
