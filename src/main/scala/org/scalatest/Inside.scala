@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
 
 /**

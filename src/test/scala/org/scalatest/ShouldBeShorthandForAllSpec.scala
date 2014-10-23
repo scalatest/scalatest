@@ -19,6 +19,7 @@ import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResul
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookPropertyMatchers {
   

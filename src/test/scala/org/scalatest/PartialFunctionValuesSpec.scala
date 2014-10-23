@@ -19,6 +19,7 @@ import org.scalatest.OptionValues._
 import org.scalatest.PartialFunctionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
+import exceptions.TestFailedException
 
 class PartialFunctionValuesSpec extends FunSpec {
   

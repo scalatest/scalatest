@@ -20,8 +20,8 @@ import org.scalatest.events._
 import tools.Runner.CHOSEN_STYLES
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
+/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 

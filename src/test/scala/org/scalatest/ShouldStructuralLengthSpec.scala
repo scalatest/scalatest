@@ -22,6 +22,7 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldStructuralLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
   

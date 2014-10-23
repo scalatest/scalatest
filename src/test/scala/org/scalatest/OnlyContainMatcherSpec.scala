@@ -18,6 +18,7 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
+import org.scalatest.exceptions.TestFailedException
 
 class OnlyContainMatcherSpec extends Spec {
 

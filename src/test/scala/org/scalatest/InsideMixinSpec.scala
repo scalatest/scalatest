@@ -19,6 +19,7 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
 import Inside._
 import OptionValues._
+import org.scalatest.exceptions.TestFailedException
 
 class InsideMixinSpec extends FunSpec {
 

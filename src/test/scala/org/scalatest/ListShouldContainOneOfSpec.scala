@@ -20,6 +20,7 @@ import org.scalactic.Uniformity
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import exceptions.TestFailedException
 
 class ListShouldContainOneOfSpec extends Spec with Matchers {
 

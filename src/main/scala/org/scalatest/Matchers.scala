@@ -54,6 +54,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.NotAllowedException
 import scala.language.experimental.macros
 import scala.language.higherKinds
+import exceptions.TestFailedException
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.

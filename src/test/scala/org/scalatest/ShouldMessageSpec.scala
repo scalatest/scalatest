@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Messaging
+import exceptions.TestFailedException
 
 class ShouldMessageSpec extends Spec with Matchers {
   

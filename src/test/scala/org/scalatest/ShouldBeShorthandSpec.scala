@@ -18,6 +18,7 @@ package org.scalatest
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeShorthandSpec extends Spec with EmptyMocks with BookPropertyMatchers {
 

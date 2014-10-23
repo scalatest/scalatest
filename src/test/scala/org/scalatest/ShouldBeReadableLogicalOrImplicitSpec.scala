@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.{thisLineNumber, createTempDirectory}
 import enablers.Readability
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeReadableLogicalOrImplicitSpec extends Spec {
   

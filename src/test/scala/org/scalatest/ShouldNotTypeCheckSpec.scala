@@ -18,6 +18,7 @@ package org.scalatest
 import Matchers._
 import SharedHelpers.thisLineNumber
 import org.scalactic.Prettifier.lineSeparator
+import exceptions.TestFailedException
 
 class ShouldNotTypeCheckSpec extends FunSpec {
 

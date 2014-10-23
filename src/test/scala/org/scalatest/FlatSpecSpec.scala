@@ -20,8 +20,8 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
 import Matchers._
 import org.scalatest.exceptions.DuplicateTestNameException
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
+/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 

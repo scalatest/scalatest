@@ -16,6 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import exceptions.TestFailedException
 
 class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
   

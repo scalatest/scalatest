@@ -19,9 +19,7 @@ import org.scalatest.Inside._
 import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
 import OptionValues._
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-*/
 
 class InsideSpec extends FunSpec {
 

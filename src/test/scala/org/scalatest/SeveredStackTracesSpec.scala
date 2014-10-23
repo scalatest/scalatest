@@ -16,9 +16,7 @@
 package org.scalatest
 
 import org.scalatest.matchers.ShouldMatchers
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-*/
 
 class SeveredStackTracesSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
 

@@ -23,6 +23,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
 import org.scalactic.{Prettifier, Bool}
+import exceptions.TestFailedException
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.

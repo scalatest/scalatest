@@ -20,6 +20,7 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.TestFailedException
 
 class EveryShouldContainInOrderLogicalOrSpec extends Spec {
 

@@ -19,6 +19,7 @@ import SharedHelpers.thisLineNumber
 import enablers.Sortable
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeSortedSpec extends Spec {
   

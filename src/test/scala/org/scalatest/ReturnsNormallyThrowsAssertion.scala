@@ -15,9 +15,7 @@
  */
 package org.scalatest
 
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-*/
 
 trait ReturnsNormallyThrowsAssertion {
 

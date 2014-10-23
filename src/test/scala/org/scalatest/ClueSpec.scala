@@ -25,10 +25,7 @@ import SharedHelpers.EventRecordingReporter
 import TableDrivenPropertyChecks._
 import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.exceptions.StackDepth
-
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-*/
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 

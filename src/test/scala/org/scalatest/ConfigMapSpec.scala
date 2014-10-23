@@ -16,6 +16,7 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
+import exceptions.TestFailedException
 import Matchers._
 
 class ConfigMapSpec extends Spec {

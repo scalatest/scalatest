@@ -26,6 +26,7 @@ import org.scalactic.TypeCheckedTripleEquals
 import org.scalactic.ConversionCheckedTripleEquals
 import SharedHelpers._
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions {
 

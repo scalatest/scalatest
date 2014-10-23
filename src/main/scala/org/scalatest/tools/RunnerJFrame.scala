@@ -64,6 +64,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.events._
 import EventToPresent.eventToEventToPresent
 import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * The main class for Runner's GUI.

@@ -25,6 +25,7 @@ import org.scalactic.TripleEquals
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
 

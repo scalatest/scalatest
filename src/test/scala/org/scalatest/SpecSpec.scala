@@ -22,6 +22,7 @@ import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
 import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException
+import exceptions.TestFailedException
 
 class SpecSpec extends FunSpec with PrivateMethodTester {
 

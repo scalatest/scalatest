@@ -209,7 +209,7 @@ class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
  * <span style="color: #cfc923">- subtraction works !!! IGNORED !!!</span>
  * <span style="color: #dd2233">- multiplication works *** FAILED *** (33 milliseconds)
  *   1 did not equal 2 (<console>:16)
- *   org.scalatest.TestFailedException:
+ *   org.scalatest.exceptions.TestFailedException:
  *   ...
  *   at line2$object$$iw$$iw$$iw$$iw$ArithmeticSuite$$anonfun$3.apply$mcV$sp(<console>:16)
  *   at line2$object$$iw$$iw$$iw$$iw$ArithmeticSuite$$anonfun$3.apply(<console>:16)

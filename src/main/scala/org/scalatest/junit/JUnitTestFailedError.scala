@@ -23,7 +23,7 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
  *
  * <p>
  * The purpose of this exception is to encapsulate the same stack depth information provided by
- * <a href="../TestFailedException.html"><code>TestFailedException</code></a>, which is used
+ * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a>, which is used
  * when running with ScalaTest, but be reported as
  * a failure not an error when running with JUnit.
  * The stack depth information indicates which line of test code failed, so that when running
@@ -38,7 +38,7 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
  * If a test fails because of a failed assertion, that is considered a <em>failure</em> in JUnit. If a test
  * fails for any other reason, either the test code or the application being tested threw an unexpected
  * exception, that is considered an <em>error</em> in JUnit. This class differs from
- * <a href="../TestFailedException.html"><code>TestFailedException</code></a> in that it extends
+ * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> in that it extends
  * <code>junit.framework.AssertionFailedError</code>. Instances of this class are thrown by the
  * assertions provided by <a href="AssertionsForJUnit.html"><code>AssertionsForJUnit</code></a>, and matcher
  * expressions provided by <a href="ShouldMatchersForJUnit.html"><code>ShouldMatchersForJUnit</code></a>, and

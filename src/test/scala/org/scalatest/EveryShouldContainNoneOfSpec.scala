@@ -21,6 +21,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import org.scalatest.exceptions.NotAllowedException
+import exceptions.TestFailedException
 
 class EveryShouldContainNoneOfSpec extends Spec {
 

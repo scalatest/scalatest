@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import Matchers._
+import exceptions.TestFailedException
 
 // For shouldEqual instead of should equal
 class ShouldEqualTokenToleranceSpec extends Spec with Tolerance {

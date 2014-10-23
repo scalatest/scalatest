@@ -17,6 +17,7 @@ package org.scalatest
 
 import Matchers._
 import SharedHelpers.thisLineNumber
+import exceptions.TestFailedException
 
 class ShouldCompileSpec extends FunSpec {
 
