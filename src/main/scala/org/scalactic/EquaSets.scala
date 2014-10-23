@@ -51,7 +51,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       Vector(equaBox.value)
   }
 
-  class EquaBridge[S](from: List[S], val fromEquaSets: EquaSets[S]) {
+  class EquaBridge[S](from: List[S]) {
     def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet.empty ++ (from collect pf)
     def map(f: S => T): thisEquaSets.EquaSet =
@@ -65,8 +65,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
     val path: thisEquaSets.type = thisEquaSets
-    def filter(pred: S => Boolean): fromEquaSets.EquaSet =
-      fromEquaSets.EquaSet(from.filter(pred).toSeq: _*)
+    def filter(pred: S => Boolean): thisEquaSets.EquaBridge[S] =
+      new thisEquaSets.EquaBridge(from.filter(pred))
   }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
@@ -1628,7 +1628,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
   }
 
-  class FastEquaBridge[S](from: List[S], override val fromEquaSets: EquaSets[S]) extends EquaBridge[S](from, fromEquaSets) {
+  class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet.empty ++ (from collect pf)
     override def map(f: S => T): thisEquaSets.FastEquaSet =
@@ -1641,8 +1641,8 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    override def filter(pred: S => Boolean): fromEquaSets.FastEquaSet =
-      fromEquaSets.FastEquaSet(from.filter(pred).toSeq: _*)
+    override def filter(pred: S => Boolean): thisEquaSets.FastEquaBridge[S] =
+      new thisEquaSets.FastEquaBridge(from.filter(pred))
   }
 
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet { thisFastEquaSet =>
@@ -1735,7 +1735,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def inits: Iterator[thisEquaSets.FastEquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
       new FastEquaSet(underlying intersect that.toEquaBoxSet)
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value), thisEquaSets)
+    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value

@@ -2340,31 +2340,26 @@ class EquaSetSpec extends UnitSpec {
     val fastSet = number.FastEquaSet(1, 2, 3)
 
     val bridge1 = set.into(lower)
-    bridge1.fromEquaSets shouldBe number
 
     val result1 = bridge1.filter(_ == 1)
-    result1 shouldBe number.EquaSet(1)
-    result1 shouldBe bridge1.fromEquaSets.EquaSet(1)
-    result1.shouldHaveExactType[bridge1.fromEquaSets.EquaSet]
+    result1.map(_.toString) shouldBe lower.EquaSet("1")
+    result1.shouldHaveExactType[lower.EquaBridge[Int]]
 
-    val result2 = for (e <- bridge1 if e == 1) yield e
-    result2 shouldBe number.EquaSet(1)
-    result2 shouldBe bridge1.fromEquaSets.EquaSet(1)
-    result2.shouldHaveExactType[bridge1.fromEquaSets.EquaSet]
+    val result2 = for (i <- bridge1 if i == 1) yield i.toString
+    result2 shouldBe lower.EquaSet("1")
+    result2.shouldHaveExactType[lower.EquaSet]
 
     val bridge2 = fastSet.into(lower)
-    bridge2.fromEquaSets shouldBe number
 
     val result3 = bridge2.filter(_ == 2)
-    result3 shouldBe number.EquaSet(2)
-    result3 shouldBe bridge2.fromEquaSets.EquaSet(2)
-    result3.shouldHaveExactType[bridge2.fromEquaSets.FastEquaSet]
+    result3.map(_.toString) shouldBe lower.FastEquaSet("2")
+    result3.shouldHaveExactType[lower.FastEquaBridge[Int]]
 
-    val result4 = for (e <- bridge2 if e == 2) yield e
-    result4 shouldBe number.EquaSet(2)
-    result4 shouldBe bridge2.fromEquaSets.EquaSet(2)
-    result4.shouldHaveExactType[bridge2.fromEquaSets.FastEquaSet]
+    val result4 = for (i <- bridge2 if i == 2) yield i.toString
+    result4 shouldBe lower.FastEquaSet("2")
+    result4.shouldHaveExactType[lower.FastEquaSet]
   }
+
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
