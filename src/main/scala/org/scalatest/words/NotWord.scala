@@ -176,7 +176,7 @@ final class NotWord {
    * This method enables the following syntax for the "primitive" numeric types: 
    *
    * <pre class="stHighlight">
-   * sevenDotOh should ((not equal (17.1 plusOrMinus 0.2)) and (not equal (27.1 plusOrMinus 0.2)))
+   * sevenDotOh should ((not equal (17.1 +- 0.2)) and (not equal (27.1 +- 0.2)))
    *                         ^
    * </pre>
    */
@@ -654,7 +654,7 @@ final class NotWord {
    * This method enables the following syntax for the "primitive" numeric types: 
    *
    * <pre class="stHighlight">
-   * sevenDotOh should ((not be (17.1 plusOrMinus 0.2)) and (not be (27.1 plusOrMinus 0.2)))
+   * sevenDotOh should ((not be (17.1 +- 0.2)) and (not be (27.1 +- 0.2)))
    *                         ^
    * </pre>
    */

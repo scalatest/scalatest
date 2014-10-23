@@ -373,7 +373,7 @@ final class BeWord {
    * This method enables the following syntax for the "primitive" numeric types: 
    *
    * <pre class="stHighlight">
-   * sevenDotOh should be (7.1 plusOrMinus 0.2)
+   * sevenDotOh should be (7.1 +- 0.2)
    *                      ^
    * </pre>
    */

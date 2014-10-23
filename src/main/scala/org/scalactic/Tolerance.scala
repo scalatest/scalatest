@@ -56,18 +56,6 @@ trait Tolerance {
         // throw newTestFailedException(Resources("negativeOrZeroRange", tolerance.toString))
       Spread(pivot, tolerance)
     }
-
-    /**
-     * <strong>The plusOrMinus method has been deprecated and will be removed in a future version of Scalactic and ScalaTest. Please use +- instead.</strong>
-     */
-    @deprecated("The plusOrMinus method has been deprecated and will be removed in a future version of ScalaTest. Please use +- instead.")
-    def plusOrMinus(tolerance: T): Spread[T] = {
-      val numeric = implicitly[Numeric[T]]
-      if (numeric.lteq(tolerance, numeric.zero))
-        throw new IllegalArgumentException(tolerance.toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
-        // throw newTestFailedException(Resources("negativeOrZeroRange", tolerance.toString))
-      Spread(pivot, tolerance)
-    }
   }
 
   import scala.language.implicitConversions
