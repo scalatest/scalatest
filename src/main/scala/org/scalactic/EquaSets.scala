@@ -36,13 +36,13 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   case class EquaBox(value: T) {
     override def equals(o: Any): Boolean = 
       o match {
-        case other: EquaSets[_]#EquaBox if equality eq other.enclosingEquaSets.equality =>
+        case other: EquaSets[_]#EquaBox if equality eq other.path.equality =>
           equality.areEqual(value, other.value)
         case _ => false
       }
     override def hashCode: Int = equality.hashCodeFor(value)
     override def toString: String = s"EquaBox(${value.toString})"
-    val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    val path: thisEquaSets.type = thisEquaSets
     // def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaBox
   }
   object EquaBox {
@@ -64,7 +64,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    val path: thisEquaSets.type = thisEquaSets
   }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
@@ -1621,7 +1621,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipWithIndex: Set[(T, Int)]
 
-    val enclosingEquaSets: thisEquaSets.type
+    val path: thisEquaSets.type
 
     def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
   }
@@ -1669,7 +1669,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean =
       that match {
-        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.enclosingEquaSets.equality eq thisEquaSets.equality
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.path.equality eq thisEquaSets.equality
         case _ => false
       }
     def collect(pf: PartialFunction[T, T]): thisEquaSets.FastEquaSet =
@@ -1689,7 +1689,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     override def equals(other: Any): Boolean = { 
       other match {
         case thatEquaSet: EquaSets[_]#EquaSet => 
-          (thisEquaSets.equality eq thatEquaSet.enclosingEquaSets.equality) && underlying == thatEquaSet.toEquaBoxSet
+          (thisEquaSets.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
         case _ => false
       }
     }
@@ -1845,7 +1845,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
 
-    val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    val path: thisEquaSets.type = thisEquaSets
     def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.FastEquaSet =
       if (thatEquaSets eq thisEquaSets)
         thisFastEquaSet.asInstanceOf[thatEquaSets.FastEquaSet]

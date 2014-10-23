@@ -992,9 +992,9 @@ class EquaSetSpec extends UnitSpec {
     result12 shouldBe number.FastEquaSet()
     result12.shouldHaveExactType[number.FastEquaSet]
   }
-  it should "have an enclosingEquaSets method" in {
-    lower.EquaSet("hi").enclosingEquaSets shouldBe lower
-    lower.FastEquaSet("hi").enclosingEquaSets shouldBe lower
+  it should "have an path method" in {
+    lower.EquaSet("hi").path shouldBe lower
+    lower.FastEquaSet("hi").path shouldBe lower
   }
   it should "have an equals method" in {
     sortedLower.SortedEquaSet("one", "two", "three") shouldEqual sortedLower.EquaSet("Three", "Two", "One")

@@ -984,11 +984,11 @@ class SortedEquaSetSpec extends UnitSpec {
     result12 shouldBe number.TreeEquaSet()
     result12.shouldHaveExactType[number.TreeEquaSet]
   }
-  it should "have an enclosingEquaSets method" in {
-    trimmed.EquaSet("hi").enclosingEquaSets shouldBe trimmed
-    trimmed.FastEquaSet("hi").enclosingEquaSets shouldBe trimmed
-    trimmed.SortedEquaSet("hi").enclosingEquaSets shouldBe trimmed
-    trimmed.TreeEquaSet("hi").enclosingEquaSets shouldBe trimmed
+  it should "have an path method" in {
+    trimmed.EquaSet("hi").path shouldBe trimmed
+    trimmed.FastEquaSet("hi").path shouldBe trimmed
+    trimmed.SortedEquaSet("hi").path shouldBe trimmed
+    trimmed.TreeEquaSet("hi").path shouldBe trimmed
   }
   it should "have an exists method" in {
     number.SortedEquaSet(1, 2, 3).exists(_ == 2) shouldBe true

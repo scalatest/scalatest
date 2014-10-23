@@ -680,7 +680,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
      */
     def union(that: thisEquaSets.EquaSet): thisEquaSets.SortedEquaSet
 
-    override val enclosingEquaSets: thisEquaSets.type
+    override val path: thisEquaSets.type
 
     def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
 
@@ -718,10 +718,10 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     // long as the Equality discriminator is the same instance.
     def canEqual(that: Any): Boolean =
       that match {
-        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.enclosingEquaSets.equality eq thisEquaSets.equality
+        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.path.equality eq thisEquaSets.equality
         case _ => false
       }
-      // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].enclosingEquaSets.equality
+      // that.isInstanceOf[thisEquaSets.EquaSet] && equality == that.asInstanceOf[thisEquaSets.EquaSet].path.equality
     def collect(pf: PartialFunction[T, T]): thisEquaSets.TreeEquaSet = {
       implicit val ord: Ordering[thisEquaSets.EquaBox] = ordering
       new TreeEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
@@ -741,7 +741,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     override def equals(other: Any): Boolean =
       other match {
         case thatEquaSet: EquaSets[_]#EquaSet => 
-          (thisEquaSets.equality eq thatEquaSet.enclosingEquaSets.equality) && underlying == thatEquaSet.toEquaBoxSet
+          (thisEquaSets.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
         case _ => false
       }
 /*
@@ -898,7 +898,7 @@ class SortedEquaSets[T](override val equality: OrderingEquality[T]) extends Equa
     def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
-    val enclosingEquaSets: thisEquaSets.type = thisEquaSets
+    val path: thisEquaSets.type = thisEquaSets
     def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet = thisTreeEquaSet.into(thatEquaSets).map(t => t)
     def copyInto(thatEquaSets: SortedEquaSets[T]): thatEquaSets.TreeEquaSet =
       if (thatEquaSets eq thisEquaSets)
