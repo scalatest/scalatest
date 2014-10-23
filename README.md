@@ -62,7 +62,7 @@ You can also publish it to your local Ivy repository using this command:
 
   `$ sbt publishLocal`
 
-Or publish it to local maven repository using this command:
+Or publish it to a local maven repository using this command:
 
   `$ sbt publishM2`
 
