@@ -20,10 +20,7 @@ import SharedHelpers._
 import org.scalatest.events._
 import PrivateMethodTester._
 import org.scalatest.exceptions.TestFailedException
-
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestPendingException
-*/
 
 class DeprecatedMethodFormSuiteSpec extends FunSpec {
 

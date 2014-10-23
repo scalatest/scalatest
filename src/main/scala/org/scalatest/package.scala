@@ -76,15 +76,6 @@ package object scalatest {
   /**
    * <p>
    * <strong>This class has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.TestPendingException</code> to <code>org.scalatest.exceptions.TestPendingException</code>.</strong>
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.exceptions.TestPendingException instead.")
-  type TestPendingException = exceptions.TestPendingException
-
-  /**
-   * <p>
-   * <strong>This class has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
    * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.TestRegistrationClosedException</code> to <code>org.scalatest.exceptions.TestRegistrationClosedException</code>.</strong>
    * </p>
    */
