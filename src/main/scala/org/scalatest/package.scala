@@ -73,15 +73,6 @@ package object scalatest {
    */
   type ShouldMatchers = matchers.ShouldMatchers
 
-  /**
-   * <p>
-   * <strong>This class has been moved to the <code>org.scalatest.exceptions</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.TestRegistrationClosedException</code> to <code>org.scalatest.exceptions.TestRegistrationClosedException</code>.</strong>
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.exceptions.TestRegistrationClosedException instead.")
-  type TestRegistrationClosedException = exceptions.TestRegistrationClosedException
-
   @deprecated("Please use org.scalactic.TimesOnInt instead")
   type TimesOnInt = org.scalactic.TimesOnInt
 

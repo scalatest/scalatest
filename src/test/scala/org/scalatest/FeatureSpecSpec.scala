@@ -22,6 +22,7 @@ import org.scalatest.events.MarkupProvided
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 class FeatureSpecSpec extends FunSpec {
 

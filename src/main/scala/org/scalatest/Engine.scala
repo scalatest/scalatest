@@ -31,6 +31,7 @@ import org.scalatest.events.Location
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResourceName: String, simpleClassName: String)  {

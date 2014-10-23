@@ -19,6 +19,7 @@ import org.scalatest.events._
 import SharedHelpers._
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 class PropSpecSpec extends FunSpec {
 

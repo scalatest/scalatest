@@ -20,9 +20,7 @@ import SharedHelpers._
 import org.scalatest.events._
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestRegistrationClosedException
-*/
 
 class FreeSpecSpec extends FunSpec with GivenWhenThen {
 
