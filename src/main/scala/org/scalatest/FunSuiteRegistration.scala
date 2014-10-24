@@ -41,7 +41,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 trait FunSuiteRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
+  protected[scalatest] final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._
 
   /**
@@ -87,11 +87,11 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -109,7 +109,7 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testName, Transformer(testFun _), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -127,8 +127,8 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideATest", "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => Registration) {
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), "ignoreCannotAppearInsideATest", "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
   }
 
   /**
