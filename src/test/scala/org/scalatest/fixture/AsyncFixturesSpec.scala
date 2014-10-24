@@ -23,8 +23,25 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
 
   describe("AsyncFixtures") {
 
-    it("should fail tests with NotAllowedException when mixed in classic style traits") {
+    it("should fail tests with NotAllowedException when mixed in classic FunSpec") {
       val spec = new FunSpec with AsyncFixtures {
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        it("a test") { fixture => }
+      }
+      val rep = new EventRecordingReporter
+      spec.run(None, Args(reporter = rep))
+      assert(rep.testFailedEventsReceived.size == 1)
+      val tfe = rep.testFailedEventsReceived(0)
+      assert(tfe.throwable.isDefined)
+      assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
+    }
+
+    it("should fail tests with NotAllowedException when mixed in classic FunSpecLike") {
+      val spec = new FunSpecLike with AsyncFixtures {
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

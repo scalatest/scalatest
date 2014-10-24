@@ -33,8 +33,32 @@ class AsyncFixturesSpec extends FunSpec {
       assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
     }
 
+    it("should fail tests with NotAllowedException when mixed in classis FunSpecLike") {
+      val spec = new FunSpecLike with AsyncFixtures {
+        it("a test") {}
+      }
+      val rep = new EventRecordingReporter
+      spec.run(None, Args(reporter = rep))
+      assert(rep.testFailedEventsReceived.size == 1)
+      val tfe = rep.testFailedEventsReceived(0)
+      assert(tfe.throwable.isDefined)
+      assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
+    }
+
     it("should fail tests with NotAllowedException when mixed in classis FunSuite") {
       val suite = new FunSuite with AsyncFixtures {
+        test("a test") {}
+      }
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(reporter = rep))
+      assert(rep.testFailedEventsReceived.size == 1)
+      val tfe = rep.testFailedEventsReceived(0)
+      assert(tfe.throwable.isDefined)
+      assert(tfe.throwable.get.isInstanceOf[exceptions.NotAllowedException])
+    }
+
+    it("should fail tests with NotAllowedException when mixed in classis FunSuiteLike") {
+      val suite = new FunSuiteLike with AsyncFixtures {
         test("a test") {}
       }
       val rep = new EventRecordingReporter
