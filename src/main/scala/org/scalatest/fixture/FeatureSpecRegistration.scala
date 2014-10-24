@@ -47,9 +47,9 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecRegistration extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FeatureSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFeatureSpecMod", "FixtureFeatureSpec")
+  protected[scalatest] final val engine = new FixtureEngine[FixtureParam]("concurrentFeatureSpecMod", "FixtureFeatureSpec")
   import engine._
   
   private[scalatest] val sourceFileName = "FeatureSpecRegistration.scala"
@@ -96,12 +96,12 @@ trait FeatureSpecRegistration extends Suite with Informing with Notifying with A
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+    engine.registerTest(Resources("scenario", testText.trim), transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecRegistration.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+    engine.registerIgnoredTest(Resources("scenario", testText.trim), transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecRegistration.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -122,8 +122,8 @@ trait FeatureSpecRegistration extends Suite with Informing with Notifying with A
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(Resources("scenario", specText.trim), Transformer(testFun), "scenarioCannotAppearInsideAnotherScenario", sourceFileName, "scenario", 4, -2, None, None, None, testTags: _*)
+  protected def scenario(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+    engine.registerTest(Resources("scenario", specText.trim), transformToOutcome(testFun), "scenarioCannotAppearInsideAnotherScenario", sourceFileName, "scenario", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -144,8 +144,8 @@ trait FeatureSpecRegistration extends Suite with Informing with Notifying with A
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(Resources("scenario", specText), Transformer(testFun), "ignoreCannotAppearInsideAScenario", sourceFileName, "ignore", 4, -3, None, testTags: _*)
+  protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+    engine.registerIgnoredTest(Resources("scenario", specText), transformToOutcome(testFun), "ignoreCannotAppearInsideAScenario", sourceFileName, "ignore", 4, -3, None, testTags: _*)
   }
 
   /**
