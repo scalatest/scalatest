@@ -763,3 +763,6 @@ object ScalatestBuild extends Build {
                               name.value)
 }
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-nowarn"

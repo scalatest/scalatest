@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeDefinedAtSpec extends Spec {
   

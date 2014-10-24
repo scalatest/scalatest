@@ -21,6 +21,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import org.scalatest.matchers.{MatchResult, BeMatcher}
+import exceptions.TestFailedException
 
 class EveryShouldContainAllElementsOfLogicalAndSpec extends Spec {
 

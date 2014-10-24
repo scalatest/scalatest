@@ -20,6 +20,8 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestFailedException
 
 class EveryShouldContainOneOfSpec extends Spec {
 

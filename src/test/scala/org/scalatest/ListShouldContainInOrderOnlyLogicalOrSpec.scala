@@ -21,6 +21,7 @@ import org.scalactic.Entry
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import exceptions.TestFailedException
 
 class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
   

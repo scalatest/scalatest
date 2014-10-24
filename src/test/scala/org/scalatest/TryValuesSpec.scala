@@ -22,9 +22,7 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
-*/
 
 class TryValuesSpec extends FunSpec {
 

@@ -19,11 +19,8 @@ import collection.immutable.TreeSet
 import SharedHelpers._
 import org.scalatest.events._
 import PrivateMethodTester._
-
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
-*/
 
 class DeprecatedMethodFormSuiteSpec extends FunSpec {
 

@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import enablers.Emptiness
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeEmptyExplicitSpec extends Spec {
   

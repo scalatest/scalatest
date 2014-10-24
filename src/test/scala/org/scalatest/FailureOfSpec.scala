@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import exceptions.TestFailedException
+
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 */

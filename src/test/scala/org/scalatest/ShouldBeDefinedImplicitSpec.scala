@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import enablers.Definition
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeDefinedImplicitSpec extends Spec {
   

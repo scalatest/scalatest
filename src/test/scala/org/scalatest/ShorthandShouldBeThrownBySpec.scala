@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import java.io.FileNotFoundException
 import Matchers._
+import exceptions.TestFailedException
 
 class ShorthandShouldBeThrownBySpec extends Spec {
   

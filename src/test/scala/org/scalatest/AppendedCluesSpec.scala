@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException}
+import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException, ModifiableMessage}
 import org.scalatest.junit.JUnitTestFailedError
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}

@@ -23,6 +23,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.MotionToSuppress
 import org.scalatest.events.IndentedText
+import org.scalatest.exceptions.TestFailedException
 
 class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 

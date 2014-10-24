@@ -177,6 +177,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.StackDepth
 """
 
 val tableScaladocTemplate = """

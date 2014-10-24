@@ -1845,7 +1845,6 @@ private[scalatest] object Suite {
       case _: AnnotationFormatError | 
 /*
            _: org.scalatest.TestRegistrationClosedException |
-           _: org.scalatest.DuplicateTestNameException |
            _: org.scalatest.NotAllowedException |
 */
            _: CoderMalfunctionError |

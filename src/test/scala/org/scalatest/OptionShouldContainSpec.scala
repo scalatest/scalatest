@@ -20,6 +20,7 @@ import org.scalactic.NormalizingEquality
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import exceptions.TestFailedException
 
 class OptionShouldContainSpec extends Spec with Matchers {
 

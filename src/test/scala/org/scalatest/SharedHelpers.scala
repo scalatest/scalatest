@@ -25,6 +25,7 @@ import scala.collection.SortedSet
 import scala.collection.SortedMap
 import FailureMessages.decorateToStringValue
 import org.scalactic.Entry
+import org.scalatest.exceptions.StackDepthException
 
 object SharedHelpers extends Assertions {
 

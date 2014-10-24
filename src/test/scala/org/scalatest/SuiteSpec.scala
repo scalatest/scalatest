@@ -19,10 +19,8 @@ import collection.immutable.TreeSet
 import org.scalatest.events._
 import scala.reflect.NameTransformer.encode
 import SharedHelpers._
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
-*/
 
 class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector

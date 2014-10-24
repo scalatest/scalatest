@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldEqualNullSpec extends Spec {
 

@@ -19,6 +19,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import org.scalactic.Entry
+import org.scalatest.exceptions.TestFailedException
 
 class OnlyContainMatcherSpec extends Spec {
 

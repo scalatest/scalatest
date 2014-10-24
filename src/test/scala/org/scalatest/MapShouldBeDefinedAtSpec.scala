@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.TestFailedException
 
 class MapShouldBeDefinedAtSpec extends Spec {
   

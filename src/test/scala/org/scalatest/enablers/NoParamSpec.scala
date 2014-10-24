@@ -18,6 +18,7 @@ package org.scalatest.enablers
 import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
+import org.scalatest.exceptions.TestFailedException
 
 class NoParamSpec extends Spec with Matchers with LoneElement {
 

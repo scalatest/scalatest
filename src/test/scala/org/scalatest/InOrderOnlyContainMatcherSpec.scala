@@ -19,6 +19,7 @@ import collection.GenTraversable
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
+import org.scalatest.exceptions.TestFailedException
 
 class InOrderOnlyContainMatcherSpec extends Spec {
 

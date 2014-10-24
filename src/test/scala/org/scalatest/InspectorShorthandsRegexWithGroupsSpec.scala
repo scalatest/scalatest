@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 import FailureMessages._
+import exceptions.TestFailedException
 
 class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
   

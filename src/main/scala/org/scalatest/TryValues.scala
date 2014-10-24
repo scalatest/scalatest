@@ -17,6 +17,7 @@ package org.scalatest
 
 import java.util.NoSuchElementException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.TestFailedException
 
 import scala.util.Try
 import scala.util.Failure

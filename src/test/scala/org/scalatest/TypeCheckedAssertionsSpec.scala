@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalactic._
 import SharedHelpers.thisLineNumber
 import TypeCheckedTripleEquals._
+import exceptions.TestFailedException
 
 class TypeCheckedAssertionsSpec extends FunSpec {
 

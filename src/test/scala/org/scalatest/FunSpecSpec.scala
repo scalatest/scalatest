@@ -17,10 +17,9 @@ package org.scalatest
 
 import SharedHelpers._
 import org.scalatest.events._
-/* Uncomment after remove type aliases in org.scalatest package object
+import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-*/
 
 class FunSpecSpec extends FunSpec with GivenWhenThen {
 

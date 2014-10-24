@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.StackDepth
+
 /**
  * Trait that causes <a href="exceptions/StackDepth.html"><code>StackDepth</code></a> exceptions thrown by a running test (such as <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>s) to have
  * the exception's stack trace severed at the stack depth. Because the stack depth indicates the exact line of code that caused

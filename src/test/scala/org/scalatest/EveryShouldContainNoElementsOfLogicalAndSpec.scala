@@ -21,6 +21,7 @@ import SharedHelpers._
 import FailureMessages._
 import scala.collection.JavaConverters._
 import Matchers._
+import exceptions.TestFailedException
 
 class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
 

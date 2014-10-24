@@ -19,6 +19,7 @@ import org.scalactic._
 import SharedHelpers._
 import Matchers._
 import TripleEquals._
+import exceptions.TestFailedException
 
 class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Tolerance {
 

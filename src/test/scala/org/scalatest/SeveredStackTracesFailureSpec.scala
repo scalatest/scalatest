@@ -16,6 +16,7 @@
 package org.scalatest
 
 import Matchers._
+import exceptions.TestFailedException
 
 class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
 

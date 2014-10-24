@@ -67,7 +67,7 @@ private[scalatest] object CompileMacro {
         // parse error, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources("expectedTypeErrorButGotParseError", e.getMessage, codeStr))
         reify {
-          throw new TestFailedException(messageExpr.splice, 0)
+          throw new exceptions.TestFailedException(messageExpr.splice, 0)
         }
     }
   }
@@ -236,7 +236,7 @@ private[scalatest] object CompileMacro {
           // expect type check error but got parse error, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources("expectedTypeErrorButGotParseError", e.getMessage, code))
           reify {
-            throw new TestFailedException(messageExpr.splice, 0)
+            throw new exceptions.TestFailedException(messageExpr.splice, 0)
           }
       }
     }

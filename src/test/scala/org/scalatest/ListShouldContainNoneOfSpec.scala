@@ -21,6 +21,8 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.NotAllowedException
+import exceptions.TestFailedException
 
 class ListShouldContainNoneOfSpec extends Spec {
 

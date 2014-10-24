@@ -20,6 +20,7 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages._
 import Matchers._
+import exceptions.TestFailedException
 
 class OptionShouldContainOneOfLogicalAndSpec extends FunSpec {
   

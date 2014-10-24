@@ -23,6 +23,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.LinkedList
 import Matchers._
+import exceptions.TestFailedException
 
 class ListShouldContainTheSameElementsInOrderAsSpec extends Spec {
   

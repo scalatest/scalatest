@@ -20,6 +20,7 @@ import org.scalactic.Uniformity
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import exceptions.TestFailedException
 
 class ListShouldContainOneOfSpec extends Spec with Matchers {
 
@@ -54,7 +55,7 @@ class ListShouldContainOneOfSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message.get should be (Resources("didNotContainOneOfElements", decorateToStringValue(fumfuList), "\"fee\", \"fum\", \"foe\", \"fu\""))
         // Contains duplicate elements in the right list
-        val e3 = intercept[NotAllowedException] {
+        val e3 = intercept[exceptions.NotAllowedException] {
           fumList should contain oneOf ("fee", "fum", "foe", "fum")
         }
         e3.getMessage should be (Resources("oneOfDuplicate"))

@@ -215,7 +215,7 @@ import Suite.autoTagClassAnnotations
  * Tests can only be registered while the <code>FreeSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>FreeSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>FreeSpec</code>,
- * will be met with a thrown <a href="TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>FreeSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
+import exceptions.NotAllowedException
 
 /**
  * Trait that can be mixed into suites that need code executed before and after running each test.

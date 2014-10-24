@@ -17,10 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
-
-/* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
-*/
 
 class SuitesSpec extends FunSpec {
 

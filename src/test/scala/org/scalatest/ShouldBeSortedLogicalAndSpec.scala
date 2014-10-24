@@ -19,6 +19,7 @@ import SharedHelpers.thisLineNumber
 import org.scalatest.enablers.Sortable
 import FailureMessages.decorateToStringValue
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldBeSortedLogicalAndSpec extends Spec {
   

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
+import exceptions.TestFailedException
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._

@@ -19,6 +19,7 @@ import OptionValues._
 import org.scalactic.Prettifier
 import SharedHelpers.thisLineNumber
 import Matchers._
+import exceptions.TestFailedException
 
 class ShouldMatchPatternSpec extends FunSpec with OptionValues {
 
