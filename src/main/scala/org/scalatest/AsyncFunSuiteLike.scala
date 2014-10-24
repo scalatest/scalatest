@@ -17,7 +17,7 @@ package org.scalatest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@Finders(Array("org.scalatest.finders.FunSpecFinder"))
+@Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
