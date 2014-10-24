@@ -2335,6 +2335,58 @@ class EquaSetSpec extends UnitSpec {
     equaSet.copyInto(sortedNumber) shouldEqual sortedNumber.EquaSet(1, 2, 3)
     equaSet.copyInto(number) should be theSameInstanceAs equaSet
   }
+  it should "have a filter method after it is converted into EquaBridge with into" in {
+    val set = number.EquaSet(1, 2, 3)
+    val fastSet = number.FastEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    val result1 = bridge1.filter(_ == 1)
+    result1.map(_.toString) shouldBe lower.EquaSet("1")
+    result1.shouldHaveExactType[lower.EquaBridge[Int]]
+
+    val result2 = for (i <- bridge1 if i == 1) yield i.toString
+    result2 shouldBe lower.EquaSet("1")
+    result2.shouldHaveExactType[lower.EquaSet]
+
+    val bridge2 = fastSet.into(lower)
+
+    val result3 = bridge2.filter(_ == 2)
+    result3.map(_.toString) shouldBe lower.FastEquaSet("2")
+    result3.shouldHaveExactType[lower.FastEquaBridge[Int]]
+
+    val result4 = for (i <- bridge2 if i == 2) yield i.toString
+    result4 shouldBe lower.FastEquaSet("2")
+    result4.shouldHaveExactType[lower.FastEquaSet]
+  }
+  it should "have a withFilter method after it is converted into EquaBridge with into" in {
+    val set = number.EquaSet(1, 2, 3)
+    val fastSet = number.FastEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    var count = 0
+    val result1 = bridge1.withFilter { i =>
+      count += 1
+      i == 1
+    }
+    count shouldBe 0
+    result1.map(_.toString) shouldBe lower.EquaSet("1")
+    count shouldBe 3
+    result1.shouldHaveExactType[bridge1.WithFilter]
+
+    val bridge2 = fastSet.into(lower)
+
+    val result2 = bridge2.withFilter { i =>
+      count += 1
+      i == 2
+    }
+    count shouldBe 3
+    result2.map(_.toString) shouldBe lower.FastEquaSet("2")
+    count shouldBe 6
+    result2.shouldHaveExactType[bridge2.FastWithFilter]
+  }
+
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

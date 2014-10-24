@@ -2187,5 +2187,56 @@ class SortedEquaSetSpec extends UnitSpec {
     equaSet.copyInto(number) shouldEqual number.EquaSet(1, 2, 3)
     equaSet.copyInto(sortedNumber) should be theSameInstanceAs equaSet
   }
+  it should "have a filter method after it is converted into EquaBridge with into" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    val treeSet = number.TreeEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    val result1 = bridge1.filter(_ == 1)
+    result1.map(_.toString) shouldBe lower.SortedEquaSet("1")
+    result1.shouldHaveExactType[lower.SortedEquaBridge[Int]]
+
+    val result2 = for (i <- bridge1 if i == 1) yield i.toString
+    result2 shouldBe lower.SortedEquaSet("1")
+    result2.shouldHaveExactType[lower.SortedEquaSet]
+
+    val bridge2 = treeSet.into(lower)
+
+    val result3 = bridge2.filter(_ == 2)
+    result3.map(_.toString) shouldBe lower.TreeEquaSet("2")
+    result3.shouldHaveExactType[lower.TreeEquaBridge[Int]]
+
+    val result4 = for (i <- bridge2 if i == 2) yield i.toString
+    result4 shouldBe lower.TreeEquaSet("2")
+    result4.shouldHaveExactType[lower.TreeEquaSet]
+  }
+  it should "have a withFilter method after it is converted into EquaBridge with into" in {
+    val set = number.SortedEquaSet(1, 2, 3)
+    val fastSet = number.TreeEquaSet(1, 2, 3)
+
+    val bridge1 = set.into(lower)
+
+    var count = 0
+    val result1 = bridge1.withFilter { i =>
+      count += 1
+      i == 1
+    }
+    count shouldBe 0
+    result1.map(_.toString) shouldBe lower.SortedEquaSet("1")
+    count shouldBe 3
+    result1.shouldHaveExactType[bridge1.SortedWithFilter]
+
+    val bridge2 = fastSet.into(lower)
+
+    val result2 = bridge2.withFilter { i =>
+      count += 1
+      i == 2
+    }
+    count shouldBe 3
+    result2.map(_.toString) shouldBe lower.TreeEquaSet("2")
+    count shouldBe 6
+    result2.shouldHaveExactType[bridge2.TreeWithFilter]
+  }
 }
 

@@ -65,6 +65,79 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
       thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
     val path: thisEquaSets.type = thisEquaSets
+    def foreach[U](f: S => U): Unit = from.foreach(f)
+    def filter(pred: S => Boolean): thisEquaSets.EquaBridge[S] =
+      new thisEquaSets.EquaBridge(from.filter(pred))
+    def withFilter(pred: S => Boolean): WithFilter = new WithFilter(pred)
+
+    /**
+     * A class supporting filtered operations. Instances of this class are
+     * returned by method `withFilter`.
+     */
+    class WithFilter(p: S => Boolean) {
+
+      /**
+       * Applies a function `f` to all elements of the outer `EquaBridge` containing
+       * this `WithFilter` instance that satisfy predicate `p`.
+       *
+       * @param f the function that is applied for its side-effect to every element.
+       * The result of function `f` is discarded.
+       *
+       * @tparam U the type parameter describing the result of function `f`.
+       * This result will always be ignored. Typically `U` is `Unit`,
+       * but this is not necessary.
+       *
+       */
+      def foreach[U](f: S => U): Unit =
+        filter(p).foreach(f)
+
+      /**
+       * Builds a new `EquaSet` by applying a function to all elements of the
+       * outer `EquaBridge` containing this `WithFilter` instance that satisfy predicate `p`.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `EquaSet` resulting from applying
+       * the given function `f` to each element of the outer `EquaBridge`
+       * that satisfies predicate `p` and collecting the results.
+       *
+       * @return a new `EquaSet` resulting from applying the given function
+       * `f` to each element of the outer `EquaBridge` that satisfies
+       * predicate `p` and collecting the results.
+       */
+      def map(f: S => T): thisEquaSets.EquaSet =
+        filter(p).map(f)
+
+      /**
+       * Builds a new `EquaSet` by applying a function to all elements of the
+       * outer `EquaBridge` containing this `WithFilter` instance that satisfy
+       * predicate `p` and concatenating the results.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `EquaSet` resulting from applying
+       * the given `EquaSet`-valued function `f` to each element
+       * of the outer `EquaBridge` that satisfies predicate `p` and
+       * concatenating the results.
+       *
+       * @return a new `EquaSet` resulting from applying the given
+       * `EquaSet`-valued function `f` to each element of the
+       * outer `EquaBridge` that satisfies predicate `p` and concatenating
+       * the results.
+       */
+      def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+        filter(p).flatMap(f)
+
+      /**
+       * Further refines the filter for this `EquaBridge`.
+       *
+       * @param q the predicate used to test elements.
+       * @return an object of class `WithFilter`, which supports
+       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
+       * All these operations apply to those elements of this `EquaBridge` which
+       * satisfy the predicate `q` in addition to the predicate `p`.
+       */
+      def withFilter(q: S => Boolean): WithFilter =
+        new WithFilter(x => p(x) && q(x))
+    }
   }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
@@ -1639,6 +1712,63 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       thisEquaSets.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
     override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.FastEquaSet =
       thisEquaSets.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    override def filter(pred: S => Boolean): thisEquaSets.FastEquaBridge[S] =
+      new thisEquaSets.FastEquaBridge(from.filter(pred))
+    override def withFilter(pred: S => Boolean): FastWithFilter = new FastWithFilter(pred)
+
+    /**
+     * A class supporting filtered operations. Instances of this class are
+     * returned by method `withFilter`.
+     */
+    class FastWithFilter(p: S => Boolean) extends WithFilter(p) {
+
+      /**
+       * Builds a new `FastEquaSet` by applying a function to all elements of the
+       * outer `EquaBridge` containing this `FastWithFilter` instance that satisfy predicate `p`.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `FastEquaSet` resulting from applying
+       * the given function `f` to each element of the outer `EquaBridge`
+       * that satisfies predicate `p` and collecting the results.
+       *
+       * @return a new `FastEquaSet` resulting from applying the given function
+       * `f` to each element of the outer `EquaBridge` that satisfies
+       * predicate `p` and collecting the results.
+       */
+      override def map(f: S => T): thisEquaSets.FastEquaSet =
+        filter(p).map(f)
+
+      /**
+       * Builds a new `FastEquaSet` by applying a function to all elements of the
+       * outer `EquaBridge` containing this `FastWithFilter` instance that satisfy
+       * predicate `p` and concatenating the results.
+       *
+       * @param f the function to apply to each element.
+       * @return a new `FastEquaSet` resulting from applying
+       * the given `EquaSet`-valued function `f` to each element
+       * of the outer `EquaBridge` that satisfies predicate `p` and
+       * concatenating the results.
+       *
+       * @return a new `FastEquaSet` resulting from applying the given
+       * `EquaSet`-valued function `f` to each element of the
+       * outer `EquaBridge` that satisfies predicate `p` and concatenating
+       * the results.
+       */
+      override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+        filter(p).flatMap(f)
+
+      /**
+       * Further refines the filter for this `EquaSet`.
+       *
+       * @param q the predicate used to test elements.
+       * @return an object of class `FastWithFilter`, which supports
+       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
+       * All these operations apply to those elements of this `EquaBridge` which
+       * satisfy the predicate `q` in addition to the predicate `p`.
+       */
+      override def withFilter(q: S => Boolean): FastWithFilter =
+        new FastWithFilter(x => p(x) && q(x))
+    }
   }
 
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet { thisFastEquaSet =>
