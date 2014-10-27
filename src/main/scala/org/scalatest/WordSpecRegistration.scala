@@ -44,7 +44,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentWordSpecMod", "WordSpecRegistration")
+  protected[scalatest] final val engine = new Engine("concurrentWordSpecMod", "WordSpecRegistration")
   import engine._
 
   /**
@@ -90,11 +90,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "WordSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "WordSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "WordSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "WordSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -116,7 +116,12 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+    def transformToOutcomeParam: Registration = testFun()
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), "inCannotAppearInsideAnotherIn", "WordSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+  }
+
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
     engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", "WordSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
@@ -139,7 +144,12 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+    def transformToOutcomeParam: Registration = testFun()
+    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), "ignoreCannotAppearInsideAnIn", "WordSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+  }
+
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
     engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", "WordSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
@@ -196,7 +206,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -217,7 +227,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(specText, tags, "is", testFun _)
+      registerPendingTestToRun(specText, tags, "is", testFun _)
     }
 
     /**
@@ -236,7 +246,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }       
@@ -274,7 +284,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(f: => Unit) {
+    def in(f: => Registration) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -294,7 +304,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(f: => Unit) {
+    def ignore(f: => Registration) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 
@@ -315,7 +325,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(f: => PendingNothing) {
-      registerTestToRun(string, List(), "is", f _)
+      registerPendingTestToRun(string, List(), "is", f _)
     }
 
     /**
