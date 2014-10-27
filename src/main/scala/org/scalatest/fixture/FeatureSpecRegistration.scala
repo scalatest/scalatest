@@ -201,13 +201,13 @@ trait FeatureSpecRegistration extends Suite with TestRegistration with Informing
         theTest.testFun match {
           case transformer: org.scalatest.fixture.Transformer[_] => 
             transformer.exceptionalTestFun match {
-              case wrapper: NoArgTestWrapper[_] =>
+              case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
               case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
             }
           case other => 
             other match {
-              case wrapper: NoArgTestWrapper[_] =>
+              case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
               case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
             }
