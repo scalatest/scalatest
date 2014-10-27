@@ -48,8 +48,10 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentSpecMod", "Spec")
+  protected[scalatest] final val engine = new Engine("concurrentSpecMod", "Spec")
   import engine._
+
+  type Registration
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -94,11 +96,11 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -120,7 +122,13 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit) {
+  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Registration) {
+    def transformToOutcomeParam: Registration = testFun()
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+  }
+
+  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingNothing) {
+    //def transformPendingToOutcomeParam: PendingNothing = testFun()
     engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
@@ -243,7 +251,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -266,7 +274,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
     }
 
     /**
@@ -287,7 +295,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -355,7 +363,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -377,7 +385,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
     }
 
     /**
@@ -397,7 +405,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -649,7 +657,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)
     }
 
@@ -680,7 +688,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _)
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -746,7 +754,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)
     }
 
@@ -776,7 +784,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _)
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _)
     }
 
     /**
@@ -958,7 +966,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -981,7 +989,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
     }
 
     /**
@@ -1002,7 +1010,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -1070,7 +1078,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -1092,7 +1100,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
     }
 
     /**
@@ -1112,7 +1120,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -1371,7 +1379,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)
     }
     
@@ -1392,7 +1400,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)
     }
   }
@@ -1469,7 +1477,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Registration) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)
     }
 
@@ -1492,7 +1500,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Registration) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)
     }
   }
@@ -1533,7 +1541,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
       new ResultOfStringPassedToVerb(verb, rest) {
 
         def is(testFun: => PendingNothing) {
-          registerTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)
+          registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)
         }
         // Note, won't have an is method that takes fixture => PendingNothing one, because don't want
         // to say is (fixture => pending), rather just say is (pending)
@@ -1543,7 +1551,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
             // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
             //                                               ^
             def is(testFun: => PendingNothing) {
-              registerTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)
+              registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)
             }
           }
         }
@@ -1602,7 +1610,12 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+    def transformToOutcomeParam: Registration = testFun()
+    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+  }
+
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
     engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
