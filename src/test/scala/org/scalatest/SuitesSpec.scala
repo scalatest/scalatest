@@ -65,44 +65,5 @@ class SuitesSpec extends FunSpec {
       }
     }
   }
-
-  describe("Specs") {
-    it("should return the passed suites from nestedSuites") {
-      val f = new Specs(a, b, c, d, e)
-      assert(f.nestedSuites == List(a, b, c, d, e))
-      val g = new Specs(Array(a, b, c, d, e): _*)
-      assert(g.nestedSuites == List(a, b, c, d, e))
-      intercept[NullPointerException] {
-        new Specs(a, b, null, d, e)
-      }
-      intercept[NullPointerException] {
-        val aNull: Array[Suite] = null
-        new Specs(aNull: _*)
-      }
-    }
-    it("should not care about chosenStyles if it contains no tests directly and only contains nested suites with no tests") {
-      val f = new Specs(a, b, c, d, e)
-      f.run(None, Args(SilentReporter))
-      f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
-    }
-
-    it("should care about chosenStyles if it contains tests directly") {
-
-      class SpecsWithSuiteStyleTests(suitesToNest: Suite*) extends Specs(suitesToNest.toList: _*) {
-        def testMethod1() {}
-        def testMethod2() {}
-      }
-
-      val g = new SpecsWithSuiteStyleTests(a, b, c, d, e)
-      // OK if no chosen styles specified
-      g.run(None, Args(SilentReporter))
-      // OK if chosen styles is Suite, because that's the style of *tests* written in this Specs
-      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Suite")), None, new Tracker, Set.empty))
-      intercept[NotAllowedException] {
-        // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Specs
-        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
-      }
-    }
-  }
 }
 

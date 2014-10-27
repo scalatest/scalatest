@@ -21,8 +21,8 @@ import org.scalatest.exceptions._
 import collection.immutable.TreeSet
 import org.scalatest.Suite._
 import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
-                        Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, Specs, 
-                        Reporter, Distributor, OptionValues, Resources, DoNotDiscover, WrapWith, 
+                        Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, 
+                        Reporter, Distributor, OptionValues, Resources, DoNotDiscover, WrapWith, Suites,
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
 import org.scalatest.SharedHelpers._
 import org.scalatest.tools.Runner.CHOSEN_STYLES
@@ -740,7 +740,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 0)
       assert(e.expectedTestCount(Filter()) === 2)
 
-      val f = new Specs(a, b, c, d, e)
+      val f = new Suites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) === 10)
     }
     
@@ -1763,7 +1763,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         val f = new SpecF
         val g = new SpecG
 
-        val x = Specs(a, b, c, d, e, f, g)
+        val x = Suites(a, b, c, d, e, f, g)
         x.run(None, Args(SilentReporter, new IgnoreStopRequestStopper, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
 
         assert(a.executed)
@@ -1782,7 +1782,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         val m = new SpecF
         val n = new SpecG
 
-        val y = Specs(h, i, j, k, l, m, n)
+        val y = Suites(h, i, j, k, l, m, n)
         y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
 
         assert(k.executed)
