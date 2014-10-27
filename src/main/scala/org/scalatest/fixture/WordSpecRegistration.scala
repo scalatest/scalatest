@@ -50,7 +50,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureWordSpecMod", "FixtureWordSpec")
+  protected[scalatest] final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureWordSpecMod", "FixtureWordSpec")
   import engine._
   
   private[scalatest] val sourceFileName = "WordSpecRegistration.scala"
@@ -98,11 +98,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -124,7 +124,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
+    engine.registerTest(specText, transformToOutcome(testFun), "inCannotAppearInsideAnotherIn", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+  }
+
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
     engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
@@ -147,7 +151,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), "ignoreCannotAppearInsideAnIn", sourceFileName, methodName, 4, -4, None, testTags: _*)
+  }
+
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
     engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
@@ -206,7 +214,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Any) {
+    def in(testFun: FixtureParam => Registration) {
       registerTestToRun(specText, tags, "in", testFun)
     }
 
@@ -228,7 +236,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Any) {
+    def in(testFun: () => Registration) {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -251,7 +259,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
     }
 
     /**
@@ -272,7 +280,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Any) {
+    def ignore(testFun: FixtureParam => Registration) {
       registerTestToIgnore(specText, tags, "ignore", testFun)
     }
 
@@ -294,7 +302,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Any) {
+    def ignore(testFun: () => Registration) {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
@@ -336,7 +344,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Any) {
+    def in(testFun: FixtureParam => Registration) {
       registerTestToRun(string, List(), "in", testFun)
     }
 
@@ -358,7 +366,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Any) {
+    def in(testFun: () => Registration) {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -381,7 +389,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(string, List(), "is", unusedFixtureParam => testFun)
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)
     }
 
     /**
@@ -402,7 +410,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Any) {
+    def ignore(testFun: FixtureParam => Registration) {
       registerTestToIgnore(string, List(), "ignore", testFun)
     }
 
@@ -424,7 +432,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Any) {
+    def ignore(testFun: () => Registration) {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
     
     }
