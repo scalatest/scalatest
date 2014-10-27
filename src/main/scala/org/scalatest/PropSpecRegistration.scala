@@ -41,7 +41,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 trait PropSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentPropSpecMod", "PropSpec")
+  protected[scalatest] final val engine = new Engine("concurrentPropSpecMod", "PropSpec")
   import engine._
 
   /**
@@ -87,11 +87,11 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "PropSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "PropSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "PropSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "PropSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -108,8 +108,8 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testName, Transformer(testFun _), "propertyCannotAppearInsideAnotherProperty", "PropSpecRegistration.scala", "property", 4, -2, None, None, None, testTags: _*)
+  protected def property(testName: String, testTags: Tag*)(testFun: => Registration) {
+    engine.registerTest(testName, transformToOutcome(testFun), "propertyCannotAppearInsideAnotherProperty", "PropSpecRegistration.scala", "property", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -127,8 +127,8 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideAProperty", "PropSpecRegistration.scala", "ignore", 4, -2, None, testTags: _*)
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => Registration) {
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), "ignoreCannotAppearInsideAProperty", "PropSpecRegistration.scala", "ignore", 4, -2, None, testTags: _*)
   }
 
   /**
