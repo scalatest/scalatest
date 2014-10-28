@@ -920,7 +920,7 @@ object EqualityPolicy {
     def !==(n: T): Boolean = !isWithin(n)
     
     /**
-     * Overrides toString to return "[pivot] plusOrMinus [tolerance]"
+     * Overrides toString to return "[pivot] +- [tolerance]"
      */
     override def toString: String = Prettifier.default(pivot) + " +- " + Prettifier.default(tolerance)
   }
