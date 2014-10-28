@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest
 
+import org.scalactic.Prettifier
 import java.text.MessageFormat
 
-sealed abstract class Fact {
+private[scalatest] sealed abstract class Fact {
     val rawFailureMessage: String
     val rawNegatedFailureMessage: String
     val rawMidSentenceFailureMessage: String
@@ -74,7 +75,8 @@ sealed abstract class Fact {
     msgFmt.format(args.map(prettifier).toArray)
   }
 }
-private[scalactic] object Fact {
+
+private[scalatest] object Fact {
   def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
     case (false,false) => Resources("commaAnd")
     case (false,true) => Resources("rightParensCommaAnd")
@@ -88,11 +90,36 @@ private[scalactic] object Fact {
     case (true,false) => Resources("leftParensCommaBut")
     case (true,true) => Resources("bothParensCommaBut")
   }
+
+  // Idea is to override toString each time it is used.
+  private[scalatest] sealed abstract class LazyMessage {
+    val nestedArgs: IndexedSeq[Any]
+  }
+
+  private[scalatest] case class FailureMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+    override def toString: String = fact.failureMessage
+  }
+
+  private[scalatest] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+    override def toString: String = fact.negatedFailureMessage
+  }
+
+  private[scalatest] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+    override def toString: String = fact.midSentenceFailureMessage
+  }
+
+  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+    override def toString: String = fact.midSentenceNegatedFailureMessage
+  }
 }
 
-import Fact._
+import org.scalatest.Fact._
 
-case class No(
+private[scalatest] case class No(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -149,7 +176,7 @@ case class No(
  *
  * @author Bill Venners
  */
-object No {
+private[scalatest] object No {
 
   /**
    * Factory method that constructs a new <code>No</code> with passed <code>failureMessage</code>, 
@@ -291,7 +318,7 @@ object No {
 }
 
 
-case class Yes(
+private[scalatest] case class Yes(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -350,7 +377,7 @@ case class Yes(
  *
  * @author Bill Venners
  */
-object Yes {
+private[scalatest] object Yes {
 
   /**
    * Factory method that constructs a new <code>Yes</code> with passed code>failureMessage</code>, 
@@ -489,31 +516,4 @@ object Yes {
       false,
       Prettifier.default
     )
-}
-
-
-
-// Idea is to override toString each time it is used.
-sealed private[scalactic] abstract class LazyMessage {
-  val nestedArgs: IndexedSeq[Any]
-}
-
-private[scalactic] case class FailureMessage(fact: Fact) extends LazyMessage {
-  val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-  override def toString: String = fact.failureMessage
-}
-
-private[scalactic] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
-  val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-  override def toString: String = fact.negatedFailureMessage
-}
-
-private[scalactic] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
-  val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-  override def toString: String = fact.midSentenceFailureMessage
-}
-
-private[scalactic] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
-  val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-  override def toString: String = fact.midSentenceNegatedFailureMessage
 }

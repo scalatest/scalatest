@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest
 
-import org.scalatest._
-import Inside._
+import org.scalactic.PrettyMethods
+import Fact._
 
 class FactSpec extends FreeSpec with Matchers with PrettyMethods {
 
