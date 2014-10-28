@@ -50,7 +50,10 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait FreeSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  protected[scalatest] final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
+  private final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
+
+  protected[scalatest] def getEngine: Engine = engine
+
   import engine._
 
   /**

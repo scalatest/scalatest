@@ -36,6 +36,8 @@ trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with org.scal
       )
     }
 
+  private final val engine: FixtureEngine[FixtureParam] = getEngine
+
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {

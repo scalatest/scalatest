@@ -44,7 +44,10 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  protected[scalatest] final val engine = new Engine("concurrentWordSpecMod", "WordSpecRegistration")
+  private final val engine = new Engine("concurrentWordSpecMod", "WordSpecRegistration")
+
+  protected[scalatest] def getEngine: Engine = engine
+
   import engine._
 
   /**

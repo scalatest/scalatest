@@ -48,7 +48,10 @@ import org.scalatest.exceptions.NotAllowedException
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 trait FeatureSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  protected[scalatest] final val engine = new Engine("concurrentFeatureSpecMod", "FeatureSpec")
+  private final val engine = new Engine("concurrentFeatureSpecMod", "FeatureSpec") // Safely published
+
+  protected[scalatest] def getEngine: Engine = engine
+
   import engine._
 
   /**

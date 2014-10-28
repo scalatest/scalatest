@@ -35,6 +35,8 @@ trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with OneInsta
       )
     }
 
+  private final val engine: Engine = getEngine
+
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {

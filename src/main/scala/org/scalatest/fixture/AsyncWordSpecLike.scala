@@ -36,6 +36,8 @@ trait AsyncWordSpecLike extends WordSpecRegistration with AsyncTests with org.sc
       )
     }
 
+  private final val engine: FixtureEngine[FixtureParam] = getEngine
+
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {

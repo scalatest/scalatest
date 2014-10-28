@@ -35,6 +35,8 @@ trait AsyncFlatSpecLike extends FlatSpecRegistration with AsyncTests with OneIns
       )
     }
 
+  private final val engine: Engine = getEngine
+
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {

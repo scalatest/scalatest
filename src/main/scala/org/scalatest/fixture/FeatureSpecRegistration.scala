@@ -49,7 +49,10 @@ import org.scalatest.exceptions.NotAllowedException
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 trait FeatureSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  protected[scalatest] final val engine = new FixtureEngine[FixtureParam]("concurrentFeatureSpecMod", "FixtureFeatureSpec")
+  private final val engine = new FixtureEngine[FixtureParam]("concurrentFeatureSpecMod", "FixtureFeatureSpec") // Safely published
+
+  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
+
   import engine._
   
   private[scalatest] val sourceFileName = "FeatureSpecRegistration.scala"

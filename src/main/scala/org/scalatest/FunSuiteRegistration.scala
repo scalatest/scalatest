@@ -41,7 +41,10 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 trait FunSuiteRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  protected[scalatest] final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
+  private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
+
+  protected[scalatest] def getEngine: Engine = engine
+
   import engine._
 
   /**
