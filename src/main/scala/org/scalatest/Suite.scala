@@ -1303,7 +1303,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     if (args == null)
       throw new NullPointerException("args was null")
     
-    if (!this.isInstanceOf[Spec] && !this.isInstanceOf[Suites] && !this.isInstanceOf[Specs] && !this.isInstanceOf[Sequential] && !this.isInstanceOf[Stepwise])
+    if (!this.isInstanceOf[Spec] && !this.isInstanceOf[Suites] && !this.isInstanceOf[Sequential] && !this.isInstanceOf[Stepwise])
       println("Unfortunately Suite has been deprecated as a style trait. Please use trait Spec instead.")
 
     import args._

@@ -724,7 +724,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 0)
       assert(e.expectedTestCount(Filter()) === 2)
 
-      val f = new Specs(a, b, c, d, e)
+      val f = new Suites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) === 10)
     }
     
@@ -1745,7 +1745,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           def reset() {}
         }
 
-        val x = Specs(a, b, c, d, e, f, g)
+        val x = Suites(a, b, c, d, e, f, g)
         x.run(None, Args(SilentReporter, new IgnoreStopRequestStopper, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
 
         assert(a.executed)
@@ -1765,7 +1765,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         val m = new SpecF
         val n = new SpecG
 
-        val y = Specs(h, i, j, k, l, m, n)
+        val y = Suites(h, i, j, k, l, m, n)
         y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
 
         assert(k.executed)
