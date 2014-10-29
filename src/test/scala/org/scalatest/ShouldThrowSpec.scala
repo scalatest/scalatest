@@ -55,7 +55,7 @@ class ShouldThrowSpec extends Spec {
     def `return the caught exception` {
       def kaboom() { throw new Exception("howdy") }
       val thrown = evaluating { kaboom() } should produce [Exception]
-      thrown.getMessage should be === "howdy"
+      thrown.getMessage should === ("howdy")
     }  
     
     def `include that wrong exception as the TFE's cause` {

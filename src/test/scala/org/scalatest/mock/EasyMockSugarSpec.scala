@@ -208,9 +208,9 @@ class EasyMockSugarSpec extends FlatSpec with ShouldMatchers {
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
-    tf.size should be === 4
+    tf.size should === (4)
     val ts = rep.testSucceededEventsReceived
-    ts.size should be === 4
+    ts.size should === (4)
   }
 
   it should "work with multiple mocks passed in as an implicit Seq" in {
@@ -412,8 +412,8 @@ class EasyMockSugarSpec extends FlatSpec with ShouldMatchers {
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
-    tf.size should be === 4
+    tf.size should === (4)
     val ts = rep.testSucceededEventsReceived
-    ts.size should be === 4
+    ts.size should === (4)
   }
 }

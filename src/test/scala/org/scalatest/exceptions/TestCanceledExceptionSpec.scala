@@ -210,24 +210,6 @@ class TestCanceledExceptionSpec extends FunSpec with ShouldMatchers {
       }
     }
 
-    it("should give the proper line on 1 should be === 2") {
-      try {
-        1 should be === 2
-      }
-      catch {
-        case e: TestCanceledException =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) =>
-              if (s != ("TestCanceledExceptionSpec.scala:" + (baseLineNumber + 186))) {
-                cancel("s was: " + s, e)
-              }
-            case None => fail("1 should be === 2 didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          cancel("1 should be === 2 didn't produce a TestCanceledException", e)
-      }
-    }
-
     it("should give the proper line on evaluating {} should produce [IllegalArgumentException] {}") {
       try {
         evaluating {} should produce[IllegalArgumentException]

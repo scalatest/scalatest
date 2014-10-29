@@ -873,8 +873,8 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should contain value (3)
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 3" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 3")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 3") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 3"))
       }
 
       def `should throw TestFailedException if contains the specified value when used with not` {
@@ -882,20 +882,20 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should (not contain value (2))
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should not (contain value (2))
         }
-        caught2.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2")
+        caught2.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should not contain value (2)
         }
-        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2")
+        caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2"))
       }
 
       def `should throw an TestFailedException when map doesn't contain specified value and used in a logical-and expression` {
@@ -903,20 +903,20 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should { contain value (5) and (contain value (2)) }
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 5" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 5")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 5") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 5"))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((contain value (5)) and (contain value (2)))
         }
-        caught2.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 5" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 5")
+        caught2.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 5") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 5"))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (contain value (5) and contain value (2))
         }
-        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 5" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 5")
+        caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 5") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 5"))
       }
 
       def `should throw an TestFailedException when map doesn't contain specified value and used in a logical-or expression` {
@@ -924,20 +924,20 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should { contain value (55) or (contain value (22)) }
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22"))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((contain value (55)) or (contain value (22)))
         }
-        caught2.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22")
+        caught2.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22"))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (contain value (55) or contain value (22))
         }
-        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22")
+        caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 55, and {\"one\"=1, \"two\"=2} did not contain value 22") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 55, and {\"two\"=2, \"one\"=1} did not contain value 22"))
       }
 
       def `should throw an TestFailedException when map contains specified value and used in a logical-and expression with not` {
@@ -945,20 +945,20 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { contain value (3) } and not { contain value (2) }}
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((not contain value (3)) and (not contain value (2)))
         }
-        caught2.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2")
+        caught2.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (not contain value (3) and not contain value (2))
         }
-        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2")
+        caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} did not contain value 3, but {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} did not contain value 3, but {\"two\"=2, \"one\"=1} contained value 2"))
       }
 
       def `should throw an TestFailedException when map contains specified value and used in a logical-or expression with not` {
@@ -966,20 +966,20 @@ class ShouldContainValueSpec extends Spec with Checkers with ReturnsNormallyThro
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { contain value (2) } or not { contain value (2) }}
         }
-        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2")
+        caught1.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((not contain value (2)) or (not contain value (2)))
         }
-        caught2.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2")
+        caught2.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2"))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (not contain value (2) or not contain value (2))
         }
-        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2" or
-          be === "{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2")
+        caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained value 2, and {\"one\"=1, \"two\"=2} contained value 2") or
+          equal ("{\"two\"=2, \"one\"=1} contained value 2, and {\"two\"=2, \"one\"=1} contained value 2"))
       }
     }
   }

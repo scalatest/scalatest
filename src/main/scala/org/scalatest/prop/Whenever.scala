@@ -90,7 +90,7 @@ trait Whenever {
    *     else if (n != 0)
    *       f.numer should be < 0
    *     else
-   *       f.numer should be === 0
+   *       f.numer should === (0)
    *
    *     f.denom should be > 0
    *   }

@@ -3327,7 +3327,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
     /**
      * <strong>
-     * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+     * The should be === syntax has been deprecated and may no longer be
+     * used.  Please use should equal, should ===, shouldEqual,
      * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
      * checkable equality comparison.
      * </strong>
@@ -3341,6 +3342,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
     def be(comparison: TripleEqualsInvocation[_]) {
+      throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+                                    getStackDepthFun("Matchers.scala", "be ===")) 
       doCollected(collected, xs, original, "be", 1) { e => 
         if ((e == comparison.right) != shouldBeTrue) {
           throw newTestFailedException(
