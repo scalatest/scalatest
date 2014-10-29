@@ -1213,10 +1213,10 @@ object Runner {
          props += s
       }
       else if (s.startsWith("-p")) {
-        println("WARNING: -p has been deprecated and will be reused for a different (but still very cool) purpose in ScalaTest 2.0. Please change all uses of -p to -R.")
-        runpath += s
-        if (it.hasNext)
-          runpath += it.next
+        throw new IllegalArgumentException(
+          "ERROR: -p has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -p to -R.")
       }
       else if (s.startsWith("-R")) {
         runpath += "-p" + s.substring(2)
@@ -1283,10 +1283,10 @@ object Runner {
           excludes += it.next
       }
       else if (s.startsWith("-r")) {
-        println("WARNING: -r has been deprecated and will be reused for a different (but still very cool) purpose in ScalaTest 2.0. Please change all uses of -r to -C.")
-        reporters += s
-        if (it.hasNext)
-          reporters += it.next
+        throw new IllegalArgumentException(
+          "ERROR: -r has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -r to -C.")
       }
       else if (s.startsWith("-C")) {
 
@@ -1343,8 +1343,10 @@ object Runner {
           wildcard += it.next
       }
       else if (s.startsWith("-c")) {
-        println("WARNING: -c has been deprecated and will be reused for a different (but still very cool) purpose in ScalaTest 2.0. Please change all uses of -c to -P.")
-        concurrent += s
+        throw new IllegalArgumentException(
+          "ERROR: -c has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -c to -P.")
       }
       else if (s.startsWith("-P")) {
 

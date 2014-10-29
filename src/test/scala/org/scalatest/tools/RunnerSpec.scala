@@ -27,7 +27,7 @@ import org.scalatest.tools.Runner.deglobSuiteParams
 
 class RunnerSpec extends Spec with PrivateMethodTester {
 
-  def `parseArgsIntoLists should work correctly using deprecated args` {
+  def `parseArgsIntoLists should throw IllegalArgumentException using long-deprecated args` {
 
     // this is how i solved the problem of wanting to reuse these val names, runpathList, reportersList, etc.
     // by putting them in a little verify method, it gets reused each time i call that method
@@ -96,50 +96,54 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       }
     }
 
-    verify(
-      Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out", "-p"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-p"),
-      List("-g", "-g", "-f", "file.out"),
-      Nil,
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+              "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out", "-p"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-p"),
+        List("-g", "-g", "-f", "file.out"),
+        Nil,
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
 
-    verify(
-      Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-            "-s", "SuiteOne", "-s", "SuiteTwo"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+              "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+              "-s", "SuiteOne", "-s", "SuiteTwo"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
 
     verify(
       Array(),
@@ -162,266 +166,296 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil
     )
 
-    verify(
-      Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-            "-n", "JustOne", "-s", "SuiteOne", "-s", "SuiteTwo"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "JustOne"),
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+              "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+              "-n", "JustOne", "-s", "SuiteOne", "-s", "SuiteTwo"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "JustOne"),
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
 
-    verify(
-      Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      Nil,
-      Nil,
-      Nil,
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+              "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+              "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        Nil,
+        Nil,
+        Nil,
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
 
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      Nil,
-      Nil,
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+              "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+              "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        Nil,
+        Nil,
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
 
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo", "-m", "com.example.webapp",
-          "-w", "com.example.root"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      Nil,
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo", "-m", "com.example.webapp",
+            "-w", "com.example.root"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        Nil,
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Try a TestNGSuite
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo", "-m", "com.example.webapp",
-          "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne", "-s", "SuiteTwo"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-s", "SuiteTwo", "-m", "com.example.webapp",
+            "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne", "-s", "SuiteTwo"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Try a junit Suite
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-j", "junitTest", "-j", "junitTest2",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-f", "file.out"),
-      List("-s", "SuiteOne"),
-      Nil,
-      List("-j", "junitTest", "-j", "junitTest2"),
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-j", "junitTest", "-j", "junitTest2",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-f", "file.out"),
+        List("-s", "SuiteOne"),
+        Nil,
+        List("-j", "junitTest", "-j", "junitTest2"),
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Test -u option
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-u", "directory/"),
-      List("-s", "SuiteOne"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      None, 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-u", "directory/"),
+        List("-s", "SuiteOne"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        None, 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Test -q option
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-q", "Spec|Suite",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-u", "directory/"),
-      List("-s", "SuiteOne"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      Some(Pattern.compile(".*(Spec|Suite)$")), 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-q", "Spec|Suite",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-u", "directory/"),
+        List("-s", "SuiteOne"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        Some(Pattern.compile(".*(Spec|Suite)$")), 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Test -q option
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-q", "Spec", "-q", "Suite",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-u", "directory/"),
-      List("-s", "SuiteOne"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      Some(Pattern.compile(".*(Spec|Suite)$")), 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-q", "Spec", "-q", "Suite",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-u", "directory/"),
+        List("-s", "SuiteOne"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        Some(Pattern.compile(".*(Spec|Suite)$")), 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Test -Q option
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
-          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-u", "directory/"),
-      List("-s", "SuiteOne"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
-      Nil, 
-      Nil, 
-      Nil, 
-      Nil
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+            "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-u", "directory/"),
+        List("-s", "SuiteOne"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
+        Nil, 
+        Nil, 
+        Nil, 
+        Nil
+      )
+    }
+
     // Test -W option
-    verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
-          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
-          "-n", "One Two Three", "-W", "60", "60", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
-          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
-      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
-      List("-g", "-g", "-u", "directory/"),
-      List("-s", "SuiteOne"),
-      Nil,
-      Nil,
-      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
-      List("-n", "One Two Three"),
-      List("-l", "SlowTests"),
-      List("-c"),
-      List("-m", "com.example.webapp"),
-      List("-w", "com.example.root"),
-      List("-b", "some/path/file.xml"),
-      Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
-      Nil, 
-      Nil, 
-      Nil,
-      List("-W", "60", "60")
-    )
+    intercept[IllegalArgumentException] {
+      verify(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+            "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+            "-n", "One Two Three", "-W", "60", "60", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+            "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+        List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+        List("-g", "-g", "-u", "directory/"),
+        List("-s", "SuiteOne"),
+        Nil,
+        Nil,
+        List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+        List("-n", "One Two Three"),
+        List("-l", "SlowTests"),
+        List("-c"),
+        List("-m", "com.example.webapp"),
+        List("-w", "com.example.root"),
+        List("-b", "some/path/file.xml"),
+        Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
+        Nil, 
+        Nil, 
+        Nil,
+        List("-W", "60", "60")
+      )
+    }
+
     intercept[IllegalArgumentException] {
       Runner.parseArgs(
         Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
@@ -860,7 +894,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     )
     // Test -h option
     verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+      Array("-P", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
           "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-h", "directory/",
           "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
           "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
@@ -883,7 +917,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     )
     // Test -h -Y option
     verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+      Array("-P", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
           "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-h", "directory/",
           "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
           "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
@@ -928,7 +962,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
 
     // Test -M some more
     verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+      Array("-P", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
           "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g",
           "-M", "target/doovers.txt",
           "-h", "directory/", "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
@@ -975,7 +1009,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
 
     // Test -A some more
     verify(
-      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+      Array("-P", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
           "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g",
           "-A", "target/doovers.txt",
           "-h", "directory/", "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
