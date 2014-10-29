@@ -20,7 +20,7 @@ import scala.language.higherKinds
 import scala.collection.GenSeq
 import scala.collection.Seq
 
-trait SafeSeqs {
+private[scalactic] trait SafeSeqs {
   // this does not work in 2.10, we could add this back when we no longer support 2.10.
   /*implicit class CovariantSeqContainifier[E, SEQ[+e] <: GenSeq[e]](leftSideGenSeq: SEQ[E]) {
     def safeContains[R](rightSideEle: R)(implicit ev: SafeSeqsConstraint[SEQ[E], R]): Boolean =
@@ -93,5 +93,5 @@ trait SafeSeqs {
   }
 }
 
-object SafeSeqs extends SafeSeqs
+private[scalactic] object SafeSeqs extends SafeSeqs
 

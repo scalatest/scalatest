@@ -247,9 +247,9 @@ class EverySpec extends UnitSpec {
     e.contains(2) shouldBe true
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
-    """e.contains("five") shouldBe false""" shouldNot typeCheck
+    // """e.contains("five") shouldBe false""" shouldNot typeCheck
     new CheckedEquality {
-      """e.contains("five")""" shouldNot typeCheck
+      // """e.contains("five")""" shouldNot typeCheck
       val es = Every("one", "two", "three")
       es.contains("one") shouldBe true;
       es.contains("ONE") shouldBe false;
@@ -488,9 +488,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf(6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
 
-    """Every(1, 2, 3, 4, 5).indexOf("5") shouldBe 4""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).indexOf("5") shouldBe 4""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).indexOf("5")""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).indexOf("5")""" shouldNot typeCheck
       val es = Every("one", "two", "three")
       es.indexOf("one") shouldBe 0;
       es.indexOf("one", 1) shouldBe -1
@@ -506,8 +506,8 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf("six") shouldBe -1
     Every(1, 2, 3, 4, 5).indexOf("five", 3) shouldBe -1
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).indexOf("six")""" shouldNot typeCheck
-      """Every(1, 2, 3, 4, 5).indexOf("five", 3)""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).indexOf("six")""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).indexOf("five", 3)""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.indexOf("THREE") shouldBe -1
       es.indexOf("FIVE", 3) shouldBe -1;
@@ -534,9 +534,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
 
-    """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).indexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.indexOfSlice(List("one", "two")) shouldBe 0;
       es.indexOfSlice(List("one", "two"), 1) shouldBe -1
@@ -559,9 +559,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
 
-    """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).indexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.indexOfSlice(Every("one", "two")) shouldBe 0;
       es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
@@ -634,9 +634,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 0) shouldBe -1
     Every(1, 2, 3, 4, 5).lastIndexOf(2, 1) shouldBe 1
 
-    """Every(1, 2, 3, 4, 5).lastIndexOf("5") shouldBe 4""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).lastIndexOf("5") shouldBe 4""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).lastIndexOf("5")""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).lastIndexOf("5")""" shouldNot typeCheck
       val es = Every("one", "two", "three")
       es.lastIndexOf("one") shouldBe 0
       es.lastIndexOf("two") shouldBe 1
@@ -654,8 +654,8 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOf("six") shouldBe -1
     Every(1, 2, 3, 4, 5).lastIndexOf("five", 3) shouldBe -1
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).lastIndexOf("six")""" shouldNot typeCheck
-      """Every(1, 2, 3, 4, 5).lastIndexOf("five", 3)""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).lastIndexOf("six")""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).lastIndexOf("five", 3)""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.lastIndexOf("THREE") shouldBe -1
       es.lastIndexOf("FIVE", 3) shouldBe -1;
@@ -682,9 +682,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List.empty, 6) shouldBe 5
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(List.empty, 4) shouldBe 4
 
-    """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).lastIndexOfSlice(List("2", "3")) shouldBe 1""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.lastIndexOfSlice(List("one", "two")) shouldBe 0;
       es.lastIndexOfSlice(List("two", "three"), 0) shouldBe -1
@@ -707,9 +707,9 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe 0
     Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe -1
 
-    """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+    // """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
     new CheckedEquality {
-      """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
+      // """Every(1, 2, 3, 4, 5).lastIndexOfSlice(Every("2", "3")) shouldBe 1""" shouldNot typeCheck
       val es = Every("one", "two", "three", "four", "five")
       es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
       es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
