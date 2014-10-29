@@ -27,7 +27,7 @@ class OptionValuesSpec extends FunSpec {
     it("should return the value inside an option if that option is defined") {
 
       val o: Option[String] = Some("hi there")
-      o.value should be === ("hi there")
+      o.value should === ("hi there")
       o.value should startWith ("hi")
     }
 

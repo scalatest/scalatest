@@ -205,7 +205,7 @@ class ConductorDeprecatedSuite extends FunSuite with ShouldMatchers with Severed
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
-    tf.size should be === 1
+    tf.size should === (1)
     tf.head.throwable should be ('defined)
     tf.head.throwable.get should be theSameInstanceAs e
   }

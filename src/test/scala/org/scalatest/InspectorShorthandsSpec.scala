@@ -579,52 +579,6 @@ class InspectorShorthandsSpec extends Spec with TableDrivenPropertyChecks {
       }
     }
 
-    def `should throw TestFailedException with correct stack depth and message when 'be triple equal' failed` {
-      forAll(examples) { colFun => 
-        val col = colFun(Set(1, 2, 3))
-        val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should be === 2 
-        }
-        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
-        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirstNot[Int](col, (e: Int) => e == 2)
-        e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " was not equal to 2 (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-                                    "in " + decorateToStringValue(col)))
-        e2.getCause match {
-          case tfe: exceptions.TestFailedException =>
-            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
-            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " was not equal to 2"))
-            tfe.getCause should be (null)
-          case other => fail("Expected cause to be TestFailedException, but got: " + other)
-        }
-      }
-    }
-
-    def `should throw TestFailedException with correct stack depth and message when 'be not triple equal' failed` {
-      forAll(examples) { colFun => 
-        val col = colFun(Set(1, 2, 3))
-        val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should not be === (2) 
-        }
-        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
-        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirst[Int](col, _ == 2)
-        e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " was equal to 2 (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-                                    "in " + decorateToStringValue(col)))
-        e2.getCause match {
-          case tfe: exceptions.TestFailedException =>
-            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
-            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " was equal to 2"))
-            tfe.getCause should be (null)
-          case other => fail("Expected cause to be TestFailedException, but got: " + other)
-        }
-      }
-    }
-    
     def `should throw TestFailedException with correct stack depth and message when 'be null' failed` {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("1", "2", "3"))
