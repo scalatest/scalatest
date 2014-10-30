@@ -82,7 +82,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       con.conduct()
     }
  
-    it("should continue when dismissed.") { con => import con._
+    it("should continue when dismissed.", Retryable) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter
@@ -232,7 +232,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
       con.conduct()
     }
     
-    it("should await to be called multiple times") { con => import con._
+    it("should await to be called multiple times", Retryable) { con => import con._
 
       @volatile var w: Waiter = null
 
