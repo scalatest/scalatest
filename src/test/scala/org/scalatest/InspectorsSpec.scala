@@ -218,13 +218,13 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
           }
           e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 7))
-          e.message should be (Some("forAll failed, because: \n" +
-                                     "  at index 1, 2 was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 8) + ") \n" +
-                                     "in Set(1, 2, 3)"))
+          e.message.get should startWith ("forAll failed, because: \n" +
+                                     "  at index 1, 2 was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                     "in")
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
-              tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+              tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
               tfe.message should be (Some("2 was not less than 2"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
