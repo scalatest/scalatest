@@ -692,6 +692,8 @@ private[scalatest] object InspectorsHelper {
             messageList
           }
           catch {
+            case e if shouldSkip(e) =>
+               messageList
             case e if !shouldPropagate(e) => 
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
