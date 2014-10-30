@@ -27,7 +27,7 @@ class EitherValuesSpec extends FunSpec {
 
     it("should return the left value inside an either if left.value is defined") {
       val e: Either[String, String] = Left("hi there")
-      e.left.value should be === ("hi there")
+      e.left.value should === ("hi there")
       e.left.value should startWith ("hi")
     }
 
@@ -44,7 +44,7 @@ class EitherValuesSpec extends FunSpec {
     
     it("should return the right value inside an either if right.value is defined") {
       val e: Either[String, String] = Right("hi there")
-      e.right.value should be === ("hi there")
+      e.right.value should === ("hi there")
       e.right.value should startWith ("hi")
     }
     

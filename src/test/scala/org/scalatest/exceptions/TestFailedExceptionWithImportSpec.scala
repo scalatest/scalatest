@@ -204,9 +204,9 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
       }
     }
 
-    it("should give the proper line on 1 should be === 2") {
+    it("should give the proper line on 1 should === (2)") {
       try {
-        1 should be === 2
+        1 should === (2)
       }
       catch {
         case e: TestFailedException =>

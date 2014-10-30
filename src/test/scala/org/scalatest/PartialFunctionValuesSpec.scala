@@ -31,14 +31,14 @@ class PartialFunctionValuesSpec extends FunSpec {
   describe("values on PartialFunction") {
     
     it("should return correct value when is defined") {
-      pf.isDefinedAt(8) should be === (true)
-      pf.valueAt(8) should be === (64)
+      pf.isDefinedAt(8) should === (true)
+      pf.valueAt(8) should === (64)
     }
     
     it("should throw TestFailedException when is not defined") {
       val caught = 
         evaluating {
-          pf.valueAt(5) should be === (25)
+          pf.valueAt(5) should === (25)
         } should produce [TestFailedException]
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("PartialFunctionValuesSpec.scala")

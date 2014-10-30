@@ -43,6 +43,8 @@ import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Prettifier
 import org.scalactic.Every
 
@@ -216,7 +218,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+   * The should be === syntax has been deprecated and is no longer allowed. Please use should equal, should ===, shouldEqual,
    * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
    * checkable equality comparison.
    * </strong>
@@ -230,6 +232,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]) {
+    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be ===")) 
     if ((left == comparison.right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(

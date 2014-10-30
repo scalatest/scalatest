@@ -228,9 +228,9 @@ class SeveredStackTracesSpec extends FunSpec with ShouldMatchers with SeveredSta
       }
     }
 
-    it("should give the proper line on 1 should be === 2") {
+    it("should give the proper line on 1 should === (2)") {
       try {
-        1 should be === 2
+        1 should === (2)
       }
       catch {
         case e: TestFailedException =>
@@ -240,10 +240,10 @@ class SeveredStackTracesSpec extends FunSpec with ShouldMatchers with SeveredSta
                 fail("s was: " + s, e)
               }
               checkFileNameAndLineNumber(e, s)
-            case None => fail("1 should be === 2 didn't produce a file name and line number string", e)
+            case None => fail("1 should === (2) didn't produce a file name and line number string", e)
           }
         case e: Throwable =>
-          fail("1 should be === 2 didn't produce a TestFailedException", e)
+          fail("1 should === (2) didn't produce a TestFailedException", e)
       }
     }
 

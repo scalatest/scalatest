@@ -30,7 +30,7 @@ package org.scalatest.exceptions
  *
  * <pre class="stHighlight">
  * withPayload(generateGUISnapshot()) {
- *   1 + 1 should be === 3
+ *   1 + 1 should === (3)
  * }
  * </pre>
  *

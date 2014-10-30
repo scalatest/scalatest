@@ -29,6 +29,7 @@ import matchers.{NegatedFailureMessage,
                  MidSentenceNegatedFailureMessage}
 import java.io.File
 import FailureMessages.decorateToStringValue
+import org.scalatest.exceptions.NotAllowedException
 
 class NotWordSpec extends Spec with FileMocks {
   
@@ -758,53 +759,8 @@ class NotWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `beTripleEqualsInvocation) method returns Matcher` {
-      
-      val mt = not be === ("cheese")
-      
-      def `should have pretty toString` {
-        mt.toString should be ("not be === \"cheese\"")
-      }
-      
-      val mr = mt("chese")
-      
-      def `should have correct MatcherResult` {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"chese\" was equal to \"cheese\""),
-          'negatedFailureMessage ("\"che[]se\" was not equal to \"che[e]se\""),
-          'midSentenceFailureMessage ("\"chese\" was equal to \"cheese\""),
-          'midSentenceNegatedFailureMessage ("\"che[]se\" was not equal to \"che[e]se\""),
-          'rawFailureMessage ("{0} was equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was not equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not equal to {1}"),
-          'failureMessageArgs(Vector("chese", "cheese")),
-          'negatedFailureMessageArgs(Vector("che[]se", "che[e]se")),
-          'midSentenceFailureMessageArgs(Vector("chese", "cheese")),
-          'midSentenceNegatedFailureMessageArgs(Vector("che[]se", "che[e]se"))
-        )
-      }
-      
-      val nmr = mr.negated
-      
-      def `should have correct negated MatcherResult` {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"che[]se\" was not equal to \"che[e]se\""),
-          'negatedFailureMessage ("\"chese\" was equal to \"cheese\""),
-          'midSentenceFailureMessage ("\"che[]se\" was not equal to \"che[e]se\""),
-          'midSentenceNegatedFailureMessage ("\"chese\" was equal to \"cheese\""),
-          'rawFailureMessage ("{0} was not equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was equal to {1}"),
-          'failureMessageArgs(Vector("che[]se", "che[e]se")),
-          'negatedFailureMessageArgs(Vector("chese", "cheese")),
-          'midSentenceFailureMessageArgs(Vector("che[]se", "che[e]se")),
-          'midSentenceNegatedFailureMessageArgs(Vector("chese", "cheese"))    
-        )
-      }
+    object `be(TripleEqualsInvocation) method fails` {
+      intercept[NotAllowedException] { val mt = be === "cheese" }
     }
     
     object `be(Symbol) method returns Matcher` {

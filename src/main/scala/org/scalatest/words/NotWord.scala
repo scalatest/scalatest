@@ -36,6 +36,8 @@ import org.scalatest.UnquotedString
 import org.scalatest.Resources
 import org.scalactic.EqualityPolicy.Spread
 import org.scalactic.EqualityPolicy.TripleEqualsInvocation
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -408,7 +410,7 @@ final class NotWord {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+   * The should be === syntax has been deprecated and may no longer be used. Please use should equal, should ===, shouldEqual,
    * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
    * checkable equality comparison.
    * </strong>
@@ -422,6 +424,8 @@ final class NotWord {
    */
   @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[Any] = {
+    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+                                  getStackDepthFun("NotWord.scala", "be ===")) 
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, tripleEqualsInvocation.right)  // TODO: Should move this part to reporter

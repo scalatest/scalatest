@@ -25,6 +25,8 @@ import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.enablers._
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -215,7 +217,7 @@ final class BeWord {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+   * The should be === syntax has been deprecated and is no longer allowed. Please use should equal, should ===, shouldEqual,
    * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
    * checkable equality comparison.
    * </strong>
@@ -247,7 +249,9 @@ final class BeWord {
    * </pre>
    */
   @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def ===(right: Any): Matcher[Any] =
+  def ===(right: Any): Matcher[Any] = {
+    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+                                  getStackDepthFun("BeWord.scala", "be ===")) 
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)  // TODO: Should move this part to reporter
@@ -261,6 +265,7 @@ final class BeWord {
       }
       override def toString: String = "be === " + Prettifier.default(right)
     }
+  }
 
   /**
    * This method enables the following syntax: 

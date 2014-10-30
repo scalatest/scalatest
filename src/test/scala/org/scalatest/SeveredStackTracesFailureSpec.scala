@@ -84,8 +84,8 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
       intercept[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
     }
 
-    it("should be properly severed on 1 should be === 2") {
-      1 should be === 2
+    it("should be properly severed on 1 should === (2)") {
+      1 should === (2)
     }
 
     it("should be properly severed on evaluating {} should produce [IllegalArgumentException] {}") {

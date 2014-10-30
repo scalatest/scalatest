@@ -95,9 +95,9 @@ class JMockCycleSpec extends FlatSpec with ShouldMatchers {
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
-    tf.size should be === 1
+    tf.size should === (1)
     val ts = rep.testSucceededEventsReceived
-    ts.size should be === 2
+    ts.size should === (2)
   }
 
   it should "provide sugar for invoking with methods that take matchers" in {
@@ -145,7 +145,7 @@ class JMockCycleSpec extends FlatSpec with ShouldMatchers {
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val ts = rep.testSucceededEventsReceived
-    ts.size should be === 1
+    ts.size should === (1)
   }
 
   it should "provide sugar for invoking with methods that take non-matcher values" in {
@@ -193,6 +193,6 @@ class JMockCycleSpec extends FlatSpec with ShouldMatchers {
     val rep = new EventRecordingReporter
     a.run(None, Args(rep))
     val ts = rep.testSucceededEventsReceived
-    ts.size should be === 1
+    ts.size should === (1)
   }
 }
