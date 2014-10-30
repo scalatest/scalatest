@@ -1080,8 +1080,22 @@ object Runner {
     val it = args.iterator.buffered
     while (it.hasNext) {
       val s = it.next
-      if (
-        s.startsWith("-p") ||
+      if (s.startsWith("-r"))
+        throw new IllegalArgumentException(
+          "ERROR: -r has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -r to -C.")
+      else if (s.startsWith("-c"))
+        throw new IllegalArgumentException(
+          "ERROR: -c has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -c to -P.")
+      else if (s.startsWith("-p"))
+        throw new IllegalArgumentException(
+          "ERROR: -p has been deprecated for a very long time and is no "+
+          "longer supported, to prepare for reusing it for a different "+
+          "purpose in the near future. Please change all uses of -p to -R.")
+      else if (
         s.startsWith("-R") ||
         s.startsWith("-f") ||
         s.startsWith("-M") ||
@@ -1089,7 +1103,6 @@ object Runner {
         s.startsWith("-u") ||
         //s.startsWith("-d") ||
         //s.startsWith("-a") ||
-        s.startsWith("-r") ||
         s.startsWith("-C") ||
         s.startsWith("-n") ||
         /* s.startsWith("-x") || */
@@ -1125,7 +1138,7 @@ object Runner {
           it.next
         }
       }
-      else if (!s.startsWith("-D") && !s.startsWith("-g") && !s.startsWith("-o") && !s.startsWith("-e") && !s.startsWith("-c") && !s.startsWith("-P")) {
+      else if (!s.startsWith("-D") && !s.startsWith("-g") && !s.startsWith("-o") && !s.startsWith("-e") && !s.startsWith("-P")) {
         lb += s
       }
     }
@@ -1152,17 +1165,17 @@ object Runner {
   // with the 'S' option, SuiteSortingReporter will be enabled.
   //
   private[scalatest] def parseConcurrentConfig(concurrentList: List[String]): ConcurrentConfig = {
-    val threadOpt = concurrentList.find(s => s.matches("-c\\d+") || s.matches("-cS\\d+"))
+    val threadOpt = concurrentList.find(s => s.matches("-P\\d+") || s.matches("-PS\\d+"))
     val numThreads = threadOpt match {
       case Some(arg) => 
-        if (arg.startsWith("-cS"))
+        if (arg.startsWith("-PS"))
           arg.substring(3).toInt
         else
           arg.substring(2).toInt
       case None      => 0
     }
     
-    val enableSuiteSortingReporter = concurrentList.find(_.startsWith("-cS")).isDefined
+    val enableSuiteSortingReporter = concurrentList.find(_.startsWith("-PS")).isDefined
     
     ConcurrentConfig(numThreads, enableSuiteSortingReporter)
   }
@@ -1212,14 +1225,8 @@ object Runner {
       if (s.startsWith("-D")) {
          props += s
       }
-      else if (s.startsWith("-p")) {
-        throw new IllegalArgumentException(
-          "ERROR: -p has been deprecated for a very long time and is no "+
-          "longer supported, to prepare for reusing it for a different "+
-          "purpose in the near future. Please change all uses of -p to -R.")
-      }
       else if (s.startsWith("-R")) {
-        runpath += "-p" + s.substring(2)
+        runpath += s
         if (it.hasNext)
           runpath += it.next
       }
@@ -1282,15 +1289,8 @@ object Runner {
         if (it.hasNext)
           excludes += it.next
       }
-      else if (s.startsWith("-r")) {
-        throw new IllegalArgumentException(
-          "ERROR: -r has been deprecated for a very long time and is no "+
-          "longer supported, to prepare for reusing it for a different "+
-          "purpose in the near future. Please change all uses of -r to -C.")
-      }
       else if (s.startsWith("-C")) {
-
-        reporters += "-r" + s.substring(2)
+        reporters += s
         if (it.hasNext)
           reporters += it.next
       }
@@ -1342,15 +1342,8 @@ object Runner {
         if (it.hasNext)
           wildcard += it.next
       }
-      else if (s.startsWith("-c")) {
-        throw new IllegalArgumentException(
-          "ERROR: -c has been deprecated for a very long time and is no "+
-          "longer supported, to prepare for reusing it for a different "+
-          "purpose in the near future. Please change all uses of -c to -P.")
-      }
       else if (s.startsWith("-P")) {
-
-        concurrent += "-c" + s.substring(2)
+        concurrent += s
       }
       else if (s == "-b") {
 
@@ -1627,11 +1620,11 @@ object Runner {
           }
           else
             throw new IllegalArgumentException("-h needs to be followed by a directory name arg: ")
-        case "-r" =>
+        case "-C" =>
           if (it.hasNext)
             it.next // scroll past the reporter class
           else
-            throw new IllegalArgumentException("-r needs to be followed by a reporter class name arg: ")
+            throw new IllegalArgumentException("-C needs to be followed by a reporter class name arg: ")
         case "-k" =>
           if (it.hasNext && !it.head.startsWith("-")) {
             it.next
@@ -1839,20 +1832,20 @@ object Runner {
       val lb = new ListBuffer[CustomReporterConfiguration]
       while (it.hasNext) {
         val arg = it.next
-        if (arg.startsWith("-r") || arg.startsWith("-C")) {
-          val dashRString = arg
+        if (arg.startsWith("-C")) {
+          val dashCString = arg
           val customReporterClassName = it.next
-          val configSet = parseConfigSet(dashRString)
+          val configSet = parseConfigSet(dashCString)
           if (configSet.contains(PresentShortStackTraces))
-            throw new IllegalArgumentException("Cannot specify an S (present short stack traces) configuration parameter for a custom reporter: " + dashRString + " " + customReporterClassName)
+            throw new IllegalArgumentException("Cannot specify an S (present short stack traces) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           if (configSet.contains(PresentFullStackTraces))
-            throw new IllegalArgumentException("Cannot specify an F (present full stack traces) configuration parameter for a custom reporter: " + dashRString + " " + customReporterClassName)
+            throw new IllegalArgumentException("Cannot specify an F (present full stack traces) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           if (configSet.contains(PresentWithoutColor))
-            throw new IllegalArgumentException("Cannot specify a W (without color) configuration parameter for a custom reporter: " + dashRString + " " + customReporterClassName)
+            throw new IllegalArgumentException("Cannot specify a W (without color) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           if (configSet.contains(PresentAllDurations))
-            throw new IllegalArgumentException("Cannot specify a D (present all durations) configuration parameter for a custom reporter: " + dashRString + " " + customReporterClassName)
+            throw new IllegalArgumentException("Cannot specify a D (present all durations) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           if (configSet.contains(PresentUnformatted))
-            throw new IllegalArgumentException("Cannot specify a U (present unformatted) configuration parameter for a custom reporter: " + dashRString + " " + customReporterClassName)
+            throw new IllegalArgumentException("Cannot specify a U (present unformatted) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           lb += new CustomReporterConfiguration(configSet, customReporterClassName)
         }
       }
@@ -2084,7 +2077,7 @@ object Runner {
   private[scalatest] def parseCompoundArgIntoSet(args: List[String], expectedDashArg: String): Set[String] = 
       Set() ++ parseCompoundArgIntoList(args, expectedDashArg)
 
-  private[scalatest] def parseRunpathArgIntoList(args: List[String]): List[String] = parseCompoundArgIntoList(args, "-p")
+  private[scalatest] def parseRunpathArgIntoList(args: List[String]): List[String] = parseCompoundArgIntoList(args, "-R")
 
   private[scalatest] def parseCompoundArgIntoList(args: List[String], expectedDashArg: String): List[String] = {
 
