@@ -1180,7 +1180,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return a <code>Every</code> consisting of the elements of this <code>Every</code> sorted according to the <code>Ordering</code> where
    *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
    */
-  final def sortBy[U](f: T => U)(implicit ord: math.Ordering[U]): Every[T] = fromNonEmptyVector(underlying.sortBy(f))
+  final def sortBy[U](f: T => U)(implicit ord: Ordering[U]): Every[T] = fromNonEmptyVector(underlying.sortBy(f))
 
   /**
    * Sorts this <code>Every</code> according to a comparison function.
@@ -1207,7 +1207,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
    * @return an <code>Every</code> consisting of the elements of this <code>Every</code> sorted according to the comparison function <code>lt</code>.
    */
-  final def sorted[U >: T](implicit ord: math.Ordering[U]): Every[U] = fromNonEmptyVector(underlying.sorted(ord))
+  final def sorted[U >: T](implicit ord: Ordering[U]): Every[U] = fromNonEmptyVector(underlying.sorted(ord))
 
   /**
    * Indicates whether this <code>Every</code> starts with the given <code>GenSeq</code>. 
