@@ -15,6 +15,8 @@
  */
 package org.scalactic.numbers
 
+import scala.language.implicitConversions
+
 //
 // Numbers greater than zero.
 //
@@ -26,8 +28,19 @@ final class Pos private (val value: Int) extends AnyVal {
 object Pos {
   def from(value: Int): Option[Pos] =
     if (value > 0) Some(new Pos(value)) else None
-}
 
+  implicit def widenToInt(pos: Pos): Int = pos.value
+  implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get
+
+  implicit def widenToFloat(pos: Pos): Float = pos.value
+  implicit def widenToFPoz(pos: Pos): FPoz = FPoz.from(pos.value).get
+
+  implicit def widenToLong(pos: Pos): Long = pos.value
+  implicit def widenToLPoz(pos: Pos): LPoz = LPoz.from(pos.value).get
+
+  implicit def widenToDouble(pos: Pos): Double = pos.value
+  implicit def widenToDPoz(pos: Pos): DPoz = DPoz.from(pos.value).get
+}
 
 final class LPos private (val value: Long) extends AnyVal {
   override def toString: String = s"LPos($value)"

@@ -18,7 +18,7 @@ package org.scalactic.numbers
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.CheckedEquality._
+import org.scalactic.StrictCheckedEquality._
 
 class PosSpec extends Spec with Matchers {
   object `A Pos` {
@@ -29,7 +29,7 @@ class PosSpec extends Spec with Matchers {
         Pos.from(100).value.value shouldBe 100
       }
       def `returns None if the passed Int is NOT greater than 0` {
-        Pos.from(0).value.value shouldBe None
+        Pos.from(0) shouldBe None
         Pos.from(-1) shouldBe None
         Pos.from(-99) shouldBe None
       }
@@ -37,6 +37,28 @@ class PosSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       Pos.from(42).value.toString shouldBe "Pos(42)"
     }
+    def `should be automatically widened to compatible AnyVal targets` {
+      (Pos.from(3).get: Int) shouldEqual 3
+      (Pos.from(3).get: Long) shouldEqual 3L
+      (Pos.from(3).get: Float) shouldEqual 3.0F
+      (Pos.from(3).get: Double) shouldEqual 3.0
+      (Pos.from(3).get: Poz) shouldEqual Poz.from(3).get
+      (Pos.from(3).get: LPoz) shouldEqual LPoz.from(3L).get
+      (Pos.from(3).get: FPoz) shouldEqual FPoz.from(3.0F).get
+      (Pos.from(3).get: DPoz) shouldEqual DPoz.from(3.0).get
+    }
+/*
+    def `should be automatically widened to compatible AnyVals when an arithmetic operator is used on them` {
+      Pos.from(3).get + 3 shouldEqual 6
+      Pos.from(3).get + 3L shouldEqual 6L
+      Pos.from(3).get + 3.0F shouldEqual 6.0F
+      Pos.from(3).get + 3.0 shouldEqual 6.0
+      Pos.from(3).get + 3 shouldEqual Poz.from(6).get
+      Pos.from(3).get + 3L shouldEqual LPoz.from(6L).get
+      Pos.from(3).get + 3.0F shouldEqual FPoz.from(6.0F).get
+      Pos.from(3).get + 3.0 shouldEqual DPoz.from(6.0).get
+    }
+*/
   }
 
   object `An LPos` {
@@ -47,7 +69,7 @@ class PosSpec extends Spec with Matchers {
         LPos.from(100L).value.value shouldBe 100
       }
       def `returns None if the passed Long is NOT greater than 0` {
-        LPos.from(0L).value.value shouldBe None
+        LPos.from(0L) shouldBe None
         LPos.from(-1L) shouldBe None
         LPos.from(-99L) shouldBe None
       }
@@ -66,7 +88,7 @@ class PosSpec extends Spec with Matchers {
       }
       def `returns None if the passed Double is NOT greater than 0`
       {
-        DPos.from(0.0).value.value shouldBe None
+        DPos.from(0.0) shouldBe None
         DPos.from(-0.00001) shouldBe None
         DPos.from(-99.9) shouldBe None
       }
@@ -84,7 +106,7 @@ class PosSpec extends Spec with Matchers {
         FPos.from(100.0F).value.value shouldBe 100.0F
       }
       def `returns None if the passed Float is NOT greater than 0` {
-        FPos.from(0.0F).value.value shouldBe None
+        FPos.from(0.0F) shouldBe None
         FPos.from(-0.00001F) shouldBe None
         FPos.from(-99.9F) shouldBe None
       }
