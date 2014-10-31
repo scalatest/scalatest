@@ -30,6 +30,7 @@ import matchers.{NegatedFailureMessage,
 import java.io.File
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
+import SharedHelpers.thisLineNumber
 
 class NotWordSpec extends Spec with FileMocks {
   
@@ -759,8 +760,12 @@ class NotWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `be(TripleEqualsInvocation) method fails` {
-      intercept[NotAllowedException] { val mt = be === "cheese" }
+    def `be(TripleEqualsInvocation) method fails` {
+      val fileName = "NotWordSpec.scala"
+      val e = intercept[NotAllowedException] { val mt = be === "cheese" }
+      assert(e.message === Some(Resources("beTripleEqualsNotAllowed")))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
     }
     
     object `be(Symbol) method returns Matcher` {

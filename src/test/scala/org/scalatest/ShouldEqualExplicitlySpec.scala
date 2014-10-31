@@ -229,7 +229,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       val caught2 = intercept[TestFailedException] { "dummy" should be ("dunny") }
       caught2.getMessage should be ("\"du[mm]y\" was not equal to \"du[nn]y\"")
       
-      val caught3 = intercept[TestFailedException] { "hi there mom" should be ===  ("high there mom") }
+      val caught3 = intercept[TestFailedException] { "hi there mom" should ===  ("high there mom") }
       caught3.getMessage should be ("\"hi[] there mom\" was not equal to \"hi[gh] there mom\"")
     }
     

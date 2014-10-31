@@ -24,6 +24,7 @@ import matchers.{BePropertyMatcher,
                  AnMatcher, 
                  BeMatcher, 
                  MatchResult}
+import SharedHelpers.thisLineNumber
 
 class BeWordSpec extends Spec with FileMocks {
   
@@ -229,8 +230,12 @@ class BeWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `=== method fails` {
-      intercept[NotAllowedException] { val mt = be === "cheese" }
+    def `=== method fails` {
+      val fileName = "BeWordSpec.scala"
+      val e = intercept[NotAllowedException] { val mt = be === "cheese" }
+      assert(e.message === Some(Resources("beTripleEqualsNotAllowed")))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
     }
     
     object `a(Symbol) method returns Matcher` {
