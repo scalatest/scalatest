@@ -159,7 +159,7 @@ object ScalatestBuild extends Build {
     Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
       "-m", "org.scalatest",
       "-m", "org.scalactic",
-      "-m", "org.scalactic.math",
+      "-m", "org.scalactic.numbers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
       "-m", "org.scalatest.testng",
