@@ -160,6 +160,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest",
       "-m", "org.scalactic",
       "-m", "org.scalactic.numbers",
+      "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
       "-m", "org.scalatest.testng",
@@ -238,6 +239,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
+        "org.scalactic.enablers",
+        "org.scalactic.numbers",
         "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
