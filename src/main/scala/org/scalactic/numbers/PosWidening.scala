@@ -41,4 +41,46 @@ object PosWidening {
       type ResultType = Double 
       def add(x: Int, y: Double): Double = x + y
     }
+
+  implicit def posWideningNatureOfPos: PosWidening[Pos] { type ResultType = Int } =
+    new PosWidening[Pos] {
+      type ResultType = Int 
+      def add(x: Int, y: Pos): Int = x + y.value
+    }
+  implicit def posWideningNatureOfLPos: PosWidening[LPos] { type ResultType = Long } =
+    new PosWidening[LPos] {
+      type ResultType = Long 
+      def add(x: Int, y: LPos): Long = x + y.value
+    }
+  implicit def posWideningNatureOfFPos: PosWidening[FPos] { type ResultType = Float } =
+    new PosWidening[FPos] {
+      type ResultType = Float 
+      def add(x: Int, y: FPos): Float = x + y.value
+    }
+  implicit def posWideningNatureOfDPos: PosWidening[DPos] { type ResultType = Double } =
+    new PosWidening[DPos] {
+      type ResultType = Double 
+      def add(x: Int, y: DPos): Double = x + y.value
+    }
+
+  implicit def posWideningNatureOfPoz: PosWidening[Poz] { type ResultType = Int } =
+    new PosWidening[Poz] {
+      type ResultType = Int 
+      def add(x: Int, y: Poz): Int = x + y.value
+    }
+  implicit def posWideningNatureOfLPoz: PosWidening[LPoz] { type ResultType = Long } =
+    new PosWidening[LPoz] {
+      type ResultType = Long 
+      def add(x: Int, y: LPoz): Long = x + y.value
+    }
+  implicit def posWideningNatureOfFPoz: PosWidening[FPoz] { type ResultType = Float } =
+    new PosWidening[FPoz] {
+      type ResultType = Float 
+      def add(x: Int, y: FPoz): Float = x + y.value
+    }
+  implicit def posWideningNatureOfDPoz: PosWidening[DPoz] { type ResultType = Double } =
+    new PosWidening[DPoz] {
+      type ResultType = Double 
+      def add(x: Int, y: DPoz): Double = x + y.value
+    }
 }

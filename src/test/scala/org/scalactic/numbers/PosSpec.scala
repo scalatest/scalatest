@@ -47,18 +47,48 @@ class PosSpec extends Spec with Matchers {
       (Pos.from(3).get: FPoz) shouldEqual FPoz.from(3.0F).get
       (Pos.from(3).get: DPoz) shouldEqual DPoz.from(3.0).get
     }
-/*
-    def `should be automatically widened to compatible AnyVals when an arithmetic operator is used on them` {
-      Pos.from(3).get + 3 shouldEqual 6
-      Pos.from(3).get + 3L shouldEqual 6L
-      Pos.from(3).get + 3.0F shouldEqual 6.0F
-      Pos.from(3).get + 3.0 shouldEqual 6.0
-      Pos.from(3).get + 3 shouldEqual Poz.from(6).get
-      Pos.from(3).get + 3L shouldEqual LPoz.from(6L).get
-      Pos.from(3).get + 3.0F shouldEqual FPoz.from(6.0F).get
-      Pos.from(3).get + 3.0 shouldEqual DPoz.from(6.0).get
+    object `when a compatible AnyVal is passed to a + method invoked on it` {
+      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+        // When adding a "primitive"
+        val posInt = Pos.from(3).get + 3
+        posInt shouldEqual 6
+
+        val posLong = Pos.from(3).get + 3L
+        posLong shouldEqual 6L
+
+        val posFloat = Pos.from(3).get + 3.0F
+        posFloat shouldEqual 6.0F
+
+        val posDouble = Pos.from(3).get + 3.0
+        posDouble shouldEqual 6.0
+
+        // When adding a *Pos
+        val posPos = Pos.from(3).get + Pos.from(3).get
+        posPos shouldEqual 6
+
+        val posLPos = Pos.from(3).get + LPos.from(3L).get
+        posLPos shouldEqual 6L
+
+        val posFPos = Pos.from(3).get + FPos.from(3.0F).get
+        posFPos shouldEqual 6.0F
+
+        val posDPos = Pos.from(3).get + DPos.from(3.0).get
+        posDPos shouldEqual 6.0
+
+        // When adding a *Poz
+        val posPoz = Pos.from(3).get + Poz.from(3).get
+        posPoz shouldEqual Poz.from(6).get.value
+
+        val posLPoz = Pos.from(3).get + LPoz.from(3L).get
+        posLPoz shouldEqual LPoz.from(6L).get.value
+
+        val posFPoz = Pos.from(3).get + FPoz.from(3.0F).get
+        posFPoz shouldEqual FPoz.from(6.0F).get.value
+
+        val posDPoz = Pos.from(3).get + DPoz.from(3.0).get
+        posDPoz shouldEqual DPoz.from(6.0).get.value
+      }
     }
-*/
   }
 
   object `An LPos` {

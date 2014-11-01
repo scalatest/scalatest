@@ -23,23 +23,48 @@ import scala.language.implicitConversions
 
 final class Pos private (val value: Int) extends AnyVal {
   override def toString: String = s"Pos($value)"
+  def +[T](x: T)(implicit ev: PosWidening[T]): ev.ResultType = ev.add(value, x)
+/*
+  def +(x: Int): Int = value + x
+  def +(x: Long): Long = value + x
+  def +(x: Float): Float = value + x
+  def +(x: Double): Double = value + x
+*/
+
+/*
+  def +(x: Pos): Int = value + x.value
+  def +(x: LPos): Long = value + x.value
+  def +(x: FPos): Float = value + x.value
+  def +(x: DPos): Double = value + x.value
+
+  def +(x: Poz): Int = value + x.value
+  def +(x: LPoz): Long = value + x.value
+  def +(x: FPoz): Float = value + x.value
+  def +(x: DPoz): Double = value + x.value
+*/
 }
 
-object Pos {
+class LowPriorityPosDoubleImplicits {
+  implicit def widenToDouble(pos: Pos): Double = pos.value
+  implicit def widenToDPoz(pos: Pos): DPoz = DPoz.from(pos.value).get
+}
+
+class LowPriorityPosFloatImplicits extends LowPriorityPosDoubleImplicits {
+  implicit def widenToFloat(pos: Pos): Float = pos.value
+  implicit def widenToFPoz(pos: Pos): FPoz = FPoz.from(pos.value).get
+}
+
+class LowPriorityPosLongImplicits extends LowPriorityPosFloatImplicits {
+  implicit def widenToLong(pos: Pos): Long = pos.value
+  implicit def widenToLPoz(pos: Pos): LPoz = LPoz.from(pos.value).get
+}
+
+object Pos extends LowPriorityPosLongImplicits {
   def from(value: Int): Option[Pos] =
     if (value > 0) Some(new Pos(value)) else None
 
   implicit def widenToInt(pos: Pos): Int = pos.value
   implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get
-
-  implicit def widenToFloat(pos: Pos): Float = pos.value
-  implicit def widenToFPoz(pos: Pos): FPoz = FPoz.from(pos.value).get
-
-  implicit def widenToLong(pos: Pos): Long = pos.value
-  implicit def widenToLPoz(pos: Pos): LPoz = LPoz.from(pos.value).get
-
-  implicit def widenToDouble(pos: Pos): Double = pos.value
-  implicit def widenToDPoz(pos: Pos): DPoz = DPoz.from(pos.value).get
 }
 
 final class LPos private (val value: Long) extends AnyVal {

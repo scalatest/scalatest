@@ -67,7 +67,7 @@ class PercentSpec extends Spec with Matchers {
         FPercent.from(100.0F).value.value shouldBe 100.0F
       }
       def `returns None if the passed Float is NOT between 0 and 100` {
-        FPercent.from(100.000001F) shouldBe None
+        FPercent.from(100.00001F) shouldBe None
         FPercent.from(1000.1F) shouldBe None
         FPercent.from(-.000001F) shouldBe None
         FPercent.from(-99.999F) shouldBe None
