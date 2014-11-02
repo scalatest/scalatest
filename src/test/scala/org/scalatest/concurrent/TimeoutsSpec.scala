@@ -15,7 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.OptionValues._
 import Timeouts._
 import org.scalatest.SharedHelpers.thisLineNumber
@@ -34,8 +33,9 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.Matchers
 
-class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
+class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

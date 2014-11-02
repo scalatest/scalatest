@@ -17,12 +17,11 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import SharedHelpers._
-import matchers.ShouldMatchers
 import Thread.State._
 import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.exceptions.NotAllowedException
 
-class ConductorDeprecatedSuite extends FunSuite with ShouldMatchers with SeveredStackTraces {
+class ConductorDeprecatedSuite extends FunSuite with Matchers with SeveredStackTraces {
 
   val baseLineNumber = thisLineNumber
 

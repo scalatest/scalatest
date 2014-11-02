@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import org.scalatest.fixture
-import org.scalatest.matchers.ShouldMatchers
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
 import java.lang.Thread.State._
 import org.scalatest.exceptions.NotAllowedException
@@ -33,7 +32,7 @@ class VolatileString {
 }
 */
 
-class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with ShouldMatchers {
+class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with Matchers {
     
   @volatile var aa = false
   @volatile var bb = false

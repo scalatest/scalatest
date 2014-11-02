@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import matchers.ShouldMatchers
 import prop.TableDrivenPropertyChecks
 import SharedHelpers._
 import TableDrivenPropertyChecks._

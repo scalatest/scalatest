@@ -15,13 +15,12 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.time.{Span, Millis}
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 
-class TimeLimitedTestsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
+class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces {
   describe("A time-limited test") {
     describe("when it does not timeout") {
       describe("when it succeeds") {

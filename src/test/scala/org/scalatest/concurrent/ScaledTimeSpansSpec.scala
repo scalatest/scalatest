@@ -16,10 +16,10 @@
 package org.scalatest.concurrent
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.tools.Runner
 
-class ScaledTimeSpansSpec extends FunSpec with ShouldMatchers with ScaledTimeSpans {
+class ScaledTimeSpansSpec extends FunSpec with Matchers with ScaledTimeSpans {
 
     describe("ScaledTimeSpans") {
       

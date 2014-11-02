@@ -16,9 +16,9 @@
 package org.scalatest.prop
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 
-class TableStyleSpec extends FunSpec with ShouldMatchers with TableDrivenPropertyChecks {
+class TableStyleSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
 
   describe("A TableFor1") {
     it("should be usable to test stateful functions") {

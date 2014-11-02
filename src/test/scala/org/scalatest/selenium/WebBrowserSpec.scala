@@ -16,7 +16,7 @@
 package org.scalatest.selenium
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import java.util.concurrent.TimeUnit
 import org.scalatest.time.SpanSugar
 import org.scalatest.ParallelTestExecution
@@ -40,7 +40,7 @@ import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebElement
 
 
-trait InputFieldBehaviour extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit {
+trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
   def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int) = {
     it("should throw TFE with valid stack depth if specified item not found") {
       go to (host + file)
@@ -173,7 +173,7 @@ trait InputFieldBehaviour extends JettySpec with ShouldMatchers with SpanSugar w
 
 }
 
-class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit with InputFieldBehaviour {
+class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit with InputFieldBehaviour {
 
   describe("textField") {
     it("should throw TFE with valid stack depth if specified item not found") {

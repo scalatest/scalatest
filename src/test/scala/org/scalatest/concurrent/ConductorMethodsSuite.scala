@@ -16,14 +16,13 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import matchers.ShouldMatchers
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
 import Thread.State._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 
-class ConductorMethodsSuite extends FunSuite with ConductorMethods with ShouldMatchers {
+class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

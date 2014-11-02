@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.exceptions.TestFailedException
 
-class SeveredStackTracesSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
+class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTraces {
 
   import SharedHelpers.thisLineNumber
 

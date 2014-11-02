@@ -18,9 +18,8 @@ package org.scalatest.suiteprop
 import org.scalatest._
 import SharedHelpers._
 import prop.TableDrivenPropertyChecks
-import matchers.ShouldMatchers
 
-class PathSuiteMatrix extends PropSpec with ShouldMatchers with TableDrivenPropertyChecks {
+class PathSuiteMatrix extends PropSpec with Matchers with TableDrivenPropertyChecks {
   
   property("A path trait should execute the first test, and only the first test, on initial instance creation") {
 

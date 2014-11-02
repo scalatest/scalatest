@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalatest.EitherValues._
 import org.scalatest.OptionValues._
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
 import org.scalatest.exceptions.TestFailedException

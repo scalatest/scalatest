@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.Doc.stripMargin
 import org.scalatest.Doc.trimMarkup

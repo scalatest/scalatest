@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import Eventually._
-import matchers.ShouldMatchers
 import SharedHelpers.thisLineNumber
 import time.{Millisecond, Span, Millis}
 import org.scalatest.exceptions.TestFailedException
@@ -25,7 +24,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import SharedHelpers.serializeRoundtrip
 
-class EventuallySpec extends FunSpec with ShouldMatchers with OptionValues with SeveredStackTraces {
+class EventuallySpec extends FunSpec with Matchers with OptionValues with SeveredStackTraces {
 
   describe("The eventually construct") {
 

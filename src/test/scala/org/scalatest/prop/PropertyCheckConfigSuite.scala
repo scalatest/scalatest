@@ -16,11 +16,9 @@
 package org.scalatest
 package prop
 
-import matchers.ShouldMatchers
-
 import Configuration._
 
-class PropertyCheckConfigSuite extends FunSuite with ShouldMatchers {
+class PropertyCheckConfigSuite extends FunSuite with Matchers {
 
   test("minSuccussful throws IAE if less than 1") {
     intercept[IllegalArgumentException] {

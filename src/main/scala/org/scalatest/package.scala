@@ -67,12 +67,6 @@ package object scalatest {
    */
   lazy val nostats: Shell = defaultShell.nostats
 
-  /**
-   * Convenience type alias allowing <code>ShouldMatchers</code> to be used without qualification or another import
-   * after a wildcard import of <code>org.scalatest</code>.
-   */
-  type ShouldMatchers = matchers.ShouldMatchers
-
   @deprecated("Please use org.scalactic.TimesOnInt instead")
   type TimesOnInt = org.scalactic.TimesOnInt
 

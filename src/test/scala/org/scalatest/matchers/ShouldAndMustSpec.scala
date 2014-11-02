@@ -13,22 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
-// commenting out because I don't automatically build MustMatchers yet, but it does work
-package org.scalatest.matchers
-
-import org.scalatest._
-
-class ShouldAndMustSpec extends FunSpec with ShouldMatchers with MustMatchers {
-
-  describe("people who want both should and must at the same time") {
-    it("should feel satisfied when they try it and it works") {
-      1 should equal (1)
-      1 must equal (1)
-    }
-  }
-}
-*/
 
 package org.scalatest.matchers  // prevents unnecessary recompilation
 class ShouldAndMustSpec {}      // prevents unnecessary recompilation
