@@ -17,9 +17,8 @@ package org.scalatest.mock
 
 import org.scalatest._
 import SharedHelpers._
-import matchers.ShouldMatchers
 
-class EasyMockSugarSpec extends FlatSpec with ShouldMatchers {
+class EasyMockSugarSpec extends FlatSpec with Matchers {
   "The EasyMockSugar trait's whenExecuting method" should
           "work with multiple mocks passed in" in {
     val a = new Suite with EasyMockSugar {

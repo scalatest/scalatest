@@ -20,7 +20,7 @@ import org.scalacheck._
 import org.scalacheck.util.Pretty
 import Arbitrary._
 import Prop._
-import org.scalatest.matchers.ShouldMatchers._
+import org.scalatest.Matchers._
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object

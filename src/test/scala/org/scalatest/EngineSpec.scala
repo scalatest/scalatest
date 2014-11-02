@@ -17,7 +17,6 @@ package org.scalatest
 
 import SharedHelpers._
 import events.InfoProvided
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events.LineInFile
 import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf

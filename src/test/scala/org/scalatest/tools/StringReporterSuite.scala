@@ -16,12 +16,11 @@
 package org.scalatest
 package tools
 
-import org.scalatest.matchers.ShouldMatchers
 import Fragment.{countTrailingEOLs, countLeadingEOLs}
 import PrintReporter.ansiReset
 import PrintReporter.ansiCyan
 
-class StringReporterSuite extends FunSuite with ShouldMatchers {
+class StringReporterSuite extends FunSuite with Matchers {
 
   test("Empty string should just come back as an empty string.") {
     assert(Fragment("", AnsiCyan).toPossiblyColoredText(true) === "")

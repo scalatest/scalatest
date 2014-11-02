@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest._
 import events._
 import events.SuiteCompleted
@@ -28,7 +27,7 @@ import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 
-class SuiteSortingReporterSpec extends FunSpec with ShouldMatchers with EventHelpers {
+class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
 
   def stringFor(event: Event): String = {
     event match {

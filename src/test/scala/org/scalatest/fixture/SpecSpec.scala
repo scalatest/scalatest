@@ -20,7 +20,7 @@ import org.scalatest.events._
 import org.scalatest.exceptions._
 import collection.immutable.TreeSet
 import org.scalatest.Suite._
-import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
+import org.scalatest.{ PrivateMethodTester, Matchers, BeforeAndAfterEach, BeforeAndAfterAll, 
                         Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, 
                         Reporter, Distributor, OptionValues, Resources, DoNotDiscover, WrapWith, Suites,
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
@@ -165,7 +165,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("test names should properly nest scopes in test names") {
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Stack` {
@@ -184,7 +184,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
-      class MySpec extends Spec with ShouldMatchers with BeforeAndAfterEach with BeforeAndAfterAll {
+      class MySpec extends Spec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Stack` {
@@ -937,7 +937,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -969,7 +969,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1001,7 +1001,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) { fail() }
       }
       val a = new MySpec
@@ -1056,7 +1056,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `My Spec` {
           def `must start with proper words`(fixture: String) {}
         }
@@ -1115,7 +1115,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `My Spec` {
           def `must start with proper words`(fixture: String) {}
         }
@@ -1174,7 +1174,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object`My Spec` {
           def `must start with proper words`(fixture: String) { fail() }
         }
@@ -1250,7 +1250,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `My Spec` {
           object `must start` {
             def `with proper words`(fixture: String) {}
@@ -1327,7 +1327,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `My Spec` {
           object `must start` {
             def `with proper words`(fixture: String) { fail() }
@@ -1358,7 +1358,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `this thing must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1378,7 +1378,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `this thing must start with proper words`(fixture: String) { fail() }
       }
       val a = new MySpec
@@ -1400,7 +1400,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `A Stack` {
           def `needs to push and pop properly`(fixture: String) {}
         }
@@ -1439,7 +1439,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `it should send defined formatters`(fixture: String) {
           assert(true)
         }
@@ -1472,7 +1472,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         def `My spec text must have the proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1499,7 +1499,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `A Stack` {
           def `My short name must have the proper words`(fixture: String) {}
         }
@@ -1528,7 +1528,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `A Stack` {
           object `(when empty)` {
             def `My short name must have the proper words`(fixture: String) {}
@@ -1563,7 +1563,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `A Stack` {
           def `should allow me to push`(fixture: String) {}
         }
@@ -1601,7 +1601,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers with StringFixture {
+      class MySpec extends Spec with Matchers with StringFixture {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop`(fixture: String) {

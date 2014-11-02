@@ -16,13 +16,12 @@
 package org.scalatest.events
 
 import org.scalatest._
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.prop.Checkers
 import org.scalacheck._
 import Arbitrary._
 import Prop._
 
-class OrdinalSpec extends FunSpec with ShouldMatchers with Checkers {
+class OrdinalSpec extends FunSpec with Matchers with Checkers {
 
   describe("An Ordinal") {
 

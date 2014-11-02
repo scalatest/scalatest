@@ -16,9 +16,8 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import matchers.ShouldMatchers
 
-class TestThreadsStartingCounterSpec extends fixture.WordSpec with ShouldMatchers with ConductorFixture {
+class TestThreadsStartingCounterSpec extends fixture.WordSpec with Matchers with ConductorFixture {
   "A TestThreadsStartingCounter" should {
     "wait if one or more threads have called increment that haven't yet called decrement" in { conductor => import conductor._
       val counter = new TestThreadsStartingCounter

@@ -16,7 +16,7 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.matchers.ShouldMatchers._
+import org.scalatest.Matchers._
 
 class TestFailedExceptionWithImportSpec extends FunSpec {
 

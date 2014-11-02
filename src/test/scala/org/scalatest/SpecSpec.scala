@@ -154,7 +154,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("test names should properly nest scopes in test names") {
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           object `(when not empty)` {
             def `must allow me to pop` {}
@@ -171,7 +171,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
-      class MySpec extends Spec with ShouldMatchers with BeforeAndAfterEach with BeforeAndAfterAll {
+      class MySpec extends Spec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop` {}
@@ -920,7 +920,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `must start with proper words` {}
       }
       val a = new MySpec
@@ -952,7 +952,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `must start with proper words` {}
       }
       val a = new MySpec
@@ -984,7 +984,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `must start with proper words` { fail() }
       }
       val a = new MySpec
@@ -1039,7 +1039,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `My Spec` {
           def `must start with proper words` {}
         }
@@ -1098,7 +1098,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `My Spec` {
           def `must start with proper words` {}
         }
@@ -1157,7 +1157,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object`My Spec` {
           def `must start with proper words` { fail() }
         }
@@ -1233,7 +1233,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `My Spec` {
           object `must start` {
             def `with proper words` {}
@@ -1310,7 +1310,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `My Spec` {
           object `must start` {
             def `with proper words` { fail() }
@@ -1341,7 +1341,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `this thing must start with proper words` {}
       }
       val a = new MySpec
@@ -1361,7 +1361,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `this thing must start with proper words` { fail() }
       }
       val a = new MySpec
@@ -1383,7 +1383,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           def `needs to push and pop properly` {}
         }
@@ -1422,7 +1422,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `it should send defined formatters` {
           assert(true)
         }
@@ -1455,7 +1455,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         def `My spec text must have the proper words` {}
       }
       val a = new MySpec
@@ -1482,7 +1482,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           def `My short name must have the proper words` {}
         }
@@ -1511,7 +1511,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           object `(when empty)` {
             def `My short name must have the proper words` {}
@@ -1546,7 +1546,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           def `should allow me to push` {}
         }
@@ -1584,7 +1584,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with ShouldMatchers {
+      class MySpec extends Spec with Matchers {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop` {

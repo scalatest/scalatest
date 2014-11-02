@@ -16,7 +16,6 @@
 package org.scalatest
 
 import SharedHelpers._
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
 import Matchers._
 import org.scalatest.exceptions.DuplicateTestNameException
@@ -233,7 +232,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
       }
       it("should work when using the shorthand notation for 'behavior of'") {
-        val e = new FlatSpec with ShouldMatchers {
+        val e = new FlatSpec with Matchers {
           "A Tester" should "test this" in {}
           it should "test that" in {}
         }

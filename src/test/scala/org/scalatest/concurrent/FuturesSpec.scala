@@ -15,7 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.OptionValues
 import org.scalatest.FunSpec
@@ -25,7 +24,7 @@ import org.scalatest._
 import time._
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException}
 
-class FuturesSpec extends FunSpec with ShouldMatchers with OptionValues with Futures with SeveredStackTraces {
+class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures with SeveredStackTraces {
 
   import scala.language.implicitConversions
 

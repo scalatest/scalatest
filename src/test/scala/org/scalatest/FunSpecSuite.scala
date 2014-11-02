@@ -16,13 +16,12 @@
 package org.scalatest
 
 import SharedHelpers._
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
 
 class FunSpecSuite extends FunSuite {
 
   test("three plain-old specifiers should be invoked in order") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       var example3WasInvokedAfterExample2 = false
@@ -46,7 +45,7 @@ class FunSpecSuite extends FunSuite {
   }
 
   test("three plain-old specifiers should be invoked in order when two are surrounded by a plain-old describe") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       var example3WasInvokedAfterExample2 = false
@@ -72,7 +71,7 @@ class FunSpecSuite extends FunSuite {
   }
    
   test("two plain-old specifiers should show up in order of appearance in testNames") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       it("should get invoked") {
@@ -91,7 +90,7 @@ class FunSpecSuite extends FunSuite {
   }
  
   test("plain-old specifier test names should include an enclosing describe string, separated by a space") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         it("must allow me to pop") {}
         it("must allow me to push") {}
@@ -104,7 +103,7 @@ class FunSpecSuite extends FunSuite {
   }
 
   test("plain-old test names should properly nest plain-old descriptions in test names") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when not empty)") {
           it("must allow me to pop") {}
@@ -121,7 +120,7 @@ class FunSpecSuite extends FunSuite {
   }
   
   test("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
-    class MySpec extends FunSpec with ShouldMatchers with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySpec extends FunSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
       describe("A Stack") {
         describe("(when not empty)") {
           it("should allow me to pop") {}
@@ -158,7 +157,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("must start with proper words") {}
     }
     val a = new MySpec
@@ -190,7 +189,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("must start with proper words") {}
     }
     val a = new MySpec
@@ -222,7 +221,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("must start with proper words") { fail() }
     }
     val a = new MySpec
@@ -277,7 +276,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("My Spec") {
         it("must start with proper words") {}
       }
@@ -336,7 +335,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("My Spec") {
         it("must start with proper words") {}
       }
@@ -395,7 +394,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("My Spec") {
         it("must start with proper words") { fail() }
       }
@@ -472,7 +471,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("My") {
         describe("Spec") {
           it("must start with proper words") {}
@@ -549,7 +548,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("My") {
         describe("Spec") {
           it("must start with proper words") { fail() }
@@ -772,7 +771,7 @@ class FunSpecSuite extends FunSuite {
 
   // Huh? what was I testing here?
   test("An empty describe shouldn't throw an exception") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("this will be empty") {}
     }
     val a = new MySpec
@@ -782,7 +781,7 @@ class FunSpecSuite extends FunSuite {
   test("Only a passed test name should be invoked.") {
     var correctTestWasInvoked = false
     var wrongTestWasInvoked = false
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("it should be invoked") {
         correctTestWasInvoked = true
       }
@@ -798,7 +797,7 @@ class FunSpecSuite extends FunSuite {
   
   test("Config map should make it through to runTest") {
     var foundMyGoodie = false
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       override def runTest(testName: String, args: Args): Status = {
         foundMyGoodie = args.configMap.contains("my goodie")
         super.runTest(testName, args)
@@ -824,7 +823,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when working right)") {
           it("should push and pop properly") {}
@@ -837,7 +836,7 @@ class FunSpecSuite extends FunSuite {
   }
   
   test("expectedTestCount is the number of plain-old specifiers if no shares") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("must one") {}
       it("must two") {}
       describe("behavior") {
@@ -864,7 +863,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("this thing must start with proper words") {}
     }
     val a = new MySpec
@@ -885,7 +884,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("this thing must start with proper words") {}
     }
     val a = new MySpec
@@ -905,7 +904,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("this thing must start with proper words") { fail() }
     }
     val a = new MySpec
@@ -927,7 +926,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         it("needs to push and pop properly") {}
       }
@@ -966,7 +965,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
 
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("it should send defined formatters") {
         assert(true)
       }
@@ -999,7 +998,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       it("My spec text must have the proper words") {}
     }
     val a = new MySpec
@@ -1026,7 +1025,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         it("My short name must have the proper words") {}
       }
@@ -1055,7 +1054,7 @@ class FunSpecSuite extends FunSuite {
         }
       }
     }
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when empty)") {
           it("My short name must have the proper words") {}
@@ -1090,7 +1089,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
 
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         it("should allow me to push") {}
       }
@@ -1183,7 +1182,7 @@ class FunSpecSuite extends FunSuite {
   }
   
   test("three examples in a shared behavior should not get invoked at all if the behavior isn't used in a like clause") {
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       var example3WasInvokedAfterExample2 = false
@@ -1269,8 +1268,8 @@ class FunSpecSuite extends FunSuite {
   }
  
   test("expectedTestCount should not include tests in shares if never called") {
-    class MySpec extends FunSpec with ShouldMatchers {
-      class Misbehavior extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
+      class Misbehavior extends FunSpec with Matchers {
         it("should six") {}
         it("should seven") {}
       }
@@ -1361,7 +1360,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
 
-    class MySpec extends FunSpec with ShouldMatchers {
+    class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when not empty)") {
           it("should allow me to pop") {

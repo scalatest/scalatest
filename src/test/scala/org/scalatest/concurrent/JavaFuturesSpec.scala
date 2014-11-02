@@ -15,7 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest._
 import time._
@@ -24,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestCanceledException
 
-class JavaFuturesSpec extends FunSpec with ShouldMatchers with OptionValues with JavaFutures with SeveredStackTraces {
+class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
 
   // This one tests the real JavaFutures trait, so it doesn't poll, which means some of the tests I used
   // to test the polling code in the default implementation of awaitResult in FutureConcept don't work.

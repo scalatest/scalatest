@@ -16,10 +16,9 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class StackDepthExceptionSpec extends FunSpec with ShouldMatchers with TableDrivenPropertyChecks {
+class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
 
   class FunException(
     messageFun: StackDepthException => Option[String],

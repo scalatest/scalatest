@@ -16,7 +16,6 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestCanceledException}
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitTestFailedError
 import prop.TableDrivenPropertyChecks
 import prop.TableFor1

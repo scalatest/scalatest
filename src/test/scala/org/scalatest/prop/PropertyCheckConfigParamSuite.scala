@@ -16,11 +16,9 @@
 package org.scalatest
 package prop
 
-import matchers.ShouldMatchers
-
 import Configuration._
 
-class PropertyCheckConfigParamSuite extends FunSuite with ShouldMatchers {
+class PropertyCheckConfigParamSuite extends FunSuite with Matchers {
 
 /*
  require(minSuccessfulTests > 0)

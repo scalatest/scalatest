@@ -15,11 +15,11 @@
  */ 
 package org.scalatest.concurrent
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FunSuite
+import org.scalatest.Matchers
 import DoOver.tryTryAgain
 
-class DoOverSuite extends FunSuite with ShouldMatchers {
+class DoOverSuite extends FunSuite with Matchers {
 
   test("passing a maxTries less than 3 generates an IllegalArgumentException") {
     intercept[IllegalArgumentException] {

@@ -1,3 +1,9 @@
+Didn't want to remove this test when removing ShouldMatchers after its
+deprecation period, because it has some diffs with the corresponding
+test class in org.scalatest for Matchers that I want to look at more
+closely before getting rid of this one, to make sure I'm not throwing
+away useful tests. - bv
+
 /*
  * Copyright 2001-2013 Artima, Inc.
  *

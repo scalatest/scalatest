@@ -16,7 +16,6 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
-import matchers.ShouldMatchers
 import prop.TableDrivenPropertyChecks
 import scala.collection.mutable.ListBuffer
 
@@ -33,7 +32,7 @@ class PathListBufferExamples extends PathSuiteExamples {
 
   type FixtureServices = Services
 
-  class EmptyPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class EmptyPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
    counts.instanceCount += 1
    val expectedInstanceCount = 7
@@ -89,7 +88,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new EmptyPathFunSpecExample(counts)
   }
 
-  class EmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class EmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 8
@@ -147,7 +146,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new EmptyNestedPathFunSpecExample(counts)
   }
 
-  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
    counts.instanceCount += 1
    val expectedInstanceCount = 9
@@ -207,7 +206,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingEmptyNestedPathFunSpecExample(counts)
   }
 
-  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
    counts.instanceCount += 1
    val expectedInstanceCount = 9
@@ -270,7 +269,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new OneTestSiblingEmptyNestedPathFunSpecExample(counts)
   }
   
-  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
    counts.instanceCount += 1
    val expectedInstanceCount = 9
@@ -336,7 +335,7 @@ class PathListBufferExamples extends PathSuiteExamples {
   }
 
   // These path.FunSpec examples use a Vector an a var
-  class PathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class PathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 7
@@ -392,7 +391,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new PathFunSpecExample(counts)
   }
 
-  class NestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class NestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -452,7 +451,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new NestedPathFunSpecExample(counts)
   }
 
-  class SiblingNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class SiblingNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -514,7 +513,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingNestedPathFunSpecExample(counts)
   }
 
-  class DeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class DeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -576,7 +575,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new DeeplyNestedPathFunSpecExample(counts)
   }
 
-  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -642,7 +641,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingDeeplyNestedPathFunSpecExample(counts)
   }
 
-  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with ShouldMatchers {
+  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -705,7 +704,7 @@ class PathListBufferExamples extends PathSuiteExamples {
   }
 
   // These path.FreeSpec examples use a ListBuffer and a val
-  class EmptyPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class EmptyPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 7
@@ -761,7 +760,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new EmptyPathFreeSpecExample(counts)
   }
 
-  class EmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class EmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 8
@@ -819,7 +818,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new EmptyNestedPathFreeSpecExample(counts)
   }
 
-  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -879,7 +878,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingEmptyNestedPathFreeSpecExample(counts)
   }
 
-  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -943,7 +942,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new OneTestSiblingEmptyNestedPathFreeSpecExample(counts)
   }
   
-  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -1009,7 +1008,7 @@ class PathListBufferExamples extends PathSuiteExamples {
   }
 
    // These path.FreeSpec examples use a Vector and a var
-  class PathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class PathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 7
@@ -1065,7 +1064,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new PathFreeSpecExample(counts)
   }
 
-  class NestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class NestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -1129,7 +1128,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new NestedPathFreeSpecExample(counts)
   }
 
-  class SiblingNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class SiblingNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -1195,7 +1194,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingNestedPathFreeSpecExample(counts)
   }
 
-  class DeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class DeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -1261,7 +1260,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new DeeplyNestedPathFreeSpecExample(counts)
   }
 
-  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9
@@ -1331,7 +1330,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     override def newInstance = new SiblingDeeplyNestedPathFreeSpecExample(counts)
   }
 
-  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with ShouldMatchers {
+  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services with Matchers {
 
     counts.instanceCount += 1
     val expectedInstanceCount = 9

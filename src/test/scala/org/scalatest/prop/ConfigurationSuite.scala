@@ -16,9 +16,7 @@
 package org.scalatest
 package prop
 
-import matchers.ShouldMatchers
-
-class ConfigurationSuite extends FunSuite with ShouldMatchers {
+class ConfigurationSuite extends FunSuite with Matchers {
 
   import Configuration._
 

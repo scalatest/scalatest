@@ -18,10 +18,9 @@ package org.scalatest.mock
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.fixture
-import matchers.ShouldMatchers
 import org.jmock.Expectations.{equal => thatEquals}
 
-class JMockCycleSpec extends FlatSpec with ShouldMatchers {
+class JMockCycleSpec extends FlatSpec with Matchers {
 
   "The JMockCycle trait" should "work with multiple mocks" in {
 
