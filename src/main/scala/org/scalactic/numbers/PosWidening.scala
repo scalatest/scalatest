@@ -47,20 +47,20 @@ object PosWidening {
       type ResultType = Int 
       def add(x: Int, y: Pos): Int = x + y.value
     }
-  implicit def posWideningNatureOfLPos: PosWidening[LPos] { type ResultType = Long } =
-    new PosWidening[LPos] {
+  implicit def posWideningNatureOfPosL: PosWidening[PosL] { type ResultType = Long } =
+    new PosWidening[PosL] {
       type ResultType = Long 
-      def add(x: Int, y: LPos): Long = x + y.value
+      def add(x: Int, y: PosL): Long = x + y.value
     }
-  implicit def posWideningNatureOfFPos: PosWidening[FPos] { type ResultType = Float } =
-    new PosWidening[FPos] {
+  implicit def posWideningNatureOfPosF: PosWidening[PosF] { type ResultType = Float } =
+    new PosWidening[PosF] {
       type ResultType = Float 
-      def add(x: Int, y: FPos): Float = x + y.value
+      def add(x: Int, y: PosF): Float = x + y.value
     }
-  implicit def posWideningNatureOfDPos: PosWidening[DPos] { type ResultType = Double } =
-    new PosWidening[DPos] {
+  implicit def posWideningNatureOfPosD: PosWidening[PosD] { type ResultType = Double } =
+    new PosWidening[PosD] {
       type ResultType = Double 
-      def add(x: Int, y: DPos): Double = x + y.value
+      def add(x: Int, y: PosD): Double = x + y.value
     }
 
   implicit def posWideningNatureOfPoz: PosWidening[Poz] { type ResultType = Int } =
@@ -68,19 +68,19 @@ object PosWidening {
       type ResultType = Int 
       def add(x: Int, y: Poz): Int = x + y.value
     }
-  implicit def posWideningNatureOfLPoz: PosWidening[LPoz] { type ResultType = Long } =
-    new PosWidening[LPoz] {
+  implicit def posWideningNatureOfPozL: PosWidening[PozL] { type ResultType = Long } =
+    new PosWidening[PozL] {
       type ResultType = Long 
-      def add(x: Int, y: LPoz): Long = x + y.value
+      def add(x: Int, y: PozL): Long = x + y.value
     }
-  implicit def posWideningNatureOfFPoz: PosWidening[FPoz] { type ResultType = Float } =
-    new PosWidening[FPoz] {
+  implicit def posWideningNatureOfPozF: PosWidening[PozF] { type ResultType = Float } =
+    new PosWidening[PozF] {
       type ResultType = Float 
-      def add(x: Int, y: FPoz): Float = x + y.value
+      def add(x: Int, y: PozF): Float = x + y.value
     }
-  implicit def posWideningNatureOfDPoz: PosWidening[DPoz] { type ResultType = Double } =
-    new PosWidening[DPoz] {
+  implicit def posWideningNatureOfPozD: PosWidening[PozD] { type ResultType = Double } =
+    new PosWidening[PozD] {
       type ResultType = Double 
-      def add(x: Int, y: DPoz): Double = x + y.value
+      def add(x: Int, y: PozD): Double = x + y.value
     }
 }

@@ -33,30 +33,30 @@ final class Pos private (val value: Int) extends AnyVal {
 
 /*
   def +(x: Pos): Int = value + x.value
-  def +(x: LPos): Long = value + x.value
-  def +(x: FPos): Float = value + x.value
-  def +(x: DPos): Double = value + x.value
+  def +(x: PosL): Long = value + x.value
+  def +(x: PosF): Float = value + x.value
+  def +(x: PosD): Double = value + x.value
 
   def +(x: Poz): Int = value + x.value
-  def +(x: LPoz): Long = value + x.value
-  def +(x: FPoz): Float = value + x.value
-  def +(x: DPoz): Double = value + x.value
+  def +(x: PozL): Long = value + x.value
+  def +(x: PozF): Float = value + x.value
+  def +(x: PozD): Double = value + x.value
 */
 }
 
 class LowPriorityPosDoubleImplicits {
   implicit def widenToDouble(pos: Pos): Double = pos.value
-  implicit def widenToDPoz(pos: Pos): DPoz = DPoz.from(pos.value).get
+  implicit def widenToPozD(pos: Pos): PozD = PozD.from(pos.value).get
 }
 
 class LowPriorityPosFloatImplicits extends LowPriorityPosDoubleImplicits {
   implicit def widenToFloat(pos: Pos): Float = pos.value
-  implicit def widenToFPoz(pos: Pos): FPoz = FPoz.from(pos.value).get
+  implicit def widenToPozF(pos: Pos): PozF = PozF.from(pos.value).get
 }
 
 class LowPriorityPosLongImplicits extends LowPriorityPosFloatImplicits {
   implicit def widenToLong(pos: Pos): Long = pos.value
-  implicit def widenToLPoz(pos: Pos): LPoz = LPoz.from(pos.value).get
+  implicit def widenToPozL(pos: Pos): PozL = PozL.from(pos.value).get
 }
 
 object Pos extends LowPriorityPosLongImplicits {
@@ -71,32 +71,31 @@ object Pos extends LowPriorityPosLongImplicits {
   implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get
 }
 
-final class LPos private (val value: Long) extends AnyVal {
-  override def toString: String = s"LPos($value)"
+final class PosL private (val value: Long) extends AnyVal {
+  override def toString: String = s"PosL($value)"
 }
 
-object LPos {
-  def from(value: Long): Option[LPos] =
-    if (value > 0L) Some(new LPos(value)) else None
+object PosL {
+  def from(value: Long): Option[PosL] =
+    if (value > 0L) Some(new PosL(value)) else None
+}
+
+final class PosD private (val value: Double) extends AnyVal {
+  override def toString: String = s"PosD($value)"
+}
+
+object PosD {
+  def from(value: Double): Option[PosD] =
+    if (value > 0.0) Some(new PosD(value)) else None
 }
 
 
-final class DPos private (val value: Double) extends AnyVal {
-  override def toString: String = s"DPos($value)"
+final class PosF private (val value: Float) extends AnyVal {
+  override def toString: String = s"PosF($value)"
 }
 
-object DPos {
-  def from(value: Double): Option[DPos] =
-    if (value > 0.0) Some(new DPos(value)) else None
-}
-
-
-final class FPos private (val value: Float) extends AnyVal {
-  override def toString: String = s"FPos($value)"
-}
-
-object FPos {
-  def from(value: Float): Option[FPos] =
-    if (value > 0.0F) Some(new FPos(value)) else None
+object PosF {
+  def from(value: Float): Option[PosF] =
+    if (value > 0.0F) Some(new PosF(value)) else None
 }
 

@@ -31,32 +31,32 @@ object Poz {
 }
 
 
-final class LPoz private (val value: Long) extends AnyVal {
-  override def toString: String = s"LPoz($value)"
+final class PozL private (val value: Long) extends AnyVal {
+  override def toString: String = s"PozL($value)"
 }
 
-object LPoz {
-  def from(value: Long): Option[LPoz] =
-    if (value >= 0L) Some(new LPoz(value)) else None
-}
-
-
-final class DPoz private (val value: Double) extends AnyVal {
-  override def toString: String = s"DPoz($value)"
-}
-
-object DPoz {
-  def from(value: Double): Option[DPoz] =
-    if (value >= 0.0) Some(new DPoz(value)) else None
+object PozL {
+  def from(value: Long): Option[PozL] =
+    if (value >= 0L) Some(new PozL(value)) else None
 }
 
 
-final class FPoz private (val value: Float) extends AnyVal {
-  override def toString: String = s"FPoz($value)"
+final class PozD private (val value: Double) extends AnyVal {
+  override def toString: String = s"PozD($value)"
 }
 
-object FPoz {
-  def from(value: Float): Option[FPoz] =
-    if (value >= 0.0F) Some(new FPoz(value)) else None
+object PozD {
+  def from(value: Double): Option[PozD] =
+    if (value >= 0.0) Some(new PozD(value)) else None
+}
+
+
+final class PozF private (val value: Float) extends AnyVal {
+  override def toString: String = s"PozF($value)"
+}
+
+object PozF {
+  def from(value: Float): Option[PozF] =
+    if (value >= 0.0F) Some(new PozF(value)) else None
 }
 

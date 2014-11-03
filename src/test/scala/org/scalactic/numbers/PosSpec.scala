@@ -43,9 +43,9 @@ class PosSpec extends Spec with Matchers {
       (Pos.from(3).get: Float) shouldEqual 3.0F
       (Pos.from(3).get: Double) shouldEqual 3.0
       (Pos.from(3).get: Poz) shouldEqual Poz.from(3).get
-      (Pos.from(3).get: LPoz) shouldEqual LPoz.from(3L).get
-      (Pos.from(3).get: FPoz) shouldEqual FPoz.from(3.0F).get
-      (Pos.from(3).get: DPoz) shouldEqual DPoz.from(3.0).get
+      (Pos.from(3).get: PozL) shouldEqual PozL.from(3L).get
+      (Pos.from(3).get: PozF) shouldEqual PozF.from(3.0F).get
+      (Pos.from(3).get: PozD) shouldEqual PozD.from(3.0).get
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
@@ -66,27 +66,27 @@ class PosSpec extends Spec with Matchers {
         val posPos = Pos.from(3).get + Pos.from(3).get
         posPos shouldEqual 6
 
-        val posLPos = Pos.from(3).get + LPos.from(3L).get
-        posLPos shouldEqual 6L
+        val posPosL = Pos.from(3).get + PosL.from(3L).get
+        posPosL shouldEqual 6L
 
-        val posFPos = Pos.from(3).get + FPos.from(3.0F).get
-        posFPos shouldEqual 6.0F
+        val posPosF = Pos.from(3).get + PosF.from(3.0F).get
+        posPosF shouldEqual 6.0F
 
-        val posDPos = Pos.from(3).get + DPos.from(3.0).get
-        posDPos shouldEqual 6.0
+        val posPosD = Pos.from(3).get + PosD.from(3.0).get
+        posPosD shouldEqual 6.0
 
         // When adding a *Poz
         val posPoz = Pos.from(3).get + Poz.from(3).get
         posPoz shouldEqual Poz.from(6).get.value
 
-        val posLPoz = Pos.from(3).get + LPoz.from(3L).get
-        posLPoz shouldEqual LPoz.from(6L).get.value
+        val posPozL = Pos.from(3).get + PozL.from(3L).get
+        posPozL shouldEqual PozL.from(6L).get.value
 
-        val posFPoz = Pos.from(3).get + FPoz.from(3.0F).get
-        posFPoz shouldEqual FPoz.from(6.0F).get.value
+        val posPozF = Pos.from(3).get + PozF.from(3.0F).get
+        posPozF shouldEqual PozF.from(6.0F).get.value
 
-        val posDPoz = Pos.from(3).get + DPoz.from(3.0).get
-        posDPoz shouldEqual DPoz.from(6.0).get.value
+        val posPozD = Pos.from(3).get + PozD.from(3.0).get
+        posPozD shouldEqual PozD.from(6.0).get.value
       }
     }
 
@@ -107,58 +107,58 @@ class PosSpec extends Spec with Matchers {
     }
   }
 
-  object `An LPos` {
+  object `A PosL` {
     object `should offer a from factory method that` {
-      def `returns Some[LPos] if the passed Long is greater than 0`
+      def `returns Some[PosL] if the passed Long is greater than 0`
       {
-        LPos.from(50L).value.value shouldBe 50
-        LPos.from(100L).value.value shouldBe 100
+        PosL.from(50L).value.value shouldBe 50
+        PosL.from(100L).value.value shouldBe 100
       }
       def `returns None if the passed Long is NOT greater than 0` {
-        LPos.from(0L) shouldBe None
-        LPos.from(-1L) shouldBe None
-        LPos.from(-99L) shouldBe None
+        PosL.from(0L) shouldBe None
+        PosL.from(-1L) shouldBe None
+        PosL.from(-99L) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      LPos.from(42L).value.toString shouldBe "LPos(42)"
+      PosL.from(42L).value.toString shouldBe "PosL(42)"
     }
   }
 
-  object `A DPos` {
+  object `A PosD` {
     object `should offer a from factory method that` {
-      def `returns Some[DPos] if the passed Double is greater than 0`
+      def `returns Some[PosD] if the passed Double is greater than 0`
       {
-        DPos.from(50.23).value.value shouldBe 50.23
-        DPos.from(100.0).value.value shouldBe 100.0
+        PosD.from(50.23).value.value shouldBe 50.23
+        PosD.from(100.0).value.value shouldBe 100.0
       }
       def `returns None if the passed Double is NOT greater than 0`
       {
-        DPos.from(0.0) shouldBe None
-        DPos.from(-0.00001) shouldBe None
-        DPos.from(-99.9) shouldBe None
+        PosD.from(0.0) shouldBe None
+        PosD.from(-0.00001) shouldBe None
+        PosD.from(-99.9) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      DPos.from(42.0).value.toString shouldBe "DPos(42.0)"
+      PosD.from(42.0).value.toString shouldBe "PosD(42.0)"
     }
   }
 
-  object `An FPos` {
+  object `A PosF` {
     object `should offer a from factory method that` {
-      def `returns Some[FPos] if the passed Float is greater than 0`
+      def `returns Some[PosF] if the passed Float is greater than 0`
       {
-        FPos.from(50.23F).value.value shouldBe 50.23F
-        FPos.from(100.0F).value.value shouldBe 100.0F
+        PosF.from(50.23F).value.value shouldBe 50.23F
+        PosF.from(100.0F).value.value shouldBe 100.0F
       }
       def `returns None if the passed Float is NOT greater than 0` {
-        FPos.from(0.0F) shouldBe None
-        FPos.from(-0.00001F) shouldBe None
-        FPos.from(-99.9F) shouldBe None
+        PosF.from(0.0F) shouldBe None
+        PosF.from(-0.00001F) shouldBe None
+        PosF.from(-99.9F) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      FPos.from(42.0F).value.toString shouldBe "FPos(42.0)"
+      PosF.from(42.0F).value.toString shouldBe "PosF(42.0)"
     }
   }
 }

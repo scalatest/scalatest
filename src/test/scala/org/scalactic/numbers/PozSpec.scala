@@ -39,58 +39,58 @@ class PozSpec extends Spec with Matchers {
     }
   }
 
-  object `An LPoz` {
+  object `An PozL` {
     object `should offer a from factory method that` {
-      def `returns Some[LPoz] if the passed Long is greater than or equal to 0`
+      def `returns Some[PozL] if the passed Long is greater than or equal to 0`
       {
-        LPoz.from(0L).value.value shouldBe 0
-        LPoz.from(50L).value.value shouldBe 50
-        LPoz.from(100L).value.value shouldBe 100
+        PozL.from(0L).value.value shouldBe 0
+        PozL.from(50L).value.value shouldBe 50
+        PozL.from(100L).value.value shouldBe 100
       }
       def `returns None if the passed Long is NOT greater than or equal to 0` {
-        LPoz.from(-1L) shouldBe None
-        LPoz.from(-99L) shouldBe None
+        PozL.from(-1L) shouldBe None
+        PozL.from(-99L) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      LPoz.from(42L).value.toString shouldBe "LPoz(42)"
+      PozL.from(42L).value.toString shouldBe "PozL(42)"
     }
   }
 
-  object `A DPoz` {
+  object `A PozD` {
     object `should offer a from factory method that` {
-      def `returns Some[DPoz] if the passed Double is greater than or equal to 0`
+      def `returns Some[PozD] if the passed Double is greater than or equal to 0`
       {
-        DPoz.from(0.0).value.value shouldBe 0.0
-        DPoz.from(50.23).value.value shouldBe 50.23
-        DPoz.from(100.0).value.value shouldBe 100.0
+        PozD.from(0.0).value.value shouldBe 0.0
+        PozD.from(50.23).value.value shouldBe 50.23
+        PozD.from(100.0).value.value shouldBe 100.0
       }
       def `returns None if the passed Double is NOT greater than or equal to 0`
       {
-        DPoz.from(-0.00001) shouldBe None
-        DPoz.from(-99.9) shouldBe None
+        PozD.from(-0.00001) shouldBe None
+        PozD.from(-99.9) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      DPoz.from(42.0).value.toString shouldBe "DPoz(42.0)"
+      PozD.from(42.0).value.toString shouldBe "PozD(42.0)"
     }
   }
 
-  object `An FPoz` {
+  object `An PozF` {
     object `should offer a from factory method that` {
-      def `returns Some[FPoz] if the passed Float is greater than or equal to 0`
+      def `returns Some[PozF] if the passed Float is greater than or equal to 0`
       {
-        FPoz.from(0.0f).value.value shouldBe 0.0f
-        FPoz.from(50.23f).value.value shouldBe 50.23f
-        FPoz.from(100.0f).value.value shouldBe 100.0f
+        PozF.from(0.0f).value.value shouldBe 0.0f
+        PozF.from(50.23f).value.value shouldBe 50.23f
+        PozF.from(100.0f).value.value shouldBe 100.0f
       }
       def `returns None if the passed Float is NOT greater than or equal to 0` {
-        FPoz.from(-0.00001f) shouldBe None
-        FPoz.from(-99.9f) shouldBe None
+        PozF.from(-0.00001f) shouldBe None
+        PozF.from(-99.9f) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      FPoz.from(42.0f).value.toString shouldBe "FPoz(42.0)"
+      PozF.from(42.0f).value.toString shouldBe "PozF(42.0)"
     }
   }
 }
