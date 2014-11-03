@@ -24,5 +24,5 @@ trait MonadProxy[TC[_], T] {
 
 trait Monad[TC[_]] {
   def apply[T](f: TC[T]): MonadProxy[TC, T]
-  def apply[T](o: T): TC[T]
+  def insert[T](o: T): TC[T]
 }

@@ -26,7 +26,7 @@ class MonadSpec extends UnitSpec {
 
   class OptionMonad extends Monad[Option] {
     def apply[T](opt: Option[T]): MonadProxy[Option, T] = new OptionMonadProxy[T](opt)
-    def apply[T](o: T): Option[T] = Option(o) 
+    def insert[T](o: T): Option[T] = Option(o) 
   }
 
   "A MonadProxy" should "offer a map method that has the usual signature" in {
@@ -47,12 +47,14 @@ class MonadSpec extends UnitSpec {
     proxy.map(_ + 1) shouldEqual Some(4)
   }
 
-  it should "offer an apply method that given a T return a TC[T]" in {
+  it should "offer an insert method that given a T return a TC[T]" in {
     val optFun: Monad[Option] = new OptionMonad
-    optFun(3) shouldEqual Some(3)
+    optFun.insert(3) shouldEqual Some(3)
   }
   
-
-
+  it should "allow you to nest a TC inside a TC" in {
+    val optFun: Monad[Option] = new OptionMonad
+    optFun.insert(Option(3)) shouldEqual Some(Some(3))
+  }
 }
 
