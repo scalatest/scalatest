@@ -63,6 +63,10 @@ object Pos extends LowPriorityPosLongImplicits {
   def from(value: Int): Option[Pos] =
     if (value > 0) Some(new Pos(value)) else None
 
+  import language.experimental.macros
+
+  def apply(value: Int): Pos = macro PosMacro.apply
+
   implicit def widenToInt(pos: Pos): Int = pos.value
   implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get
 }

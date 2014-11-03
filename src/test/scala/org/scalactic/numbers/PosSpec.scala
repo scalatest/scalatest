@@ -89,6 +89,22 @@ class PosSpec extends Spec with Matchers {
         posDPoz shouldEqual DPoz.from(6.0).get.value
       }
     }
+
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "Pos(8)" should compile
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "Pos(0)" shouldNot compile
+      }
+
+      def `should compile when -8 is passed in`: Unit = {
+        "Pos(-8)" shouldNot compile
+      }
+
+    }
   }
 
   object `An LPos` {
