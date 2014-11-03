@@ -8,6 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
  
+  // To run gentests
+  // rm -rf gentests
+  // sbt genGenTests/test  (etc., look at specific failures on CI output)
+
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.4
   val buildScalaVersion = "2.11.2"
