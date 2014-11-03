@@ -21,6 +21,7 @@ class MonadSpec extends UnitSpec {
 
   class OptionMonadProxy[T](underlying: Option[T]) extends MonadProxy[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
+    def flatMap[U](f: T => Option[U]): Option[U]  = underlying.flatMap(f)
   }
 
   class OptionMonad extends Monad[Option] {
@@ -29,21 +30,29 @@ class MonadSpec extends UnitSpec {
   }
 
   "A MonadProxy" should "offer a map method that has the usual signature" in {
-    val proxy = new OptionMonadProxy(Some(3))
+    val proxy: MonadProxy[Option, Int] = new OptionMonadProxy(Some(3))
     proxy.map(_ + 1) shouldEqual Some(4)
+  }
+  
+  it should "also offer a flatmap" in {
+    val proxy: MonadProxy[Option, Int] = new OptionMonadProxy(Some(3))
+    val f: Int => Option[Int] = (x: Int) => Some(x + 1) 
+    proxy.flatMap(f) shouldEqual Some(4)
   }
 
   "A Monad" should "offer an apply method that takes a TC[_] instance" in {
     val opt = Some(3)
-    val optFun = new OptionMonad
+    val optFun: Monad[Option] = new OptionMonad
     val proxy = optFun(opt)
     proxy.map(_ + 1) shouldEqual Some(4)
   }
 
   it should "offer an apply method that given a T return a TC[T]" in {
-    val optFun = new OptionMonad
+    val optFun: Monad[Option] = new OptionMonad
     optFun(3) shouldEqual Some(3)
   }
+  
+
 
 }
 

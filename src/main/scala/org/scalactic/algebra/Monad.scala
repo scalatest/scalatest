@@ -19,6 +19,7 @@ import scala.language.higherKinds
 
 trait MonadProxy[TC[_], T] {
   def map[U](f: T => U): TC[U]
+  def flatMap[U](f: T => Option[U]): Option[U]  
 }
 
 trait Monad[TC[_]] {
