@@ -16,6 +16,7 @@
 package org.scalactic.numbers
 
 import reflect.macros.Context
+import org.scalactic.Resources
 
 private[scalactic] object PosMacro {
 
@@ -28,10 +29,9 @@ private[scalactic] object PosMacro {
         if (intConst.value.toString.toInt > 0)
           reify { Pos.from(value.splice).get }
         else
-          c.abort(c.enclosingPosition, "Pos.apply only works with positive integer literals.")
+          c.abort(c.enclosingPosition, Resources("nonPositivePos"))
       case _ =>
-        c.abort(c.enclosingPosition, "Pos.apply only works with positive integer literals.")
+        c.abort(c.enclosingPosition, Resources("nonPositivePos"))
     }
   }
-
 }
