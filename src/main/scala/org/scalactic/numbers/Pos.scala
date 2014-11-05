@@ -65,7 +65,7 @@ object Pos extends LowPriorityPosLongImplicits {
 
   import language.experimental.macros
 
-  def apply(value: Int): Pos = macro PosMacro.apply
+  implicit def apply(value: Int): Pos = macro PosMacro.apply
 
   implicit def widenToInt(pos: Pos): Int = pos.value
   implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get

@@ -94,16 +94,43 @@ class PosSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "Pos(8)" should compile
+        Pos(8).value shouldEqual 8
       }
 
-      def `should compile when 0 is passed in`: Unit = {
+      def `should not compile when 0 is passed in`: Unit = {
         "Pos(0)" shouldNot compile
       }
 
-      def `should compile when -8 is passed in`: Unit = {
+      def `should not compile when -8 is passed in`: Unit = {
         "Pos(-8)" shouldNot compile
       }
 
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "Pos(x)" shouldNot compile
+      }
+    }
+    object `when specified as a plain-old Int` {
+
+      def takesPos(pos: Pos): Int = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPos(8)" should compile
+        takesPos(8) shouldEqual 8
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "takesPos(0)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPos(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "takesPos(x)" shouldNot compile
+      }
     }
   }
 
