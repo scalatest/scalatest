@@ -648,9 +648,7 @@ trait GenInspectorsShorthandsBase {
       ("'should be greater than comparison' failed", " should be > " + right, "MoreThan", errorFunPrefix + "LessThanEqual", "" + right, (errorFun: String, errorValue: String) => new WasNotGreaterThanMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
       ("'should not be greater than comparison' failed", " should not be > (" + right + ")", "LessThanEqual", errorFunPrefix + "MoreThan", "" + right, (errorFun: String, errorValue: String) => new WasGreaterThanMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
       ("'should be greater than or equal comparison' failed", " should be >= " + right, "MoreThanEqual", errorFunPrefix + "LessThan", "" + right, (errorFun: String, errorValue: String) => new WasNotGreaterThanOrEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should not be greater than or equal comparison' failed", " should not be >= (" + right + ")", "LessThan", errorFunPrefix + "MoreThanEqual", "" + right, (errorFun: String, errorValue: String) => new WasGreaterThanOrEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should be ===' failed", " should be === " + right, "Equal[Int]", errorFunPrefix + "NotEqual[Int]", "" + right, (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should not be ===' failed", " should not be === (" + right + ")", "NotEqual[Int]", errorFunPrefix + "Equal[Int]", "" + right, (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString))
+      ("'should not be greater than or equal comparison' failed", " should not be >= (" + right + ")", "LessThan", errorFunPrefix + "MoreThanEqual", "" + right, (errorFun: String, errorValue: String) => new WasGreaterThanOrEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString))
     )
 
   def stdNullStringTypes(leftTemplateFun: (String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
@@ -739,9 +737,7 @@ trait GenInspectorsShorthandsBase {
       ("'should equal' failed", " should equal ('" + right + "')", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
       ("'should not equal' failed", " should not equal '" + right + "'", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new EqualedMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
       ("'should be' failed", " should be ('" + right + "')", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
-      ("'should not be' failed", " should not be '" + right + "'", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
-      ("'should be ===' failed", " should be === '" + right + "'", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
-      ("'should not be ===' failed", " should not be === ('" + right + "')", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString))
+      ("'should not be' failed", " should not be '" + right + "'", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString))
     )
   }
 
@@ -750,9 +746,7 @@ trait GenInspectorsShorthandsBase {
       ("'should equal' failed", " should equal (" + right + ")", "Equal[(Int, Int)]", errorFunPrefix + "NotEqual[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
       ("'should not equal' failed", " should not equal " + right, "NotEqual[(Int, Int)]", errorFunPrefix + "Equal[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new EqualedMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
       ("'should be' failed", " should be (" + right + ")", "Equal[(Int, Int)]", errorFunPrefix + "NotEqual[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should not be' failed", " should not be " + right, "NotEqual[(Int, Int)]", errorFunPrefix + "Equal[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should be ===' failed", " should be === " + right, "Equal[(Int, Int)]", errorFunPrefix + "NotEqual[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
-      ("'should not be ===' failed", " should not be === (" + right + ")", "NotEqual[(Int, Int)]", errorFunPrefix + "Equal[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString))
+      ("'should not be' failed", " should not be " + right, "NotEqual[(Int, Int)]", errorFunPrefix + "Equal[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString))
     )
 
   def stdNumberJavaMapTypes(leftTemplateFun: (String, String) => Template, right: Tuple2[_, _], errorFunPrefix: String, autoQuoteString: Boolean = true) =
@@ -760,9 +754,7 @@ trait GenInspectorsShorthandsBase {
       ("'should equal' failed", " should equal (org.scalatest.Entry(" + right._1 + ", " + right._2 + "))", "Equal[Int, Int]", errorFunPrefix + "NotEqual[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString)),
       ("'should not equal' failed", " should not equal org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", "NotEqual[Int, Int]", errorFunPrefix + "Equal[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new EqualedMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString)),
       ("'should be' failed", " should be (org.scalatest.Entry(" + right._1 + ", " + right._2 + "))", "Equal[Int, Int]", errorFunPrefix + "NotEqual[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString)),
-      ("'should not be' failed", " should not be org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", "NotEqual[Int, Int]", errorFunPrefix + "Equal[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString)),
-      ("'should be ===' failed", " should be === org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", "Equal[Int, Int]", errorFunPrefix + "NotEqual[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString)),
-      ("'should not be ===' failed", " should not be === (org.scalatest.Entry(" + right._1 + ", " + right._2 + "))", "NotEqual[Int, Int]", errorFunPrefix + "Equal[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString))
+      ("'should not be' failed", " should not be org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", "NotEqual[Int, Int]", errorFunPrefix + "Equal[Int, Int]", "org.scalatest.Entry(" + right._1 + ", " + right._2 + ")", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(right._1 + "=" + right._2), autoQuoteString))
     )
 
   def stdJavaColCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, leftSizeTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
@@ -2324,8 +2316,7 @@ trait GenInspectorsShorthandsBase {
       ) ++
         (stdInt123Types(simpleMessageFun, 3, "indexElement", false).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           condition != "'should equal' failed" &&
-            condition != "'should be' failed" &&
-            condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+          condition != "'should be' failed"
         })
 
     val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
@@ -2366,8 +2357,7 @@ trait GenInspectorsShorthandsBase {
     val stringTypes =
       stdStringTypes(simpleMessageFun, '3', "indexElement", true, true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-          condition != "'should be' failed" &&
-          condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+          condition != "'should be' failed"
       }
 
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5"))
@@ -2375,8 +2365,7 @@ trait GenInspectorsShorthandsBase {
     val numberMapTypes =
       stdNumberMapTypes(simpleMessageFun, (3, 3), "indexElement", false).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-          condition != "'should be' failed" &&
-          condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+          condition != "'should be' failed"
       }
 
     val numberJavaMap = genJavaMap(Array("Map(1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5)"), "Int", "Int")
@@ -2384,8 +2373,7 @@ trait GenInspectorsShorthandsBase {
     val numberJavaMapTypes =
       stdNumberJavaMapTypes(simpleMessageFun, (3, 3), "indexElement", false).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-          condition != "'should be' failed" &&
-          condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+          condition != "'should be' failed"
       }
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
