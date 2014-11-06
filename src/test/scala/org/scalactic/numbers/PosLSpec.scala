@@ -38,6 +38,103 @@ class PosLSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosL.from(42L).value.toString shouldBe "PosL(42)"
     }
+/*
+    def `should be automatically widened to compatible AnyVal targets` {
+      (PosL.from(3).get: Int) shouldEqual 3 // shouldNot typeCheck
+      (PosL.from(3).get: Long) shouldEqual 3L
+      (PosL.from(3).get: Float) shouldEqual 3.0F
+      (PosL.from(3).get: Double) shouldEqual 3.0
+      (PosL.from(3).get: Poz) shouldEqual Poz.from(3).get
+      (PosL.from(3).get: PozL) shouldEqual PozL.from(3L).get
+      (PosL.from(3).get: PozF) shouldEqual PozF.from(3.0F).get
+      (PosL.from(3).get: PozD) shouldEqual PozD.from(3.0).get
+    }
+    object `when a compatible AnyVal is passed to a + method invoked on it` {
+      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+        // When adding a "primitive"
+        val opInt = PosL.from(3).get + 3 // should be type Long
+        opInt shouldEqual 6L
+
+        val opLong = PosL.from(3).get + 3L
+        opLong shouldEqual 6L
+
+        val opFloat = PosL.from(3).get + 3.0F
+        opFloat shouldEqual 6.0F
+
+        val opDouble = PosL.from(3).get + 3.0
+        opDouble shouldEqual 6.0
+
+        // When adding a *Pos
+        val opPos = Pos.from(3).get + Pos.from(3).get
+        opPos shouldEqual 6L
+
+        val opPosL = Pos.from(3).get + PosL.from(3L).get
+        opPosL shouldEqual 6L
+
+        val opPosF = Pos.from(3).get + PosF.from(3.0F).get
+        opPosF shouldEqual 6.0F
+
+        val opPosD = Pos.from(3).get + PosD.from(3.0).get
+        opPosD shouldEqual 6.0
+
+        // When adding a *Poz
+        val opPoz = Pos.from(3).get + Poz.from(3).get
+        opPoz shouldEqual Poz.from(6).get.value
+
+        val opPozL = Pos.from(3).get + PozL.from(3L).get
+        opPozL shouldEqual PozL.from(6L).get.value
+
+        val opPozF = Pos.from(3).get + PozF.from(3.0F).get
+        opPozF shouldEqual PozF.from(6.0F).get.value
+
+        val opPozD = Pos.from(3).get + PozD.from(3.0).get
+        opPozD shouldEqual PozD.from(6.0).get.value
+      }
+    }
+
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "Pos(8)" should compile
+        Pos(8).value shouldEqual 8
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "Pos(0)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "Pos(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "Pos(x)" shouldNot compile
+      }
+    }
+    object `when specified as a plain-old Int` {
+
+      def takesPos(pos: Pos): Int = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPos(8)" should compile
+        takesPos(8) shouldEqual 8
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "takesPos(0)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPos(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "takesPos(x)" shouldNot compile
+      }
+    }
+*/
   }
 }
 

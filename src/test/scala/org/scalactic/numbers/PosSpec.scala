@@ -50,43 +50,43 @@ class PosSpec extends Spec with Matchers {
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
         // When adding a "primitive"
-        val posInt = Pos.from(3).get + 3
-        posInt shouldEqual 6
+        val opInt = Pos(3) + 3
+        opInt shouldEqual 6
 
-        val posLong = Pos.from(3).get + 3L
-        posLong shouldEqual 6L
+        val opLong = Pos(3) + 3L
+        opLong shouldEqual 6L
 
-        val posFloat = Pos.from(3).get + 3.0F
-        posFloat shouldEqual 6.0F
+        val opFloat = Pos(3) + 3.0F
+        opFloat shouldEqual 6.0F
 
-        val posDouble = Pos.from(3).get + 3.0
-        posDouble shouldEqual 6.0
+        val opDouble = Pos(3) + 3.0
+        opDouble shouldEqual 6.0
 
         // When adding a *Pos
-        val posPos = Pos.from(3).get + Pos.from(3).get
-        posPos shouldEqual 6
+        val opPos = Pos(3) + Pos(3)
+        opPos shouldEqual 6
 
-        val posPosL = Pos.from(3).get + PosL.from(3L).get
-        posPosL shouldEqual 6L
+        val opPosL = Pos(3) + PosL.from(3L).get
+        opPosL shouldEqual 6L
 
-        val posPosF = Pos.from(3).get + PosF.from(3.0F).get
-        posPosF shouldEqual 6.0F
+        val opPosF = Pos(3) + PosF.from(3.0F).get
+        opPosF shouldEqual 6.0F
 
-        val posPosD = Pos.from(3).get + PosD.from(3.0).get
-        posPosD shouldEqual 6.0
+        val opPosD = Pos(3) + PosD.from(3.0).get
+        opPosD shouldEqual 6.0
 
         // When adding a *Poz
-        val posPoz = Pos.from(3).get + Poz.from(3).get
-        posPoz shouldEqual Poz.from(6).get.value
+        val opPoz = Pos(3) + Poz.from(3).get
+        opPoz shouldEqual Poz.from(6).get.value
 
-        val posPozL = Pos.from(3).get + PozL.from(3L).get
-        posPozL shouldEqual PozL.from(6L).get.value
+        val opPozL = Pos(3) + PozL.from(3L).get
+        opPozL shouldEqual PozL.from(6L).get.value
 
-        val posPozF = Pos.from(3).get + PozF.from(3.0F).get
-        posPozF shouldEqual PozF.from(6.0F).get.value
+        val opPozF = Pos(3) + PozF.from(3.0F).get
+        opPozF shouldEqual PozF.from(6.0F).get.value
 
-        val posPozD = Pos.from(3).get + PozD.from(3.0).get
-        posPozD shouldEqual PozD.from(6.0).get.value
+        val opPozD = Pos(3) + PozD.from(3.0).get
+        opPozD shouldEqual PozD.from(6.0).get.value
       }
     }
 
@@ -131,24 +131,6 @@ class PosSpec extends Spec with Matchers {
         val x: Int = -8
         "takesPos(x)" shouldNot compile
       }
-    }
-  }
-
-  object `A PosL` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosL] if the passed Long is greater than 0`
-      {
-        PosL.from(50L).value.value shouldBe 50
-        PosL.from(100L).value.value shouldBe 100
-      }
-      def `returns None if the passed Long is NOT greater than 0` {
-        PosL.from(0L) shouldBe None
-        PosL.from(-1L) shouldBe None
-        PosL.from(-99L) shouldBe None
-      }
-    } 
-    def `should have a pretty toString` {
-      PosL.from(42L).value.toString shouldBe "PosL(42)"
     }
   }
 }
