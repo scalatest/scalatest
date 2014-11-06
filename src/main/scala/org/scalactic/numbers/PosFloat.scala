@@ -29,6 +29,7 @@ object PosFloat {
   def from(value: Float): Option[PosFloat] =
     if (value > 0.0F) Some(new PosFloat(value)) else None
   import language.experimental.macros
+  import scala.language.implicitConversions
   implicit def apply(value: Float): PosFloat = macro PosFloatMacro.apply
 }
 

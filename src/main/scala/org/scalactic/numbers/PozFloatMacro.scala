@@ -15,21 +15,24 @@
  */
 package org.scalactic.numbers
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
+import reflect.macros.Context
+import org.scalactic.Resources
 
-final class PozFloat private (val value: Float) extends AnyVal with BoundedFloat {
-  override def toString: String = s"PozFloat($value)"
-}
+private[scalactic] object PozFloatMacro {
 
-object PozFloat {
-  def from(value: Float): Option[PozFloat] =
-    if (value >= 0.0F) Some(new PozFloat(value)) else None
-  import language.experimental.macros
-  import scala.language.implicitConversions
-  implicit def apply(value: Float): PozFloat = macro PozFloatMacro.apply
+  def apply(c: Context)(value: c.Expr[Float]): c.Expr[PozFloat] = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(floatConst) =>
+        if (floatConst.value.toString.toFloat >= 0.0F)
+          reify { PozFloat.from(value.splice).get }
+        else
+          c.abort(c.enclosingPosition, Resources("negativePozFloat"))
+      case _ =>
+        c.abort(c.enclosingPosition, Resources("negativePozFloat"))
+    }
+  }
 }
 

@@ -37,6 +37,40 @@ class PozFloatSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozFloat.from(42.0f).value.toString shouldBe "PozFloat(42.0)"
     }
+    object `when created with apply method` {
+  
+      def `should compile when 8 is passed in`: Unit = {
+        "PozFloat(8)" should compile
+        PozFloat(8).value shouldEqual 8
+        "PozFloat(8L)" should compile
+        PozFloat(8L).value shouldEqual 8
+        "PozFloat(8.0F)" should compile
+        PozFloat(8.0F).value shouldEqual 8.0F
+      }
+  
+      def `should compile when 0 is passed in`: Unit = {
+        "PozFloat(0)" should compile
+        PozFloat(0).value shouldEqual 0
+        "PozFloat(0L)" should compile
+        PozFloat(0L).value shouldEqual 0
+        "PozFloat(0.0F)" should compile
+        PozFloat(0.0F).value shouldEqual 0.0F
+      }
+  
+      def `should not compile when -8 is passed in`: Unit = {
+        "PozFloat(-8)" shouldNot compile
+        "PozFloat(-8L)" shouldNot compile
+        "PozFloat(-8.0F)" shouldNot compile
+      }
+      def `should not compile when x is passed in`: Unit = {
+        val a: Int = -8
+        "PozFloat(a)" shouldNot compile
+        val b: Long = -8L
+        "PozFloat(b)" shouldNot compile
+        val c: Float = -8.0F
+        "PozFloat(c)" shouldNot compile
+      }
+    }
   }
 }
 
