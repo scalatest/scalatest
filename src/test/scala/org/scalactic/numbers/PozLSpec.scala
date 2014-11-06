@@ -20,22 +20,22 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import org.scalactic.CheckedEquality._
 
-class PozSpec extends Spec with Matchers {
-  object `A Poz` {
+class PozLSpec extends Spec with Matchers {
+  object `An PozL` {
     object `should offer a from factory method that` {
-      def `returns Some[Poz] if the passed Int is greater than or equal to 0`
+      def `returns Some[PozL] if the passed Long is greater than or equal to 0`
       {
-        Poz.from(0).value.value shouldBe 0
-        Poz.from(50).value.value shouldBe 50
-        Poz.from(100).value.value shouldBe 100
+        PozL.from(0L).value.value shouldBe 0
+        PozL.from(50L).value.value shouldBe 50
+        PozL.from(100L).value.value shouldBe 100
       }
-      def `returns None if the passed Int is NOT greater than or equal to 0` {
-        Poz.from(-1) shouldBe None
-        Poz.from(-99) shouldBe None
+      def `returns None if the passed Long is NOT greater than or equal to 0` {
+        PozL.from(-1L) shouldBe None
+        PozL.from(-99L) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      Poz.from(42).value.toString shouldBe "Poz(42)"
+      PozL.from(42L).value.toString shouldBe "PozL(42)"
     }
   }
 }
