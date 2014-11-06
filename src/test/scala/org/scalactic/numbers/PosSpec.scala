@@ -66,7 +66,7 @@ class PosSpec extends Spec with Matchers {
         val opPos = Pos(3) + Pos(3)
         opPos shouldEqual 6
 
-        val opPosL = Pos(3) + PosL.from(3L).get
+        val opPosL = Pos(3) + PosL(3L)
         opPosL shouldEqual 6L
 
         val opPosF = Pos(3) + PosF.from(3.0F).get

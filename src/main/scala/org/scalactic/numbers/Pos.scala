@@ -24,24 +24,6 @@ import scala.language.implicitConversions
 final class Pos private (val value: Int) extends AnyVal with BoundedInt {
   override def toString: String = s"Pos($value)"
   def +[T](x: T)(implicit ev: PosWidening[T]): ev.ResultType = ev.add(value, x)
-/*
-  def +(x: Int): Int = value + x
-  def +(x: Long): Long = value + x
-  def +(x: Float): Float = value + x
-  def +(x: Double): Double = value + x
-*/
-
-/*
-  def +(x: Pos): Int = value + x.value
-  def +(x: PosL): Long = value + x.value
-  def +(x: PosF): Float = value + x.value
-  def +(x: PosD): Double = value + x.value
-
-  def +(x: Poz): Int = value + x.value
-  def +(x: PozL): Long = value + x.value
-  def +(x: PozF): Float = value + x.value
-  def +(x: PozD): Double = value + x.value
-*/
 }
 
 class LowPriorityPosDoubleImplicits {
@@ -78,6 +60,8 @@ final class PosL private (val value: Long) extends AnyVal with BoundedLong {
 object PosL {
   def from(value: Long): Option[PosL] =
     if (value > 0L) Some(new PosL(value)) else None
+  import language.experimental.macros
+  implicit def apply(value: Long): PosL = macro PosLMacro.apply
 }
 
 final class PosD private (val value: Double) extends AnyVal with BoundedDouble {
