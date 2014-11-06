@@ -64,6 +64,36 @@ class PozLongSpec extends Spec with Matchers {
         "PozLong(b)" shouldNot compile
       }
     }
+    object `when specified as a plain-old Long` {
+
+      def takesPozLong(pos: PozLong): Long = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPozLong(8)" should compile
+        takesPozLong(8) shouldEqual 8
+        "takesPozLong(8L)" should compile
+        takesPozLong(8L) shouldEqual 8L
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "takesPozLong(0)" should compile
+        takesPozLong(0) shouldEqual 0
+        "takesPozLong(0L)" should compile
+        takesPozLong(0L) shouldEqual 0L
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPozLong(-8)" shouldNot compile
+        "takesPozLong(-8L)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Long = -8
+        "takesPozLong(x)" shouldNot compile
+        val b: Long = -8L
+        "takesPozLong(b)" shouldNot compile
+      }
+    }
   }
 }
 

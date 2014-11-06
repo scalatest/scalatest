@@ -29,5 +29,6 @@ object PozInt {
   def from(value: Int): Option[PozInt] =
     if (value >= 0) Some(new PozInt(value)) else None
   import language.experimental.macros
+  import scala.language.implicitConversions
   implicit def apply(value: Int): PozInt = macro PozIntMacro.apply
 }

@@ -58,6 +58,28 @@ class PozIntSpec extends Spec with Matchers {
         "PozInt(x)" shouldNot compile
       }
     }
+    object `when specified as a plain-old Int` {
+
+      def takesPozInt(pos: PozInt): Int = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPozInt(8)" should compile
+        takesPozInt(8) shouldEqual 8
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "takesPozInt(0)" should compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPozInt(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "takesPozInt(x)" shouldNot compile
+      }
+    }
   }
 }
 

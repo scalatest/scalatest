@@ -72,6 +72,43 @@ class PozFloatSpec extends Spec with Matchers {
         "PozFloat(c)" shouldNot compile
       }
     }
+    object `when specified as a plain-old Float` {
+
+      def takesPozFloat(pos: PozFloat): Float = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPozFloat(8)" should compile
+        takesPozFloat(8) shouldEqual 8
+        "takesPozFloat(8L)" should compile
+        takesPozFloat(8L) shouldEqual 8L
+        "takesPozFloat(8.0F)" should compile
+        takesPozFloat(8.0F) shouldEqual 8.0F
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "takesPozFloat(0)" should compile
+        takesPozFloat(0) shouldEqual 0
+        "takesPozFloat(0L)" should compile
+        takesPozFloat(0L) shouldEqual 0L
+        "takesPozFloat(0.0F)" should compile
+        takesPozFloat(0.0F) shouldEqual 0.0F
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPozFloat(-8)" shouldNot compile
+        "takesPozFloat(-8L)" shouldNot compile
+        "takesPozFloat(-8.0F)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Float = -8
+        "takesPozFloat(x)" shouldNot compile
+        val b: Float = -8L
+        "takesPozFloat(b)" shouldNot compile
+        val c: Float = -8.0F
+        "takesPozFloat(c)" shouldNot compile
+      }
+    }
   }
 }
 
