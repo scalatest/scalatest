@@ -1,18 +1,18 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2001-2014 Artima, Inc.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.scalactic.numbers
 
 import org.scalatest._
@@ -34,12 +34,11 @@ class PercentSpec extends Spec with Matchers {
         Percent.from(-1) shouldBe None
         Percent.from(-99) shouldBe None
       }
-    } 
+    }
     def `should have a pretty toString` {
       Percent.from(42).value.toString shouldBe "Percent(42)"
     }
   }
-
   object `An LPercent` {
     object `should offer a from factory method that` {
       def `returns Some[LPercent] if the passed Long is between 0 and 100` {
@@ -53,7 +52,7 @@ class PercentSpec extends Spec with Matchers {
         LPercent.from(-1L) shouldBe None
         LPercent.from(-99L) shouldBe None
       }
-    } 
+    }
     def `should have a pretty toString` {
       LPercent.from(42L).value.toString shouldBe "LPercent(42)"
     }
@@ -72,13 +71,12 @@ class PercentSpec extends Spec with Matchers {
         FPercent.from(-.000001F) shouldBe None
         FPercent.from(-99.999F) shouldBe None
       }
-    } 
+    }
     def `should have a pretty toString` {
       FPercent.from(42.0F).value.toString shouldBe "FPercent(42.0)"
       FPercent.from(42.42F).value.toString shouldBe "FPercent(42.42)"
     }
   }
-
   object `A DPercent` {
     object `should offer a from factory method that` {
       def `returns Some[DPercent] if the passed Double is between 0 and 100` {
@@ -92,7 +90,7 @@ class PercentSpec extends Spec with Matchers {
         DPercent.from(-.000001) shouldBe None
         DPercent.from(-99.999) shouldBe None
       }
-    } 
+    }
     def `should have a pretty toString` {
       DPercent.from(42.0).value.toString shouldBe "DPercent(42.0)"
       DPercent.from(42.42).value.toString shouldBe "DPercent(42.42)"

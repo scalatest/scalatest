@@ -15,23 +15,6 @@
  */
 package org.scalactic.numbers
 
-import reflect.macros.Context
-import org.scalactic.Resources
-
-private[scalactic] object PosMacro {
-
-  def apply(c: Context)(value: c.Expr[Int]): c.Expr[Pos] = {
-
-    import c.universe._
-
-    value.tree match {
-      case Literal(intConst) =>
-        if (intConst.value.toString.toInt > 0)
-          reify { Pos.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, Resources("nonPositivePos"))
-      case _ =>
-        c.abort(c.enclosingPosition, Resources("nonPositivePos"))
-    }
-  }
+trait BoundedFloat extends Any {
+  val value: Float
 }

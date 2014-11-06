@@ -1,23 +1,19 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2001-2014 Artima, Inc.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.scalactic.numbers
-
-//
-// Numbers from zero to 100.
-//
 
 final class Percent private (val value: Int) extends AnyVal {
   override def toString: String = s"Percent($value)"
@@ -28,7 +24,6 @@ object Percent {
     if (value >= 0 && value <= 100) Some(new Percent(value)) else None
 }
 
-
 final class LPercent private (val value: Long) extends AnyVal {
   override def toString: String = s"LPercent($value)"
 }
@@ -38,7 +33,6 @@ object LPercent {
     if (value >= 0L && value <= 100L) Some(new LPercent(value)) else None
 }
 
-
 final class FPercent private (val value: Float) extends AnyVal {
   override def toString: String = s"FPercent($value)"
 }
@@ -47,7 +41,6 @@ object FPercent {
   def from(value: Float): Option[FPercent] =
     if (value >= 0.0F && value <= 100.0F) Some(new FPercent(value)) else None
 }
-
 
 final class DPercent private (val value: Double) extends AnyVal {
   override def toString: String = s"DPercent($value)"
