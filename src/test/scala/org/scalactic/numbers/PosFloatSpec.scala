@@ -37,36 +37,36 @@ class PosFloatSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
     }
-    object `when created with apply method` {
+  }
+  object `when created with apply method` {
 
-      def `should compile when 8 is passed in`: Unit = {
-        "PosFloat(8)" should compile
-        PosFloat(8).value shouldEqual 8
-        "PosFloat(8L)" should compile
-        PosFloat(8L).value shouldEqual 8
-        "PosFloat(8.0F)" should compile
-        PosFloat(8.0F).value shouldEqual 8.0F
-      }
+    def `should compile when 8 is passed in`: Unit = {
+      "PosFloat(8)" should compile
+      PosFloat(8).value shouldEqual 8
+      "PosFloat(8L)" should compile
+      PosFloat(8L).value shouldEqual 8
+      "PosFloat(8.0F)" should compile
+      PosFloat(8.0F).value shouldEqual 8.0F
+    }
 
-      def `should not compile when 0 is passed in`: Unit = {
-        "PosFloat(0)" shouldNot compile
-        "PosFloat(0L)" shouldNot compile
-        "PosFloat(0.0F)" shouldNot compile
-      }
+    def `should not compile when 0 is passed in`: Unit = {
+      "PosFloat(0)" shouldNot compile
+      "PosFloat(0L)" shouldNot compile
+      "PosFloat(0.0F)" shouldNot compile
+    }
 
-      def `should not compile when -8 is passed in`: Unit = {
-        "PosFloat(-8)" shouldNot compile
-        "PosFloat(-8L)" shouldNot compile
-        "PosFloat(-8.0F)" shouldNot compile
-      }
-      def `should not compile when x is passed in`: Unit = {
-        val a: Int = -8
-        "PosFloat(a)" shouldNot compile
-        val b: Long = -8L
-        "PosFloat(b)" shouldNot compile
-        val c: Float = -8.0F
-        "PosFloat(c)" shouldNot compile
-      }
+    def `should not compile when -8 is passed in`: Unit = {
+      "PosFloat(-8)" shouldNot compile
+      "PosFloat(-8L)" shouldNot compile
+      "PosFloat(-8.0F)" shouldNot compile
+    }
+    def `should not compile when x is passed in`: Unit = {
+      val a: Int = -8
+      "PosFloat(a)" shouldNot compile
+      val b: Long = -8L
+      "PosFloat(b)" shouldNot compile
+      val c: Float = -8.0F
+      "PosFloat(c)" shouldNot compile
     }
   }
 }
