@@ -21,11 +21,12 @@ package org.scalactic.numbers
 // (Pronounced like "posey".)
 //
 
-final class PozInt private (val value: Int) extends AnyVal with BoundedInt {
-  override def toString: String = s"PozInt($value)"
+final class PozFloat private (val value: Float) extends AnyVal with BoundedFloat {
+  override def toString: String = s"PozFloat($value)"
 }
 
-object PozInt {
-  def from(value: Int): Option[PozInt] =
-    if (value >= 0) Some(new PozInt(value)) else None
+object PozFloat {
+  def from(value: Float): Option[PozFloat] =
+    if (value >= 0.0F) Some(new PozFloat(value)) else None
 }
+

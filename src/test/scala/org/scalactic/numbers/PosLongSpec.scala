@@ -20,41 +20,41 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import org.scalactic.StrictCheckedEquality._
 
-class PosLSpec extends Spec with Matchers {
+class PosLongSpec extends Spec with Matchers {
 
-  object `A PosL` {
+  object `A PosLong` {
     object `should offer a from factory method that` {
-      def `returns Some[PosL] if the passed Long is greater than 0`
+      def `returns Some[PosLong] if the passed Long is greater than 0`
       {
-        PosL.from(50L).value.value shouldBe 50
-        PosL.from(100L).value.value shouldBe 100
+        PosLong.from(50L).value.value shouldBe 50
+        PosLong.from(100L).value.value shouldBe 100
       }
       def `returns None if the passed Long is NOT greater than 0` {
-        PosL.from(0L) shouldBe None
-        PosL.from(-1L) shouldBe None
-        PosL.from(-99L) shouldBe None
+        PosLong.from(0L) shouldBe None
+        PosLong.from(-1L) shouldBe None
+        PosLong.from(-99L) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      PosL.from(42L).value.toString shouldBe "PosL(42)"
+      PosLong.from(42L).value.toString shouldBe "PosLong(42)"
     }
     object `when created with apply method` {
 
       def `should compile when 8 is passed in`: Unit = {
-        "PosL(8)" should compile
-        PosL(8).value shouldEqual 8
-        "PosL(8L)" should compile
-        PosL(8L).value shouldEqual 8
+        "PosLong(8)" should compile
+        PosLong(8).value shouldEqual 8
+        "PosLong(8L)" should compile
+        PosLong(8L).value shouldEqual 8
       }
 
       def `should not compile when 0 is passed in`: Unit = {
-        "PosL(0)" shouldNot compile
-        "PosL(0L)" shouldNot compile
+        "PosLong(0)" shouldNot compile
+        "PosLong(0L)" shouldNot compile
       }
 
       def `should not compile when -8 is passed in`: Unit = {
-        "PosL(-8)" shouldNot compile
-        "PosL(-8L)" shouldNot compile
+        "PosLong(-8)" shouldNot compile
+        "PosLong(-8L)" shouldNot compile
       }
       def `should not compile when x is passed in`: Unit = {
         val a: Int = -8
@@ -66,84 +66,84 @@ class PosLSpec extends Spec with Matchers {
 /*
     object `when specified as a plain-old Int` {
 
-      def takesPosL(posL: PosL): Long = posL.value
+      def takesPosLong(posL: PosLong): Long = posL.value
 
       def `should compile when 8 is passed in`: Unit = {
-        "takesPosL(8)" should compile
-        takesPosL(8) shouldEqual 8L
-        "takesPosL(8L)" should compile
-        takesPosL(8L) shouldEqual 8L
+        "takesPosLong(8)" should compile
+        takesPosLong(8) shouldEqual 8L
+        "takesPosLong(8L)" should compile
+        takesPosLong(8L) shouldEqual 8L
       }
 
       def `should not compile when 0 is passed in`: Unit = {
-        "takesPosL(0)" shouldNot compile
-        "takesPosL(0L)" shouldNot compile
+        "takesPosLong(0)" shouldNot compile
+        "takesPosLong(0L)" shouldNot compile
       }
 
       def `should not compile when -8 is passed in`: Unit = {
-        "takesPosL(-8)" shouldNot compile
-        "takesPosL(-8L)" shouldNot compile
+        "takesPosLong(-8)" shouldNot compile
+        "takesPosLong(-8L)" shouldNot compile
       }
 
       def `should not compile when x is passed in`: Unit = {
         val a: Int = -8
-        "takesPosL(a)" shouldNot compile
+        "takesPosLong(a)" shouldNot compile
         val b: Long = -8L
-        "takesPosL(b)" shouldNot compile
+        "takesPosLong(b)" shouldNot compile
       }
     }
 */
 /*
     def `should be automatically widened to compatible AnyVal targets` {
-      (PosL.from(3).get: Int) shouldEqual 3 // shouldNot typeCheck
-      (PosL.from(3).get: Long) shouldEqual 3L
-      (PosL.from(3).get: Float) shouldEqual 3.0F
-      (PosL.from(3).get: Double) shouldEqual 3.0
-      (PosL.from(3).get: Poz) shouldEqual Poz.from(3).get
-      (PosL.from(3).get: PozL) shouldEqual PozL.from(3L).get
-      (PosL.from(3).get: PozF) shouldEqual PozF.from(3.0F).get
-      (PosL.from(3).get: PozD) shouldEqual PozD.from(3.0).get
+      (PosLong.from(3).get: Int) shouldEqual 3 // shouldNot typeCheck
+      (PosLong.from(3).get: Long) shouldEqual 3L
+      (PosLong.from(3).get: Float) shouldEqual 3.0F
+      (PosLong.from(3).get: Double) shouldEqual 3.0
+      (PosLong.from(3).get: Poz) shouldEqual Poz.from(3).get
+      (PosLong.from(3).get: PozLong) shouldEqual PozLong.from(3L).get
+      (PosLong.from(3).get: PozFloat) shouldEqual PozFloat.from(3.0F).get
+      (PosLong.from(3).get: PozDouble) shouldEqual PozDouble.from(3.0).get
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
         // When adding a "primitive"
-        val opInt = PosL.from(3).get + 3 // should be type Long
+        val opInt = PosLong.from(3).get + 3 // should be type Long
         opInt shouldEqual 6L
 
-        val opLong = PosL.from(3).get + 3L
+        val opLong = PosLong.from(3).get + 3L
         opLong shouldEqual 6L
 
-        val opFloat = PosL.from(3).get + 3.0F
+        val opFloat = PosLong.from(3).get + 3.0F
         opFloat shouldEqual 6.0F
 
-        val opDouble = PosL.from(3).get + 3.0
+        val opDouble = PosLong.from(3).get + 3.0
         opDouble shouldEqual 6.0
 
         // When adding a *Pos
         val opPos = Pos.from(3).get + Pos.from(3).get
         opPos shouldEqual 6L
 
-        val opPosL = Pos.from(3).get + PosL.from(3L).get
-        opPosL shouldEqual 6L
+        val opPosLong = Pos.from(3).get + PosLong.from(3L).get
+        opPosLong shouldEqual 6L
 
-        val opPosF = Pos.from(3).get + PosF.from(3.0F).get
-        opPosF shouldEqual 6.0F
+        val opPosFloat = Pos.from(3).get + PosFloat.from(3.0F).get
+        opPosFloat shouldEqual 6.0F
 
-        val opPosD = Pos.from(3).get + PosD.from(3.0).get
-        opPosD shouldEqual 6.0
+        val opPosDouble = Pos.from(3).get + PosDouble.from(3.0).get
+        opPosDouble shouldEqual 6.0
 
         // When adding a *Poz
         val opPoz = Pos.from(3).get + Poz.from(3).get
         opPoz shouldEqual Poz.from(6).get.value
 
-        val opPozL = Pos.from(3).get + PozL.from(3L).get
-        opPozL shouldEqual PozL.from(6L).get.value
+        val opPozLong = Pos.from(3).get + PozLong.from(3L).get
+        opPozLong shouldEqual PozLong.from(6L).get.value
 
-        val opPozF = Pos.from(3).get + PozF.from(3.0F).get
-        opPozF shouldEqual PozF.from(6.0F).get.value
+        val opPozFloat = Pos.from(3).get + PozFloat.from(3.0F).get
+        opPozFloat shouldEqual PozFloat.from(6.0F).get.value
 
-        val opPozD = Pos.from(3).get + PozD.from(3.0).get
-        opPozD shouldEqual PozD.from(6.0).get.value
+        val opPozDouble = Pos.from(3).get + PozDouble.from(3.0).get
+        opPozDouble shouldEqual PozDouble.from(6.0).get.value
       }
     }
 

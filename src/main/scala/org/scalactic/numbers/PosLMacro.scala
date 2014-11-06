@@ -18,16 +18,16 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PosLMacro {
+private[scalactic] object PosLongMacro {
 
-  def apply(c: Context)(value: c.Expr[Long]): c.Expr[PosL] = {
+  def apply(c: Context)(value: c.Expr[Long]): c.Expr[PosLong] = {
 
     import c.universe._
 
     value.tree match {
       case Literal(longConst) =>
         if (longConst.value.toString.toLong > 0L)
-          reify { PosL.from(value.splice).get }
+          reify { PosLong.from(value.splice).get }
         else
           c.abort(c.enclosingPosition, Resources("nonPositivePosLong"))
       case _ =>

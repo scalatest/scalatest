@@ -18,25 +18,24 @@ package org.scalactic.numbers
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.CheckedEquality._
+import org.scalactic.StrictCheckedEquality._
 
-class PozDSpec extends Spec with Matchers {
-  object `A PozD` {
+class PosFloatSpec extends Spec with Matchers {
+  object `A PosFloat` {
     object `should offer a from factory method that` {
-      def `returns Some[PozD] if the passed Double is greater than or equal to 0`
+      def `returns Some[PosFloat] if the passed Float is greater than 0`
       {
-        PozD.from(0.0).value.value shouldBe 0.0
-        PozD.from(50.23).value.value shouldBe 50.23
-        PozD.from(100.0).value.value shouldBe 100.0
+        PosFloat.from(50.23F).value.value shouldBe 50.23F
+        PosFloat.from(100.0F).value.value shouldBe 100.0F
       }
-      def `returns None if the passed Double is NOT greater than or equal to 0`
-      {
-        PozD.from(-0.00001) shouldBe None
-        PozD.from(-99.9) shouldBe None
+      def `returns None if the passed Float is NOT greater than 0` {
+        PosFloat.from(0.0F) shouldBe None
+        PosFloat.from(-0.00001F) shouldBe None
+        PosFloat.from(-99.9F) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      PozD.from(42.0).value.toString shouldBe "PozD(42.0)"
+      PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
     }
   }
 }

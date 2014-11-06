@@ -18,16 +18,16 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PosMacro {
+private[scalactic] object PosIntMacro {
 
-  def apply(c: Context)(value: c.Expr[Int]): c.Expr[Pos] = {
+  def apply(c: Context)(value: c.Expr[Int]): c.Expr[PosInt] = {
 
     import c.universe._
 
     value.tree match {
       case Literal(intConst) =>
         if (intConst.value.toString.toInt > 0)
-          reify { Pos.from(value.splice).get }
+          reify { PosInt.from(value.splice).get }
         else
           c.abort(c.enclosingPosition, Resources("nonPositivePosInt"))
       case _ =>

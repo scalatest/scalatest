@@ -15,17 +15,20 @@
  */
 package org.scalactic.numbers
 
+import scala.language.implicitConversions
+
 //
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
+// Numbers greater than zero.
 //
 
-final class PozInt private (val value: Int) extends AnyVal with BoundedInt {
-  override def toString: String = s"PozInt($value)"
+final class PosLong private (val value: Long) extends AnyVal with BoundedLong {
+  override def toString: String = s"PosLong($value)"
 }
 
-object PozInt {
-  def from(value: Int): Option[PozInt] =
-    if (value >= 0) Some(new PozInt(value)) else None
+object PosLong {
+  def from(value: Long): Option[PosLong] =
+    if (value > 0L) Some(new PosLong(value)) else None
+  import language.experimental.macros
+  implicit def apply(value: Long): PosLong = macro PosLongMacro.apply
 }
+

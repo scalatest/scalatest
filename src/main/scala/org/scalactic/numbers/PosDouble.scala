@@ -15,17 +15,18 @@
  */
 package org.scalactic.numbers
 
+import scala.language.implicitConversions
+
 //
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
+// Numbers greater than zero.
 //
 
-final class PozInt private (val value: Int) extends AnyVal with BoundedInt {
-  override def toString: String = s"PozInt($value)"
+final class PosDouble private (val value: Double) extends AnyVal with BoundedDouble {
+  override def toString: String = s"PosDouble($value)"
 }
 
-object PozInt {
-  def from(value: Int): Option[PozInt] =
-    if (value >= 0) Some(new PozInt(value)) else None
+object PosDouble {
+  def from(value: Double): Option[PosDouble] =
+    if (value > 0.0) Some(new PosDouble(value)) else None
 }
+
