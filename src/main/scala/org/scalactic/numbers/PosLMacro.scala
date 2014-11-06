@@ -29,9 +29,9 @@ private[scalactic] object PosLMacro {
         if (longConst.value.toString.toLong > 0L)
           reify { PosL.from(value.splice).get }
         else
-          c.abort(c.enclosingPosition, Resources("nonPositivePosL"))
+          c.abort(c.enclosingPosition, Resources("nonPositivePosLong"))
       case _ =>
-        c.abort(c.enclosingPosition, Resources("nonPositivePosL"))
+        c.abort(c.enclosingPosition, Resources("nonPositivePosLong"))
     }
   }
 }

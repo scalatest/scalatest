@@ -29,9 +29,9 @@ private[scalactic] object PosMacro {
         if (intConst.value.toString.toInt > 0)
           reify { Pos.from(value.splice).get }
         else
-          c.abort(c.enclosingPosition, Resources("nonPositivePos"))
+          c.abort(c.enclosingPosition, Resources("nonPositivePosInt"))
       case _ =>
-        c.abort(c.enclosingPosition, Resources("nonPositivePos"))
+        c.abort(c.enclosingPosition, Resources("nonPositivePosInt"))
     }
   }
 }
