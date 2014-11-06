@@ -38,6 +38,47 @@ class PozDoubleSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozDouble.from(42.0).value.toString shouldBe "PozDouble(42.0)"
     }
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "PozDouble(8)" should compile
+        PozDouble(8).value shouldEqual 8
+        "PozDouble(8L)" should compile
+        PozDouble(8L).value shouldEqual 8
+        "PozDouble(8.0F)" should compile
+        PozDouble(8.0F).value shouldEqual 8.0F
+        "PozDouble(8.0)" should compile
+        PozDouble(8.0).value shouldEqual 8.0
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "PozDouble(0)" should compile
+        PozDouble(0).value shouldEqual 0
+        "PozDouble(0L)" should compile
+        PozDouble(0L).value shouldEqual 0
+        "PozDouble(0.0F)" should compile
+        PozDouble(0.0F).value shouldEqual 0.0F
+        "PozDouble(0.0)" should compile
+        PozDouble(0.0).value shouldEqual 0.0
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "PozDouble(-8)" shouldNot compile
+        "PozDouble(-8L)" shouldNot compile
+        "PozDouble(-8.0F)" shouldNot compile
+        "PozDouble(-8.0)" shouldNot compile
+      }
+      def `should not compile when x is passed in`: Unit = {
+        val a: Int = -8
+        "PozDouble(a)" shouldNot compile
+        val b: Long = -8L
+        "PozDouble(b)" shouldNot compile
+        val c: Float = -8.0F
+        "PozDouble(c)" shouldNot compile
+        val d: Double = -8.0
+        "PozDouble(d)" shouldNot compile
+      }
+    }
   }
 }
 

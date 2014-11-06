@@ -56,12 +56,13 @@ class PozFloatSpec extends Spec with Matchers {
         "PozFloat(0.0F)" should compile
         PozFloat(0.0F).value shouldEqual 0.0F
       }
-  
+
       def `should not compile when -8 is passed in`: Unit = {
         "PozFloat(-8)" shouldNot compile
         "PozFloat(-8L)" shouldNot compile
         "PozFloat(-8.0F)" shouldNot compile
       }
+
       def `should not compile when x is passed in`: Unit = {
         val a: Int = -8
         "PozFloat(a)" shouldNot compile

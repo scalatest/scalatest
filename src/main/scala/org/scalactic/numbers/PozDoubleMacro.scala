@@ -15,21 +15,23 @@
  */
 package org.scalactic.numbers
 
-import scala.language.implicitConversions
+import reflect.macros.Context
+import org.scalactic.Resources
 
-//
-// Numbers greater than zero.
-//
+private[scalactic] object PozDoubleMacro {
 
-final class PosDouble private (val value: Double) extends AnyVal with BoundedDouble {
-  override def toString: String = s"PosDouble($value)"
+  def apply(c: Context)(value: c.Expr[Double]): c.Expr[PozDouble] = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(doubleConst) =>
+        if (doubleConst.value.toString.toDouble >= 0.0)
+          reify { PozDouble.from(value.splice).get }
+        else
+          c.abort(c.enclosingPosition, Resources("negativePozDouble"))
+      case _ =>
+        c.abort(c.enclosingPosition, Resources("negativePozDouble"))
+    }
+  }
 }
-
-object PosDouble {
-  def from(value: Double): Option[PosDouble] =
-    if (value > 0.0) Some(new PosDouble(value)) else None
-  import language.experimental.macros
-  import scala.language.implicitConversions
-  implicit def apply(value: Double): PosDouble = macro PosDoubleMacro.apply
-}
-

@@ -28,5 +28,8 @@ final class PozDouble private (val value: Double) extends AnyVal with BoundedDou
 object PozDouble {
   def from(value: Double): Option[PozDouble] =
     if (value >= 0.0) Some(new PozDouble(value)) else None
+  import language.experimental.macros
+  import scala.language.implicitConversions
+  implicit def apply(value: Double): PozDouble = macro PozDoubleMacro.apply
 }
 
