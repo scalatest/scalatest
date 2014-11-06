@@ -40,5 +40,42 @@ class PosDoubleSpec extends Spec with Matchers {
       PosDouble.from(42.0).value.toString shouldBe "PosDouble(42.0)"
     }
   }
+  object `when created with apply method` {
+
+    def `should compile when 8 is passed in`: Unit = {
+      "PosDouble(8)" should compile
+      PosDouble(8).value shouldEqual 8
+      "PosDouble(8L)" should compile
+      PosDouble(8L).value shouldEqual 8
+      "PosDouble(8.0F)" should compile
+      PosDouble(8.0F).value shouldEqual 8.0F
+      "PosDouble(8.0)" should compile
+      PosDouble(8.0).value shouldEqual 8.0
+    }
+
+    def `should not compile when 0 is passed in`: Unit = {
+      "PosDouble(0)" shouldNot compile
+      "PosDouble(0L)" shouldNot compile
+      "PosDouble(0.0F)" shouldNot compile
+      "PosDouble(0.0)" shouldNot compile
+    }
+
+    def `should not compile when -8 is passed in`: Unit = {
+      "PosDouble(-8)" shouldNot compile
+      "PosDouble(-8L)" shouldNot compile
+      "PosDouble(-8.0F)" shouldNot compile
+      "PosDouble(-8.0)" shouldNot compile
+    }
+    def `should not compile when x is passed in`: Unit = {
+      val a: Int = -8
+      "PosDouble(a)" shouldNot compile
+      val b: Long = -8L
+      "PosDouble(b)" shouldNot compile
+      val c: Float = -8.0F
+      "PosDouble(c)" shouldNot compile
+      val d: Double = -8.0
+      "PosDouble(d)" shouldNot compile
+    }
+  }
 }
 

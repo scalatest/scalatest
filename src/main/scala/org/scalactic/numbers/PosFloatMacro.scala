@@ -26,7 +26,7 @@ private[scalactic] object PosFloatMacro {
 
     value.tree match {
       case Literal(floatConst) =>
-        if (floatConst.value.toString.toFloat > 0L)
+        if (floatConst.value.toString.toFloat > 0.0F)
           reify { PosFloat.from(value.splice).get }
         else
           c.abort(c.enclosingPosition, Resources("nonPositivePosFloat"))
