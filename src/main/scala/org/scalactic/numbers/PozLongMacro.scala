@@ -15,20 +15,23 @@
  */
 package org.scalactic.numbers
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
+import reflect.macros.Context
+import org.scalactic.Resources
 
-final class PozLong private (val value: Long) extends AnyVal with BoundedLong {
-  override def toString: String = s"PozLong($value)"
-}
+private[scalactic] object PozLongMacro {
 
-object PozLong {
-  def from(value: Long): Option[PozLong] =
-    if (value >= 0L) Some(new PozLong(value)) else None
-  import language.experimental.macros
-  import scala.language.implicitConversions
-  implicit def apply(value: Long): PozLong = macro PozLongMacro.apply
+  def apply(c: Context)(value: c.Expr[Long]): c.Expr[PozLong] = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(longConst) =>
+        if (longConst.value.toString.toLong >= 0L)
+          reify { PozLong.from(value.splice).get }
+        else
+          c.abort(c.enclosingPosition, Resources("nonPositivePozLong"))
+      case _ =>
+        c.abort(c.enclosingPosition, Resources("nonPositivePozLong"))
+    }
+  }
 }

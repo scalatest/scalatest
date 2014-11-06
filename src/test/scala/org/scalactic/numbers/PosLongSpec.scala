@@ -38,6 +38,32 @@ class PosLongSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosLong.from(42L).value.toString shouldBe "PosLong(42)"
     }
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "PosLong(8)" should compile
+        PosLong(8).value shouldEqual 8
+        "PosLong(8L)" should compile
+        PosLong(8L).value shouldEqual 8
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "PosLong(0)" shouldNot compile
+        "PosLong(0L)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "PosLong(-8)" shouldNot compile
+        "PosLong(-8L)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val a: Int = -8
+        "PosLong(a)" shouldNot compile
+        val b: Long = -8L
+        "PosLong(b)" shouldNot compile
+      }
+    }
 /*
     object `when specified as a plain-old Int` {
 
@@ -165,31 +191,6 @@ class PosLongSpec extends Spec with Matchers {
       }
     }
 */
-  }
-  object `when created with apply method` {
-
-    def `should compile when 8 is passed in`: Unit = {
-      "PosLong(8)" should compile
-      PosLong(8).value shouldEqual 8
-      "PosLong(8L)" should compile
-      PosLong(8L).value shouldEqual 8
-    }
-
-    def `should not compile when 0 is passed in`: Unit = {
-      "PosLong(0)" shouldNot compile
-      "PosLong(0L)" shouldNot compile
-    }
-
-    def `should not compile when -8 is passed in`: Unit = {
-      "PosLong(-8)" shouldNot compile
-      "PosLong(-8L)" shouldNot compile
-    }
-    def `should not compile when x is passed in`: Unit = {
-      val a: Int = -8
-      "PosLong(a)" shouldNot compile
-      val b: Long = -8L
-      "PosLong(b)" shouldNot compile
-    }
   }
 }
 
