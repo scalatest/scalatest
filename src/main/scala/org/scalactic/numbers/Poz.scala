@@ -21,7 +21,7 @@ package org.scalactic.numbers
 // (Pronounced like "pose".)
 //
 
-final class Poz private (val value: Int) extends AnyVal {
+final class Poz private (val value: Int) extends AnyVal with BoundedInt {
   override def toString: String = s"Poz($value)"
 }
 
@@ -31,7 +31,7 @@ object Poz {
 }
 
 
-final class PozL private (val value: Long) extends AnyVal {
+final class PozL private (val value: Long) extends AnyVal with BoundedLong {
   override def toString: String = s"PozL($value)"
 }
 
@@ -41,7 +41,7 @@ object PozL {
 }
 
 
-final class PozD private (val value: Double) extends AnyVal {
+final class PozD private (val value: Double) extends AnyVal with BoundedDouble {
   override def toString: String = s"PozD($value)"
 }
 
@@ -51,7 +51,7 @@ object PozD {
 }
 
 
-final class PozF private (val value: Float) extends AnyVal {
+final class PozF private (val value: Float) extends AnyVal with BoundedFloat {
   override def toString: String = s"PozF($value)"
 }
 

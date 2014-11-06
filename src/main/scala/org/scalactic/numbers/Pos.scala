@@ -21,7 +21,7 @@ import scala.language.implicitConversions
 // Numbers greater than zero.
 //
 
-final class Pos private (val value: Int) extends AnyVal {
+final class Pos private (val value: Int) extends AnyVal with BoundedInt {
   override def toString: String = s"Pos($value)"
   def +[T](x: T)(implicit ev: PosWidening[T]): ev.ResultType = ev.add(value, x)
 /*
@@ -71,7 +71,7 @@ object Pos extends LowPriorityPosLongImplicits {
   implicit def widenToPoz(pos: Pos): Poz = Poz.from(pos.value).get
 }
 
-final class PosL private (val value: Long) extends AnyVal {
+final class PosL private (val value: Long) extends AnyVal with BoundedLong {
   override def toString: String = s"PosL($value)"
 }
 
@@ -80,7 +80,7 @@ object PosL {
     if (value > 0L) Some(new PosL(value)) else None
 }
 
-final class PosD private (val value: Double) extends AnyVal {
+final class PosD private (val value: Double) extends AnyVal with BoundedDouble {
   override def toString: String = s"PosD($value)"
 }
 
@@ -89,8 +89,7 @@ object PosD {
     if (value > 0.0) Some(new PosD(value)) else None
 }
 
-
-final class PosF private (val value: Float) extends AnyVal {
+final class PosF private (val value: Float) extends AnyVal with BoundedFloat {
   override def toString: String = s"PosF($value)"
 }
 
