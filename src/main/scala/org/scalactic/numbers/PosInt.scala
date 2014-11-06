@@ -46,7 +46,6 @@ object PosInt extends LowPriorityPosLongImplicits {
     if (value > 0) Some(new PosInt(value)) else None
 
   import language.experimental.macros
-
   implicit def apply(value: Int): PosInt = macro PosIntMacro.apply
 
   implicit def widenToInt(pos: PosInt): Int = pos.value

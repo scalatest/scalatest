@@ -37,6 +37,27 @@ class PozIntSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozInt.from(42).value.toString shouldBe "PozInt(42)"
     }
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "PozInt(8)" should compile
+        PozInt(8).value shouldEqual 8
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "PozInt(0)" should compile
+        PozInt(0).value shouldEqual 0
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "PozInt(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "PozInt(x)" shouldNot compile
+      }
+    }
   }
 }
 

@@ -15,19 +15,23 @@
  */
 package org.scalactic.numbers
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
+import reflect.macros.Context
+import org.scalactic.Resources
 
-final class PozInt private (val value: Int) extends AnyVal with BoundedInt {
-  override def toString: String = s"PozInt($value)"
-}
+private[scalactic] object PozIntMacro {
 
-object PozInt {
-  def from(value: Int): Option[PozInt] =
-    if (value >= 0) Some(new PozInt(value)) else None
-  import language.experimental.macros
-  implicit def apply(value: Int): PozInt = macro PozIntMacro.apply
+  def apply(c: Context)(value: c.Expr[Int]): c.Expr[PozInt] = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(intConst) =>
+        if (intConst.value.toString.toInt >= 0)
+          reify { PozInt.from(value.splice).get }
+        else
+          c.abort(c.enclosingPosition, Resources("negativePozInt"))
+      case _ =>
+        c.abort(c.enclosingPosition, Resources("negativePozInt"))
+    }
+  }
 }
