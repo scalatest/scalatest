@@ -151,42 +151,5 @@ class PosSpec extends Spec with Matchers {
       PosL.from(42L).value.toString shouldBe "PosL(42)"
     }
   }
-
-  object `A PosD` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosD] if the passed Double is greater than 0`
-      {
-        PosD.from(50.23).value.value shouldBe 50.23
-        PosD.from(100.0).value.value shouldBe 100.0
-      }
-      def `returns None if the passed Double is NOT greater than 0`
-      {
-        PosD.from(0.0) shouldBe None
-        PosD.from(-0.00001) shouldBe None
-        PosD.from(-99.9) shouldBe None
-      }
-    } 
-    def `should have a pretty toString` {
-      PosD.from(42.0).value.toString shouldBe "PosD(42.0)"
-    }
-  }
-
-  object `A PosF` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosF] if the passed Float is greater than 0`
-      {
-        PosF.from(50.23F).value.value shouldBe 50.23F
-        PosF.from(100.0F).value.value shouldBe 100.0F
-      }
-      def `returns None if the passed Float is NOT greater than 0` {
-        PosF.from(0.0F) shouldBe None
-        PosF.from(-0.00001F) shouldBe None
-        PosF.from(-99.9F) shouldBe None
-      }
-    } 
-    def `should have a pretty toString` {
-      PosF.from(42.0F).value.toString shouldBe "PosF(42.0)"
-    }
-  }
 }
 
