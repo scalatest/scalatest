@@ -58,9 +58,9 @@ class PosLongSpec extends Spec with Matchers {
       }
       def `should not compile when x is passed in`: Unit = {
         val a: Int = -8
-        "Pos(a)" shouldNot compile
+        "PosLong(a)" shouldNot compile
         val b: Long = -8L
-        "Pos(b)" shouldNot compile
+        "PosLong(b)" shouldNot compile
       }
     }
 /*

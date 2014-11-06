@@ -15,20 +15,23 @@
  */
 package org.scalactic.numbers
 
-import scala.language.implicitConversions
+import reflect.macros.Context
+import org.scalactic.Resources
 
-//
-// Numbers greater than zero.
-//
+private[scalactic] object PosFloatMacro {
 
-final class PosFloat private (val value: Float) extends AnyVal with BoundedFloat {
-  override def toString: String = s"PosFloat($value)"
+  def apply(c: Context)(value: c.Expr[Float]): c.Expr[PosFloat] = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(floatConst) =>
+        if (floatConst.value.toString.toFloat > 0L)
+          reify { PosFloat.from(value.splice).get }
+        else
+          c.abort(c.enclosingPosition, Resources("nonPositivePosFloat"))
+      case _ =>
+        c.abort(c.enclosingPosition, Resources("nonPositivePosFloat"))
+    }
+  }
 }
-
-object PosFloat {
-  def from(value: Float): Option[PosFloat] =
-    if (value > 0.0F) Some(new PosFloat(value)) else None
-  import language.experimental.macros
-  implicit def apply(value: Float): PosFloat = macro PosFloatMacro.apply
-}
-
