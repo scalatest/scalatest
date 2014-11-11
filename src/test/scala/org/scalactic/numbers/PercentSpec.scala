@@ -38,6 +38,34 @@ class PercentSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       Percent.from(42).value.toString shouldBe "Percent(42)"
     }
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "Percent(8)" should compile
+        Percent(8).value shouldEqual 8
+        "Percent(0)" should compile
+        Percent(0).value shouldEqual 0
+        "Percent(100)" should compile
+        Percent(100).value shouldEqual 100
+      }
+
+      def `should not compile when -1 is passed in`: Unit = {
+        "Percent(-1)" shouldNot compile
+      }
+
+      def `should not compile when 101 is passed in`: Unit = {
+        "Percent(101)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "Percent(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "Percent(x)" shouldNot compile
+      }
+    }
   }
   object `An LPercent` {
     object `should offer a from factory method that` {

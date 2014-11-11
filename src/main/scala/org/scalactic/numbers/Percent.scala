@@ -22,6 +22,8 @@ final class Percent private (val value: Int) extends AnyVal {
 object Percent {
   def from(value: Int): Option[Percent] =
     if (value >= 0 && value <= 100) Some(new Percent(value)) else None
+  import scala.language.experimental.macros
+  def apply(value: Int): Percent = macro PercentMacro.apply
 }
 
 final class LPercent private (val value: Long) extends AnyVal {

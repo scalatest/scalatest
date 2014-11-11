@@ -38,6 +38,26 @@ class GuessANumberSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       GuessANumber.from(4).value.toString shouldBe "GuessANumber(4)"
     }
+    object `when created with apply method` {
+
+      def `should compile when 8 is passed in`: Unit = {
+        "GuessANumber(8)" should compile
+        GuessANumber(8).value shouldEqual 8
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "GuessANumber(0)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "GuessANumber(-8)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "GuessANumber(x)" shouldNot compile
+      }
+    }
   }
   object `An LGuessANumber` {
     object `should offer a from factory method that` {
