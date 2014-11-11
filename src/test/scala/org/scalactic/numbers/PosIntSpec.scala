@@ -69,24 +69,24 @@ class PosIntSpec extends Spec with Matchers {
         val opPosLong = PosInt(3) + PosLong(3L)
         opPosLong shouldEqual 6L
 
-        val opPosFloat = PosInt(3) + PosFloat.from(3.0F).get
+        val opPosFloat = PosInt(3) + PosFloat(3.0F)
         opPosFloat shouldEqual 6.0F
 
-        val opPosDouble = PosInt(3) + PosDouble.from(3.0).get
+        val opPosDouble = PosInt(3) + PosDouble(3.0)
         opPosDouble shouldEqual 6.0
 
         // When adding a *Poz
-        val opPoz = PosInt(3) + PozInt.from(3).get
-        opPoz shouldEqual PozInt.from(6).get.value
+        val opPoz = PosInt(3) + PozInt(3)
+        opPoz shouldEqual 6
 
-        val opPozLong = PosInt(3) + PozLong.from(3L).get
-        opPozLong shouldEqual PozLong.from(6L).get.value
+        val opPozLong = PosInt(3) + PozLong(3L)
+        opPozLong shouldEqual 6L
 
-        val opPozFloat = PosInt(3) + PozFloat.from(3.0F).get
-        opPozFloat shouldEqual PozFloat.from(6.0F).get.value
+        val opPozFloat = PosInt(3) + PozFloat(3.0F)
+        opPozFloat shouldEqual 6.0F
 
-        val opPozDouble = PosInt(3) + PozDouble.from(3.0).get
-        opPozDouble shouldEqual PozDouble.from(6.0).get.value
+        val opPozDouble = PosInt(3) + PozDouble(3.0)
+        opPozDouble shouldEqual 6.0
       }
     }
 
