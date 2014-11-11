@@ -571,7 +571,7 @@ val propertyCheckPreamble = """
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.matchers.ShouldMatchers._
+ * import org.scalatest.Matchers._
  *
  * forAll (fractions) { (n: Int, d: Int) =>
  *
@@ -817,7 +817,7 @@ trait TableDrivenPropertyChecks extends Whenever with Tables {
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.matchers.ShouldMatchers._
+   * import org.scalatest.Matchers._
    *
    * forAll (fractions) { (n: Int, d: Int) =>
    *
@@ -893,8 +893,8 @@ val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
  *   |   )
  * examples: org.scalatest.prop.TableFor2[Int,Int] = TableFor2((1,2), (3,4))
  *
- * scala> import org.scalatest.matchers.ShouldMatchers._
- * import org.scalatest.matchers.ShouldMatchers._
+ * scala> import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
  *
  * scala> forAll (examples) { (a, b) => a should be < b }
  * 
@@ -921,8 +921,6 @@ object TableDrivenPropertyChecks extends TableDrivenPropertyChecks
 """
 
 val tableSuitePreamble = """
-
-import matchers.ShouldMatchers
 
 class TableSuite extends Spec with TableDrivenPropertyChecks {
 """

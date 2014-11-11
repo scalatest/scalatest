@@ -208,7 +208,7 @@ import org.scalacheck.Prop._
  *
  * <p>
  * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>GeneratorDrivenPropertyChecks</code>
- * (and <code>ShouldMatchers</code>) and check a property using a <code>forAll</code> method, like this:
+ * (and <code>Matchers</code>) and check a property using a <code>forAll</code> method, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1130,7 +1130,6 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 
 val generatorSuitePreamble = """
 
-import matchers.ShouldMatchers
 import org.scalacheck.Gen
 """
 
