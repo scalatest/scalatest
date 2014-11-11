@@ -12,6 +12,9 @@ object ScalatestBuild extends Build {
   // rm -rf gentests
   // sbt genGenTests/test  (etc., look at specific failures on CI output)
 
+  // To enable deprecation warnings on the fly
+  // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
+
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.4
   val buildScalaVersion = "2.11.4"
