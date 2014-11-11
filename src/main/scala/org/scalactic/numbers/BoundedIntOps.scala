@@ -16,5 +16,5 @@
 package org.scalactic.numbers
 
 trait BoundedIntOps extends Any { this: BoundedInt =>
-  def +[T](x: T)(implicit ev: PosWidening[T]): ev.ResultType = ev.add(value, x)
+  def +[T](x: T)(implicit ev: IntNarrowing[T]): ev.ResultType = ev.add(value, x)
 }

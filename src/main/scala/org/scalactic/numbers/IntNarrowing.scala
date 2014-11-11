@@ -15,50 +15,50 @@
  */
 package org.scalactic.numbers
 
-trait PosWidening[T] {
+trait IntNarrowing[T] {
   type ResultType
   def add(x: Int, y: T): ResultType
 }
 
-object PosWidening {
-  implicit def posWideningNatureOfInt: PosWidening[Int] { type ResultType = Int } =
-    new PosWidening[Int] {
+object IntNarrowing {
+  implicit def intNarrowingNatureOfInt: IntNarrowing[Int] { type ResultType = Int } =
+    new IntNarrowing[Int] {
       type ResultType = Int 
       def add(x: Int, y: Int): Int = x + y
     }
-  implicit def posWideningNatureOfLong: PosWidening[Long] { type ResultType = Long } =
-    new PosWidening[Long] {
+  implicit def intNarrowingNatureOfLong: IntNarrowing[Long] { type ResultType = Long } =
+    new IntNarrowing[Long] {
       type ResultType = Long 
       def add(x: Int, y: Long): Long = x + y
     }
-  implicit def posWideningNatureOfFloat: PosWidening[Float] { type ResultType = Float } =
-    new PosWidening[Float] {
+  implicit def intNarrowingNatureOfFloat: IntNarrowing[Float] { type ResultType = Float } =
+    new IntNarrowing[Float] {
       type ResultType = Float 
       def add(x: Int, y: Float): Float = x + y
     }
-  implicit def posWideningNatureOfDouble: PosWidening[Double] { type ResultType = Double } =
-    new PosWidening[Double] {
+  implicit def intNarrowingNatureOfDouble: IntNarrowing[Double] { type ResultType = Double } =
+    new IntNarrowing[Double] {
       type ResultType = Double 
       def add(x: Int, y: Double): Double = x + y
     }
 
-  implicit def posWideningNatureOfBoundedInt[T <: BoundedInt]: PosWidening[T] { type ResultType = Int } =
-    new PosWidening[T] {
+  implicit def intNarrowingNatureOfBoundedInt[T <: BoundedInt]: IntNarrowing[T] { type ResultType = Int } =
+    new IntNarrowing[T] {
       type ResultType = Int 
       def add(x: Int, y: T): Int = x + y.value
     }
-  implicit def posWideningNatureOfBoundedLong[T <: BoundedLong]: PosWidening[T] { type ResultType = Long } =
-    new PosWidening[T] {
+  implicit def intNarrowingNatureOfBoundedLong[T <: BoundedLong]: IntNarrowing[T] { type ResultType = Long } =
+    new IntNarrowing[T] {
       type ResultType = Long 
       def add(x: Int, y: T): Long = x + y.value
     }
-  implicit def posWideningNatureOfBoundedFloat[T <: BoundedFloat]: PosWidening[T] { type ResultType = Float } =
-    new PosWidening[T] {
+  implicit def intNarrowingNatureOfBoundedFloat[T <: BoundedFloat]: IntNarrowing[T] { type ResultType = Float } =
+    new IntNarrowing[T] {
       type ResultType = Float 
       def add(x: Int, y: T): Float = x + y.value
     }
-  implicit def posWideningNatureOfBoundedDouble[T <: BoundedDouble]: PosWidening[T] { type ResultType = Double } =
-    new PosWidening[T] {
+  implicit def intNarrowingNatureOfBoundedDouble[T <: BoundedDouble]: IntNarrowing[T] { type ResultType = Double } =
+    new IntNarrowing[T] {
       type ResultType = Double 
       def add(x: Int, y: T): Double = x + y.value
     }
