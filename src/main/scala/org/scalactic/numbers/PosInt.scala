@@ -21,9 +21,8 @@ import scala.language.implicitConversions
 // Numbers greater than zero.
 //
 
-final class PosInt private (val value: Int) extends AnyVal with BoundedInt {
+final class PosInt private (val value: Int) extends AnyVal with BoundedInt with BoundedIntOps {
   override def toString: String = s"PosInt($value)"
-  def +[T](x: T)(implicit ev: PosWidening[T]): ev.ResultType = ev.add(value, x)
 }
 
 class LowPriorityPosDoubleImplicits {
