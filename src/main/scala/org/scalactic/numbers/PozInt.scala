@@ -100,34 +100,6 @@ final class PozInt private (val value: Int) extends AnyVal with BoundedInt {
   * }}}
   */
   def >>(x: Long): Int = value >> x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Byte): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Short): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Char): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Int): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Long): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Float): Boolean = value == x
-  /** Returns `true` if this value is equal to x, `false` otherwise. */
-  def ==(x: Double): Boolean = value == x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Byte): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Short): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Char): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Int): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Long): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Float): Boolean = value != x
-  /** Returns `true` if this value is not equal to x, `false` otherwise. */
-  def !=(x: Double): Boolean = value != x
   /** Returns `true` if this value is less than x, `false` otherwise. */
   def <(x: Byte): Boolean = value < x
   /** Returns `true` if this value is less than x, `false` otherwise. */
