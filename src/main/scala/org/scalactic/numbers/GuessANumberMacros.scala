@@ -17,17 +17,18 @@ package org.scalactic.numbers
 
 import reflect.macros.Context
 import org.scalactic.Resources
-  
+
 object BoundedNumberMacros {
-  def intHelper[T](lower: Int, upper: Int, c: Context)(value: c.Expr[Int])(f: Int => T): c.Expr[T] = {
+
+  def checkBounds[T](lower: Int, upper: Int, c: Context)(value: c.Expr[Int]): Unit = {
 
     import c.universe._
-  
+
     value.tree match {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (literalValue >= lower && literalValue <= upper)
-          reify { (f(value.splice)) }
+          println("RETURNING ()")
         else
           c.abort(c.enclosingPosition, "nonValiHELPEDTYPE")
       case _ =>
@@ -40,21 +41,8 @@ private[scalactic] object GuessANumberMacro {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
 
-    BoundedNumberMacros.intHelper(1, 10, c)(value) { (i: Int) => GuessANumber.from(i).get }
-/*
-    import c.universe._
-
-    value.tree match {
-      case Literal(intConst) =>
-        val literalValue = intConst.value.toString.toInt
-        if (literalValue >= 1 && literalValue <= 10)
-          reify { GuessANumber.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, "nonValidGuessANumber")
-      case _ =>
-        c.abort(c.enclosingPosition, "nonValidGuessANumberNotALiteral?")
-    } 
-*/
+    BoundedNumberMacros.intHelper(1, 10, c)(value)
+    c.universe.reify { GuessANumber.from(value.splice).get }
   } 
 }
 
@@ -62,19 +50,8 @@ private[scalactic] object PercentMacro {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
 
-    // BoundedNumberMacros.intHelper(0, 100, c)(value) { i => Percent.from(i).get }
-    import c.universe._
-  
-    value.tree match {
-      case Literal(intConst) =>
-        val literalValue = intConst.value.toString.toInt
-        if (literalValue >= 0 && literalValue <= 100)
-          reify { Percent.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, "nonValidPercent")
-      case _ =>
-        c.abort(c.enclosingPosition, "nonValidPercentNotALiteral?")
-    } 
+    BoundedNumberMacros.intHelper(0, 100, c)(value)
+    c.universe.reify { Percent.from(value.splice).get }
   } 
 }
 
