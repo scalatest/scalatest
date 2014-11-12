@@ -20,14 +20,14 @@ import org.scalactic.Resources
 
 object BoundedNumberMacros {
 
-  def checkBounds[T](lower: Int, upper: Int, c: Context)(value: c.Expr[Int]): Unit = {
+  def checkBounds[T](c: Context)(value: c.Expr[Int])(isValid: Int => Boolean): Unit = {
 
     import c.universe._
 
     value.tree match {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
-        if (literalValue >= lower && literalValue <= upper)
+        if (isValid(literalValue))
           println("RETURNING ()")
         else
           c.abort(c.enclosingPosition, "nonValiHELPEDTYPE")
@@ -40,8 +40,9 @@ object BoundedNumberMacros {
 private[scalactic] object GuessANumberMacro {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
-
-    BoundedNumberMacros.intHelper(1, 10, c)(value)
+    BoundedNumberMacros.checkBounds(c)(value) { i =>
+      i >= 1 && i <= 10
+    }
     c.universe.reify { GuessANumber.from(value.splice).get }
   } 
 }
@@ -50,7 +51,7 @@ private[scalactic] object PercentMacro {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
 
-    BoundedNumberMacros.intHelper(0, 100, c)(value)
+    BoundedNumberMacros.checkBounds(c)(value) { i => i >= 0 && i <= 100 }
     c.universe.reify { Percent.from(value.splice).get }
   } 
 }
