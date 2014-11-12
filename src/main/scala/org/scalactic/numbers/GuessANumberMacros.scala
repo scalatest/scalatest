@@ -18,9 +18,8 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
   
-/*
 object BoundedNumberMacros {
-  def intHelper[T : c.WeakTypeTag](lower: Int, upper: Int, c: Context)(value: c.Expr[Int])(f: Int => T): c.Expr[T] = {
+  def intHelper[T](lower: Int, upper: Int, c: Context)(value: c.Expr[Int])(f: Int => T): c.Expr[T] = {
 
     import c.universe._
   
@@ -28,7 +27,7 @@ object BoundedNumberMacros {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (literalValue >= lower && literalValue <= upper)
-          reify { (f(literalValue)).splice }
+          reify { (f(value.splice)) }
         else
           c.abort(c.enclosingPosition, "nonValiHELPEDTYPE")
       case _ =>
@@ -36,13 +35,13 @@ object BoundedNumberMacros {
     } 
   } 
 }
-*/
 
 private[scalactic] object GuessANumberMacro {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
 
-    // BoundedNumberMacros.intHelper(1, 10, c)(value) { i => GuessANumber.from(i).get }
+    BoundedNumberMacros.intHelper(1, 10, c)(value) { (i: Int) => GuessANumber.from(i).get }
+/*
     import c.universe._
 
     value.tree match {
@@ -55,6 +54,7 @@ private[scalactic] object GuessANumberMacro {
       case _ =>
         c.abort(c.enclosingPosition, "nonValidGuessANumberNotALiteral?")
     } 
+*/
   } 
 }
 
