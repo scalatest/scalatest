@@ -21,7 +21,7 @@ package org.scalactic.numbers
 // (Pronounced like "posey".)
 //
 
-final class PozDouble private (val value: Double) extends AnyVal with BoundedDouble {
+final class PozDouble private (val value: Double) extends AnyVal with RestrictedDouble {
   override def toString: String = s"PozDouble($value)"
 }
 

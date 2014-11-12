@@ -21,7 +21,7 @@ import scala.language.implicitConversions
 // Numbers greater than zero.
 //
 
-final class PosLong private (val value: Long) extends AnyVal with BoundedLong {
+final class PosLong private (val value: Long) extends AnyVal with RestrictedLong {
   override def toString: String = s"PosLong($value)"
 }
 

@@ -18,40 +18,19 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-object BoundedNumberMacros {
-
-  def checkBounds[T](c: Context)(value: c.Expr[Int])(isValid: Int => Boolean): Unit = {
-
-    import c.universe._
-
-    value.tree match {
-      case Literal(intConst) =>
-        val literalValue = intConst.value.toString.toInt
-        if (isValid(literalValue))
-          println("RETURNING ()")
-        else
-          c.abort(c.enclosingPosition, "nonValiHELPEDTYPE")
-      case _ =>
-        c.abort(c.enclosingPosition, "nonValidHELPEDTYPENotALiteral")
-    } 
-  } 
-}
-
-private[scalactic] object GuessANumberMacro {
-
+private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
-    BoundedNumberMacros.checkBounds(c)(value) { i =>
-      i >= 1 && i <= 10
-    }
+    val errMsg = "GuessANumber.apply can only be invoked on Int literals between 1 and 10, inclusive, like GuessANumber(8). Please use GuessANumber.from instead."
+    ensureValidIntLiteral(c)(value)(errMsg) { i => i >= 1 && i <= 10 }
     c.universe.reify { GuessANumber.from(value.splice).get }
   } 
 }
 
+import NumericMacroHelpers._
 private[scalactic] object PercentMacro {
-
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
-
-    BoundedNumberMacros.checkBounds(c)(value) { i => i >= 0 && i <= 100 }
+    val errMsg = "Percent.apply can only be invoked on Int literals between 0 and 100, inclusive, like Percent(8). Please use Percent.from instead."
+    ensureValidIntLiteral(c)(value)(errMsg) { i => i >= 0 && i <= 100 }
     c.universe.reify { Percent.from(value.splice).get }
   } 
 }

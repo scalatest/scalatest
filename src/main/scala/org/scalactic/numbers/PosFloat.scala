@@ -21,7 +21,7 @@ import scala.language.implicitConversions
 // Numbers greater than zero.
 //
 
-final class PosFloat private (val value: Float) extends AnyVal with BoundedFloat {
+final class PosFloat private (val value: Float) extends AnyVal with RestrictedFloat {
   override def toString: String = s"PosFloat($value)"
 }
 

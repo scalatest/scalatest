@@ -15,6 +15,6 @@
  */
 package org.scalactic.numbers
 
-trait BoundedInt extends Any {
-  val value: Int
+trait RestrictedFloat extends Any {
+  val value: Float
 }

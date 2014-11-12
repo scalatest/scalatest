@@ -21,7 +21,7 @@ package org.scalactic.numbers
 // (Pronounced like "posey".)
 //
 
-final class PozLong private (val value: Long) extends AnyVal with BoundedLong {
+final class PozLong private (val value: Long) extends AnyVal with RestrictedLong {
   override def toString: String = s"PozLong($value)"
 }
 

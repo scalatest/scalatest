@@ -21,7 +21,7 @@ package org.scalactic.numbers
 // (Pronounced like "posey".)
 //
 
-final class PozFloat private (val value: Float) extends AnyVal with BoundedFloat {
+final class PozFloat private (val value: Float) extends AnyVal with RestrictedFloat {
   override def toString: String = s"PozFloat($value)"
 }
 
