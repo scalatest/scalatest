@@ -62,6 +62,7 @@ class PosIntSpec extends Spec with Matchers {
         val opDouble = PosInt(3) + 3.0
         opDouble shouldEqual 6.0
 
+/*
         // When adding a Pos*
         val opPosInt = PosInt(3) + PosInt(3)
         opPosInt shouldEqual 6
@@ -87,6 +88,7 @@ class PosIntSpec extends Spec with Matchers {
 
         val opPozDouble = PosInt(3) + PozDouble(3.0)
         opPozDouble shouldEqual 6.0
+*/
       }
     }
 
