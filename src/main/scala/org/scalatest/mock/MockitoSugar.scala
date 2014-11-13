@@ -17,7 +17,7 @@ package org.scalatest.mock
 
 import org.scalatest._
 import org.mockito.Mockito.{mock => mockitoMock}
-import reflect.Manifest
+import reflect.{ClassTag, Manifest}
 import org.mockito.stubbing.Answer
 import org.mockito.MockSettings
 
@@ -144,6 +144,30 @@ trait MockitoSugar {
    */
   def mock[T <: AnyRef](name: String)(implicit manifest: Manifest[T]): T = {
     mockitoMock(manifest.erasure.asInstanceOf[Class[T]], name)
+  }
+
+  /**
+   * Invokes the <code>any(classToMatch: Class[T])</code> method on the <code>Matchers</code> companion object (<em>i.e.</em>, the
+   * static <code>any(java.lang.Class<T> classToMatch)</code> method in Java class <code>org.mockito.Matchers</code>).
+   *
+   * <p>
+   * Using the Mockito API directly, you create a mock with:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * given(mockObject.method(any(classOf[String]))
+   * </pre>
+   *
+   * <p>
+   * Using this method, you can shorten that to:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * given(mockObject.method(any[String])
+   * </pre>
+   */
+  def any[T : ClassTag]: T = {
+    org.mockito.Matchers.any(implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
   }
 }
 
