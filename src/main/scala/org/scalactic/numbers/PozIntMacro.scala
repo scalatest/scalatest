@@ -26,7 +26,7 @@ private[scalactic] object PozIntMacro extends NumericMacroHelpers {
 
     import c.universe._
 
-    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i >= 0 }
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0 }
     reify { PozInt.from(value.splice).get }
   }
 }

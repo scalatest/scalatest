@@ -26,7 +26,7 @@ private[scalactic] object PozFloatMacro extends NumericMacroHelpers {
 
     import c.universe._
 
-    ensureValidFloatLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i >= 0.0F }
+    ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0.0F }
     reify { PozFloat.from(value.splice).get }
   }
 }

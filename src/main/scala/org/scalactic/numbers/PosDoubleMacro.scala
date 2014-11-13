@@ -26,7 +26,7 @@ private[scalactic] object PosDoubleMacro extends NumericMacroHelpers {
 
     import c.universe._
 
-    ensureValidDoubleLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i > 0.0 }
+    ensureValidDoubleLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i > 0.0 }
     reify { PosDouble.from(value.splice).get }
   }
 }

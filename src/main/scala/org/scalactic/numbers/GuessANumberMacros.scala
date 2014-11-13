@@ -26,7 +26,7 @@ private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
     val notLiteralMsg =
       "GuessANumber.apply can only be invoked on Int literals, like "+
       "GuessANumber(8). Please use GuessANumber.from instead."
-    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i =>
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i =>
       i >= 1 && i <= 10
     }
     c.universe.reify { GuessANumber.from(value.splice).get }
@@ -42,7 +42,7 @@ private[scalactic] object PercentMacro {
     val notLiteralMsg =
       "Percent.apply can only be invoked on Int literals, like Percent(8)."+
       " Please use Percent.from instead."
-    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i =>
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i =>
       i >= 0 && i <= 100
     }
     c.universe.reify { Percent.from(value.splice).get }
