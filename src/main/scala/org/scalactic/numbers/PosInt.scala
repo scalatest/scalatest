@@ -393,24 +393,7 @@ final class PosInt private (val value: Int) extends AnyVal with RestrictedInt {
   def %(x: Double): Double = value % x
 }
 
-/*
-class LowPriorityPosIntToDoubleImplicits {
-  implicit def widenToDouble(pos: PosInt): Double = pos.value
-  implicit def widenToPozDouble(pos: PosInt): PozDouble = PozDouble.from(pos.value).get
-}
-
-class LowPriorityPosIntToFloatImplicits extends LowPriorityPosIntToDoubleImplicits {
-  implicit def widenToFloat(pos: PosInt): Float = pos.value
-  implicit def widenToPozFloat(pos: PosInt): PozFloat = PozFloat.from(pos.value).get
-}
-
-class LowPriorityPosIntToLongImplicits extends LowPriorityPosIntToFloatImplicits {
-  implicit def widenToLong(pos: PosInt): Long = pos.value
-  implicit def widenToPozLong(pos: PosInt): PozLong = PozLong.from(pos.value).get
-}
-*/
-
-object PosInt /* extends LowPriorityPosIntToLongImplicits */ {
+object PosInt {
   def from(value: Int): Option[PosInt] =
     if (value > 0) Some(new PosInt(value)) else None
 
