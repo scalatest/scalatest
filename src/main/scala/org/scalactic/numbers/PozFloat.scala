@@ -23,6 +23,155 @@ package org.scalactic.numbers
 
 final class PozFloat private (val value: Float) extends AnyVal with RestrictedFloat {
   override def toString: String = s"PozFloat($value)"
+  def toByte: Byte = value.toByte
+  def toShort: Short = value.toShort
+  def toChar: Char = value.toChar
+  def toInt: Int = value.toInt
+  def toLong: Long = value.toLong
+  def toFloat: Float = value.toFloat
+  def toDouble: Double = value.toDouble
+
+  /** Returns this value, unmodified. */
+  def unary_+ : Float = +value
+  /** Returns the negation of this value. */
+  def unary_- : Float = -value
+
+  def +(x: String): String = value + x
+
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Byte): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Short): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Char): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Int): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Long): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Float): Boolean = value < x
+  /** Returns `true` if this value is less than x, `false` otherwise. */
+  def <(x: Double): Boolean = value < x
+
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Byte): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Short): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Char): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Int): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Long): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Float): Boolean = value <= x
+  /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
+  def <=(x: Double): Boolean = value <= x
+
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Byte): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Short): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Char): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Int): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Long): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Float): Boolean = value > x
+  /** Returns `true` if this value is greater than x, `false` otherwise. */
+  def >(x: Double): Boolean = value > x
+
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Byte): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Short): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Char): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Int): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Long): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Float): Boolean = value >= x
+  /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
+  def >=(x: Double): Boolean = value >= x
+
+  /** Returns the sum of this value and `x`. */
+  def +(x: Byte): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Short): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Char): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Int): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Long): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Float): Float = value + x
+  /** Returns the sum of this value and `x`. */
+  def +(x: Double): Double = value + x
+
+  /** Returns the difference of this value and `x`. */
+  def -(x: Byte): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Short): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Char): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Int): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Long): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Float): Float = value - x
+  /** Returns the difference of this value and `x`. */
+  def -(x: Double): Double = value - x
+
+  /** Returns the product of this value and `x`. */
+  def *(x: Byte): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Short): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Char): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Int): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Long): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Float): Float = value * x
+  /** Returns the product of this value and `x`. */
+  def *(x: Double): Double = value * x
+
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Byte): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Short): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Char): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Int): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Long): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Float): Float = value / x
+  /** Returns the quotient of this value and `x`. */
+  def /(x: Double): Double = value / x
+
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Byte): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Short): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Char): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Int): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Long): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Float): Float = value % x
+  /** Returns the remainder of the division of this value by `x`. */
+  def %(x: Double): Double = value % x
 }
 
 object PozFloat {
