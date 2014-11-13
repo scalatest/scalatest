@@ -18,20 +18,15 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PozIntMacro {
+private[scalactic] object PozIntMacro extends NumericMacroHelpers {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[PozInt] = {
+    val notValidMsg = Resources("notValidPozInt")
+    val notLiteralMsg = Resources("notLiteralPozInt")
 
     import c.universe._
 
-    value.tree match {
-      case Literal(intConst) =>
-        if (intConst.value.toString.toInt >= 0)
-          reify { PozInt.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, Resources("negativePozInt"))
-      case _ =>
-        c.abort(c.enclosingPosition, Resources("negativePozInt"))
-    }
+    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i >= 0 }
+    reify { PozInt.from(value.splice).get }
   }
 }

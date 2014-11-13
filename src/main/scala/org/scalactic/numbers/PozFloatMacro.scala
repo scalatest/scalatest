@@ -18,21 +18,16 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PozFloatMacro {
+private[scalactic] object PozFloatMacro extends NumericMacroHelpers {
 
   def apply(c: Context)(value: c.Expr[Float]): c.Expr[PozFloat] = {
+    val notValidMsg = Resources("notValidPozFloat")
+    val notLiteralMsg = Resources("notLiteralPozFloat")
 
     import c.universe._
 
-    value.tree match {
-      case Literal(floatConst) =>
-        if (floatConst.value.toString.toFloat >= 0.0F)
-          reify { PozFloat.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, Resources("negativePozFloat"))
-      case _ =>
-        c.abort(c.enclosingPosition, Resources("negativePozFloat"))
-    }
+    ensureValidFloatLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i >= 0.0F }
+    reify { PozFloat.from(value.splice).get }
   }
 }
 

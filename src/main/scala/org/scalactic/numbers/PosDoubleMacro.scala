@@ -18,20 +18,15 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PosDoubleMacro {
+private[scalactic] object PosDoubleMacro extends NumericMacroHelpers {
 
   def apply(c: Context)(value: c.Expr[Double]): c.Expr[PosDouble] = {
+    val notValidMsg = Resources("notValidPosDouble")
+    val notLiteralMsg = Resources("notLiteralPosDouble")
 
     import c.universe._
 
-    value.tree match {
-      case Literal(doubleConst) =>
-        if (doubleConst.value.toString.toDouble > 0.0)
-          reify { PosDouble.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, Resources("nonPositivePosDouble"))
-      case _ =>
-        c.abort(c.enclosingPosition, Resources("nonPositivePosDouble"))
-    }
+    ensureValidDoubleLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i > 0.0 }
+    reify { PosDouble.from(value.splice).get }
   }
 }

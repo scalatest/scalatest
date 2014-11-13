@@ -20,8 +20,15 @@ import org.scalactic.Resources
 
 private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
-    val errMsg = "GuessANumber.apply can only be invoked on Int literals between 1 and 10, inclusive, like GuessANumber(8). Please use GuessANumber.from instead."
-    ensureValidIntLiteral(c)(value)(errMsg) { i => i >= 1 && i <= 10 }
+    val notValidMsg =
+      "GuessANumber.apply can only be invoked on Int literals between 1 and "+
+      "10, inclusive, like GuessANumber(8)."
+    val notLiteralMsg =
+      "GuessANumber.apply can only be invoked on Int literals, like "+
+      "GuessANumber(8). Please use GuessANumber.from instead."
+    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i =>
+      i >= 1 && i <= 10
+    }
     c.universe.reify { GuessANumber.from(value.splice).get }
   } 
 }
@@ -29,8 +36,15 @@ private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
 import NumericMacroHelpers._
 private[scalactic] object PercentMacro {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
-    val errMsg = "Percent.apply can only be invoked on Int literals between 0 and 100, inclusive, like Percent(8). Please use Percent.from instead."
-    ensureValidIntLiteral(c)(value)(errMsg) { i => i >= 0 && i <= 100 }
+    val notValidMsg =
+      "Percent.apply can only be invoked on Int literals between 0 and 100, "+
+      "inclusive, like Percent(8)."
+    val notLiteralMsg =
+      "Percent.apply can only be invoked on Int literals, like Percent(8)."+
+      " Please use Percent.from instead."
+    ensureValidIntLiteral(c)(value)(notValidMsg, notLiteralMsg) { i =>
+      i >= 0 && i <= 100
+    }
     c.universe.reify { Percent.from(value.splice).get }
   } 
 }

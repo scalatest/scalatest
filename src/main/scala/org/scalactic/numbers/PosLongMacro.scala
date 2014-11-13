@@ -18,20 +18,15 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PosLongMacro {
+private[scalactic] object PosLongMacro extends NumericMacroHelpers {
 
   def apply(c: Context)(value: c.Expr[Long]): c.Expr[PosLong] = {
+    val notValidMsg = Resources("notValidPosLong")
+    val notLiteralMsg = Resources("notLiteralPosLong")
 
     import c.universe._
 
-    value.tree match {
-      case Literal(longConst) =>
-        if (longConst.value.toString.toLong > 0L)
-          reify { PosLong.from(value.splice).get }
-        else
-          c.abort(c.enclosingPosition, Resources("nonPositivePosLong"))
-      case _ =>
-        c.abort(c.enclosingPosition, Resources("nonPositivePosLong"))
-    }
+    ensureValidLongLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i > 0L }
+    reify { PosLong.from(value.splice).get }
   }
 }
