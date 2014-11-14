@@ -38,14 +38,14 @@ class PosIntSpec extends Spec with Matchers {
       PosInt.from(42).value.toString shouldBe "PosInt(42)"
     }
     def `should be automatically widened to compatible AnyVal targets` {
-      (PosInt.from(3).get: Int) shouldEqual 3
-      (PosInt.from(3).get: Long) shouldEqual 3L
-      (PosInt.from(3).get: Float) shouldEqual 3.0F
-      (PosInt.from(3).get: Double) shouldEqual 3.0
-      (PosInt.from(3).get: PozInt) shouldEqual PozInt.from(3).get
-      (PosInt.from(3).get: PozLong) shouldEqual PozLong.from(3L).get
-      (PosInt.from(3).get: PozFloat) shouldEqual PozFloat.from(3.0F).get
-      (PosInt.from(3).get: PozDouble) shouldEqual PozDouble.from(3.0).get
+      (PosInt(3): Int) shouldEqual 3
+      (PosInt(3): Long) shouldEqual 3L
+      (PosInt(3): Float) shouldEqual 3.0F
+      (PosInt(3): Double) shouldEqual 3.0
+      (PosInt(3): PozInt) shouldEqual PozInt(3)
+      (PosInt(3): PozLong) shouldEqual PozLong(3L)
+      (PosInt(3): PozFloat) shouldEqual PozFloat(3.0F)
+      (PosInt(3): PozDouble) shouldEqual PozDouble(3.0)
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
@@ -66,7 +66,6 @@ class PosIntSpec extends Spec with Matchers {
         val opPosInt = PosInt(3) + PosInt(3)
         opPosInt shouldEqual 6
 
-/*
         val opPosLong = PosInt(3) + PosLong(3L)
         opPosLong shouldEqual 6L
 
@@ -88,7 +87,6 @@ class PosIntSpec extends Spec with Matchers {
 
         val opPozDouble = PosInt(3) + PozDouble(3.0)
         opPozDouble shouldEqual 6.0
-*/
       }
     }
 

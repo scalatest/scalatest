@@ -180,5 +180,11 @@ object PosFloat {
   import language.experimental.macros
   import scala.language.implicitConversions
   implicit def apply(value: Float): PosFloat = macro PosFloatMacro.apply
+
+  implicit def widenToFloat(pos: PosFloat): Float = pos.value
+  implicit def widenToDouble(pos: PosFloat): Double = pos.value
+
+  implicit def widenToPozFloat(pos: PosFloat): PozFloat = PozFloat.from(pos.value).get
+  implicit def widenToPozDouble(pos: PosFloat): PozDouble = PozDouble.from(pos.value).get
 }
 

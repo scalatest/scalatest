@@ -180,5 +180,7 @@ object PozDouble {
   import language.experimental.macros
   import scala.language.implicitConversions
   implicit def apply(value: Double): PozDouble = macro PozDoubleMacro.apply
+
+  implicit def widenToDouble(poz: PozDouble): Double = poz.value
 }
 

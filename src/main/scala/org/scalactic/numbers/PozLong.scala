@@ -414,4 +414,11 @@ object PozLong {
   import language.experimental.macros
   import scala.language.implicitConversions
   implicit def apply(value: Long): PozLong = macro PozLongMacro.apply
+
+  implicit def widenToLong(poz: PozLong): Long = poz.value
+  implicit def widenToFloat(poz: PozLong): Float = poz.value
+  implicit def widenToDouble(poz: PozLong): Double = poz.value
+
+  implicit def widenToPozFloat(poz: PozLong): PozFloat = PozFloat.from(poz.value).get
+  implicit def widenToPozDouble(poz: PozLong): PozDouble = PozDouble.from(poz.value).get
 }

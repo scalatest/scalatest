@@ -37,6 +37,55 @@ class PosFloatSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
     }
+    def `should be automatically widened to compatible AnyVal targets` {
+      (PosFloat(3.0F): Float) shouldEqual 3.0F
+      (PosFloat(3.0F): Double) shouldEqual 3.0
+      (PosFloat(3.0F): PozFloat) shouldEqual PozFloat(3.0F)
+      (PosFloat(3.0F): PozDouble) shouldEqual PozDouble(3.0)
+    }
+    object `when a compatible AnyVal is passed to a + method invoked on it` {
+      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+        // When adding a "primitive"
+        val opInt = PosFloat(3.0F) + 3
+        opInt shouldEqual 6.0F
+
+        val opLong = PosFloat(3.0F) + 3L
+        opLong shouldEqual 6.0F
+
+        val opFloat = PosFloat(3.0F) + 3.0F
+        opFloat shouldEqual 6.0F
+
+        val opDouble = PosFloat(3.0F) + 3.0
+        opDouble shouldEqual 6.0
+
+        // When adding a Pos*
+        val opPosInt = PosFloat(3.0F) + PosInt(3)
+        opPosInt shouldEqual 6.0F
+
+        val opPosLong = PosFloat(3.0F) + PosLong(3L)
+        opPosLong shouldEqual 6.0F
+
+        val opPosFloat = PosFloat(3.0F) + PosFloat(3.0F)
+        opPosFloat shouldEqual 6.0F
+
+        val opPosDouble = PosFloat(3.0F) + PosDouble(3.0)
+        opPosDouble shouldEqual 6.0
+
+        // When adding a *Poz
+        val opPoz = PosFloat(3.0F) + PozInt(3)
+        opPoz shouldEqual 6.0F
+
+        val opPozLong = PosFloat(3.0F) + PozLong(3L)
+        opPozLong shouldEqual 6.0F
+
+        val opPozFloat = PosFloat(3.0F) + PozFloat(3.0F)
+        opPozFloat shouldEqual 6.0F
+
+        val opPozDouble = PosFloat(3.0F) + PozDouble(3.0)
+        opPozDouble shouldEqual 6.0
+      }
+    }
+
     object `when created with apply method` {
   
       def `should compile when 8 is passed in`: Unit = {

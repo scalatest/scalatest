@@ -413,4 +413,12 @@ object PosLong {
     if (value > 0L) Some(new PosLong(value)) else None
   import language.experimental.macros
   implicit def apply(value: Long): PosLong = macro PosLongMacro.apply
+
+  implicit def widenToLong(pos: PosLong): Long = pos.value
+  implicit def widenToFloat(pos: PosLong): Float = pos.value
+  implicit def widenToDouble(pos: PosLong): Double = pos.value
+
+  implicit def widenToPozLong(pos: PosLong): PozLong = PozLong.from(pos.value).get
+  implicit def widenToPozFloat(pos: PosLong): PozFloat = PozFloat.from(pos.value).get
+  implicit def widenToPozDouble(pos: PosLong): PozDouble = PozDouble.from(pos.value).get
 }
