@@ -38,9 +38,19 @@ class PozFloatSpec extends Spec with Matchers {
       PozFloat.from(42.0f).value.toString shouldBe "PozFloat(42.0)"
     }
     def `should be automatically widened to compatible AnyVal targets` {
+
       (PozFloat(3.0F): Float) shouldEqual 3.0F
       (PozFloat(3.0F): Double) shouldEqual 3.0
       (PozFloat(3.0F): PozDouble) shouldEqual PozDouble(3.0)
+
+      "(PozFloat(3): Int)" shouldNot compile
+      "(PozFloat(3): Long)" shouldNot compile
+      "(PozFloat(3): PosInt)" shouldNot compile
+      "(PozFloat(3): PosLong)" shouldNot compile
+      "(PozInt(3): PosFloat)" shouldNot compile
+      "(PozInt(3): PosDouble)" shouldNot compile
+      "(PozFloat(3): PozInt)" shouldNot compile
+      "(PozFloat(3): PosLong)" shouldNot compile
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
