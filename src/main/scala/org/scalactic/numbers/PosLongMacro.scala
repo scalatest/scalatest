@@ -26,7 +26,7 @@ private[scalactic] object PosLongMacro extends NumericMacroHelpers {
 
     import c.universe._
 
-    ensureValidLongLiteral(c)(value)(notValidMsg, notLiteralMsg) { i => i > 0L }
+    ensureValidLongLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i > 0L }
     reify { PosLong.from(value.splice).get }
   }
 }

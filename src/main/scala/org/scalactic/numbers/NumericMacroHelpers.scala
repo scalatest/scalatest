@@ -20,7 +20,7 @@ import org.scalactic.Resources
 
 trait NumericMacroHelpers {
 
-  def ensureValidIntLiteral(c: Context)(value: c.Expr[Int])(notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean): Unit = {
+  def ensureValidIntLiteral(c: Context)(value: c.Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean): Unit = {
 
     import c.universe._
 
@@ -34,7 +34,7 @@ trait NumericMacroHelpers {
     } 
   } 
 
-  def ensureValidLongLiteral(c: Context)(value: c.Expr[Long])(notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean): Unit = {
+  def ensureValidLongLiteral(c: Context)(value: c.Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean): Unit = {
 
     import c.universe._
 
@@ -48,7 +48,7 @@ trait NumericMacroHelpers {
     } 
   } 
 
-  def ensureValidFloatLiteral(c: Context)(value: c.Expr[Float])(notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean): Unit = {
+  def ensureValidFloatLiteral(c: Context)(value: c.Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean): Unit = {
 
     import c.universe._
 
@@ -62,7 +62,7 @@ trait NumericMacroHelpers {
     } 
   } 
 
-  def ensureValidDoubleLiteral(c: Context)(value: c.Expr[Double])(notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean): Unit = {
+  def ensureValidDoubleLiteral(c: Context)(value: c.Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean): Unit = {
 
     import c.universe._
 
