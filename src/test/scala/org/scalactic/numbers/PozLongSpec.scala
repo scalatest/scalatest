@@ -18,7 +18,7 @@ package org.scalactic.numbers
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.CheckedEquality._
+import org.scalactic.StrictCheckedEquality._
 
 class PozLongSpec extends Spec with Matchers {
   object `A PozLong` {
