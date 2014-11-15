@@ -18,7 +18,7 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-trait NumericMacroHelpers {
+trait CompileTimeAssertions {
 
   def ensureValidIntLiteral(c: Context)(value: c.Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean): Unit = {
 
@@ -77,4 +77,4 @@ trait NumericMacroHelpers {
   } 
 }
 
-object NumericMacroHelpers extends NumericMacroHelpers
+object CompileTimeAssertions extends CompileTimeAssertions

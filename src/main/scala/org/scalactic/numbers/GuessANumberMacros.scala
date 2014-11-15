@@ -18,7 +18,7 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
+private[scalactic] object GuessANumberMacro extends CompileTimeAssertions {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {
     val notValidMsg =
       "GuessANumber.apply can only be invoked on Int literals between 1 and "+
@@ -33,7 +33,7 @@ private[scalactic] object GuessANumberMacro extends NumericMacroHelpers {
   } 
 }
 
-import NumericMacroHelpers._
+import CompileTimeAssertions._
 private[scalactic] object PercentMacro {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[Percent] = {
     val notValidMsg =

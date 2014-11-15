@@ -18,7 +18,7 @@ package org.scalactic.numbers
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PosIntMacro extends NumericMacroHelpers {
+private[scalactic] object PosIntMacro extends CompileTimeAssertions {
 
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[PosInt] = {
     val notValidMsg = Resources("notValidPosInt")
