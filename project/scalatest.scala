@@ -166,7 +166,7 @@ object ScalatestBuild extends Build {
     Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
       "-m", "org.scalatest",
       "-m", "org.scalactic",
-      "-m", "org.scalactic.numbers",
+      "-m", "org.scalactic.anyvals",
       "-m", "org.scalactic.algebra",
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
@@ -248,7 +248,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.enablers",
-        "org.scalactic.numbers",
+        "org.scalactic.anyvals",
         "org.scalactic.algebra",
         "org.scalautils"
       ),
