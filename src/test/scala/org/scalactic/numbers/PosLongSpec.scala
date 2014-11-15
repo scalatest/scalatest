@@ -143,36 +143,6 @@ class PosLongSpec extends Spec with Matchers {
         "takesPosLong(b)" shouldNot compile
       }
     }
-/*
-    object `when specified as a plain-old Int` {
-
-      def takesPosLong(posL: PosLong): Long = posL.value
-
-      def `should compile when 8 is passed in`: Unit = {
-        "takesPosLong(8)" should compile
-        takesPosLong(8) shouldEqual 8L
-        "takesPosLong(8L)" should compile
-        takesPosLong(8L) shouldEqual 8L
-      }
-
-      def `should not compile when 0 is passed in`: Unit = {
-        "takesPosLong(0)" shouldNot compile
-        "takesPosLong(0L)" shouldNot compile
-      }
-
-      def `should not compile when -8 is passed in`: Unit = {
-        "takesPosLong(-8)" shouldNot compile
-        "takesPosLong(-8L)" shouldNot compile
-      }
-
-      def `should not compile when x is passed in`: Unit = {
-        val a: Int = -8
-        "takesPosLong(a)" shouldNot compile
-        val b: Long = -8L
-        "takesPosLong(b)" shouldNot compile
-      }
-    }
-*/
   }
 }
 
