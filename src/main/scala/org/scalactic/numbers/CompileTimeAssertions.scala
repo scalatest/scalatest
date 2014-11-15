@@ -75,6 +75,20 @@ trait CompileTimeAssertions {
         c.abort(c.enclosingPosition, notLiteralMsg)
     } 
   } 
+
+  def ensureValidStringLiteral(c: Context)(value: c.Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean): Unit = {
+
+    import c.universe._
+
+    value.tree match {
+      case Literal(stringConst) =>
+        val literalValue = stringConst.value.toString
+        if (!isValid(literalValue))
+          c.abort(c.enclosingPosition, notValidMsg)
+      case _ =>
+        c.abort(c.enclosingPosition, notLiteralMsg)
+    } 
+  } 
 }
 
 object CompileTimeAssertions extends CompileTimeAssertions

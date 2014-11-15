@@ -53,3 +53,14 @@ object DPercent {
     if (value >= 0.0 && value <= 100.0) Some(new DPercent(value)) else None
 }
 
+
+final class TLA private (val value: String) extends AnyVal {
+  override def toString: String = s"TLA($value)"
+}
+object TLA {
+  def from(value: String): Option[TLA] =
+    if (value.length == 3) Some(new TLA(value)) else None
+  import scala.language.experimental.macros
+  def apply(value: String): TLA = macro TLAMacro.apply
+}
+

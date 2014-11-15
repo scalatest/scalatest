@@ -49,3 +49,17 @@ private[scalactic] object PercentMacro {
   } 
 }
 
+private[scalactic] object TLAMacro {
+  def apply(c: Context)(value: c.Expr[String]): c.Expr[TLA] = {
+    val notValidMsg =
+      "TLA.apply can only be invoked on String literals of length 3,"+
+      "like \"LOL\"."
+    val notLiteralMsg =
+      "TLA.apply can only be invoked on String literals, like \"LOL\""+
+      " Please use TLA.from instead."
+    ensureValidStringLiteral(c)(value, notValidMsg, notLiteralMsg) { s =>
+      s.length == 3
+    }
+    c.universe.reify { TLA.from(value.splice).get }
+  } 
+}
