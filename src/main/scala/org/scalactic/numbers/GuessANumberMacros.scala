@@ -63,3 +63,18 @@ private[scalactic] object TLAMacro {
     c.universe.reify { TLA.from(value.splice).get }
   } 
 }
+
+private[scalactic] object DigitMacro {
+  def apply(c: Context)(value: c.Expr[Char]): c.Expr[Digit] = {
+    val notValidMsg =
+      "Digit.apply can only be invoked on Char literals that are digits," +
+      "like '8'."
+    val notLiteralMsg =
+      "Digit.apply can only be invoked on Char literals that are digits, like '8'" +
+      " Please use Digit.from instead."
+    ensureValidCharLiteral(c)(value, notValidMsg, notLiteralMsg) { c =>
+      c >= '0' && c <= '9'
+    }
+    c.universe.reify { Digit.from(value.splice).get }
+  } 
+}

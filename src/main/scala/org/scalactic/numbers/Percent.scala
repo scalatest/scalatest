@@ -64,3 +64,13 @@ object TLA {
   def apply(value: String): TLA = macro TLAMacro.apply
 }
 
+final class Digit private (val value: Char) extends AnyVal {
+  override def toString: String = s"Digit($value)"
+}
+object Digit {
+  def from(value: Char): Option[Digit] =
+    if (value >= '0' && value <= '9') Some(new Digit(value)) else None
+  import scala.language.experimental.macros
+  def apply(value: Char): Digit = macro DigitMacro.apply
+}
+
