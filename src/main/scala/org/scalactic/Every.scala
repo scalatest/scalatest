@@ -25,7 +25,6 @@ import scala.collection.GenIterable
 import scala.collection.generic.CanBuildFrom
 import Every.fromNonEmptyVector
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import enablers.SafeSeqsConstraint
 
 // Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
 /**
@@ -583,7 +582,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return the index of the first element of this <code>Every</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def indexOf[U >: T](elem: U, from: Int): Int = underlying.indexOf(elem, from)
+  final def indexOf[U >: T](elem: U): Int = underlying.indexOf(elem, 0)
 
   /**
    * Finds index of first occurrence of some value in this <code>Every</code> after or at some start index.
@@ -593,7 +592,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>Every</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def indexOf[U >: T](elem: U, from: Int)(implicit ev: SafeSeqsConstraint[Every[T], U]): Int = ev.indexOf(this, elem, from)
+  final def indexOf[U >: T](elem: U, from: Int): Int = underlying.indexOf(elem, from)
 
   /**
    * Finds first index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice.
