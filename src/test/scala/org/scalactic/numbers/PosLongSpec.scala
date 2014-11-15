@@ -38,6 +38,57 @@ class PosLongSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosLong.from(42L).value.toString shouldBe "PosLong(42)"
     }
+    def `should be automatically widened to compatible AnyVal targets` {
+      (PosLong(3L): Long) shouldEqual 3L
+      (PosLong(3L): Float) shouldEqual 3.0F
+      (PosLong(3L): Double) shouldEqual 3.0
+      (PosLong(3L): PozLong) shouldEqual PozLong(3L)
+      (PosLong(3L): PozFloat) shouldEqual PozFloat(3.0F)
+      (PosLong(3L): PozDouble) shouldEqual PozDouble(3.0)
+    }
+    object `when a compatible AnyVal is passed to a + method invoked on it` {
+      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+        // When adding a "primitive"
+        val opInt = PosLong(3L) + 3
+        opInt shouldEqual 6L
+
+        val opLong = PosLong(3L) + 3L
+        opLong shouldEqual 6L
+
+        val opFloat = PosLong(3L) + 3.0F
+        opFloat shouldEqual 6.0F
+
+        val opDouble = PosLong(3L) + 3.0
+        opDouble shouldEqual 6.0
+
+        // When adding a Pos*
+        val opPosInt = PosLong(3L) + PosInt(3)
+        opPosInt shouldEqual 6L
+
+        val opPosLong = PosLong(3L) + PosLong(3L)
+        opPosLong shouldEqual 6L
+
+        val opPosFloat = PosLong(3L) + PosFloat(3.0F)
+        opPosFloat shouldEqual 6.0F
+
+        val opPosDouble = PosLong(3L) + PosDouble(3.0)
+        opPosDouble shouldEqual 6.0
+
+        // When adding a *Poz
+        val opPoz = PosLong(3L) + PozInt(3)
+        opPoz shouldEqual 6L
+
+        val opPozLong = PosLong(3L) + PozLong(3L)
+        opPozLong shouldEqual 6L
+
+        val opPozFloat = PosLong(3L) + PozFloat(3.0F)
+        opPozFloat shouldEqual 6.0F
+
+        val opPozDouble = PosLong(3L) + PozDouble(3.0)
+        opPozDouble shouldEqual 6.0
+      }
+    }
+
     object `when created with apply method` {
 
       def `should compile when 8 is passed in`: Unit = {
@@ -119,60 +170,6 @@ class PosLongSpec extends Spec with Matchers {
         "takesPosLong(a)" shouldNot compile
         val b: Long = -8L
         "takesPosLong(b)" shouldNot compile
-      }
-    }
-*/
-/*
-    def `should be automatically widened to compatible AnyVal targets` {
-      (PosLong.from(3).get: Int) shouldEqual 3 // shouldNot typeCheck
-      (PosLong.from(3).get: Long) shouldEqual 3L
-      (PosLong.from(3).get: Float) shouldEqual 3.0F
-      (PosLong.from(3).get: Double) shouldEqual 3.0
-      (PosLong.from(3).get: Poz) shouldEqual Poz.from(3).get
-      (PosLong.from(3).get: PozLong) shouldEqual PozLong.from(3L).get
-      (PosLong.from(3).get: PozFloat) shouldEqual PozFloat.from(3.0F).get
-      (PosLong.from(3).get: PozDouble) shouldEqual PozDouble.from(3.0).get
-    }
-    object `when a compatible AnyVal is passed to a + method invoked on it` {
-      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
-        // When adding a "primitive"
-        val opInt = PosLong.from(3).get + 3 // should be type Long
-        opInt shouldEqual 6L
-
-        val opLong = PosLong.from(3).get + 3L
-        opLong shouldEqual 6L
-
-        val opFloat = PosLong.from(3).get + 3.0F
-        opFloat shouldEqual 6.0F
-
-        val opDouble = PosLong.from(3).get + 3.0
-        opDouble shouldEqual 6.0
-
-        // When adding a *Pos
-        val opPos = Pos.from(3).get + Pos.from(3).get
-        opPos shouldEqual 6L
-
-        val opPosLong = Pos.from(3).get + PosLong.from(3L).get
-        opPosLong shouldEqual 6L
-
-        val opPosFloat = Pos.from(3).get + PosFloat.from(3.0F).get
-        opPosFloat shouldEqual 6.0F
-
-        val opPosDouble = Pos.from(3).get + PosDouble.from(3.0).get
-        opPosDouble shouldEqual 6.0
-
-        // When adding a *Poz
-        val opPoz = Pos.from(3).get + Poz.from(3).get
-        opPoz shouldEqual Poz.from(6).get.value
-
-        val opPozLong = Pos.from(3).get + PozLong.from(3L).get
-        opPozLong shouldEqual PozLong.from(6L).get.value
-
-        val opPozFloat = Pos.from(3).get + PozFloat.from(3.0F).get
-        opPozFloat shouldEqual PozFloat.from(6.0F).get.value
-
-        val opPozDouble = Pos.from(3).get + PozDouble.from(3.0).get
-        opPozDouble shouldEqual PozDouble.from(6.0).get.value
       }
     }
 */
