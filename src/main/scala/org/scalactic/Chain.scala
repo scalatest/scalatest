@@ -153,6 +153,16 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   def ++[U >: T](other: Chain[U]): Chain[U] = new Chain(underlying ++ other.toList)
 
   /**
+   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>Every</code>.
+   * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this and the passed <code>Every</code>.
+   *
+   * @tparam U the element type of the returned <code>Many</code>
+   * @param other the <code>Every</code> to append
+   * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
+   */
+  def ++[U >: T](other: Every[U]): Chain[U] = new Chain(underlying ++ other.toVector)
+
+  /**
    * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
    * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this <code>Every</code>
    * and the passed <code>GenTraversableOnce</code>.
@@ -223,6 +233,50 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Every</code> consisting of <code>element</code> followed by all elements of this <code>Every</code>.
    */
   final def +:[U >: T](element: U): Chain[U] = new Chain(element +: underlying)
+
+  /**
+   * Adds an element to the beginning of this <code>Chain</code>.
+   *
+   * <p>
+   * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+   * </p>
+   *
+   * @param element the element to prepend to this <code>Chain</code>
+   * @return a <code>Chain</code> that contains <code>element</code> as first element and that continues with this <code>Chain</code>.
+   */
+  final def ::[U >: T](element: U): Chain[U] = new Chain(element +: underlying)
+
+  /**
+   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>Every</code>.
+   * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this and the passed <code>Every</code>.
+   *
+   * @tparam U the element type of the returned <code>Many</code>
+   * @param other the <code>Every</code> to append
+   * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
+   */
+  def :::[U >: T](other: Chain[U]): Chain[U] = new Chain(other.toList ::: underlying)
+
+  /**
+   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>Every</code>.
+   * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this and the passed <code>Every</code>.
+   *
+   * @tparam U the element type of the returned <code>Many</code>
+   * @param other the <code>Every</code> to append
+   * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
+   */
+  def :::[U >: T](other: Every[U]): Chain[U] = new Chain(other.toList ::: underlying)
+
+  /**
+   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
+   * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this <code>Every</code>
+   * and the passed <code>GenTraversableOnce</code>.
+   *
+   * @tparam U the element type of the returned <code>Many</code>
+   * @param other the <code>Every</code> to append
+   * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
+   */
+  def :::[U >: T](other: GenTraversableOnce[U]): Chain[U] =
+    if (other.isEmpty) this else new Chain(other.toList ::: underlying)
 
   /**
    * Returns a new <code>Every</code> with the given element appended.
@@ -1632,3 +1686,6 @@ object Chain {
   implicit def chainToGenTraversableOnce[E](chain: Chain[E]): scala.collection.immutable.LinearSeq[E] = chain.toList
 }
 
+object End {
+  def ::[T](element: T): Chain[T] = Chain(element)
+}

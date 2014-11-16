@@ -51,6 +51,11 @@ class ChainSpec extends UnitSpec with CheckedEquality {
     noException should be thrownBy Chain(null)
     noException should be thrownBy Chain("ho", null)
   }
+  it can "be constructed using cons-End style" in {
+    0 :: 1 :: End shouldBe Chain(0, 1)
+    0 :: 1 ::  2 :: End shouldBe Chain(0, 1, 2)
+    "zero" :: "one" ::  "two" :: End shouldBe Chain("zero", "one", "two")
+  }
   it can "be deconstructed with Chain" in {
     Chain(1) match {
       case Chain(x) => x shouldEqual 1
@@ -166,20 +171,35 @@ class ChainSpec extends UnitSpec with CheckedEquality {
     0 +: Chain(1, 2) shouldBe Chain(0, 1, 2)
     "zero" +: Chain("one", "two") shouldBe Chain("zero", "one", "two")
   }
-/*
   it should "have a :: method" in {
 
     0 :: Chain(1) shouldBe Chain(0, 1)
     0 :: Chain(1, 2) shouldBe Chain(0, 1, 2)
     "zero" :: Chain("one", "two") shouldBe Chain("zero", "one", "two")
-
-    0 :: 1 :: End shouldBe Chain(0, 1)
-    0 :: 1 ::  2 :: End shouldBe Chain(0, 1, 2)
-    "zero" :: "one" ::  "two" :: End shouldBe Chain("zero", "one", "two")
+  }
+  it should "have a ::: method that takes another Chain" in {
+    Chain(1, 2, 3) ::: Chain(4) shouldEqual Chain(1, 2, 3, 4)
+    Chain(1, 2, 3) ::: Chain(4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
+    Chain(1, 2, 3) ::: Chain(4, 5, 6) shouldEqual Chain(1, 2, 3, 4, 5, 6)
+  }
+  it should "have a ::: method that takes an Every" in {
+    One(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Every(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Every(1, 2, 3) ::: Chain(4, 5, 6) shouldEqual Chain(1, 2, 3, 4, 5, 6)
+    One(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    One(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Every(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Every(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    One(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+  }
+  it should "have a ::: method that takes a GenTraversableOnce" in {
+    List(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Vector(1, 2, 3) ::: Chain(4, 5, 6) shouldEqual Chain(1, 2, 3, 4, 5, 6)
+    GenTraversable(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Set(1, 2) ::: Chain(3, 4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
+    Set(1, 2).iterator ::: Chain(3, 4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
   }
 
-  0 :: 1 :: 2 :: End
-*/
   it should "implement PartialFunction[Int, T]" in {
     val pf1: PartialFunction[Int, Int] = Chain(1)
     pf1.isDefinedAt(0) shouldBe true
