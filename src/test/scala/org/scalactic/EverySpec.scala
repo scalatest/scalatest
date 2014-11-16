@@ -239,7 +239,7 @@ class EverySpec extends UnitSpec {
     fn(0) shouldBe 2
     fn(1) shouldBe 3
   }
-  it should "have an contains method that does a type check" in {
+  it should "have a contains method" in {
     val e = Every(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
@@ -247,17 +247,13 @@ class EverySpec extends UnitSpec {
     e.contains(2) shouldBe true
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
-    // """e.contains("five") shouldBe false""" shouldNot typeCheck
-    new CheckedEquality {
-      // """e.contains("five")""" shouldNot typeCheck
-      val es = Every("one", "two", "three")
+    val es = Every("one", "two", "three")
+    es.contains("one") shouldBe true;
+    es.contains("ONE") shouldBe false;
+    {
+      implicit val strEq = StringNormalizations.lowerCased.toEquality
       es.contains("one") shouldBe true;
-      es.contains("ONE") shouldBe false;
-      {
-        implicit val strEq = StringNormalizations.lowerCased.toEquality
-        es.contains("one") shouldBe true;
-        es.contains("ONE") shouldBe false
-      }
+      es.contains("ONE") shouldBe false
     }
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
@@ -314,7 +310,7 @@ class EverySpec extends UnitSpec {
     every.corresponds(Many(2, 4, 6, 8))(_ * 2 == _) shouldBe false
     every.corresponds(Many(2, 4, 6, 8, 10, 12))(_ * 2 == _) shouldBe false
   }
-  it should "have an count method" in {
+  it should "have a count method" in {
     val every = Every(1, 2, 3, 4, 5)
     every.count(_ > 10) shouldBe 0
     every.count(_ % 2 == 0) shouldBe 2
@@ -325,7 +321,7 @@ class EverySpec extends UnitSpec {
     scala> Vector(1, 2, 3).diff(Vector(1, 2, 3))
     res0: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an distinct method" in {
+  it should "have a distinct method" in {
     Every(1, 2, 3).distinct shouldBe Every(1, 2, 3)
     Every(1).distinct shouldBe Every(1)
     Every(1, 2, 1, 1).distinct shouldBe Every(1, 2)
@@ -481,7 +477,7 @@ class EverySpec extends UnitSpec {
     One("hi").headOption shouldBe Some("hi")
     Many(1, 2, 3).headOption shouldBe Some(1)
   }
-  it should "have 2 indexOf methods that do a type check" in {
+  it should "have 2 indexOf methods" in {
     Every(1, 2, 3, 4, 5).indexOf(3) shouldBe 2
     Every(1, 2, 3, 4, 5).indexOf(1) shouldBe 0
     Every(1, 2, 3, 4, 5).indexOf(1, 2) shouldBe -1
