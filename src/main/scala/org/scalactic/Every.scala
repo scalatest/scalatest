@@ -28,7 +28,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
 // Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
 /**
- * An ordered, immutable, non-empty collection of elements.
+ * An ordered, immutable, non-empty collection of elements with <code>IndexedSeq</code> performance characteristics.
  *
  * <p>
  * Class <code>Every</code> has two and only two subtypes: <a href="One.html"><code>One</code></a> and <a href="Many.html"><code>Many</code></a>.

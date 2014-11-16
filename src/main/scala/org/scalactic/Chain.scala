@@ -25,47 +25,40 @@ import scala.collection.GenIterable
 import scala.collection.generic.CanBuildFrom
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
-// Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
+// Can't be a LinearSeq[T] because Builder would be able to create an empty one.
 /**
- * An ordered, immutable, non-empty collection of elements.
+ * An ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
+ *
+ * <h2>Constructing <code>Chain</code>s</h2>
  *
  * <p>
- * Class <code>Every</code> has two and only two subtypes: <a href="One.html"><code>One</code></a> and <a href="Many.html"><code>Many</code></a>.
- * A <code>One</code> contains exactly one element. A <code>Many</code> contains two or more elements. Thus no way exists for an
- * <code>Every</code> to contain zero elements.
- * </p>
- *
- * <h2>Constructing <code>Every</code>s</h2>
- *
- * <p>
- * You can construct an <code>Every</code> by passing one or more elements to the <code>Every.apply</code> factory method:
+ * You can construct a <code>Chain</code> by passing one or more elements to the <code>Chain.apply</code> factory method:
  * </p>
  *
  * <pre class="stHighlight">
- * Every(1)
- * Every(1, 2)
- * Every(1, 2, 3)
+ * Chain(1)
+ * Chain(1, 2)
+ * Chain(1, 2, 3)
  * </pre>
  *
  * <p>
- * Alternatively you can pass one element to the <code>One.apply</code> factory method, or two or more elements to 
- * <code>Many.apply</code>:
+ * Alternatively you can pass cons elements onto the <code>End</code> singelton object:
  * </p>
  *
  * <pre class="stHighlight">
- * One(1)
- * Many(1, 3)
- * Many(1, 2, 3)
+ * 1 :: End
+ * 1 :: 2 :: End
+ * 1 :: 2 :: 3 :: End
  * </pre>
  *
- * <h2>Working with <code>Every</code>s</h2>
+ * <h2>Working with <code>Chains</code>s</h2>
  *
  * <p>
- * <code>Every</code> does not extend Scala's <code>Seq</code> or <code>Traversable</code> traits because these require that
+ * <code>Chain</code> does not extend Scala's <code>Seq</code> or <code>Traversable</code> traits because these require that
  * implementations may be empty. For example, if you invoke <code>tail</code> on a <code>Seq</code> that contains just one element,
  * you'll get an empty <code>Seq</code>:
  * </p>
- * 
+ *
  * <pre class="stREPL">
  * scala&gt; List(1).tail
  * res6: List[Int] = List()
@@ -73,70 +66,62 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * <p>
  * On the other hand, many useful methods exist on <code>Seq</code> that when invoked on a non-empty <code>Seq</code> are guaranteed
- * to not result in an empty <code>Seq</code>. For convenience, <code>Every</code> defines a method corresponding to every such <code>Seq</code>
+ * to not result in an empty <code>Seq</code>. For convenience, <code>Chain</code> defines a method corresponding to every such <code>Seq</code>
  * method. Here are some examples:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
- * Many(1, 2, 3).map(_ + 1)                  // Result: Many(2, 3, 4)
- * One(1).map(_ + 1)                         // Result: One(2)
- * Every(1, 2, 3).containsSlice(Every(2, 3)) // Result: true
- * Every(1, 2, 3).containsSlice(Every(3, 4)) // Result: false
- * Every(-1, -2, 3, 4, 5).minBy(_.abs)       // Result: -1
+ * Chain(1, 2, 3).map(_ + 1)                 // Result: Many(2, 3, 4)
+ * Chain(1).map(_ + 1)                       // Result: One(2)
+ * Chain(1, 2, 3).containsSlice(Chain(2, 3)) // Result: true
+ * Chain(1, 2, 3).containsSlice(Chain(3, 4)) // Result: false
+ * Chain(-1, -2, 3, 4, 5).minBy(_.abs)       // Result: -1
  * </pre>
  *
  * <p>
- * <code>Every</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
- * an empty <code>Seq</code>. However, an implicit converison from <code>Every</code> to <code>collection.immutable.IndexedSeq</code>
- * is defined in the <code>Every</code> companion object that will be applied if you attempt to call one of the missing methods. As a
- * result, you can invoke <code>filter</code> on an <code>Every</code>, even though <code>filter</code> could result
- * in an empty sequence&mdash;but the result type will be <code>collection.immutable.IndexedSeq</code> instead of <code>Every</code>:
+ * <code>Chain</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
+ * an empty <code>Seq</code>. However, an implicit converison from <code>Chain</code> to <code>collection.immutable.LinearSeq</code>
+ * is defined in the <code>Chain</code> companion object that will be applied if you attempt to call one of the missing methods. As a
+ * result, you can invoke <code>filter</code> on an <code>Chain</code>, even though <code>filter</code> could result
+ * in an empty sequence&mdash;but the result type will be <code>collection.immutable.LinearSeq</code> instead of <code>Chain</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * Every(1, 2, 3).filter(_ &lt; 10) // Result: Vector(1, 2, 3)
- * Every(1, 2, 3).filter(_ &gt; 10) // Result: Vector()
+ * Chain(1, 2, 3).filter(_ &lt; 10) // Result: List(1, 2, 3)
+ * Chain(1, 2, 3).filter(_ &gt; 10) // Result: List()
  * </pre>
  * 
  *
  * <p>
- * You can use <code>Every</code>s in <code>for</code> expressions. The result will be an <code>Every</code> unless
+ * You can use <code>Chain</code>s in <code>for</code> expressions. The result will be an <code>Chain</code> unless
  * you use a filter (an <code>if</code> clause). Because filters are desugared to invocations of <code>filter</code>, the
- * result type will switch to a <code>collection.immutable.IndexedSeq</code> at that point. Here are some examples:
+ * result type will switch to a <code>collection.immutable.LinearSeq</code> at that point. Here are some examples:
  * </p>
  * 
  * <pre class="stREPL">
  * scala&gt; import org.scalactic._
  * import org.scalactic._
  *
- * scala&gt; for (i &lt;- Every(1, 2, 3)) yield i + 1
- * res0: org.scalactic.Every[Int] = Many(2, 3, 4)
+ * scala&gt; for (i &lt;- Chain(1, 2, 3)) yield i + 1
+ * res0: org.scalactic.Chain[Int] = Chain(2, 3, 4)
  *
- * scala&gt; for (i &lt;- Every(1, 2, 3) if i &lt; 10) yield i + 1
- * res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 3, 4)
- *
- * scala&gt; for {
- *      |   i &lt;- Every(1, 2, 3)
- *      |   j &lt;- Every('a', 'b', 'c')
- *      | } yield (i, j)
- * res3: org.scalactic.Every[(Int, Char)] =
- *         Many((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
+ * scala&gt; for (i &lt;- Chain(1, 2, 3) if i &lt; 10) yield i + 1
+ * res1: scala.collection.immutable.LinearSeq[Int] = List(2, 3, 4)
  *
  * scala&gt; for {
- *      |   i &lt;- Every(1, 2, 3) if i &lt; 10
- *      |   j &lt;- Every('a', 'b', 'c')
+ *      |   i &lt;- Chain(1, 2, 3)
+ *      |   j &lt;- Chain('a', 'b', 'c')
  *      | } yield (i, j)
- * res6: scala.collection.immutable.IndexedSeq[(Int, Char)] =
- *         Vector((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
+ * res3: org.scalactic.Chain[(Int, Char)] =
+ *         Chain((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
+ *
+ * scala&gt; for {
+ *      |   i &lt;- Chain(1, 2, 3) if i &lt; 10
+ *      |   j &lt;- Chain('a', 'b', 'c')
+ *      | } yield (i, j)
+ * res6: scala.collection.immutable.LinearSeq[(Int, Char)] =
+ *         List((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
  * </pre>
- *
- * <h2>Motivation for <code>Every</code>s</h2>
- *
- * <p>
- * Although <code>Every</code> is a general-purpose, non-empty ordered collection, it was motivated by the desire to enable easy
- * accumulation of errors in <a href="Or.html"><code>Or</code></a>s. For examples of <code>Every</code> used in that use case, see the
- * <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section in the main documentation for <code>Or</code>.
- * </p>
  *
  * @tparam T the type of elements contained in this <code>Every</code>
  */
@@ -1681,7 +1666,7 @@ object Chain {
    * </pre>
    *
    * @param every the <code>Every</code> to convert to a <code>GenTraversableOnce</code>
-   * @return an immutable <code>IndexedSeq</code> containing the elements, in order, of this <code>Every</code>
+   * @return an immutable <code>LinearSeq</code> containing the elements, in order, of this <code>Chain</code>
    */
   implicit def chainToGenTraversableOnce[E](chain: Chain[E]): scala.collection.immutable.LinearSeq[E] = chain.toList
 }
