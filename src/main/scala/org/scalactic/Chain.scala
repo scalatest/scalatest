@@ -51,7 +51,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  * 1 :: 2 :: 3 :: End
  * </pre>
  *
- * <h2>Working with <code>Chains</code>s</h2>
+ * <h2>Working with <code>Chain</code>s</h2>
  *
  * <p>
  * <code>Chain</code> does not extend Scala's <code>Seq</code> or <code>Traversable</code> traits because these require that
