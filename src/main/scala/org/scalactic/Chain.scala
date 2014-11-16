@@ -1688,4 +1688,6 @@ object Chain {
 
 object End {
   def ::[T](element: T): Chain[T] = Chain(element)
+  override def toString: String = "End"
 }
+

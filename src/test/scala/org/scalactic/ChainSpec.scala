@@ -1398,5 +1398,8 @@ class ChainSpec extends UnitSpec with CheckedEquality {
     Chain(99).zipWithIndex shouldBe Chain((99,0))
     Chain(1, 2, 3, 4, 5).zipWithIndex shouldBe Chain((1,0), (2,1), (3,2), (4,3), (5,4))
   }
+  "End" should "have a pretty toString" in {
+    End.toString shouldBe "End"
+  }
 }
 
