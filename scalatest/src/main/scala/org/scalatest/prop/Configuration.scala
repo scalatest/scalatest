@@ -18,6 +18,7 @@ package org.scalatest.prop
 import org.scalacheck.Test.Parameters
 import org.scalacheck.Test.TestCallback
 import org.scalacheck.Gen
+import org.scalactic.anyvals.{PozInt, PozDouble, PosInt}
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -92,6 +93,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
+  @deprecated("Use PropertyCheckConfiguration instead")
   case class PropertyCheckConfig(
     minSuccessful: Int = 100,
     maxDiscarded: Int = 500,
@@ -105,6 +107,34 @@ trait Configuration {
     require(maxSize >= 0, "maxSize had value " + maxSize + ", but must be greater than or equal to zero")
     require(minSize <= maxSize, "minSize had value " + minSize + ", which must be less than or equal to maxSize, which had value " + maxSize)
     require(workers > 0, "workers had value " + workers + ", but must be greater than zero")
+  }
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts <code>PropertyCheckConfig</code>s to <code>PropertyCheckConfiguration</code>,
+   * which enables a smoother upgrade path.
+   */
+  implicit def PropertyCheckConfig2PropertyCheckConfiguration(p: PropertyCheckConfig): PropertyCheckConfiguration = {
+    val maxDiscardedFactor = PropertyCheckConfiguration.calculateMaxDiscardedFactor(p.minSuccessful, p.maxDiscarded)
+    PropertyCheckConfiguration(
+      minSuccessful = PosInt.from(p.minSuccessful).get,
+      maxDiscardedFactor = PozDouble.from(maxDiscardedFactor).get,
+      minSize = PozInt.from(p.minSize).get,
+      sizeRange = PozInt.from(p.maxSize - p.minSize).get,
+      workers = PosInt.from(p.workers).get)
+  }
+
+  // Note: Using PosX.from factory methods, because "you cannot use macro implementations in the same compilation run that defines them".  If scalactic were in a separate compile, this would go away.
+  case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt.from(100).get,
+                                        maxDiscardedFactor: PozDouble = PozDouble.from(5.0).get,
+                                        minSize: PozInt = PozInt.from(0).get,
+                                        sizeRange: PozInt = PozInt.from(100).get,
+                                        workers: PosInt = PosInt.from(1).get)
+
+  object PropertyCheckConfiguration {
+    private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
+      ((maxDiscarded + 1): Double) / (minSuccessful: Double)
   }
 
   /**
@@ -180,10 +210,12 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class MaxDiscarded(value: Int) extends PropertyCheckConfigParam {
+  @deprecated case class MaxDiscarded(value: Int) extends PropertyCheckConfigParam {
     require(value >= 0)
   }
-  
+
+  case class MaxDiscardedFactor(value: PozDouble) extends PropertyCheckConfigParam
+
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum size parameter to
    * provide to ScalaCheck, which it will use when generating objects for which size matters (such as
@@ -216,7 +248,7 @@ trait Configuration {
   case class MaxSize(value: Int) extends PropertyCheckConfigParam {
     require(value >= 0)
   }
-  
+
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the number of worker threads
    * to use when evaluating a property.
@@ -280,17 +312,19 @@ trait Configuration {
 
   private[prop] def getParams(
     configParams: Seq[PropertyCheckConfigParam],
-    config: PropertyCheckConfig
+    config: PropertyCheckConfiguration
   ): Parameters = {
 
     var minSuccessful = -1
     var maxDiscarded = -1
+    var maxDiscardedFactor = -1.0
     var pminSize = -1
     var pmaxSize = -1
     var pworkers = -1
 
     var minSuccessfulTotalFound = 0
     var maxDiscardedTotalFound = 0
+    var maxDiscardedFactorTotalFound = 0
     var minSizeTotalFound = 0
     var maxSizeTotalFound = 0
     var workersTotalFound = 0
@@ -303,6 +337,9 @@ trait Configuration {
         case param: MaxDiscarded =>
           maxDiscarded = param.value
           maxDiscardedTotalFound += 1
+        case param: MaxDiscardedFactor =>
+          maxDiscardedFactor = param.value
+          maxDiscardedFactorTotalFound += 1
         case param: MinSize =>
           pminSize = param.value
           minSizeTotalFound += 1
@@ -337,7 +374,7 @@ trait Configuration {
         if (pminSize != -1) pminSize else config.minSize
 
       val maxSize: Int = 
-        if (pmaxSize != -1) pmaxSize else config.maxSize
+        if (pmaxSize != -1) pmaxSize else config.minSize + config.sizeRange
 
       val rng: scala.util.Random = Gen.Parameters.default.rng
 
@@ -347,10 +384,14 @@ trait Configuration {
       val testCallback: TestCallback = new TestCallback {}
 
       val maxDiscardRatio: Float = {
-        val maxDiscardedTests = (if (maxDiscarded != -1) maxDiscarded else config.maxDiscarded) + 1
-
-        if (maxDiscardedTests < 0) Parameters.default.maxDiscardRatio
-        else (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
+        if (maxDiscardedFactor >= 0) {
+          maxDiscardedFactor.toFloat
+        } else if (maxDiscarded != -1) {
+          if (maxDiscarded < 0) Parameters.default.maxDiscardRatio
+          else PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessfulTests, maxDiscarded).toFloat
+        } else {
+          config.maxDiscardedFactor.toFloat
+        }
       }
 
       val customClassLoader: Option[ClassLoader] = None
