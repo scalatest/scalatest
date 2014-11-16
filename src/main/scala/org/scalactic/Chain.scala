@@ -140,7 +140,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * @tparam T the type of elements contained in this <code>Every</code>
  */
-final class Chain[+T] protected (underlying: List[T]) extends PartialFunction[Int, T] {
+final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int, T] {
 
   /**
    * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>Every</code>.
@@ -222,7 +222,7 @@ final class Chain[+T] protected (underlying: List[T]) extends PartialFunction[In
    * @param element the element to prepend to this <code>Every</code>
    * @return a new <code>Every</code> consisting of <code>element</code> followed by all elements of this <code>Every</code>.
    */
-  final def +:[U >: T](element: U): Many[U] = Many(element, underlying.head, underlying.tail: _*)
+  final def +:[U >: T](element: U): Chain[U] = new Chain(element +: underlying)
 
   /**
    * Returns a new <code>Every</code> with the given element appended.
@@ -425,6 +425,12 @@ final class Chain[+T] protected (underlying: List[T]) extends PartialFunction[In
    */
   final def endsWith[B](that: Chain[B]): Boolean = underlying.endsWith(that.toList)
 
+  override def equals(o: Any): Boolean =
+    o match {
+      case chain: Chain[_] => underlying == chain.toList
+      case _ => false
+    }
+
   /**
    * Indicates whether a predicate holds for at least one of the elements of this <code>Every</code>.
    *
@@ -574,6 +580,8 @@ final class Chain[+T] protected (underlying: List[T]) extends PartialFunction[In
    * Returns <code>true</code> to indicate this <code>Every</code> has a definite size, since all <code>Every</code>s are strict collections.
    */
   final def hasDefiniteSize: Boolean = true
+
+  override def hashCode: Int = underlying.hashCode
 
   /**
    * Selects the first element of this <code>Every</code>. 
