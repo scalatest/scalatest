@@ -45,13 +45,13 @@ class SortedEquaSetSpec extends UnitSpec {
       def areEqual(a: Int, b: Any): Boolean = a == b
       def compare(a: Int, b: Int): Int = a - b
     }
-  val plainNumber = EquaSets[Int](intEquality)
-  val number = SortedEquaSets[Int](intEquality)
-  val sortedNumber = SortedEquaSets[Int](normalOrderingEquality[Int])
-  val lower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val plainLower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val trimmed = SortedEquaSets[String](StringNormalizations.trimmed.toOrderingEquality)
+  val plainNumber = EquaPath[Int](intEquality)
+  val number = SortedEquaPath[Int](intEquality)
+  val sortedNumber = SortedEquaPath[Int](normalOrderingEquality[Int])
+  val lower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val plainLower = EquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val sortedLower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
   val intStringEquality =
     new OrderingEquality[(Int, String)] {
       def hashCodeFor(a: (Int, String)): Int = a.hashCode
@@ -62,7 +62,7 @@ class SortedEquaSetSpec extends UnitSpec {
         else
           a._2 compareTo b._2
     }
-  val numberLower = SortedEquaSets(intStringEquality)
+  val numberLower = SortedEquaPath(intStringEquality)
   val intStringStringEquality =
     new OrderingEquality[(Int, String, String)] {
       def hashCodeFor(a: (Int, String, String)): Int = a.hashCode
@@ -75,7 +75,7 @@ class SortedEquaSetSpec extends UnitSpec {
         else
           a._3 compareTo b._3
     }
-  val numberLowerTrimmed = SortedEquaSets(intStringStringEquality)
+  val numberLowerTrimmed = SortedEquaPath(intStringStringEquality)
 
   def numberListEquality[T] =
     new OrderingEquality[List[Int]] {
@@ -84,7 +84,7 @@ class SortedEquaSetSpec extends UnitSpec {
       def compare(a: List[Int], b: List[Int]): Int = a.mkString compareTo b.mkString
     }
 
-  val numberList = SortedEquaSets[List[Int]](numberListEquality)
+  val numberList = SortedEquaPath[List[Int]](numberListEquality)
 
   val numberNumberEquality =
     new OrderingEquality[number.SortedEquaSet] {
@@ -92,7 +92,7 @@ class SortedEquaSetSpec extends UnitSpec {
       def areEqual(a: number.SortedEquaSet, b: Any): Boolean = a == b
       def compare(a: number.SortedEquaSet, b: number.SortedEquaSet): Int = a.mkString compareTo b.mkString
     }
-  val numberNumber = SortedEquaSets[number.SortedEquaSet](numberNumberEquality)
+  val numberNumber = SortedEquaPath[number.SortedEquaSet](numberNumberEquality)
 
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
@@ -703,22 +703,22 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an into.collect method" in {
 
-    // SortedEquaSet into EquaSets => EquaSet
+    // SortedEquaSet into EquaPath => EquaSet
     val result1 = number.SortedEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(plainLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result1 shouldBe plainLower.EquaSet("4", "8", "12", "16", "20")
     result1.shouldHaveExactType[plainLower.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
     val result2 = number.SortedEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result2 shouldBe sortedLower.SortedEquaSet("4", "8", "12", "16", "20")
     result2.shouldHaveExactType[sortedLower.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
+    // TreeEquaSet into EquaPath => EquaSet
     val result3 = number.TreeEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(plainLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result3 shouldBe plainLower.EquaSet("4", "8", "12", "16", "20")
     result3.shouldHaveExactType[plainLower.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
     val result4 = number.TreeEquaSet(1, 2, 3, 4, 5, 6 ,7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result4 shouldBe sortedLower.TreeEquaSet("4", "8", "12", "16", "20")
     result4.shouldHaveExactType[sortedLower.TreeEquaSet]
@@ -799,8 +799,8 @@ class SortedEquaSetSpec extends UnitSpec {
         def hashCodeFor(a: Fruit): Int = nameEquality.hashCodeFor(a.name)
         def compare(a: Fruit, b: Fruit): Int = nameEquality.compare(a.name, b.name)
       }
-    val fruitEquaSets = SortedEquaSets(equalityOfFruit)
-    val fruits = fruitEquaSets.SortedEquaSet(mac, navel)
+    val fruitEquaPath = SortedEquaPath(equalityOfFruit)
+    val fruits = fruitEquaPath.SortedEquaSet(mac, navel)
     fruits.contains(mac) shouldBe true
   }
   it should "have 3 copyToArray methods" in {
@@ -1034,28 +1034,28 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an into.flatMap method" in {
 
-    // SortedEquaSet into EquaSets => EquaSet
+    // SortedEquaSet into EquaPath => EquaSet
     val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).flatMap(i => plainLower.EquaSet(i.toString))
     result1 shouldBe plainLower.EquaSet("7", "8", "9")
     result1.shouldHaveExactType[plainLower.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
     val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString))
     result2 shouldBe sortedLower.SortedEquaSet("7", "8", "9")
     result2.shouldHaveExactType[sortedLower.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
+    // TreeEquaSet into EquaPath => EquaSet
     val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).flatMap(i => plainLower.EquaSet(i.toString))
     result3 shouldBe plainLower.EquaSet("7", "8", "9")
     result3.shouldHaveExactType[plainLower.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
     val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.TreeEquaSet(i.toString))
     result4 shouldBe sortedLower.TreeEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.TreeEquaSet]
 
     // Extra stuff from oldInto test
-    val nonSortedlower = EquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+    val nonSortedlower = EquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
     number.SortedEquaSet(8).into(nonSortedlower).flatMap(i => nonSortedlower.EquaSet(i.toString)) shouldBe nonSortedlower.EquaSet("8")
     number.SortedEquaSet(8).into(sortedLower).flatMap(i => sortedLower.SortedEquaSet(i.toString)) shouldBe sortedLower.SortedEquaSet("8")
   }
@@ -1106,26 +1106,26 @@ class SortedEquaSetSpec extends UnitSpec {
       new Ordering[sortedNumber.SortedEquaSet] {
         def compare(x: sortedNumber.SortedEquaSet, y: sortedNumber.SortedEquaSet): Int = x.size - y.size
       }
-    // SortedEquaSet into EquaSets => EquaSet
-    val numberNumber1 = SortedEquaSets[plainNumber.EquaSet](normalOrderingEquality[plainNumber.EquaSet])
+    // SortedEquaSet into EquaPath => EquaSet
+    val numberNumber1 = SortedEquaPath[plainNumber.EquaSet](normalOrderingEquality[plainNumber.EquaSet])
     val result1 = numberNumber1.SortedEquaSet(plainNumber.EquaSet(1, 2), plainNumber.EquaSet(3)).into(plainNumber).flatten
     result1 shouldBe plainNumber.EquaSet(1, 2, 3)
     result1.shouldHaveExactType[plainNumber.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
-    val numberNumber2 = SortedEquaSets[sortedNumber.SortedEquaSet](normalOrderingEquality[sortedNumber.SortedEquaSet])
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
+    val numberNumber2 = SortedEquaPath[sortedNumber.SortedEquaSet](normalOrderingEquality[sortedNumber.SortedEquaSet])
     val result2 = numberNumber2.SortedEquaSet(sortedNumber.SortedEquaSet(1, 2), sortedNumber.SortedEquaSet(3)).into(sortedNumber).flatten
     result2 shouldBe sortedNumber.SortedEquaSet(1, 2, 3)
     result2.shouldHaveExactType[sortedNumber.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
-    val numberNumber3 = SortedEquaSets[plainNumber.FastEquaSet](normalOrderingEquality[plainNumber.FastEquaSet])
-    val result3 = numberNumber3.TreeEquaSet(plainNumber.FastEquaSet(1, 2), plainNumber.FastEquaSet(3)).into(plainNumber).flatten // What about into EquaSets.EquaSet?
+    // TreeEquaSet into EquaPath => EquaSet
+    val numberNumber3 = SortedEquaPath[plainNumber.FastEquaSet](normalOrderingEquality[plainNumber.FastEquaSet])
+    val result3 = numberNumber3.TreeEquaSet(plainNumber.FastEquaSet(1, 2), plainNumber.FastEquaSet(3)).into(plainNumber).flatten // What about into EquaPath.EquaSet?
     result3 shouldBe plainNumber.EquaSet(1, 2, 3)
     result3.shouldHaveExactType[plainNumber.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
-    val numberNumber4 = SortedEquaSets[sortedNumber.EquaSet](normalOrderingEquality[sortedNumber.EquaSet])
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
+    val numberNumber4 = SortedEquaPath[sortedNumber.EquaSet](normalOrderingEquality[sortedNumber.EquaSet])
     val result4 = numberNumber4.TreeEquaSet(sortedNumber.EquaSet(1, 2), sortedNumber.EquaSet(3)).into(sortedNumber).flatten
     result4 shouldBe sortedNumber.TreeEquaSet(1, 2, 3)
     result4.shouldHaveExactType[sortedNumber.TreeEquaSet]
@@ -1329,7 +1329,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
   it should "have an into.map method" in {
-    // Can map directly if want to stay in same SortedEquaSets
+    // Can map directly if want to stay in same SortedEquaPath
     number.SortedEquaSet(1, 2, 3).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
     (for (ele <- number.SortedEquaSet(1, 2, 3)) yield ele * 2) shouldBe number.SortedEquaSet(2, 4, 6)
     number.SortedEquaSet(5) map (_ + 3) shouldBe number.SortedEquaSet(8)
@@ -1338,22 +1338,22 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.SortedEquaSet(2, 3, 4)
     number.SortedEquaSet(5).into(number).map(_ + 3) shouldBe number.SortedEquaSet(8)
 
-    // SortedEquaSet into EquaSets => EquaSet
+    // SortedEquaSet into EquaPath => EquaSet
     val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).map(_.toString)
     result1 shouldBe plainLower.EquaSet("7", "8", "9")
     result1.shouldHaveExactType[plainLower.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
     val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
     result2 shouldBe sortedLower.SortedEquaSet("7", "8", "9")
     result2.shouldHaveExactType[sortedLower.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
+    // TreeEquaSet into EquaPath => EquaSet
     val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).map(_.toString)
     result3 shouldBe plainLower.EquaSet("7", "8", "9")
     result3.shouldHaveExactType[plainLower.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
     val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
     result4 shouldBe sortedLower.TreeEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.TreeEquaSet]
@@ -1513,22 +1513,22 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an into.scanLeft method" in {
 
-    // SortedEquaSet into EquaSets => EquaSet
+    // SortedEquaSet into EquaPath => EquaSet
     val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).scanLeft("z")(_ + _)
     result1 shouldBe plainLower.EquaSet("z", "z7", "z78", "z789")
     result1.shouldHaveExactType[plainLower.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
     val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
     result2 shouldBe sortedLower.SortedEquaSet("z", "z7", "z78", "z789")
     result2.shouldHaveExactType[sortedLower.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
+    // TreeEquaSet into EquaPath => EquaSet
     val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).scanLeft("z")(_ + _)
     result3 shouldBe plainLower.EquaSet("z", "z7", "z78", "z789")
     result3.shouldHaveExactType[plainLower.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
     val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
     result4 shouldBe sortedLower.TreeEquaSet("z", "z7", "z78", "z789")
     result4.shouldHaveExactType[sortedLower.TreeEquaSet]
@@ -1556,22 +1556,22 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an into.scanRight method" in {
 
-    // SortedEquaSet into EquaSets => EquaSet
+    // SortedEquaSet into EquaPath => EquaSet
     val result1 = number.SortedEquaSet(7, 8, 9).into(plainLower).scanRight("z")(_ + _)
     result1 shouldBe plainLower.EquaSet("789z", "89z", "9z", "z")
     result1.shouldHaveExactType[plainLower.EquaSet]
 
-    // SortedEquaSet into SortedEquaSets => SortedEquaSet
+    // SortedEquaSet into SortedEquaPath => SortedEquaSet
     val result2 = number.SortedEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
     result2 shouldBe sortedLower.SortedEquaSet("789z", "89z", "9z", "z")
     result2.shouldHaveExactType[sortedLower.SortedEquaSet]
 
-    // TreeEquaSet into EquaSets => EquaSet
+    // TreeEquaSet into EquaPath => EquaSet
     val result3 = number.TreeEquaSet(7, 8, 9).into(plainLower).scanRight("z")(_ + _)
     result3 shouldBe plainLower.EquaSet("789z", "89z", "9z", "z")
     result3.shouldHaveExactType[plainLower.EquaSet]
 
-    // TreeEquaSet into SortedEquaSets => TreeEquaSet
+    // TreeEquaSet into SortedEquaPath => TreeEquaSet
     val result4 = number.TreeEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
     result4 shouldBe sortedLower.TreeEquaSet("789z", "89z", "9z", "z")
     result4.shouldHaveExactType[sortedLower.TreeEquaSet]

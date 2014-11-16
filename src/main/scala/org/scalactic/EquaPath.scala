@@ -31,19 +31,19 @@ import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
 
-class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
+class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
 
   case class EquaBox(value: T) {
     override def equals(o: Any): Boolean = 
       o match {
-        case other: EquaSets[_]#EquaBox if equality eq other.path.equality =>
+        case other: EquaPath[_]#EquaBox if equality eq other.path.equality =>
           equality.areEqual(value, other.value)
         case _ => false
       }
     override def hashCode: Int = equality.hashCodeFor(value)
     override def toString: String = s"EquaBox(${value.toString})"
-    val path: thisEquaSets.type = thisEquaSets
-    // def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaBox
+    val path: thisEquaPath.type = thisEquaPath
+    // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaBox
   }
   object EquaBox {
     import scala.language.implicitConversions
@@ -52,22 +52,22 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   }
 
   class EquaBridge[S](from: List[S]) {
-    def collect(pf: PartialFunction[S, T]): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet.empty ++ (from collect pf)
-    def map(f: S => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet.empty ++ (from map f)
-    def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+    def collect(pf: PartialFunction[S, T]): thisEquaPath.EquaSet =
+      thisEquaPath.EquaSet.empty ++ (from collect pf)
+    def map(f: S => T): thisEquaPath.EquaSet =
+      thisEquaPath.EquaSet.empty ++ (from map f)
+    def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
+      thisEquaPath.EquaSet((from flatMap ((s: S) => f(s).toList)): _*)
+    def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.EquaSet =
       flatMap((s: S) => cvt(s))
-    def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    def scanRight(z: T)(op: (S, T) => T): thisEquaSets.EquaSet =
-      thisEquaSets.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    val path: thisEquaSets.type = thisEquaSets
+    def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.EquaSet =
+      thisEquaPath.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    def scanRight(z: T)(op: (S, T) => T): thisEquaPath.EquaSet =
+      thisEquaPath.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    val path: thisEquaPath.type = thisEquaPath
     def foreach[U](f: S => U): Unit = from.foreach(f)
-    def filter(pred: S => Boolean): thisEquaSets.EquaBridge[S] =
-      new thisEquaSets.EquaBridge(from.filter(pred))
+    def filter(pred: S => Boolean): thisEquaPath.EquaBridge[S] =
+      new thisEquaPath.EquaBridge(from.filter(pred))
     def withFilter(pred: S => Boolean): WithFilter = new WithFilter(pred)
 
     /**
@@ -104,7 +104,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * `f` to each element of the outer `EquaBridge` that satisfies
        * predicate `p` and collecting the results.
        */
-      def map(f: S => T): thisEquaSets.EquaSet =
+      def map(f: S => T): thisEquaPath.EquaSet =
         filter(p).map(f)
 
       /**
@@ -123,7 +123,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * outer `EquaBridge` that satisfies predicate `p` and concatenating
        * the results.
        */
-      def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
         filter(p).flatMap(f)
 
       /**
@@ -147,7 +147,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // for consistency I'd probably say flattenTrav for this one.
     //
     // The above then makes me wonder if there's not another potential method here that is
-    // def flatMapTrav(f: S => GenTraversable[T]): thisEquaSets.EquaSet
+    // def flatMapTrav(f: S => GenTraversable[T]): thisEquaPath.EquaSet
     // that way you can say something like:
     // val ss = lower.EquaSet("hi", "ha")
     // ss.into(number).flatMapTrav((s: String) => s.toList.map(_.toInt)))
@@ -162,7 +162,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     // scala> 'i'.toInt
     // res3: Int = 105
 
-    // What's missing is a flatten on Bridge that let's you go to a different EquaSets than the
+    // What's missing is a flatten on Bridge that let's you go to a different EquaPath than the
     // current one so long as the type parameter is the same. So if you have an x.EquaSet[number.EquaSet], and
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
@@ -177,7 +177,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` that contains all elements of this `EquaSet` and that also
      * contains `elem`.
      */
-    def + (elem: T): thisEquaSets.EquaSet
+    def + (elem: T): thisEquaPath.EquaSet
 
     /**
      * Creates a new `EquaSet` with additional elements.
@@ -190,14 +190,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param elems the remaining elements to add.
      * @return a new `EquaSet` with the given elements added.
      */
-    def + (elem1: T, elem2: T, elems: T*): thisEquaSets.EquaSet
+    def + (elem1: T, elem2: T, elems: T*): thisEquaPath.EquaSet
 
     /** Creates a new `EquaSet` by adding all elements contained in another collection to this `EquaSet`.
       *
       *  @param elems     the collection containing the added elements.
       *  @return          a new `EquaSet` with the given elements added.
       */
-    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
+    def ++ (elems: GenTraversableOnce[T]): thisEquaPath.EquaSet
 
     /**
      * Creates a new `EquaSet` by adding elements contained in another `EquaSet`.
@@ -205,7 +205,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param that     the other `EquaSet` containing the added elements.
      * @return         a new `EquaSet` with the given elements added.
      */
-    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def ++ (that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Creates a new `EquaSet` with a given element removed from this `EquaSet`.
@@ -214,7 +214,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` that contains all elements of this `EquaSet` but that does not
      * contain `elem`.
      */
-    def - (elem: T): thisEquaSets.EquaSet
+    def - (elem: T): thisEquaPath.EquaSet
 
     /* * USE LATER
      * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
@@ -237,7 +237,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` that contains all elements of the current `EquaSet`
      * except one less occurrence of each of the given elements.
      */
-    def - (elem1: T, elem2: T, elems: T*): thisEquaSets.EquaSet
+    def - (elem1: T, elem2: T, elems: T*): thisEquaPath.EquaSet
 
     /**
      * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
@@ -247,7 +247,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *  @return a new `EquaSet` that contains all elements of the current `EquaSet`
      *  except one less occurrence of each of the elements of `elems`.
      */
-    def --(elems: GenTraversableOnce[T]): thisEquaSets.EquaSet
+    def --(elems: GenTraversableOnce[T]): thisEquaPath.EquaSet
 
     /**
      * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another `EquaSet`
@@ -255,7 +255,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param that       the other `EquaSet` containing the removed elements.
      * @return a new `EquaSet` that contains all elements of the current `EquaSet` minus elements contained in the passed in `EquaSet`.
      */
-    def --(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def --(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Applies a binary operator to a start value and all elements of this `EquaSet`,
@@ -337,7 +337,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` consisting of all elements that are in this
      * `EquaSet` or in the given `EquaSet` `that`.
      */
-    def | (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def | (that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
@@ -347,7 +347,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` consisting of all elements that are both in this
      * `EquaSet` and in the given `EquaSet` `that`.
      */
-    def & (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def & (that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * The difference of this `EquaSet` and another `EquaSet`.
@@ -357,7 +357,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` containing those elements of this
      * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
-    def &~ (that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def &~ (that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Appends all elements of this `EquaSet` to a string builder.
@@ -486,7 +486,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * `pf` to each element on which it is defined and collecting the results.
      * The order of the elements is preserved.
      */
-    def collect(pf: PartialFunction[T, T]): thisEquaSets.EquaSet
+    def collect(pf: PartialFunction[T, T]): thisEquaPath.EquaSet
 
     /*
       The reason I don't just do this:
@@ -508,7 +508,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param xs the array to fill.
      *
      */
-    def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit
+    def copyToArray(xs: Array[thisEquaPath.EquaBox]): Unit
 
     /**
      * Copies values of this `EquaSet` to an array.
@@ -520,7 +520,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param start the starting index.
      *
      */
-    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit
+    def copyToArray(xs: Array[thisEquaPath.EquaBox], start: Int): Unit
 
     /**
      * Copies values of this `EquaSet` to an array.
@@ -532,14 +532,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param len the length of elements to copy
      *
      */
-    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit
+    def copyToArray(xs: Array[thisEquaPath.EquaBox], start: Int, len: Int): Unit
 
     /**
      * Copies all elements of this `EquaSet` to a buffer.
      *
      * @param dest The buffer to which elements are copied.
      */
-    def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit
+    def copyToBuffer(dest: mutable.Buffer[thisEquaPath.EquaBox]): Unit
 
     /**
      * Counts the number of elements in the `EquaSet` which satisfy a predicate.
@@ -556,7 +556,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` containing those elements of this
      * `EquaSet` that are not also contained in the given `EquaSet` `that`.
      */
-    def diff(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def diff(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Selects all elements except first ''n'' ones.
@@ -565,7 +565,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` consisting of all elements of this `EquaSet` except the first `n` ones, or else the
      * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
      */
-    def drop(n: Int): thisEquaSets.EquaSet
+    def drop(n: Int): thisEquaPath.EquaSet
 
     /**
      * Selects all elements except last ''n'' ones.
@@ -574,7 +574,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` consisting of all elements of this `EquaSet` except the last `n` ones, or else the
      * empty `EquaSet`, if this `EquaSet` has less than `n` elements.
      */
-    def dropRight(n: Int): thisEquaSets.EquaSet
+    def dropRight(n: Int): thisEquaPath.EquaSet
 
     /**
      * Drops longest prefix of elements that satisfy a predicate.
@@ -583,7 +583,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return the longest suffix of this `EquaSet` whose first element
      * does not satisfy the predicate `p`.
      */
-    def dropWhile(pred: T => Boolean): thisEquaSets.EquaSet
+    def dropWhile(pred: T => Boolean): thisEquaPath.EquaSet
 
     /**
      * Check if this `EquaSet` contains element which satisfy a predicate.
@@ -600,16 +600,16 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` consisting of all elements of this `EquaSet` that satisfy the given
      * predicate <code>pred</code>. Their order may not be preserved.
      */
-    def filter(pred: T => Boolean): thisEquaSets.EquaSet
+    def filter(pred: T => Boolean): thisEquaPath.EquaSet
 
     /**
-     * Selects all elements of this `EquaSets` which do not satisfy a predicate.
+     * Selects all elements of this `EquaPath` which do not satisfy a predicate.
      *
      * @param pred the predicate used to test elements.
-     * @return a new `EquaSets` consisting of all elements of this `EquaSets` that do not satisfy the given
+     * @return a new `EquaPath` consisting of all elements of this `EquaPath` that do not satisfy the given
      * predicate <code>pred</code>. Their order may not be preserved.
      */
-    def filterNot(pred: T => Boolean): thisEquaSets.EquaSet
+    def filterNot(pred: T => Boolean): thisEquaPath.EquaSet
 
     /**
      * Finds the first element of the `EquaSet` satisfying a predicate, if any.
@@ -638,7 +638,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` resulting from applying the given `EquaSet`-valued function
      * `f` to each element of this `EquaSet` and concatenating the results.
      */
-    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Converts this `EquaSet` of `EquaSet` into
@@ -659,7 +659,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * // ys == `EquaSet`(1, 2, 3)
      * }}}
      */
-    //def flatten[S, T >: EquaSets[S]#EquaSet]: EquaSets[S]#EquaSet
+    //def flatten[S, T >: EquaPath[S]#EquaSet]: EquaPath[S]#EquaSet
 
     /**
      * Folds the elements of this `EquaSet` using the specified associative
@@ -744,7 +744,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * for which `f(x)` equals `k`.
      *
      */
-    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.EquaSet]
+    def groupBy[K](f: T => K): GenMap[K, thisEquaPath.EquaSet]
 
     /**
      * Partitions elements in fixed size `EquaSet`s.
@@ -754,7 +754,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return An iterator producing `EquaSet`s of size `size`, except the
      * last will be less than size `size` if the elements don't divide evenly.
      */
-    def grouped(size: Int): Iterator[thisEquaSets.EquaSet]
+    def grouped(size: Int): Iterator[thisEquaPath.EquaSet]
 
     def hasDefiniteSize: Boolean
 
@@ -779,7 +779,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * except the last one.
      * @throws `UnsupportedOperationException` if the `EquaSet` is empty.
      */
-    def init: thisEquaSets.EquaSet
+    def init: thisEquaPath.EquaSet
 
     /**
      * Iterates over the inits of this `EquaSet`. The first value will be this
@@ -789,7 +789,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an iterator over all the inits of this `EquaSet`
      * @example EquaSet(1,2,3).inits = Iterator(EquaSet(1,2,3), EquaSet(1,2), EquaSet(1), EquaSet())
      */
-    def inits: Iterator[thisEquaSets.EquaSet]
+    def inits: Iterator[thisEquaPath.EquaSet]
 
     /**
      * Computes the intersection between this `EquaSet` and another `EquaSet`.
@@ -798,18 +798,18 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` consisting of all elements that are both in this
      * `EquaSet` and in the given `EquaSet` `that`.
      */
-    def intersect(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def intersect(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
-     * Make an `EquaBridge` between this `EquaSet` and the given `thatEquaSets`.
-     * `EquaBridge` enables this `EquaSet` to transform into `thatEquaSets`.`EquaSet`
+     * Make an `EquaBridge` between this `EquaSet` and the given `thatEquaPath`.
+     * `EquaBridge` enables this `EquaSet` to transform into `thatEquaPath`.`EquaSet`
      * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
      *
-     * @param thatEquaSets that `EquaSets` to bridge to
-     * @tparam U the type of `thatEquaSets`
-     * @return an instance of `thatEquaSets`.`EquaBridge`
+     * @param thatEquaPath that `EquaPath` to bridge to
+     * @tparam U the type of `thatEquaPath`
+     * @return an instance of `thatEquaPath`.`EquaBridge`
      */
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.EquaBridge[T]
+    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.EquaBridge[T]
 
     /**
      * Tests if this `EquaSet` is empty.
@@ -859,7 +859,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new `EquaSet` resulting from applying the given function
      * `f` to each element of this `EquaSet` and collecting the results.
      */
-    def map(f: T => T): thisEquaSets.EquaSet
+    def map(f: T => T): thisEquaPath.EquaSet
 
     /**
      * Finds the largest element.
@@ -961,7 +961,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * that don't. The relative order of the elements in the resulting `EquaSet`s
      * may not be preserved.
      */
-    def partition(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+    def partition(pred: T => Boolean): (thisEquaPath.EquaSet, thisEquaPath.EquaSet)
 
     /**
      * Multiplies up the elements of this collection.
@@ -1073,7 +1073,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param op the binary operator applied to the intermediate result and the element
      * @return `EquaSet` with intermediate results
      */
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.EquaSet
 
     /**
      * Produces a collection containing cumulative results of applying the operator going right to left.
@@ -1088,7 +1088,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param op the binary operator applied to the intermediate result and the element
      * @return `EquaSet` with intermediate results
      */
-    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.EquaSet
+    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.EquaSet
 
     /**
      * The size of this `EquaSet`.
@@ -1110,7 +1110,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * index `from` extending up to (but not including) index `until`
      * of this `EquaSet`.
      */
-    def slice(unc_from: Int, unc_until: Int): thisEquaSets.EquaSet
+    def slice(unc_from: Int, unc_until: Int): thisEquaPath.EquaSet
 
     /**
      * Groups elements in fixed size blocks by passing a "sliding window"
@@ -1122,7 +1122,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * last and the only element will be truncated if there are
      * fewer elements than size.
      */
-    def sliding(size: Int): Iterator[thisEquaSets.EquaSet]
+    def sliding(size: Int): Iterator[thisEquaPath.EquaSet]
 
     /**
      * Groups elements in fixed size blocks by passing a "sliding window"
@@ -1136,7 +1136,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * last and the only element will be truncated if there are
      * fewer elements than size.
      */
-    def sliding(size: Int, step: Int): Iterator[thisEquaSets.EquaSet]
+    def sliding(size: Int, step: Int): Iterator[thisEquaPath.EquaSet]
 
     /**
      * Splits this `EquaSet` into a prefix/suffix pair according to a predicate.
@@ -1150,7 +1150,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a pair consisting of the longest prefix of this `EquaSet` whose
      * elements all satisfy `p`, and the rest of this `EquaSet`.
      */
-    def span(pred: T => Boolean): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+    def span(pred: T => Boolean): (thisEquaPath.EquaSet, thisEquaPath.EquaSet)
 
     /**
      * Splits this `EquaSet` into two at a given position.
@@ -1162,7 +1162,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a pair of `EquaSet`s consisting of the first `n`
      * elements of this `EquaSet`, and the other elements.
      */
-    def splitAt(n: Int): (thisEquaSets.EquaSet, thisEquaSets.EquaSet)
+    def splitAt(n: Int): (thisEquaPath.EquaSet, thisEquaPath.EquaSet)
 
     /**
      * Defines the prefix of this object's `toString` representation.
@@ -1180,7 +1180,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return `true` if this set is a subset of `that`, i.e. if
      * every element of this set is also an element of `that`.
      */
-    def subsetOf(that: thisEquaSets.EquaSet): Boolean
+    def subsetOf(that: thisEquaPath.EquaSet): Boolean
 
     /**
      * An iterator over all subsets of this set of the given size.
@@ -1189,14 +1189,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @param len the size of the subsets.
      * @return the iterator.
      */
-    def subsets(len: Int): Iterator[thisEquaSets.EquaSet]
+    def subsets(len: Int): Iterator[thisEquaPath.EquaSet]
 
     /**
      * An iterator over all subsets of this set.
      *
      * @return the iterator.
      */
-    def subsets: Iterator[thisEquaSets.EquaSet]
+    def subsets: Iterator[thisEquaPath.EquaSet]
 
     /** Sums up the elements of this collection.
       *
@@ -1220,7 +1220,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * except the first one.
      * @throws `UnsupportedOperationException` if the `EquaSet` is empty.
      */
-    def tail: thisEquaSets.EquaSet
+    def tail: thisEquaPath.EquaSet
 
     /**
      * Iterates over the tails of this `EquaSet`. The first value will be this
@@ -1230,7 +1230,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an iterator over all the tails of this `EquaSet`
      * @example `EquaSet(1,2,3).tails = Iterator(EquaSet(1,2,3), EquaSet(2,3), EquaSet(3), EquaSet())`
      */
-    def tails: Iterator[thisEquaSets.EquaSet]
+    def tails: Iterator[thisEquaPath.EquaSet]
 
     /**
      * Selects first ''n'' elements.
@@ -1239,7 +1239,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` consisting only of the first `n` elements of this `EquaSet`,
      * or else the whole `EquaSet`, if it has less than `n` elements.
      */
-    def take(n: Int): thisEquaSets.EquaSet
+    def take(n: Int): thisEquaPath.EquaSet
 
     /**
      * Selects last ''n'' elements.
@@ -1249,14 +1249,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return an `EquaSet` consisting only of the last `n` elements of this `EquaSet`, or else the
      * whole `EquaSet`, if it has less than `n` elements.
      */
-    def takeRight(n: Int): thisEquaSets.EquaSet
+    def takeRight(n: Int): thisEquaPath.EquaSet
 
     /**
      * Converts this `EquaSet` into another by copying all elements.
      * @tparam Col The collection type to build.
      * @return a new collection containing all elements of this `EquaSet`.
      */
-    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV]
+    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaPath.EquaBox, Col[thisEquaPath.EquaBox @uV]]): Col[thisEquaPath.EquaBox @uV]
 
     /**
      * Converts this `EquaSet` to an array.
@@ -1270,7 +1270,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an array containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxArray: Array[thisEquaSets.EquaBox]
+    def toEquaBoxArray: Array[thisEquaPath.EquaBox]
 
     /**
      * Uses the contents of this `EquaSet` to create a new mutable buffer.
@@ -1284,7 +1284,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a buffer containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox]
+    def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to an indexed sequence.
@@ -1298,7 +1298,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an indexed sequence containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox]
+    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to an iterable collection. Note that
@@ -1317,7 +1317,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an `Iterable` containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox]
+    def toEquaBoxIterable: GenIterable[thisEquaPath.EquaBox]
 
     /**
      * Returns an Iterator over the elements in this `EquaSet`.  Will return
@@ -1333,14 +1333,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return an Iterator containing all elements of this  `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIterator: Iterator[thisEquaSets.EquaBox]
+    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a list of `EquaBox`.
      *
      * @return a list containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxList: List[thisEquaSets.EquaBox]
+    def toEquaBoxList: List[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a list.
@@ -1374,7 +1374,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a `ParArray` containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox]
+    def toEquaBoxParArray: ParArray[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
@@ -1392,7 +1392,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a sequence containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxSeq: GenSeq[thisEquaSets.EquaBox]
+    def toEquaBoxSeq: GenSeq[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a set.
@@ -1406,7 +1406,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a set containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxSet: Set[thisEquaSets.EquaBox]
+    def toEquaBoxSet: Set[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a stream.
@@ -1420,7 +1420,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a stream containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxStream: Stream[thisEquaSets.EquaBox]
+    def toEquaBoxStream: Stream[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a `Traversable`.
@@ -1434,7 +1434,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a Traversable containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox]
+    def toEquaBoxTraversable: GenTraversable[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a Vector.
@@ -1448,7 +1448,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      *
      * @return a vector containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxVector: Vector[thisEquaSets.EquaBox]
+    def toEquaBoxVector: Vector[thisEquaPath.EquaBox]
 
     /**
      * Transposes this `EquaSet` of traversable collections into
@@ -1483,7 +1483,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @throws `IllegalArgumentException` if all collections in this `EquaSet`
      * are not of the same size.
      */
-    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.EquaSet
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaPath.EquaSet
 
     /**
      * Computes the union between of set and another set.
@@ -1492,7 +1492,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a new set consisting of all elements that are in this
      * set or in the given set `that`.
      */
-    def union(that: thisEquaSets.EquaSet): thisEquaSets.EquaSet
+    def union(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
      * Converts this `EquaSet` of pairs into two collections of the first and second
@@ -1514,7 +1514,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a pair of `EquaSet`s, containing the first, respectively second
      * half of each element pair of this `EquaSet`.
      */
-    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet)
+    def unzip[T1, T2](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2])(implicit asPair: T => (T1, T2)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet)
 
     /**
      * Converts this `EquaSet` of triples into three collections of the first, second,
@@ -1538,14 +1538,14 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a triple of `EquaSet`s, containing the first, second, respectively
      * third member of each element triple of this `EquaSet`.
      */
-    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.EquaSet, t2EquaSets.EquaSet, t3EquaSets.EquaSet)
+    def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet, t3EquaPath.EquaSet)
 
     /**
      * Creates a non-strict view of this `EquaSet`.
      *
      * @return a non-strict view of this `EquaSet`.
      */
-    def view: TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
+    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
 
     /**
      * Creates a non-strict view of a slice of this `EquaSet`.
@@ -1561,7 +1561,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      * @return a non-strict view of a slice of this `EquaSet`, starting at index `from`
      * and extending up to (but not including) index `until`.
      */
-    def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]]
+    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
 
     /**
      * Creates a non-strict filter of this `EquaSet`.
@@ -1613,7 +1613,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * `f` to each element of the outer `EquaSet` that satisfies
        * predicate `p` and collecting the results.
        */
-      def map(f: T => T): thisEquaSets.EquaSet =
+      def map(f: T => T): thisEquaPath.EquaSet =
         filter(p).map(f)
 
       /**
@@ -1632,7 +1632,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * outer `EquaSet` that satisfies predicate `p` and concatenating
        * the results.
        */
-      def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.EquaSet =
+      def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
         filter(p).flatMap(f)
 
       /**
@@ -1694,26 +1694,26 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
      */
     def zipWithIndex: Set[(T, Int)]
 
-    val path: thisEquaSets.type
+    val path: thisEquaPath.type
 
-    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.EquaSet
+    def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
   }
 
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet.empty ++ (from collect pf)
-    override def map(f: S => T): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet.empty ++ (from map f)
-    override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    override def flatten(implicit cvt: S <:< thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+    override def collect(pf: PartialFunction[S, T]): thisEquaPath.FastEquaSet =
+      thisEquaPath.FastEquaSet.empty ++ (from collect pf)
+    override def map(f: S => T): thisEquaPath.FastEquaSet =
+      thisEquaPath.FastEquaSet.empty ++ (from map f)
+    override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
+      thisEquaPath.FastEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
+    override def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       flatMap((s: S) => cvt(s))
-    override def scanLeft(z: T)(op: (T, S) => T): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    override def scanRight(z: T)(op: (S, T) => T): thisEquaSets.FastEquaSet =
-      thisEquaSets.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    override def filter(pred: S => Boolean): thisEquaSets.FastEquaBridge[S] =
-      new thisEquaSets.FastEquaBridge(from.filter(pred))
+    override def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.FastEquaSet =
+      thisEquaPath.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
+    override def scanRight(z: T)(op: (S, T) => T): thisEquaPath.FastEquaSet =
+      thisEquaPath.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
+    override def filter(pred: S => Boolean): thisEquaPath.FastEquaBridge[S] =
+      new thisEquaPath.FastEquaBridge(from.filter(pred))
     override def withFilter(pred: S => Boolean): FastWithFilter = new FastWithFilter(pred)
 
     /**
@@ -1735,7 +1735,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * `f` to each element of the outer `EquaBridge` that satisfies
        * predicate `p` and collecting the results.
        */
-      override def map(f: S => T): thisEquaSets.FastEquaSet =
+      override def map(f: S => T): thisEquaPath.FastEquaSet =
         filter(p).map(f)
 
       /**
@@ -1754,7 +1754,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
        * outer `EquaBridge` that satisfies predicate `p` and concatenating
        * the results.
        */
-      override def flatMap(f: S => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+      override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
         filter(p).flatMap(f)
 
       /**
@@ -1772,26 +1772,26 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   }
 
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet { thisFastEquaSet =>
-    def + (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
-    def + (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
+    def + (elem: T): thisEquaPath.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
+    def + (elem1: T, elem2: T, elem3: T*): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying + (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
-    def ++ (elems: GenTraversableOnce[T]): thisEquaSets.FastEquaSet =
+    def ++ (elems: GenTraversableOnce[T]): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying ++ elems.toList.map(EquaBox(_)))
-    def ++ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying ++ that.toEquaBoxSet)
-    def - (elem: T): thisEquaSets.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
-    def - (elem1: T, elem2: T, elem3: T*): thisEquaSets.FastEquaSet =
+    def ++ (that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = new FastEquaSet(underlying ++ that.toEquaBoxSet)
+    def - (elem: T): thisEquaPath.FastEquaSet = new FastEquaSet(underlying - EquaBox(elem))
+    def - (elem1: T, elem2: T, elem3: T*): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying - (EquaBox(elem1), EquaBox(elem2), elem3.map(EquaBox(_)): _*))
-    def --(elems: GenTraversableOnce[T]): thisEquaSets.FastEquaSet =
+    def --(elems: GenTraversableOnce[T]): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying -- elems.toList.map(EquaBox(_)))
-    def --(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+    def --(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying -- that.toEquaBoxSet)
     def /:[B](z: B)(op: (B, T) => B): B =
       underlying./:(z)((b: B, e: EquaBox) => op(b, e.value))
     def :\[B](z: B)(op: (T, B) => B): B =
       underlying.:\(z)((e: EquaBox, b: B) => op(e.value, b))
-    def | (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this union that
-    def & (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this intersect that
-    def &~ (that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = this diff that
+    def | (that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = this union that
+    def & (that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = this intersect that
+    def &~ (that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = this diff that
     def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
@@ -1799,56 +1799,56 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean =
       that match {
-        case thatEquaSet: EquaSets[_]#EquaSet => thatEquaSet.path.equality eq thisEquaSets.equality
+        case thatEquaSet: EquaPath[_]#EquaSet => thatEquaSet.path.equality eq thisEquaPath.equality
         case _ => false
       }
-    def collect(pf: PartialFunction[T, T]): thisEquaSets.FastEquaSet =
-      new FastEquaSet(underlying collect { case hb: thisEquaSets.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
+    def collect(pf: PartialFunction[T, T]): thisEquaPath.FastEquaSet =
+      new FastEquaSet(underlying collect { case hb: thisEquaPath.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def contains[U](elem: U)(implicit ev: U <:< T): Boolean = underlying.contains(EquaBox(elem))
 
-    def copyToArray(xs: Array[thisEquaSets.EquaBox]): Unit = underlying.copyToArray(xs)
-    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
-    def copyToArray(xs: Array[thisEquaSets.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
-    def copyToBuffer(dest: mutable.Buffer[thisEquaSets.EquaBox]): Unit = underlying.copyToBuffer(dest)
+    def copyToArray(xs: Array[thisEquaPath.EquaBox]): Unit = underlying.copyToArray(xs)
+    def copyToArray(xs: Array[thisEquaPath.EquaBox], start: Int): Unit = underlying.copyToArray(xs, start)
+    def copyToArray(xs: Array[thisEquaPath.EquaBox], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
+    def copyToBuffer(dest: mutable.Buffer[thisEquaPath.EquaBox]): Unit = underlying.copyToBuffer(dest)
     def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
-    def diff(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+    def diff(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying diff that.toEquaBoxSet)
-    def drop(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.drop(n))
-    def dropRight(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.dropRight(n))
-    def dropWhile(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
+    def drop(n: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.drop(n))
+    def dropRight(n: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.dropRight(n))
+    def dropWhile(pred: T => Boolean): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.dropWhile((p: EquaBox) => pred(p.value)))
     override def equals(other: Any): Boolean = { 
       other match {
-        case thatEquaSet: EquaSets[_]#EquaSet => 
-          (thisEquaSets.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
+        case thatEquaSet: EquaPath[_]#EquaSet => 
+          (thisEquaPath.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
         case _ => false
       }
     }
     def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox) => pred(box.value))
-    def filter(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
-    def filterNot(pred: T => Boolean): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
+    def filter(pred: T => Boolean): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
+    def filterNot(pred: T => Boolean): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
-    def flatMap(f: T => thisEquaSets.EquaSet): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList))
+    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList))
     /*
     // This is the problem with using an implicit EquaSet. We need the path defined before we can use
     // it in the function. So into is the only way to get for expressions.
-    def potentialFlatMap[U](f: T => thatEquaSets.EquaSet)(implicit thatEquaSets: EquaSets[U]): thatEquaSets.EquaSet
+    def potentialFlatMap[U](f: T => thatEquaPath.EquaSet)(implicit thatEquaPath: EquaPath[U]): thatEquaPath.EquaSet
     */
-    /*def flatten[T >: EquaSets[].EquaSet]: EquaSet = {
+    /*def flatten[T >: EquaPath[].EquaSet]: EquaSet = {
       new FastEquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _).toSet)
     }*/
-    /*def flatten[S, T >: EquaSets[S]#EquaSet]: EquaSets[S]#EquaSet = {
+    /*def flatten[S, T >: EquaPath[S]#EquaSet]: EquaPath[S]#EquaSet = {
       if (underlying.isEmpty)
-        new EquaSets()
+        new EquaPath()
 
-      EquaSets[S]#EquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _): _*)
+      EquaPath[S]#EquaSet(underlying.toList.map(_.value.asInstanceOf[EquaSet].toList).reduce(_ ++ _): _*)
     }*/
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
     def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
     def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
-    def groupBy[K](f: T => K): GenMap[K, thisEquaSets.FastEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
-    def grouped(size: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
+    def groupBy[K](f: T => K): GenMap[K, thisEquaPath.FastEquaSet] = underlying.groupBy((box: EquaBox) => f(box.value)).map(t => (t._1, new FastEquaSet(t._2)))
+    def grouped(size: Int): Iterator[thisEquaPath.FastEquaSet] = underlying.grouped(size).map(new FastEquaSet(_))
     def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
     override def hashCode: Int = underlying.hashCode
     def head: T = underlying.head.value
@@ -1857,11 +1857,11 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(head) => Some(head.value)
         case None => None
       }
-    def init: thisEquaSets.FastEquaSet = new FastEquaSet(underlying.init)
-    def inits: Iterator[thisEquaSets.FastEquaSet] = underlying.inits.map(new FastEquaSet(_))
-    def intersect(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+    def init: thisEquaPath.FastEquaSet = new FastEquaSet(underlying.init)
+    def inits: Iterator[thisEquaPath.FastEquaSet] = underlying.inits.map(new FastEquaSet(_))
+    def intersect(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying intersect that.toEquaBoxSet)
-    def into[U](thatEquaSets: EquaSets[U]): thatEquaSets.FastEquaBridge[T] = new thatEquaSets.FastEquaBridge[T](underlying.toList.map(_.value))
+    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.FastEquaBridge[T] = new thatEquaPath.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value
@@ -1870,7 +1870,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
         case Some(last) => Some(last.value)
         case None => None
       }
-    def map(f: T => T): thisEquaSets.FastEquaSet = FastEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
+    def map(f: T => T): thisEquaPath.FastEquaSet = FastEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
@@ -1879,7 +1879,7 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
     def mkString: String = underlying.toList.map(_.value).mkString
     def nonEmpty: Boolean = underlying.nonEmpty
-    def partition(pred: T => Boolean): (thisEquaSets.FastEquaSet, thisEquaSets.FastEquaSet) = {
+    def partition(pred: T => Boolean): (thisEquaPath.FastEquaSet, thisEquaPath.FastEquaSet) = {
       val tuple2 = underlying.partition((box: EquaBox) => pred(box.value))
       (new FastEquaSet(tuple2._1), new FastEquaSet(tuple2._2))
     }
@@ -1892,36 +1892,36 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaSets.FastEquaSet = {
+    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.FastEquaSet = {
       val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
-    def scanRight(z: T)(op: (T, T) => T): thisEquaSets.FastEquaSet = {
+    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.FastEquaSet = {
       val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
       new FastEquaSet(set)
     }
     def size: Int = underlying.size
-    def slice(unc_from: Int, unc_until: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
-    def sliding(size: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
-    def sliding(size: Int, step: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
-    def span(pred: T => Boolean): (thisEquaSets.FastEquaSet, thisEquaSets.FastEquaSet) = {
+    def slice(unc_from: Int, unc_until: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
+    def sliding(size: Int): Iterator[thisEquaPath.FastEquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
+    def sliding(size: Int, step: Int): Iterator[thisEquaPath.FastEquaSet] = underlying.sliding(size, step).map(new FastEquaSet(_))
+    def span(pred: T => Boolean): (thisEquaPath.FastEquaSet, thisEquaPath.FastEquaSet) = {
       val (trueSet, falseSet) = underlying.span((box: EquaBox) => pred(box.value))
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
-    def splitAt(n: Int): (thisEquaSets.FastEquaSet, thisEquaSets.FastEquaSet) = {
+    def splitAt(n: Int): (thisEquaPath.FastEquaSet, thisEquaPath.FastEquaSet) = {
       val (trueSet, falseSet) = underlying.splitAt(n)
       (new FastEquaSet(trueSet), new FastEquaSet(falseSet))
     }
     def stringPrefix: String = "EquaSet"
-    def subsetOf(that: thisEquaSets.EquaSet): Boolean = underlying.subsetOf(that.toEquaBoxSet)
-    def subsets(len: Int): Iterator[thisEquaSets.FastEquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
-    def subsets: Iterator[thisEquaSets.FastEquaSet] = underlying.subsets.map(new FastEquaSet(_))
+    def subsetOf(that: thisEquaPath.EquaSet): Boolean = underlying.subsetOf(that.toEquaBoxSet)
+    def subsets(len: Int): Iterator[thisEquaPath.FastEquaSet] = underlying.subsets(len).map(new FastEquaSet(_))
+    def subsets: Iterator[thisEquaPath.FastEquaSet] = underlying.subsets.map(new FastEquaSet(_))
     def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
-    def tail: thisEquaSets.FastEquaSet = new FastEquaSet(underlying.tail)
-    def tails: Iterator[thisEquaSets.FastEquaSet] = underlying.tails.map(new FastEquaSet(_))
-    def take(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.take(n))
-    def takeRight(n: Int): thisEquaSets.FastEquaSet = new FastEquaSet(underlying.takeRight(n))
-    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaSets.EquaBox, Col[thisEquaSets.EquaBox @uV]]): Col[thisEquaSets.EquaBox @uV] = underlying.to[Col]
+    def tail: thisEquaPath.FastEquaSet = new FastEquaSet(underlying.tail)
+    def tails: Iterator[thisEquaPath.FastEquaSet] = underlying.tails.map(new FastEquaSet(_))
+    def take(n: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.take(n))
+    def takeRight(n: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.takeRight(n))
+    def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaPath.EquaBox, Col[thisEquaPath.EquaBox @uV]]): Col[thisEquaPath.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[T] = {
       // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
       // No ClassTag available for T
@@ -1929,58 +1929,58 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
       underlying.map(_.value).copyToArray(arr)
       arr.asInstanceOf[Array[T]]
     }
-    def toEquaBoxArray: Array[thisEquaSets.EquaBox] = underlying.toArray
+    def toEquaBoxArray: Array[thisEquaPath.EquaBox] = underlying.toArray
     def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
-    def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaSets.EquaBox] = underlying.toBuffer
+    def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaPath.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
-    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaSets.EquaBox] = underlying.toIndexedSeq
+    def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaPath.EquaBox] = underlying.toIndexedSeq
     def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-    def toEquaBoxIterable: GenIterable[thisEquaSets.EquaBox] = underlying.toIterable
+    def toEquaBoxIterable: GenIterable[thisEquaPath.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-    def toEquaBoxIterator: Iterator[thisEquaSets.EquaBox] = underlying.toIterator
-    def toEquaBoxList: List[thisEquaSets.EquaBox] = underlying.toList
+    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox] = underlying.toIterator
+    def toEquaBoxList: List[thisEquaPath.EquaBox] = underlying.toList
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
-    def toEquaBoxParArray: ParArray[thisEquaSets.EquaBox] = underlying.toParArray
+    def toEquaBoxParArray: ParArray[thisEquaPath.EquaBox] = underlying.toParArray
     def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-    def toEquaBoxSeq: GenSeq[thisEquaSets.EquaBox] = underlying.toSeq
+    def toEquaBoxSeq: GenSeq[thisEquaPath.EquaBox] = underlying.toSeq
     def toSet: Set[T] = underlying.map(_.value)
-    def toEquaBoxSet: Set[thisEquaSets.EquaBox] = underlying
+    def toEquaBoxSet: Set[thisEquaPath.EquaBox] = underlying
     def toStream: Stream[T] = underlying.toStream.map(_.value)
-    def toEquaBoxStream: Stream[thisEquaSets.EquaBox] = underlying.toStream
+    def toEquaBoxStream: Stream[thisEquaPath.EquaBox] = underlying.toStream
     def toTraversable: GenTraversable[T] = underlying.map(_.value)
-    def toEquaBoxTraversable: GenTraversable[thisEquaSets.EquaBox] = underlying.toTraversable
+    def toEquaBoxTraversable: GenTraversable[thisEquaPath.EquaBox] = underlying.toTraversable
     def toVector: Vector[T] = underlying.toVector.map(_.value)
-    def toEquaBoxVector: Vector[thisEquaSets.EquaBox] = underlying.toVector
+    def toEquaBoxVector: Vector[thisEquaPath.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
-    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaSets.FastEquaSet = {
+    def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisEquaPath.FastEquaSet = {
       val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
       new FastEquaSet(listList.map(EquaBox(_)).toSet)
     }
-    def union(that: thisEquaSets.EquaSet): thisEquaSets.FastEquaSet =
+    def union(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying union that.toEquaBoxSet)
-    def unzip[T1, T2](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2])(implicit asPair: T => (T1, T2)): (t1EquaSets.FastEquaSet, t2EquaSets.FastEquaSet) = {
+    def unzip[T1, T2](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2])(implicit asPair: T => (T1, T2)): (t1EquaPath.FastEquaSet, t2EquaPath.FastEquaSet) = {
       val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
-      (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*))
+      (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*))
     }
-    def unzip3[T1, T2, T3](t1EquaSets: EquaSets[T1], t2EquaSets: EquaSets[T2], t3EquaSets: EquaSets[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaSets.FastEquaSet, t2EquaSets.FastEquaSet, t3EquaSets.FastEquaSet) = {
+    def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.FastEquaSet, t2EquaPath.FastEquaSet, t3EquaPath.FastEquaSet) = {
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
-      (t1EquaSets.FastEquaSet(t1: _*), t2EquaSets.FastEquaSet(t2: _*), t3EquaSets.FastEquaSet(t3: _*))
+      (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*), t3EquaPath.FastEquaSet(t3: _*))
     }
-    def view: TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view
-    def view(from: Int, until: Int): TraversableView[thisEquaSets.EquaBox, Set[thisEquaSets.EquaBox]] = underlying.toList.toSet.view(from, until)
+    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view
+    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
 
-    val path: thisEquaSets.type = thisEquaSets
-    def copyInto(thatEquaSets: EquaSets[T]): thatEquaSets.FastEquaSet =
-      if (thatEquaSets eq thisEquaSets)
-        thisFastEquaSet.asInstanceOf[thatEquaSets.FastEquaSet]
+    val path: thisEquaPath.type = thisEquaPath
+    def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.FastEquaSet =
+      if (thatEquaPath eq thisEquaPath)
+        thisFastEquaSet.asInstanceOf[thatEquaPath.FastEquaSet]
       else
-        thisFastEquaSet.into(thatEquaSets).map(t => t)
+        thisFastEquaSet.into(thatEquaPath).map(t => t)
   }
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
@@ -1998,6 +1998,6 @@ class EquaSets[T](val equality: HashingEquality[T]) { thisEquaSets =>
   }
 }
 
-object EquaSets {
-  def apply[T](equality: HashingEquality[T]): EquaSets[T] = new EquaSets(equality)
+object EquaPath {
+  def apply[T](equality: HashingEquality[T]): EquaPath[T] = new EquaPath(equality)
 }

@@ -65,10 +65,10 @@ class PrettifierSpec extends Spec with Matchers {
       def areEqual(a: T, b: Any): Boolean = a == b
     }
 
-  val numberEquaSet = EquaSets[Int](normalHashingEquality[Int])
-  val numberSortedEquaSet = SortedEquaSets[Int](normalOrderingEquality[Int])
-  val lowerEquaSet = EquaSets[String](StringNormalizations.lowerCased.toHashingEquality)
-  val lowerSortedEquaSet = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val numberEquaSet = EquaPath[Int](normalHashingEquality[Int])
+  val numberSortedEquaSet = SortedEquaPath[Int](normalOrderingEquality[Int])
+  val lowerEquaSet = EquaPath[String](StringNormalizations.lowerCased.toHashingEquality)
+  val lowerSortedEquaSet = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
 
   object `the basic Prettifier` {
     def `should put double quotes around strings` {

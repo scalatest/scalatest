@@ -23,8 +23,8 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.parallel.mutable.ParArray
 
 /*
-val t = EquaSets[String](StringNormalizations.trimmed.toHashingEquality)
-val w = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
+val t = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
+val w = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
 val tes = t.EquaSet("tes")
 val tfes = t.FastEquaSet("tfes")
 val wes = w.EquaSet("les")
@@ -32,25 +32,25 @@ val wfes = w.FastEquaSet("lfes")
 val wses = w.SortedEquaSet("lses")
 val wtes = w.TreeEquaSet("ltes")
 
-EquaBridge[F, EquaSets#EquaSet, EquaSets] // EquaSets#EquaSet                      thatEquaSets.EquaSetBridge
-EquaBridge[F, EquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet          thatEquaSets.EquaSetBridge
+EquaBridge[F, EquaPath#EquaSet, EquaPath] // EquaPath#EquaSet                      thatEquaPath.EquaSetBridge
+EquaBridge[F, EquaPath#EquaSet, SortedEquaPath] // SortedEquaPath#EquaSet          thatEquaPath.EquaSetBridge
 
-EquaBridge[F, EquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet              thatEquaSets.FastEquaSetBridge
-EquaBridge[F, EquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet  thatEquaSets.FastEquaSetBridge
+EquaBridge[F, EquaPath#FastEquaSet, EquaPath] // EquaPath#FastEquaSet              thatEquaPath.FastEquaSetBridge
+EquaBridge[F, EquaPath#FastEquaSet, SortedEquaPath] // SortedEquaPath#FastEquaSet  thatEquaPath.FastEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#EquaSet, EquaSets] // EquaSets#EquaSet                thatEquaSets.EquaSetBridge
-EquaBridge[F, SortedEquaSets#EquaSet, SortedEquaSets] // SortedEquaSets#EquaSet    thatEquaSets.EquaSetBridge
+EquaBridge[F, SortedEquaPath#EquaSet, EquaPath] // EquaPath#EquaSet                thatEquaPath.EquaSetBridge
+EquaBridge[F, SortedEquaPath#EquaSet, SortedEquaPath] // SortedEquaPath#EquaSet    thatEquaPath.EquaSetBridge
 
-EquaBridge[F, SortedEquaSets#FastEquaSet, EquaSets] // EquaSets#FastEquaSet               thatEquaSets.FastEquaSetBridge
-EquaBridge[F, SortedEquaSets#FastEquaSet, SortedEquaSets] // SortedEquaSets#FastEquaSet   thatEquaSets.FastEquaSetBridge
+EquaBridge[F, SortedEquaPath#FastEquaSet, EquaPath] // EquaPath#FastEquaSet               thatEquaPath.FastEquaSetBridge
+EquaBridge[F, SortedEquaPath#FastEquaSet, SortedEquaPath] // SortedEquaPath#FastEquaSet   thatEquaPath.FastEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#SortedEquaSet, EquaSets] // EquaSets#EquaSet                    thatEquaSets.EquaSetBridge
-EquaBridge[F, SortedEquaSets#SortedEquaSet, SortedEquaSets] // SortedEquaSets#SortedEquaSet  thatEquaSets.SortedEquaSetBridge
+EquaBridge[F, SortedEquaPath#SortedEquaSet, EquaPath] // EquaPath#EquaSet                    thatEquaPath.EquaSetBridge
+EquaBridge[F, SortedEquaPath#SortedEquaSet, SortedEquaPath] // SortedEquaPath#SortedEquaSet  thatEquaPath.SortedEquaSetBridge
 
-EquaBridge[F, SortedEquaSets#TreeEquaSet, EquaSets] // EquaSets#EquaSet                      thatEquaSets.EquaSetBridge
-EquaBridge[F, SortedEquaSets#TreeEquaSet, SortedEquaSets] // SortedEquaSets#TreeEquaSet      thatEquaSets.TreeEquaSetBridge
+EquaBridge[F, SortedEquaPath#TreeEquaSet, EquaPath] // EquaPath#EquaSet                      thatEquaPath.EquaSetBridge
+EquaBridge[F, SortedEquaPath#TreeEquaSet, SortedEquaPath] // SortedEquaPath#TreeEquaSet      thatEquaPath.TreeEquaSetBridge
 
-// def into[U, EQUASETS[u] <: EquaSets[u]](thatEquaSets: EQUASETS[U]): thatEquaSets.EquaBridgeResult[T]
+// def into[U, EQUASETS[u] <: EquaPath[u]](thatEquaPath: EQUASETS[U]): thatEquaPath.EquaBridgeResult[T]
 */
 class EquaSetSpec extends UnitSpec {
   implicit class HasExactType[T](o: T) {
@@ -67,15 +67,15 @@ class EquaSetSpec extends UnitSpec {
       def hashCodeFor(a: T): Int = a.hashCode
       def areEqual(a: T, b: Any): Boolean = a == b
     }
-  val number = EquaSets[Int](normalHashingEquality[Int])
-  val sortedNumber = SortedEquaSets[Int](normalOrderingEquality[Int])
-  val lower = EquaSets[String](StringNormalizations.lowerCased.toHashingEquality)
-  val trimmed = EquaSets[String](StringNormalizations.trimmed.toHashingEquality)
-  val sortedLower = SortedEquaSets[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val numberList = EquaSets[List[Int]](normalHashingEquality[List[Int]])
-  val numberLower = EquaSets[(Int, String)](normalHashingEquality[(Int, String)])
-  val numberLowerTrimmed = EquaSets[(Int, String, String)](normalHashingEquality[(Int, String, String)])
-  val numberNumber = EquaSets[number.EquaSet](normalHashingEquality[number.EquaSet])
+  val number = EquaPath[Int](normalHashingEquality[Int])
+  val sortedNumber = SortedEquaPath[Int](normalOrderingEquality[Int])
+  val lower = EquaPath[String](StringNormalizations.lowerCased.toHashingEquality)
+  val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
+  val sortedLower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val numberList = EquaPath[List[Int]](normalHashingEquality[List[Int]])
+  val numberLower = EquaPath[(Int, String)](normalHashingEquality[(Int, String)])
+  val numberLowerTrimmed = EquaPath[(Int, String, String)](normalHashingEquality[(Int, String, String)])
+  val numberNumber = EquaPath[number.EquaSet](normalHashingEquality[number.EquaSet])
   def upperCharHashingEquality =
     new HashingEquality[Char] {
       def hashCodeFor(a: Char): Int = a.toUpper.hashCode
@@ -85,9 +85,9 @@ class EquaSetSpec extends UnitSpec {
           case _ => false
         }
     }
-  val upperChar = EquaSets[Char](upperCharHashingEquality)
-  val regularChar = EquaSets[Char](normalHashingEquality[Char])
-  val tuple = EquaSets[(Int, String)](normalHashingEquality)
+  val upperChar = EquaPath[Char](upperCharHashingEquality)
+  val regularChar = EquaPath[Char](normalHashingEquality[Char])
+  val tuple = EquaPath[(Int, String)](normalHashingEquality)
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.EquaSet.empty
@@ -673,12 +673,12 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1).canEqual(number.EquaSet(1, 2, 3)) shouldBe true
     number.EquaSet(1).canEqual(lower.EquaSet("hi")) shouldBe false
     val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
-    val equaSets = EquaSets[String](orderingEquality) // Two different EquaSets instances
-    val sortedEquaSets = SortedEquaSets[String](orderingEquality)
+    val equaSets = EquaPath[String](orderingEquality) // Two different EquaPath instances
+    val sortedEquaPath = SortedEquaPath[String](orderingEquality)
     val equaSet = equaSets.EquaSet("hi", "ho")
     val fastEquaSet = equaSets.FastEquaSet("Bi", "Bo")
-    val sortedEquaSet = sortedEquaSets.SortedEquaSet("cI", "cO")
-    val treeEquaSet = sortedEquaSets.TreeEquaSet("DI", "DO")
+    val sortedEquaSet = sortedEquaPath.SortedEquaSet("cI", "cO")
+    val treeEquaSet = sortedEquaPath.TreeEquaSet("DI", "DO")
     equaSet.canEqual(equaSet) shouldBe true
     equaSet.canEqual(equaSets.FastEquaSet("Hi", "Ho")) shouldBe true
     equaSets.FastEquaSet("Hi", "Ho").canEqual(equaSet) shouldBe true
@@ -703,22 +703,22 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
     number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
 
-    // EquaSet into EquaSets => EquaSet
+    // EquaSet into EquaPath => EquaSet
     val result1 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result1 shouldBe lower.EquaSet("4", "8", "12", "16", "20")
     result1.shouldHaveExactType[lower.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
+    // EquaSet into SortedEquaPath => EquaSet
     val result2 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result2 shouldBe sortedLower.EquaSet("4", "8", "12", "16", "20")
     result2.shouldHaveExactType[sortedLower.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
     val result3 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(lower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result3 shouldBe lower.FastEquaSet("4", "8", "12", "16", "20")
     result3.shouldHaveExactType[lower.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
+    // FastEquaSet into SortedEquaPath => FastEquaSet
     val result4 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).into(sortedLower).collect { case i if i % 2 == 0 => (i * 2).toString }
     result4 shouldBe sortedLower.FastEquaSet("4", "8", "12", "16", "20")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
@@ -801,8 +801,8 @@ class EquaSetSpec extends UnitSpec {
           }
         def hashCodeFor(a: Fruit): Int = nameEquality.hashCodeFor(a.name)
       }
-    val fruitEquaSets = EquaSets(equalityOfFruit)
-    val fruits = fruitEquaSets.EquaSet(mac, navel)
+    val fruitEquaPath = EquaPath(equalityOfFruit)
+    val fruits = fruitEquaPath.EquaSet(mac, navel)
     fruits.contains(mac) shouldBe true
   }
   it should "have 3 copyToArray methods" in {
@@ -1000,12 +1000,12 @@ class EquaSetSpec extends UnitSpec {
     sortedLower.SortedEquaSet("one", "two", "three") shouldEqual sortedLower.EquaSet("Three", "Two", "One")
     sortedLower.EquaSet("one", "two", "three") shouldEqual sortedLower.SortedEquaSet("Three", "Two", "One")
     val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
-    val equaSets = EquaSets[String](orderingEquality) // Two different EquaSets instances
-    val sortedEquaSets = SortedEquaSets[String](orderingEquality)
+    val equaSets = EquaPath[String](orderingEquality) // Two different EquaPath instances
+    val sortedEquaPath = SortedEquaPath[String](orderingEquality)
     val equaSet = equaSets.EquaSet("hi", "ho")
     val fastEquaSet = equaSets.FastEquaSet("Hi", "Ho")
-    val sortedEquaSet = sortedEquaSets.SortedEquaSet("hI", "hO")
-    val treeEquaSet = sortedEquaSets.TreeEquaSet("HI", "HO")
+    val sortedEquaSet = sortedEquaPath.SortedEquaSet("hI", "hO")
+    val treeEquaSet = sortedEquaPath.TreeEquaSet("HI", "HO")
     equaSet shouldEqual equaSet
     equaSet shouldEqual equaSets.FastEquaSet("Hi", "Ho")
     equaSets.FastEquaSet("Hi", "Ho") shouldEqual equaSet
@@ -1091,22 +1091,22 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an into.flatMap method" in {
 
-    // EquaSet into EquaSets => EquaSet
+    // EquaSet into EquaPath => EquaSet
     val result1 = number.EquaSet(7, 8, 9).into(lower).flatMap(i => lower.EquaSet(i.toString))
     result1 shouldBe lower.EquaSet("7", "8", "9")
     result1.shouldHaveExactType[lower.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
+    // EquaSet into SortedEquaPath => EquaSet
     val result2 = number.EquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.EquaSet(i.toString))
     result2 shouldBe sortedLower.EquaSet("7", "8", "9")
     result2.shouldHaveExactType[sortedLower.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
     val result3 = number.FastEquaSet(7, 8, 9).into(lower).flatMap(i => lower.FastEquaSet(i.toString))
     result3 shouldBe lower.FastEquaSet("7", "8", "9")
     result3.shouldHaveExactType[lower.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
+    // FastEquaSet into SortedEquaPath => FastEquaSet
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).flatMap(i => sortedLower.FastEquaSet(i.toString))
     result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
@@ -1172,26 +1172,26 @@ class EquaSetSpec extends UnitSpec {
       }
 */
 
-    // EquaSet into EquaSets => EquaSet
-    val numberNumber1 = EquaSets[number.EquaSet](normalHashingEquality[number.EquaSet])
+    // EquaSet into EquaPath => EquaSet
+    val numberNumber1 = EquaPath[number.EquaSet](normalHashingEquality[number.EquaSet])
     val result1 = numberNumber1.EquaSet(number.EquaSet(1, 2), number.EquaSet(3)).into(number).flatten
     result1 shouldBe number.EquaSet(1, 2, 3)
     result1.shouldHaveExactType[number.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
-    val numberNumber2 = EquaSets[sortedNumber.SortedEquaSet](normalHashingEquality[sortedNumber.SortedEquaSet])
+    // EquaSet into SortedEquaPath => EquaSet
+    val numberNumber2 = EquaPath[sortedNumber.SortedEquaSet](normalHashingEquality[sortedNumber.SortedEquaSet])
     val result2 = numberNumber2.EquaSet(sortedNumber.SortedEquaSet(1, 2), sortedNumber.SortedEquaSet(3)).into(sortedNumber).flatten
     result2 shouldBe sortedNumber.EquaSet(1, 2, 3)
     result2.shouldHaveExactType[sortedNumber.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
-    val numberNumber3 = EquaSets[number.FastEquaSet](normalHashingEquality[number.FastEquaSet])
-    val result3 = numberNumber3.FastEquaSet(number.FastEquaSet(1, 2), number.FastEquaSet(3)).into(number).flatten // I think also true for into EquaSets.EquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
+    val numberNumber3 = EquaPath[number.FastEquaSet](normalHashingEquality[number.FastEquaSet])
+    val result3 = numberNumber3.FastEquaSet(number.FastEquaSet(1, 2), number.FastEquaSet(3)).into(number).flatten // I think also true for into EquaPath.EquaSet
     result3 shouldBe number.FastEquaSet(1, 2, 3)
     result3.shouldHaveExactType[number.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
-    val numberNumber4 = EquaSets[sortedNumber.EquaSet](normalHashingEquality[sortedNumber.EquaSet])
+    // FastEquaSet into SortedEquaPath => FastEquaSet
+    val numberNumber4 = EquaPath[sortedNumber.EquaSet](normalHashingEquality[sortedNumber.EquaSet])
     val result4 = numberNumber4.FastEquaSet(sortedNumber.EquaSet(1, 2), sortedNumber.EquaSet(3)).into(sortedNumber).flatten
     result4 shouldBe sortedNumber.FastEquaSet(1, 2, 3)
     result4.shouldHaveExactType[sortedNumber.FastEquaSet]
@@ -1421,7 +1421,7 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).lastOption shouldBe Some(3)
   }
   it should "have an into.map method" in {
-    // Can map directly if want to stay in same EquaSets
+    // Can map directly if want to stay in same EquaPath
     number.EquaSet(1, 2, 3).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
     (for (ele <- number.EquaSet(1, 2, 3)) yield ele * 2) shouldBe number.EquaSet(2, 4, 6)
     number.EquaSet(5) map (_ + 3) shouldBe number.EquaSet(8)
@@ -1430,22 +1430,22 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(1, 2, 3).into(number).map(_ + 1) shouldBe number.EquaSet(2, 3, 4)
     number.EquaSet(5).into(number).map(_ + 3) shouldBe number.EquaSet(8)
 
-    // EquaSet into EquaSets => EquaSet
+    // EquaSet into EquaPath => EquaSet
     val result1 = number.EquaSet(7, 8, 9).into(lower).map(_.toString)
     result1 shouldBe lower.EquaSet("7", "8", "9")
     result1.shouldHaveExactType[lower.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
+    // EquaSet into SortedEquaPath => EquaSet
     val result2 = number.EquaSet(7, 8, 9).into(sortedLower).map(_.toString)
     result2 shouldBe sortedLower.EquaSet("7", "8", "9")
     result2.shouldHaveExactType[sortedLower.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
     val result3 = number.FastEquaSet(7, 8, 9).into(lower).map(_.toString)
     result3 shouldBe lower.FastEquaSet("7", "8", "9")
     result3.shouldHaveExactType[lower.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
+    // FastEquaSet into SortedEquaPath => FastEquaSet
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).map(_.toString)
     result4 shouldBe sortedLower.FastEquaSet("7", "8", "9")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
@@ -1585,22 +1585,22 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an into.scanLeft method" in {
 
-    // EquaSet into EquaSets => EquaSet
+    // EquaSet into EquaPath => EquaSet
     val result1 = number.EquaSet(7, 8, 9).into(lower).scanLeft("z")(_ + _)
     result1 shouldBe lower.EquaSet("z", "z7", "z78", "z789")
     result1.shouldHaveExactType[lower.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
+    // EquaSet into SortedEquaPath => EquaSet
     val result2 = number.EquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
     result2 shouldBe sortedLower.EquaSet("z", "z7", "z78", "z789")
     result2.shouldHaveExactType[sortedLower.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
     val result3 = number.FastEquaSet(7, 8, 9).into(lower).scanLeft("z")(_ + _)
     result3 shouldBe lower.FastEquaSet("z", "z7", "z78", "z789")
     result3.shouldHaveExactType[lower.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
+    // FastEquaSet into SortedEquaPath => FastEquaSet
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanLeft("z")(_ + _)
     result4 shouldBe sortedLower.FastEquaSet("z", "z7", "z78", "z789")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]
@@ -1645,22 +1645,22 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an into.scanRight method" in {
 
-    // EquaSet into EquaSets => EquaSet
+    // EquaSet into EquaPath => EquaSet
     val result1 = number.EquaSet(7, 8, 9).into(lower).scanRight("z")(_ + _)
     result1 shouldBe lower.EquaSet("789z", "89z", "9z", "z")
     result1.shouldHaveExactType[lower.EquaSet]
 
-    // EquaSet into SortedEquaSets => EquaSet
+    // EquaSet into SortedEquaPath => EquaSet
     val result2 = number.EquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
     result2 shouldBe sortedLower.EquaSet("789z", "89z", "9z", "z")
     result2.shouldHaveExactType[sortedLower.EquaSet]
 
-    // FastEquaSet into EquaSets => FastEquaSet
+    // FastEquaSet into EquaPath => FastEquaSet
     val result3 = number.FastEquaSet(7, 8, 9).into(lower).scanRight("z")(_ + _)
     result3 shouldBe lower.FastEquaSet("789z", "89z", "9z", "z")
     result3.shouldHaveExactType[lower.FastEquaSet]
 
-    // FastEquaSet into SortedEquaSets => FastEquaSet
+    // FastEquaSet into SortedEquaPath => FastEquaSet
     val result4 = number.FastEquaSet(7, 8, 9).into(sortedLower).scanRight("z")(_ + _)
     result4 shouldBe sortedLower.FastEquaSet("789z", "89z", "9z", "z")
     result4.shouldHaveExactType[sortedLower.FastEquaSet]

@@ -181,8 +181,8 @@ object Prettifier {
             case Bad(e) => "Bad(" + apply(e) + ")"
             case One(e) => "One(" + apply(e) + ")"
             case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
-            case equaBox: EquaSets[_]#EquaBox => "EquaBox(" + apply(equaBox.value) + ")"
-            case equaSet: EquaSets[_]#EquaSet =>
+            case equaBox: EquaPath[_]#EquaBox => "EquaBox(" + apply(equaBox.value) + ")"
+            case equaSet: EquaPath[_]#EquaSet =>
               val isSelf =
                 if (equaSet.size == 1) {
                   equaSet.head match {
