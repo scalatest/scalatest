@@ -78,7 +78,7 @@ class HelperSuite extends FunSuite with Matchers {
 
   test("getParams returns default maxDiscarded config param if none passed") {
     val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
-    params.maxDiscardRatio should equal (maxDiscardRatio(DefaultMaxDiscarded + 1, params.minSuccessfulTests))
+    params.maxDiscardRatio should equal (defaultConfig.maxDiscardedFactor.value.toFloat +- 0.0001f)
   }
 
   // minSize
