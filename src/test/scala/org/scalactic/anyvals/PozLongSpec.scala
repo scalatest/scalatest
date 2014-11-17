@@ -18,15 +18,15 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PozLongSpec extends Spec with Matchers {
+class PozLongSpec extends Spec with Matchers with StrictCheckedEquality {
   object `A PozLong` {
     object `should offer a from factory method that` {
       def `returns Some[PozLong] if the passed Long is greater than or equal to 0` {
-        PozLong.from(0L).value.value shouldBe 0
-        PozLong.from(50L).value.value shouldBe 50
-        PozLong.from(100L).value.value shouldBe 100
+        PozLong.from(0L).value.value shouldBe 0L
+        PozLong.from(50L).value.value shouldBe 50L
+        PozLong.from(100L).value.value shouldBe 100L
       }
       def `returns None if the passed Long is NOT greater than or equal to 0` {
         PozLong.from(-1L) shouldBe None
@@ -120,14 +120,14 @@ class PozLongSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "takesPozLong(8)" should compile
-        takesPozLong(8) shouldEqual 8
+        takesPozLong(8) shouldEqual 8L
         "takesPozLong(8L)" should compile
         takesPozLong(8L) shouldEqual 8L
       }
 
       def `should compile when 0 is passed in`: Unit = {
         "takesPozLong(0)" should compile
-        takesPozLong(0) shouldEqual 0
+        takesPozLong(0) shouldEqual 0L
         "takesPozLong(0L)" should compile
         takesPozLong(0L) shouldEqual 0L
       }
@@ -138,7 +138,7 @@ class PozLongSpec extends Spec with Matchers {
       }
 
       def `should not compile when x is passed in`: Unit = {
-        val x: Long = -8
+        val x: Int = -8
         "takesPozLong(x)" shouldNot compile
         val b: Long = -8L
         "takesPozLong(b)" shouldNot compile

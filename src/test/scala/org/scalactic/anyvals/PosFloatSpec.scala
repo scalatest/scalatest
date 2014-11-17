@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PosFloatSpec extends Spec with Matchers {
+class PosFloatSpec extends Spec with Matchers with StrictCheckedEquality {
   object `A PosFloat` {
     object `should offer a from factory method that` {
       def `returns Some[PosFloat] if the passed Float is greater than 0`
@@ -90,9 +90,9 @@ class PosFloatSpec extends Spec with Matchers {
   
       def `should compile when 8 is passed in`: Unit = {
         "PosFloat(8)" should compile
-        PosFloat(8).value shouldEqual 8
+        PosFloat(8).value shouldEqual 8.0F
         "PosFloat(8L)" should compile
-        PosFloat(8L).value shouldEqual 8
+        PosFloat(8L).value shouldEqual 8.0F
         "PosFloat(8.0F)" should compile
         PosFloat(8.0F).value shouldEqual 8.0F
       }
@@ -123,9 +123,9 @@ class PosFloatSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "takesPosFloat(8)" should compile
-        takesPosFloat(8) shouldEqual 8
+        takesPosFloat(8) shouldEqual 8.0F
         "takesPosFloat(8L)" should compile
-        takesPosFloat(8L) shouldEqual 8
+        takesPosFloat(8L) shouldEqual 8.0F
         "takesPosFloat(8.0F)" should compile
         takesPosFloat(8.0F) shouldEqual 8.0F
       }
@@ -143,9 +143,9 @@ class PosFloatSpec extends Spec with Matchers {
       }
 
       def `should not compile when x is passed in`: Unit = {
-        val x: Float = -8
+        val x: Int = -8
         "takesPosFloat(x)" shouldNot compile
-        val b: Float = -8L
+        val b: Long = -8L
         "takesPosFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPosFloat(c)" shouldNot compile
