@@ -40,7 +40,7 @@ final class PosInt private (val value: Int) extends AnyVal with RestrictedInt {
   */
   def unary_~ : Int = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : Int = +value
+  def unary_+ : PosInt = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
   def +(x: String): String = value + x

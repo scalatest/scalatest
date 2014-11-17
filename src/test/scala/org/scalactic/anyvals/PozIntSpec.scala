@@ -37,6 +37,9 @@ class PozIntSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozInt.from(42).value.toString shouldBe "PozInt(42)"
     }
+    def `should return the same type from its unary_+ method` {
+      +PozInt(3) shouldEqual PozInt(3)
+    } 
     def `should be automatically widened to compatible AnyVal targets` {
       (PozInt(3): Int) shouldEqual 3
       (PozInt(3): Long) shouldEqual 3L

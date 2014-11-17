@@ -32,7 +32,7 @@ final class PosFloat private (val value: Float) extends AnyVal with RestrictedFl
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
-  def unary_+ : Float = +value
+  def unary_+ : PosFloat = this
   /** Returns the negation of this value. */
   def unary_- : Float = -value
 

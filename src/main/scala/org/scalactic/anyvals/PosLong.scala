@@ -41,7 +41,7 @@ final class PosLong private (val value: Long) extends AnyVal with RestrictedLong
  */
   def unary_~ : Long = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : Long = +value
+  def unary_+ : PosLong = this
   /** Returns the negation of this value. */
   def unary_- : Long = -value
 

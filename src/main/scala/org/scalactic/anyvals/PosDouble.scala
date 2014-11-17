@@ -32,7 +32,7 @@ final class PosDouble private (val value: Double) extends AnyVal with Restricted
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
-  def unary_+ : Double = +value
+  def unary_+ : PosDouble = this
   /** Returns the negation of this value. */
   def unary_- : Double = -value
 
