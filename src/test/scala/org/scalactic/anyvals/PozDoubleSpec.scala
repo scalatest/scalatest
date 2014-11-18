@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PozDoubleSpec extends Spec with Matchers {
+class PozDoubleSpec extends Spec with Matchers with StrictCheckedEquality {
   object `A PozDouble` {
     object `should offer a from factory method that` {
       def `returns Some[PozDouble] if the passed Double is greater than or equal to 0`
@@ -91,22 +91,22 @@ class PozDoubleSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "PozDouble(8)" should compile
-        PozDouble(8).value shouldEqual 8
+        PozDouble(8).value shouldEqual 8.0
         "PozDouble(8L)" should compile
-        PozDouble(8L).value shouldEqual 8
+        PozDouble(8L).value shouldEqual 8.0
         "PozDouble(8.0F)" should compile
-        PozDouble(8.0F).value shouldEqual 8.0F
+        PozDouble(8.0F).value shouldEqual 8.0
         "PozDouble(8.0)" should compile
         PozDouble(8.0).value shouldEqual 8.0
       }
 
       def `should compile when 0 is passed in`: Unit = {
         "PozDouble(0)" should compile
-        PozDouble(0).value shouldEqual 0
+        PozDouble(0).value shouldEqual 0.0
         "PozDouble(0L)" should compile
-        PozDouble(0L).value shouldEqual 0
+        PozDouble(0L).value shouldEqual 0.0
         "PozDouble(0.0F)" should compile
-        PozDouble(0.0F).value shouldEqual 0.0F
+        PozDouble(0.0F).value shouldEqual 0.0
         "PozDouble(0.0)" should compile
         PozDouble(0.0).value shouldEqual 0.0
       }
@@ -126,6 +126,50 @@ class PozDoubleSpec extends Spec with Matchers {
         "PozDouble(c)" shouldNot compile
         val d: Double = -8.0
         "PozDouble(d)" shouldNot compile
+      }
+    }
+    object `when specified as a plain-old Double` {
+
+      def takesPozDouble(poz: PozDouble): Double = poz.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPozDouble(8)" should compile
+        takesPozDouble(8) shouldEqual 8.0
+        "takesPozDouble(8L)" should compile
+        takesPozDouble(8L) shouldEqual 8.0
+        "takesPozDouble(8.0F)" should compile
+        takesPozDouble(8.0F) shouldEqual 8.0
+        "takesPozDouble(8.0)" should compile
+        takesPozDouble(8.0) shouldEqual 8.0
+      }
+
+      def `should compile when 0 is passed in`: Unit = {
+        "takesPozDouble(0)" should compile
+        takesPozDouble(0) shouldEqual 0.0
+        "takesPozDouble(0L)" should compile
+        takesPozDouble(0L) shouldEqual 0.0
+        "takesPozDouble(0.0F)" should compile
+        takesPozDouble(0.0F) shouldEqual 0.0
+        "takesPozDouble(0.0)" should compile
+        takesPozDouble(0.0) shouldEqual 0.0
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPozDouble(-8)" shouldNot compile
+        "takesPozDouble(-8L)" shouldNot compile
+        "takesPozDouble(-8.0F)" shouldNot compile
+        "takesPozDouble(-8.0)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "takesPozDouble(x)" shouldNot compile
+        val b: Long = -8L
+        "takesPozDouble(b)" shouldNot compile
+        val c: Float = -8.0F
+        "takesPozDouble(c)" shouldNot compile
+        val d: Double = -8.0
+        "takesPozDouble(d)" shouldNot compile
       }
     }
   }

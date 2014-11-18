@@ -18,16 +18,16 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PosLongSpec extends Spec with Matchers {
+class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
 
   object `A PosLong` {
     object `should offer a from factory method that` {
       def `returns Some[PosLong] if the passed Long is greater than 0`
       {
-        PosLong.from(50L).value.value shouldBe 50
-        PosLong.from(100L).value.value shouldBe 100
+        PosLong.from(50L).value.value shouldBe 50L
+        PosLong.from(100L).value.value shouldBe 100L
       }
       def `returns None if the passed Long is NOT greater than 0` {
         PosLong.from(0L) shouldBe None
@@ -96,9 +96,9 @@ class PosLongSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "PosLong(8)" should compile
-        PosLong(8).value shouldEqual 8
+        PosLong(8).value shouldEqual 8L
         "PosLong(8L)" should compile
-        PosLong(8L).value shouldEqual 8
+        PosLong(8L).value shouldEqual 8L
       }
 
       def `should not compile when 0 is passed in`: Unit = {
@@ -124,9 +124,9 @@ class PosLongSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "takesPosLong(8)" should compile
-        takesPosLong(8) shouldEqual 8
+        takesPosLong(8) shouldEqual 8L
         "takesPosLong(8L)" should compile
-        takesPosLong(8L) shouldEqual 8
+        takesPosLong(8L) shouldEqual 8L
       }
 
       def `should not compile when 0 is passed in`: Unit = {
@@ -140,7 +140,7 @@ class PosLongSpec extends Spec with Matchers {
       }
 
       def `should not compile when x is passed in`: Unit = {
-        val x: Long = -8
+        val x: Int = -8
         "takesPosLong(x)" shouldNot compile
         val b: Long = -8L
         "takesPosLong(b)" shouldNot compile

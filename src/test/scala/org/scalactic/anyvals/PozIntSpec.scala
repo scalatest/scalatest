@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PozIntSpec extends Spec with Matchers {
+class PozIntSpec extends Spec with Matchers with StrictCheckedEquality {
   object `A PozInt` {
     object `should offer a from factory method that` {
       def `returns Some[PozInt] if the passed Int is greater than or equal to 0`

@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PozFloatSpec extends Spec with Matchers {
+class PozFloatSpec extends Spec with Matchers with StrictCheckedEquality {
   object `An PozFloat` {
     object `should offer a from factory method that` {
       def `returns Some[PozFloat] if the passed Float is greater than or equal to 0`
@@ -102,18 +102,18 @@ class PozFloatSpec extends Spec with Matchers {
   
       def `should compile when 8 is passed in`: Unit = {
         "PozFloat(8)" should compile
-        PozFloat(8).value shouldEqual 8
+        PozFloat(8).value shouldEqual 8.0F
         "PozFloat(8L)" should compile
-        PozFloat(8L).value shouldEqual 8
+        PozFloat(8L).value shouldEqual 8.0F
         "PozFloat(8.0F)" should compile
         PozFloat(8.0F).value shouldEqual 8.0F
       }
   
       def `should compile when 0 is passed in`: Unit = {
         "PozFloat(0)" should compile
-        PozFloat(0).value shouldEqual 0
+        PozFloat(0).value shouldEqual 0.0F
         "PozFloat(0L)" should compile
-        PozFloat(0L).value shouldEqual 0
+        PozFloat(0L).value shouldEqual 0.0F
         "PozFloat(0.0F)" should compile
         PozFloat(0.0F).value shouldEqual 0.0F
       }
@@ -139,18 +139,18 @@ class PozFloatSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "takesPozFloat(8)" should compile
-        takesPozFloat(8) shouldEqual 8
+        takesPozFloat(8) shouldEqual 8.0F
         "takesPozFloat(8L)" should compile
-        takesPozFloat(8L) shouldEqual 8L
+        takesPozFloat(8L) shouldEqual 8.0F
         "takesPozFloat(8.0F)" should compile
         takesPozFloat(8.0F) shouldEqual 8.0F
       }
 
       def `should compile when 0 is passed in`: Unit = {
         "takesPozFloat(0)" should compile
-        takesPozFloat(0) shouldEqual 0
+        takesPozFloat(0) shouldEqual 0.0F
         "takesPozFloat(0L)" should compile
-        takesPozFloat(0L) shouldEqual 0L
+        takesPozFloat(0L) shouldEqual 0.0F
         "takesPozFloat(0.0F)" should compile
         takesPozFloat(0.0F) shouldEqual 0.0F
       }
@@ -162,9 +162,9 @@ class PozFloatSpec extends Spec with Matchers {
       }
 
       def `should not compile when x is passed in`: Unit = {
-        val x: Float = -8
+        val x: Int = -8
         "takesPozFloat(x)" shouldNot compile
-        val b: Float = -8L
+        val b: Long = -8L
         "takesPozFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPozFloat(c)" shouldNot compile

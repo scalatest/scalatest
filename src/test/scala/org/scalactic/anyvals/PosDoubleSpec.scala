@@ -18,9 +18,9 @@ package org.scalactic.anyvals
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality._
+import org.scalactic.StrictCheckedEquality
 
-class PosDoubleSpec extends Spec with Matchers {
+class PosDoubleSpec extends Spec with Matchers with StrictCheckedEquality {
 
   object `A PosDouble` {
     object `should offer a from factory method that` {
@@ -93,11 +93,11 @@ class PosDoubleSpec extends Spec with Matchers {
 
       def `should compile when 8 is passed in`: Unit = {
         "PosDouble(8)" should compile
-        PosDouble(8).value shouldEqual 8
+        PosDouble(8).value shouldEqual 8.0
         "PosDouble(8L)" should compile
-        PosDouble(8L).value shouldEqual 8
+        PosDouble(8L).value shouldEqual 8.0
         "PosDouble(8.0F)" should compile
-        PosDouble(8.0F).value shouldEqual 8.0F
+        PosDouble(8.0F).value shouldEqual 8.0
         "PosDouble(8.0)" should compile
         PosDouble(8.0).value shouldEqual 8.0
       }
@@ -124,6 +124,46 @@ class PosDoubleSpec extends Spec with Matchers {
         "PosDouble(c)" shouldNot compile
         val d: Double = -8.0
         "PosDouble(d)" shouldNot compile
+      }
+    }
+    object `when specified as a plain-old Double` {
+
+      def takesPosDouble(pos: PosDouble): Double = pos.value
+
+      def `should compile when 8 is passed in`: Unit = {
+        "takesPosDouble(8)" should compile
+        takesPosDouble(8) shouldEqual 8.0
+        "takesPosDouble(8L)" should compile
+        takesPosDouble(8L) shouldEqual 8.0
+        "takesPosDouble(8.0F)" should compile
+        takesPosDouble(8.0F) shouldEqual 8.0
+        "takesPosDouble(8.0)" should compile
+        takesPosDouble(8.0) shouldEqual 8.0
+      }
+
+      def `should not compile when 0 is passed in`: Unit = {
+        "takesPosDouble(0)" shouldNot compile
+        "takesPosDouble(0L)" shouldNot compile
+        "takesPosDouble(0.0F)" shouldNot compile
+        "takesPosDouble(0.0)" shouldNot compile
+      }
+
+      def `should not compile when -8 is passed in`: Unit = {
+        "takesPosDouble(-8)" shouldNot compile
+        "takesPosDouble(-8L)" shouldNot compile
+        "takesPosDouble(-8.0F)" shouldNot compile
+        "takesPosDouble(-8.0)" shouldNot compile
+      }
+
+      def `should not compile when x is passed in`: Unit = {
+        val x: Int = -8
+        "takesPosDouble(x)" shouldNot compile
+        val b: Long = -8L
+        "takesPosDouble(b)" shouldNot compile
+        val c: Float = -8.0F
+        "takesPosDouble(c)" shouldNot compile
+        val d: Double = -8.0
+        "takesPosDouble(d)" shouldNot compile
       }
     }
   }
