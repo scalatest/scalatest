@@ -37,6 +37,9 @@ class PozFloatSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozFloat.from(42.0f).value.toString shouldBe "PozFloat(42.0)"
     }
+    def `should return the same type from its unary_+ method` {
+      +PozFloat(3.0F) shouldEqual PozFloat(3.0F)
+    } 
     def `should be automatically widened to compatible AnyVal targets` {
 
       (PozFloat(3.0F): Float) shouldEqual 3.0F

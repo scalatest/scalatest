@@ -38,6 +38,9 @@ class PosLongSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PosLong.from(42L).value.toString shouldBe "PosLong(42)"
     }
+    def `should return the same type from its unary_+ method` {
+      +PosLong(3L) shouldEqual PosLong(3L)
+    } 
     def `should be automatically widened to compatible AnyVal targets` {
       (PosLong(3L): Long) shouldEqual 3L
       (PosLong(3L): Float) shouldEqual 3.0F

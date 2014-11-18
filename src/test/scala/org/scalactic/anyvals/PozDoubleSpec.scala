@@ -38,6 +38,9 @@ class PozDoubleSpec extends Spec with Matchers {
     def `should have a pretty toString` {
       PozDouble.from(42.0).value.toString shouldBe "PozDouble(42.0)"
     }
+    def `should return the same type from its unary_+ method` {
+      +PozDouble(3.0) shouldEqual PozDouble(3.0)
+    } 
     def `should be automatically widened to compatible AnyVal targets` {
       (PozDouble(3.0): Double) shouldEqual 3.0
     }

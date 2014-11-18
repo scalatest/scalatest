@@ -41,7 +41,7 @@ final class PozLong private (val value: Long) extends AnyVal with RestrictedLong
  */
   def unary_~ : Long = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : Long = +value
+  def unary_+ : PozLong = this
   /** Returns the negation of this value. */
   def unary_- : Long = -value
 
