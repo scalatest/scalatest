@@ -1653,15 +1653,15 @@ object Chain {
 
   // Can be flattened: Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
   /**
-   * Implicit conversion from <code>Every</code> to immutable <code>IndexedSeq</code>.
+   * Implicit conversion from <code>Every</code> to immutable <code>LinearSeq</code>.
    *
    * <p>
-   * One use case for this implicit conversion is to enable <code>GenSeq[Every]</code>s to be flattened.
+   * One use case for this implicit conversion is to enable <code>GenSeq[Chain]</code>s to be flattened.
    * Here's an example:
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; Vector(Every(1, 2, 3), Every(3, 4), Every(5, 6, 7, 8)).flatten
+   * scala&gt; Vector(Chain(1, 2, 3), Chain(3, 4), Chain(5, 6, 7, 8)).flatten
    * res0: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 3, 4, 5, 6, 7, 8)
    * </pre>
    *
