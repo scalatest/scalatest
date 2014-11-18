@@ -172,6 +172,35 @@ final class PosDouble private (val value: Double) extends AnyVal with Restricted
   def %(x: Float): Double = value % x
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
+
+  // Stuff from RichDouble
+  def isNaN: Boolean = java.lang.Double.isNaN(value)
+  def isPosInfinity: Boolean = Double.PositiveInfinity == value
+
+  def max(that: PosDouble): PosDouble = if (math.max(value, that.value) == value) this else that
+  def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
+
+  def isWhole = {
+    val longValue = value.toLong
+    longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
+  }
+
+  def round: PozLong = PozLong.from(math.round(value)).get // Also could be zero. For PozDouble will need to drop down to Long as the result type
+  def ceil: PosDouble = PosDouble.from(math.ceil(value)).get // I think this one is safe, but try NaN
+  def floor: PozDouble = PozDouble.from(math.floor(value)).get // Could be zero. For PozDouble, will need to drop down to Double as the result type
+
+  /** Converts an angle measured in degrees to an approximately equivalent
+  * angle measured in radians.
+  *
+  * @return the measurement of the angle x in radians.
+  */
+  def toRadians: Double = math.toRadians(value)
+
+  /** Converts an angle measured in radians to an approximately equivalent
+  * angle measured in degrees.
+  * @return the measurement of the angle x in degrees.
+  */
+  def toDegrees: Double = math.toDegrees(value)
 }
 
 object PosDouble {
