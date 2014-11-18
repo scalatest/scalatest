@@ -391,6 +391,45 @@ final class PosInt private (val value: Int) extends AnyVal with RestrictedInt {
   def %(x: Float): Float = value % x
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
+
+  // Stuff from Richint:
+  def toBinaryString: String = java.lang.Integer.toBinaryString(value)
+  def toHexString: String = java.lang.Integer.toHexString(value)
+  def toOctalString: String = java.lang.Integer.toOctalString(value)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Int): Range = Range(value, end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.Range]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Int, step: Int): Range = Range(value, end, step)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
+
+  // No point to call abs on a PosInt.
+  def max(that: PosInt): PosInt = if (math.max(value, that.value) == value) this else that
+  def min(that: PosInt): PosInt = if (math.min(value, that.value) == value) this else that
 }
 
 object PosInt {
