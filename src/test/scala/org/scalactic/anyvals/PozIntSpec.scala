@@ -45,6 +45,13 @@ class PozIntSpec extends Spec with Matchers with StrictCheckedEquality {
       (PozInt(3): Long) shouldEqual 3L
       (PozInt(3): Float) shouldEqual 3.0F
       (PozInt(3): Double) shouldEqual 3.0
+
+      "(PozInt(3): PosInt)" shouldNot typeCheck
+      "(PozInt(3): PosLong)" shouldNot typeCheck
+      "(PozInt(3): PosFloat)" shouldNot typeCheck
+      "(PozInt(3): PosDouble)" shouldNot typeCheck
+
+      (PozInt(3): PozInt) shouldEqual PozInt(3)
       (PozInt(3): PozLong) shouldEqual PozLong(3L)
       (PozInt(3): PozFloat) shouldEqual PozFloat(3.0F)
       (PozInt(3): PozDouble) shouldEqual PozDouble(3.0)

@@ -42,9 +42,17 @@ class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
       +PosLong(3L) shouldEqual PosLong(3L)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
+      "PosLong(3L): Int" shouldNot typeCheck
       (PosLong(3L): Long) shouldEqual 3L
       (PosLong(3L): Float) shouldEqual 3.0F
       (PosLong(3L): Double) shouldEqual 3.0
+
+      "PosLong(3L): PosInt" shouldNot typeCheck
+      (PosLong(3L): PosLong) shouldEqual PosLong(3L)
+      (PosLong(3L): PosFloat) shouldEqual PosFloat(3.0F)
+      (PosLong(3L): PosDouble) shouldEqual PosDouble(3.0)
+
+      "PosLong(3L): PozInt" shouldNot typeCheck
       (PosLong(3L): PozLong) shouldEqual PozLong(3L)
       (PosLong(3L): PozFloat) shouldEqual PozFloat(3.0F)
       (PosLong(3L): PozDouble) shouldEqual PozDouble(3.0)

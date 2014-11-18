@@ -41,8 +41,18 @@ class PosFloatSpec extends Spec with Matchers with StrictCheckedEquality {
       +PosFloat(3.0F) shouldEqual PosFloat(3.0F)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
+      "PosFloat(3.0F): Int" shouldNot typeCheck
+      "PosFloat(3.0F): Long" shouldNot typeCheck
       (PosFloat(3.0F): Float) shouldEqual 3.0F
       (PosFloat(3.0F): Double) shouldEqual 3.0
+
+      "PosFloat(3.0F): PosInt" shouldNot typeCheck
+      "PosFloat(3.0F): PosLong" shouldNot typeCheck
+      (PosFloat(3.0F): PosFloat) shouldEqual PosFloat(3.0F)
+      (PosFloat(3.0F): PosDouble) shouldEqual PosDouble(3.0)
+
+      "PosFloat(3.0F): PozInt" shouldNot typeCheck
+      "PosFloat(3.0F): PozLong" shouldNot typeCheck
       (PosFloat(3.0F): PozFloat) shouldEqual PozFloat(3.0F)
       (PosFloat(3.0F): PozDouble) shouldEqual PozDouble(3.0)
     }

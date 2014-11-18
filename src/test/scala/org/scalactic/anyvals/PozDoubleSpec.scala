@@ -42,7 +42,20 @@ class PozDoubleSpec extends Spec with Matchers with StrictCheckedEquality {
       +PozDouble(3.0) shouldEqual PozDouble(3.0)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
+      "PozDouble(3.0): Int" shouldNot typeCheck
+      "PozDouble(3.0): Long" shouldNot typeCheck
+      "PozDouble(3.0): Float" shouldNot typeCheck
       (PozDouble(3.0): Double) shouldEqual 3.0
+
+      "PozDouble(3.0): PosInt" shouldNot typeCheck
+      "PozDouble(3.0): PosLong" shouldNot typeCheck
+      "PozDouble(3.0): PosFloat" shouldNot typeCheck
+      "PozDouble(3.0): PosDouble" shouldNot typeCheck
+
+      "PozDouble(3.0): PozInt" shouldNot typeCheck
+      "PozDouble(3.0): PozLong" shouldNot typeCheck
+      "PozDouble(3.0): PozFloat" shouldNot typeCheck
+      (PozDouble(3.0): PozDouble) shouldEqual PozDouble(3.0)
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {

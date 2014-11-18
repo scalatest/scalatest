@@ -40,9 +40,18 @@ class PozLongSpec extends Spec with Matchers with StrictCheckedEquality {
       +PozLong(3L) shouldEqual PozLong(3L)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
+      "(PozLong(3L): Int)" shouldNot typeCheck
       (PozLong(3L): Long) shouldEqual 3L
       (PozLong(3L): Float) shouldEqual 3.0F
       (PozLong(3L): Double) shouldEqual 3.0
+
+      "(PozLong(3L): PosInt)" shouldNot typeCheck
+      "(PozLong(3L): PosLong)" shouldNot typeCheck
+      "(PozLong(3L): PosFloat)" shouldNot typeCheck
+      "(PozLong(3L): PosDouble)" shouldNot typeCheck
+
+      "(PozLong(3L): PozInt)" shouldNot typeCheck
+      (PozLong(3L): PozLong) shouldEqual PozLong(3L)
       (PozLong(3L): PozFloat) shouldEqual PozFloat(3.0F)
       (PozLong(3L): PozDouble) shouldEqual PozDouble(3.0)
     }
