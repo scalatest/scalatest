@@ -172,6 +172,34 @@ final class PozDouble private (val value: Double) extends AnyVal with Restricted
   def %(x: Float): Double = value % x
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
+
+  // Stuff from RichDouble
+  def isPosInfinity: Boolean = Double.PositiveInfinity == value
+
+  def max(that: PozDouble): PozDouble = if (math.max(value, that.value) == value) this else that
+  def min(that: PozDouble): PozDouble = if (math.min(value, that.value) == value) this else that
+
+  def isWhole = {
+    val longValue = value.toLong
+    longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
+  }
+
+  def round: PozLong = PozLong.from(math.round(value)).get
+  def ceil: PozDouble = PozDouble.from(math.ceil(value)).get
+  def floor: PozDouble = PozDouble.from(math.floor(value)).get
+
+  /** Converts an angle measured in degrees to an approximately equivalent
+  * angle measured in radians.
+  *
+  * @return the measurement of the angle x in radians.
+  */
+  def toRadians: Double = math.toRadians(value)
+
+  /** Converts an angle measured in radians to an approximately equivalent
+  * angle measured in degrees.
+  * @return the measurement of the angle x in degrees.
+  */
+  def toDegrees: Double = math.toDegrees(value)
 }
 
 object PozDouble {

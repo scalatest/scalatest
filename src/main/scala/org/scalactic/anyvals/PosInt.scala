@@ -16,6 +16,7 @@
 package org.scalactic.anyvals
 
 import scala.language.implicitConversions
+import scala.collection.immutable.Range
 
 //
 // Numbers greater than zero.
