@@ -21,7 +21,7 @@ package org.scalactic.anyvals
 // (Pronounced like "posey".)
 //
 
-final class PozInt private (val value: Int) extends AnyVal with RestrictedInt {
+final class PozInt private (val value: Int) extends AnyVal {
   override def toString: String = s"PozInt($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort

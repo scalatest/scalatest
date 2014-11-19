@@ -21,7 +21,7 @@ package org.scalactic.anyvals
 // (Pronounced like "posey".)
 //
 
-final class PozFloat private (val value: Float) extends AnyVal with RestrictedFloat {
+final class PozFloat private (val value: Float) extends AnyVal {
   override def toString: String = s"PozFloat($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
