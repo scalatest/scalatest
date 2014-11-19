@@ -440,11 +440,16 @@ object PosInt {
   implicit def apply(value: Int): PosInt = macro PosIntMacro.apply
 
   implicit def widenToInt(pos: PosInt): Int = pos.value
-  implicit def widenToPozInt(pos: PosInt): PozInt = PozInt.from(pos.value).get
-  implicit def widenToDouble(pos: PosInt): Double = pos.value
-  implicit def widenToPozDouble(pos: PosInt): PozDouble = PozDouble.from(pos.value).get
-  implicit def widenToFloat(pos: PosInt): Float = pos.value
-  implicit def widenToPozFloat(pos: PosInt): PozFloat = PozFloat.from(pos.value).get
   implicit def widenToLong(pos: PosInt): Long = pos.value
+  implicit def widenToFloat(pos: PosInt): Float = pos.value
+  implicit def widenToDouble(pos: PosInt): Double = pos.value
+
+  implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.from(pos.value).get
+  implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.from(pos.value).get
+  implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.from(pos.value).get
+
+  implicit def widenToPozInt(pos: PosInt): PozInt = PozInt.from(pos.value).get
   implicit def widenToPozLong(pos: PosInt): PozLong = PozLong.from(pos.value).get
+  implicit def widenToPozFloat(pos: PosInt): PozFloat = PozFloat.from(pos.value).get
+  implicit def widenToPozDouble(pos: PosInt): PozDouble = PozDouble.from(pos.value).get
 }

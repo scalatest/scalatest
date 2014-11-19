@@ -41,19 +41,20 @@ class PozFloatSpec extends Spec with Matchers with StrictCheckedEquality {
       +PozFloat(3.0F) shouldEqual PozFloat(3.0F)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
-
+      "PozFloat(3.0F): Int" shouldNot typeCheck
+      "PozFloat(3.0F): Long" shouldNot typeCheck
       (PozFloat(3.0F): Float) shouldEqual 3.0F
       (PozFloat(3.0F): Double) shouldEqual 3.0
-      (PozFloat(3.0F): PozDouble) shouldEqual PozDouble(3.0)
 
-      "(PozFloat(3): Int)" shouldNot compile
-      "(PozFloat(3): Long)" shouldNot compile
-      "(PozFloat(3): PosInt)" shouldNot compile
-      "(PozFloat(3): PosLong)" shouldNot compile
-      "(PozInt(3): PosFloat)" shouldNot compile
-      "(PozInt(3): PosDouble)" shouldNot compile
-      "(PozFloat(3): PozInt)" shouldNot compile
-      "(PozFloat(3): PosLong)" shouldNot compile
+      "PozFloat(3.0F): PosInt" shouldNot typeCheck
+      "PozFloat(3.0F): PosLong" shouldNot typeCheck
+      "PozFloat(3.0F): PosFloat" shouldNot typeCheck
+      "PozFloat(3.0F): PosDouble" shouldNot typeCheck
+
+      "PozFloat(3.0F): PozInt" shouldNot typeCheck
+      "PozFloat(3.0F): PozLong" shouldNot typeCheck
+      (PozFloat(3.0F): PozFloat) shouldEqual PozFloat(3.0F)
+      (PozFloat(3.0F): PozDouble) shouldEqual PozDouble(3.0)
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
