@@ -15,59 +15,60 @@
 */
 package org.scalactic.anyvals
 
-final class Percent private (val value: Int) extends AnyVal {
+// These are here emporaritly for testing, because need to have the compile separate. Can't I just move them?
+private[scalactic] final class Percent private (val value: Int) extends AnyVal {
   override def toString: String = s"Percent($value)"
 }
 
-object Percent {
+private[scalactic] object Percent {
   def from(value: Int): Option[Percent] =
     if (value >= 0 && value <= 100) Some(new Percent(value)) else None
   import scala.language.experimental.macros
   def apply(value: Int): Percent = macro PercentMacro.apply
 }
 
-final class LPercent private (val value: Long) extends AnyVal {
+private[scalactic] final class LPercent private (val value: Long) extends AnyVal {
   override def toString: String = s"LPercent($value)"
 }
 
-object LPercent {
+private[scalactic] object LPercent {
   def from(value: Long): Option[LPercent] =
     if (value >= 0L && value <= 100L) Some(new LPercent(value)) else None
 }
 
-final class FPercent private (val value: Float) extends AnyVal {
+private[scalactic] final class FPercent private (val value: Float) extends AnyVal {
   override def toString: String = s"FPercent($value)"
 }
 
-object FPercent {
+private[scalactic] object FPercent {
   def from(value: Float): Option[FPercent] =
     if (value >= 0.0F && value <= 100.0F) Some(new FPercent(value)) else None
 }
 
-final class DPercent private (val value: Double) extends AnyVal {
+private[scalactic] final class DPercent private (val value: Double) extends AnyVal {
   override def toString: String = s"DPercent($value)"
 }
 
-object DPercent {
+private[scalactic] object DPercent {
   def from(value: Double): Option[DPercent] =
     if (value >= 0.0 && value <= 100.0) Some(new DPercent(value)) else None
 }
 
-
-final class TLA private (val value: String) extends AnyVal {
+private[scalactic] final class TLA private (val value: String) extends AnyVal {
   override def toString: String = s"TLA($value)"
 }
-object TLA {
+
+private[scalactic] object TLA {
   def from(value: String): Option[TLA] =
     if (value.length == 3) Some(new TLA(value)) else None
   import scala.language.experimental.macros
   def apply(value: String): TLA = macro TLAMacro.apply
 }
 
-final class Digit private (val value: Char) extends AnyVal {
+private[scalactic] final class Digit private (val value: Char) extends AnyVal {
   override def toString: String = s"Digit($value)"
 }
-object Digit {
+private[scalactic] object Digit {
   def from(value: Char): Option[Digit] =
     if (value >= '0' && value <= '9') Some(new Digit(value)) else None
   import scala.language.experimental.macros

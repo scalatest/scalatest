@@ -15,40 +15,40 @@
 */
 package org.scalactic.anyvals
 
-final class GuessANumber private (val value: Int) extends AnyVal {
+private[scalactic] final class GuessANumber private (val value: Int) extends AnyVal {
   override def toString: String = s"GuessANumber($value)"
 }
 
-object GuessANumber {
+private[scalactic] object GuessANumber {
   def from(value: Int): Option[GuessANumber] =
     if (value >= 1 && value <= 10) Some(new GuessANumber(value)) else None
   import scala.language.experimental.macros
   def apply(value: Int): GuessANumber = macro GuessANumberMacro.apply
 }
 
-final class LGuessANumber private (val value: Long) extends AnyVal {
+private[scalactic] final class LGuessANumber private (val value: Long) extends AnyVal {
   override def toString: String = s"LGuessANumber($value)"
 }
 
-object LGuessANumber {
+private[scalactic] object LGuessANumber {
   def from(value: Long): Option[LGuessANumber] =
     if (value >= 1L && value <= 10L) Some(new LGuessANumber(value)) else None
 }
 
-final class FGuessANumber private (val value: Float) extends AnyVal {
+private[scalactic] final class FGuessANumber private (val value: Float) extends AnyVal {
   override def toString: String = s"FGuessANumber($value)"
 }
 
-object FGuessANumber {
+private[scalactic] object FGuessANumber {
   def from(value: Float): Option[FGuessANumber] =
     if (value >= 1.0F && value <= 10.0F) Some(new FGuessANumber(value)) else None
 }
 
-final class DGuessANumber private (val value: Double) extends AnyVal {
+private[scalactic] final class DGuessANumber private (val value: Double) extends AnyVal {
   override def toString: String = s"DGuessANumber($value)"
 }
 
-object DGuessANumber {
+private[scalactic] object DGuessANumber {
   def from(value: Double): Option[DGuessANumber] =
     if (value >= 1.0 && value <= 10.0) Some(new DGuessANumber(value)) else None
 }
