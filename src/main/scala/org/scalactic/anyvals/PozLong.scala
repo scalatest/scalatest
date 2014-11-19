@@ -406,6 +406,15 @@ final class PozLong private (val value: Long) extends AnyVal with RestrictedLong
   def %(x: Float): Float = value % x
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
+
+  // Stuff from RichLong:
+  def toBinaryString: String = java.lang.Long.toBinaryString(value)
+  def toHexString: String = java.lang.Long.toHexString(value)
+  def toOctalString: String = java.lang.Long.toOctalString(value)
+
+  // No point to call abs on a PozLong.
+  def max(that: PozLong): PozLong = if (math.max(value, that.value) == value) this else that
+  def min(that: PozLong): PozLong = if (math.min(value, that.value) == value) this else that
 }
 
 object PozLong {

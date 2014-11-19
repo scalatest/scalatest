@@ -174,7 +174,6 @@ final class PosDouble private (val value: Double) extends AnyVal with Restricted
   def %(x: Double): Double = value % x
 
   // Stuff from RichDouble
-  def isNaN: Boolean = java.lang.Double.isNaN(value)
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
   def max(that: PosDouble): PosDouble = if (math.max(value, that.value) == value) this else that
@@ -185,9 +184,9 @@ final class PosDouble private (val value: Double) extends AnyVal with Restricted
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PozLong = PozLong.from(math.round(value)).get // Also could be zero. For PozDouble will need to drop down to Long as the result type
+  def round: PozLong = PozLong.from(math.round(value)).get // Also could be zero.
   def ceil: PosDouble = PosDouble.from(math.ceil(value)).get // I think this one is safe, but try NaN
-  def floor: PozDouble = PozDouble.from(math.floor(value)).get // Could be zero. For PozDouble, will need to drop down to Double as the result type
+  def floor: PozDouble = PozDouble.from(math.floor(value)).get // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
