@@ -21,7 +21,7 @@ package org.scalactic.anyvals
 // (Pronounced like "posey".)
 //
 
-final class PozLong private (val value: Long) extends AnyVal with RestrictedLong {
+final class PozLong private (val value: Long) extends AnyVal {
   override def toString: String = s"PozLong($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort

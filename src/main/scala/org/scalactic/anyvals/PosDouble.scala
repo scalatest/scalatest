@@ -21,7 +21,7 @@ import scala.language.implicitConversions
 // Numbers greater than zero.
 //
 
-final class PosDouble private (val value: Double) extends AnyVal with RestrictedDouble {
+final class PosDouble private (val value: Double) extends AnyVal {
   override def toString: String = s"PosDouble($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort

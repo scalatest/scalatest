@@ -21,7 +21,7 @@ package org.scalactic.anyvals
 // (Pronounced like "posey".)
 //
 
-final class PozDouble private (val value: Double) extends AnyVal with RestrictedDouble {
+final class PozDouble private (val value: Double) extends AnyVal {
   override def toString: String = s"PozDouble($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
