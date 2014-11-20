@@ -15,6 +15,8 @@
  */
 package org.scalactic.anyvals
 
+import scala.collection.immutable.NumericRange
+
 //
 // Numbers greater than or equal to zero.
 //
@@ -200,6 +202,41 @@ final class PozFloat private (val value: Float) extends AnyVal {
   * @return the measurement of the angle x in degrees.
   */
   def toDegrees: PozFloat = PozFloat.from(math.toDegrees(value).toFloat).get
+
+  // adapted from RichInt:
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Float): Range.Partial[Float, NumericRange[Float]] =
+    value.until(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Float]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Float, step: Float): NumericRange.Exclusive[Float] =
+    value.until(end, step)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Float, NumericRange[Float]]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Float): Range.Partial[Float, NumericRange[Float]] =
+    value.to(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Float]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Float, step: Float): NumericRange.Inclusive[Float] =
+    value.to(end, step)
 }
 
 object PozFloat {

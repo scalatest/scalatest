@@ -15,6 +15,8 @@
  */
 package org.scalactic.anyvals
 
+import scala.collection.immutable.NumericRange
+
 //
 // Numbers greater than or equal to zero.
 //
@@ -415,6 +417,39 @@ final class PozLong private (val value: Long) extends AnyVal {
   // No point to call abs on a PozLong.
   def max(that: PozLong): PozLong = if (math.max(value, that.value) == value) this else that
   def min(that: PozLong): PozLong = if (math.min(value, that.value) == value) this else that
+
+  // adapted from RichInt:
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Long): NumericRange.Exclusive[Long] = value.until(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Long, step: Long): NumericRange.Exclusive[Long] =
+    value.until(end, step)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Long): NumericRange.Inclusive[Long] = value.to(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Long, step: Long): NumericRange.Inclusive[Long] =
+    value.to(end, step)
 }
 
 object PozLong {

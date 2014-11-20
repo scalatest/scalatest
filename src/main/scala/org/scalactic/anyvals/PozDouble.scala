@@ -15,6 +15,8 @@
  */
 package org.scalactic.anyvals
 
+import scala.collection.immutable.NumericRange
+
 //
 // Numbers greater than or equal to zero.
 //
@@ -200,6 +202,41 @@ final class PozDouble private (val value: Double) extends AnyVal {
   * @return the measurement of the angle x in degrees.
   */
   def toDegrees: Double = math.toDegrees(value)
+
+  // adapted from RichInt:
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Double): Range.Partial[Double, NumericRange[Double]] =
+    value.until(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Double]]] from `this` up to but
+  * not including `end`.
+  */
+  def until(end: Double, step: Double): NumericRange.Exclusive[Double] =
+    value.until(end, step)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Double): Range.Partial[Double, NumericRange[Double]] =
+    value.to(end)
+
+  /**
+  * @param end The final bound of the range to make.
+  * @param step The number to increase by for each step of the range.
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Double]]] from `'''this'''` up to
+  * and including `end`.
+  */
+  def to(end: Double, step: Double): NumericRange.Inclusive[Double] =
+    value.to(end, step)
 }
 
 object PozDouble {
