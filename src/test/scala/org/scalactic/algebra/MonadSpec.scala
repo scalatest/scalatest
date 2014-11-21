@@ -29,6 +29,16 @@ class MonadSpec extends UnitSpec {
     def insert[T](o: T): Option[T] = Option(o) 
   }
 
+  class ListMonadProxy[T](underlying: List[T]) extends MonadProxy[List, T] {
+     def map[U](f: T => U): List[U]  = underlying.map(f)
+     def flatMap[U](f: T => List[U]): List[U]  = underlying.flatMap(f)
+   }
+
+   class ListMonad extends Monad[List] {
+     def apply[T](ls: List[T]): MonadProxy[List, T] = new ListMonadProxy[T](ls)
+     def insert[T](o: T): List[T] = List(o)
+   }
+
   "A MonadProxy" should "offer a map method that has the usual signature" in {
     val proxy: MonadProxy[Option, Int] = new OptionMonadProxy(Some(3))
     proxy.map(_ + 1) shouldEqual Some(4)
