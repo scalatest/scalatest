@@ -71,22 +71,22 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     obeyFunctorLaws[Option, Int, String, String]
   }
   "Or" should "obey the functor laws via its badMap method" in {
-    trait Howdy[G] {
-      type Doody[B] = G Or B
+    trait OrWithGood[G] {
+      type AndBad[B] = G Or B
     }
-    class BadOrFunctorProxy[G, B](underlying: Howdy[G]#Doody[B]) extends FunctorProxy[Howdy[G]#Doody, B] {
-      def map[C](f: B => C): Howdy[G]#Doody[C]  = underlying.badMap(f)
+    class BadOrFunctorProxy[G, B](underlying: OrWithGood[G]#AndBad[B]) extends FunctorProxy[OrWithGood[G]#AndBad, B] {
+      def map[C](f: B => C): OrWithGood[G]#AndBad[C]  = underlying.badMap(f)
     }
-    implicit def badOrFunctor[G]: Functor[Howdy[G]#Doody] =
-      new Functor[Howdy[G]#Doody] {
-        def apply[B](opt: Howdy[G]#Doody[B]): FunctorProxy[Howdy[G]#Doody, B] = new BadOrFunctorProxy[G, B](opt)
+    implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] =
+      new Functor[OrWithGood[G]#AndBad] {
+        def apply[B](opt: OrWithGood[G]#AndBad[B]): FunctorProxy[OrWithGood[G]#AndBad, B] = new BadOrFunctorProxy[G, B](opt)
       }
     import org.scalacheck.Gen
     implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
       Arbitrary(
         for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either)
       )
-    obeyFunctorLaws[Howdy[Int]#Doody, Int, String, String]
+    obeyFunctorLaws[OrWithGood[Int]#AndBad, Int, String, String]
   }
 }
 
