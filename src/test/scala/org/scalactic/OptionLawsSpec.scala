@@ -62,13 +62,13 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
   import org.scalacheck.Arbitrary
   import org.scalacheck.Shrink
-  def obeyFunctorLaws[Context[_], T, U, V](implicit arbContextT: Arbitrary[Context[T]], shrContextT: Shrink[Context[T]], arbTToU: Arbitrary[T => U], shrTToU: Shrink[T => U], arbUToV: Arbitrary[U => V], shrUToV: Shrink[Context[U => V]], functor: Functor[Context]): Unit = {
-    forAll { (opt: Context[T]) => identity(opt) }
-    forAll { (opt: Context[T], f: T => U, g: U => V) => composite(opt, f, g) }
+  def assertObeysTheFunctorLaws[Context[_]](implicit arbContextInt: Arbitrary[Context[Int]], shrContextInt: Shrink[Context[Int]], arbIntToString: Arbitrary[Int => String], shrIntToString: Shrink[Int => String], arbStringToChar: Arbitrary[String => Char], shrStringToChar: Shrink[Context[String => Char]], functor: Functor[Context]): Unit = {
+    forAll { (opt: Context[Int]) => identity(opt) }
+    forAll { (opt: Context[Int], f: Int => String, g: String => Char) => composite(opt, f, g) }
   }
 
   it should "obey the functor laws via its map method more generically" in {
-    obeyFunctorLaws[Option, Int, String, String]
+    assertObeysTheFunctorLaws[Option]
   }
   "Or" should "obey the functor laws via its badMap method" in {
     trait OrWithGood[G] {
@@ -86,7 +86,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
       Arbitrary(
         for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either)
       )
-    obeyFunctorLaws[OrWithGood[Int]#AndBad, Int, String, String]
+    assertObeysTheFunctorLaws[OrWithGood[Int]#AndBad]
   }
 }
 
