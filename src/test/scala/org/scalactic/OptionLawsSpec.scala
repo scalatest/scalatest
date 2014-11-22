@@ -25,7 +25,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
   class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorProxy[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
   }
-  object OptionFunctor extends Functor[Option] {
+  implicit object OptionFunctor extends Functor[Option] {
     def apply[T](opt: Option[T]): FunctorProxy[Option, T] = new OptionFunctorProxy[T](opt)
   }
   "Option's map method" should "obey the functor laws" in {
@@ -41,6 +41,20 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     def id[T] = (o: T) => o
     forAll { opt: Option[Int] =>
       OptionFunctor(opt).map(id) shouldEqual opt
+    }
+    forAll { (opt: Option[Int], f: String => String, g: Int => String) =>
+      OptionFunctor((OptionFunctor(opt).map(g))).map(f) shouldEqual OptionFunctor(opt).map(f compose g)
+    }
+  }
+
+  def id[T] = (o: T) => o
+  def identity[Context[_], T](o: Context[T])(implicit functor: Functor[Context]): Boolean =
+    functor(o).map(id) == o
+    // functor((functor(opt).map(g))).map(f) == functor(opt).map(f compose g)
+
+  "A Functor should" should "obey the functor laws" in {
+    forAll { (opt: Option[Int]) => identity(opt) shouldBe true
+      // OptionFunctor(opt).map(id) shouldEqual opt
     }
     forAll { (opt: Option[Int], f: String => String, g: Int => String) =>
       OptionFunctor((OptionFunctor(opt).map(g))).map(f) shouldEqual OptionFunctor(opt).map(f compose g)
