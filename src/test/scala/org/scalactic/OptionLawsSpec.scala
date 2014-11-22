@@ -47,18 +47,28 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     }
   }
 
+  import scala.language.higherKinds
   def id[T] = (o: T) => o
-  def identity[Context[_], T](o: Context[T])(implicit functor: Functor[Context]): Boolean =
-    functor(o).map(id) == o
-    // functor((functor(opt).map(g))).map(f) == functor(opt).map(f compose g)
+  def identity[Context[_], T](o: Context[T])(implicit functor: Functor[Context]): Unit =
+    functor(o).map(id) shouldEqual o
 
-  "A Functor should" should "obey the functor laws" in {
-    forAll { (opt: Option[Int]) => identity(opt) shouldBe true
-      // OptionFunctor(opt).map(id) shouldEqual opt
-    }
-    forAll { (opt: Option[Int], f: String => String, g: Int => String) =>
-      OptionFunctor((OptionFunctor(opt).map(g))).map(f) shouldEqual OptionFunctor(opt).map(f compose g)
-    }
+  def composite[Context[_], T, U, V](o: Context[T], f: T => U, g: U => V)(implicit functor: Functor[Context]): Unit =
+    functor((functor(o).map(f))).map(g) shouldEqual functor(o).map(g compose f) // g(f(x))
+
+  "Option" should "obey the functor laws via its map method" in {
+    forAll { (opt: Option[Int]) => identity(opt) }
+    forAll { (opt: Option[Int], f: Int => String, g: String => String) => composite(opt, f, g) }
+  }
+
+  import org.scalacheck.Arbitrary
+  import org.scalacheck.Shrink
+  def obeyFunctorLaws[Context[_], T, U, V](implicit arbContextT: Arbitrary[Context[T]], shrContextT: Shrink[Context[T]], arbTToU: Arbitrary[T => U], shrTToU: Shrink[T => U], arbUToV: Arbitrary[U => V], shrUToV: Shrink[Context[U => V]], functor: Functor[Context]): Unit = {
+    forAll { (opt: Context[T]) => identity(opt) }
+    forAll { (opt: Context[T], f: T => U, g: U => V) => composite(opt, f, g) }
+  }
+
+  it should "obey the functor laws via its map method more generically" in {
+    obeyFunctorLaws[Option, Int, String, String]
   }
 }
 
