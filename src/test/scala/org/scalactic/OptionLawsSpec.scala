@@ -87,6 +87,8 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
         for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either)
       )
     assertObeysTheFunctorLaws[OrWithGood[Int]#AndBad]
+
+    // instancesOf[OrWithGood[Int]#AndBad] shouldObey theFunctorLaws
   }
 }
 
