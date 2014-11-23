@@ -19,6 +19,7 @@ package org.scalactic
 import org.scalatest._
 import prop.GeneratorDrivenPropertyChecks._
 import algebra._
+import exceptions.TestFailedException
 
 class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
@@ -49,10 +50,11 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
   import scala.language.higherKinds
   def id[T] = (o: T) => o
-  def identity[Context[_], T](o: Context[T])(implicit functor: Functor[Context]): Unit =
+
+  def identity[Context[_], T](o: Context[T])(implicit functor: Functor[Context], equality: Equality[Context[T]]): Unit =
     functor(o).map(id) shouldEqual o
 
-  def composite[Context[_], T, U, V](o: Context[T], f: T => U, g: U => V)(implicit functor: Functor[Context]): Unit =
+  def composite[Context[_], T, U, V](o: Context[T], f: T => U, g: U => V)(implicit functor: Functor[Context], equality: Equality[Context[V]]): Unit =
     functor((functor(o).map(f))).map(g) shouldEqual functor(o).map(g compose f) // g(f(x))
 
   "Option" should "obey the functor laws via its map method" in {
@@ -62,7 +64,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
   import org.scalacheck.Arbitrary
   import org.scalacheck.Shrink
-  def assertObeysTheFunctorLaws[Context[_]](implicit arbContextInt: Arbitrary[Context[Int]], shrContextInt: Shrink[Context[Int]], arbIntToString: Arbitrary[Int => String], shrIntToString: Shrink[Int => String], arbStringToChar: Arbitrary[String => Char], shrStringToChar: Shrink[Context[String => Char]], functor: Functor[Context]): Unit = {
+  def assertObeysTheFunctorLaws[Context[_]](implicit arbContextInt: Arbitrary[Context[Int]], shrContextInt: Shrink[Context[Int]], arbIntToString: Arbitrary[Int => String], shrIntToString: Shrink[Int => String], arbStringToChar: Arbitrary[String => Char], shrStringToChar: Shrink[Context[String => Char]], functor: Functor[Context], equalityOfContextOfInt: Equality[Context[Int]], equalityOfContextOfChar: Equality[Context[Char]]): Unit = {
     forAll { (opt: Context[Int]) => identity(opt) }
     forAll { (opt: Context[Int], f: Int => String, g: String => Char) => composite(opt, f, g) }
   }
@@ -90,6 +92,48 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
     // instancesOf[OrWithGood[Int]#AndBad] shouldObey theFunctorLaws
     // instancesOf[OrWithGood[Int]#AndBad] should obey the functorLaws
+  }
+
+  
+/* Need ClassTag, but then don't implement the interface.
+  "The map method of unmutated Arrays" should "obey the functor laws despite its unfortunate equals method" in {
+    class ArrayFunctorProxy[T](underlying: Array[T]) extends FunctorProxy[Array, T] {
+      def map[U](f: T => U): Array[U]  = underlying.map(f)
+    }
+    implicit object ArrayFunctor extends Functor[Array] {
+      def apply[T](arr: Array[T]): FunctorProxy[Array, T] = new ArrayFunctorProxy[T](arr)
+    }
+    assertObeysTheFunctorLaws[Array]
+  }
+*/
+
+  "The obey functor laws syntax" should "take an Equality" in {
+    class ListFunctorProxy[T](underlying: List[T]) extends FunctorProxy[List, T] {
+      def map[U](f: T => U): List[U]  = underlying.map(f)
+    }
+    implicit object ListFunctor extends Functor[List] {
+      def apply[T](arr: List[T]): FunctorProxy[List, T] = new ListFunctorProxy[T](arr)
+    }
+    implicit def listEq[T]: Equality[List[T]] =
+      new Equality[List[T]] {
+        def areEqual(a: List[T], b: Any): Boolean =
+          b match {
+            case bAnyRef: AnyRef => a eq bAnyRef
+            case _ => false
+          }
+      }
+    a [TestFailedException] should be thrownBy {
+      assertObeysTheFunctorLaws[List]
+    }
+  }
+  "The map method of List" should "obey the functor laws" in {
+    class ListFunctorProxy[T](underlying: List[T]) extends FunctorProxy[List, T] {
+      def map[U](f: T => U): List[U]  = underlying.map(f)
+    }
+    implicit object ListFunctor extends Functor[List] {
+      def apply[T](arr: List[T]): FunctorProxy[List, T] = new ListFunctorProxy[T](arr)
+    }
+    assertObeysTheFunctorLaws[List]
   }
 }
 
