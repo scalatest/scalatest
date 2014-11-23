@@ -74,12 +74,12 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     trait OrWithGood[G] {
       type AndBad[B] = G Or B
     }
-    class BadOrFunctorProxy[G, B](underlying: OrWithGood[G]#AndBad[B]) extends FunctorProxy[OrWithGood[G]#AndBad, B] {
-      def map[C](f: B => C): OrWithGood[G]#AndBad[C]  = underlying.badMap(f)
+    class BadOrFunctorProxy[G, B](underlying: G Or B) extends FunctorProxy[OrWithGood[G]#AndBad, B] {
+      def map[C](f: B => C): G Or C  = underlying.badMap(f)
     }
     implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] =
       new Functor[OrWithGood[G]#AndBad] {
-        def apply[B](opt: OrWithGood[G]#AndBad[B]): FunctorProxy[OrWithGood[G]#AndBad, B] = new BadOrFunctorProxy[G, B](opt)
+        def apply[B](opt: G Or B): FunctorProxy[OrWithGood[G]#AndBad, B] = new BadOrFunctorProxy[G, B](opt)
       }
     import org.scalacheck.Gen
     implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
