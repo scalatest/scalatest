@@ -89,6 +89,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     assertObeysTheFunctorLaws[OrWithGood[Int]#AndBad]
 
     // instancesOf[OrWithGood[Int]#AndBad] shouldObey theFunctorLaws
+    // instancesOf[OrWithGood[Int]#AndBad] should obey the functorLaws
   }
 }
 
