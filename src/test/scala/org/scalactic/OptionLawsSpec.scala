@@ -64,7 +64,19 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
 
   import org.scalacheck.Arbitrary
   import org.scalacheck.Shrink
-  def assertObeysTheFunctorLaws[Context[_]](implicit arbContextInt: Arbitrary[Context[Int]], shrContextInt: Shrink[Context[Int]], arbIntToString: Arbitrary[Int => String], shrIntToString: Shrink[Int => String], arbStringToChar: Arbitrary[String => Char], shrStringToChar: Shrink[Context[String => Char]], functor: Functor[Context], equalityOfContextOfInt: Equality[Context[Int]], equalityOfContextOfChar: Equality[Context[Char]]): Unit = {
+  def assertObeysTheFunctorLaws[Context[_]](
+      // wraps to gen
+      implicit arbContextInt: Arbitrary[Context[Int]],
+      // failure might have a list of 1000 keep shrinking till finds smallest, pass it in for every time.
+      shrContextInt: Shrink[Context[Int]],
+      arbIntToString: Arbitrary[Int => String],
+      shrIntToString: Shrink[Int => String],
+      // testing for the laws, composition
+      arbStringToChar: Arbitrary[String => Char],
+      shrStringToChar: Shrink[Context[String => Char]],
+      functor: Functor[Context],
+      equalityOfContextOfInt: Equality[Context[Int]],
+      equalityOfContextOfChar: Equality[Context[Char]]): Unit = {
     forAll { (opt: Context[Int]) => identity(opt) }
     forAll { (opt: Context[Int], f: Int => String, g: String => Char) => composite(opt, f, g) }
   }
@@ -72,17 +84,22 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
   it should "obey the functor laws via its map method more generically" in {
     assertObeysTheFunctorLaws[Option]
   }
+
   "Or" should "obey the functor laws via its badMap method" in {
+
     trait OrWithGood[G] {
       type AndBad[B] = G Or B
     }
+
     class BadOrFunctorProxy[G, B](underlying: G Or B) extends FunctorProxy[OrWithGood[G]#AndBad, B] {
       def map[C](f: B => C): G Or C  = underlying.badMap(f)
     }
+
     implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] =
       new Functor[OrWithGood[G]#AndBad] {
         def apply[B](opt: G Or B): FunctorProxy[OrWithGood[G]#AndBad, B] = new BadOrFunctorProxy[G, B](opt)
       }
+
     import org.scalacheck.Gen
     implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
       Arbitrary(
@@ -93,8 +110,31 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     // instancesOf[OrWithGood[Int]#AndBad] shouldObey theFunctorLaws
     // instancesOf[OrWithGood[Int]#AndBad] should obey the functorLaws
   }
-
   
+   "Or" should "obey the functor laws via its good map method" in {
+
+       trait OrWithBad[B] {
+         type Good[G] = G Or B
+       }
+
+       class GoodOrFunctorProxy[G, B](underlying: G Or B) extends FunctorProxy[OrWithBad[B]#Good, G] {
+         def map[C](f: G => C): C Or B = underlying.map(f)
+       }
+
+       implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#Good] =
+         new Functor[OrWithBad[B]#Good] {
+           def apply[G](or: G Or B): FunctorProxy[OrWithBad[B]#Good, G] = new GoodOrFunctorProxy[G, B](or)
+         }
+
+       import org.scalacheck.Gen
+       implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
+         Arbitrary(
+           for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either)
+         )
+
+         assertObeysTheFunctorLaws[OrWithBad[Int]#Good]
+  }
+
 /* Need ClassTag, but then don't implement the interface.
   "The map method of unmutated Arrays" should "obey the functor laws despite its unfortunate equals method" in {
     class ArrayFunctorProxy[T](underlying: Array[T]) extends FunctorProxy[Array, T] {
