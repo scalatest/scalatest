@@ -134,6 +134,8 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
       def apply[T](arr: List[T]): FunctorProxy[List, T] = new ListFunctorProxy[T](arr)
     }
     assertObeysTheFunctorLaws[List]
+    // assertObeys[Option](functorLaws)
+    // assertObeys[Option](functorLawsUsing[Int, String, Char])
   }
 }
 
