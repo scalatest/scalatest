@@ -275,7 +275,15 @@ trait Configuration {
    *
    * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
    */
+  @deprecated("use maxDiscardedFactor instead")
   def maxDiscarded(value: Int): MaxDiscarded = new MaxDiscarded(value)
+
+  /**
+   * Returns a <code>MaxDiscardedFactor</code> property check configuration parameter containing the passed value, which specifies the factor of discarded
+   * property evaluations allowed during property evaluation.
+   *
+   */
+  def maxDiscardedFactor(value: PozDouble): MaxDiscardedFactor = MaxDiscardedFactor(value)
 
   /**
    * Returns a <code>MinSize</code> property check configuration parameter containing the passed value, which specifies the minimum size parameter to
