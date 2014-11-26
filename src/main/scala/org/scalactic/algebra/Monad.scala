@@ -17,12 +17,43 @@ package org.scalactic.algebra
 
 import scala.language.higherKinds
 
-trait MonadProxy[TC[_], T] {
-  def map[U](f: T => U): TC[U]
-  def flatMap[U](f: T => TC[U]): TC[U]
+/**
+ * Proxy for algebraic structure containing <em>insertion</em> and <em>flat-mapping</em> methods that obey
+ * laws of <em>identity</em> and <em>associativity</em>.
+ *
+ * <p>
+ * A <code>MonadProxy</code> instance wraps an object that in some way behaves as a <code>Monad</code>.
+ * </p>
+ */
+trait MonadProxy[Context[_], T] {
+
+  /**
+   * Applies the given function to the value contained in this context, returning the result 
+   * of the function lifted into the same context.
+   */
+  def map[U](f: T => U): Context[U]
+
+  /**
+   * Applies the given function to the value contained in this context, returning the result 
+   * of the function, which is another value wrapped in the same context.
+   */
+  def flatMap[U](f: T => Context[U]): Context[U]
 }
 
-trait Monad[TC[_]] {
-  def apply[T](f: TC[T]): MonadProxy[TC, T]
-  def insert[T](o: T): TC[T]
+/**
+ * Algebraic structure containing <em>insertion</em> and <em>flat-mapping</em> methods that obey
+ * laws of <em>identity</em> and <em>associativity</em>.
+ */
+trait Monad[Context[_]] {
+
+  /**
+   * Produces a <code>MonadProxy</code> wrapping the given context instance.
+   */
+  def apply[T](o: Context[T]): MonadProxy[Context, T]
+
+  /**
+   * Inserts a value into a context.
+   */
+  def insert[T](o: T): Context[T]
 }
+
