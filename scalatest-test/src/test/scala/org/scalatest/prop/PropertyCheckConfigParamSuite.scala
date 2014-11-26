@@ -62,6 +62,16 @@ class PropertyCheckConfigParamSuite extends FunSuite with Matchers {
       MaxDiscarded(5678).value should be (5678)
   }
 
+  test("maxDiscardedFactor value is passed value, if valid") {
+    MaxDiscardedFactor(1.0).value.value should be (1.0)
+    MaxDiscardedFactor(1.5).value.value should be (1.5)
+  }
+
+  test("maxDiscardedFactor should not compile if value less than 0") {
+    "MaxDiscardedFactor(-0.1)" shouldNot compile
+    "MaxDiscardedFactor(-100.0)" shouldNot compile
+  }
+
   test("minSize throws IAE if less than 0") {
     intercept[IllegalArgumentException] {
       MinSize(-1)
