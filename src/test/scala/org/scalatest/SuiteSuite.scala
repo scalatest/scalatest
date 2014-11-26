@@ -511,6 +511,18 @@ class SuiteSuite extends Suite with SeveredStackTraces {
     assert(s6.theTestTheOtherConfigMapWasEmpty)
   }
 
+  def `test: execute should return a Status` {
+    class HappySuite extends Suite {
+      def testSucceeds() = ()
+    }
+    assert(new HappySuite().execute.succeeds())
+
+    class SadSuite extends Suite {
+      def testFails() { fail() }
+    }
+    assert(!new SadSuite().execute.succeeds())
+  }
+
   def `test: Suite should order encoded names in alphabetical decoded order` {
 
     // + comes before -
