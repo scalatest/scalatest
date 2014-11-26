@@ -114,16 +114,16 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
    "Or" should "obey the functor laws via its good map method" in {
 
        trait OrWithBad[B] {
-         type Good[G] = G Or B
+         type AndGood[G] = G Or B
        }
 
-       class GoodOrFunctorProxy[G, B](underlying: G Or B) extends FunctorProxy[OrWithBad[B]#Good, G] {
+       class GoodOrFunctorProxy[G, B](underlying: G Or B) extends FunctorProxy[OrWithBad[B]#AndGood, G] {
          def map[C](f: G => C): C Or B = underlying.map(f)
        }
 
-       implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#Good] =
-         new Functor[OrWithBad[B]#Good] {
-           def apply[G](or: G Or B): FunctorProxy[OrWithBad[B]#Good, G] = new GoodOrFunctorProxy[G, B](or)
+       implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#AndGood] =
+         new Functor[OrWithBad[B]#AndGood] {
+           def apply[G](or: G Or B): FunctorProxy[OrWithBad[B]#AndGood, G] = new GoodOrFunctorProxy[G, B](or)
          }
 
        import org.scalacheck.Gen
@@ -132,7 +132,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
            for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either)
          )
 
-         assertObeysTheFunctorLaws[OrWithBad[Int]#Good]
+         assertObeysTheFunctorLaws[OrWithBad[Int]#AndGood]
   }
 
 /* Need ClassTag, but then don't implement the interface.
