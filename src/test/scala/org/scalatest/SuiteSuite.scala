@@ -521,6 +521,20 @@ class SuiteSuite extends Suite with SeveredStackTraces {
       def testFails() { fail() }
     }
     assert(!new SadSuite().execute.succeeds())
+
+
+    def failsWith(t:Throwable) = {
+      class CrashySuite(t: Throwable) extends Suite {
+        def testCrashes() {
+          throw t
+        }
+      }
+      !new CrashySuite(new InstantiationException).execute.succeeds()
+    }
+    assert(failsWith(new InstantiationException))
+    assert(failsWith(new IllegalAccessException))
+    assert(failsWith(new NoClassDefFoundError))
+    assert(failsWith(new RuntimeException))
   }
 
   def `test: Suite should order encoded names in alphabetical decoded order` {
