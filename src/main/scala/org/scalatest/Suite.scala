@@ -791,7 +791,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     shortstacks: Boolean = false,
     fullstacks: Boolean = false,
     stats: Boolean = false
-  ) {
+  ): Status = {
     if (configMap == null)
       throw new NullPointerException("configMap was null")
     val SelectedTag = "Selected"
@@ -840,7 +840,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
       val formatter = formatterForSuiteStarting(thisSuite)
       dispatch(SuiteStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), formatter, Some(getTopOfClass(thisSuite))))
 
-      run(
+      val status = run(
         None,
         Args(dispatch,
         Stopper.default,
@@ -857,20 +857,25 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
         val duration = System.currentTimeMillis - runStartTime
         dispatch(RunCompleted(tracker.nextOrdinal(), Some(duration)))
       }
+      status
     }
     catch {
       case e: InstantiationException =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        FailedStatus
       case e: IllegalAccessException =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        FailedStatus
       case e: NoClassDefFoundError =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadClass", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        FailedStatus
       case e: Throwable =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        FailedStatus
     }
     finally {
       dispatch.dispatchDisposeAndWaitUntilDone()
@@ -903,7 +908,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
    * (new ExampleSuite).execute()
    * </pre>
    */
-  final def execute { execute() }
+  final def execute: Status = { execute() }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tests that are tagged and

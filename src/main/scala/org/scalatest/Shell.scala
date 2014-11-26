@@ -401,7 +401,7 @@ private[scalatest] final case class ShellImpl(
   lazy val nostacks: Shell = copy(shortstacksPassed = false, fullstacksPassed = false)
   lazy val nostats: Shell = copy(statsPassed = false)
 
-  def run(suite: Suite, testName: String = null, configMap: ConfigMap = ConfigMap.empty) {
+  def run(suite: Suite, testName: String = null, configMap: ConfigMap = ConfigMap.empty) = {
     suite.execute(testName, configMap, colorPassed, durationsPassed, shortstacksPassed, fullstacksPassed, statsPassed)
   }
 }
