@@ -160,7 +160,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  * </table>
  *
  * <p>
- * The <code>check</code> methods of trait <code>Checkers</code> each take a <code>PropertyCheckConfig</code>
+ * The <code>check</code> methods of trait <code>Checkers</code> each take a <code>PropertyCheckConfiguration</code>
  * object as an implicit parameter. This object provides values for each of the five configuration parameters. Trait <code>Configuration</code>
  * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value.
  * If you want to set one or more configuration parameters to a different value for all property checks in a suite you can override this
@@ -171,7 +171,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <pre class="stHighlight">
  * implicit override val generatorDrivenConfig =
- *   PropertyCheckConfig(minSize = 10, maxSize = 20)
+ *   PropertyCheckConfiguration(minSize = 10, sizeRange = 10)
  * </pre>
  *
  * <p>
@@ -180,13 +180,13 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <pre class="stHighlight">
  * implicit val generatorDrivenConfig =
- *   PropertyCheckConfig(minSize = 10, maxSize = 20)
+ *   PropertyCheckConfiguration(minSize = 10, sizeRange = 10)
  * </pre>
  *
  * <p>
- * In addition to taking a <code>PropertyCheckConfig</code> object as an implicit parameter, the <code>check</code> methods of trait
+ * In addition to taking a <code>PropertyCheckConfiguration</code> object as an implicit parameter, the <code>check</code> methods of trait
  * <code>Checkers</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
- * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfig</code> for a single <code>check</code>
+ * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfiguration</code> for a single <code>check</code>
  * invocation. You place these configuration settings after the property or property function, For example, if you want to
  * set <code>minSuccessful</code> to 500 for just one particular <code>check</code> invocation,
  * you can do so like this:
@@ -198,12 +198,12 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <p>
  * This invocation of <code>check</code> will use 500 for <code>minSuccessful</code> and whatever values are specified by the
- * implicitly passed <code>PropertyCheckConfig</code> object for the other configuration parameters.
+ * implicitly passed <code>PropertyCheckConfiguration</code> object for the other configuration parameters.
  * If you want to set multiple configuration parameters in this way, just list them separated by commas:
  * </p>
  *
  * <pre class="stHighlight">
- * check((n: Int) => n + 0 == n, minSuccessful(500), maxDiscarded(300))
+ * check((n: Int) => n + 0 == n, minSuccessful(500), maxDiscardedFactor(0.6))
  * </pre>
  *
  * <p>
@@ -237,7 +237,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,P](f: A1 => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty
     ) {
@@ -252,7 +252,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,P](f: (A1,A2) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty
@@ -269,7 +269,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,P](f: (A1,A2,A3) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -286,7 +286,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,P](f: (A1,A2,A3,A4) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -304,7 +304,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,A5,P](f: (A1,A2,A3,A4,A5) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -323,7 +323,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,A5,A6,P](f: (A1,A2,A3,A4,A5,A6) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfiguration,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -352,7 +352,7 @@ trait Checkers extends Configuration {
    * @param p the property to check
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfig) {
+  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfiguration) {
     val params = getParams(configParams, config)
     check(p, params)
   }
