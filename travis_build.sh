@@ -103,15 +103,15 @@ if [[ $MODE = 'RegularTests5' ]] ; then
 fi
 
 if [[ $MODE = 'ScalacticTests' ]] ; then
-  echo "Doing 'sbt scalactic/test'"
+  echo "Doing 'sbt scalacticAll/test'"
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION compile
-  sbt ++$TRAVIS_SCALA_VERSION scalactic/test
+  sbt ++$TRAVIS_SCALA_VERSION scalacticAll/test
   rc=$?
   echo first try, exitcode $rc
   if [[ $rc != 0 ]] ; then
-    sbt ++$TRAVIS_SCALA_VERSION scalactic/testQuick
+    sbt ++$TRAVIS_SCALA_VERSION scalacticAll/testQuick
     rc=$?
     echo second try, exitcode $rc
   fi
@@ -302,5 +302,5 @@ fi
 
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
-  sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
+  sbt ++$TRAVIS_SCALA_VERSION scalacticAll/publishSigned
 fi
