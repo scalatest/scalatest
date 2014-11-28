@@ -48,22 +48,10 @@ object GenScalactic {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {
-
-    val scalacticSourceDir = new File("src/main/scala/org/scalactic")
+    val scalacticSourceDir = new File("scalactic/src/main/scala/org/scalactic")
     val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    copyDir(scalacticSourceDir, scalacticPackageDir)
 
-    GenVersions.genMain(scalacticPackageDir, version, scalaVersion)
-
-    val scalautilsSourceDir = new File("src/main/scala/org/scalautils")
-    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
-    copyDir(scalautilsSourceDir, scalautilsPackageDir)
-
-    val sourceResourceFile = new File("src/main/resources/org/scalactic/ScalacticBundle.properties")
-    val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
-    destResourceDir.mkdirs()
-    val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
-    copyFile(sourceResourceFile, destResourceFile)
+    GenVersions.genMainScalactic(scalacticPackageDir, version, scalaVersion)
 
     val sourceCssFile = new File("src/main/html/addl.css")
     val destCssDir = new File(targetDir.getParentFile, "html")
@@ -78,14 +66,6 @@ object GenScalactic {
     val sharedHelpersSourceFile = new File("src/test/scala/org/scalatest/SharedHelpers.scala")
     val sharedHelpersTargetFile = new File(scalatestDir, sharedHelpersSourceFile.getName)
     copyFile(sharedHelpersSourceFile, sharedHelpersTargetFile)
-
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    val scalacticSourceDir = new File("src/test/scala/org/scalactic")
-    copyDir(scalacticSourceDir, scalacticPackageDir)
-
-    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
-    val scalautilsSourceDir = new File("src/test/scala/org/scalautils")
-    copyDir(scalautilsSourceDir, scalautilsPackageDir)
   }
 
 
