@@ -1,3 +1,4 @@
+import sbt.Package.ManifestAttributes
 import sbt._
 import Keys._
 import java.net.{URL, URLClassLoader}
@@ -63,7 +64,7 @@ object ScalatestBuild extends Build {
         if (javac.exists || javacExe.exists)
           Some(file(javaHome.getAbsolutePath))
         else {
-          println("WARNING: No JAVA_HOME detected, javac on PATH will be used.  Set JAVA_HOME enviroment variable to a JDK to remove this warning.")
+          println("WARNING: No JAVA_HOME detected, javac on PATH will be used.  Set JAVA_HOME environment variable to a JDK to remove this warning.")
           None
         }
     }
@@ -259,9 +260,23 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   )
+   ).dependsOn(scalactic)
 
-  lazy val scalactic = Project("scalactic", file("genscalactic"))
+  lazy val scalacticTest = Project("scalacticTest", file("scalactic-test"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test",
+      organization := "org.scalactic",
+      initialCommands in console := "import org.scalactic._"
+    )
+    .settings(
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest)
+    )
+    .settings(libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value))
+    .dependsOn(scalatest, scalactic)
+
+  lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic",
@@ -269,12 +284,10 @@ object ScalatestBuild extends Build {
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
       resourceDirectories in Compile += {
         (sourceManaged in Compile).value / "resources"
       },
-      // TODO - This is a hack to get us on the resources list..
+        // TODO - This is a hack to get us on the resources list..
       resourceGenerators in Compile += {
         Def.task{
           Seq((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties")
@@ -295,8 +308,16 @@ object ScalatestBuild extends Build {
         "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
-      )
-    ).dependsOn(scalatest % "test")
+      ))
+
+  lazy val scalacticAll = Project("scalacticAll", file("genscalactic"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic All",
+      initialCommands in console := "import org.scalactic._"
+    )
+    .aggregate(scalactic, scalacticTest)
+    .dependsOn(scalactic, scalacticTest)
 
   def gentestsLibraryDependencies =
     Seq(
