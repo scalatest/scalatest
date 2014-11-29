@@ -57,10 +57,25 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
   def composite[Context[_], T, U, V](o: Context[T], f: T => U, g: U => V)(implicit functor: Functor[Context], equality: Equality[Context[V]]): Unit =
     functor((functor(o).map(f))).map(g) shouldEqual functor(o).map(g compose f) // g(f(x))
 
+  def laws(name: String)(assertion: => Unit): Unit = {
+    withClue(s"$name ") { assertion }
+  }
+  def law(name: String)(assertion: => Unit): Unit = {
+    withClue(s"$name law failed: ") { assertion }
+  }
+
   "Option" should "obey the functor laws via its map method" in {
     forAll { (opt: Option[Int]) => identity(opt) }
     forAll { (opt: Option[Int], f: Int => String, g: String => String) => composite(opt, f, g) }
   }
+
+  trait Laws[T[_]] {
+  }
+
+  trait LawsUsing[T[_], A, B, C] {
+  }
+
+  // def assertObeys[T[_]](laws: Laws[T]): Unit = laws.assertObeys()
 
   import org.scalacheck.Arbitrary
   import org.scalacheck.Shrink
@@ -77,8 +92,15 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
       functor: Functor[Context],
       equalityOfContextOfInt: Equality[Context[Int]],
       equalityOfContextOfChar: Equality[Context[Char]]): Unit = {
-    forAll { (opt: Context[Int]) => identity(opt) }
-    forAll { (opt: Context[Int], f: Int => String, g: String => Char) => composite(opt, f, g) }
+
+      laws("Functor") {
+        law("identity") {
+          forAll { (opt: Context[Int]) => identity(opt) }
+        }
+        law("composite") {
+          forAll { (opt: Context[Int], f: Int => String, g: String => Char) => composite(opt, f, g) }
+        }
+      }
   }
 
   it should "obey the functor laws via its map method more generically" in {
