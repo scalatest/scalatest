@@ -883,7 +883,7 @@ object Or {
       case Left(b) => Bad(b)
     }
 
-  def from[G, B](option: Option[G], orElse: B): G Or B =
+  def from[G, B](option: Option[G], orElse: => B): G Or B =
     option match {
       case Some(g) => Good(g)
       case None => Bad(orElse)
