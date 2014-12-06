@@ -259,7 +259,16 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   )
+   ).dependsOn(scalacticMacro)
+
+  lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Macro",
+      organization := "org.scalactic",
+      // Disable publishing macros directly, included in scalactic main jar
+      publish := {},
+      publishLocal := {})
 
   lazy val scalactic = Project("scalactic", file("genscalactic"))
     .settings(sharedSettings: _*)
@@ -274,17 +283,12 @@ object ScalatestBuild extends Build {
       resourceDirectories in Compile += {
         (sourceManaged in Compile).value / "resources"
       },
-      // TODO - This is a hack to get us on the resources list..
-      resourceGenerators in Compile += {
-        Def.task{
-          Seq((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties")
-        }.taskValue
-      },
-      // Note this should be removable.
-      mappings in (Compile, packageBin) += {
-        ((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties") -> "org/scalactic/ScalacticBundle.properties"
-      },
-      scalacticDocTaskSetting
+       // include the macro classes and resources in the main jar
+       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
+       // include the macro sources in the main source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
+      scalacticDocTaskSetting,
+      sources in (Compile, doc) ++= (sources in scalacticMacro in (Compile, doc)).value
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -296,7 +300,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatest % "test")
+    ).dependsOn(scalatest % "test", scalacticMacro)
 
   def gentestsLibraryDependencies =
     Seq(
