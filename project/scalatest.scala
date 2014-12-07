@@ -224,6 +224,11 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genMain),
      testOptions in Test := scalatestTestOptions,
+       // include the macro classes and resources in the main jar
+       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
+       // include the macro sources in the main source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
+      sources in (Compile, doc) ++= (sources in scalacticMacro in (Compile, doc)).value,
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -259,7 +264,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro)
+   ).dependsOn(scalacticMacro % "compile-internal, test-internal") // avoid dependency in pom on non-existent scalactic-macro artifact, per discussion in http://grokbase.com/t/gg/simple-build-tool/133shekp07/sbt-avoid-dependence-in-a-macro-based-project
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
@@ -300,7 +305,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatest % "test", scalacticMacro)
+    ).dependsOn(scalatest % "test", scalacticMacro % "compile-internal, test-internal")
 
   def gentestsLibraryDependencies =
     Seq(
