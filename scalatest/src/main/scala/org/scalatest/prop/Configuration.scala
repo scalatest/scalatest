@@ -100,13 +100,14 @@ trait Configuration {
     minSize: Int = 0,
     maxSize: Int = 100,
     workers: Int = 1
-  ) {
+  ) extends PropertyCheckConfigurable {
     require(minSuccessful > 0, "minSuccessful had value " + minSuccessful + ", but must be greater than zero")
     require(maxDiscarded >= 0, "maxDiscarded had value " + maxDiscarded + ", but must be greater than or equal to zero")
     require(minSize >= 0, "minSize had value " + minSize + ", but must be greater than or equal to zero")
     require(maxSize >= 0, "maxSize had value " + maxSize + ", but must be greater than or equal to zero")
     require(minSize <= maxSize, "minSize had value " + minSize + ", which must be less than or equal to maxSize, which had value " + maxSize)
     require(workers > 0, "workers had value " + workers + ", but must be greater than zero")
+    private [prop] def asPropertyCheckConfiguration = this
   }
 
   import scala.language.implicitConversions
@@ -133,11 +134,25 @@ trait Configuration {
                                         maxDiscardedFactor: PozDouble = PozDouble.from(5.0).get,
                                         minSize: PozInt = PozInt.from(0).get,
                                         sizeRange: PozInt = PozInt.from(100).get,
-                                        workers: PosInt = PosInt.from(1).get) {
+                                        workers: PosInt = PosInt.from(1).get) extends PropertyCheckConfigurable {
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSuccessful parameters.  Remove with PropertyCheckConfig class")
     private [scalatest] val legacyMaxDiscarded: Option[Int] = None
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSize parameters.  Remove with PropertyCheckConfig class")
     private [scalatest] val legacyMaxSize: Option[Int] = None
+    private [prop] def asPropertyCheckConfiguration = this
+  }
+
+  /**
+   *   Internal transitional trait for upgrade compatibility when mixing
+   *   <code>PropertyCheckConfig</code> and <code>PropertyCheckConfiguration</code> implicit variables.
+   *
+   *   When <code>PropertyCheckConfig</code> is removed, this trait will be removed as well.
+   *
+   *   For example, see ConfigImplicitOverrideInClassTest.
+   */
+  @deprecated("Use PropertyCheckConfiguration directly instead.")
+  trait PropertyCheckConfigurable {
+    private [prop] def asPropertyCheckConfiguration: PropertyCheckConfiguration
   }
 
   object PropertyCheckConfiguration {
@@ -347,9 +362,9 @@ trait Configuration {
 
   private[prop] def getParams(
     configParams: Seq[PropertyCheckConfigParam],
-    config: PropertyCheckConfiguration
+    c: PropertyCheckConfigurable
   ): Parameters = {
-
+    val config: PropertyCheckConfiguration = c.asPropertyCheckConfiguration
     var minSuccessful: Option[Int] = None
     var maxDiscarded: Option[Int] = None
     var maxDiscardedFactor: Option[Double] = None

@@ -2,7 +2,7 @@ package org.scalatest
 package prop
 
 trait GetImplicitConfig { self: Configuration =>
-  def getImplicitConfig()(implicit config: PropertyCheckConfiguration): PropertyCheckConfiguration = config
+  def getImplicitConfig()(implicit config: PropertyCheckConfigurable): PropertyCheckConfiguration = config.asPropertyCheckConfiguration
 }
 
 class ConfigImplicitOverrideInClassTest extends FunSuite with Matchers with Configuration with GetImplicitConfig {
