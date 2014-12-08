@@ -700,7 +700,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A](fun: (A) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A]
       ) {
         val propF = { (a: A) =>
@@ -741,7 +741,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B](fun: (A, B) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B]
       ) {
@@ -783,7 +783,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C](fun: (A, B, C) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C]
@@ -826,7 +826,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D](fun: (A, B, C, D) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C],
@@ -870,7 +870,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D, E](fun: (A, B, C, D, E) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C],
@@ -915,7 +915,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    */
     def apply[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Unit)
       (implicit
-        config: PropertyCheckConfiguration,
+        config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C],
@@ -963,7 +963,7 @@ val propertyCheckForAllTemplate = """
    */
   def forAll[$alphaUpper$](fun: ($alphaUpper$) => Unit)
     (implicit
-      config: PropertyCheckConfiguration,
+      config: PropertyCheckConfigurable,
 $arbShrinks$
     ) {
       val propF = { ($argType$) =>
@@ -1003,7 +1003,7 @@ $arbShrinks$
    */
   def forAll[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
-      config: PropertyCheckConfiguration,
+      config: PropertyCheckConfigurable,
 $arbShrinks$
     ) {
       val propF = { ($argType$) =>
@@ -1050,7 +1050,7 @@ $arbShrinks$
    */
   def forAll[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
-      config: PropertyCheckConfiguration,
+      config: PropertyCheckConfigurable,
 $shrinks$
     ) {
       val propF = { ($argType$) =>
@@ -1097,7 +1097,7 @@ $shrinks$
    */
   def forAll[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
-      config: PropertyCheckConfiguration,
+      config: PropertyCheckConfigurable,
 $shrinks$
     ) {
 
