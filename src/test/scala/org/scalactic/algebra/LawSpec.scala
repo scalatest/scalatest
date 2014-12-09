@@ -15,6 +15,7 @@
  */
 package org.scalactic.algebra
 
+import org.scalactic.{Good, Or}
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 import org.scalacheck._
@@ -24,184 +25,268 @@ import scala.language.higherKinds
 class LawSpec extends FlatSpec with Matchers {
 
   /* Local def of Functor */
-  trait FunctorProxy[Context[_], T] {
-    def map[U](f: T => U): Context[U]
+  trait FunctorProxy[Context[_], A] {
+    def map[B](f: A => B): Context[B]
   }
 
   trait Functor[Context[_]] {
-    def apply[T](ct: Context[T]): FunctorProxy[Context, T]
+    def apply[A](ct: Context[A]): FunctorProxy[Context, A]
   }
 
-  trait ApplicativeProxy[Context[_], T] extends FunctorProxy[Context, T] {
-    // 'ap' in scalaz, renamed to make things more readable (zap = zip + apply)
-    def zap[U](ctu: => Context[T => U]): Context[U]
+  trait ApplicativeProxy[Context[_], A] extends FunctorProxy[Context, A] {
+    def ap[B](cab: Context[A => B]): Context[B]
   }
 
   trait Applicative[Context[_]] extends Functor[Context] {
-    def apply[T](ct: Context[T]): ApplicativeProxy[Context, T]
+    def apply[A](ca: Context[A]): ApplicativeProxy[Context, A]
 
     // a.k.a. pure, point
-    def insert[T](t: T): Context[T]
+    def insert[A](a: A): Context[A]
   }
 
-  trait MonadProxy[Context[_], T] extends ApplicativeProxy[Context, T] {
+  trait MonadProxy[Context[_], A] extends ApplicativeProxy[Context, A] {
     // a.k.a. bind
-    def flatMap[U](f: T => Context[U]): Context[U]
+    def flatMap[B](acb: A => Context[B]): Context[B]
   }
 
   trait Monad[Context[_]] extends Applicative[Context] {
     def apply[T](ct: Context[T]): MonadProxy[Context, T]
   }
 
-  trait FunctorIdentityLaw {
-    def obeysIdentityLaw[Context[_], T](ct: Context[T])(implicit fun: Functor[Context]): Boolean =
-      fun(ct).map(identity[T]) === ct
+  trait Laws[Context[_]] {
+    type Law = () => Unit
+
+    def laws: Seq[Law]
+
+    def assert(): Unit = laws.foreach(law => law())
   }
 
-  trait FunctorCompositionLaw {
-    // conforms if (ctx map f map g) is the same as (ctx map (g(f)), via the proxy
-    def obeysFunctorCompositionLaw[Context[_], T, U, V](ct: Context[T], f: T => U, g: U => V)(implicit fun: Functor[Context]): Boolean = {
-      fun(fun(ct).map(f)).map(g) === fun(ct).map(g compose f)
+  class FunctorLaws[Context[_], A, B, C](implicit fun: Functor[Context],
+      arbCa: Arbitrary[Context[A]],
+      shrCa: Shrink[Context[A]],
+      arbAb: Arbitrary[A => B],
+      shrAb: Shrink[A => B],
+      arbBc: Arbitrary[B => C],
+      shrBc: Shrink[B => C]) extends Laws[Context] {
+
+    // mapping over an identity function (e.g. a => a) should cause no change
+    val checkFunctorIdentity: Law = () =>
+      forAll { (ca: Context[A]) =>
+        (fun(ca) map identity[A]) shouldEqual ca
+      }
+
+    // conforms if (ca map f map g) is the same as (ca map (g(f)), via the proxy
+    val checkFunctorComposition: Law = () =>
+      forAll { (ca: Context[A], ab: A => B, bc: B => C) =>
+        (fun(fun(ca) map ab) map bc) shouldEqual (fun(ca) map (bc compose ab))
+      }
+
+    override def laws = Seq(checkFunctorIdentity, checkFunctorComposition)
+  }
+
+  class ApplicativeLaws[Context[_], A, B, C](implicit applic: Applicative[Context],
+      arbA: Arbitrary[A],
+      shrA: Shrink[A],
+      arbCa: Arbitrary[Context[A]],
+      shrCa: Shrink[Context[A]],
+      arbCab: Arbitrary[Context[A => B]],
+      shrCab: Shrink[Context[A => B]],
+      arbCbc: Arbitrary[Context[B => C]],
+      shrCbc: Shrink[Context[B => C]],
+      arbAb: Arbitrary[A => B],
+      shrAb: Shrink[A => B],
+      arbBc: Arbitrary[B => C],
+      shrBc: Shrink[B => C]) extends FunctorLaws[Context, A, B, C] {
+
+    val checkApplicativeComposition: Law = () =>
+      forAll { (ca: Context[A], cab: Context[A => B], cbc: Context[B => C]) =>
+        // (ca ap cab ap cbc) should be the same as (ca ap (cab ap (cbc map (bc compose ab))))
+        (applic(applic(ca) ap cab) ap cbc) shouldEqual
+          (applic(ca) ap
+            (applic(cab) ap
+              (applic(cbc) map ((bc: B => C) => (ab: A => B) => bc compose ab))))
+      }
+
+    // ca ap (a => a) should be the same as ca
+    val checkApplicativeIdentity: Law = () =>
+      forAll { (ca: Context[A]) => (applic(ca) ap applic.insert((a: A) => a)) shouldEqual ca}
+
+
+    // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
+    val checkApplicativeHomomorphism: Law = () =>
+      forAll { (a: A, ab: A => B) =>
+        (applic(applic.insert(a)) ap applic.insert(ab)) shouldEqual applic.insert(ab(a))
+      }
+
+    val checkApplicativeInterchange: Law = () =>
+
+      forAll { (a: A, cab: Context[A => B]) =>
+        (applic(applic.insert(a)) ap cab) shouldEqual (applic(cab) ap applic.insert((ab: A => B) => ab(a)))
+      }
+
+    val checkApplicativeMapConsistentWithAp: Law = () =>
+      forAll { (ca: Context[A], ab: A => B) =>
+        (applic(ca) map ab) shouldEqual (applic(ca) ap applic.insert(ab))
+      }
+
+    override def laws = super.laws ++ Seq(
+      checkApplicativeComposition,
+      checkApplicativeHomomorphism,
+      checkApplicativeInterchange,
+      checkApplicativeMapConsistentWithAp)
+  }
+
+  class MonadLaws[Context[_], A, B, C]()(implicit monad: Monad[Context],
+      arbA: Arbitrary[A],
+      shrA: Shrink[A],
+      arbCa: Arbitrary[Context[A]],
+      shrCa: Shrink[Context[A]],
+      arbCab: Arbitrary[Context[A => B]],
+      shrCab: Shrink[Context[A => B]],
+      arbCbc: Arbitrary[Context[B => C]],
+      shrCbc: Shrink[Context[B => C]],
+      arbAcb: Arbitrary[A => Context[B]],
+      shrAcb: Shrink[A => Context[B]],
+      arbBcc: Arbitrary[B => Context[C]],
+      shrBcc: Shrink[B => Context[C]],
+      arbAb: Arbitrary[A => B],
+      shrAb: Shrink[A => B],
+      arbBc: Arbitrary[B => C],
+      shrBc: Shrink[B => C]) extends ApplicativeLaws[Context, A, B, C] {
+
+    val checkMonadicAssociativity: Law = () =>
+      forAll { (ca: Context[A], acb: A => Context[B], bcc: B => Context[C]) =>
+        (monad(monad(ca) flatMap acb) flatMap bcc) shouldEqual (monad(ca) flatMap ((t: A) => monad(acb(t)) flatMap bcc))
+      }
+
+    val checkMonadicFlatMapConsistentWithAp: Law = () =>
+      forAll { (a: Context[A], cab: Context[A => B]) =>
+        (monad(a) ap cab) shouldEqual (monad(cab) flatMap (ab => monad(a) map ab))
+      }
+
+    val checkMonadicRightIdentity: Law = () =>
+      forAll { (ca: Context[A]) => (monad(ca) flatMap (t => monad.insert(t))) shouldEqual ca}
+
+    val checkMonadicLeftIdentity: Law = () =>
+      forAll { (a: A, acb: A => Context[B]) =>
+        (monad(monad.insert(a)) flatMap acb) shouldEqual acb(a)
+      }
+
+    override def laws = super.laws ++ Seq(
+      checkMonadicAssociativity,
+      checkMonadicFlatMapConsistentWithAp,
+      checkMonadicLeftIdentity,
+      checkMonadicRightIdentity)
+  }
+
+  /**
+   * This trait is used to curry the type parameters of Or, which takes two type parameters,
+   * into a type (the trait) which takes one parameter, and another (the type member) which
+   * takes the other.  The resulting type (OrWithBad[B]#AndGood) takes a single (Good) type
+   * parameter.
+   */
+  trait OrWithBad[B] {
+    type AndGood[G] = G Or B
+  }
+
+  /**
+   * This trait is used to curry the type parameters of Or, which takes two type parameters,
+   * into a type (the trait) which takes one parameter, and another (the type member) which
+   * takes the other.  The resulting type (OrWithGood[G]#AndBad) takes a single (Bad) type
+   * parameter.
+   */
+  trait OrWithGood[G] {
+    type AndBad[B] = G Or B
+  }
+
+  "Option" should "obey the functor laws via its map method" in {
+    class OptionFunctorProxy[T](opt: Option[T]) extends FunctorProxy[Option, T] {
+      override def map[U](f: (T) => U): Option[U] = opt.map(f)
     }
-  }
 
-  trait FunctorLaws extends FunctorIdentityLaw with FunctorCompositionLaw
-
-  trait ApplicativeCompositionLaw {
-    def obeysApplicativeComposition[Context[_], T, U, V](ct: Context[T], ctu: Context[T => U], cuv: Context[U => V])
-                                                        (implicit applic: Applicative[Context]): Boolean = {
-      (applic( applic(ct) zap ctu ) zap cuv) ===
-        applic(ct).zap( applic(ctu).zap( applic(cuv).map((uv: U => V) => (tu: T => U) => uv compose tu) ) )
-    }
-  }
-
-  trait ApplicativeIdentityLaw {
-    def obeysApplicativeIdentity[Context[_], T](ct: Context[T])(implicit applic: Applicative[Context]): Boolean = {
-      (applic(ct) zap applic.insert((t: T) => t)) === ct
-    }
-  }
-
-  trait ApplicativeHomomorphismLaw {
-    def obeysApplicativeHomomorphism[Context[_], T, U](f: T => U, t: T)(implicit applic: Applicative[Context]): Boolean = {
-      (applic( applic.insert(t) ) zap applic.insert(f)) === applic.insert(f(t))
-    }
-  }
-
-  trait ApplicativeInterchangeLaw {
-    def obeysApplicativeInterchange[Context[_], T, U](cf: Context[T => U], t: T)(implicit applic: Applicative[Context]): Boolean = {
-      (applic(applic.insert(t)) zap cf) === (applic(cf) zap applic.insert((f: T => U) => f(t)))
-    }
-  }
-
-  trait ApplicativeMapConsistentWithApLaw {
-    def obeysApplicativeMapConsistentWithZap[Context[_], T, U](ct: Context[T], f: T => U)(implicit applic: Applicative[Context]): Boolean = {
-      (applic(ct) map f) === (applic(ct) zap applic.insert(f))
-    }
-  }
-
-  trait ApplicativeLaws extends FunctorLaws
-    with ApplicativeCompositionLaw
-    with ApplicativeIdentityLaw
-    with ApplicativeHomomorphismLaw
-    with ApplicativeInterchangeLaw
-    with ApplicativeMapConsistentWithApLaw
-
-  trait MonadicAssociativityLaw {
-    def obeysMonadicAssociativity[Context[_], T, U, V](ct: Context[T], tcu: T => Context[U], ucv: U => Context[V])(implicit monad: Monad[Context]): Boolean = {
-
-      (monad(monad(ct) flatMap tcu) flatMap ucv) === (monad(ct) flatMap ((t: T) => monad(tcu(t)) flatMap ucv))
-    }
-  }
-
-  trait MonadicFlatMapConsistentWithZapLaw {
-    def obeysFlatMapConsistentWithZap[Context[_], T, U](ct: Context[T], ctu: Context[T => U])(implicit monad: Monad[Context]): Boolean = {
-      (monad(ct) zap ctu) === (monad(ctu) flatMap (f => monad(ct) map f))
-    }
-  }
-
-  trait MonadicRightIdentityLaw {
-    def obeysRightIdentity[Context[_], T](ct: Context[T])(implicit monad: Monad[Context]): Boolean = {
-      (monad(ct) flatMap (t => monad.insert(t))) === ct
-
-    }
-  }
-
-  trait MonadicLeftIdentityLaw {
-    def obeysLeftIdentity[Context[_], T, U](t: T, tcu: T => Context[U])(implicit monad: Monad[Context]): Boolean = {
-      (monad(monad.insert(t)) flatMap tcu) === tcu(t)
-    }
-  }
-
-  trait MonadLaws extends ApplicativeLaws
-    with MonadicAssociativityLaw
-    with MonadicFlatMapConsistentWithZapLaw
-    with MonadicLeftIdentityLaw
-    with MonadicRightIdentityLaw
-
-  trait FunctorAssertions[Context[_]] extends FunctorIdentityLaw with FunctorCompositionLaw {
-
-    def assert[T, U, V]()(implicit fun: Functor[Context],
-                          arbContextT:  Arbitrary[Context[T]],
-                          shrContextT:  Shrink[Context[T]],
-                          arbFunT:      Arbitrary[T => U],
-                          shrFunT:      Shrink[T => U],
-                          arbFunU:      Arbitrary[U => V],
-                          shrFunU:      Shrink[U => V]
-      ): Unit = {
-      checkIdentity[T]()
-      checkComposition[T, U, V]()
+    implicit object OptionFunctor extends Functor[Option] {
+      def apply[T](opt: Option[T]) = new OptionFunctorProxy[T](opt)
     }
 
-    def checkIdentity[T]()(implicit fun: Functor[Context],
-                           arbContextT:  Arbitrary[Context[T]],
-                           shrContextT:  Shrink[Context[T]]
-      ): Unit = {
-      forAll { (ctx: Context[T]) => obeysIdentityLaw(ctx) shouldBe true }
+    new FunctorLaws[Option, Int, String, Double]().assert()
+  }
+
+  "Option" should "obey the monad laws" in {
+    class OptionMonadProxy[A](opt: Option[A]) extends MonadProxy[Option, A] {
+      override def map[B](ab: A => B): Option[B] = opt.map(ab)
+
+      override def flatMap[B](aob: A => Option[B]): Option[B] = opt.flatMap(aob)
+
+      override def ap[B](oab: Option[A => B]): Option[B] = opt.zip(oab).map(tup => tup._2(tup._1)).headOption
     }
 
-    def checkComposition[T, U, V]()(implicit
-                                    adapter:      Functor[Context],
-                                    arbContextT:  Arbitrary[Context[T]],
-                                    shrContextT:  Shrink[Context[T]],
-                                    arbFunT:      Arbitrary[T => U],
-                                    shrFunT:      Shrink[T => U],
-                                    arbFunU:      Arbitrary[U => V],
-                                    shrFunU:      Shrink[U => V]
-      ): Unit = {
-      // TODO: how to loop through types? (code generation/macros?)
-      forAll { (ctx: Context[T], f: T => U, g: U => V) => obeysFunctorCompositionLaw(ctx, f, g) shouldBe true }
+    implicit object OptionMonad extends Monad[Option] {
+      override def apply[A](opt: Option[A]) = new OptionMonadProxy[A](opt)
+
+      override def insert[A](a: A): Option[A] = Option(a)
     }
+
+    new MonadLaws[Option, Int, String, Double]().assert()
   }
 
-  /* functor def for Option */
-  class OptionFunctorProxy[T](opt: Option[T]) extends FunctorProxy[Option, T] {
-    override def map[U](f: (T) => U): Option[U] = opt.map(f)
+  "List" should "obey the functor laws via its map method" in {
+    /* functor def for List */
+    class ListFunctorProxy[T](list: List[T]) extends FunctorProxy[List, T] {
+      override def map[U](f: (T) => U): List[U] = list.map(f)
+    }
+
+    implicit object ListFunctor extends Functor[List] {
+      def apply[T](list: List[T]) = new ListFunctorProxy[T](list)
+    }
+
+    new FunctorLaws[List, Int, String, Double]().assert()
   }
 
-  implicit object OptionFunctor extends Functor[Option] {
-    def apply[T](opt: Option[T]) = new OptionFunctorProxy[T](opt)
+  implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
+    Arbitrary(for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either))
+
+  "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
+
+    class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorProxy[OrWithBad[Bad]#AndGood, Good] {
+      def map[C](gc: Good => C): C Or Bad = ctx.map(gc)
+    }
+
+    implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#AndGood] = new Functor[OrWithBad[B]#AndGood] {
+      def apply[G](ctx: G Or B) = new GoodOrFunctorProxy[G, B](ctx)
+    }
+
+    new FunctorLaws[OrWithBad[Int]#AndGood, Int, String, Double]().assert()
   }
 
-  /* functor def for List */
-  class ListFunctorProxy[T](list: List[T]) extends FunctorProxy[List, T] {
-    override def map[U](f: (T) => U): List[U] = list.map(f)
+  "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
+
+    class BadOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorProxy[OrWithGood[Good]#AndBad, Bad] {
+      def map[C](bc: Bad => C): Good Or C = ctx.badMap(bc)
+    }
+
+    implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] = new Functor[OrWithGood[G]#AndBad] {
+      def apply[B](ctx: G Or B) = new BadOrFunctorProxy[G, B](ctx)
+    }
+
+    new FunctorLaws[OrWithGood[Int]#AndBad, Int, String, Double]().assert()
   }
 
-  implicit object ListFunctor extends Functor[List] {
-    def apply[T](list: List[T]) = new ListFunctorProxy[T](list)
-  }
+  "Or" should "obey the monad laws (for its 'good' type)" in {
+    class OrMonadProxy[Good, Bad](or: Good Or Bad) extends MonadProxy[OrWithBad[Bad]#AndGood, Good] {
+      override def map[C](ab: Good => C): C Or Bad = or.map(ab)
 
-  "Option" should "obey the functor laws via its map method (generically)" in {
+      override def flatMap[C](goc: Good => C Or Bad): C Or Bad = or.flatMap(goc)
 
-    object OptionFunctorAssertions extends FunctorAssertions[Option]
-    OptionFunctorAssertions.assert[String, Int, Double]()
+      override def ap[C](other: OrWithBad[Bad]#AndGood[Good => C]): C Or Bad =
+        for { g <- or; gc <- other } yield gc(g)
+    }
 
-    // or
+    implicit def orMonad[B]: Monad[OrWithBad[B]#AndGood] = new Monad[OrWithBad[B]#AndGood] {
+      override def apply[G](or: G Or B) = new OrMonadProxy[G, B](or)
 
-    new FunctorAssertions[Option](){}.assert[String, Int, Double]()
-  }
+      override def insert[G](g: G): G Or B = Good(g)
+    }
 
-  "List" should "obey the functor laws via its map method (generically)" in {
-    new FunctorAssertions[List](){}.assert[Double, Byte, String]()
+    new MonadLaws[OrWithBad[Int]#AndGood, Int, String, Double]().assert()
   }
 }
