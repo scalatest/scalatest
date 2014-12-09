@@ -24,7 +24,7 @@ object ScalatestBuild extends Build {
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
-    "/src/main/scala€{FILE_PATH}.scala"
+    "€{FILE_PATH}.scala"
 
   def envVar(name: String): Option[String] =
     try {
@@ -120,7 +120,15 @@ object ScalatestBuild extends Build {
       ),
     credentials += getNexusCredentials,
     pgpSecretRing := file(getGPGFilePath),
-    pgpPassphrase := getGPGPassphase,
+    pgpPassphrase := getGPGPassphase
+  )
+
+  lazy val sharedDocSettings = Seq(
+    dependencyClasspath in (Compile, doc) := {
+      val deps = (dependencyClasspath in (Compile, doc)).value
+      val macroClassDir = (classDirectory in (scalacticMacro, Compile)).value
+      deps.filterNot(_.data == macroClassDir)
+    },
     docsrcDirSetting,
     docSourcesSetting,
     docScalacOptionsSetting
@@ -193,6 +201,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
+   .settings(sharedDocSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
@@ -228,7 +237,6 @@ object ScalatestBuild extends Build {
        mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
        // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      sources in (Compile, doc) ++= (sources in scalacticMacro in (Compile, doc)).value,
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -277,14 +285,15 @@ object ScalatestBuild extends Build {
 
   lazy val scalactic = Project("scalactic", file("genscalactic"))
     .settings(sharedSettings: _*)
+    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
+        (baseDirectory, sourceDirectory in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
+        (baseDirectory, sourceDirectory in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
       resourceDirectories in Compile += {
         (sourceManaged in Compile).value / "resources"
       },
@@ -292,8 +301,7 @@ object ScalatestBuild extends Build {
        mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
        // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      scalacticDocTaskSetting,
-      sources in (Compile, doc) ++= (sources in scalacticMacro in (Compile, doc)).value
+      scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -663,27 +671,22 @@ object ScalatestBuild extends Build {
   //
   // Prepares source files for running scaladoc.
   //
-  def genDocSources(srcFiles: Seq[File], srcMain: File,
-                    managedSrcMain: File, docsrcDir: File): Seq[File] =
+  def genDocSources(srcFiles: Seq[File], 
+                    srcDirs: Seq[File], 
+                    docsrcDir: File): Seq[File] =
   {
-    val srcMainScalaDir = srcMain / "scala"
-    val managedSrcMainScalaDir = managedSrcMain / "scala"
-
     val scalaFiles =
       for {
         srcFile <- srcFiles
         if srcFile.name.endsWith(".scala")
       } yield {
         val srcPath = srcFile.getPath
-        val docsrcPath =
-          srcPath.
-            replaceFirst(srcMainScalaDir.getPath, docsrcDir.getPath).
-            replaceFirst(managedSrcMainScalaDir.getPath, docsrcDir.getPath)
-
-        if (srcPath == docsrcPath)
-          throw new RuntimeException("unexpected source path ["+ srcPath +"]")
-
-        copyDocFile(srcFile, file(docsrcPath))
+        val maybeSourceFile = srcDirs.flatMap(srcFile.relativeTo).headOption
+        maybeSourceFile match {
+          case Some(docsrcFile) => copyDocFile(srcFile, new File(docsrcDir.asFile, docsrcFile.getPath))
+          case None             => 
+             throw new RuntimeException("unexpected source path ["+ srcPath +"] not relative to " + srcDirs.map(_.toPath))
+        }
       }
 
     val javaSources = srcFiles.filter(_.name.endsWith(".java")).toSet
@@ -762,14 +765,16 @@ object ScalatestBuild extends Build {
 
   val docSourcesSetting =
      sources in (Compile, doc) :=
-       genDocSources((sources in Compile).value,
-                     (sourceDirectory in Compile).value,
-                     (sourceManaged in Compile).value,
+       genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value, 
+                     Seq((sourceManaged in Compile).value, 
+                         baseDirectory.value,
+                         file(".").getCanonicalFile),
                      docsrcDir.value)
 
   val docScalacOptionsSetting =
     scalacOptions in (Compile, doc) ++= 
       Seq[String](
+        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", docSourceUrl)
@@ -781,7 +786,7 @@ object ScalatestBuild extends Build {
 
   val scalacticDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
-                              (sourceManaged in Compile).value,
+                              (sourceDirectory in Compile).value,
                               name.value)
 }
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"
