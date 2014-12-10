@@ -1,11 +1,16 @@
 language: scala
+
 scala:
   - 2.11.2
   - 2.10.4
+
 jdk:
   - oraclejdk7
   - openjdk6
   - oraclejdk8
+
+sudo: false
+
 env:
   #see https://github.com/scalatest/scalatest/pull/245
   #global values should be replaced using http://docs.travis-ci.com/user/encryption-keys/ with valid values
