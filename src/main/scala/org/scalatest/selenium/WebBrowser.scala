@@ -4531,6 +4531,27 @@ trait WebBrowser {
     val ae: WebElement = driver.switchTo.activeElement
     ae.sendKeys(value)
   }
+
+  object jquery {
+    import org.openqa.selenium.NoSuchElementException
+
+    private def exactlyOne(selector:String, matched:Seq[Element]):Element = {
+      if(matched.length == 1) matched.head
+      else throw new NoSuchElementException("$('"+selector+"') matched "+matched.length+" elements")
+    }
+
+    def $$(selector:String)(implicit webDriver: WebDriver): Seq[Element] =
+      webDriver.findElements(By.cssSelector(selector)).asScala.map(createTypedElement)
+    def $(selector:String)(implicit webDriver: WebDriver): Element =
+      exactlyOne(selector, $$(selector))
+
+    implicit class EnhancedElement(val e:Element) {
+      def findAll(selector:String): Seq[Element] =
+        e.underlying.findElements(By.cssSelector(selector)).asScala.map(createTypedElement)
+      def find(selector:String):Element =
+        exactlyOne(selector, findAll(selector))
+    }
+  }
 }
 
 /**
