@@ -34,7 +34,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     )
 
   // this is taken from expecty
-  private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
+  private[this] def getPosition(expr: Tree) = expr.pos
 
   // this is taken from expecty and modified, the purpose is to get the anchor for the given expression
   private[this] def getAnchor(expr: Tree): Int = expr match {
