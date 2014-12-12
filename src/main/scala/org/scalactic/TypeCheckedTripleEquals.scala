@@ -188,7 +188,7 @@ import TripleEqualsSupport._
  * import org.scalactic._
  *
  * scala&gt; import TypeCheckedTripleEquals._
- * import TypeCheckedLegacyTripleEquals._
+ * import TypeCheckedTripleEquals._
  *
  * scala&gt; 1 === 1L
  * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[Int,Long]
@@ -234,9 +234,6 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
-
-  override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
-  override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
 
   override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 

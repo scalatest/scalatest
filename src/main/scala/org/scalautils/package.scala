@@ -77,12 +77,6 @@ package object scalautils {
   @deprecated("Please use org.scalactic.Catcher instead.")
   val Catcher = org.scalactic.Catcher
 
-  @deprecated("Please use org.scalactic.ConversionCheckedLegacyTripleEquals instead.")
-  type ConversionCheckedLegacyTripleEquals = org.scalactic.ConversionCheckedLegacyTripleEquals
-
-  @deprecated("Please use org.scalactic.ConversionCheckedLegacyTripleEquals instead.")
-  val ConversionCheckedLegacyTripleEquals = org.scalactic.ConversionCheckedLegacyTripleEquals
-
   @deprecated("Please use org.scalactic.Equality instead.")
   type Equality[A] = org.scalactic.Equality[A]
 
@@ -127,12 +121,6 @@ package object scalautils {
 
   @deprecated("Please use org.scalactic.TraversableEqualityConstraints instead.")
   val TraversableEqualityConstraints = org.scalactic.TraversableEqualityConstraints
-
-  @deprecated("Please use org.scalactic.LegacyTripleEquals instead.")
-  type LegacyTripleEquals = org.scalactic.LegacyTripleEquals
-
-  @deprecated("Please use org.scalactic.LegacyTripleEquals instead.")
-  val LegacyTripleEquals = org.scalactic.LegacyTripleEquals
 
   @deprecated("Please use org.scalactic.Tolerance instead.")
   type Tolerance = org.scalactic.Tolerance
@@ -208,10 +196,4 @@ package object scalautils {
 
   @deprecated("Please use org.scalactic.TolerantNumerics instead.")
   val TolerantNumerics = org.scalactic.TolerantNumerics
-
-  @deprecated("Please use org.scalactic.TypeCheckedLegacyTripleEquals instead.")
-  type TypeCheckedLegacyTripleEquals = org.scalactic.TypeCheckedLegacyTripleEquals
-
-  @deprecated("Please use org.scalactic.TypeCheckedLegacyTripleEquals instead.")
-  val TypeCheckedLegacyTripleEquals = org.scalactic.TypeCheckedLegacyTripleEquals
 }

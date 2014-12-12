@@ -565,74 +565,6 @@ trait Assertions extends TripleEquals {
   def assert(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assertWithClue
 
   /**
-   * Assert that an <code>Option[String]</code> is <code>None</code>. 
-   * If the condition is <code>None</code>, this method returns normally.
-   * Else, it throws <code>TestFailedException</code> with the <code>String</code>
-   * value of the <code>Some</code>, as well as the 
-   * <code>String</code> obtained by invoking <code>toString</code> on the
-   * specified <code>clue</code>,
-   * included in the <code>TestFailedException</code>'s detail message.
-   *
-   * <p>
-   * This form of <code>assert</code> is usually called in conjunction with an
-   * implicit conversion to <code>Equalizer</code>, using a <code>===</code> comparison, as in:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert(a === b, "extra info reported if assertion fails")
-   * </pre>
-   *
-   * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
-   * <code>Equalizer</code>]].
-   * </p>
-   *
-   * @param o the <code>Option[String]</code> to assert
-   * @param clue An object whose <code>toString</code> method returns a message to include in a failure report.
-   * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
-   */
-  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
-  def assert(o: Option[String], clue: Any) {
-    o match {
-      case Some(s) => throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
-      case None =>
-    }
-  }
-  
-  /**
-   * Assert that an <code>Option[String]</code> is <code>None</code>.
-   * If the condition is <code>None</code>, this method returns normally.
-   * Else, it throws <code>TestFailedException</code> with the <code>String</code>
-   * value of the <code>Some</code> included in the <code>TestFailedException</code>'s
-   * detail message.
-   *
-   * <p>
-   * This form of <code>assert</code> is usually called in conjunction with an
-   * implicit conversion to <code>Equalizer</code>, using a <code>===</code> comparison, as in:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert(a === b)
-   * </pre>
-   *
-   * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
-   * <code>Equalizer</code>]].
-   * </p>
-   *
-   * @param o the <code>Option[String]</code> to assert
-   * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
-   */
-  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
-  def assert(o: Option[String]) {
-    o match {
-      case Some(s) => throw newAssertionFailedException(Some(s), None, 4)
-      case None =>
-    }
-  }
-
-  /**
    * Assume that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>TestCanceledException</code>.
@@ -732,75 +664,6 @@ trait Assertions extends TripleEquals {
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   def assume(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assumeWithClue
-
-  /**
-   * Assume that an <code>Option[String]</code> is <code>None</code>. 
-   * If the condition is <code>None</code>, this method returns normally.
-   * Else, it throws <code>TestCanceledException</code> with the <code>String</code>
-   * value of the <code>Some</code>, as well as the 
-   * <code>String</code> obtained by invoking <code>toString</code> on the
-   * specified <code>clue</code>,
-   * included in the <code>TestCanceledException</code>'s detail message.
-   *
-   * <p>
-   * This form of <code>assume</code> is usually called in conjunction with an
-   * implicit conversion to <code>Equalizer</code>, using a <code>===</code> comparison, as in:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assume(a === b, "extra info reported if assertion fails")
-   * </pre>
-   *
-   * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
-   * <code>Equalizer</code>]].
-   * </p>
-   *
-   * @param o the <code>Option[String]</code> to assert
-   * @param clue An object whose <code>toString</code> method returns a message to include in a failure report.
-   * @throws TestCanceledException if the <code>Option[String]</code> is <code>Some</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
-   */
-  @deprecated("This method has been deprecated in favor of macro assumption and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
-  def assume(o: Option[String], clue: Any) {
-    o match {
-      case Some(s) => throw newTestCanceledException(Some(clue + "\n" + s), None, 3)
-      case None =>
-    }
-  }
-
-  /**
-   * Assume that an <code>Option[String]</code> is <code>None</code>.
-   * If the condition is <code>None</code>, this method returns normally.
-   * Else, it throws <code>TestCanceledException</code> with the <code>String</code>
-   * value of the <code>Some</code> included in the <code>TestCanceledException</code>'s
-   * detail message.
-   *
-   * <p>
-   * This form of <code>assume</code> is usually called in conjunction with an
-   * implicit conversion to <code>Equalizer</code>, using a <code>===</code> comparison, as in:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assume(a === b)
-   * </pre>
-   *
-   * <p>
-   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
-   * <code>Equalizer</code>]].
-   * </p>
-   *
-   * @param o the <code>Option[String]</code> to assert
-   * @throws TestCanceledException if the <code>Option[String]</code> is <code>Some</code>.
-   */
-  // def assume(o: Option[String]) = throwIfSome(o, (a: Any) => newTestCanceledException(Some(a.toString), None, 3))
-  @deprecated("This method has been deprecated in favor of macro assumption and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
-  def assume(o: Option[String]) {
-    o match {
-      case Some(s) => throw newTestCanceledException(Some(s), None, 3)
-      case None =>
-    }
-  }
 
   /**
    * Asserts that a given string snippet of code does not pass the Scala type checker, failing if the given
@@ -1173,42 +1036,6 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     }
   }
 
-  /**
-   * This <code>expectResult</code> method has been deprecated; Please use <code>assertResult</code> instead.
-   *
-   * <p>
-   * To get rid of the deprecation warning, simply replace <code>expectResult</code> with
-   * <code>assertResult</code>. The name <code>expectResult</code> will be used for a different purposes in
-   * a future version of ScalaTest.
-   * </p>
-   */
-  @deprecated("This expectResult method has been deprecated. Please replace all invocations of expectResult with an identical invocation of assertResult instead.")
-  def expectResult(expected: Any, clue: Any)(actual: Any) {
-    if (actual != expected) {
-      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
-    }
-  }
-
-  /**
-   * This <code>expect</code> method has been deprecated; Please use <code>assertResult</code> instead.
-   *
-   * <p>
-   * To get rid of the deprecation warning, simply replace <code>expect</code> with
-   * <code>assertResult</code>. The name <code>expect</code> will be used for a different purposes in
-   * a future version of ScalaTest.
-   * </p>
-   */
-  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of assertResult instead.")
-  def expect(expected: Any, clue: Any)(actual: Any) {
-    if (actual != expected) {
-      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
-    }
-  }
-
   /** 
    * Assert that the value passed as <code>expected</code> equals the value passed as <code>actual</code>.
    * If the <code>actual</code> value equals the <code>expected</code> value
@@ -1222,42 +1049,6 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    */
   def assertResult(expected: Any)(actual: Any) {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
-      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(s), None, 4)
-    }
-  }
-
-  /**
-   * This <code>expectResult</code> method has been deprecated; Please use <code>assertResult</code> instead.
-   *
-   * <p>
-   * To get rid of the deprecation warning, simply replace <code>expectResult</code> with
-   * <code>assertResult</code>. The name <code>expectResult</code> will be used for a different purposes in
-   * a future version of ScalaTest.
-   * </p>
-   */
-  @deprecated("This expectResult method has been deprecated. Please replace all invocations of expectResult with an identical invocation of assertResult instead.")
-  def expectResult(expected: Any)(actual: Any) {
-    if (actual != expected) {
-      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(s), None, 4)
-    }
-  }
-
-  /**
-   * This <code>expect</code> method has been deprecated; Please use <code>assertResult</code> instead.
-   *
-   * <p>
-   * To get rid of the deprecation warning, simply replace <code>expect</code> with
-   * <code>assertResult</code>. The name <code>expect</code> will be used for a different purposes in
-   * a future version of ScalaTest.
-   * </p>
-   */
-  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of assertResult instead.")
-  def expect(expected: Any)(actual: Any) {
-    if (actual != expected) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages("expectedButGot", exp, act)
       throw newAssertionFailedException(Some(s), None, 4)

@@ -74,36 +74,12 @@ package org.scalatest
 trait GivenWhenThen { this: Informing =>
 
   /**
-   * <p>
-   * <strong>The lower case form of <code>given</code> was
-   * deprecated because using <code>then</code> as an identifier was deprecated in Scala 2.10.
-   * Please use the upper case form, <code>Given</code>, instead.</strong>
-   * <p>
-   */
-  @deprecated("Please use Given(message: String)(implicit info: Informer) instead.")
-  def given(message: String) {
-    Given(message)
-  }
-
-  /**
    * Forwards a message to an implicit <code>Informer</code>, preceded by "Given."
    *
    * @param message the message to forward to the passed informer
    */
   def Given(message: String) {
     info(Resources("givenMessage", message))
-  }
-
-  /**
-   * <p>
-   * <strong>The lower case form of <code>when</code> was
-   * deprecated because using <code>then</code> as an identifier was deprecated in Scala 2.10.
-   * Please use the upper case form, <code>When</code>, instead.</strong>
-   * <p>
-   */
-  @deprecated("Please use When(message: String)(implicit info: Informer) instead.")
-  def when(message: String) {
-    When(message)
   }
   
   /**
@@ -114,18 +90,6 @@ trait GivenWhenThen { this: Informing =>
   def When(message: String) {
     info(Resources("whenMessage", message))
   }
-
-  /**
-   * <p>
-   * <strong>The lower case form of <code>then</code> was
-   * deprecated because using <code>then</code> as an identifier was deprecated in Scala 2.10.
-   * Please use the upper case form, <code>Then</code>, instead.</strong>
-   * <p>
-   */
-  @deprecated("Please use Then(message: String)(implicit info: Informer) instead.")
-  def then(message: String) {
-    Then(message)
-  }
   
   /**
    * Forwards a message to an implicit <code>Informer</code>, preceded by "Then ".
@@ -134,18 +98,6 @@ trait GivenWhenThen { this: Informing =>
    */
   def Then(message: String) {
     info(Resources("thenMessage", message))
-  }
-
-  /**
-   * <p>
-   * <strong>The lower case form of <code>and</code> was
-   * deprecated because using <code>then</code> as an identifier was deprecated in Scala 2.10.
-   * Please use the upper case form, <code>And</code>, instead.</strong>
-   * <p>
-   */
-  @deprecated("Please use And(message: String)(implicit info: Informer) instead.")
-  def and(message: String) {
-    And(message)
   }
   
    /**
