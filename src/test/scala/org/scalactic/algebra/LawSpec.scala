@@ -15,7 +15,7 @@
  */
 package org.scalactic.algebra
 
-import org.scalactic.{Good, Or}
+import org.scalactic.{Bad, Good, Or}
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 import org.scalacheck._
@@ -50,7 +50,7 @@ class LawSpec extends FlatSpec with Matchers {
   }
 
   trait Monad[Context[_]] extends Applicative[Context] {
-    def apply[T](ct: Context[T]): MonadProxy[Context, T]
+    def apply[A](ca: Context[A]): MonadProxy[Context, A]
   }
 
   trait Laws[Context[_]] {
@@ -62,12 +62,12 @@ class LawSpec extends FlatSpec with Matchers {
   }
 
   class FunctorLaws[Context[_], A, B, C](implicit fun: Functor[Context],
-      arbCa: Arbitrary[Context[A]],
-      shrCa: Shrink[Context[A]],
-      arbAb: Arbitrary[A => B],
-      shrAb: Shrink[A => B],
-      arbBc: Arbitrary[B => C],
-      shrBc: Shrink[B => C]) extends Laws[Context] {
+    arbCa: Arbitrary[Context[A]],
+    shrCa: Shrink[Context[A]],
+    arbAb: Arbitrary[A => B],
+    shrAb: Shrink[A => B],
+    arbBc: Arbitrary[B => C],
+    shrBc: Shrink[B => C]) extends Laws[Context] {
 
     // mapping over an identity function (e.g. a => a) should cause no change
     val checkFunctorIdentity: Law = () =>
@@ -85,18 +85,18 @@ class LawSpec extends FlatSpec with Matchers {
   }
 
   class ApplicativeLaws[Context[_], A, B, C](implicit applic: Applicative[Context],
-      arbA: Arbitrary[A],
-      shrA: Shrink[A],
-      arbCa: Arbitrary[Context[A]],
-      shrCa: Shrink[Context[A]],
-      arbCab: Arbitrary[Context[A => B]],
-      shrCab: Shrink[Context[A => B]],
-      arbCbc: Arbitrary[Context[B => C]],
-      shrCbc: Shrink[Context[B => C]],
-      arbAb: Arbitrary[A => B],
-      shrAb: Shrink[A => B],
-      arbBc: Arbitrary[B => C],
-      shrBc: Shrink[B => C]) extends FunctorLaws[Context, A, B, C] {
+    arbA: Arbitrary[A],
+    shrA: Shrink[A],
+    arbCa: Arbitrary[Context[A]],
+    shrCa: Shrink[Context[A]],
+    arbCab: Arbitrary[Context[A => B]],
+    shrCab: Shrink[Context[A => B]],
+    arbCbc: Arbitrary[Context[B => C]],
+    shrCbc: Shrink[Context[B => C]],
+    arbAb: Arbitrary[A => B],
+    shrAb: Shrink[A => B],
+    arbBc: Arbitrary[B => C],
+    shrBc: Shrink[B => C]) extends FunctorLaws[Context, A, B, C] {
 
     val checkApplicativeComposition: Law = () =>
       forAll { (ca: Context[A], cab: Context[A => B], cbc: Context[B => C]) =>
@@ -137,31 +137,31 @@ class LawSpec extends FlatSpec with Matchers {
   }
 
   class MonadLaws[Context[_], A, B, C]()(implicit monad: Monad[Context],
-      arbA: Arbitrary[A],
-      shrA: Shrink[A],
-      arbCa: Arbitrary[Context[A]],
-      shrCa: Shrink[Context[A]],
-      arbCab: Arbitrary[Context[A => B]],
-      shrCab: Shrink[Context[A => B]],
-      arbCbc: Arbitrary[Context[B => C]],
-      shrCbc: Shrink[Context[B => C]],
-      arbAcb: Arbitrary[A => Context[B]],
-      shrAcb: Shrink[A => Context[B]],
-      arbBcc: Arbitrary[B => Context[C]],
-      shrBcc: Shrink[B => Context[C]],
-      arbAb: Arbitrary[A => B],
-      shrAb: Shrink[A => B],
-      arbBc: Arbitrary[B => C],
-      shrBc: Shrink[B => C]) extends ApplicativeLaws[Context, A, B, C] {
+    arbA: Arbitrary[A],
+    shrA: Shrink[A],
+    arbCa: Arbitrary[Context[A]],
+    shrCa: Shrink[Context[A]],
+    arbCab: Arbitrary[Context[A => B]],
+    shrCab: Shrink[Context[A => B]],
+    arbCbc: Arbitrary[Context[B => C]],
+    shrCbc: Shrink[Context[B => C]],
+    arbAcb: Arbitrary[A => Context[B]],
+    shrAcb: Shrink[A => Context[B]],
+    arbBcc: Arbitrary[B => Context[C]],
+    shrBcc: Shrink[B => Context[C]],
+    arbAb: Arbitrary[A => B],
+    shrAb: Shrink[A => B],
+    arbBc: Arbitrary[B => C],
+    shrBc: Shrink[B => C]) extends ApplicativeLaws[Context, A, B, C] {
 
     val checkMonadicAssociativity: Law = () =>
       forAll { (ca: Context[A], acb: A => Context[B], bcc: B => Context[C]) =>
-        (monad(monad(ca) flatMap acb) flatMap bcc) shouldEqual (monad(ca) flatMap ((t: A) => monad(acb(t)) flatMap bcc))
+        (monad(monad(ca) flatMap acb) flatMap bcc) shouldEqual (monad(ca) flatMap ((a: A) => monad(acb(a)) flatMap bcc))
       }
 
     val checkMonadicFlatMapConsistentWithAp: Law = () =>
-      forAll { (a: Context[A], cab: Context[A => B]) =>
-        (monad(a) ap cab) shouldEqual (monad(cab) flatMap (ab => monad(a) map ab))
+      forAll { (ca: Context[A], cab: Context[A => B]) =>
+        (monad(ca) ap cab) shouldEqual (monad(cab) flatMap (ab => monad(ca) map ab))
       }
 
     val checkMonadicRightIdentity: Law = () =>
@@ -198,6 +198,13 @@ class LawSpec extends FlatSpec with Matchers {
   trait OrWithGood[G] {
     type AndBad[B] = G Or B
   }
+
+  // generator used for verifying the Good nature of Or
+  def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+
+  // generator used for verifying the Bad nature of Or
+  def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] = Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
+
 
   "Option" should "obey the functor laws via its map method" in {
     class OptionFunctorProxy[T](opt: Option[T]) extends FunctorProxy[Option, T] {
@@ -242,9 +249,6 @@ class LawSpec extends FlatSpec with Matchers {
     new FunctorLaws[List, Int, String, Double]().assert()
   }
 
-  implicit def orArb[G, B](implicit arbG: Arbitrary[G], arbB: Arbitrary[B]): Arbitrary[G Or B] =
-    Arbitrary(for (either <- Arbitrary.arbEither[B, G].arbitrary) yield Or.from(either))
-
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
 
     class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorProxy[OrWithBad[Bad]#AndGood, Good] {
@@ -254,6 +258,8 @@ class LawSpec extends FlatSpec with Matchers {
     implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#AndGood] = new Functor[OrWithBad[B]#AndGood] {
       def apply[G](ctx: G Or B) = new GoodOrFunctorProxy[G, B](ctx)
     }
+
+    implicit def orArb[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = orArbGood
 
     new FunctorLaws[OrWithBad[Int]#AndGood, Int, String, Double]().assert()
   }
@@ -267,6 +273,8 @@ class LawSpec extends FlatSpec with Matchers {
     implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] = new Functor[OrWithGood[G]#AndBad] {
       def apply[B](ctx: G Or B) = new BadOrFunctorProxy[G, B](ctx)
     }
+
+    implicit def orArb[G, B](implicit arbB: Arbitrary[B]): Arbitrary[G Or B] = orArbBad
 
     new FunctorLaws[OrWithGood[Int]#AndBad, Int, String, Double]().assert()
   }
@@ -286,6 +294,8 @@ class LawSpec extends FlatSpec with Matchers {
 
       override def insert[G](g: G): G Or B = Good(g)
     }
+
+    implicit def orArb[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = orArbGood
 
     new MonadLaws[OrWithBad[Int]#AndGood, Int, String, Double]().assert()
   }
