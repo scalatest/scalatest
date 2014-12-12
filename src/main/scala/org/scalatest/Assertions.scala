@@ -419,10 +419,9 @@ trait Assertions extends TripleEquals {
    * <p>
    * At this time, any other form of expression will get a <code>TestFailedException</code> with message saying the given
    * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
-   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
-   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
-   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
-   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>
+   * to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code.
    * </p>
    *
    * @param condition the boolean condition to assert
@@ -551,10 +550,9 @@ trait Assertions extends TripleEquals {
    * <p>
    * At this time, any other form of expression will just get a <code>TestFailedException</code> with message saying the given
    * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
-   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
-   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
-   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
-   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>
+   * to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code.
    * </p>
    *
    * @param condition the boolean condition to assert
@@ -601,10 +599,9 @@ trait Assertions extends TripleEquals {
    * <p>
    * At this time, any other form of expression will just get a <code>TestCanceledException</code> with message saying the given
    * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
-   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
-   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
-   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
-   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>
+   * to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code.
    * </p>
    *
    * @param condition the boolean condition to assume
@@ -652,10 +649,9 @@ trait Assertions extends TripleEquals {
    * <p>
    * At this time, any other form of expression will just get a <code>TestCanceledException</code> with message saying the given
    * expression was false.  In the future, we will enhance this macro to give helpful error messages in more situations.
-   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>,
-   * not <code>Option[String]</code> to be the default in tests. This makes <code>===</code> consistent between tests and production
-   * code. If you have pre-existing code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an
-   * <code>Option[String]</code>, use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * In ScalaTest 2.0, however, this behavior was sufficient to allow the <code>===</code> that returns <code>Boolean</code>
+   * to be the default in tests. This makes <code>===</code> consistent between tests and production
+   * code.
    * </p>
    *
    * @param condition the boolean condition to assume
