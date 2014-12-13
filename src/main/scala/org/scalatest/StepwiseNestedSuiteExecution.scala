@@ -48,12 +48,11 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
 
     import args._
 
-    val stopRequested = stopper
     val report = wrapReporterIfNecessary(thisSuite, reporter)
 
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
-      if (!stopRequested()) {
+      if (!stopper.stopRequested) {
 
         // Create a Rerunner if the Suite has a no-arg constructor 
         val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
@@ -67,7 +66,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
 
         try { // TODO: pass runArgs down and that will get the chosenStyles passed down
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopRequested, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
           val rawString = Resources("suiteCompletedNormally")
           val formatter = formatterForSuiteCompleted(nestedSuite)
@@ -99,7 +98,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
     val statusBuffer = new ListBuffer[Status]()
     if (!filter.excludeNestedSuites) {
       for (nestedSuite <- nestedSuites) {
-        if (!stopRequested()) {
+        if (!stopper.stopRequested) {
           val st = callExecuteOnSuite(nestedSuite)
           // The distributor is being passed down with stepwise execution,
           // so it may run in parallel. Make sure all is done before moving on.

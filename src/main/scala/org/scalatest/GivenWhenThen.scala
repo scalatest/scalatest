@@ -64,11 +64,6 @@ package org.scalatest
  *   + That's all folks! </span>
  * </pre>
  *
- * <p>
- * <strong>Note: The lower case forms of <code>given</code>, <code>when</code>, <code>then</code> and <code>and</code> were
- * deprecated in ScalaTest because using <code>then</code> as an identifier was deprecated in Scala 2.10.</strong>
- * <p>
- *
  * @author Bill Venners
  */
 trait GivenWhenThen { this: Informing =>

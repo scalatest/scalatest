@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.SharedHelpers.thisLineNumber
 import time.{Millis, Span}
+import PatienceConfiguration.{Timeout, Interval}
+import time.SpanSugar._
 
 class ConductorSuite extends FunSuite with Matchers with Conductors with SeveredStackTraces {
 
@@ -129,50 +131,6 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
       case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 4))
       case None => fail("Didn't produce a file name and line number string: ", caught)
     }
-  }
-
-  test("If a non-positive number is passed to conduct for clockPeriod, it will throw NotAllowedException") {
-    val conductor = new Conductor
-    val caught =
-      intercept[NotAllowedException] {
-        conductor.conduct(0, 100)
-      }
-    caught.getMessage should be ("The clockPeriod passed to conduct must be greater than zero. Value passed was: 0.")
-    caught.failedCodeFileNameAndLineNumberString match {
-      case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 4))
-      case None => fail("Didn't produce a file name and line number string: ", caught)
-    }
-    val caught2 =
-      intercept[NotAllowedException] {
-        conductor.conduct(-1, 100)
-      }
-    caught2.failedCodeFileNameAndLineNumberString match {
-      case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 3))
-      case None => fail("Didn't produce a file name and line number string: ", caught)
-    }
-    caught2.getMessage should be ("The clockPeriod passed to conduct must be greater than zero. Value passed was: -1.")
-  }
-
-  test("If a non-positive number is passed to conduct for runLimit, it will throw NotAllowedException") {
-    val conductor = new Conductor
-    val caught =
-      intercept[NotAllowedException] {
-        conductor.conduct(100, 0)
-      }
-    caught.getMessage should be ("The timeout passed to conduct must be greater than zero. Value passed was: 0.")
-    caught.failedCodeFileNameAndLineNumberString match {
-      case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 4))
-      case None => fail("Didn't produce a file name and line number string: ", caught)
-    }
-    val caught2 =
-      intercept[NotAllowedException] {
-        conductor.conduct(100, -1)
-      }
-    caught2.failedCodeFileNameAndLineNumberString match {
-      case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 3))
-      case None => fail("Didn't produce a file name and line number string: ", caught)
-    }
-    caught2.getMessage should be ("The timeout passed to conduct must be greater than zero. Value passed was: -1.")
   }
 
   test("withConductorFrozen executes the passed function once") {
@@ -333,7 +291,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
     }
     val caught =
       intercept[RuntimeException] {
-        conduct(10, 1)
+        conduct(Timeout(1 second), Interval(10 millis))
       }
     caught.getMessage should be ("Test timed out because threads existed that were runnable while no progress was made (the beat did not advance) for 1 second.")
   }

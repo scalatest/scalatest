@@ -51,19 +51,4 @@ class ArgsSpec extends WordSpec with SeveredStackTraces {
       }
     }
   }
-
-  "The deprecated run method" should {
-    "call the new run method" in {
-      class MySuite extends Suite {
-        var newRunGotCalled = false
-        override def run(testName: Option[String], args: Args): Status = {
-          newRunGotCalled = true
-          SucceededStatus
-        }
-      }
-      val s = new MySuite
-      s.run(None, SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker)
-      assert(s.newRunGotCalled)
-    }
-  }
 }
