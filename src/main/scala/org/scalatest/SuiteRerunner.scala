@@ -32,7 +32,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
   if (suiteClassName == null)
     throw new NullPointerException
 
-  def apply(report: Reporter, stopRequested: Stopper, filter: Filter,
+  def apply(report: Reporter, stopper: Stopper, filter: Filter,
             configMap: ConfigMap, distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader) {
 
     val tagsToInclude =
@@ -66,7 +66,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
 
         report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
         // TODO: I had to pass Set.empty for chosenStyles now. Fix this later.
-        suite.run(None, Args(report, stopRequested, filter, configMap, distributor, tracker, Set.empty))
+        suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
         val rawString2 = Resources("suiteCompletedNormally")
         val formatter2 = formatterForSuiteCompleted(suite)
@@ -90,7 +90,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
       }
 
       val duration = System.currentTimeMillis - runStartTime
-      if (stopRequested()) {
+      if (stopper.stopRequested) {
         report(RunStopped(tracker.nextOrdinal(), Some(duration)))
       }
       else {

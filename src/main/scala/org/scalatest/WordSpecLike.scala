@@ -382,10 +382,21 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     }
 
     /**
-     * <b><code>that</code> has been deprecated and will be used for a different purpose in a future version of ScalaTest. Please
-     * use <code>which</code> instead. (Warning: this change will likely have a shorter than usual deprecation cycle: less than a year.)</b>
+     * Registers a <code>that</code> clause.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "a rerun button" that {
+     *                  ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * </p>
      */
-    @deprecated("Please use \"which\" instead of \"that\".")
     def that(f: => Unit) {
       registerBranch(string.trim + " that", None, "that", "that", 4, -2, f _)
     }
@@ -398,7 +409,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      *
      * <pre class="stHighlight">
-     * "a rerun button" which {
+     * "a rerun button," which {
      *                  ^
      * </pre>
      *
@@ -411,10 +422,23 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     }
 
     /**
-     * <b><code>that</code> has been deprecated and will be used for a different purpose in a future version of ScalaTest. Please
-     * use <code>which</code> instead. (Warning: this change will likely have a shorter than usual deprecation cycle: less than a year.)</b>
+     * Registers a <code>that</code> clause that is followed by an <em>after word</em>.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * def is = afterWord("is")
+     *
+     * "a rerun button" that is {
+     *                  ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
+     * </p>
      */
-    @deprecated("Please use \"which\" instead of \"that\".")
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, resultOfAfterWordApplication.f)
     }
@@ -429,7 +453,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * <pre class="stHighlight">
      * def is = afterWord("is")
      *
-     * "a rerun button" which is {
+     * "a rerun button," which is {
      *                  ^
      * </pre>
      *

@@ -784,35 +784,6 @@ trait Conductors extends PatienceConfiguration {
      */
     def conductingHasBegun: Boolean = currentState.get.testWasStarted
 
-    /**
-     * Conducts a multi-threaded test with the specified clock period (in milliseconds)
-     * and timeout (in seconds).
-     *
-     * <p>
-     * A <code>Conductor</code> instance maintains an internal clock, which will wake up
-     * periodically and check to see if it should advance the beat, abort the test, or go back to sleep.
-     * It sleeps <code>clockPeriod</code> milliseconds each time. It will abort the test
-     * if either deadlock is suspected or the beat has not advanced for the number of
-     * seconds specified as <code>timeout</code>. Suspected deadlock will be declared if
-     * for some number of consecutive clock cycles, all test threads are in the <code>BLOCKED</code> or
-     * <code>WAITING</code> states and none of them are waiting for a beat.
-     * </p>
-     *
-     * @param clockPeriod The period (in ms) the clock will sleep each time it sleeps
-     * @param timeout The maximum allowed time between successive advances of the beat. If this time
-     *    is exceeded, the Conductor will abort the test.
-     * @throws Throwable The first error or exception that is thrown by one of the test threads, or
-     *    a <code>TestFailedException</code> if the test was aborted due to a timeout or suspected deadlock.
-     */
-    @deprecated("This overloaded form of conduct has been deprecated and will be removed in a future version of ScalaTest. Please use one of the other overloaded forms of conduct instead.")
-    def conduct(clockPeriod: Int, timeout: Int) {
-      if (clockPeriod <= 0)
-        throw new NotAllowedException(Resources("cannotPassNonPositiveClockPeriod", clockPeriod.toString), getStackDepthFun("Conductors.scala", "conduct"))
-      if (timeout <= 0)
-        throw new NotAllowedException(Resources("cannotPassNonPositiveTimeout", timeout.toString), getStackDepthFun("Conductors.scala", "conduct"))
-      conductImpl(Span(timeout, Seconds),  Span(clockPeriod, Millis))
-    }
- 
     private def conductImpl(timeout: Span, clockInterval: Span) {
 
       // if the test was started already, explode
