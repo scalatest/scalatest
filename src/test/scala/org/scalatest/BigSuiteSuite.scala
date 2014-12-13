@@ -91,6 +91,7 @@ class BigSuiteSuite extends FunSuite {
     assert(bs.nestedSuites.size === 0)
   }
   test("A BigSuite() has no nested suites if a system property is empty") {
+    System.clearProperty("org.scalatest.BigSuite.size")
     val bs = new BigSuite(None)
     assert(bs.nestedSuites.size === 0)
   }
