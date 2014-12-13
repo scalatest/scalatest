@@ -2275,7 +2275,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
       val masterSpec = new MasterSpec()
 
-      val defaultFilter = new Filter(None, Set.empty)
+      val defaultFilter = Filter(None, Set.empty)
       val defaultReporter = new EventRecordingReporter
       masterSpec.runNestedSuites(Args(defaultReporter, Stopper.default, defaultFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
       assert(defaultReporter.suiteStartingEventsReceived.size === 4)
@@ -2285,7 +2285,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       masterSpec.runNestedSuites(Args(defaultReporterDist, Stopper.default, defaultFilter, ConfigMap.empty, Some(defaultDistributor), new Tracker(new Ordinal(99)), Set.empty))
       assert(defaultDistributor.count === 4)
 
-      val includeFilter = new Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)
+      val includeFilter = Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)
       val includeReporter = new EventRecordingReporter
       masterSpec.runNestedSuites(Args(includeReporter, Stopper.default, includeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
       assert(includeReporter.suiteStartingEventsReceived.size === 4) 
@@ -2295,7 +2295,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       masterSpec.runNestedSuites(Args(includeReporterDist, Stopper.default, includeFilter, ConfigMap.empty, Some(includeDistributor), new Tracker(new Ordinal(99)), Set.empty))
       assert(includeDistributor.count === 4) 
 
-      val excludeFilter = new Filter(None, Set("org.scalatest.SlowAsMolasses"))
+      val excludeFilter = Filter(None, Set("org.scalatest.SlowAsMolasses"))
       val excludeReporter = new EventRecordingReporter
       masterSpec.runNestedSuites(Args(excludeReporter, Stopper.default, excludeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
       assert(excludeReporter.suiteStartingEventsReceived.size === 4)
@@ -2341,11 +2341,11 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       }
     
       val masterSpec = new MasterSpec()
-      assert(masterSpec.expectedTestCount(new Filter(None, Set.empty)) === 9)
-      assert(masterSpec.expectedTestCount(new Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)) === 3)
-      assert(masterSpec.expectedTestCount(new Filter(None, Set("org.scalatest.FastAsLight"))) === 6)
-      assert(masterSpec.expectedTestCount(new Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set.empty)) === 3)
-      assert(masterSpec.expectedTestCount(new Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 6)
+      assert(masterSpec.expectedTestCount(Filter(None, Set.empty)) === 9)
+      assert(masterSpec.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)) === 3)
+      assert(masterSpec.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 6)
+      assert(masterSpec.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set.empty)) === 3)
+      assert(masterSpec.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 6)
     }
   }
   
