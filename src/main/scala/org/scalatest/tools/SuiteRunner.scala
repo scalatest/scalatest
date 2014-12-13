@@ -26,11 +26,11 @@ import org.scalatest.exceptions.NotAllowedException
 
 private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTestStatefulStatus) extends Runnable {
 
-  private val stopRequested = args.stopper
+  import args.stopper
 
   def run() {
 
-    if (!stopRequested()) {
+    if (!stopper.stopRequested) {
       // Create a Rerunner if the Suite has a no-arg constructor
       val hasPublicNoArgConstructor: Boolean =
         try {

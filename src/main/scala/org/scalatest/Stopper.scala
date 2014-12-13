@@ -29,13 +29,6 @@ package org.scalatest
 trait Stopper {
 
   /**
-   * <strong>This method has been deprecated and will be removed in a future version of ScalaTest. Please call
-   * the stopRequested method instead.</strong>
-   */
-  @deprecated 
-  def apply() = stopRequested
-
-  /**
    * Indicates whether a stop has been requested.
    *
    * <p>
