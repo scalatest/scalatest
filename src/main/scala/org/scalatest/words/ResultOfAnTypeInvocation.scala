@@ -79,7 +79,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       case None =>
         val message = Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
 
@@ -136,7 +136,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       case None =>
         val message = Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
   

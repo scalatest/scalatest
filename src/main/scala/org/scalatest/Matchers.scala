@@ -2875,7 +2875,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
            val message = Resources("exceptionExpected", clazz.getName)
            throw newTestFailedException(message)
            // throw new TestFailedException(message, 3)
-         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
+         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, because isAssignableFrom succeeded above
        }
      }
 
