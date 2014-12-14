@@ -1,0 +1,332 @@
+package org.scalatest.prop
+
+import java.lang.annotation.AnnotationFormatError
+import java.nio.charset.CoderMalfunctionError
+import javax.xml.parsers.FactoryConfigurationError
+import javax.xml.transform.TransformerFactoryConfigurationError
+
+import org.scalatest.FailureMessages._
+import org.scalatest.SharedHelpers._
+import org.scalatest._
+
+class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks {
+
+  object `forEvery/1 ` {
+    def colFun[A](s: Set[A]): TableFor1[A] = {
+
+      val table = Table(("column1"), s.toSeq: _*)
+      table
+    }
+
+    def `should pass when all elements passed` {
+      val col = colFun(Set(1, 2, 3))
+      forEvery(col) { e => e should be < 4}
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+      val col = colFun(Set(1, 2, 3))
+      val e = intercept[exceptions.TestFailedException] {
+        forEvery(col) { e => e should not equal 2}
+      }
+      e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
+      e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
+      val index = getIndex(col, 2)
+      e.message should be(Some("forEvery failed, because: \n" +
+        "  at index " + index + ", 2 equaled 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+        "in " + decorateToStringValue(col)))
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+      val col = colFun(Set(1, 2, 3))
+      val e = intercept[exceptions.TestFailedException] {
+        forEvery(col) { e => e should be < 2}
+      }
+      e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
+      e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
+      val itr = col.toIterator
+      val first = getNextNot[Int](itr, _ < 2)
+      val firstIndex = getIndex(col, first)
+      val second = getNextNot[Int](itr, _ < 2)
+      val secondIndex = getIndex(col, second)
+      e.message should be(Some("forEvery failed, because: \n" +
+        "  at index " + firstIndex + ", " + first + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 10) + "), \n" +
+        "  at index " + secondIndex + ", " + second + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 11) + ") \n" +
+        "in " + decorateToStringValue(col)))
+    }
+
+    def `should propagate TestPendingException thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[exceptions.TestPendingException] {
+        forEvery(col) { e => pending}
+      }
+    }
+
+    def `should propagate TestCanceledException thrown from assertion` {
+      val example = colFun(Set(1, 2, 3))
+      intercept[exceptions.TestCanceledException] {
+        forEvery(example) { e => cancel}
+      }
+    }
+
+    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[AnnotationFormatError] {
+        forEvery(col) { e => throw new AnnotationFormatError("test")}
+      }
+    }
+
+    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[CoderMalfunctionError] {
+        forEvery(col) { e => throw new CoderMalfunctionError(new RuntimeException("test"))}
+      }
+    }
+
+    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[FactoryConfigurationError] {
+        forEvery(col) { e => throw new FactoryConfigurationError()}
+      }
+    }
+
+    def `should propagate java.lang.LinkageError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[LinkageError] {
+        forEvery(col) { e => throw new LinkageError()}
+      }
+    }
+
+    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[ThreadDeath] {
+        forEvery(col) { e => throw new ThreadDeath()}
+      }
+    }
+
+    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[TransformerFactoryConfigurationError] {
+        forEvery(col) { e => throw new TransformerFactoryConfigurationError()}
+      }
+    }
+
+    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[VirtualMachineError] {
+        forEvery(col) { e => throw new VirtualMachineError() {}}
+      }
+    }
+  }
+
+  object `forEvery/2 ` {
+    def colFun[A](s: Set[A]): TableFor2[A, A] = {
+      val table = Table(("column1", "column2"), s.map(x => (x, x)).toSeq: _*)
+      table
+    }
+
+    def `should pass when all elements passed` {
+      val col = colFun(Set(1, 2, 3))
+      forEvery(col) { (e, _) => e should be < 4}
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+      val col = colFun(Set(1, 2, 3))
+      val e = intercept[exceptions.TestFailedException] {
+        forEvery(col) { (e, _) => e should not equal 2}
+      }
+      e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
+      e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
+      val index = getIndex(col, (2, 2))
+      e.message should be(Some("forEvery failed, because: \n" +
+        "  at index " + index + ", 2 equaled 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+        "in " + decorateToStringValue(col)))
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+      val col = colFun(Set(1, 2, 3))
+      val e = intercept[exceptions.TestFailedException] {
+        forEvery(col) { (e, _) => e should be < 2}
+      }
+      e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
+      e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
+      val itr = col.toIterator
+      val first = getNextNot[(Int, Int)](itr, _._1 < 2)
+      val firstIndex = getIndex(col, first)
+      val second = getNextNot[(Int, Int)](itr, _._1 < 2)
+      val secondIndex = getIndex(col, second)
+      e.message should be(Some("forEvery failed, because: \n" +
+        "  at index " + firstIndex + ", " + first._1 + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 10) + "), \n" +
+        "  at index " + secondIndex + ", " + second._1 + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 11) + ") \n" +
+        "in " + decorateToStringValue(col)))
+    }
+
+    def `should propagate TestPendingException thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[exceptions.TestPendingException] {
+        forEvery(col) { (e, _) => pending}
+      }
+    }
+
+    def `should propagate TestCanceledException thrown from assertion` {
+      val example = colFun(Set(1, 2, 3))
+      intercept[exceptions.TestCanceledException] {
+        forEvery(example) { (e, _) => cancel}
+      }
+    }
+
+    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[AnnotationFormatError] {
+        forEvery(col) { (e, _) => throw new AnnotationFormatError("test")}
+      }
+    }
+
+    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[CoderMalfunctionError] {
+        forEvery(col) { (e, _) => throw new CoderMalfunctionError(new RuntimeException("test"))}
+      }
+    }
+
+    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[FactoryConfigurationError] {
+        forEvery(col) { (e, _) => throw new FactoryConfigurationError()}
+      }
+    }
+
+    def `should propagate java.lang.LinkageError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[LinkageError] {
+        forEvery(col) { (e, _) => throw new LinkageError()}
+      }
+    }
+
+    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[ThreadDeath] {
+        forEvery(col) { (e, _) => throw new ThreadDeath()}
+      }
+    }
+
+    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[TransformerFactoryConfigurationError] {
+        forEvery(col) { (e, _) => throw new TransformerFactoryConfigurationError()}
+      }
+    }
+
+    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[VirtualMachineError] {
+        forEvery(col) { (e, _) => throw new VirtualMachineError() {}}
+      }
+    }
+  }
+}
+
+  /*
+
+    describe("forEvery") {
+      it("passes with one passing") {
+        val example = Table(
+          ("passes", "message"),
+          (true,     "passes")
+        )
+        forEvery(example) { (shouldPass, message) =>
+          assert(shouldPass, message)
+        }
+      }
+
+      it("passes with multiple passing") {
+        val example = Table(
+          ("passes", "message"),
+          (true,     "passes"),
+          (true,     "passes 2")
+        )
+        forEvery(example) { (shouldPass, message) =>
+          assert(shouldPass, message)
+        }
+      }
+
+      it("fails with one passing and some failing") {
+        pendingUntilFixed {
+          val example = Table(
+            ("passes", "message"),
+            (true, "passes"),
+            (false, "failure 1"),
+            (false, "failure 2")
+          )
+          forEvery(example) { (shouldPass, message) =>
+            assert(shouldPass, message)
+          }
+        }
+      }
+
+      it("fails when no passing and one failing") {
+        pendingUntilFixed {
+          val example = Table(
+            ("passes", "message"),
+            (false, "failure 1")
+          )
+          forEvery(example) { (shouldPass, message) =>
+            assert(shouldPass, message)
+          }
+        }
+      }
+
+      it("fails when no passing and some failing") {
+        pendingUntilFixed {
+          val example = Table(
+            ("passes", "message"),
+            (false, "failure 1"),
+            (false, "failure 2"),
+            (false, "failure 3")
+          )
+          forEvery(example) { (shouldPass, message) =>
+            assert(shouldPass, message)
+          }
+        }
+      }
+    }
+}
+*/
+/*
+class InspectorExampleSpec extends Spec with Matchers with Inspectors {
+  object `Inspector examples ` {
+    val list = Seq(1, 2, 3)
+    def `failing list for forAll` = {
+      forAll(list) { x =>
+        x should be < (2)
+      }
+    }
+    def `failing list for forEvery` = {
+      forEvery(list) { x =>
+        x should be < (2)
+      }
+    }
+  }
+}
+
+class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks {
+
+  object `examples for failing ` {
+    def `failing table for 1 forAll` {
+      val examples = Table(("a"),
+        (1))
+      forAll(examples) { a =>
+        a should be (2)
+      }
+    }
+
+    def `failing table for 2 forAll` {
+      val examples = Table(("a", "b"),
+        (1, 2))
+
+      forAll(examples) { case (a, b) =>
+        assert(a === 42)
+      }
+    }
+  }
+}
+*/
