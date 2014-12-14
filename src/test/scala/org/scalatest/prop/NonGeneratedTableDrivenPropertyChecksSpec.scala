@@ -9,7 +9,7 @@ import org.scalatest.FailureMessages._
 import org.scalatest.SharedHelpers._
 import org.scalatest._
 
-class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks {
+class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks with OptionValues {
 
   object `forEvery/1 ` {
     def colFun[A](s: Set[A]): TableFor1[A] = {
@@ -31,9 +31,13 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
       e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
       val index = getIndex(col, 2)
-      e.message should be(Some("forEvery failed, because: \n" +
-        "  at index " + index + ", 2 equaled 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-        "in " + decorateToStringValue(col)))
+      e.message.value should be(s"forEvery failed, because: \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 6})\n" +
+        s"    Message: 2 equaled 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 8})\n" +
+        s"    Occurred at table row 1 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 2  )"
+      )
     }
 
     def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
@@ -48,10 +52,43 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       val firstIndex = getIndex(col, first)
       val second = getNextNot[Int](itr, _ < 2)
       val secondIndex = getIndex(col, second)
-      e.message should be(Some("forEvery failed, because: \n" +
-        "  at index " + firstIndex + ", " + first + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 10) + "), \n" +
-        "  at index " + secondIndex + ", " + second + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 11) + ") \n" +
-        "in " + decorateToStringValue(col)))
+      e.message.value should be(s"forEvery failed, because: \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 10})\n" +
+        s"    Message: 2 was not less than 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 12})\n" +
+        s"    Occurred at table row 1 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 2  ), \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 15})\n" +
+        s"    Message: 3 was not less than 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 17})\n" +
+        s"    Occurred at table row 2 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 3  )"
+      )
+/*
+[info] forEvery/1
+[info] - should throw TestFailedException with correct stack depth and message when more than one element failed *** FAILED *** (5 milliseconds)
+[info]   Some("forEvery failed, because:
+[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Message: 2 was not less than 2
+[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Occurred at table row 1 (zero based, not counting headings), which had values (
+[info]       column1 = 2  ),
+[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Message: 3 was not less than 2
+[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Occurred at table row 2 (zero based, not counting headings), which had values (
+[info]       column1 = 3  )") was not equal to Some("forEvery failed, because:
+[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Message: 2 was not less than 2
+[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Occurred at table row 1 (zero based, not counting headings), which had values (
+[info]       column1 = 2  ),
+[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Message: 3 was not less than 2
+[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
+[info]       Occurred at table row 2 (zero based, not counting headings), which had values (
+[info]       column1 = 3  )") (NonGeneratedTableDrivenPropertyChecksSpec.scala:55)
+       */
     }
 
     def `should propagate TestPendingException thrown from assertion` {
@@ -66,6 +103,11 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       intercept[exceptions.TestCanceledException] {
         forEvery(example) { e => cancel}
       }
+    }
+
+    def `should not propagate DiscardedEvaluationException thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      forEvery(col) { e => throw new DiscardedEvaluationException}
     }
 
     def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
@@ -137,9 +179,14 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       e.failedCodeFileName should be(Some("NonGeneratedTableDrivenPropertyChecksSpec.scala"))
       e.failedCodeLineNumber should be(Some(thisLineNumber - 3))
       val index = getIndex(col, (2, 2))
-      e.message should be(Some("forEvery failed, because: \n" +
-        "  at index " + index + ", 2 equaled 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-        "in " + decorateToStringValue(col)))
+      e.message.value should be(s"forEvery failed, because: \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 6})\n" +
+        s"    Message: 2 equaled 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 8})\n" +
+        s"    Occurred at table row 1 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 2\n" +
+        s"    column2 = 2  )"
+      )
     }
 
     def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
@@ -154,10 +201,25 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       val firstIndex = getIndex(col, first)
       val second = getNextNot[(Int, Int)](itr, _._1 < 2)
       val secondIndex = getIndex(col, second)
-      e.message should be(Some("forEvery failed, because: \n" +
-        "  at index " + firstIndex + ", " + first._1 + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 10) + "), \n" +
-        "  at index " + secondIndex + ", " + second._1 + " was not less than 2 (NonGeneratedTableDrivenPropertyChecksSpec.scala:" + (thisLineNumber - 11) + ") \n" +
-        "in " + decorateToStringValue(col)))
+      e.message.value should be(s"forEvery failed, because: \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 10})\n" +
+        s"    Message: 2 was not less than 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 12})\n" +
+        s"    Occurred at table row 1 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 2\n" +
+        s"    column2 = 2  ), \n" +
+        s"  org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 16})\n" +
+        s"    Message: 3 was not less than 2\n" +
+        s"    Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:${thisLineNumber - 18})\n" +
+        s"    Occurred at table row 2 (zero based, not counting headings), which had values (\n" +
+        s"    column1 = 3\n" +
+        s"    column2 = 3  )"
+      )
+    }
+
+    def `should propagate not DiscardedEvaluationException thrown from assertion` {
+      val col = colFun(Set(1, 2, 3))
+      forEvery(col) { (_, _) => throw new DiscardedEvaluationException}
     }
 
     def `should propagate TestPendingException thrown from assertion` {

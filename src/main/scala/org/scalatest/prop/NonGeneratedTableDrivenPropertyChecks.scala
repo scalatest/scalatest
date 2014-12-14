@@ -17,8 +17,9 @@ package org.scalatest
 package prop
 
 import org.scalatest.FailureMessages._
-import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.{TableDrivenPropertyCheckFailedException, StackDepth}
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.prop._
 
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
@@ -393,55 +394,68 @@ trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
     table(fun)
   }
 
+  def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper._
+    lazy val headingStrings = namesOfArgs.map(_.toString)
+    @tailrec
+    def runAndCollectErrorMessage[T <: Product](itr: Iterator[T], messageList: IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException], index: Int)(fun: T => Unit): IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException] = {
+      if (itr.hasNext) {
+        val head = itr.next
+        val newMessageList =
+          try {
+            fun(head)
+            messageList
+          }
+          catch {
+            case _: exceptions.DiscardedEvaluationException => messageList // discard this evaluation and move on to the next
+            case ex if !shouldPropagate(ex) =>
+              messageList :+ new exceptions.TableDrivenPropertyCheckFailedException(
+                (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                  "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                  (
+                    ex match {
+                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                        "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                      case _ => ""
+                    }
+                    ) +
+                  "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                  indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+                    name + " = " + value
+                  }.toIndexedSeq).mkString("\n") +
+                  "  )"),
+                Some(ex),
+                getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+                None,
+                FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                head.productIterator.toList,
+                namesOfArgs,
+                index
+              )
+          }
 
-  import InspectorsHelper._
+        runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
+      }
+      else
+        messageList
+    }
+    val messageList = runAndCollectErrorMessage(rows.toIterator, IndexedSeq.empty, 0)(fun)
+    if (messageList.size > 0)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        None,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+  }
 
-  def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doForEvery(table, table, "forEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 2)(fun)
+  def forEvery[A](table: TableFor1[A])(fun: A => Unit): Unit = {
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){x: Tuple1[A] => fun(x._1)}
   }
 
   def forEvery[A, B](table: TableFor2[A, B])(fun: (A, B) => Unit): Unit = {
-    doForEvery(table, table, "forEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3)(fun.tupled)
-    /*
-      val heading = table.heading
-      val rows = table.toSeq
-    val index: Seq[((A, B), Int)] = rows.zipWithIndex
-    val results = index.flatMap { case ((a: A, b: B), idx: Int) =>
-      try {
-        fun(a, b)
-        None
-      }
-      catch {
-        case _: DiscardedEvaluationException => None // discard this evaluation and move on to the next
-        case ex: Throwable =>
-          val (aName, bName) = heading
-          Some(new TableDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-              "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-              (
-                ex match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                  case _ => ""
-                }
-                ) +
-              "  " + FailureMessages("occurredAtRow", idx) + "\n" +
-              "    " + aName + " = " + a + "," + "\n" +
-              "    " + bName + " = " + b + "\n" +
-
-              "  )",
-            Some(ex),
-            getStackDepthFun("NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 2),
-            FailureMessages("undecoratedPropertyCheckFailureMessage"),
-            List(a, b),
-            List(aName, bName),
-            idx
-          ))
-      }
-      }
-      */
-    }
+    doForEvery[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3)(fun.tupled)
+  }
 
   /**
    * Performs a property check by applying the specified property check function to each row
