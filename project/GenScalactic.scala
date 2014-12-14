@@ -56,10 +56,6 @@ object GenScalactic {
 
     GenVersions.genMain(scalacticPackageDir, version, scalaVersion)
 
-    val scalautilsSourceDir = new File("src/main/scala/org/scalautils")
-    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
-    copyDir(scalautilsSourceDir, scalautilsPackageDir)
-
     val sourceCssFile = new File("src/main/html/addl.css")
     val destCssDir = new File(targetDir.getParentFile, "html")
     destCssDir.mkdirs()
