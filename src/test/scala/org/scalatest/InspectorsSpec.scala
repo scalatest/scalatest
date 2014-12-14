@@ -23,12 +23,13 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import collection._
+import prop.Whenever
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import org.scalactic.Entry
 
-class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks {
+class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks with Whenever {
   
   def examples =
     Table[Set[Int] => GenTraversable[Int]](
@@ -189,6 +190,46 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         intercept[VirtualMachineError] {
           forAll(col) { e => throw new VirtualMachineError() {} }
         }
+      }
+    }
+    
+    object `when used with whenever` {
+      def `should succeed when all whenever conditions are false` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          forAll(col) { e => whenever (e > 3) { fail("if whenever check fails") } }
+        } 
+      }
+      def `should succeed when all whenever conditions are true and conditions pass` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          forAll(col) { e => whenever (e > 0) { e should be > 0 } }
+        } 
+      }
+      def `should fail when whenever conditions are true and conditions fail` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          val e = intercept[exceptions.TestFailedException] {
+            forAll(col) { e => 
+              whenever (e > 0) {  
+                e should be < 2 
+              } 
+            }
+          }
+          e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+          e.failedCodeLineNumber should be (Some(thisLineNumber - 7))
+          e.message.get should startWith ("forAll failed, because: \n" +
+                                     "  at index 1, 2 was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                     "in")
+          e.getCause match {
+            case tfe: exceptions.TestFailedException =>
+              tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+              tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+              tfe.message should be (Some("2 was not less than 2"))
+              tfe.getCause should be (null)
+            case other => fail("Expected cause to be TestFailedException, but got: " + other)
+          }
+        } 
       }
     }
 
@@ -1477,6 +1518,39 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         intercept[VirtualMachineError] {
           forEvery(col) { e => throw new VirtualMachineError() {} }
         }
+      }
+    }
+
+    object `when used with whenever` {
+      def `should succeed when all whenever conditions are false` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          forEvery(col) { e => whenever (e > 3) { fail("if whenever check fails") } }
+        } 
+      }
+      def `should succeed when all whenever conditions are true and conditions pass` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          forEvery(col) { e => whenever (e > 0) { e should be > 0 } }
+        } 
+      }
+      def `should fail when whenever conditions are true and conditions fail` {
+        forAll(examples) { colFun =>
+          val col = colFun(Set(1, 2, 3))
+          val e = intercept[exceptions.TestFailedException] {
+            forEvery(col) { e => 
+              whenever (e > 0) {  
+                e should be < 2 
+              } 
+            }
+          }
+          e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+          e.failedCodeLineNumber should be (Some(thisLineNumber - 7))
+          e.message.get should startWith ("forEvery failed, because: \n" +
+                                     "  at index 1, 2 was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 7) + "), \n" +
+                                     "  at index 2, 3 was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 8) + ") \n" +
+                                     "in")
+        } 
       }
     }
   }

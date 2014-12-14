@@ -541,6 +541,12 @@ private[scalatest] object InspectorsHelper {
       case _ if Suite.anExceptionThatShouldCauseAnAbort(throwable) => true
       case _ => false
     }
+
+  def shouldSkip(throwable: Throwable): Boolean = 
+    throwable match {
+      case _: exceptions.DiscardedEvaluationException => true
+      case _ => false
+    }
   
   def createMessage(messageKey: String, t: Throwable, resourceNamePrefix: String): String = 
     t match {
@@ -571,6 +577,8 @@ private[scalatest] object InspectorsHelper {
           result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
         }
         catch {
+          case e if shouldSkip(e) =>
+             result
           case e if !shouldPropagate(e) => 
             val messageKey = head match {
               case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
@@ -684,6 +692,8 @@ private[scalatest] object InspectorsHelper {
             messageList
           }
           catch {
+            case e if shouldSkip(e) =>
+               messageList
             case e if !shouldPropagate(e) => 
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
