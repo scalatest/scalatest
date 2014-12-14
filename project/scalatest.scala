@@ -685,7 +685,7 @@ object ScalatestBuild extends Build {
         maybeSourceFile match {
           case Some(docsrcFile) => copyDocFile(srcFile, new File(docsrcDir.asFile, docsrcFile.getPath))
           case None             => 
-             throw new RuntimeException("unexpected source path ["+ srcPath +"] not relative to " + srcDirs.map(_.toPath))
+             throw new RuntimeException("unexpected source path ["+ srcPath +"] not relative to " + srcDirs.mkString("[", ", ", "]"))
         }
       }
 
