@@ -36,6 +36,8 @@ object GenScalactic {
   }
 
   private def copyDir(sourceDir: File, targetDir: File): Unit = {
+    println(s"Copying dir ${sourceDir} (exists: ${sourceDir.exists()}, absolutePath: ${sourceDir.getAbsolutePath})")
+    println(s"     to dir ${targetDir}")
     targetDir.mkdirs()
     sourceDir.listFiles.foreach { sourceFile =>
       if (sourceFile.isFile) {
