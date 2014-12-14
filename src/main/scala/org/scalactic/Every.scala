@@ -79,8 +79,8 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  * </p>
  * 
  * <pre class="stHighlight">
- * Many(1, 2, 3).map(_ + 1)                  // Result: Many(2, 3, 4)
- * One(1).map(_ + 1)                         // Result: One(2)
+ * Many(1, 2, 3).map(_ + 1)                  // Result: Many(2, 3, 4): Every[Int]
+ * One(1).map(_ + 1)                         // Result: One(2): Every[Int]
  * Every(1, 2, 3).containsSlice(Every(2, 3)) // Result: true
  * Every(1, 2, 3).containsSlice(Every(3, 4)) // Result: false
  * Every(-1, -2, 3, 4, 5).minBy(_.abs)       // Result: -1
@@ -163,7 +163,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * and the passed <code>GenTraversableOnce</code>.
    *
    * @tparam U the element type of the returned <code>Many</code>
-   * @param other the <code>Every</code> to append
+   * @param other the <code>GenTraversableOnce</code> to append
    * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
    */
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U]
@@ -401,7 +401,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Indicates whether this <code>Every</code> ends with the given <code>Every</code>.
    *
-   * @param the sequence to test
+   * @param the <code>Every</code> to test
    * @return <code>true</code> if this <code>Every</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
    */
   final def endsWith[B](that: Every[B]): Boolean = underlying.endsWith(that.toVector)
@@ -910,10 +910,10 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * </p>
    *
    * <pre class="stHighlight">
-   * Every('a', 'b', 'b').permutations.toList = Iterator(Many(a, b, b), Many(b, a, b), Many(b, b, a))
+   * Every('a', 'b', 'b').permutations.toList = List(Many(a, b, b), Many(b, a, b), Many(b, b, a))
    * </pre>
    *
-   * @return an iterator which traverses the distinct permutations of this <code>Every</code>.
+   * @return an iterator that traverses the distinct permutations of this <code>Every</code>.
    */
   final def permutations: Iterator[Every[T]] = {
     val it = underlying.permutations
@@ -1009,7 +1009,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = underlying.reduceRightOption(op)
 
   /**
-   * Returns new <code>Every</code> wih elements in reverse order.
+   * Returns new <code>Every</code> with elements in reverse order.
    *
    * @return a new <code>Every</code> with all elements of this <code>Every</code> in reversed order. 
    */

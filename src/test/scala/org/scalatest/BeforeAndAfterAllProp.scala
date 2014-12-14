@@ -97,10 +97,10 @@ class ExampleBeforeAndAfterAllPropSuite extends Suite with BeforeAndAfterAll wit
   def testMethod2() { Thread.sleep(10) }
   def testMethod3() { Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -111,10 +111,10 @@ class ExampleBeforeAndAfterAllPropFixtureSuite extends fixture.Suite with Before
   def testMethod2() { Thread.sleep(10) }
   def testMethod3() { Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -127,10 +127,10 @@ class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with 
     def `Test 3` { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -143,10 +143,10 @@ class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAn
     def `Test 3`(fixture: String) { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -169,10 +169,10 @@ class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterA
   test("Test 2") { Thread.sleep(10) }
   test("Test 3") { Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -183,10 +183,10 @@ class ExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with 
   test("Test 2") { s => Thread.sleep(10) }
   test("Test 3") { s => Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -199,10 +199,10 @@ class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll
     it("Test 3") { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -215,10 +215,10 @@ class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with Be
     it("Test 3") { s => Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -231,10 +231,10 @@ class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAnd
     scenario("Scenario 3") { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -247,10 +247,10 @@ class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec
     scenario("Scenario 3") { s => Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -261,10 +261,10 @@ class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterA
   it should "do thing 2" in { Thread.sleep(10) }
   it should "do thing 3" in { Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -275,10 +275,10 @@ class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with 
   it should "do thing 2" in { s => Thread.sleep(10) }
   it should "do thing 3" in { s => Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -291,10 +291,10 @@ class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterA
     "Test 3" in { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -307,10 +307,10 @@ class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with 
     "Test 3" in { s => Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -321,10 +321,10 @@ class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterA
   property("Test 2") { Thread.sleep(10) }
   property("Test 3") { Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -335,10 +335,10 @@ class ExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with 
   property("Test 2") { s => Thread.sleep(10) }
   property("Test 3") { s => Thread.sleep(10) }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -351,10 +351,10 @@ class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterA
     "Test 3" in { Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -367,10 +367,10 @@ class ExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with 
     "Test 3" in { s => Thread.sleep(10) }
   }
   
-  override protected def beforeAll(configMap: ConfigMap) {
+  override protected def beforeAll() {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll() {
     afterAllTime = System.currentTimeMillis
   }
 }

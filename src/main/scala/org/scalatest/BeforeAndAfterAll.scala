@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
- * Trait that can be mixed into suites that need methods invoked before and after executing the
+ * Stackable trait that can be mixed into suites that need methods invoked before and after executing the
  * suite.
  *
  * <p>
@@ -35,13 +35,12 @@ package org.scalatest
  *
  * <p>
  * For example, the following <code>ExampleSpec</code> mixes in <code>BeforeAndAfterAll</code> and
- * in <code>beforeAll</code>, creates and writes to a temp file, taking the name of the temp file
- * from the <code>configMap</code>. This same <code>configMap</code> is then passed to the <code>run</code>
- * methods of the nested suites, <code>OneSpec</code>, <code>TwoSpec</code>, <code>RedSpec</code>,
- * and <code>BlueSpec</code>, so those suites can access the filename and, therefore, the file's
- * contents. After all of the nested suites have executed, <code>afterAll</code> is invoked, which
- * again grabs the file name from the <code>configMap</code> and deletes the file. Each of these five
- * test classes extend trait <code>TempFileExistsSpec</code>, which defines a test that ensures the temp file exists.
+ * in <code>beforeAll</code>, creates and writes to a temp file.
+ * Each test class, <code>ExampleSpec</code> and all its nested
+ * suites--<code>OneSpec</code>, <code>TwoSpec</code>, <code>RedSpec</code>,
+ * and <code>BlueSpec</code>--tests that the file exists. After all of the nested suites
+ * have executed, <code>afterAll</code> is invoked, which
+ * deletes the file. 
  * (Note: if you're unfamiliar with the <code>withFixture(OneArgTest)</code> approach to shared fixtures, check out
  * the documentation for trait <a href="fixture/FlatSpec.html"><code>fixture.FlatSpec</code></a>.)
  * </p>
@@ -54,7 +53,7 @@ package org.scalatest
  * 
  * trait TempFileExistsSpec extends fixture.FlatSpecLike {
  * 
- *   private val tempFileName = "tmp.txt"
+ *   protected val tempFileName = "tmp.txt"
  * 
  *   type FixtureParam = File
  *   override def withFixture(test: OneArgTest) = {
@@ -96,24 +95,11 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Running the above class in the interpreter will give an error if you don't supply a mapping for <code>"tempFileName"</code> in the config map:
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
- * <span class="stGreen">ExampleSpec:</span>
- * <span class="stRed">Exception encountered when invoking run on a suite. *** ABORTED ***
- *   Exception encountered when invoking run on a suite. (<console>:30)
- * *** RUN ABORTED ***
- *   An exception or error caused a run to abort: must place a temp file name in the config map under the key: tempFileName (<console>:30)</span>
- * </pre>
- *
- * <p>
  * If you do supply a mapping for <code>"tempFileName"</code> in the config map, you'll see that the temp file is available to all the tests:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute (configMap = ConfigMap("tempFileName" -&gt; "tmp.txt"))
+ * scala&gt; new ExampleSpec execute
  * <span class="stGreen">ExampleSpec:
  * OneSpec:
  * The temp file
@@ -132,7 +118,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * <strong>Note: As of 2.0.M5, this trait uses the newly added <code>Status</code> result of <code>Suite</code>'s "run" methods
+ * <strong>Note: this trait uses the <code>Status</code> result of <code>Suite</code>'s "run" methods
  * to ensure that the code in <code>afterAll</code> is executed after
  * all the tests and nested suites are executed even if a <code>Distributor</code> is passed.</strong>
  * </p>
@@ -178,16 +164,6 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
   protected def beforeAll() = ()
 
   /**
-   * <strong>This overloaded form of <code>beforeAll</code> has been deprecated and will
-   * be removed in a future version of ScalaTest. Please use the <code>beforeAll(ConfigMap)</code> method
-   * of trait <code>BeforeAndAfterAllConfigMap</code> instead.</strong>
-   */
-  @deprecated("Please use the beforeAll(ConfigMap) method of trait BeforeAndAfterAllConfigMap instead.")
-  protected def beforeAll(configMap: ConfigMap) {
-    beforeAll()
-  }
-
-  /**
    * Defines a method to be run after all of this suite's tests and nested suites have
    * been run.
    *
@@ -202,16 +178,6 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    * </p>
    */
   protected def afterAll() = ()
-
-  /**
-   * <strong>This overloaded form of <code>afterAll</code> has been deprecated and will
-   * be removed in a future version of ScalaTest. Please use the <code>afterAll(ConfigMap)</code> method
-   * of trait <code>BeforeAndAfterAllConfigMap</code> instead.</strong>
-   */
-  @deprecated("Please use the afterAll(ConfigMap) method of trait BeforeAndAfterAllConfigMap instead.")
-  protected def afterAll(configMap: ConfigMap) {
-    afterAll()
-  }
 
   /**
    * Execute a suite surrounded by calls to <code>beforeAll</code> and <code>afterAll</code>.
@@ -250,7 +216,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
   */
   abstract override def run(testName: Option[String], args: Args): Status = {
     if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-      beforeAll(args.configMap)
+      beforeAll()
 
     val (runStatus, thrownException) =
       try {
@@ -264,7 +230,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
       case Some(earlierException) =>
         try {
           if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-            afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
+            afterAll() // Make sure that afterAll is called even if run completes abruptly.
         }
         catch {
           case laterException: Exception => // Do nothing, will need to throw the earlier exception
@@ -277,7 +243,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
           // runStatus may not be completed, call afterAll only after it is completed
           runStatus.whenCompleted { succeeded =>
             try {
-                afterAll(args.configMap)
+                afterAll()
             }
             catch {
               case laterException: Exception =>
