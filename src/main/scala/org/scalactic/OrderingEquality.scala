@@ -15,8 +15,41 @@
  */
 package org.scalactic
 
+/**
+ * A <code>HashingEquality[T]</code> that offers a <code>compare</code> method that indicates 
+ * whether two objects of type <code>T</code> are greater than, less than, or equal to each other.
+ *
+ * <p>
+ * Instances of this trait must define a <em>total ordering</em> on objects of type <code>T</code> that 
+ * is consistent with <code>areEqual</code> according to the following:
+ * </p>
+ *
+ * <ul>
+ * <li><em>consistency</em>: for any non-<code>null</code> values <code>x</code> and <code>y</code>, <code>(compare(a, b) == 0) == areEqual(x, y)</code> must return <code>true</code>.</li>
+ * <li><em>right-null</em>: For any non-<code>null</code> value <code>x</code>, <code>compare(x, null)</code> must throw <code>NullPointerException</code>.</li>
+ * <li><em>left-null</em>: For any non-<code>null</code> value <code>x</code>, <code>compare(null, x)</code> must throw <code>NullPointerException</code>.</li>
+ * <li><em>both-null</em>: <code>compare(null, null)</code> must throw <code>NullPointerException</code>.</li>
+ * </ul>
+ */
 trait OrderingEquality[A] extends HashingEquality[A] {
 
+  /**
+   * Returns an integer whose sign indicates how x compares to y.
+   *
+   * <p>
+   * The result sign has the following meaning:
+   * </p>
+   *
+   * <ul>
+   * <li>negative if x < y</li>
+   * <li>positive if x > y</li>
+   * <li>zero otherwise (if <code>areEqual(x, y)</code>)</li>
+   * </ul>
+   *
+   * <p>
+   * For more detail on the contract of this method, see the main documentation for this trait.
+   * </p>
+   */
   def compare(a: A, b: A): Int
 
 // Actually the only way to do this is to make them implement areEqual in
@@ -42,42 +75,42 @@ trait OrderingEquality[A] extends HashingEquality[A] {
   // people can implement each in the most efficient manner.
   // Oh yes, the reason we need the Any is so we can provide an OrdBox that doesn't
   // cast and hope what comes back is a ClassCastException.
-  override def areEqual(a: A, b: Any): Boolean
+  // override def areEqual(a: A, b: Any): Boolean
 
   /**
-   * Return true if `a` <= `b` in the ordering.
+   * Returns true if `a` <= `b` in the total order defined by this <code>OrderingEquality</code>.
   */
-  def lteq(a: A, b: A): Boolean = compare(a, b) <= 0
+  final def lteq(a: A, b: A): Boolean = compare(a, b) <= 0
 
   /**
-   * Return true if `a` >= `b` in the ordering.
+   * Returns true if `a` >= `b` in the total order defined by this <code>OrderingEquality</code>.
   */
-  def gteq(a: A, b: A): Boolean = compare(a, b) >= 0
+  final def gteq(a: A, b: A): Boolean = compare(a, b) >= 0
 
   /**
-   * Return true if `a` < `b` in the ordering.
+   * Returns true if `a` < `b` in the total order defined by this <code>OrderingEquality</code>.
   */
-  def lt(a: A, b: A): Boolean = compare(a, b) < 0
+  final def lt(a: A, b: A): Boolean = compare(a, b) < 0
 
   /**
-   * Return true if `a` > `b` in the ordering.
+   * Returns true if `a` > `b` in the total order defined by this <code>OrderingEquality</code>.
   */
-  def gt(a: A, b: A): Boolean = compare(a, b) > 0
+  final def gt(a: A, b: A): Boolean = compare(a, b) > 0
 
   /**
-   * Return true if `a` == `b` in the ordering.
+   * Returns true if `a` == `b` in the total order defined by this <code>OrderingEquality</code>.
   */
-  def equiv(a: A, b: A): Boolean = compare(a, b) == 0
+  // final def equiv(a: A, b: A): Boolean = compare(a, b) == 0 // Silly. Don't need this as it is redundant with areEquivalent.
 
   /**
-   * Return `a` if `a` >= `b`, otherwise `b`.
+   * Returns `a` if `a` >= `b`, otherwise `b`, according to the total order defined by this <code>OrderingEquality</code>.
   */
-  def max(a: A, b: A): A = if (gteq(a, b)) a else b
+  final def max(a: A, b: A): A = if (gteq(a, b)) a else b
 
   /**
-   * Return `a` if `a` <= `b`, otherwise `b`.
+   * Returns `a` if `a` <= `b`, otherwise `b`, according to the total order defined by this <code>OrderingEquality</code>.
   */
-  def min(a: A, b: A): A = if (lteq(a, b)) a else b
+  final def min(a: A, b: A): A = if (lteq(a, b)) a else b
 }
 
 object OrderingEquality {
