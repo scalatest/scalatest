@@ -73,10 +73,6 @@ object GenScalactic {
     val scalacticPackageDir = new File(targetDir, "org/scalactic")
     val scalacticSourceDir = new File("src/test/scala/org/scalactic")
     copyDir(scalacticSourceDir, scalacticPackageDir)
-
-    val scalautilsPackageDir = new File(targetDir, "org/scalautils")
-    val scalautilsSourceDir = new File("src/test/scala/org/scalautils")
-    copyDir(scalautilsSourceDir, scalautilsPackageDir)
   }
 
 
