@@ -27,8 +27,14 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
 /**
- * An ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
+ * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
  *
+ * <p>
+ * The purpose of <code>Chain</code> is to allow you to express in a type that a <code>List</code> is non-empty, thereby eliminating the
+ * need for (and potential exception from) a run-time check for non-emptiness. For a non-empty sequence with <code>IndexedSeq</code>
+ * performance, see <a href="Every.html"><code>Every</code></a>.
+ * </p>
+ * 
  * <h2>Constructing <code>Chain</code>s</h2>
  *
  * <p>
@@ -36,19 +42,38 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  * </p>
  *
  * <pre class="stHighlight">
- * Chain(1)
- * Chain(1, 2)
- * Chain(1, 2, 3)
+ * scala&gt; Chain(1, 2, 3)
+ * res0: org.scalactic.Chain[Int] = Chain(1, 2, 3)
  * </pre>
  *
  * <p>
- * Alternatively you can pass cons elements onto the <code>End</code> singelton object:
+ * Alternatively you can <em>cons</em> elements onto the <code>End</code> singleton object, similar to making a <code>List</code> starting with <code>Nil</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * 1 :: End
- * 1 :: 2 :: End
- * 1 :: 2 :: 3 :: End
+ * scala&gt; 1 :: 2 :: 3 :: Nil
+ * res0: List[Int] = List(1, 2, 3)
+ *
+ * scala&gt; 1 :: 2 :: 3 :: End
+ * res1: org.scalactic.Chain[Int] = Chain(1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * Note that although <code>Nil</code> is a <code>List[Nothing]</code>, <code>End</code> is
+ * not a <code>Chain[Nothing]</code>, because no empty <code>Chain</code> exists. (A chain is a series
+ * of connect links; if you have no links, you have no chain.)
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * scala&gt; val nil: List[Nothing] = Nil
+ * nil: List[Nothing] = List()
+ *
+ * scala&gt; val nada: Chain[Nothing] = End
+ * &lt;console&gt;:16: error: type mismatch;
+ * found   : org.scalactic.End.type
+ * required: org.scalactic.Chain[Nothing]
+ *        val nada: Chain[Nothing] = End
+ *                                   ^
  * </pre>
  *
  * <h2>Working with <code>Chain</code>s</h2>
@@ -489,7 +514,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   final def find(p: T => Boolean): Option[T] = underlying.find(p)
 
   /**
-   * Builds a new <code>Chain</code> by applying a function to all elements of this <code>Chain</code> and using the elements of the resulting <code>Chains</code>s.
+   * Builds a new <code>Chain</code> by applying a function to all elements of this <code>Chain</code> and using the elements of the resulting <code>Chain</code>s.
    *
    * @tparam U the element type of the returned <code>Chain</code>
    * @param f the function to apply to each element.
@@ -587,7 +612,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   final def foreach(f: T => Unit): Unit = underlying.foreach(f)
 
   /**
-   * Partitions this <code>Chain</code> into a map of <code>Chains</code>s according to some discriminator function.
+   * Partitions this <code>Chain</code> into a map of <code>Chain</code>s according to some discriminator function.
    *
    * @tparam K the type of keys returned by the discriminator function.
    * @param f the discriminator function.
@@ -607,10 +632,10 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   }
 
   /**
-   * Partitions elements into fixed size <code>Chains</code>s.
+   * Partitions elements into fixed size <code>Chain</code>s.
    *
    * @param size the number of elements per group
-   * @return An iterator producing <code>Chains</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
+   * @return An iterator producing <code>Chain</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
    */
   final def grouped(size: Int): Iterator[Chain[T]] = {
     val itOfList = underlying.grouped(size)
@@ -618,7 +643,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   }
 
   /**
-   * Returns <code>true</code> to indicate this <code>Chain</code> has a definite size, since all <code>Chains</code>s are strict collections.
+   * Returns <code>true</code> to indicate this <code>Chain</code> has a definite size, since all <code>Chain</code>s are strict collections.
    */
   final def hasDefiniteSize: Boolean = true
 
@@ -665,7 +690,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index where this <code>Chain</code> contains a given <code>GenSeq</code> as a slice.
    * 
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @return the first index at which the elements of this <code>Chain</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
@@ -674,7 +699,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>GenSeq</code> as a slice.
    * 
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>Chain</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
@@ -684,7 +709,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index where this <code>Chain</code> contains a given <code>Every</code> as a slice.
    * 
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @return the first index such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
@@ -693,7 +718,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index where this <code>Chain</code> contains a given <code>Chain</code> as a slice.
    * 
-   * @param that the <code>Chain<code> defining the slice to look for
+   * @param that the <code>Chain</code> defining the slice to look for
    * @return the first index such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
@@ -702,7 +727,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>Every</code> as a slice.
    * 
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
@@ -712,7 +737,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>Chain</code> as a slice.
    * 
-   * @param that the <code>Chain<code> defining the slice to look for
+   * @param that the <code>Chain</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
@@ -754,14 +779,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   final def isDefinedAt(idx: Int): Boolean = underlying.isDefinedAt(idx)
 
   /**
-   * Returns <code>false</code> to indicate this <code>Chain</code>, like all <code>Chains<code>s, is non-empty.
+   * Returns <code>false</code> to indicate this <code>Chain</code>, like all <code>Chain<code>s, is non-empty.
    *
    * @return false
    */
   final def isEmpty: Boolean = false
 
   /**
-   * Returns <code>true</code> to indicate this <code>Chain</code>, like all <code>Chains<code>s, can be traversed repeatedly.
+   * Returns <code>true</code> to indicate this <code>Chain</code>, like all <code>Chain</code>s, can be traversed repeatedly.
    *
    * @return true
    */
@@ -975,7 +1000,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
   final def mkString(start: String, sep: String, end: String): String = underlying.mkString(start, sep, end)
 
   /**
-   * Returns <code>true</code> to indicate this <code>Chain</code>, like all <code>Chain<code>s, is non-empty.
+   * Returns <code>true</code> to indicate this <code>Chain</code>, like all <code>Chain</code>s, is non-empty.
    *
    * @return true
    */
@@ -1255,7 +1280,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
 
   /**
    * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
-   * moving the sliding window by a given <code>step<code> each time.
+   * moving the sliding window by a given <code>step</code> each time.
    *
    * @param size the number of elements per group
    * @param step the distance between the first elements of successive groups
@@ -1569,7 +1594,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @tparam R the type of the second member of the element triples
    * @tparam R the type of the third member of the element triples
    * @param asTriple an implicit conversion that asserts that the element type of this <code>Chain</code> is a triple.
-   * @return a triple of <code>Chains</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>Chain</code>. 
+   * @return a triple of <code>Chain</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>Chain</code>. 
    */
   final def unzip3[L, M, R](implicit asTriple: T => (L, M, R)): (Chain[L], Chain[M], Chain[R]) = {
     val unzipped = underlying.unzip3

@@ -28,8 +28,14 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
 
 // Can't be an IndexedSeq[T] because Builder would be able to create an empty one.
 /**
- * An ordered, immutable, non-empty collection of elements with <code>IndexedSeq</code> performance characteristics.
+ * A non-empty vector: an ordered, immutable, non-empty collection of elements with <code>IndexedSeq</code> performance characteristics.
  *
+ * <p>
+ * The purpose of <code>Every</code> is to allow you to express in a type that a <code>Vector</code> is non-empty, thereby eliminating the
+ * need for (and potential exception from) a run-time check for non-emptiness. For a non-empty sequence with <code>LinearSeq</code>
+ * performance, see <a href="Chain.html"><code>Chain</code></a>.
+ * </p>
+ * 
  * <p>
  * Class <code>Every</code> has two and only two subtypes: <a href="One.html"><code>One</code></a> and <a href="Many.html"><code>Many</code></a>.
  * A <code>One</code> contains exactly one element. A <code>Many</code> contains two or more elements. Thus no way exists for an
@@ -597,7 +603,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice.
    * 
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @return the first index at which the elements of this <code>Every</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
@@ -606,7 +612,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index after or at a start index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice.
    * 
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>Every</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
@@ -616,7 +622,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index where this <code>Every</code> contains a given <code>Every</code> as a slice.
    * 
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @return the first index such that the elements of this <code>Every</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
@@ -625,7 +631,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index after or at a start index where this <code>Every</code> contains a given <code>Every</code> as a slice.
    * 
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Every</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
@@ -667,7 +673,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def isDefinedAt(idx: Int): Boolean = underlying.isDefinedAt(idx)
 
   /**
-   * Returns <code>false</code> to indicate this <code>Every</code>, like all <code>Every<code>s, is non-empty.
+   * Returns <code>false</code> to indicate this <code>Every</code>, like all <code>Every</code>s, is non-empty.
    *
    * @return false
    */
@@ -871,7 +877,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def mkString(start: String, sep: String, end: String): String = underlying.mkString(start, sep, end)
 
   /**
-   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every<code>s, is non-empty.
+   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every</code>s, is non-empty.
    *
    * @return true
    */
@@ -1150,7 +1156,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
 
   /**
    * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
-   * moving the sliding window by a given <code>step<code> each time.
+   * moving the sliding window by a given <code>step</code> each time.
    *
    * @param size the number of elements per group
    * @param step the distance between the first elements of successive groups
