@@ -23,6 +23,11 @@ class FilterSpec extends FunSpec {
   
   describe("A Filter") {
 
+    it("should during the deprecation cycle be usable as a particular Function2") {
+      def bippy(fn: Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]]) = fn
+      assertCompiles("bippy(Filter.default)")
+    }
+
     it("should throw NPEs if constructed with nulls") {
       intercept[NullPointerException] {
         Filter(null, null)
@@ -49,13 +54,13 @@ class FilterSpec extends FunSpec {
 
     it("should throw IAE if passed a Some(Set()) for tagsToInclude") {
       intercept[IllegalArgumentException] {
-        new Filter(Some(Set()), Set())
+        Filter(Some(Set()), Set())
       }
     }
 
     it("should throw IAE if passed an empty set for testName in the apply method") {
       val caught = intercept[IllegalArgumentException] {
-        val filter = new Filter(None, Set())
+        val filter = Filter(None, Set())
         filter(Set("hi", "ho"), Map("hi" -> Set[String]()), suite.suiteId)
       }
       assert(caught.getMessage === "hi was associated with an empty set in the map passsed as tags")
@@ -63,7 +68,7 @@ class FilterSpec extends FunSpec {
 
     it("should throw IAE if passed an empty set for testName in the includedTestCount method") {
       val caught = intercept[IllegalArgumentException] {
-        val filter = new Filter(None, Set())
+        val filter = Filter(None, Set())
         filter.runnableTestCount(Set("hi", "ho"), Map("hi" -> Set()), suite.suiteId)
       }
       assert(caught.getMessage === "hi was associated with an empty set in the map passsed as tags")
@@ -82,25 +87,25 @@ class FilterSpec extends FunSpec {
 
     it("should report a test as ignored when None is passed to filter for tagsToInclude, and" +
             "org.scalatest.Ignore is not passed in the tagsToExclude") {
-      val filter = new Filter(None, Set("no ignore here"))
+      val filter = Filter(None, Set("no ignore here"))
       validateIgnoreBehavior(filter)
     }
 
     it("should report a test as ignored when None is passed to filter for tagsToInclude, and" +
             "org.scalatest.Ignore is passed in the tagsToExclude") {
-      val filter = new Filter(None, Set("org.scalatest.Ignore"))
+      val filter = Filter(None, Set("org.scalatest.Ignore"))
       validateIgnoreBehavior(filter)
     }
 
     it("should report a test as ignored when Some(Ignore) is passed to filter for tagsToInclude, and" +
             "org.scalatest.Ignore is not passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("org.scalatest.Ignore")), Set("no ignore here"))
+      val filter = Filter(Some(Set("org.scalatest.Ignore")), Set("no ignore here"))
       validateIgnoreBehavior(filter)
     }
 
     it("should report a test as ignored when Some(Ignore) is passed to filter for tagsToInclude, and" +
             "org.scalatest.Ignore is passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("org.scalatest.Ignore")), Set("org.scalatest.Ignore"))
+      val filter = Filter(Some(Set("org.scalatest.Ignore")), Set("org.scalatest.Ignore"))
       validateIgnoreBehavior(filter)
     }
     
@@ -142,13 +147,13 @@ class FilterSpec extends FunSpec {
 
     it("should report a test tagged as Other as ignored when Some(Other) is passed to filter" +
             "for tagsToInclude, and org.scalatest.Ignore is not passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("Other")), Set("no ignore here"))
+      val filter = Filter(Some(Set("Other")), Set("no ignore here"))
       validateIgnoreOtherBehavior(filter)
     }
 
     it("should report a test tagged as Other as ignored when Some(Other) is passed to filter" +
             "for tagsToInclude, and org.scalatest.Ignore is passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("Other")), Set("org.scalatest.Ignore"))
+      val filter = Filter(Some(Set("Other")), Set("org.scalatest.Ignore"))
       validateIgnoreOtherBehavior(filter)
     }
 
@@ -177,13 +182,13 @@ class FilterSpec extends FunSpec {
 
     it("should not report a test as ignored when Some(no ignore here) is passed to filter for" +
             "tagsToInclude, and org.scalatest.Ignore is not passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("no ignore here")), Set("no ignore here"))
+      val filter = Filter(Some(Set("no ignore here")), Set("no ignore here"))
       validateNotReportingIgnoresBehavior(filter)
     }
 
     it("should not report a test as ignored when Some(no ignore here) is passed to filter for" +
             "tagsToInclude, and org.scalatest.Ignore is passed in the tagsToExclude") {
-      val filter = new Filter(Some(Set("no ignore here")), Set("org.scalatest.Ignore"))
+      val filter = Filter(Some(Set("no ignore here")), Set("org.scalatest.Ignore"))
       validateNotReportingIgnoresBehavior(filter)
     }
     
@@ -218,7 +223,7 @@ class FilterSpec extends FunSpec {
         val tags = Map() ++ tuples
 
         val tagsToExclude = Set() ++ potentialTagNames.drop(randomPositiveInt(potentialTagNames.length)) // Do want an empty set here occasionally
-        val filter = new Filter(None, tagsToExclude)
+        val filter = Filter(None, tagsToExclude)
         val filtered = filter(TreeSet[String]() ++ testNames, tags, suite.suiteId)
 
         // Here I believe I was trying to check to make sure the test names come out in
@@ -316,7 +321,7 @@ class FilterSpec extends FunSpec {
     }
 
     it("should not include an excluded tag even if it also appears as an included tag") {
-      val filter = new Filter(Some(Set("Slow")), Set("Slow"))
+      val filter = Filter(Some(Set("Slow")), Set("Slow"))
       val filtered = filter(Set("myTestName"), Map("myTestName" -> Set("Slow")), suite.suiteId)
       assert(filtered.size === 0) 
     }
@@ -328,7 +333,7 @@ class FilterSpec extends FunSpec {
     }
 
     it("should include an included tag if there are no excluded tags") {
-      val filter = new Filter(Some(Set("Slow")), Set())
+      val filter = Filter(Some(Set("Slow")), Set())
       val filtered = filter(Set("myTestName"), Map("myTestName" -> Set("Slow")), suite.suiteId)
       assert(filtered.size === 1) 
     }
@@ -355,7 +360,7 @@ class FilterSpec extends FunSpec {
         val tagsToExclude = Set() ++ potentialTagNames.drop(randomPositiveInt(potentialTagNames.length)) // Do want an empty set here occasionally
         val tagsToInclude = Set() ++ potentialTagNames.drop(randomPositiveInt(potentialTagNames.length - 1)) // Again, subtracting one to avoid an empty set, which is an illegal argument. 
 
-        val filter = new Filter(Some(tagsToInclude), tagsToExclude)
+        val filter = Filter(Some(tagsToInclude), tagsToExclude)
         val filtered = filter(TreeSet[String]() ++ testNames, tags, suite.suiteId)
 
         // Here I believe I was trying to check to make sure the test names come out in
@@ -461,13 +466,13 @@ class FilterSpec extends FunSpec {
 
       it("should return (false, false) if tagsToInclude is None and tagsToExclude is empty" +
               "and the test has no tags") {
-        val filter = new Filter(None, Set[String]())
+        val filter = Filter(None, Set[String]())
         assert(filter("myTestName", emptyMap, suite.suiteId) === (false, false))
       }
       
       it("should return (true, false) if tagsToInclude is None and tagsToExclude includes" +
               "SlowAsMolasses and the test is marked as SlowAsMolasses") {
-        val filter = new Filter(None, Set("SlowAsMolasses"))
+        val filter = Filter(None, Set("SlowAsMolasses"))
         assert(filter("myTestName", Map("myTestName" -> Set("SlowAsMolasses")), suite.suiteId) === (true, false))
       }
       it("should return (true, false) if tagsToInclude is None and tagsToExclude includes" +
@@ -478,7 +483,7 @@ class FilterSpec extends FunSpec {
       
       it("should return (false, true) if tagsToInclude is None and tagsToExclude is empty" +
               "and the test is marked as ignored") {
-        val filter = new Filter(None, Set[String]())
+        val filter = Filter(None, Set[String]())
         assert(filter("myTestName", Map("myTestName" -> Set("org.scalatest.Ignore")), suite.suiteId) === (false, true))
       }
       it("should return (false, true) if tagsToInclude is None and tagsToExclude is empty" +
@@ -489,7 +494,7 @@ class FilterSpec extends FunSpec {
       
       it("should return (true, false) if tagsToInclude is None and tagsToExclude includes" +
               "SlowAsMolasses and the test is marked as SlowAsMolasses and ignored") {
-        val filter = new Filter(None, Set("SlowAsMolasses"))
+        val filter = Filter(None, Set("SlowAsMolasses"))
         assert(filter("myTestName", Map("myTestName" -> Set("SlowAsMolasses", "org.scalatest.Ignore")), suite.suiteId) === (true, false))
       }
       it("should return (true, false) if tagsToInclude is None and tagsToExclude includes" +
@@ -500,7 +505,7 @@ class FilterSpec extends FunSpec {
 
       it("should return (false, false) if tagsToInclude includes a tag for the test name and tagsToExclude" +
               "is empty and the test is marked as SlowAsMolasses") {
-        val filter = new Filter(Some(Set("SlowAsMolasses")), Set[String]())
+        val filter = Filter(Some(Set("SlowAsMolasses")), Set[String]())
         assert(filter("myTestName", Map("myTestName" -> Set("SlowAsMolasses")), suite.suiteId) === (false, false))
       }
       it("should return (false, false) if tagsToInclude includes a tag for the test name and tagsToExclude" +
@@ -522,7 +527,7 @@ class FilterSpec extends FunSpec {
       
       it("should return (false, true) if tagsToInclude includes a tag for the test name and tagsToExclude" +
               "is empty and the test is marked as ignored") {
-        val filter = new Filter(Some(Set("SlowAsMolasses")), Set[String]())
+        val filter = Filter(Some(Set("SlowAsMolasses")), Set[String]())
         assert(filter("myTestName", Map("myTestName" -> Set("SlowAsMolasses", "org.scalatest.Ignore")), suite.suiteId) === (false, true))
       }
       it("should return (false, true) if tagsToInclude includes a tag for the test name and tagsToExclude" +

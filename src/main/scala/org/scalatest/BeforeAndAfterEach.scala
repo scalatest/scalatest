@@ -21,9 +21,9 @@ package org.scalatest
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Use trait <code>BeforeAndAfterEach</code> when you want to stack traits that perform side-effects before and/or after tests, rather
- * than at the beginning or end of tests, or when you need access to the config map or test name in the before and/or after code.
+ * than at the beginning or end of tests. 
  * <em>Note: For more insight into where <code>BeforeAndAfterEach</code> fits into the big picture, see the </em>
- * <a href="FlatSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for your chosen style trait.</em>
+ * <a href="FlatSpec.html#sharedFixtures">Shared fixtures</a></em> section in the documentation for your chosen style trait.
  * </td></tr></table>
  * 
  * <p>
@@ -31,7 +31,8 @@ package org.scalatest
  * connections, <em>etc.</em>) tests use to do their work.
  * When multiple tests need to work with the same fixtures, it is important to try and avoid
  * duplicating the fixture code across those tests. The more code duplication you have in your
- * tests, the greater drag the tests will have on refactoring the actual production code.
+ * tests, the greater drag the tests will have on refactoring the actual production code, and 
+ * the slower your compile will likely be.
  * Trait <code>BeforeAndAfterEach</code> offers one way to eliminate such code duplication:
  * a <code>beforeEach</code> method that will be run before each test (like JUnit's <code>setUp</code>),
  * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
@@ -138,42 +139,6 @@ trait BeforeAndAfterEach extends SuiteMixin {
   protected def beforeEach() = ()
 
   /**
-   * <strong>This overloaded form of <code>beforeEach</code> has been deprecated and will
-   * be removed in a future version of ScalaTest. Please use the <code>beforeEach(TestData)</code> method
-   * of trait <code>BeforeAndAfterEachTestData</code> instead.</strong>
-   *
-   * <p>
-   * During the deprecation cycle, this trait's implementation
-   * of <code>beforeEach(TestData)</code> invokes will this method.
-   * This trait's implementation of this method invokes the
-   * overloaded form of <code>beforeEach</code> that takes no <code>configMap</code>.
-   * </p>
-   */
-  @deprecated("Please use the beforeEach(TestData) method of trait BeforeAndAfterEachTestData instead.")
-  protected def beforeEach(configMap: ConfigMap) {
-    beforeEach()
-  }
-  
-  /**
-   * Defines a method (that takes a <code>TestData</code>) to be run before
-   * each of this suite's tests.
-   *
-   * <p>
-   * This trait's implementation
-   * of <code>runTest</code> invokes this method before running
-   * each test (passing in the <code>configMap</code> passed to it), thus this
-   * method can be used to set up a test fixture
-   * needed by each test. This trait's implementation of this method invokes the
-   * overloaded form of <code>beforeEach</code> that takes <code>configMap</code>.
-   * After the deprecation cycle, this method will invoke the no-arg form of <code>beforeEach</code>.
-   * </p>
-   */
-  @deprecated("Please use the beforeEach(TestData) method of trait BeforeAndAfterEachTestData instead.")
-  protected def beforeEach(testData: TestData) {
-    beforeEach(testData.configMap)
-  }
-
-  /**
    * Defines a method to be run after each of this suite's tests.
    *
    * <p>
@@ -187,38 +152,6 @@ trait BeforeAndAfterEach extends SuiteMixin {
    * </p>
    */
   protected def afterEach() = ()
-
-  /**
-   * <strong>This overloaded form of <code>afterEach</code> has been deprecated and will
-   * be removed in a future version of ScalaTest. Please use the <code>afterEach(TestData)</code> method
-   * of trait <code>BeforeAndAfterEachTestData</code> instead.</strong>
-   *
-   * <p>
-   * During the deprecation cycle, this trait's implementation
-   * of <code>afterEach(TestData)</code> will invoke this method.
-   * This trait's implementation of this method invokes the
-   * overloaded form of <code>afterEach</code> that takes no <code>configMap</code>.
-   * </p>
-   */
-  @deprecated("Please use the afterEach(TestData) method of trait BeforeAndAfterEachTestData instead.")
-  protected def afterEach(configMap: ConfigMap) {
-    afterEach()
-  }
-
-  /**
-   * <strong>This overloaded form of <code>afterEach</code> has been deprecated and will
-   * be removed in a future version of ScalaTest. Please use the <code>afterEach(TestData)</code> method
-   * of trait <code>BeforeAndAfterEachTestData</code> instead.</strong>
-   *
-   * <p>
-   * This trait's implementation of this method invokes the
-   * overloaded form of <code>afterEach</code> that takes no <code>configMap</code>.
-   * </p>
-   */
-  @deprecated("Please use the afterEach(TestData) method of trait BeforeAndAfterEachTestData instead.")
-  protected def afterEach(testData: TestData) {
-    afterEach(testData.configMap)
-  }
 
   /**
    * Run a test surrounded by calls to <code>beforeEach</code> and <code>afterEach</code>.
@@ -250,7 +183,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
 
     var thrownException: Option[Throwable] = None
 
-    beforeEach(testDataFor(testName, args.configMap))
+    beforeEach()
     try {
       super.runTest(testName, args)
     }
@@ -261,7 +194,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
     }
     finally {
       try {
-        afterEach(testDataFor(testName, args.configMap)) // Make sure that afterEach is called even if runTest completes abruptly.
+        afterEach() // Make sure that afterEach is called even if runTest completes abruptly.
         thrownException match {
           case Some(e) => throw e
           case None =>
