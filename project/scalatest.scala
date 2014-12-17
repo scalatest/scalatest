@@ -10,8 +10,8 @@ object ScalatestBuild extends Build {
 
   val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.2.2-SNAPSHOT"
-  val githubTag = "release-2.2.2-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.3-SNAPSHOT"
+  val githubTag = "release-2.2.3-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -123,10 +123,10 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional"
+          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.11.0" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
