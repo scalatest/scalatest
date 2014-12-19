@@ -9,7 +9,7 @@ import org.scalatest.FailureMessages._
 import org.scalatest.SharedHelpers._
 import org.scalatest._
 
-class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks with OptionValues {
+class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with TableDrivenPropertyChecks with OptionValues {
 
   object `forEvery/1 ` {
     def colFun[A](s: Set[A]): TableFor1[A] = {
@@ -64,31 +64,6 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
         s"    Occurred at table row 2 (zero based, not counting headings), which had values (\n" +
         s"    column1 = 3  )"
       )
-/*
-[info] forEvery/1
-[info] - should throw TestFailedException with correct stack depth and message when more than one element failed *** FAILED *** (5 milliseconds)
-[info]   Some("forEvery failed, because:
-[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Message: 2 was not less than 2
-[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Occurred at table row 1 (zero based, not counting headings), which had values (
-[info]       column1 = 2  ),
-[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Message: 3 was not less than 2
-[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Occurred at table row 2 (zero based, not counting headings), which had values (
-[info]       column1 = 3  )") was not equal to Some("forEvery failed, because:
-[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Message: 2 was not less than 2
-[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Occurred at table row 1 (zero based, not counting headings), which had values (
-[info]       column1 = 2  ),
-[info]     org.scalatest.exceptions.TableDrivenPropertyCheckFailedException: TestFailedException was thrown during property evaluation. (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Message: 3 was not less than 2
-[info]       Location: (NonGeneratedTableDrivenPropertyChecksSpec.scala:46)
-[info]       Occurred at table row 2 (zero based, not counting headings), which had values (
-[info]       column1 = 3  )") (NonGeneratedTableDrivenPropertyChecksSpec.scala:55)
-       */
     }
 
     def `should propagate TestPendingException thrown from assertion` {

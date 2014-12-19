@@ -16,13 +16,10 @@
 package org.scalatest
 package prop
 
-import org.scalatest.FailureMessages._
 import org.scalatest.exceptions.{TableDrivenPropertyCheckFailedException, StackDepth}
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.prop._
 
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
 
 
 /**
@@ -286,7 +283,7 @@ import scala.collection.GenTraversable
  * </p>
  * @author Bill Venners
  */
-trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
+private trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
 
   /*
    * Evaluates the passed code block if the passed boolean condition is true, else throws <code>DiscardedEvaluationException</code>.
@@ -394,9 +391,8 @@ trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
     table(fun)
   }
 
-  def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
-    import InspectorsHelper._
-    lazy val headingStrings = namesOfArgs.map(_.toString)
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
     def runAndCollectErrorMessage[T <: Product](itr: Iterator[T], messageList: IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException], index: Int)(fun: T => Unit): IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException] = {
       if (itr.hasNext) {
@@ -444,13 +440,13 @@ trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
         sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
-        None,
+        messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
 
-  def forEvery[A](table: TableFor1[A])(fun: A => Unit): Unit = {
-    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){x: Tuple1[A] => fun(x._1)}
+  def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){a => fun(a._1)}
   }
 
   def forEvery[A, B](table: TableFor2[A, B])(fun: (A, B) => Unit): Unit = {
@@ -734,4 +730,4 @@ trait NonGeneratedTableDrivenPropertyChecks extends Whenever with Tables {
  *
  * @author Bill Venners
  */
-object NonGeneratedTableDrivenPropertyChecks extends NonGeneratedTableDrivenPropertyChecks
+private object NonGeneratedTableDrivenPropertyChecks extends NonGeneratedTableDrivenPropertyChecks

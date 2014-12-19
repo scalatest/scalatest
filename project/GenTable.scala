@@ -17,6 +17,7 @@ import java.io.File
 import java.io.FileWriter
 import java.io.BufferedWriter
 import java.util.Calendar
+
 import scala.collection.JavaConversions._
 
 object GenTable {
@@ -499,6 +500,10 @@ object Tables extends Tables
 """
 
 val propertyCheckPreamble = """
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.StackDepth
+import scala.annotation.tailrec
+
 /**
  * Trait containing methods that faciliate property checks against tables of data.
  *
@@ -593,8 +598,8 @@ val propertyCheckPreamble = """
  * </pre>
  *
  * <p>
- * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>forAll</code> methods
- * that allow you to check properties using the data provided by a table. Each <code>forAll</code>
+ * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>forAll</code> and <code>forEvery</code> methods
+ * that allow you to check properties using the data provided by a table. Each <code>forAll</code> or <code>forEvery</code>
  * method takes two parameter lists. The first parameter list is a table. The second parameter list
  * is a function whose argument types and number matches that of the tuples in the table. For
  * example, if the tuples in the table supplied to <code>forAll</code> each contain an
@@ -871,6 +876,89 @@ val propertyCheckForAllTemplate = """
   }
 """
 
+val propertyCheckForEveryPreamble = """
+  /**
+  */
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.{shouldPropagate, indentErrorMessages}
+    @tailrec
+    def runAndCollectErrorMessage[T <: Product](itr: Iterator[T], messageList: IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException], index: Int)(fun: T => Unit): IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException] = {
+      if (itr.hasNext) {
+        val head = itr.next
+        val newMessageList =
+          try {
+            fun(head)
+            messageList
+          }
+          catch {
+            case _: exceptions.DiscardedEvaluationException => messageList // discard this evaluation and move on to the next
+            case ex if !shouldPropagate(ex) =>
+              messageList :+ new exceptions.TableDrivenPropertyCheckFailedException(
+                (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                  "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                  (
+                    ex match {
+                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                        "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                      case _ => ""
+                    }
+                    ) +
+                  "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                  indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+                    name + " = " + value
+                  }.toIndexedSeq).mkString("\n") +
+                  "  )"),
+                Some(ex),
+                getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+                None,
+                FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                head.productIterator.toList,
+                namesOfArgs,
+                index
+              )
+          }
+
+        runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
+      }
+      else
+        messageList
+    }
+    val messageList = runAndCollectErrorMessage(rows.toIterator, IndexedSeq.empty, 0)(fun)
+    if (messageList.size > 0)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+  }
+
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor1</code> and reporting every error.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "$filename$", "forEvery", 3){a => fun(a._1)}
+  }
+
+"""
+
+val propertyCheckForEveryTemplate = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor$n$</code> and reporting every error.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def forEvery[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
+    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "$filename$", "forEvery", 3)(fun.tupled)
+  }
+"""
+
 val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
 /*
  * Companion object that facilitates the importing of <code>TableDrivenPropertyChecks</code> members as 
@@ -1044,9 +1132,9 @@ $columnsOfIndexes$
   }
 
   def genPropertyChecks(targetDir: File) {
+    val filename = "TableDrivenPropertyChecks.scala"
+    val bw = new BufferedWriter(new FileWriter(new File(targetDir, filename)))
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableDrivenPropertyChecks.scala")))
- 
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
       st.setAttribute("year", thisYear);
@@ -1062,6 +1150,26 @@ $columnsOfIndexes$
         st.setAttribute("alphaLower", alphaLower)
         st.setAttribute("alphaUpper", alphaUpper)
         st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForEveryPreamble)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      for (i <- 2 /*1 included in preamble*/ to 22) {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForEveryTemplate)
+        val alphaLower = alpha.take(i).mkString(", ")
+        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+        val strings = List.fill(i)("String").mkString(", ")
+        st.setAttribute("n", i)
+        st.setAttribute("alphaLower", alphaLower)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
         bw.write(st.toString)
       }
 
