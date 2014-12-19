@@ -48,8 +48,6 @@ So the knobs we can turn are:
 */
 class BigSuite(nestedSuiteCount: Option[Int]) extends Suite { thisSuite =>
 
-  //def this() = this(None)
-  
   override def nestedSuites: collection.immutable.IndexedSeq[Suite] = {
 
     def makeList(remaining: Int, soFar: List[Suite], nestedCount: Int): List[Suite] = {

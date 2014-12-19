@@ -261,7 +261,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     
     import args._
 
-    val (stopRequested, report, testStartTime) =
+    val (theStopper, report, testStartTime) =
       Suite.getRunTestGoodies(theSuite, stopper, reporter, testName)
 
     if (!atomic.get.testsMap.contains(testName))
@@ -416,7 +416,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     runTest: (String, Args) => Status
   ): Status = {
 
-    val stopRequested = args.stopper
+    import args.stopper
     
     // TODO: Inspect this and make sure it does not need synchronization, and either way, document why.
     val statusList = new ListBuffer[Status]()
@@ -440,7 +440,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
     def traverseSubNodes() {
       branch.subNodes.reverse.foreach { node =>
-        if (!stopRequested()) {
+        if (!stopper.stopRequested) {
           node match {
             case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
               val (filterTest, ignoreTest) = args.filter(testName, theSuite.tags, theSuite.suiteId)
@@ -497,8 +497,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     if (theSuite.testNames.size > 0)
       checkChosenStyles(configMap, theSuite.styleName)
 
-    val stopRequested = stopper
-
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
@@ -533,8 +531,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     superRun: (Option[String], Args) => Status
   ): Status = {
     import args._
-
-    val stopRequested = stopper
 
     // Set the flag that indicates registration is closed (because run has now been invoked),
     // which will disallow any further invocations of "test" or "ignore" with
@@ -1100,8 +1096,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
   ): Status = {
     import args._
 
-     // All but one line of code copied from runImpl. Factor out duplication later...
-    val stopRequested = stopper
+    // All but one line of code copied from runImpl. Factor out duplication later...
 
     // Set the flag that indicates registration is closed (because run has now been invoked),
     // which will disallow any further invocations of "test" or "ignore" with

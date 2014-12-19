@@ -2291,7 +2291,7 @@ object Runner {
     agains: List[String],
     testSpecs: List[TestSpec],
     junitsList: List[String],
-    stopRequested: Stopper,
+    stopper: Stopper,
     tagsToIncludeSet: Set[String], 
     tagsToExcludeSet: Set[String], 
     configMap: ConfigMap,
@@ -2306,7 +2306,7 @@ object Runner {
     concurrentConfig: ConcurrentConfig,
     suffixes: Option[Pattern],
     chosenStyleSet: Set[String]
-  ) = { // TODO, either put a type on here or do procedure style if Unit
+  ): Unit = {
 
     // TODO: add more, and to RunnerThread too
     if (dispatch == null)
@@ -2319,7 +2319,7 @@ object Runner {
       throw new NullPointerException
     if (junitsList == null)
       throw new NullPointerException
-    if (stopRequested == null)
+    if (stopper == null)
       throw new NullPointerException
     if (tagsToIncludeSet == null)
       throw new NullPointerException
@@ -2526,14 +2526,14 @@ object Runner {
             val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
             try {
 
-              val distributor = new ConcurrentDistributor(Args(dispatch, stopRequested, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet), execSvc)
+              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet), execSvc)
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
                   for (suiteConfig <- suiteInstances) {
                     val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                     val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                    val runArgs = Args(concurrentDispatch, stopRequested, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
+                    val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                     distributor.apply(suiteConfig.suite, runArgs)
                   }
                   distributor.waitUntilDone()
@@ -2543,7 +2543,7 @@ object Runner {
                 for (suiteConfig <- suiteInstances) {
                   val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                   val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                  val runArgs = Args(concurrentDispatch, stopRequested, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
+                  val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                   distributor.apply(suiteConfig.suite, runArgs)
                 }
                 distributor.waitUntilDone()
@@ -2557,7 +2557,7 @@ object Runner {
             for (suiteConfig <- suiteInstances) {
               val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
               val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-              val runArgs = Args(dispatch, stopRequested, filter, configMap, None, tracker, chosenStyleSet)
+              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, chosenStyleSet)
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()
@@ -2565,7 +2565,7 @@ object Runner {
           }
 
           val duration = System.currentTimeMillis - runStartTime
-          if (stopRequested()) {
+          if (stopper.stopRequested) {
             dispatch(RunStopped(tracker.nextOrdinal(), Some(duration)))
           }
           else {

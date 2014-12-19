@@ -67,9 +67,6 @@ package object scalatest {
    */
   lazy val nostats: Shell = defaultShell.nostats
 
-  @deprecated("Please use org.scalactic.TimesOnInt instead")
-  type TimesOnInt = org.scalactic.TimesOnInt
-
   /**
    * <p>
    * <strong>This class has been moved to the <code>org.scalactic</code> package. The deprecated type alias that has been left in its place will

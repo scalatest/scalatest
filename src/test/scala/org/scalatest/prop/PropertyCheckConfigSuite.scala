@@ -18,6 +18,7 @@ package prop
 
 import Configuration._
 
+@deprecated("delete when PropertyCheckConfig is removed")
 class PropertyCheckConfigSuite extends FunSuite with Matchers {
 
   test("minSuccussful throws IAE if less than 1") {

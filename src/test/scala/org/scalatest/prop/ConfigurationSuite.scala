@@ -20,22 +20,16 @@ class ConfigurationSuite extends FunSuite with Matchers {
 
   import Configuration._
 
-  test("minSuccussful throws IAE if less than 1") {
-    intercept[IllegalArgumentException] {
-      minSuccessful(0)
-    }
-    intercept[IllegalArgumentException] {
-      minSuccessful(-1)
-    }
-    intercept[IllegalArgumentException] {
-      minSuccessful(-2)
-    }
+  test("minSuccessful should not compile if less than 1") {
+    "minSuccessful(0)" shouldNot compile
+    "minSuccessful(-1)" shouldNot compile
+    "minSuccessful(-2)" shouldNot compile
   }
 
-  test("minSuccussful value is passed value, if valid") {
-      minSuccessful(1).value should be (1)
-      minSuccessful(2).value should be (2)
-      minSuccessful(5678).value should be (5678)
+  test("minSuccessful value is passed value, if valid") {
+      minSuccessful(1).value.value should be (1)
+      minSuccessful(2).value.value should be (2)
+      minSuccessful(5678).value.value should be (5678)
   }
 
   test("maxDiscarded throws IAE if less than 0") {
@@ -54,20 +48,29 @@ class ConfigurationSuite extends FunSuite with Matchers {
       maxDiscarded(5678).value should be (5678)
   }
 
-  test("minSize throws IAE if less than 0") {
-    intercept[IllegalArgumentException] {
-      minSize(-1)
-    }
-    intercept[IllegalArgumentException] {
-      minSize(-2)
-    }
+  test("maxDiscardedFactor should not compile if less than 0 or a non-double") {
+    "maxDiscardedFactor(-0.1)" shouldNot compile
+    "maxDiscardedFactor(-100.0)" shouldNot compile
+  }
+
+  test("maxDiscardedFactor value is passed value, if valid") {
+      maxDiscardedFactor(0.0).value.value should be (0.0)
+      maxDiscardedFactor(1.0).value.value should be (1.0)
+      maxDiscardedFactor(2.0).value.value should be (2.0)
+      maxDiscardedFactor(5678.0).value.value should be (5678.0)
+      maxDiscardedFactor(1.0).value.value should be (1.0)
+  }
+
+  test("minSize should not compile if less than 0") {
+    "minSize(-1)" shouldNot compile
+    "minSize(-2)" shouldNot compile
   }
 
   test("minSize value is passed value, if valid") {
-      minSize(0).value should be (0)
-      minSize(1).value should be (1)
-      minSize(2).value should be (2)
-      minSize(5678).value should be (5678)
+      minSize(0).value.value should be (0)
+      minSize(1).value.value should be (1)
+      minSize(2).value.value should be (2)
+      minSize(5678).value.value should be (5678)
   }
 
   test("maxSize throws IAE if less than 0") {
@@ -86,21 +89,27 @@ class ConfigurationSuite extends FunSuite with Matchers {
       maxSize(5678).value should be (5678)
   }
 
-  test("workers throws IAE if less than 1") {
-    intercept[IllegalArgumentException] {
-      workers(0)
-    }
-    intercept[IllegalArgumentException] {
-      workers(-1)
-    }
-    intercept[IllegalArgumentException] {
-      workers(-2)
-    }
+  test("sizeRange should not compile if less than 0") {
+    "sizeRange(-1)" shouldNot compile
+    "sizeRange(-2)" shouldNot compile
+  }
+
+  test("sizeRange value is passed value, if valid") {
+      sizeRange(0).value.value should be (0)
+      sizeRange(1).value.value should be (1)
+      sizeRange(2).value.value should be (2)
+      sizeRange(5678).value.value should be (5678)
+  }
+
+  test("workers should not compile if less than 1") {
+    "workers(0)" shouldNot compile
+    "workers(-1)" shouldNot compile
+    "workers(-2)" shouldNot compile
   }
 
   test("workers value is passed value, if valid") {
-      workers(1).value should be (1)
-      workers(2).value should be (2)
-      workers(5678).value should be (5678)
+      workers(1).value.value should be (1)
+      workers(2).value.value should be (2)
+      workers(5678).value.value should be (5678)
   }
 }

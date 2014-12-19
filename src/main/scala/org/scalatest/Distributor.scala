@@ -41,17 +41,6 @@ trait Distributor {
   /**
    * Puts a <code>Suite</code> into the <code>Distributor</code>.
    *
-   * @param suite the <code>Suite</code> to put into the <code>Distributor</code>.
-   * @param tracker a <code>Tracker</code> to pass to the <code>Suite</code>'s <code>run</code> method.
-   *
-   * @throws NullPointerException if either <code>suite</code> or <code>tracker</code> is <code>null</code>.
-   */
-  @deprecated("Please use the apply method that takes a Args instead, the one with this signature: def apply(Suite, Args)")
-  def apply(suite: Suite, tracker: Tracker)
-
-  /**
-   * Puts a <code>Suite</code> into the <code>Distributor</code>.
-   *
    * <p>
    * The <code>Distributor</code> can decide which, if any, of the passed <code>Args</code
    * to pass to the <code>Suite</code>'s apply method. For example, a <code>Distributor</code>

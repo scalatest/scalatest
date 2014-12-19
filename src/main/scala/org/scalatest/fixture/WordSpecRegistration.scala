@@ -512,10 +512,23 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     }
 
     /**
-     * <b><code>that</code> has been deprecated and will be used for a different purpose in a future version of ScalaTest. Please
-     * use <code>which</code> instead. (Warning: this change will likely have a shorter than usual deprecation cycle: less than a year.)</b>
+     * Registers a <code>that</code> clause.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "a rerun button" that {
+     *                  ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
+     * </p>
+     *
+     * @param f the function which is the body of the scope
      */
-    @deprecated("Please use \"which\" instead of \"that\".")
     def that(f: => Unit) {
       registerBranch(string.trim + " that", None, "that", "that", 4, -2, f _)
     }
@@ -543,10 +556,23 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     }
 
     /**
-     * <b><code>that</code> has been deprecated and will be used for a different purpose in a future version of ScalaTest. Please
-     * use <code>which</code> instead. (Warning: this change will likely have a shorter than usual deprecation cycle: less than a year.)</b>
+     * Registers a <code>that</code> clause.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "a rerun button," that {
+     *                  ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
+     * </p>
+     *
+     * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
-    @deprecated("Please use \"which\" instead of \"that\".")
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, resultOfAfterWordApplication.f)
     }

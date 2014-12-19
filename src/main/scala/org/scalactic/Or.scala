@@ -870,7 +870,8 @@ object Or {
    * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Either</code> to an <code>Or</code>. If the type of the
    * <code>Either</code> which you pass to <code>Or.from</code> is <code>Either[ErrorMessage, Int]</code> for example, the result will be an
    * <code>Or[Int, ErrorMessage]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones. If you with to keep the types on the same side, invoke <code>swap</code> on the
+   * <code>Either</code> before passing it to <code>from</code>. 
    * </p>
    *
    * @param either the <code>Either</code> to convert to an <code>Or</code>
@@ -883,7 +884,15 @@ object Or {
       case Left(b) => Bad(b)
     }
 
-  def from[G, B](option: Option[G], orElse: B): G Or B =
+  /**
+   * Constructs a new <code>Or</code> from the given <code>Option</code>.
+   *
+   * @param option the <code>Option</code> to convert to an <code>Or</code>
+   * @param orElse the <code>Bad</code> value to use if the <code>Option</code> passed as <code>option</code> is <code>None</code>.
+   * @return a new <code>Or</code> whose <code>Good</code> type is the <code>Option</code>'s type and whose
+   *    <code>Bad</code> type is the type of the passed <code>orElse</code> parameter.
+   */
+  def from[G, B](option: Option[G], orElse: => B): G Or B =
     option match {
       case Some(g) => Good(g)
       case None => Bad(orElse)

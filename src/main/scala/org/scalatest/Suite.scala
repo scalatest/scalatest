@@ -560,7 +560,7 @@ import org.scalactic.Prettifier
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.MethodFinder"))
-trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite =>
+trait Suite extends Assertions with Serializable { thisSuite =>
 
   import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
 
@@ -1155,7 +1155,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     
     import args._
 
-    val (stopRequested, report, method, testStartTime) =
+    val (theStopper, report, method, testStartTime) =
       getSuiteRunTestGoodies(thisSuite, stopper, reporter, testName)
 
     reportTestStarting(this, report, tracker, testName, testName, rerunner, Some(getTopOfMethod(thisSuite, testName)))
@@ -1312,8 +1312,6 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     if (theTestNames.size > 0)
       checkChosenStyles(configMap, styleName)
 
-    val stopRequested = stopper
-
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
@@ -1337,7 +1335,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
 
       case None =>
         for ((tn, ignoreTest) <- filter(theTestNames, tags, suiteId)) {
-          if (!stopRequested()) {
+          if (!stopper.stopRequested) {
             if (ignoreTest)
               reportTestIgnored(thisSuite, report, tracker, tn, tn, getEscapedIndentedTextForTest(tn, 1, true), Some(getTopOfMethod(thisSuite, tn)))
             else
@@ -1412,7 +1410,6 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     try {
       Thread.currentThread.setName(SuiteHelpers.augmentedThreadName(originalThreadName, suiteName))
 
-      val stopRequested = stopper
       val report = wrapReporterIfNecessary(thisSuite, reporter)
       val newArgs = args.copy(reporter = report)
 
@@ -1423,7 +1420,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
         }
       val testsStatus = runTests(testName, newArgs)
 
-      if (stopRequested()) {
+      if (stopper.stopRequested) {
         val rawString = Resources("executeStopping")
         report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
       }
@@ -1470,12 +1467,11 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
 
     import args._
 
-    val stopRequested = stopper
     val report = wrapReporterIfNecessary(thisSuite, reporter)
 
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
-      if (!stopRequested()) {
+      if (!stopper.stopRequested) {
 
         // Create a Rerunner if the Suite has a no-arg constructor 
         val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
@@ -1489,7 +1485,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
 
         try { // TODO: pass runArgs down and that will get the chosenStyles passed down
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopRequested, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
           val rawString = Resources("suiteCompletedNormally")
           val formatter = formatterForSuiteCompleted(nestedSuite)
@@ -1524,7 +1520,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
       distributor match {
         case None =>
           for (nestedSuite <- nestedSuitesArray) {
-            if (!stopRequested()) 
+            if (!stopper.stopRequested) 
               statusBuffer += callExecuteOnSuite(nestedSuite)
           }
         case Some(distribute) =>
@@ -2461,20 +2457,19 @@ used for test events like succeeded/failed, etc.
 
   // Factored out to share this with fixture.Suite.runTest
   def getSuiteRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Method, Long) = {
-    val (stopRequested, report, testStartTime) = getRunTestGoodies(theSuite, stopper, reporter, testName)
+    val (theStopper, report, testStartTime) = getRunTestGoodies(theSuite, stopper, reporter, testName)
     val method = getMethodForTestName(theSuite, testName)
-    (stopRequested, report, method, testStartTime)
+    (theStopper, report, method, testStartTime)
   }
 
   // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
 
-    val stopRequested = stopper
     val report = wrapReporterIfNecessary(theSuite, reporter)
 
     val testStartTime = System.currentTimeMillis
 
-    (stopRequested, report, testStartTime)
+    (stopper, report, testStartTime)
   }
 
   // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,

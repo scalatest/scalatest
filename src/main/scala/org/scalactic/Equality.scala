@@ -86,6 +86,24 @@ package org.scalactic
  * res1: Boolean = true
  * </pre>
  *
+ * <a name="equalityLaws"></a>
+ * <h2>Equality laws</h2>
+ *
+ * <p>
+ * Instances of <code>Equality[T]</code> define an equivalence relation on non-<code>null</code> object instances 
+ * that must adhere to the following laws (which are consistent with those of <code>equals</code> on <code>java.lang.Object</code>):
+ * </p>
+ *
+ * <ul>
+ * <li><em>reflexivity</em>: for any non-<code>null</code> value <code>x</code>, <code>areEqual(x, x)</code> must return <code>true.</code></li>
+ * <li><em>symmetry</em>: for any non-<code>null</code> values <code>x</code> and <code>y</code>, <code>areEqual(x, y)</code> must return <code>true</code> if and only if <code>areEqual(y, x)</code> returns <code>true</code>.</li>
+ * <li><em>transitivity</em>: for any non-<code>null</code> values <code>x</code>, <code>y</code>, and <code>z</code>, if <code>areEqual(x, y)</code> returns <code>true</code> and <code>areEqual(y, z)</code> returns <code>true</code>, then <code>areEqual(x, z)</code> must return <code>true</code>.</li>
+ * <li><em>consistency</em>: for any non-<code>null</code> values <code>x</code> and <code>y</code>, multiple invocations of <code>areEqual(x, y)</code> consistently return <code>true</code> or consistently return <code>false</code>, provided no information used in the equality comparison on the objects is modified.</li>
+ * <li><em>right-null</em>: For any non-<code>null</code> value <code>x</code>, <code>areEqual(x, null)</code> must return <code>false</code>.</li>
+ * <li><em>left-null</em>: For any non-<code>null</code> value <code>x</code>, <code>areEqual(null, x)</code> must return <code>false</code>.</li>
+ * <li><em>both-null</em>: <code>areEqual(null, null)</code> must return <code>true</code>.</li>
+ * </ul>
+ *
  * <a name="defaultEquality"></a>
  * <h2>Default equality</h2>
  *
@@ -123,7 +141,7 @@ package org.scalactic
  * </pre>
  *
  * <p>
- * The <code>areEquals</code> method of <code>Equality[T]</code> is similar. The left-hand type is known to be <code>T</code>, but the right-hand type is <code>Any</code>, so
+ * The <code>areEqual</code> method of <code>Equality[T]</code> is similar. The left-hand type is known to be <code>T</code>, but the right-hand type is <code>Any</code>, so
  * normally you'd need to do a runtime type test in your <code>areEqual</code> implementation.
  * Here's the <code>areEqual</code> method implementation from the earlier <code>Equality[Person]</code> example:
  * </p>

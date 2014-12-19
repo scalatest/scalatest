@@ -44,7 +44,7 @@ import Filter.IgnoreTag
  * @throws NullPointerException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
-final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]] with Serializable {
+final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Serializable {
 
   if (tagsToInclude == null)
     throw new NullPointerException("tagsToInclude was null")
@@ -60,14 +60,16 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     case None =>
   }
 
-  /**
+  /*
    * <strong>This constructor has been deprecated and will be removed in a future version of ScalaTest. Please use
    * the factory method, named <code>apply</code>, in the <code>Filter</code> companion object instead.
    * (<em>I.e.</em>, to get rid of the deprecation warning, just remove <code>new</code> in front
    * of <code>Filter</code>).</strong>
    */
+/* TODO: REMOVE ME IF TESTS PASS
   @deprecated("This overloaded constructor has been deprecated and will be removed in a future version of ScalaTest. Please use the factory method (named apply) in the Filter companion object instead.")
   def this(tagsToInclude: Option[Set[String]], tagsToExclude: Set[String]) = this(tagsToInclude, tagsToExclude, false, DynaTags(Map.empty, Map.empty))
+*/
 
   private def includedTestNames(testNamesAsList: List[String], tags: Map[String, Set[String]]): List[String] = 
     tagsToInclude match {
@@ -152,8 +154,11 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
+// I will make this private so I can keep using that darned deprecated implicit conversion.
+// TODO: REMOVE THIS DEPRECATED ONCE TESTS PASS, AND AFTER DEPRECATION CYCLE OF THE Function2
+// IMPLICIT, REMOVE THE WHOLE PRIVATE METHOD.
   @deprecated("Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)]")
-  def apply(testNames: Set[String], tags: Map[String, Set[String]]): List[(String, Boolean)] = {
+  private def apply(testNames: Set[String], tags: Map[String, Set[String]]): List[(String, Boolean)] = {
 
     verifyPreconditionsForMethods(testNames, tags)
 
@@ -216,6 +221,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
+/* TODO: REMOVE THIS IF TESTS PASS, AND MOVE THE DOCUMENTATION DOWN, ADDING SUITE ID IN THERE.
   @deprecated("Please use the apply method that takes a suite instead, the one with this signature: def apply(testName: String, testTags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean)")
   def apply(testName: String, tags: Map[String, Set[String]]): (Boolean, Boolean) = {
     val list = apply(Set(testName), tags)
@@ -224,6 +230,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     else
       (false, list.head._2)
   }
+*/
   
   def apply(testName: String, tags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean) = {
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, Set(testName))
@@ -250,6 +257,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
+/* TODO: REMOVE THIS ONCE TESTS PASS
   @deprecated("Please use the runnableTestCount method that takes a suiteId instead, the one with this signature: def runnableTestCount(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): Int")
   def runnableTestCount(testNames: Set[String], tags: Map[String, Set[String]]): Int = {
 
@@ -264,6 +272,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
 
     runnableTests.size
   }
+*/
 
   def runnableTestCount(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): Int = {
     val tags: Map[String, Set[String]] = mergeTestDynamicTags(testTags, suiteId, testNames)
@@ -305,4 +314,7 @@ object Filter {
    * @return a default <code>Filter</code>
    */
   def default: Filter = apply()
+
+  @deprecated("This implicit conversion was added in 2.3 because we dropped the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]].")
+  implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => List[(String, Boolean)] = (set, map) => filter.apply(set, map)
 }

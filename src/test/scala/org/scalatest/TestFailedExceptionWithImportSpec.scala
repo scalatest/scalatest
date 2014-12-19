@@ -142,36 +142,6 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
       }
     }
 
-    it("should give the proper line on expect(1) { 2 }") {
-      try {
-        expect(1) { 2 }
-      }
-      catch {
-        case e: TestFailedException =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("TestFailedExceptionWithImportSpec.scala:" + (thisLineNumber - 5))
-            case None => fail("expect(1) { 2 } didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("expect(1) { 2 } didn't produce a TestFailedException", e)
-      }
-    }
-
-    it("should give the proper line on expect(1, \"some message\") { 2 }") {
-      try {
-        assertResult(1, "some message") { 2 }
-      }
-      catch {
-        case e: TestFailedException =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("TestFailedExceptionWithImportSpec.scala:" + (thisLineNumber - 5))
-            case None => fail("expect(1, \"some message\") { 2 } didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("expect(1, \"some message\") { 2 } didn't produce a TestFailedException", e)
-      }
-    }
-
     it("should give the proper line on intercept[IllegalArgumentException] {}") {
       try {
         intercept[IllegalArgumentException] {}
