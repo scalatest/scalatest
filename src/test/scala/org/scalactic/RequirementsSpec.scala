@@ -165,6 +165,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val a = 3
     val b = 5
+    val c = "8"
 
     it("should do nothing when is used to check a == 3") {
       require(a == 3)
@@ -208,18 +209,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b))
     }
 
-    it("should throw IllegalArgumentException when is used to check a == null") {
+    it("should throw IllegalArgumentException when is used to check c == null") {
       val e = intercept[IllegalArgumentException] {
-        require(a == null)
+        require(c == null)
       }
-      assert(e.getMessage == didNotEqual(a, null))
+      assert(e.getMessage == didNotEqual(c, null))
     }
 
-    it("should throw IllegalArgumentException when is used to check null == a") {
+    it("should throw IllegalArgumentException when is used to check null == c") {
       val e = intercept[IllegalArgumentException] {
-        require(null == a)
+        require(null == c)
       }
-      assert(e.getMessage == didNotEqual(null, a))
+      assert(e.getMessage == didNotEqual(null, c))
     }
 
     it("should do nothing when is used to check a === 3") {
@@ -1199,6 +1200,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val a = 3
     val b = 5
+    val c = "8"
 
     it("should throw NullPointerException when null is passed in as clue") {
       val e = intercept[NullPointerException] {
@@ -1271,18 +1273,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b) + ", dude")
     }
 
-    it("should throw IllegalArgumentException when is used to check a == null") {
+    it("should throw IllegalArgumentException when is used to check c == null") {
       val e = intercept[IllegalArgumentException] {
-        require(a == null, ". dude")
+        require(c == null, ". dude")
       }
-      assert(e.getMessage == didNotEqual(a, null) + ". dude")
+      assert(e.getMessage == didNotEqual(c, null) + ". dude")
     }
 
-    it("should throw IllegalArgumentException when is used to check null == a") {
+    it("should throw IllegalArgumentException when is used to check null == c") {
       val e = intercept[IllegalArgumentException] {
-        require(null == a, "; dude")
+        require(null == c, "; dude")
       }
-      assert(e.getMessage == didNotEqual(null, a) + "; dude")
+      assert(e.getMessage == didNotEqual(null, c) + "; dude")
     }
 
     it("should throw IllegalArgumentException when is used to check 3 != a") {
@@ -2273,6 +2275,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val a = 3
     val b = 5
+    val c = "8"
 
     it("should do nothing when is used to check a == 3") {
       requireState(a == 3)
@@ -2316,18 +2319,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b))
     }
 
-    it("should throw IllegalStateException when is used to check a == null") {
+    it("should throw IllegalStateException when is used to check c == null") {
       val e = intercept[IllegalStateException] {
-        requireState(a == null)
+        requireState(c == null)
       }
-      assert(e.getMessage == didNotEqual(a, null))
+      assert(e.getMessage == didNotEqual(c, null))
     }
 
-    it("should throw IllegalStateException when is used to check null == a") {
+    it("should throw IllegalStateException when is used to check null == c") {
       val e = intercept[IllegalStateException] {
-        requireState(null == a)
+        requireState(null == c)
       }
-      assert(e.getMessage == didNotEqual(null, a))
+      assert(e.getMessage == didNotEqual(null, c))
     }
 
     it("should do nothing when is used to check a === 3") {
@@ -3307,6 +3310,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val a = 3
     val b = 5
+    val c = "8"
 
     it("should throw NullPointerException when null is passed in as clue") {
       val e = intercept[NullPointerException] {
@@ -3379,18 +3383,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b) + ", dude")
     }
 
-    it("should throw IllegalStateException when is used to check a == null") {
+    it("should throw IllegalStateException when is used to check c == null") {
       val e = intercept[IllegalStateException] {
-        requireState(a == null, ". dude")
+        requireState(c == null, ". dude")
       }
-      assert(e.getMessage == didNotEqual(a, null) + ". dude")
+      assert(e.getMessage == didNotEqual(c, null) + ". dude")
     }
 
     it("should throw IllegalStateException when is used to check null == a") {
       val e = intercept[IllegalStateException] {
-        requireState(null == a, "; dude")
+        requireState(null == c, "; dude")
       }
-      assert(e.getMessage == didNotEqual(null, a) + "; dude")
+      assert(e.getMessage == didNotEqual(null, c) + "; dude")
     }
 
     it("should throw IllegalStateException when is used to check 3 != a") {
