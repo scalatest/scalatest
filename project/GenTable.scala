@@ -605,7 +605,7 @@ import scala.annotation.tailrec
  * example, if the tuples in the table supplied to <code>forAll</code> each contain an
  * <code>Int</code>, a <code>String</code>, and a <code>List[Char]</code>, then the function supplied
  * to <code>forAll</code> must take 3 parameters, an <code>Int</code>, a <code>String</code>,
- * and a <code>List[Char]</code>. The <code>forAll</code> or <code>forEvery</code> method will pass each row of data to
+ * and a <code>List[Char]</code>. The <code>forAll</code> method will pass each row of data to
  * the function, and generate a <code>TableDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any row of data with any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
  * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
@@ -614,6 +614,15 @@ import scala.annotation.tailrec
  * a condition required by the property function is not met by a row
  * of passed data, will simply cause <code>forAll</code> to skip that row of data.
  * <p>
+ *
+ * <p>
+ * The full list of table methods are:
+ * </p>
+ *
+ * <ul>
+ * <li><code>forAll</code> - succeeds if the assertion holds true for every element</li>
+ * <li><code>forEvery</code> - same as <code>forAll</code>, but lists all failing elements if it fails (whereas <code>forAll</code> just reports the first failing element) and throws <code>TestFailedException</code> with the first failed checks as the cause.</li>
+ * </ul>
  *
  * <a name="testingStatefulFunctions"></a><h2>Testing stateful functions</h2>
  *
@@ -933,9 +942,19 @@ val propertyCheckForEveryPreamble = """
       )
   }
 
+"""
+
+
+val propertyCheckForEveryTemplateFor1 = """
   /**
    * Performs a property check by applying the specified property check function to each row
    * of the specified <code>TableFor1</code> and reporting every error.
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
    *
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
@@ -950,6 +969,12 @@ val propertyCheckForEveryTemplate = """
   /**
    * Performs a property check by applying the specified property check function to each row
    * of the specified <code>TableFor$n$</code> and reporting every error.
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
    *
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
@@ -1198,8 +1223,9 @@ $columnsOfIndexes$
         bw.write(st.toString)
       }
 
-      for (i <- 2 /*1 included in preamble*/ to 22) {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForEveryTemplate)
+      for (i <- 1 to 22) {
+        val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
+        val st = new org.antlr.stringtemplate.StringTemplate(template)
         val alphaLower = alpha.take(i).mkString(", ")
         val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
         val strings = List.fill(i)("String").mkString(", ")

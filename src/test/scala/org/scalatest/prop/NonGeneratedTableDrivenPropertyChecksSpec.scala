@@ -9,6 +9,9 @@ import org.scalatest.FailureMessages._
 import org.scalatest.SharedHelpers._
 import org.scalatest._
 
+/**
+ * Separate non-generated tests, for completeness
+ */
 class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with TableDrivenPropertyChecks with OptionValues {
 
   object `forEvery/1 ` {
