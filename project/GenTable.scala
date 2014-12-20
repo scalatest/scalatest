@@ -605,7 +605,7 @@ import scala.annotation.tailrec
  * example, if the tuples in the table supplied to <code>forAll</code> each contain an
  * <code>Int</code>, a <code>String</code>, and a <code>List[Char]</code>, then the function supplied
  * to <code>forAll</code> must take 3 parameters, an <code>Int</code>, a <code>String</code>,
- * and a <code>List[Char]</code>. The <code>forAll</code> method will pass each row of data to
+ * and a <code>List[Char]</code>. The <code>forAll</code> or <code>forEvery</code> method will pass each row of data to
  * the function, and generate a <code>TableDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any row of data with any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
  * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
@@ -1014,7 +1014,7 @@ class TableSuite extends Spec with TableDrivenPropertyChecks {
 """
 
 val tableSuiteTemplate = """
-  def `table for $n$ that succeeds` {
+  def `table forAll $n$ that succeeds` {
 
     val examples =
       Table(
@@ -1025,7 +1025,7 @@ $columnsOfOnes$
     forAll (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
   }
 
-  def `table for $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+  def `table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown` {
     val numbers =
       Table(
         ($argNames$),
@@ -1041,7 +1041,7 @@ $columnsOfOnes$
     }
   }
 
-  def `table for $n$, which fails` {
+  def `table forAll $n$, which fails` {
 
     val examples =
       Table(
@@ -1051,6 +1051,44 @@ $columnsOfTwos$
 
     intercept[TableDrivenPropertyCheckFailedException] {
       forAll (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+    }
+  }
+
+  def `table forEvery $n$ that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+  }
+
+  def `table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forEvery (numbers) { ($names$) =>
+      whenever (a > 0) {
+        assert(a > 0)
+      }
+    }
+  }
+
+  def `table forEvery $n$, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    intercept[exceptions.TestFailedException] {
+      forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
     }
   }
 
