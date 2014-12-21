@@ -672,8 +672,18 @@ private[scalatest] object InspectorsHelper {
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
-  
-  def doForEvery[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+
+  def createMessageForThrowable(e: Throwable, element: Any, index: Int, original: Any): String = {
+    val resourceNamePrefix = getResourceNamePrefix(original)
+    val messageKey = element match {
+      case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+      case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
+      case _ => index.toString
+    }
+    createMessage(messageKey, e, resourceNamePrefix)
+  }
+
+  def doForEvery[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, createMsg: (Throwable, Any, Int, Any) => String = createMessageForThrowable _)(fun: T => Unit) {
     @tailrec
     def runAndCollectErrorMessage[T](itr: Iterator[T], messageList: IndexedSeq[String], index: Int)(fun: T => Unit): IndexedSeq[String] = {
       if (itr.hasNext) {
@@ -684,14 +694,8 @@ private[scalatest] object InspectorsHelper {
             messageList
           }
           catch {
-            case e if !shouldPropagate(e) => 
-              val resourceNamePrefix = getResourceNamePrefix(original)
-              val messageKey = head match {
-                case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
-                case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
-                case _ => index.toString
-              }
-              messageList :+ createMessage(messageKey, e, resourceNamePrefix)
+            case e if !shouldPropagate(e) =>
+              messageList :+ createMsg(e, head, index, original)
           }
         
         runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
