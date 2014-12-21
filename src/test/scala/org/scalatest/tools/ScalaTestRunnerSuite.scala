@@ -198,39 +198,25 @@ import java.io.File
       assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
     }
     
-    test("ScalaTestRunner.run should throw IllegalArgumentException when -c is passed in") {
-      val iae = intercept[IllegalArgumentException] {
-        run("org.scalatest.tools.test.SimpleTest", Array("-c"))
-      }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
-    }
-    
     test("ScalaTestRunner.run should throw IllegalArgumentException when -P is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-P"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+      assert(iae.getMessage === "-P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -PS is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+      assert(iae.getMessage === "-P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -R is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-R"))
       }
-      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
-    }
-    
-    test("ScalaTestRunner.run should throw IllegalArgumentException when -p is passed in") {
-      val iae = intercept[IllegalArgumentException] {
-        run("org.scalatest.tools.test.SimpleTest", Array("-p"))
-      }
-      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-R (runpath) is not supported when runs in SBT.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -A is passed in") {
