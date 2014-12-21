@@ -447,19 +447,6 @@ object Checkers extends Checkers {
             None,
             scalaCheckLabels.toList
           )
-
-        case Test.GenException(e) =>
-
-          throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => prettyTestStats(result),
-            Some(e),
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-            None,
-            FailureMessages("generatorException", UnquotedString(e.getClass.getName)),
-            args,
-            None,
-            labels
-          )
       }
     }
   }
@@ -516,9 +503,6 @@ object Checkers extends Checkers {
 
     case Test.PropException(args, e, labels) =>
       FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
-
-    case Test.GenException(e) =>
-      "Exception \"" + e + "\" (included as the TestFailedException's cause) was thrown during argument generation."
   }
 
   private def prettyLabels(labels: Set[String]) = {

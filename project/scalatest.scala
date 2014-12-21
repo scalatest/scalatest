@@ -140,10 +140,10 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional"
+          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.11.0" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
