@@ -130,8 +130,8 @@ trait OptionValues {
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  *
- * scala&gt; import matchers.ShouldMatchers._
- * import matchers.ShouldMatchers._
+ * scala&gt; import matchers.Matchers._
+ * import matchers.Matchers._
  *
  * scala&gt; import OptionValues._
  * import OptionValues._

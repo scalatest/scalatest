@@ -1012,12 +1012,16 @@ $endif$
       thisMatcherFactory.and(MatcherWords.not.be(resultOfGreaterThanOrEqualToComparison))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * aMatcherFactory and not be === (6)
-     *                         ^
-     * </pre>
+     * <strong>
+     * The deprecation period for the should be === syntax has expired, and the syntax may no longer be
+     * used.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
+     * </strong>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation))
@@ -2303,12 +2307,16 @@ $endif$
       thisMatcherFactory.or(MatcherWords.not.be(resultOfGreaterThanOrEqualToComparison))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * aMatcherFactory or not be === (8)
-     *                        ^
-     * </pre>
+     * <strong>
+     * The deprecation period for the "be ===" syntax has expired, and the syntax 
+     * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
+     * </strong>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation))

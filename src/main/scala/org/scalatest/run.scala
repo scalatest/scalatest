@@ -28,7 +28,7 @@ package org.scalatest
  * <span style="color: white">scala&gt; import org.scalatest._
  * import org.scalatest._
  *
- * scala&gt; class ArithmeticSuite extends FunSuite with ShouldMatchers {
+ * scala&gt; class ArithmeticSuite extends FunSuite with Matchers {
  *      |   test("addition works") {
  *      |     1 + 1 should equal (2)
  *      |   }

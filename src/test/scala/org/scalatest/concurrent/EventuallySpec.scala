@@ -69,13 +69,13 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
     it("should eventually blow up with a TestFailedDueToTimeoutException if the by-name continuously throws an exception") {
 
       var count = 0
-      val caught = evaluating {
+      val caught = the [TestFailedDueToTimeoutException] thrownBy {
         eventually {
           count += 1
           throw new RuntimeException
           ()
         }
-      } should produce [TestFailedDueToTimeoutException]
+      }
 
       caught.message.value should include ("Attempted " + count.toString + " times")
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 8)
@@ -86,12 +86,12 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
     it("should eventually blow up with a TFE if the by-name continuously throws an exception, and include the last failure message in the TFE message") {
 
       var count = 0
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         eventually {
           count += 1
           1 + 1 should equal (3)
         }
-      } should produce [TestFailedException]
+      }
 
       caught.message.value should include ("Attempted " + count.toString + " times")
       caught.message.value should include ("2 did not equal 3")
@@ -103,33 +103,33 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
     
     it("should provides correct stack depth when eventually is called from the overload method") {
       
-      val caught1 = evaluating {
+      val caught1 = the [TestFailedException] thrownBy {
         eventually(timeout(Span(100, Millis)), interval(Span(1, Millisecond))) { 1 + 1 should equal (3) }
-      } should produce [TestFailedException]
+      }
       caught1.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught1.failedCodeFileName.value should be ("EventuallySpec.scala")
       
-      val caught3 = evaluating {
+      val caught3 = the [TestFailedException] thrownBy {
         eventually(timeout(Span(100, Millis))) { 1 + 1 should equal (3) }
-      } should produce [TestFailedException]
+      }
       caught3.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught3.failedCodeFileName.value should be ("EventuallySpec.scala")
       
-      val caught4 = evaluating {
+      val caught4 = the [TestFailedException] thrownBy {
         eventually(interval(Span(1, Millisecond))) { 1 + 1 should equal (3) }
-      } should produce [TestFailedException]
+      }
       caught4.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught4.failedCodeFileName.value should be ("EventuallySpec.scala")
     }
 
     it("should by default invoke an always-failing by-name for at least 150 millis") {
       var startTime: Option[Long] = None
-      evaluating {
+      a [TestFailedException] should be thrownBy {
         startTime = Some(System.currentTimeMillis)
         eventually {
           1 + 1 should equal (3)
         }
-      } should produce [TestFailedException]
+      }
       (System.currentTimeMillis - startTime.get).toInt should be >= (150)
     }
 
@@ -138,26 +138,26 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
       implicit val patienceConfig = PatienceConfig(timeout = Span(1500, Millis))
 
       var startTime: Option[Long] = None
-      evaluating {
+      a [TestFailedException] should be thrownBy {
         eventually {
           if (startTime.isEmpty)
             startTime = Some(System.currentTimeMillis)
           1 + 1 should equal (3)
         }
-      } should produce [TestFailedException]
+      }
       (System.currentTimeMillis - startTime.get).toInt should be >= (1500)
     }
 
     it("should, if an alternate explicit timeout is provided, invoke an always-failing by-name by at least the specified timeout") {
 
       var startTime: Option[Long] = None
-      evaluating {
+      a [TestFailedException] should be thrownBy {
         eventually (timeout(Span(1250, Millis))) {
           if (startTime.isEmpty)
             startTime = Some(System.currentTimeMillis)
           1 + 1 should equal (3)
         } 
-      } should produce [TestFailedException]
+      }
       (System.currentTimeMillis - startTime.get).toInt should be >= (1250)
     }
 
@@ -166,13 +166,13 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
       implicit val patienceConfig = PatienceConfig(timeout = Span(500, Millis), interval = Span(2, Millis))
       
       var startTime: Option[Long] = None
-      evaluating {
+      the [TestFailedException] thrownBy {
         eventually (timeout(Span(1388, Millis)), interval(Span(1, Millisecond))) {
           if (startTime.isEmpty)
             startTime = Some(System.currentTimeMillis)
           1 + 1 should equal (3)
         } 
-      } should produce [TestFailedException]
+      }
       (System.currentTimeMillis - startTime.get).toInt should be >= (1388)
     }
     
@@ -204,7 +204,7 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
     it("should, when reach before first interval, wake up every 1/10 of the interval.") {
       var count = 0
       var startTime: Option[Long] = None
-      evaluating {
+      a [TestFailedException] should be thrownBy {
         eventually(timeout(Span(1000, Millis)), interval(Span(100, Millis))) {
           if (startTime.isEmpty) {
             startTime = Some(System.nanoTime)
@@ -217,7 +217,7 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
           }
           1 + 1 should equal (3)
         }
-      } should produce [TestFailedException]
+      }
       count should be > (1)
     }
 

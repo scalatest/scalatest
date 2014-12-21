@@ -35,9 +35,9 @@ class OptionValuesSpec extends FunSpec {
 
       val o: Option[String] = None
       val caught =
-        evaluating {
+        the [TestFailedException] thrownBy {
           o.value should startWith ("hi")
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("OptionValuesSpec.scala")
       caught.message.value should be (Resources("optionValueNotDefined"))

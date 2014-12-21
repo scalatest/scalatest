@@ -202,9 +202,9 @@ class ShouldHavePropertiesSpec extends Spec with Checkers with ReturnsNormallyTh
       }
 
       def `should throw TestFailedException if trying to check for a non existent property` {
-        val thrown = evaluating {
+        val thrown = the [TestFailedException] thrownBy {
           new Object should have ('nonExistentProperty ("something"))
-        } should produce [TestFailedException]
+        }
         thrown.getMessage should equal("have nonExistentProperty (something) used with an object that had no public field or method named nonExistentProperty or getNonExistentProperty")
       }
 

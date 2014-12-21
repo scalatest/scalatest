@@ -88,12 +88,12 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
       1 should === (2)
     }
 
-    it("should be properly severed on evaluating {} should produce [IllegalArgumentException] {}") {
-      evaluating {} should produce [IllegalArgumentException]
+    it("should be properly severed on an [IllegalArgumentException] should be thrownBy {}") {
+      an [IllegalArgumentException] should be thrownBy {}
     }
 
-    it("should be properly severed on evaluating { throw new RuntimeException } should produce [IllegalArgumentException]") {
-      evaluating { if (false) 1 else throw new RuntimeException } should produce [IllegalArgumentException]
+    it("should be properly severed on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
+      an [IllegalArgumentException] should be thrownBy { if (false) 1 else throw new RuntimeException }
     }
   }
   private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {

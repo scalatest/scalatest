@@ -36,9 +36,9 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
         val cp = new Checkpoint
         cp { 1 should equal (2) }
         val caught = 
-          evaluating {
+          the [TestFailedException] thrownBy {
             cp.reportAll()
-          } should produce [TestFailedException]
+          }
 
         val failConditionLineNumber = thisLineNumber - 6
         val reportAllLineNumber = failConditionLineNumber + 3
@@ -61,11 +61,11 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should report all failures when reportAll is called") {
         val cp = new Checkpoint
         val caught = 
-          evaluating {
+          the [TestFailedException] thrownBy {
             cp { 1 should equal (2) }
             cp { 3 should equal (2) }
             cp.reportAll()
-          } should produce [TestFailedException]
+          }
 
         val failCondition1LineNumber = thisLineNumber - 5
         val failCondition2LineNumber = failCondition1LineNumber + 1
@@ -94,33 +94,33 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
     describe("when a TestCanceledException is thrown") {
       it("should pass the TestCanceledException through immediately") {
         val cp = new Checkpoint
-        evaluating {
+        a [TestCanceledException] should be thrownBy {
           cp { cancel("This should not be captured by the Checkpoint") }
-        } should produce [TestCanceledException]
+        }
       }
     } 
     describe("when a TestRegistrationClosedException is thrown") {
       it("should pass the TestRegistrationClosedException through immediately") {
         val cp = new Checkpoint
-        evaluating {
+        a [TestRegistrationClosedException] should be thrownBy {
           cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", 0) }
-        } should produce [TestRegistrationClosedException]
+        }
       }
     } 
     describe("when a NotAllowedException is thrown") {
       it("should pass the NotAllowedException through immediately") {
         val cp = new Checkpoint
-        evaluating {
+        a [NotAllowedException] should be thrownBy {
           cp { throw new NotAllowedException("This should not be captured by the Checkpoint", 0) }
-        } should produce [NotAllowedException]
+        }
       }
     } 
     describe("when a DuplicateTestNameException is thrown") {
       it("should pass the DuplicateTestNameException through immediately") {
         val cp = new Checkpoint
-        evaluating {
+        a [DuplicateTestNameException] should be thrownBy {
           cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", 0) }
-        } should produce [DuplicateTestNameException]
+        }
       }
     } 
   } 
@@ -131,10 +131,10 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should throw a JUnitTestFailedError when reportAll is called") {
         val cp = new Checkpoint
         val caught = 
-          evaluating {
+          the [TestFailedException] thrownBy {
             cp { assert(1 === 2) }
             cp.reportAll()
-          } should produce [TestFailedException]
+          }
 
         val failConditionLineNumber = thisLineNumber - 4
         val reportAllLineNumber = failConditionLineNumber + 1

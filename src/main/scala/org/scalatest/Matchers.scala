@@ -129,55 +129,6 @@ import exceptions.TestFailedException
  * a written specification.
  * </p>
  *
- * <a name="matchersMigration"></a>
- * <h2>Matchers migration in ScalaTest 2.0 and 2.1.0</h2>
- *
- * <h3>Deprecations</h3>
- *
- * <p>
- * Prior to 2.0, ScalaTest's matchers DSL was provided by traits
- * <code>org.scalatest.matchers.ShouldMatchers</code> and
- * <code>org.scalatest.matchers.MustMatchers</code>. These are now deprecated in favor of
- * traits in package <code>org.scalatest</code>. The fully qualified name of the original
- * <code>ShouldMatchers</code> is now <code>org.scalatest.Matchers</code>, and the fully qualified
- * name of the original <code>MustMatchers</code> is now <code>org.scalatest.MustMatchers</code>.
- * The old fully qualified names will continue to work during a lengthy deprecation cycle, but
- * will generate a deprecation warning and eventually be removed in a future version
- * of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> by simply importing
- * or mixing in <code>org.scalatest.Matchers</code> instead of
- * <code>org.scalatest.matchers.ShouldMatchers</code>, and can migrate existing
- * uses of <code>org.scalatest.matchers.MustMatchers</code> by importing or
- * mixing in <code>org.scalatest.MustMatchers</code> instead of <code>org.scalatest.matchers.MustMatchers</code>.
- * </p>
- *
- * <p>
- * Two other deprecations in ScalaTest 2.0 matchers are <code>be</code> <code>===</code> <code>&lt;value&gt;</code> and <code>evaluating</code> <code>...</code>
- * <code>should</code> <code>produce</code> syntax. This will both continue to work as before, but will generate a deprecation
- * warning and eventually be removed in a future version of ScalaTest. the <code>be</code> <code>===</code> syntax is being deprecated so that all uses
- * of <code>===</code> in ScalaTest consistently provide the new
- * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
- * ways to check equality described in the next section. The <code>eventually</code> syntax is being deprecated because it is replaced by <code>thrownBy</code>
- * clauses, as <a href="#expectedExceptions">described below</a>.
- * </p>
- *
- * <h3>Potential breakages</h3>
- * 
- * <p>
- * Although ScalaTest's matchers have undergone a major refactor in 2.0, all previously documented syntax for matchers should continue to work exactly
- * the same with one potential exception, which should in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
- * along with custom have-property matchers that you wrote, you'll get a compiler error. To fix such an error, add after
- * your <code>length</code> or <code>size</code> invocation an <code>(of [&lt;type&gt;])</code> clause, as
- * <a href="#lengthSizeHavePropertyMatchers">described below</a>.
- * </p>
- *
- * <p>
- * The only other source of potential breakage is the fragile base class problem. We have added fields and methods to <code>Matchers</code> in 2.0 that may
- * conflict with fields and methods in your existing classes and cause a compiler error. Such issues can usually be easily fixed locally with simple renames or refactors,
- * but if you prefer to subtract a token from <code>Matchers</code>, you can do so by mixing together your own <code>Matchers</code> trait
- * from component traits, as <a>described below</a>. Note that you should not see any new implicit conflicts, because we managed to <em>reduce</em> the number
- * of implicits brought into scope by 2.0 matchers compared to 1.x by about 75%.
- * </p>
- *
  * <a name="checkingEqualityWithMatchers"></a>
  * <h2>Checking equality with matchers</h2>
  *
@@ -1687,20 +1638,6 @@ import exceptions.TestFailedException
  * noException should be thrownBy 0 / 1
  * </pre>
  * 
- * <p>
- * Note: the following syntax from ScalaTest 1.x has been deprecated:
- * </p>
- *
- * <pre class="stHighlight">
- * evaluating { s.charAt(-1) } should produce [IndexOutOfBoundsException]
- * </pre>
- *
- * <p>
- * Such uses will continue to work during the deprecation cycle, but support for this syntax will
- * eventually be removed in a future version of ScalaTest. Please change all uses to
- * a corresponding use of the syntax described previously in this section.
- * <p>
- *
  * <a name="thosePeskyParens"></a>
  * <h2>Those pesky parens</h2>
  * 
@@ -2842,73 +2779,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfEvaluatingApplication(val fun: () => Any) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-     *                                ^
-     * </pre>
-     */
-     def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
-       val clazz = resultOfProduceApplication.clazz
-       val caught = try {
-         fun()
-         None
-       }
-       catch {
-         case u: Throwable => {
-           if (!clazz.isAssignableFrom(u.getClass)) {
-             val s = Resources("wrongException", clazz.getName, u.getClass.getName)
-             throw newTestFailedException(s, Some(u))
-             // throw new TestFailedException(s, u, 3) 
-           }
-           else {
-             Some(u)
-           }
-         }
-       }
-       caught match {
-         case None =>
-           val message = Resources("exceptionExpected", clazz.getName)
-           throw newTestFailedException(message)
-           // throw new TestFailedException(message, 3)
-         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
-       }
-     }
-
-    /**
-     * Overrides to return pretty toString.
-     *
-     * @return "evaluating { ... }"
-     */
-    override def toString: String = "evaluating { ... }"
-  }
-
-  /**
-   * <strong>The <code>evaluating { ... } should produce [...Exception]</code> syntax has been deprecated and
-   * will be removed in a future version of ScalaTest. Please use <code>a/an [...Exception] should be
-   * thrownBy { ... }</code> instead.</strong>
-   *
-   * This method enables syntax such as the following:
-   *
-   * <pre class="stHighlight">
-   * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-   * ^
-   * </pre>
-   */
-  @deprecated("Please use 'an [Exception] should be thrownBy { ... }' syntax instead")
-  def evaluating(fun: => Any): ResultOfEvaluatingApplication =
-    new ResultOfEvaluatingApplication(fun _)
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
   final class ResultOfProduceInvocation[T](val clazz: Class[T]) {
     /**
      * Overrides to return pretty toString.
@@ -3440,36 +3310,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
     /**
      * <strong>
-     * The should be === syntax has been deprecated and may no longer be
-     * used.  Please use should equal, should ===, shouldEqual,
-     * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
-     * checkable equality comparison.
+     * The deprecation period for the "be ===" syntax has expired, and the syntax 
+     * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
      * </strong>
-     *
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should not be === (7)
-     *                    ^
-     * </pre>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
-    @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-    def be(comparison: TripleEqualsInvocation[_]) {
+    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+    def be(comparison: TripleEqualsInvocation[_]): Unit = {
       throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
-                                    getStackDepthFun("Matchers.scala", "be ===")) 
-      doCollected(collected, xs, original, "be", 1) { e => 
-        if ((e == comparison.right) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
-              e,
-              comparison.right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
+                                    getStackDepthFun("Matchers.scala", "be")) 
     }
 
     /**

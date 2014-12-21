@@ -22,39 +22,39 @@ import OptionValues._
 
 class ShouldThrowSpec extends Spec {
 
-  object `The evaluating { ... } should produce [ExceptionType] syntax` {
+  object `The a [ExceptionType] should be thrownBy { ... } syntax` {
 
     def `fail if a different exception is thrown` {
       val caught1 = intercept[TestFailedException] {
-        evaluating { "hi".charAt(-1) } should produce [IllegalArgumentException]
+        an [IllegalArgumentException] should be thrownBy { "hi".charAt(-1) }
       }
       assert(caught1.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but java.lang.StringIndexOutOfBoundsException was thrown.")
     }
 
     def `fail if no exception is thrown` {
       val caught2 = intercept[TestFailedException] {
-        evaluating { "hi" } should produce [IllegalArgumentException]
+        an [IllegalArgumentException] should be thrownBy { "hi" }
       }
       assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown.")
     }
 
     def `succeed if the expected exception is thrown` {
-      evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
+      a [StringIndexOutOfBoundsException] should be thrownBy { "hi".charAt(-1) }
     }
     
     def `succeed if a subtype of the expected exception is thrown, where the expected type is a class` {
-      evaluating { "hi".charAt(-1) } should produce [Exception]
+      a [Exception] should be thrownBy { "hi".charAt(-1) }
     }
 
     def `succeed if a subtype of the expected exception is thrown, where the expected type is a trait` {
       trait Excitement
       def kaboom() { throw new Exception with Excitement }
-      evaluating { kaboom() } should produce [Excitement]
+      a [Excitement] should be thrownBy { kaboom() }
     }
     
     def `return the caught exception` {
       def kaboom() { throw new Exception("howdy") }
-      val thrown = evaluating { kaboom() } should produce [Exception]
+      val thrown = the [Exception] thrownBy { kaboom() }
       thrown.getMessage should === ("howdy")
     }  
     
@@ -62,7 +62,7 @@ class ShouldThrowSpec extends Spec {
       val wrongException = new RuntimeException("oops!")
       val caught =
         intercept[TestFailedException] {
-          evaluating { throw wrongException } should produce [IllegalArgumentException]
+          an [IllegalArgumentException] should be thrownBy { throw wrongException }
         }
       assert(caught.cause.value eq wrongException)
     }
