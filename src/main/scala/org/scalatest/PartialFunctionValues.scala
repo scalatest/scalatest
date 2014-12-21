@@ -129,8 +129,8 @@ trait PartialFunctionValues {
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  * 
- * scala&gt; import matchers.ShouldMatchers._
- * import matchers.ShouldMatchers._
+ * scala&gt; import matchers.Matchers._
+ * import matchers.Matchers._
  * 
  * scala&gt; import PartialFunctionValues._
  * import PartialFunctionValues._

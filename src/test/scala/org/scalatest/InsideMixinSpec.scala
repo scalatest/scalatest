@@ -53,59 +53,59 @@ class InsideMixinSpec extends FunSpec {
     }
 
     it("should throw a TFE when the partial function isn't defined at the passed value") {
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, 99) =>
           name.first should be ("Sally")
         }
-      } should produce [TestFailedException]
+      }
       caught.message.value should be (Resources("insidePartialFunctionNotDefined", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include an inside clause when a matcher fails inside") {
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(_, _, age) =>
           age should be <= 21
         }
-      } should produce [TestFailedException]
+      }
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotLessThanOrEqualTo", "29", "21"), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include a nested inside clause when a matcher fails inside a nested inside") {
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, _) =>
           inside (name) { case Name(first, _, _) =>
             first should be ("Harry")
           }
         }
-      } should produce [TestFailedException]
+      }
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotEqualTo", "\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should throw a TFE when matcher fails inside due to exception") {
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, address, age) =>
           throw new TestFailedException(None, None, 0)
         }
-      } should produce [TestFailedException]
+      }
       caught.message.value should be (Resources("insidePartialFunctionAppendNone", "", rec))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include a nested inside clause when a matcher fails inside due to exception") {
-      val caught = evaluating {
+      val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, _) =>
           inside (name) { case Name(first, _, _) =>
             throw new TestFailedException(None, None, 0)
           }
         }
-      } should produce [TestFailedException]
+      }
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendNone", "  ", rec.name), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")

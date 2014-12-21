@@ -173,7 +173,7 @@ println("##### " + indexedList)
   }
   "The stripMargin method" - {
     "should throw NPE if null passed" in {
-      evaluating { stripMargin(null) } should produce [NullPointerException] 
+      a [NullPointerException] should be thrownBy { stripMargin(null) }
     }
     "should return an empty string as is" in {
       stripMargin("") should equal ("")

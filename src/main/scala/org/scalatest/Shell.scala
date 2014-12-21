@@ -17,7 +17,7 @@ package org.scalatest
 
 /*
 Delete this later:
-class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
+class ArithmeticSuite extends FunSuite with matchers.Matchers {
   test("addition works") {
     1 + 1 should equal (2)
   }
@@ -92,7 +92,7 @@ class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
  * </p>
  *
  * <pre style="background-color: #2c415c; padding: 10px">
- * <span style="color: white">scala> class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
+ * <span style="color: white">scala> class ArithmeticSuite extends FunSuite with matchers.Matchers {
  *      |   test("addition works") { 
  *      |     1 + 1 should equal (2)
  *      |   } 

@@ -214,7 +214,7 @@ This is a paragraph later...
 
   object `The stripMargin method` {
     def `should throw NPE if null passed` {
-      evaluating { stripMargin(null) } should produce [NullPointerException] 
+      a [NullPointerException] should be thrownBy { stripMargin(null) }
     }
     def `should return an empty string as is` {
       stripMargin("") should equal ("")

@@ -37,9 +37,9 @@ class PartialFunctionValuesSpec extends FunSpec {
     
     it("should throw TestFailedException when is not defined") {
       val caught = 
-        evaluating {
+        the [TestFailedException] thrownBy {
           pf.valueAt(5) should === (25)
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("PartialFunctionValuesSpec.scala")
       caught.message.value should be (Resources("partialFunctionValueNotDefined", "5"))

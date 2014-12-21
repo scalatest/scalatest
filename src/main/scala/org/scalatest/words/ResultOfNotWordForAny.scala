@@ -176,31 +176,20 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and is no longer allowed. Please use should equal, should ===, shouldEqual,
-   * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
-   * checkable equality comparison.
+   * The deprecation period for the "be ===" syntax has expired, and the syntax 
+   * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+   * should be, or shouldBe instead.
    * </strong>
    *
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * result should not be === (7)
-   *                   ^
-   * </pre>
+   * <p>
+   * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+   * cases still compile, but silently wouldn't work.
+   * </p>
    */
-  @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def be(comparison: TripleEqualsInvocation[_]) {
+  @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+  def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
-                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be ===")) 
-    if ((left == comparison.right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
-          left,
-          comparison.right
-        )
-      )
-    }
+                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be")) 
   }
 
   /**

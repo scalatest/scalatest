@@ -222,54 +222,20 @@ final class BeWord {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and is no longer allowed. Please use should equal, should ===, shouldEqual,
-   * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
-   * checkable equality comparison.
+   * The deprecation period for the "be ===" syntax has expired, and the syntax 
+   * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+   * should be, or shouldBe instead.
    * </strong>
-   *
+   * 
    * <p>
-   * This method enables the following syntax:
+   * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+   * cases still compile, but silently wouldn't work.
    * </p>
-   *
-   * <pre class="stHighlight">
-   * result should be === (7)
-   *                  ^
-   * </pre>
-   *
-   * <p>
-   * Note that the === operator will be invoked on <code>be</code> in this expression, not
-   * on a result of passing <code>be</code> to <code>should</code>, as with most other operators
-   * in the matchers DSL, because the ===n operator has a higher precedence than <code>should</code>.
-   * Thus in the above case the first expression evaluated will be <code>be === (7)</code>, which results
-   * in a matcher that is passed to <code>should</code>.
-   * </p>
-   *
-   * <p>
-   * This method also enables the following syntax:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * result should not (be === (7))
-   *                       ^
-   * </pre>
    */
-  @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+  @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
-                                  getStackDepthFun("BeWord.scala", "be ===")) 
-    new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)  // TODO: Should move this part to reporter
-        MatchResult(
-          areEqualComparingArraysStructurally(left, right),
-          Resources("wasNotEqualTo"),
-          Resources("wasEqualTo"), 
-          Vector(leftee, rightee), 
-          Vector(left, right)
-        )
-      }
-      override def toString: String = "be === " + Prettifier.default(right)
-    }
+                                  getStackDepthFun("BeWord.scala", "==="))  // TODO: Change that to encoded name.
   }
 
   /**

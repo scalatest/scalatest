@@ -45,9 +45,9 @@ class ArgsSpec extends WordSpec with SeveredStackTraces {
         )
 
       forAll (invalidCombos) { (reporter, stopper, filter, configMap, distributor, tracker, chosenStyles) =>
-        evaluating {
+        a [NullPointerException] should be thrownBy {
           Args(reporter, stopper, filter, configMap, distributor, tracker, chosenStyles)
-        } should produce [NullPointerException]
+        }
       }
     }
   }

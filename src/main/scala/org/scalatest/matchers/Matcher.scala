@@ -436,7 +436,7 @@ import org.scalatest.words.DefinedWord
  * </pre>
  *
  * <p>
- * The expression "<code>orange should</code>" will, via an implicit conversion in <code>ShouldMatchers</code>,
+ * The expression "<code>orange should</code>" will, via an implicit conversion in <code>Matchers</code>,
  * result in an object that has a <code>should</code>
  * method that takes a <code>Matcher[Orange]</code>. If the static type of the matcher being passed to <code>should</code> is
  * <code>Matcher[Valencia]</code> it shouldn't (and won't) compile. The reason it shouldn't compile is that

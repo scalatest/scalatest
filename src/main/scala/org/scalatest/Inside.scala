@@ -143,8 +143,8 @@ trait Inside {
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  * 
- * scala&gt; import matchers.ShouldMatchers._
- * import matchers.ShouldMatchers._
+ * scala&gt; import matchers.Matchers._
+ * import matchers.Matchers._
  * 
  * scala&gt; import Inside._
  * import Inside._
@@ -158,8 +158,8 @@ trait Inside {
  *      | }
  * org.scalatest.TestFailedException: 1 did not equal 2, inside List(1, 2, 3)
  *   at org.scalatest.matchers.Matchers$class.newTestFailedException(Matchers.scala:150)
- *   at org.scalatest.matchers.ShouldMatchers$.newTestFailedException(ShouldMatchers.scala:2331)
- *   at org.scalatest.matchers.ShouldMatchers$ShouldMethodHelper$.shouldMatcher(ShouldMatchers.scala:873)
+ *   at org.scalatest.matchers.Matchers$.newTestFailedException(Matchers.scala:2331)
+ *   at org.scalatest.matchers.Matchers$ShouldMethodHelper$.shouldMatcher(Matchers.scala:873)
  *   ...
  * </pre>
  */

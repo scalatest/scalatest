@@ -220,13 +220,6 @@ class MatchersSpec extends Spec {
       }
     }
 
-    object `ResultOfEvaluatingApplication ` {
-      def `should have pretty toString` {
-        val word = evaluating { "hi".charAt(-1) }
-        word.toString should be ("evaluating { ... }")
-      }
-    }
-
     object `ResultOfProduceInvocation ` {
       def `should have pretty toString` {
         val word = produce [StringIndexOutOfBoundsException]

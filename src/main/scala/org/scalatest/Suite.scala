@@ -279,7 +279,7 @@ import org.scalactic.Prettifier
  *
  * <p>
  * ScalaTest also supports another style of assertions via its matchers DSL. By mixing in
- * trait <a href="matchers/ShouldMatchers.html"><code>ShouldMatchers</code></a>, you can 
+ * trait <a href="matchers/Matchers.html"><code>Matchers</code></a>, you can 
  * write suites that look like:
  * </p>
  *
@@ -288,7 +288,7 @@ import org.scalactic.Prettifier
  *
  * import org.scalatest._
  *
- * class SetSuite extends Suite with ShouldMatchers {
+ * class SetSuite extends Suite with Matchers {
  *
  *   def &#96;test: an empty Set should have size 0&#96; {
  *     Set.empty.size should equal (0)

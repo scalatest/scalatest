@@ -164,9 +164,9 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
 
         var count = 0
         val neverReadyCountingFuture = newNeverReadyCountingFuture { count += 1 }
-        val caught = evaluating {
+        val caught = the [TestFailedException] thrownBy {
           neverReadyCountingFuture.futureValue
-        } should produce [TestFailedException]
+        }
 
         caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
@@ -174,30 +174,30 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       }
 
       it("should provide the correct stack depth") {
-        val caught1 = evaluating {
+        val caught1 = the [TestFailedException] thrownBy {
           neverReadyFuture.futureValue(timeout(Span(100, Millis)), interval(Span(1, Millisecond)))
-        } should produce [TestFailedException]
+        }
         caught1.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught1.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
 
-        val caught3 = evaluating {
+        val caught3 = the [TestFailedException] thrownBy {
           neverReadyFuture.futureValue(timeout(Span(100, Millis)))
-        } should produce [TestFailedException]
+        }
         caught3.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught3.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
 
-        val caught4 = evaluating {
+        val caught4 = the [TestFailedException] thrownBy {
           neverReadyFuture.futureValue(interval(Span(1, Millisecond)))
-        } should produce [TestFailedException]
+        }
         caught4.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           neverReadyFuture.futureValue
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (150)
       }
 
@@ -205,17 +205,17 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         implicit val patienceConfig = PatienceConfig(timeout = Span(1500, Millis))
 
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           neverReadyFuture.futureValue
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1500)
       }
 
       it("should, if an alternate explicit timeout is provided, query a never-ready future by at least the specified timeout") {
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           neverReadyFuture.futureValue(timeout(Span(1250, Milliseconds)))
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1250)
       }
 
@@ -223,9 +223,9 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         implicit val patienceConfig = PatienceConfig(timeout = Span(500, Millis), interval = Span(2, Millis))
 
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           neverReadyFuture.futureValue(timeout(Span(1388, Millis)), interval(Span(1, Millisecond)))
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
 
@@ -307,11 +307,11 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       it("should, if the function arg completes abruptly with a TFE, complete abruptly with the same exception") {
         val futureIsNow = alreadySucceededFuture
         val caught =
-          evaluating {
+          the [TestFailedException] thrownBy {
             whenReady(futureIsNow) { s =>
               s should equal ("ho")
             }
-          } should produce [TestFailedException]
+          }
         caught.message.value should be ("\"h[i]\" did not equal \"h[o]\"")
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
@@ -320,12 +320,12 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       it("should, if the function arg completes abruptly with a non-stack depth exception, complete abruptly with the same exception") {
         val futureIsNow = alreadySucceededFuture
         val caught =
-          evaluating {
+          the [RuntimeException] thrownBy {
             whenReady(futureIsNow) { s =>
               s should equal ("hi")
               throw new RuntimeException("oops")
             }
-          } should produce [RuntimeException]
+          }
         caught.getMessage should be ("oops")
       }
 
@@ -374,11 +374,11 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
 
         var count = 0
         val neverReadyCountingFuture = newNeverReadyCountingFuture { count += 1 }
-        val caught = evaluating {
+        val caught = the [TestFailedException] thrownBy {
           whenReady(neverReadyCountingFuture) { s =>
             s should equal ("hi")
           }
-        } should produce [TestFailedException]
+        }
 
         caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
@@ -386,32 +386,32 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       }
 
       it("should provides correct stack depth") {
-        val caught1 = evaluating {
+        val caught1 = the [TestFailedException] thrownBy {
           whenReady(neverReadyFuture, timeout(Span(100, Millis)), interval(Span(1, Millisecond))) { s => s should equal ("hi") }
-        } should produce [TestFailedException]
+        }
         caught1.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught1.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
 
-        val caught3 = evaluating {
+        val caught3 = the [TestFailedException] thrownBy {
          whenReady(neverReadyFuture, timeout(Span(100, Millis))) {  s => s should equal ("hi") }
-        } should produce [TestFailedException]
+        }
         caught3.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught3.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
 
-        val caught4 = evaluating {
+        val caught4 = the [TestFailedException] thrownBy {
           whenReady(neverReadyFuture, interval(Span(1, Millisecond))) { s => s should equal ("hi")  }
-        } should produce [TestFailedException]
+        }
         caught4.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           whenReady(neverReadyFuture) { s =>
             s should equal ("hi")
           }
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (150)
       }
 
@@ -419,21 +419,21 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         implicit val patienceConfig = PatienceConfig(timeout = Span(1500, Millis))
 
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           whenReady(neverReadyFuture) { s =>
             s should equal ("hi")
           }
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1500)
       }
 
       it("should, if an alternate explicit timeout is provided, query a never-ready future by at least the specified timeout") {
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           whenReady(neverReadyFuture, timeout(Span(1250, Milliseconds))) { s =>
             s should equal ("hi")
           }
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1250)
       }
 
@@ -441,11 +441,11 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         implicit val patienceConfig = PatienceConfig(timeout = Span(500, Millis), interval = Span(2, Millis))
 
         var startTime = System.currentTimeMillis
-        evaluating {
+        a [TestFailedException] should be thrownBy {
           whenReady(neverReadyFuture, timeout(Span(1388, Millis)), interval(Span(1, Millisecond))) { s =>
             s should equal ("hi")
           }
-        } should produce [TestFailedException]
+        }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
 
