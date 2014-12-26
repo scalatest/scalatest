@@ -13,7 +13,7 @@ import org.scalatest._
 /**
  * Separate non-generated tests, for completeness
  */
-class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with NonGeneratedTableDrivenPropertyChecks with OptionValues {
+class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with TableDrivenPropertyChecks with OptionValues {
 
   object `forEvery/1 ` {
     def colFun[A](s: Set[A]): TableFor1[A] = {

@@ -1004,6 +1004,53 @@ val propertyCheckForEveryTemplate = """
   }
 """
 
+
+  val propertyCheckExistsPreamble = """
+
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    if (result.passedCount == 0) {
+      val messageList = result.failedElements.map(_._3)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+    }
+  }
+
+                                      """
+
+
+  val propertyCheckExistsTemplateFor1 = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor1</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  }
+
+                                          """
+
+  val propertyCheckExistsTemplate = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor$n$</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
+    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "$filename$", "exists", 3)(fun.tupled)
+  }
+                                      """
+
+
 val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
 /*
  * Companion object that facilitates the importing of <code>TableDrivenPropertyChecks</code> members as 
@@ -1245,6 +1292,26 @@ $columnsOfIndexes$
 
       for (i <- 1 to 22) {
         val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
+        val st = new org.antlr.stringtemplate.StringTemplate(template)
+        val alphaLower = alpha.take(i).mkString(", ")
+        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+        val strings = List.fill(i)("String").mkString(", ")
+        st.setAttribute("n", i)
+        st.setAttribute("alphaLower", alphaLower)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckExistsPreamble)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      for (i <- 1 to 22) {
+        val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
         val st = new org.antlr.stringtemplate.StringTemplate(template)
         val alphaLower = alpha.take(i).mkString(", ")
         val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
