@@ -1184,6 +1184,45 @@ $columnsOfTwos$
     }
   }
 
+  def `table exists $n$ that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+  }
+
+  def `table exists $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (numbers) { ($names$) =>
+      whenever (a > 0) {
+        assert(a > 0)
+      }
+    }
+  }
+
+  def `table exists $n$, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    intercept[exceptions.TestFailedException] {
+      exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+    }
+  }
+
   def `table for $n$ apply, length, and iterator methods work correctly` {
 
     val examples =
@@ -1384,7 +1423,7 @@ $columnsOfIndexes$
         val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
         val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
         val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =                              
+        val rawRows =
           for (idx <- 0 to 9) yield                
             List.fill(i)("  " + idx).mkString("        (", ", ", ")")
         val columnsOfIndexes = rawRows.mkString(",\n")
