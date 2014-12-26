@@ -468,6 +468,27 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
       )
   }
 
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    if (result.passedCount == 0) {
+      val messageList = result.failedElements.map(_._3)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+    }
+  }
+
+  def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  }
+
+  def exists[A, B](table: TableFor2[A, B])(fun: (A, B) => Unit): Unit = {
+    doExists[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3)(fun.tupled)
+  }
+
   def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
     doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){a => fun(a._1)}
   }
@@ -753,4 +774,4 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
  *
  * @author Bill Venners
  */
-private object NonGeneratedTableDrivenPropertyChecks extends NonGeneratedTableDrivenPropertyChecks
+private[prop] object NonGeneratedTableDrivenPropertyChecks extends NonGeneratedTableDrivenPropertyChecks
