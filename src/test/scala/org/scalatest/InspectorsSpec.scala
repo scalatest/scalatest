@@ -33,7 +33,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
   def examples =
     Table[Set[Int] => GenTraversable[Int]](
       ("Fun"), 
-      ((set: Set[Int]) => set), 
+      ((set: Set[Int]) => set),
       ((set: Set[Int]) => set.toList), 
       ((set: Set[Int]) => set.toSeq), 
       ((set: Set[Int]) => set.toArray), 
@@ -533,6 +533,133 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
           forAtLeast(1, col) { e => throw new VirtualMachineError() {} }
+        }
+      }
+    }
+  }
+
+  object `exists ` {
+    def `should pass when one element passed` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        exists(col) { e => e should be (2) }
+      }
+    }
+
+    def `should pass when more than one element passed` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        exists(col) { e => e should be < 3 }
+      }
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when none of the elements passed` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        val e = intercept[exceptions.TestFailedException] {
+          exists(col) { e =>
+            e should be > 5
+          }
+        }
+        e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        val itr = col.toIterator
+        val first = itr.next
+        val second = itr.next
+        val third = itr.next
+        e.message should be (Some("exists failed, because no element satisfied the assertion block: \n" +
+                                   "  at index 0, " + first + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
+                                   "  at index 1, " + second + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
+                                   "  at index 2, " + third + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
+                                   "in " + decorateToStringValue(col)))
+        e.getCause should be (null)
+      }
+    }
+
+    def `should pass when all of the elements passed` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        exists(col) { e => e should be < 5 }
+      }
+    }
+
+    def `should propagate TestPendingException thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[exceptions.TestPendingException] {
+          exists(col) { e => pending }
+        }
+      }
+    }
+
+    def `should propagate TestCanceledException thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[exceptions.TestCanceledException] {
+          exists(col) { e => cancel }
+        }
+      }
+    }
+
+    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[AnnotationFormatError] {
+          exists(col) { e => throw new AnnotationFormatError("test") }
+        }
+      }
+    }
+
+    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[CoderMalfunctionError] {
+          exists(col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
+        }
+      }
+    }
+
+    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[FactoryConfigurationError] {
+          exists(col) { e => throw new FactoryConfigurationError() }
+        }
+      }
+    }
+
+    def `should propagate java.lang.LinkageError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[LinkageError] {
+          exists(col) { e => throw new LinkageError() }
+        }
+      }
+    }
+
+    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[ThreadDeath] {
+          exists(col) { e => throw new ThreadDeath() }
+        }
+      }
+    }
+
+    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[TransformerFactoryConfigurationError] {
+          exists(col) { e => throw new TransformerFactoryConfigurationError() }
+        }
+      }
+    }
+
+    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+      forAll(examples) { colFun =>
+        val col = colFun(Set(1, 2, 3))
+        intercept[VirtualMachineError] {
+          exists(col) { e => throw new VirtualMachineError() {} }
         }
       }
     }
