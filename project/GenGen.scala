@@ -968,7 +968,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of the <code>ConfiguredPropertyExistsCheck</code>
    *   object returned by this method.
    */
-  def exists(configParams: PropertyCheckConfigParam*): ConfiguredPropertyExistsCheck = new ConfiguredPropertyExistsCheck(configParams)
+  def exists(configParams: PropertyExistsCheckConfigParam*): ConfiguredPropertyExistsCheck = new ConfiguredPropertyExistsCheck(configParams)
 
   /**
    * Performs a configured property checks by applying property check functions passed to its <code>apply</code> methods to arguments
@@ -977,7 +977,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * <p>
    * Instances of this class are returned by trait <code>GeneratorDrivenPropertyChecks</code> <code>exists</code> method that accepts a variable length
-   * argument list of <code>PropertyCheckConfigParam</code> objects. Thus it is used with functions of arity-1.
+   * argument list of <code>PropertyExistsCheckConfigParam</code> objects. Thus it is used with functions of arity-1.
    * Here are some examples:
    * </p>
    *
@@ -1005,12 +1005,12 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    * }
    * </pre>
    *
-   * @param configParams a variable length list of <code>PropertyCheckConfigParam</code> objects that should override corresponding
+   * @param configParams a variable length list of <code>PropertyExistsCheckConfigParam</code> objects that should override corresponding
    *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of instances of this class.
    *
    * @author Bill Venners
   */
-  class ConfiguredPropertyExistsCheck(configParams: Seq[PropertyCheckConfigParam]) {
+  class ConfiguredPropertyExistsCheck(configParams: Seq[PropertyExistsCheckConfigParam]) {
 
   /**
    * Performs an <code>exists</code> property check by applying the specified property check function to arguments
@@ -1112,7 +1112,7 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def exists[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def exists[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyExistsCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
       config: PropertyCheckConfigurable,
 $arbShrinks$
@@ -1159,7 +1159,7 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def exists[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def exists[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyExistsCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
       config: PropertyCheckConfigurable,
 $shrinks$
@@ -1206,7 +1206,7 @@ $shrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def exists[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def exists[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyExistsCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
     (implicit
       config: PropertyCheckConfigurable,
 $shrinks$
@@ -1574,286 +1574,6 @@ val generatorSuiteExistsTemplate = """
       exists ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
         assert($sumOfArgLengths$ < 0)
       }
-    }
-  }
-
-  // Same thing, but set minSuccessful to 5 with param, prop fails after 5
-  def `generator-driven exists property that takes $n$ args, which succeeds, with minSuccessful param set to 5` {
-
-    var i = 0
-    exists (minSuccessful(5)) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args, which fails, with minSuccessful param set to 5, but exists ignores` {
-      var i = 0
-      exists (minSuccessful(5)) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which succeeds, with minSuccessful param set to 5` {
-
-    var i = 0
-    exists ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
-
-      var i = 0
-      exists ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5` {
-
-    var i = 0
-    exists ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
-
-      var i = 0
-      exists ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5` {
-
-    var i = 0
-    exists ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
-
-      var i = 0
-      exists ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  // Same thing, but set default minSuccessful to 5, prop fails after 5
-  def `generator-driven exists property that takes $n$ args, which succeeds, with default minSuccessful param set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    var i = 0
-    exists { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args, which fails, with default minSuccessful param set to 5, but exists ignores config and passes anyway` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-      var i = 0
-      exists { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    var i = 0
-    exists ($argNames$) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which fails, with default minSuccessful param set to 5, but exists ignores config and passes anyway` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-      var i = 0
-      exists ($argNames$) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    var i = 0
-    exists ($famousArgs$) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5, but exists ignores` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-      var i = 0
-      exists ($famousArgs$) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-    var i = 0
-    exists ($nameGenTuples$) { ($namesAndTypes$) =>
-      i += 1
-      assert(i != 6)
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5, but exists ignores` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
-
-      var i = 0
-      exists ($nameGenTuples$) { ($namesAndTypes$) =>
-        i += 1
-        assert(i != 5)
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ args, which fails, with maxDiscarded param set to 5, but exists ignores` {
-
-      var i = 0
-      exists (maxDiscarded(5)) { ($namesAndTypes$) =>
-        i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5` {
-
-    var i = 0
-    exists ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
-
-      var i = 0
-      exists ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
-        i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5` {
-
-    var i = 0
-    exists ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
-      var i = 0
-      exists ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
-        i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
-      }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5` {
-
-    var i = 0
-    exists ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
-
-      var i = 0
-      exists ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
-        i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
-      }
-  }
-
-  // Same thing, but set default maxDiscarded to 5, prop fails after 5
-  def `generator-driven exists property that takes $n$ args, which succeeds, with default maxDiscarded set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
-
-    var i = 0
-    exists { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
-
-    var i = 0
-    exists ($argNames$) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
-
-    var i = 0
-    exists ($famousArgs$) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
-    }
-  }
-
-  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5` {
-
-    // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
-
-    var i = 0
-    exists ($nameGenTuples$) { ($namesAndTypes$) =>
-      i += 1
-      whenever (i > 5) { assert(1 + 1 === (2)) }
     }
   }
 

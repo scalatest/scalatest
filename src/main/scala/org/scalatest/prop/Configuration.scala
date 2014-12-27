@@ -171,6 +171,19 @@ trait Configuration {
    * @author Bill Venners
    */
   sealed abstract class PropertyCheckConfigParam
+
+  /**
+   * Abstract class defining a family of configuration parameters for exists property checks.
+   *
+   * <p>
+   * The subclasses of this abstract class are used to pass configuration information to
+   * the <code>exists</code> or <code>forAll</code> methods of traits <code>PropertyChecks</code> (for ScalaTest-style
+   * property checks).
+   * </p>
+   *
+   * @author Bill Venners
+   */
+   sealed abstract class PropertyExistsCheckConfigParam extends PropertyCheckConfigParam
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum number of successful
@@ -241,7 +254,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class MinSize(value: PozInt) extends PropertyCheckConfigParam
+  case class MinSize(value: PozInt) extends PropertyExistsCheckConfigParam
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the maximum size parameter to
@@ -260,7 +273,7 @@ trait Configuration {
    * @author Bill Venners
    */
   @deprecated("use SizeRange instead")
-  case class MaxSize(value: Int) extends PropertyCheckConfigParam {
+  case class MaxSize(value: Int) extends PropertyExistsCheckConfigParam {
     require(value >= 0)
   }
 
@@ -276,7 +289,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class SizeRange(value: PozInt) extends PropertyCheckConfigParam
+  case class SizeRange(value: PozInt) extends PropertyExistsCheckConfigParam
 
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the number of worker threads
@@ -286,7 +299,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class Workers(value: PosInt) extends PropertyCheckConfigParam
+  case class Workers(value: PosInt) extends PropertyExistsCheckConfigParam
   
   /**
    * Returns a <code>MinSuccessful</code> property check configuration parameter containing the passed value, which specifies the minimum number of successful
