@@ -17,6 +17,8 @@ import java.io.File
 import java.io.FileWriter
 import java.io.BufferedWriter
 import java.util.Calendar
+import org.antlr.stringtemplate.StringTemplate
+
 import scala.collection.JavaConversions._
 
 object GenGen {
@@ -942,7 +944,296 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
   }
+
+
+
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function to arguments
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyGenConfig</code> object with explicitly passed parameter values.
+   *
+   * <p>
+   * This method creates a <code>ConfiguredPropertyExistsCheck</code> object that has an apply method
+   * that take a function. Thus it is used with functions of arity-1.
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists (minSize(1), maxSize(10)) { (a: String) =>
+   *   a.length should equal ((a).length)
+   * }
+   * </pre>
+   *
+   * @param configParams a variable length list of <code>PropertyCheckConfigParam</code> objects that should override corresponding
+   *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of the <code>ConfiguredPropertyExistsCheck</code>
+   *   object returned by this method.
+   */
+  def exists(configParams: PropertyCheckConfigParam*): ConfiguredPropertyExistsCheck = new ConfiguredPropertyExistsCheck(configParams)
+
+  /**
+   * Performs a configured property checks by applying property check functions passed to its <code>apply</code> methods to arguments
+   * supplied by implicitly passed generators, modifying the values in the
+   * <code>PropertyGenConfig</code> object passed implicitly to its <code>apply</code> methods with parameter values passed to its constructor.
+   *
+   * <p>
+   * Instances of this class are returned by trait <code>GeneratorDrivenPropertyChecks</code> <code>exists</code> method that accepts a variable length
+   * argument list of <code>PropertyCheckConfigParam</code> objects. Thus it is used with functions of arity-1.
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists (minSize(1), maxSize(10)) { (a: String) =>
+   *   a.length should equal ((a).length)
+   * }
+   * </pre>
+   *
+   * <p>
+   * In the first example above, the <code>ConfiguredPropertyExistsCheck</code> object is returned by:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists (minSize(1), maxSize(10))
+   * </pre>
+   *
+   * <p>
+   * The code that follows is an invocation of one of the <code>ConfiguredPropertyExistsCheck</code> <code>apply</code> methods:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * { (a: String) =>
+   *   a.length should equal ((a).length)
+   * }
+   * </pre>
+   *
+   * @param configParams a variable length list of <code>PropertyCheckConfigParam</code> objects that should override corresponding
+   *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of instances of this class.
+   *
+   * @author Bill Venners
+  */
+  class ConfiguredPropertyExistsCheck(configParams: Seq[PropertyCheckConfigParam]) {
+
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function to arguments
+   * supplied by implicitly passed generators, modifying the values in the implicitly passed
+   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists (minSize(1), maxSize(10)) { (a: String) =>
+   *   a.length should equal ((a).length)
+   * }
+   * </pre>
+   *
+   * @param fun the property check function to apply to the generated arguments
+   */
+    def apply[A](fun: (A) => Unit)
+      (implicit
+        config: PropertyCheckConfigurable,
+      arbA: Arbitrary[A], shrA: Shrink[A]
+      ) {
+        val propF = { (a: A) =>
+          val (unmetCondition, exception) =
+            try {
+              fun(a)
+              (false, None)
+            }
+            catch {
+              case e: DiscardedEvaluationException => (true, None)
+              case e: Throwable => (false, Some(e))
+            }
+          !unmetCondition ==> (
+            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
+          )
+        }
+        val prop = Prop.exists(propF)
+        val params = getParams(configParams, config)
+        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+    }
+ }
 """
+
+val propertyCheckExistsTemplate = """
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function to arguments
+   * supplied by implicitly passed generators.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists { ($namesAndTypes$) =>
+   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
+   * }
+   * </pre>
+   *
+   * @param fun the property check function to apply to the generated arguments
+   */
+  def exists[$alphaUpper$](fun: ($alphaUpper$) => Unit)
+    (implicit
+      config: PropertyCheckConfigurable,
+$arbShrinks$
+    ) {
+      val propF = { ($argType$) =>
+        val (unmetCondition, exception) =
+          try {
+            fun($alphaLower$)
+            (false, None)
+          }
+          catch {
+            case e: DiscardedEvaluationException => (true, None)
+            case e: Throwable => (false, Some(e))
+          }
+        !unmetCondition ==> (
+          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
+        )
+      }
+      val prop = Prop.exists(propF)
+      val params = getParams(Seq(), config)
+      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "exists")
+  }
+
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function with the specified
+   * argument names to arguments supplied by implicitly passed generators.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * exists ($argNames$) { ($namesAndTypes$) =>
+   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
+   * }
+   * </pre>
+   *
+   * @param fun the property check function to apply to the generated arguments
+   */
+  def exists[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+    (implicit
+      config: PropertyCheckConfigurable,
+$arbShrinks$
+    ) {
+      val propF = { ($argType$) =>
+        val (unmetCondition, exception) =
+          try {
+            fun($alphaLower$)
+            (false, None)
+          }
+          catch {
+            case e: DiscardedEvaluationException => (true, None)
+            case e: Throwable => (false, Some(e))
+          }
+        !unmetCondition ==> (
+          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
+        )
+      }
+      val prop = Prop.exists(propF)
+      val params = getParams(configParams, config)
+      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "exists", Some(List($argNameNames$)))
+  }
+
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function to arguments
+   * supplied by the specified generators.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * import org.scalacheck.Gen
+   *
+   * // Define your own string generator:
+   * val famousLastWords = for {
+   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
+   * } yield s
+   *
+   * exists ($famousArgs$) { ($namesAndTypes$) =>
+   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
+   * }
+   * </pre>
+   *
+   * @param fun the property check function to apply to the generated arguments
+   */
+  def exists[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+    (implicit
+      config: PropertyCheckConfigurable,
+$shrinks$
+    ) {
+      val propF = { ($argType$) =>
+        val (unmetCondition, exception) =
+          try {
+            fun($alphaLower$)
+            (false, None)
+          }
+          catch {
+            case e: DiscardedEvaluationException => (true, None)
+            case e: Throwable => (false, Some(e))
+          }
+        !unmetCondition ==> (
+          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
+        )
+      }
+      val prop = Prop.exists($genArgs$)(propF)
+      val params = getParams(configParams, config)
+      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "exists")
+  }
+
+  /**
+   * Performs an <code>exists</code> property check by applying the specified property check function to named arguments
+   * supplied by the specified generators.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * import org.scalacheck.Gen
+   *
+   * // Define your own string generator:
+   * val famousLastWords = for {
+   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
+   * } yield s
+   *
+   * exists ($nameGenTuples$) { ($namesAndTypes$) =>
+   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
+   * }
+   * </pre>
+   *
+   * @param fun the property check function to apply to the generated arguments
+   */
+  def exists[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+    (implicit
+      config: PropertyCheckConfigurable,
+$shrinks$
+    ) {
+
+$tupleBusters$
+
+      val propF = { ($argType$) =>
+        val (unmetCondition, exception) =
+          try {
+            fun($alphaLower$)
+            (false, None)
+          }
+          catch {
+            case e: DiscardedEvaluationException => (true, None)
+            case e: Throwable => (false, Some(e))
+          }
+        !unmetCondition ==> (
+          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
+        )
+      }
+      val prop = Prop.exists($genArgs$)(propF)
+      val params = getParams(configParams, config)
+      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "exists", Some(List($argNameNames$)))
+  }
+                                    """
+
 
 val propertyCheckForAllTemplate = """
   /**
@@ -1155,7 +1446,613 @@ val generatorSuitePostamble = """
     }
 """
 
-val generatorSuiteTemplate = """
+val generatorSuiteExistsTemplate = """
+
+  def `generator-driven exists property that takes $n$ args, which succeeds` {
+
+    exists { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args, which fails` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds` {
+
+    exists ($argNames$) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which fails` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($argNames$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds` {
+
+    exists ($famousArgs$) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which fails` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($famousArgs$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds` {
+
+    exists ($nameGenTuples$) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which fails` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($nameGenTuples$) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  // Same thing, but with config params
+  def `generator-driven exists property that takes $n$ args, which succeeds, with config params` {
+
+    exists (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args, which fails, with config params` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds, with config params` {
+
+    exists ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which fails, with config params` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with config params` {
+
+    exists ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which fails, with config params` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with config params` {
+
+    exists ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+      assert($sumOfArgLengths$ === (($sumOfArgs$).length))
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which fails, with config params` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      exists ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
+        assert($sumOfArgLengths$ < 0)
+      }
+    }
+  }
+
+  // Same thing, but set minSuccessful to 5 with param, prop fails after 5
+  def `generator-driven exists property that takes $n$ args, which succeeds, with minSuccessful param set to 5` {
+
+    var i = 0
+    exists (minSuccessful(5)) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args, which fails, with minSuccessful param set to 5, but exists ignores` {
+      var i = 0
+      exists (minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds, with minSuccessful param set to 5` {
+
+    var i = 0
+    exists ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
+
+      var i = 0
+      exists ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5` {
+
+    var i = 0
+    exists ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
+
+      var i = 0
+      exists ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5` {
+
+    var i = 0
+    exists ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5, but exists ignores config and passes anyway` {
+
+      var i = 0
+      exists ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  // Same thing, but set default minSuccessful to 5, prop fails after 5
+  def `generator-driven exists property that takes $n$ args, which succeeds, with default minSuccessful param set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    exists { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args, which fails, with default minSuccessful param set to 5, but exists ignores config and passes anyway` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+      var i = 0
+      exists { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    exists ($argNames$) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which fails, with default minSuccessful param set to 5, but exists ignores config and passes anyway` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+      var i = 0
+      exists ($argNames$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    exists ($famousArgs$) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5, but exists ignores` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+      var i = 0
+      exists ($famousArgs$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+    var i = 0
+    exists ($nameGenTuples$) { ($namesAndTypes$) =>
+      i += 1
+      assert(i != 6)
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5, but exists ignores` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
+      var i = 0
+      exists ($nameGenTuples$) { ($namesAndTypes$) =>
+        i += 1
+        assert(i != 5)
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ args, which fails, with maxDiscarded param set to 5, but exists ignores` {
+
+      var i = 0
+      exists (maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 6) { assert(1 + 1 === (2)) }
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5` {
+
+    var i = 0
+    exists ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
+
+      var i = 0
+      exists ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 6) { assert(1 + 1 === (2)) }
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5` {
+
+    var i = 0
+    exists ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
+      var i = 0
+      exists ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 6) { assert(1 + 1 === (2)) }
+      }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5` {
+
+    var i = 0
+    exists ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5, but exists ignores config and passes anyway` {
+
+      var i = 0
+      exists ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
+        i += 1
+        whenever (i > 6) { assert(1 + 1 === (2)) }
+      }
+  }
+
+  // Same thing, but set default maxDiscarded to 5, prop fails after 5
+  def `generator-driven exists property that takes $n$ args, which succeeds, with default maxDiscarded set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    exists { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    exists ($argNames$) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    exists ($famousArgs$) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+
+    var i = 0
+    exists ($nameGenTuples$) { ($namesAndTypes$) =>
+      i += 1
+      whenever (i > 5) { assert(1 + 1 === (2)) }
+    }
+  }
+
+  // set maxSize with param (ensure always passed with a size less than maxSize)
+  def `generator-driven exists property that takes $n$ args, with maxSize specified as param` {
+
+    exists (maxSize(5)) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, with maxSize specified as param` {
+
+    exists ($argNames$, maxSize(5)) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+  }
+
+  // set maxSize with default (ensure always passed with a size less than maxSize)
+  def `generator-driven exists property that takes $n$ args, with maxSize specified as default` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    exists { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args, with maxSize specified as default` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    exists ($argNames$) { ($namesAndTypes$) =>
+$lengthAssertions$
+    }
+  }
+
+  // set minSize == maxSize with (param, param) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)` {
+
+    exists ($fiveFiveArgs$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, param)` {
+
+    exists ($fiveFiveNameGenTuples$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize == maxSize with (param, default) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    exists ($fiveFiveArgs$, minSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 5)
+
+    exists ($fiveFiveNameGenTuples$, minSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize == maxSize with (default, param) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    exists ($fiveFiveArgs$, maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, param)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 5)
+
+    exists ($fiveFiveNameGenTuples$, maxSize(5)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize == maxSize with (default, default) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
+
+    exists ($fiveFiveArgs$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 5, maxSize = 5)
+
+    exists ($fiveFiveNameGenTuples$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize to 7 and maxSize to 11 with (param, param) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)` {
+
+    exists ($sevenElevenArgs$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)` {
+
+    exists ($sevenElevenNameGenTuples$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize to 7 and maxSize to 11 with (param, default) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
+
+    exists ($sevenElevenArgs$, minSize(7)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxSize = 11)
+
+    exists ($sevenElevenNameGenTuples$, minSize(7)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize to 7 and maxSize to 11 with (default, param) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
+
+    exists ($sevenElevenArgs$, maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSize = 7)
+
+    exists ($sevenElevenNameGenTuples$, maxSize(11)) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  // set minSize to 7 and maxSize to 11 with (default, default) (ensure always passed with that size)
+  def `generator-driven exists property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
+
+    exists ($sevenElevenArgs$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+
+  def `generator-driven exists property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)` {
+
+    // Hides the member
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSize = 7, maxSize = 11)
+
+    exists ($sevenElevenNameGenTuples$) { ($namesAndTypes$) =>
+$okayAssertions$
+    }
+  }
+                               """
+
+
+
+  val generatorSuiteTemplate = """
 
   def `generator-driven property that takes $n$ args, which succeeds` {
 
@@ -1986,6 +2883,28 @@ $okayAssertions$
   }
 """
 
+val checkersSuiteExistsTemplate = """
+  def `ScalaCheck exists property that takes $n$ args and generators, which succeeds` {
+
+    val prop = exists ($famousArgs$) { ($namesAndTypes$) =>
+      a.length == (2)
+    }
+    check(prop)
+  }
+
+  def `ScalaCheck exists property that takes $n$ args and generators, which fails` {
+
+    intercept[GeneratorDrivenPropertyCheckFailedException] {
+      val prop = exists ($famousArgs$) { ($namesAndTypes$) =>
+        $sumOfArgLengths$ < 0
+      }
+      check(prop)
+    }
+  }
+
+
+  """.stripMargin
+
 val checkersSuiteTemplate = """
 
   def `ScalaCheck property that takes $n$ args, which succeeds` {
@@ -2487,51 +3406,16 @@ $okayExpressions$
       st.setAttribute("year", thisYear);
       bw.write(st.toString)
       bw.write(propertyCheckPreamble)
-      val alpha = "abcdefghijklmnopqrstuv"
       for (i <- 1 to 6) {
-        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
-        val alphaLower = alpha.take(i).mkString(", ")
-        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
-        val argType = alpha.take(i).map(c => c + ": " + c.toUpper).mkString(", ")
-        val strings = List.fill(i)("String").mkString(", ")
-        val arbShrinks = alpha.take(i).toUpperCase.map(
-          c => "      arb" + c + ": Arbitrary[" + c + "], shr" + c + ": Shrink[" + c + "]"
-        ).mkString(",\n")
-        val shrinks = alpha.take(i).toUpperCase.map(
-          c => "      shr" + c + ": Shrink[" + c + "]"
-        ).mkString(",\n")
-        val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
-        val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val genArgsAndTypes = alpha.take(i).toUpperCase.map(c => "gen" + c + ": Gen[" + c + "]").mkString(", ")
-        val genArgs = alpha.take(i).toUpperCase.map(c => "gen" + c).mkString(", ")
-        val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
-        val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
-        val argNameNames = alpha.take(i).toUpperCase.map("name" + _).mkString(", ")
-        val argNameNamesAndTypes = alpha.take(i).toUpperCase.map("name" + _ + ": String").mkString(", ")
-        val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
-        val nameAndGenArgsAndTypes = alpha.take(i).toUpperCase.map(c => "genAndName" + c + ": (Gen[" + c + "], String)").mkString(", ")
-        val tupleBusters = alpha.take(i).toUpperCase.map(c => "      val (gen" + c + ", name" + c + ") = genAndName" + c).mkString("\n")
-        st.setAttribute("n", i)
-        st.setAttribute("argType", argType)
-        st.setAttribute("arbShrinks", arbShrinks)
-        st.setAttribute("shrinks", shrinks)
-        st.setAttribute("alphaLower", alphaLower)
-        st.setAttribute("alphaUpper", alphaUpper)
-        st.setAttribute("strings", strings)
-        st.setAttribute("sumOfArgLengths", sumOfArgLengths)
-        st.setAttribute("namesAndTypes", namesAndTypes)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("genArgs", genArgs)
-        st.setAttribute("genArgsAndTypes", genArgsAndTypes)
-        st.setAttribute("famousArgs", famousArgs)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("tupleBusters", tupleBusters)
-        st.setAttribute("nameGenTuples", nameGenTuples)
-        st.setAttribute("nameAndGenArgsAndTypes", nameAndGenArgsAndTypes)
-        st.setAttribute("argNameNames", argNameNames)
-        st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
-        bw.write(st.toString)
+        val forAllTemplate = new StringTemplate(propertyCheckForAllTemplate)
+        setGeneratedAttributes(i, forAllTemplate)
+        bw.write(forAllTemplate.toString)
+
+        if (i <= 1) {
+          val existsTemplate = new StringTemplate(propertyCheckExistsTemplate)
+          setGeneratedAttributes(i, existsTemplate)
+          bw.write(existsTemplate.toString)
+        }
       }
       bw.write("}\n")
       bw.write(generatorDrivenPropertyChecksCompanionObjectVerbatimString)
@@ -2539,6 +3423,54 @@ $okayExpressions$
     finally {
       bw.close()
     }
+  }
+
+
+  private def setGeneratedAttributes(i: Int, st: org.antlr.stringtemplate.StringTemplate): org.antlr.stringtemplate.StringTemplate = {
+    val alpha = "abcdefghijklmnopqrstuv"
+    val alphaLower = alpha.take(i).mkString(", ")
+    val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+    val argType = alpha.take(i).map(c => c + ": " + c.toUpper).mkString(", ")
+    val strings = List.fill(i)("String").mkString(", ")
+    val arbShrinks = alpha.take(i).toUpperCase.map(
+      c => "      arb" + c + ": Arbitrary[" + c + "], shr" + c + ": Shrink[" + c + "]"
+    ).mkString(",\n")
+    val shrinks = alpha.take(i).toUpperCase.map(
+      c => "      shr" + c + ": Shrink[" + c + "]"
+    ).mkString(",\n")
+    val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
+    val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
+    val sumOfArgs = alpha.take(i).mkString(" + ")
+    val genArgsAndTypes = alpha.take(i).toUpperCase.map(c => "gen" + c + ": Gen[" + c + "]").mkString(", ")
+    val genArgs = alpha.take(i).toUpperCase.map(c => "gen" + c).mkString(", ")
+    val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
+    val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
+    val argNameNames = alpha.take(i).toUpperCase.map("name" + _).mkString(", ")
+    val argNameNamesAndTypes = alpha.take(i).toUpperCase.map("name" + _ + ": String").mkString(", ")
+    val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
+    val nameAndGenArgsAndTypes = alpha.take(i).toUpperCase.map(c => "genAndName" + c + ": (Gen[" + c + "], String)").mkString(", ")
+    val tupleBusters = alpha.take(i).toUpperCase.map(c => "      val (gen" + c + ", name" + c + ") = genAndName" + c).mkString("\n")
+    st.setAttribute("n", i)
+    st.setAttribute("argType", argType)
+    st.setAttribute("arbShrinks", arbShrinks)
+    st.setAttribute("shrinks", shrinks)
+    st.setAttribute("alphaLower", alphaLower)
+    st.setAttribute("alphaUpper", alphaUpper)
+    st.setAttribute("strings", strings)
+    st.setAttribute("sumOfArgLengths", sumOfArgLengths)
+    st.setAttribute("namesAndTypes", namesAndTypes)
+    st.setAttribute("sumOfArgs", sumOfArgs)
+    st.setAttribute("genArgs", genArgs)
+    st.setAttribute("genArgsAndTypes", genArgsAndTypes)
+    st.setAttribute("famousArgs", famousArgs)
+    st.setAttribute("argNames", argNames)
+    st.setAttribute("tupleBusters", tupleBusters)
+    st.setAttribute("nameGenTuples", nameGenTuples)
+    st.setAttribute("nameAndGenArgsAndTypes", nameAndGenArgsAndTypes)
+    st.setAttribute("argNameNames", argNameNames)
+    st.setAttribute("argNameNamesAndTypes", argNameNamesAndTypes)
+
+    st
   }
 
   // Invitation style indicates how GeneratorDrivenPropertyChecks is imported
@@ -2572,59 +3504,22 @@ $okayExpressions$
         "class " + suiteClassName + " extends Spec " +
         (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
       bw.write(generatorSuitePostamble)
-      val alpha = "abcdefghijklmnopqrstuv"
       for (i <- 1 to 6) {
-        val st =
-          if (doItForCheckers)
-            new org.antlr.stringtemplate.StringTemplate(checkersSuiteTemplate)
-          else
-            new org.antlr.stringtemplate.StringTemplate(generatorSuiteTemplate)
-        val rowOfOnes = List.fill(i)("  1").mkString(", ")
-        val rowOfTwos = List.fill(i)("  2").mkString(", ")
-        val listOfIs = List.fill(i)("i").mkString(", ")
-        val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
-        val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =                              
-          for (idx <- 0 to 9) yield                
-            List.fill(i)("  " + idx).mkString("        (", ", ", ")")
-        val columnsOfIndexes = rawRows.mkString(",\n")
-        val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
-        //val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
-        val names = alpha.take(i).mkString(", ")
-        val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
-        val sumOfArgs = alpha.take(i).mkString(" + ")
-        val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
-        val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
-        val sevenElevenArgs = List.fill(i)("sevenEleven").mkString(", ")
-        val fiveFiveArgs = List.fill(i)("fiveFive").mkString(", ")
-        val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
-        val fiveFiveNameGenTuples = alpha.take(i).map("(fiveFive, \"" + _ + "\")").mkString(", ")
-        val sevenElevenNameGenTuples = alpha.take(i).map("(sevenEleven, \"" + _ + "\")").mkString(", ")
-        val lengthAssertions = alpha.take(i).map("      assert(" + _ + ".length <= 5)").mkString("\n")
-        val okayAssertions = alpha.take(i).map("        assert(" + _ + " === (\"OKAY\"))").mkString("\n")
-        val lengthExpressions = alpha.take(i).map("      " + _ + ".length <= 5").mkString("\n")
-        val okayExpressions = alpha.take(i).map("        " + _ + " == (\"OKAY\")").mkString("\n")
-        st.setAttribute("n", i)
-        st.setAttribute("columnsOfOnes", columnsOfOnes)
-        st.setAttribute("columnsOfTwos", columnsOfTwos)
-        st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        st.setAttribute("argNames", argNames)
-        st.setAttribute("names", names)
-        st.setAttribute("namesAndTypes", namesAndTypes)
-        st.setAttribute("sumOfArgs", sumOfArgs)
-        st.setAttribute("sumOfArgLengths", sumOfArgLengths)
-        st.setAttribute("listOfIs", listOfIs)
-        st.setAttribute("famousArgs", famousArgs)
-        st.setAttribute("sevenElevenArgs", sevenElevenArgs)
-        st.setAttribute("fiveFiveArgs", fiveFiveArgs)
-        st.setAttribute("nameGenTuples", nameGenTuples)
-        st.setAttribute("fiveFiveNameGenTuples", fiveFiveNameGenTuples)
-        st.setAttribute("sevenElevenNameGenTuples", sevenElevenNameGenTuples)
-        st.setAttribute("lengthAssertions", lengthAssertions)
-        st.setAttribute("okayAssertions", okayAssertions)
-        st.setAttribute("lengthExpressions", lengthExpressions)
-        st.setAttribute("okayExpressions", okayExpressions)
-        bw.write(st.toString)
+        {
+          val st =
+            if (doItForCheckers)
+              new StringTemplate(checkersSuiteTemplate)
+            else
+              new StringTemplate(generatorSuiteTemplate)
+          setTemplateAttributes(i, st)
+          bw.write(st.toString)
+        }
+
+        if (i <= 1) {
+          val st2 = if (doItForCheckers) new StringTemplate(checkersSuiteExistsTemplate) else new StringTemplate(generatorSuiteExistsTemplate)
+          setTemplateAttributes(i, st2)
+          bw.write(st2.toString)
+        }
       }
 
       bw.write("}\n")
@@ -2633,7 +3528,58 @@ $okayExpressions$
       bw.close()
     }
   }
-  
+
+  private def setTemplateAttributes(i: Int, st: org.antlr.stringtemplate.StringTemplate) = {
+    val alpha = "abcdefghijklmnopqrstuv"
+    val rowOfOnes = List.fill(i)("  1").mkString(", ")
+    val rowOfTwos = List.fill(i)("  2").mkString(", ")
+    val listOfIs = List.fill(i)("i").mkString(", ")
+    val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
+    val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
+    val rawRows =
+      for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString("        (", ", ", ")")
+    val columnsOfIndexes = rawRows.mkString(",\n")
+    val argNames = alpha.take(i).map("\"" + _ + "\"").mkString(", ")
+    //val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+    val names = alpha.take(i).mkString(", ")
+    val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
+    val sumOfArgs = alpha.take(i).mkString(" + ")
+    val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
+    val famousArgs = List.fill(i)("famousLastWords").mkString(", ")
+    val sevenElevenArgs = List.fill(i)("sevenEleven").mkString(", ")
+    val fiveFiveArgs = List.fill(i)("fiveFive").mkString(", ")
+    val nameGenTuples = alpha.take(i).map("(famousLastWords, \"" + _ + "\")").mkString(", ")
+    val fiveFiveNameGenTuples = alpha.take(i).map("(fiveFive, \"" + _ + "\")").mkString(", ")
+    val sevenElevenNameGenTuples = alpha.take(i).map("(sevenEleven, \"" + _ + "\")").mkString(", ")
+    val lengthAssertions = alpha.take(i).map("      assert(" + _ + ".length <= 5)").mkString("\n")
+    val okayAssertions = alpha.take(i).map("        assert(" + _ + " === (\"OKAY\"))").mkString("\n")
+    val lengthExpressions = alpha.take(i).map("      " + _ + ".length <= 5").mkString("\n")
+    val okayExpressions = alpha.take(i).map("        " + _ + " == (\"OKAY\")").mkString("\n")
+    st.setAttribute("n", i)
+    st.setAttribute("columnsOfOnes", columnsOfOnes)
+    st.setAttribute("columnsOfTwos", columnsOfTwos)
+    st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+    st.setAttribute("argNames", argNames)
+    st.setAttribute("names", names)
+    st.setAttribute("namesAndTypes", namesAndTypes)
+    st.setAttribute("sumOfArgs", sumOfArgs)
+    st.setAttribute("sumOfArgLengths", sumOfArgLengths)
+    st.setAttribute("listOfIs", listOfIs)
+    st.setAttribute("famousArgs", famousArgs)
+    st.setAttribute("sevenElevenArgs", sevenElevenArgs)
+    st.setAttribute("fiveFiveArgs", fiveFiveArgs)
+    st.setAttribute("nameGenTuples", nameGenTuples)
+    st.setAttribute("fiveFiveNameGenTuples", fiveFiveNameGenTuples)
+    st.setAttribute("sevenElevenNameGenTuples", sevenElevenNameGenTuples)
+    st.setAttribute("lengthAssertions", lengthAssertions)
+    st.setAttribute("okayAssertions", okayAssertions)
+    st.setAttribute("lengthExpressions", lengthExpressions)
+    st.setAttribute("okayExpressions", okayExpressions)
+
+    st
+  }
+
   def main(args: Array[String]) {
     val targetDir = args(0)
     val version = args(1)
