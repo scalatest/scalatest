@@ -9,6 +9,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalatest.FailureMessages._
 import org.scalatest.SharedHelpers._
 import org.scalatest._
+import org.scalatest.exceptions.TestCanceledException
 
 /**
  * Separate non-generated tests, for completeness
@@ -280,6 +281,17 @@ class NonGeneratedTableDrivenPropertyChecksSpec extends Spec with Matchers with 
       val col = colFun(Set(1, 2, 3))
       exists(col) { e => e should be < 3 }
     }
+
+    def `should evaluate all elements, and allow test to be canceled after one element passed` {
+      val col = colFun(Set(1, 2, 3))
+      intercept[TestCanceledException] {
+        exists(col) { e =>
+          if (e == 3) cancel("You got to three")
+          e should be < 3
+        }
+      }
+    }
+
 
     def `should throw TestFailedException with correct stack depth and message when none of the elements passed` {
       val col = colFun(Set(1, 2, 3))
