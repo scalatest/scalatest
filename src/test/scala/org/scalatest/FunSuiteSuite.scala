@@ -20,9 +20,9 @@ import org.scalatest.events._
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FunSuiteSuite extends Suite {
+class YeOldeFunSuiteSpec extends Spec {
 
-  def testThatTestMethodsWithNoTagsDontShowUpInTagsMap() {
+  def `test that test methods with no tags dont show up in tags map` = {
     
     val a = new FunSuite {
       test("test not in a group") {}
@@ -30,7 +30,7 @@ class FunSuiteSuite extends Suite {
     assert(a.tags.keySet.size === 0)
   }
 
-  def testThatTestFunctionsThatResultInNonUnitAreRegistered() {
+  def `test that test functions that result in non unit are registered` = {
     val a = new FunSuite {
       test("test this") { 1 }
       test("test that") { "hi" }
@@ -40,7 +40,7 @@ class FunSuiteSuite extends Suite {
     assert(a.tags.keySet.size === 0)
   }
 
-  def testThatTestNameCantBeReused() {
+  def `test that test name cant be reused` = {
     intercept[DuplicateTestNameException] {
       new FunSuite {
         test("test this") {}
@@ -67,7 +67,7 @@ class FunSuiteSuite extends Suite {
     }
   }
   
-  def testThatIfYouCallTestAfterExecuteYouGetAnTestFailedExceptionAndTheTestDoesntRun() {
+  def `test that if you call test after execute you get an test failed exception and the test doesnt run` = {
     class MySuite extends FunSuite {
       var fromMethodTestExecuted = false
       var fromConstructorTestExecuted = false
@@ -91,7 +91,7 @@ class FunSuiteSuite extends Suite {
     assert(!a.fromMethodTestExecuted)
   }
   
-  def testThatInfoInsideATestMethodGetsOutTheDoor() {
+  def `test that info inside a test method gets out the door` = {
     val msg = "hi there, dude"
     class MySuite extends FunSuite {
       test("test this") {
@@ -109,7 +109,7 @@ class FunSuiteSuite extends Suite {
     assert(ip.message === msg)
   }
   
-  def testThatInfoInTheConstructorGetsOutTheDoor() {
+  def `test that info in the constructor gets out the door` = {
     class MyReporter extends Reporter {
       var infoProvidedReceived = false
       var lastEvent: InfoProvided = null
@@ -135,7 +135,7 @@ class FunSuiteSuite extends Suite {
     assert(myRep.lastEvent.message === msg)
   }
 
-  def testThatInfoInTheConstructorBeforeATestHappensFirst() {
+  def `test that info in the constructor before a test happens first` = {
     var infoProvidedReceived = false
     var infoProvidedReceivedBeforeTest = false
     class MyReporter extends Reporter {
@@ -161,7 +161,7 @@ class FunSuiteSuite extends Suite {
     assert(infoProvidedReceivedBeforeTest)
   }
 
-  def testThatInfoInTheConstructorAfterATestHappensSecond() {
+  def `test that info in the constructor after a test happens second` = {
     var infoProvidedReceived = false
     var infoProvidedReceivedAfterTest = true
     class MyReporter extends Reporter {
@@ -296,7 +296,7 @@ class FunSuiteSuite extends Suite {
     assert(testFailedAsExpected)
   }
 
-  def testThatTestDurationsAreIncludedInTestFailedAndTestSucceededEventsFiredFromFunSuite() {
+  def `test that test durations are included in test failed and test succeeded events fired from FunSuite` = {
 
     class MyFunSuite extends FunSuite {
       test("that it succeeds") {}
@@ -310,7 +310,7 @@ class FunSuiteSuite extends Suite {
     assert(myReporter.testFailedWasFiredAndHadADuration)
   }
 
-  def testThatSuiteDurationsAreIncludedInSuiteCompletedEventsFiredFromFunSuite() {
+  def `test that suite durations are included in suite completed events fired from FunSuite` = {
 
     class MyFunSuite extends FunSuite {
       override def nestedSuites = Vector(new Suite {})
@@ -322,7 +322,7 @@ class FunSuiteSuite extends Suite {
     assert(myReporter.suiteCompletedWasFiredAndHadADuration)
   }
 
-  def testThatSuiteDurationsAreIncludedInSuiteAbortedEventsFiredFromFunSuite() {
+  def `test that suite durations are included in suite aborted events fired from FunSuite` = {
 
     class SuiteThatAborts extends Suite {
       override def run(testName: Option[String], args: Args): Status = {
@@ -340,7 +340,7 @@ class FunSuiteSuite extends Suite {
     assert(myReporter.suiteAbortedWasFiredAndHadADuration)
   }
 
-  def testPendingWorksInFunSuite() {
+  def `test pending works in FunSuite` = {
 
     class MyFunSuite extends FunSuite {
       test("this test is pending") (pending)

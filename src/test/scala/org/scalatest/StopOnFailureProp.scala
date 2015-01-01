@@ -25,8 +25,6 @@ class StopOnFailureProp extends AllSuiteProp {
 
   type FixtureServices = StopOnFailureFixtureServices
   
-  def suite = new ExampleStopOnFailureSuite
-  def fixtureSuite = new ExampleStopOnFailureFixtureSuite
   def spec = new ExampleStopOnFailureSpec
   def fixtureSpec = new ExampleStopOnFailureFixtureSpec
   def junit3Suite = new ExampleStopOnFailureJUnit3Suite
@@ -92,26 +90,6 @@ class StopOnFailureProp extends AllSuiteProp {
 trait StopOnFailureFixtureServices {
   val supported: Boolean = true
   val supportStopTest: Boolean = true
-}
-
-@DoNotDiscover
-class ExampleStopOnFailureSuite extends Suite with StopOnFailure with StopOnFailureFixtureServices {
-  def testMethod1() {}
-  def testMethod2() { pending }
-  def testMethod3() { cancel }
-  @Ignore def testMethod4() {}
-  def testMethod5() { fail }
-  def testMethod6() {}
-}
-
-@DoNotDiscover
-class ExampleStopOnFailureFixtureSuite extends fixture.Suite with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  def testMethod1(fixture: String) {}
-  def testMethod2(fixture: String) { pending }
-  def testMethod3(fixture: String) { cancel }
-  @Ignore def testMethod4(fixture: String) {}
-  def testMethod5(fixture: String) { fail }
-  def testMethod6(fixture: String) {}
 }
 
 @DoNotDiscover

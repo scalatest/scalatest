@@ -28,18 +28,18 @@ import org.testng.annotations.{Test => TestNGTest}
 import org.scalatest.events.Formatter
 import SharedHelpers._
 
-trait TestColonEscapeExamples extends Tables {
-  def suite: Suite
-  def fixtureSuite: fixture.Suite
-    
-  def examples =
-  Table(
-    ("suite", "succeeded", "failed", "ignored", "pending", "canceled"),
-    (suite, "- A Succeeded Test", "- A Failed Test", "- An Ignored Test", "- A Pending Test", "- A Canceled Test"), 
-    (fixtureSuite, "- A Succeeded Test", "- A Failed Test", "- An Ignored Test", "- A Pending Test", "- A Canceled Test"))
-}
-  
+/*
+This test could perhaps just be dropped. The history is that before I had the idea to
+do a full on Spec with `names like this`, i had and implemented the idea of having
+Suite itself treat names like `test: bla bla bla` specially in that it dropped the test$colon$$space$
+from the front of the test name. The suites in this file made sure Suite had that behavior, and none
+of the others styles had it. Then I decided to just deprecate Suite as a style trait, but I left in
+this behavior during the deprecation period. The deprecation period for Suite as a style triat has
+expired, so now it is only testing that no style traits handle test: prefixes specially.
+*/
 trait NonTestColonEscapeExamples extends Tables {
+  def spec: Spec
+  def fixtureSpec: fixture.Spec
   def funSuite: FunSuite
   def fixtureFunSuite: fixture.FunSuite
   def funSpec: FunSpec
@@ -63,6 +63,8 @@ trait NonTestColonEscapeExamples extends Tables {
   def examples =
   Table(
     ("suite", "succeeded", "failed", "ignored", "pending", "canceled"),
+    (spec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")), 
+    (fixtureSpec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (funSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (fixtureFunSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")), 
     (funSpec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
@@ -82,68 +84,6 @@ trait NonTestColonEscapeExamples extends Tables {
     (junit3Suite, Some("- test: A Succeeded Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), Some("- test: A Failed Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), None, None, None),
     (junitSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
     (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None))
-}
-
-class TestColonEscapeProp extends FunSuite with TestColonEscapeExamples {
-
-  def assertFormattedText(formatter: Option[Formatter], expected: String) {
-    formatter match {
-      case Some(formatter) =>
-        formatter match {
-          case IndentedText(formattedText, _, _) =>
-            assert(formattedText === expected)
-          case _ =>
-            fail("Expected Some(IndentedText as formatter, but got: " + formatter)
-        }
-        case None =>
-          fail("Expected Some(IndentedText) as formatter, but got None.")
-      }
-  }
-  
-  test("Suite and fixture.Suite should escape 'test:' prefix in its IndentedText's formattedText") {
-    forAll(examples) { (suite, succeeded, failed, ignored, pending, canceled) =>
-      val reporter = new EventRecordingReporter
-      suite.run(None, Args(reporter))
-      
-      assert(reporter.testSucceededEventsReceived.size === 1)
-      val testSucceeded = reporter.testSucceededEventsReceived(0)
-      assertFormattedText(testSucceeded.formatter, succeeded)
-      
-      assert(reporter.testFailedEventsReceived.size === 1)
-      val testFailed = reporter.testFailedEventsReceived(0)
-      assertFormattedText(testFailed.formatter, failed)
-      
-      assert(reporter.testIgnoredEventsReceived.size === 1)
-      val testIgnored = reporter.testIgnoredEventsReceived(0)
-      assertFormattedText(testIgnored.formatter, ignored)
-      
-      assert(reporter.testPendingEventsReceived.size === 1)
-      val testPending = reporter.testPendingEventsReceived(0)
-      assertFormattedText(testPending.formatter, pending)
-      
-      assert(reporter.testCanceledEventsReceived.size === 1)
-      val testCanceled = reporter.testCanceledEventsReceived(0)
-      assertFormattedText(testCanceled.formatter, canceled)
-    }
-  }
-  
-  def suite = new ExampleSuite()
-  class ExampleSuite extends Suite {
-    def `test: A Succeeded Test`() {}
-    def `test: A Failed Test`() { fail }
-    @Ignore def `test: An Ignored Test`() {}
-    def `test: A Pending Test`() { pending }
-    def `test: A Canceled Test`() { cancel }
-  }
-  
-  def fixtureSuite = new ExampleFixtureSuite
-  class ExampleFixtureSuite extends fixture.Suite with StringFixture {
-    def `test: A Succeeded Test`() {}
-    def `test: A Failed Test`() { fail }
-    @Ignore def `test: An Ignored Test`() {}
-    def `test: A Pending Test`() { pending }
-    def `test: A Canceled Test`() { cancel }
-  }
 }
 
 @DoNotDiscover
@@ -245,6 +185,24 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
     }
   }
   
+  def spec = new ExampleSpec()
+  class ExampleSpec extends Spec {
+    def `test: A Succeeded Test` = {}
+    def `test: A Failed Test` = { fail }
+    @Ignore def `test: An Ignored Test` = {}
+    def `test: A Pending Test` = { pending }
+    def `test: A Canceled Test` = { cancel }
+  }
+  
+  def fixtureSpec = new ExampleFixtureSpec
+  class ExampleFixtureSpec extends fixture.Spec with StringFixture {
+    def `test: A Succeeded Test` = {}
+    def `test: A Failed Test` = { fail }
+    @Ignore def `test: An Ignored Test` = {}
+    def `test: A Pending Test` = { pending }
+    def `test: A Canceled Test` = { cancel }
+  }
+
   def funSuite = new ExampleFunSuite()
   class ExampleFunSuite extends FunSuite {
     test("test: A Succeeded Test") {}

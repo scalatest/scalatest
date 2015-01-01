@@ -63,44 +63,42 @@ class LocationSpec extends FunSpec with Checkers {
     }
   }
   
-  class TestLocationSuite extends Suite {
-    def testSucceed() = {
-      
+  class TestLocationSpec extends Spec {
+    def `test succeed` = {
     }
     
-    def testFail() = {
+    def `test fail` = {
       fail
     }
     
-    def testPending():Unit = {
+    def `test pending`: Unit = {
       pending
     }
     
     @Ignore
-    def testIgnore() = {
-      
+    def `test ignore` = {
     }
   }
   
   describe("Suite's events") {
     it("should have TopOfMethod and SeeStackDepthException location with correct line number and source file name") {
-      val testLocationSuite = new TestLocationSuite
+      val testLocationSuite = new TestLocationSpec
       val testLocationReporter = new EventRecordingReporter
       testLocationSuite.run(None, Args(testLocationReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
       val testLocationEventList = testLocationReporter.eventsReceived
       testLocationEventList.foreach {event => 
         event match {
           case testSucceed:TestSucceeded => 
-            assertResult("org.scalatest.events.LocationSpec$TestLocationSuite") { testSucceed.location.get.asInstanceOf[TopOfMethod].className }
-            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSuite.testSucceed()") { testSucceed.location.get.asInstanceOf[TopOfMethod].methodId }
+            assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testSucceed.location.get.asInstanceOf[TopOfMethod].className }
+            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020succeed()") { testSucceed.location.get.asInstanceOf[TopOfMethod].methodId }
           case testFail:TestFailed => 
             assertResult(SeeStackDepthException.getClass) { testFail.location.get.getClass }
           case testPending:TestPending => 
-            assertResult("org.scalatest.events.LocationSpec$TestLocationSuite") { testPending.location.get.asInstanceOf[TopOfMethod].className }
-            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSuite.testPending()") { testPending.location.get.asInstanceOf[TopOfMethod].methodId }
+            assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testPending.location.get.asInstanceOf[TopOfMethod].className }
+            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020pending()") { testPending.location.get.asInstanceOf[TopOfMethod].methodId }
           case testIgnore:TestIgnored => 
-            assertResult("org.scalatest.events.LocationSpec$TestLocationSuite") { testIgnore.location.get.asInstanceOf[TopOfMethod].className }
-            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSuite.testIgnore()") { testIgnore.location.get.asInstanceOf[TopOfMethod].methodId }
+            assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testIgnore.location.get.asInstanceOf[TopOfMethod].className }
+            assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020ignore()") { testIgnore.location.get.asInstanceOf[TopOfMethod].methodId }
           case _ =>
         }
       }

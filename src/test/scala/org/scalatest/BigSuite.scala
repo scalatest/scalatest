@@ -46,7 +46,7 @@ So the knobs we can turn are:
 -s org.scalatest.BigSuite..., repeating this gets you more instances of these trees sized by M
 -Dorg.scalatest.SuiteCompletedStatusReporter.max=X, where X is the number of SuiteCompleted events between duration notes
 */
-class BigSuite(nestedSuiteCount: Option[Int]) extends Suite { thisSuite =>
+class BigSuite(nestedSuiteCount: Option[Int]) extends Spec { thisSuite =>
 
   override def nestedSuites: collection.immutable.IndexedSeq[Suite] = {
 
@@ -76,7 +76,7 @@ class BigSuite(nestedSuiteCount: Option[Int]) extends Suite { thisSuite =>
     Vector.empty ++ nsList
   }
 
-  def testNumber1() {
+  def `test number 1` = {
     val someFailures = System.getProperty("org.scalatest.BigSuite.someFailures", "")
     nestedSuiteCount match {
       case Some(0) if someFailures == "true" => assert(1 + 1 === 3)
@@ -84,399 +84,399 @@ class BigSuite(nestedSuiteCount: Option[Int]) extends Suite { thisSuite =>
     }
   }
 
-  def testNumber2() {
+  def `test number 2` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber3() {
+  def `test number 3` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber4() {
+  def `test number 4` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber5() {
+  def `test number 5` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber6() {
+  def `test number 6` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber7() {
+  def `test number 7` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber8() {
+  def `test number 8` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber9() {
+  def `test number 9` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber10() {
+  def `test number 10` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber11() {
+  def `test number 11` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber12() {
+  def `test number 12` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber13() {
+  def `test number 13` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber14() {
+  def `test number 14` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber15() {
+  def `test number 15` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber16() {
+  def `test number 16` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber17() {
+  def `test number 17` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber18() {
+  def `test number 18` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber19() {
+  def `test number 19` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber20() {
+  def `test number 20` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber21() {
+  def `test number 21` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber22() {
+  def `test number 22` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber23() {
+  def `test number 23` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber24() {
+  def `test number 24` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber25() {
+  def `test number 25` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber26() {
+  def `test number 26` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber27() {
+  def `test number 27` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber28() {
+  def `test number 28` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber29() {
+  def `test number 29` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber30() {
+  def `test number 30` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber31() {
+  def `test number 31` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber32() {
+  def `test number 32` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber33() {
+  def `test number 33` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber34() {
+  def `test number 34` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber35() {
+  def `test number 35` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber36() {
+  def `test number 36` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber37() {
+  def `test number 37` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber38() {
+  def `test number 38` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber39() {
+  def `test number 39` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber40() {
+  def `test number 40` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber41() {
+  def `test number 41` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber42() {
+  def `test number 42` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber43() {
+  def `test number 43` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber44() {
+  def `test number 44` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber45() {
+  def `test number 45` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber46() {
+  def `test number 46` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber47() {
+  def `test number 47` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber48() {
+  def `test number 48` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber49() {
+  def `test number 49` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber50() {
+  def `test number 50` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber51() {
+  def `test number 51` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber52() {
+  def `test number 52` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber53() {
+  def `test number 53` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber54() {
+  def `test number 54` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber55() {
+  def `test number 55` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber56() {
+  def `test number 56` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber57() {
+  def `test number 57` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber58() {
+  def `test number 58` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber59() {
+  def `test number 59` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber60() {
+  def `test number 60` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber61() {
+  def `test number 61` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber62() {
+  def `test number 62` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber63() {
+  def `test number 63` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber64() {
+  def `test number 64` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber65() {
+  def `test number 65` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber66() {
+  def `test number 66` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber67() {
+  def `test number 67` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber68() {
+  def `test number 68` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber69() {
+  def `test number 69` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber70() {
+  def `test number 70` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber71() {
+  def `test number 71` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber72() {
+  def `test number 72` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber73() {
+  def `test number 73` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber74() {
+  def `test number 74` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber75() {
+  def `test number 75` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber76() {
+  def `test number 76` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber77() {
+  def `test number 77` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber78() {
+  def `test number 78` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber79() {
+  def `test number 79` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber80() {
+  def `test number 80` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber81() {
+  def `test number 81` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber82() {
+  def `test number 82` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber83() {
+  def `test number 83` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber84() {
+  def `test number 84` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber85() {
+  def `test number 85` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber86() {
+  def `test number 86` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber87() {
+  def `test number 87` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber88() {
+  def `test number 88` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber89() {
+  def `test number 89` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber90() {
+  def `test number 90` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber91() {
+  def `test number 91` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber92() {
+  def `test number 92` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber93() {
+  def `test number 93` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber94() {
+  def `test number 94` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber95() {
+  def `test number 95` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber96() {
+  def `test number 96` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber97() {
+  def `test number 97` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber98() {
+  def `test number 98` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber99() {
+  def `test number 99` = {
     assert(1 + 1 === 2)
   }
 
-  def testNumber100() {
+  def `test number 100` = {
     assert(1 + 1 === 2)
   }
 }

@@ -24,8 +24,6 @@ trait SuiteExamples extends Tables {
 
   type FixtureServices
   
-  def suite: Suite with FixtureServices
-  def fixtureSuite: fixture.Suite with FixtureServices
   def junit3Suite: JUnit3Suite with FixtureServices
   def junitSuite: JUnitSuite with FixtureServices
   def testngSuite: TestNGSuite with FixtureServices
@@ -49,8 +47,6 @@ trait SuiteExamples extends Tables {
   def examples =
     Table(
       "suite",
-      suite,
-      fixtureSuite,
       junit3Suite,
       junitSuite,
       testngSuite,

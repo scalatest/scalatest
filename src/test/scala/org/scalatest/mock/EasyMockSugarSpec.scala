@@ -21,8 +21,8 @@ import SharedHelpers._
 class EasyMockSugarSpec extends FlatSpec with Matchers {
   "The EasyMockSugar trait's whenExecuting method" should
           "work with multiple mocks passed in" in {
-    val a = new Suite with EasyMockSugar {
-      def testThatShouldFail() {
+    val a = new Spec with EasyMockSugar {
+      def `test that should fail` = {
         trait OneFish {
           def eat(food: String) = ()
         }
@@ -47,7 +47,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceed() {
+      def `test that should succeed` = {
         trait OneFish {
           def eat(food: String) = ()
         }
@@ -68,7 +68,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailWithClass() {
+      def `test that should fail with class` = {
         class OneFish {
           def eat(food: String) = ()
         }
@@ -89,7 +89,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedWithClass() {
+      def `test that should succeed with class` = {
         class OneFish {
           def eat(food: String) = ()
         }
@@ -110,7 +110,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailStrict() {
+      def `test that should fail strict` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -134,7 +134,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedStrict() {
+      def `test that should succeed strict` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -158,7 +158,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedNice() {
+      def `test that should succeed nice` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -181,7 +181,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailNice() {
+      def `test that should fail nice` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -213,8 +213,8 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
   }
 
   it should "work with multiple mocks passed in as an implicit Seq" in {
-    val a = new Suite with EasyMockSugar {
-      def testThatShouldFail() {
+    val a = new Spec with EasyMockSugar {
+      def `test that should fail` = {
         trait OneFish {
           def eat(food: String) = ()
         }
@@ -237,7 +237,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceed() {
+      def `test that should succeed` = {
         trait OneFish {
           def eat(food: String) = ()
         }
@@ -260,7 +260,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailWithClass() {
+      def `test that should fail with class` = {
         class OneFish {
           def eat(food: String) = ()
         }
@@ -283,7 +283,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedWithClass() {
+      def `test that should succeed with class` = {
         class OneFish {
           def eat(food: String) = ()
         }
@@ -306,7 +306,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailStrict() {
+      def `test that should fail strict` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -332,7 +332,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedStrict() {
+      def `test that should succeed strict` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -358,7 +358,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldSucceedNice() {
+      def `test that should succeed nice` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()
@@ -383,7 +383,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
         }
       }
 
-      def testThatShouldFailNice() {
+      def `test that should fail nice` = {
         class OneFish {
           def eat(food: String) = ()
           def burp(flavor: String) = ()

@@ -51,15 +51,15 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
-  class SuiteExample extends Suite with Services  {
-    def testMethod(info: Informer) {
+  class SpecExample extends Spec with Services  {
+    def `test method` = {
       info(msg)
     }
     override val theTestName = "testMethod(Informer)"
   }
   
-  class FixtureSuiteExample extends StringFixtureSuite with Services {
-    def testMethod(s: String, info: Informer) {
+  class FixtureSpecExample extends StringFixtureSpec with Services {
+    def `test method`(s: String) = {
       info(msg)
     }
     override val theTestName = "testMethod(FixtureParam, Informer)"
@@ -502,8 +502,8 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     }
   }
 
-  lazy val suite = new SuiteExample
-  lazy val fixtureSuite = new FixtureSuiteExample
+  lazy val spec = new SpecExample
+  lazy val fixtureSpec = new FixtureSpecExample
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample

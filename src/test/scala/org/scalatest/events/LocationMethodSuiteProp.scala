@@ -45,17 +45,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def testSucceed() {
+    def `test succeed` = {
       
     }
-    def testPending() {
+    def `test pending` = {
       pending
     }
-    def testCancel() {
+    def `test cancel` = {
       cancel
     }
     @Ignore
-    def testIgnore() {
+    def `test ignore` = {
       
     }
   }
@@ -73,17 +73,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def testSucceed() {
+    def `test succeed` = {
       
     }
-    def testPending() {
+    def `test pending` = {
       pending
     }
-    def testCancel() {
+    def `test cancel` = {
       cancel
     }
     @Ignore
-    def testIgnore() {
+    def `test ignore` = {
       
     }
   }

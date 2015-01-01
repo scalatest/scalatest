@@ -595,35 +595,35 @@ class FilterSpec extends FunSpec {
   describe("(when invoke apply on test names with suite annotation)") {
     
     @FastAsLight
-    class TagSuite extends Suite {
-      def testMethod1() {}
-      def testMethod2() {}
+    class TagSuite extends Spec {
+      def `test method 1` = {}
+      def `test method 2` = {}
       @SlowAsMolasses
-      def testMethod3() {}
+      def `test method 3` = {}
       @FastAsLight
-      def testMethod4() {}
+      def `test method 4` = {}
     }
     
-    class NoTagSuite extends Suite {
-      def testMethod1() {}
-      def testMethod2() {}
-      def testMethod3() {}
-      def testMethod4() {}
+    class NoTagSuite extends Spec {
+      def `test method 1` = {}
+      def `test method 2` = {}
+      def `test method 3` = {}
+      def `test method 4` = {}
     }
     
-    class InsideTagSuite extends Suite {
-      def testMethod1() {}
-      def testMethod2() {}
+    class InsideTagSuite extends Spec {
+      def `test method 1` = {}
+      def `test method 2` = {}
       @SlowAsMolasses
-      def testMethod3() {}
+      def `test method 3` = {}
       @FastAsLight
-      def testMethod4() {}
+      def `test method 4` = {}
     }
     
-    val expectedTestTags = Map("testMethod1" -> Set("org.scalatest.FastAsLight"), 
-                               "testMethod2" -> Set("org.scalatest.FastAsLight"), 
-                               "testMethod3" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.FastAsLight"), 
-                               "testMethod4" -> Set("org.scalatest.FastAsLight"))
+    val expectedTestTags = Map("test method 1" -> Set("org.scalatest.FastAsLight"), 
+                               "test method 2" -> Set("org.scalatest.FastAsLight"), 
+                               "test method 3" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.FastAsLight"), 
+                               "test method 4" -> Set("org.scalatest.FastAsLight"))
     
     def assertTestTags(testTags: Map[String, Set[String]]) {
       assert(testTags.size == expectedTestTags.size)
@@ -648,8 +648,8 @@ class FilterSpec extends FunSpec {
       val noTagSuite = new NoTagSuite
       val dynaFilter1 = Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty, false,
                                    DynaTags(Map(noTagSuite.suiteId -> Set("org.scalatest.FastAsLight")), 
-                                            Map(noTagSuite.suiteId -> Map("testMethod3" -> Set("org.scalatest.SlowAsMolasses"), 
-                                                                          "testMethod4" -> Set("org.scalatest.FastAsLight")))))
+                                            Map(noTagSuite.suiteId -> Map("test method 3" -> Set("org.scalatest.SlowAsMolasses"), 
+                                                                          "test method 4" -> Set("org.scalatest.FastAsLight")))))
       val noTagSuiteTestTags = dynaFilter1.mergeTestDynamicTags(noTagSuite.tags, noTagSuite.suiteId, noTagSuite.testNames)
       assertTestTags(noTagSuiteTestTags)
       
@@ -670,8 +670,8 @@ class FilterSpec extends FunSpec {
       val noTagSuite = new NoTagSuite
       val dynaFilter1 = Filter(None, Set("org.scalatest.FastAsLight"), false,
                                    DynaTags(Map(noTagSuite.suiteId -> Set("org.scalatest.FastAsLight")), 
-                                            Map(noTagSuite.suiteId -> Map("testMethod3" -> Set("org.scalatest.SlowAsMolasses"), 
-                                                                          "testMethod4" -> Set("org.scalatest.FastAsLight")))))
+                                            Map(noTagSuite.suiteId -> Map("test method 3" -> Set("org.scalatest.SlowAsMolasses"), 
+                                                                          "test method 4" -> Set("org.scalatest.FastAsLight")))))
       val noTagSuiteTestTags = dynaFilter1.mergeTestDynamicTags(noTagSuite.tags, noTagSuite.suiteId, noTagSuite.testNames)
       assertTestTags(noTagSuiteTestTags)
       
@@ -692,8 +692,8 @@ class FilterSpec extends FunSpec {
       val noTagSuite = new NoTagSuite
       val dynaFilter1 = Filter(Some(Set("org.scalatest.FastAsLight")), Set("org.scalatest.FastAsLight"), false,
                                    DynaTags(Map(noTagSuite.suiteId -> Set("org.scalatest.FastAsLight")), 
-                                            Map(noTagSuite.suiteId -> Map("testMethod3" -> Set("org.scalatest.SlowAsMolasses"), 
-                                                                          "testMethod4" -> Set("org.scalatest.FastAsLight")))))
+                                            Map(noTagSuite.suiteId -> Map("test method 3" -> Set("org.scalatest.SlowAsMolasses"), 
+                                                                          "test method 4" -> Set("org.scalatest.FastAsLight")))))
       val noTagSuiteTestTags = dynaFilter1.mergeTestDynamicTags(noTagSuite.tags, noTagSuite.suiteId, noTagSuite.testNames)
       assertTestTags(noTagSuiteTestTags)
       

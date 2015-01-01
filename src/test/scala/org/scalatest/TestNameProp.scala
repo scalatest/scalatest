@@ -24,8 +24,6 @@ class TestNameProp  extends AllSuiteProp {
 
   type FixtureServices = TestNameFixtureServices
   
-  def suite = new ExampleTestNameSuite
-  def fixtureSuite = new ExampleTestNameFixtureSuite
   def spec = new ExampleTestNameSpec
   def fixtureSpec = new ExampleTestNameFixtureSpec
   def junit3Suite = new ExampleTestNameJUnit3Suite
@@ -65,28 +63,6 @@ trait TestNameFixtureServices { suite: Suite =>
       assert(testNameSet contains tn, "Unable to find test name: '" + tn + "', testNames is: \n" + testNameSet.map("'" + _ + "'").mkString("\n"))
     }
   }
-}
-
-@DoNotDiscover
-class ExampleTestNameSuite extends Suite with TestNameFixtureServices {
-  
-  val expectedTestNames = 
-    Set(
-     "testingShouldBeFun"     
-    )
-    
-  def testingShouldBeFun() { }
-}
-
-@DoNotDiscover
-class ExampleTestNameFixtureSuite extends fixture.Suite with TestNameFixtureServices with StringFixture {
-  
-  val expectedTestNames = 
-    Set(
-     "testingShouldBeFun(FixtureParam)"     
-    )
-  
-  def testingShouldBeFun(fixture: String) { }
 }
 
 @DoNotDiscover

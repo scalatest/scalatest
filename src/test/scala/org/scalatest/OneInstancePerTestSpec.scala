@@ -18,23 +18,23 @@ package org.scalatest
 import events._
 import SharedHelpers._
 
-class TopLevelSuite extends Suite with OneInstancePerTest {
-  import TopLevelSuite.sideEffectWasNotSeen
+class TopLevelSpec extends Spec with OneInstancePerTest {
+  import TopLevelSpec.sideEffectWasNotSeen
   var sideEffectWasIsolated = true
-  def testOne() {
+  def `test one` = {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
-  def testTwo() {
+  def `test two` = {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
-  def testThree() {
+  def `test three` = {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
 }
-object TopLevelSuite {
+object TopLevelSpec {
   var sideEffectWasNotSeen = true
 }
 
@@ -42,30 +42,30 @@ class OneInstancePerTestSpec extends FunSpec {
   describe("The OneInstancePerTest trait") {
     it("should isolate side effects from one test to the next in a top level Suite class that does not override newInstance") {
       var sideEffectWasNotSeen = true
-      class MySuite extends Suite with OneInstancePerTest {
+      class MySpec extends Spec with OneInstancePerTest {
         var sideEffectWasIsolated = true
-        def testOne() {
+        def `test one`() {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }
-        def testTwo() {
+        def `test two`() {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }
-        def testThree() {
+        def `test three`() {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }
-        override def newInstance = new MySuite
+        override def newInstance = new MySpec
       }
-      val suite = new MySuite
+      val suite = new MySpec
       suite.run(None, Args(SilentReporter))
       assert(sideEffectWasNotSeen)
     }
     it("should isolate side effects from one test to the next in an inner Suite class that overrides newInstance") {
-      val suite = new TopLevelSuite
+      val suite = new TopLevelSpec
       suite.run(None, Args(SilentReporter))
-      assert(TopLevelSuite.sideEffectWasNotSeen)
+      assert(TopLevelSpec.sideEffectWasNotSeen)
     }
     it("should send TestIgnored for an ignored test") {
 
