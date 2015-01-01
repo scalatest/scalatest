@@ -29,7 +29,6 @@ object ParallelTestExecutionParallelSuiteExamples extends Tables {
   def parallelExamples = 
     Table(
       "pair", 
-      new ExampleParallelTestExecutionParallelSuitePair, 
       new ExampleParallelTestExecutionParallelSpecPair, 
       new ExampleParallelTestExecutionParallelFunSuitePair, 
       new ExampleParallelTestExecutionParallelFunSpecPair, 
@@ -39,33 +38,6 @@ object ParallelTestExecutionParallelSuiteExamples extends Tables {
       new ExampleParallelTestExecutionParallelPropSpecPair,
       new ExampleParallelTestExecutionParallelWordSpecPair
     )
-}
-
-class ExampleParallelTestExecutionParallelSuitePair extends ParallelSuites {
-  def suite1 = new ExampleParallelTestExecutionOrderSuite
-  def suite2 = new ExampleParallelTestExecutionOrderFixtureSuite
-  
-  def assertParallelSuites(events: List[Event]) {
-    assert(events.size === 16)
-    
-    checkSuiteStarting(events(0), suite1.suiteId)
-    checkTestStarting(events(1), "testMethod1")
-    checkTestSucceeded(events(2), "testMethod1")
-    checkTestStarting(events(3), "testMethod2")
-    checkTestSucceeded(events(4), "testMethod2")
-    checkTestStarting(events(5), "testMethod3")
-    checkTestSucceeded(events(6), "testMethod3")
-    checkSuiteCompleted(events(7), suite1.suiteId)
-    
-    checkSuiteStarting(events(8), suite2.suiteId)
-    checkTestStarting(events(9), "testFixtureMethod1")
-    checkTestSucceeded(events(10), "testFixtureMethod1")
-    checkTestStarting(events(11), "testFixtureMethod2")
-    checkTestSucceeded(events(12), "testFixtureMethod2")
-    checkTestStarting(events(13), "testFixtureMethod3")
-    checkTestSucceeded(events(14), "testFixtureMethod3")
-    checkSuiteCompleted(events(15), suite2.suiteId)
-  }
 }
 
 class ExampleParallelTestExecutionParallelSpecPair extends ParallelSuites {

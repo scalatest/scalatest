@@ -23,6 +23,7 @@ import org.scalatest.events._
 import org.scalatest.Suite._
 import exceptions.{TestCanceledException, TestPendingException}
 import OutcomeOf.outcomeOf
+import scala.reflect.NameTransformer.decode
 
 /**
  * Base trait for a family of style traits that can pass a fixture object into tests.
@@ -281,6 +282,9 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
    * </p>
    */
+   // Can just inherit the supertrait implementation of testnames that returns an empty set
+
+/*
   override def testNames: Set[String] = {
 
     def takesTwoParamsOfTypesAnyAndInformer(m: Method) = {
@@ -315,6 +319,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
 
     TreeSet[String]() ++ testNameArray
   }
+*/
 
   /**
    * Run a test.
@@ -340,6 +345,8 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
+  // Can just inheirt the supertrait implementation of runTest that 
+/*
   protected override def runTest(testName: String, args: Args): Status = {
 
     if (testName == null)
@@ -438,6 +445,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
       case e: Throwable => throw e
     }
   }
+*/
 
 /*
   // Overriding this in fixture.Suite to reduce duplication of tags method

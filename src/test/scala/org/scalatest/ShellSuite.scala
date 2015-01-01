@@ -17,9 +17,9 @@ package org.scalatest
 
 import Matchers._
 
-class ShellSuite extends Suite {
+class ShellSpec extends Spec {
 
-  def testDefaults() {
+  def `test defaults` = {
 
     // From default values
     org.scalatest.color should have (
@@ -87,7 +87,7 @@ class ShellSuite extends Suite {
     )
   }
 
-  def testFromColor() {
+  def `test from color` = {
 
     org.scalatest.color.color should have (
       'colorPassed (true),
@@ -154,7 +154,7 @@ class ShellSuite extends Suite {
     )
   }
 
-  def testFromDurations() {
+  def `test from durations` = {
 
     org.scalatest.durations.color should have (
       'colorPassed (true),
@@ -221,7 +221,7 @@ class ShellSuite extends Suite {
     )
   }
 
-  def testFromShortstacks() {
+  def `test from shortstacks` = {
 
     org.scalatest.shortstacks.color should have (
       'colorPassed (true),
@@ -288,7 +288,7 @@ class ShellSuite extends Suite {
     )
   }
 
-  def testFromFullstacks() {
+  def `test from full stacks` = {
 
     org.scalatest.fullstacks.color should have (
       'colorPassed (true),
@@ -355,7 +355,7 @@ class ShellSuite extends Suite {
     )
   }
 
-  def testFromStats() {
+  def `test from stats` = {
 
     org.scalatest.stats.color should have (
       'colorPassed (true),

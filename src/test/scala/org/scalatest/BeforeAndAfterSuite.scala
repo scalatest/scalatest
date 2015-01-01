@@ -24,7 +24,7 @@ import org.scalatest.events.InfoProvided
 
 class BeforeAndAfterSuite extends FunSuite {
 
-  class TheSuper extends Suite {
+  class TheSuper extends Spec {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -51,7 +51,7 @@ class BeforeAndAfterSuite extends FunSuite {
       if (!runTestWasCalled)
         beforeEachCalledBeforeRunTest = true
     }
-    def testSomething() = ()
+    def `test something` = ()
     override def afterEach() {
       if (runTestWasCalled)
         afterEachCalledAfterRunTest = true
@@ -134,7 +134,7 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If any invocation of beforeEach completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception.") {
     
-    class MySuite extends Suite with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends Spec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeEach() { throw new NumberFormatException } 
     }
     intercept[NumberFormatException] {
@@ -145,7 +145,7 @@ class BeforeAndAfterSuite extends FunSuite {
   
   test("If any call to super.runTest completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterEach") {
-    trait FunkySuite extends Suite {
+    trait FunkySuite extends Spec {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
@@ -165,7 +165,7 @@ class BeforeAndAfterSuite extends FunSuite {
   
   test("If both super.runTest and afterEach complete abruptly with an exception, runTest " + 
     "will complete abruptly with the exception thrown by super.runTest.") {
-    trait FunkySuite extends Suite {
+    trait FunkySuite extends Spec {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
@@ -187,13 +187,13 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
        
-    class MySuite extends Suite with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends Spec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterEach() { throw new NumberFormatException }
-      def testJuly() = ()
+      def `test July` = ()
     }
     intercept[NumberFormatException] {
       val a = new MySuite
-      a.run(Some("testJuly"), Args(StubReporter))
+      a.run(Some("test July"), Args(StubReporter))
     }
   }
  
@@ -201,9 +201,9 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If any invocation of beforeAll completes abruptly with an exception, run " +
     "will complete abruptly with the same exception.") {
     
-    class MySuite extends Suite with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends Spec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeAll() { throw new NumberFormatException }
-      def testJuly() = ()
+      def `test July` = ()
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -213,16 +213,16 @@ class BeforeAndAfterSuite extends FunSuite {
  
   test("If any call to super.run completes abruptly with an exception, run " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
-    trait FunkySuite extends Suite {
+    trait FunkySuite extends Spec {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
-      def test1 {}
-      def test2 {}
-      def test3 {}
+      def `test 1` = {}
+      def `test 2` = {}
+      def `test 3` = {}
       override def afterAll() {
         afterAllCalled = true
       }
@@ -236,16 +236,16 @@ class BeforeAndAfterSuite extends FunSuite {
    
   test("If both super.run and afterAll complete abruptly with an exception, run " + 
     "will complete abruptly with the exception thrown by super.run.") {
-    trait FunkySuite extends Suite {
+    trait FunkySuite extends Spec {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
-      def test1 {}
-      def test2 {}
-      def test3 {}
+      def `test 1` = {}
+      def `test 2` = {}
+      def `test 3` = {}
       override def afterAll() {
         afterAllCalled = true
         throw new IllegalArgumentException
@@ -261,9 +261,9 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, run will complete abruptly with the same exception.") {
        
-    class MySuite extends Suite with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends Spec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterAll() { throw new NumberFormatException }
-      def testJuly() = ()
+      def `test July` = ()
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -272,7 +272,7 @@ class BeforeAndAfterSuite extends FunSuite {
   }
 }
 
-class BeforeAndAfterExtendingSuite extends Suite with BeforeAndAfterEach with BeforeAndAfterAll {
+class BeforeAndAfterExtendingSuite extends Spec with BeforeAndAfterEach with BeforeAndAfterAll {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
@@ -282,14 +282,14 @@ class BeforeAndAfterExtendingSuite extends Suite with BeforeAndAfterEach with Be
     lb.clear()
   }
 
-  def testEasy() {
+  def `test easy` = {
     sb.append("easy!")
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
   }
 
-  def testFun() {
+  def `test fun` = {
     sb.append("fun!")
     assert(sb.toString === "ScalaTest is fun!")
     assert(lb.isEmpty)

@@ -929,7 +929,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * returned <code>Map</code>.
    * </p>
    */
-  def tags: Map[String, Set[String]] = {
+  def tags: Map[String, Set[String]] = Map.empty
+
+  private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
     val testNameSet = testNames
       
     val testTags = Map() ++ 
@@ -1047,7 +1049,10 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
    * </p>
    */
-  def testNames: Set[String] = {
+  def testNames: Set[String] = Set.empty
+
+  // Leave this around for a while so can print out a warning if we find testXXX methods.
+  private[scalatest] def yeOldeTestNames: Set[String] = {
 
     def isTestMethod(m: Method) = {
 
@@ -1146,7 +1151,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
-  protected def runTest(testName: String, args: Args): Status = {
+  protected def runTest(testName: String, args: Args): Status = SucceededStatus
+
+  private[scalatest] def yeOldeRunTest(testName: String, args: Args): Status = {
 
     if (testName == null)
       throw new NullPointerException("testName was null")
@@ -1303,8 +1310,10 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     if (args == null)
       throw new NullPointerException("args was null")
     
-    if (!this.isInstanceOf[Spec] && !this.isInstanceOf[Suites] && !this.isInstanceOf[Sequential] && !this.isInstanceOf[Stepwise])
-      println("Unfortunately Suite has been deprecated as a style trait. Please use trait Spec instead.")
+    if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
+      if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
+      else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
+    }
 
     import args._
 
@@ -1727,6 +1736,15 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @return a <code>TestData</code> instance for the specified test, which includes the specified config map
    */
   def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
+    new TestData { // TODO: Document that we return a "null object" here. Seems odd actually, shouldn't this return an Option?
+      val configMap = theConfigMap 
+      val name = testName
+      val scopes = Vector.empty
+      val text = testName
+      val tags = Set.empty[String]
+    }
+  }
+  private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     val suiteTags = for { 
       a <- this.getClass.getAnnotations
       annotationClass = a.annotationType

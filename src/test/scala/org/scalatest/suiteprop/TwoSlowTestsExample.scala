@@ -49,16 +49,16 @@ class TwoSlowTestsExample extends SuiteExamples {
 
   type FixtureServices = Services
 
-  class SuiteExample extends Suite with Services {
-    @SlowAsMolasses def testFirst {}
-    @Ignore @SlowAsMolasses def testSecond {}
-    override val theTestNames = Vector("testFirst", "testSecond")
+  class SpecExample extends Spec with Services {
+    @SlowAsMolasses def `test first` = {}
+    @Ignore @SlowAsMolasses def `test second` = {}
+    override val theTestNames = Vector("test first", "test second")
   }
 
-  class FixtureSuiteExample extends StringFixtureSuite with Services {
-    @SlowAsMolasses def testFirst(s: String) {}
-    @Ignore @SlowAsMolasses def testSecond(s: String) {}
-    override val theTestNames = Vector("testFirst(FixtureParam)", "testSecond(FixtureParam)")
+  class FixtureSpecExample extends StringFixtureSpec with Services {
+    @SlowAsMolasses def `test first`(s: String) = {}
+    @Ignore @SlowAsMolasses def `test second`(s: String) {}
+    override val theTestNames = Vector("test first", "test second")
   }
 
   class FunSuiteExample extends FunSuite with Services {
@@ -449,8 +449,8 @@ class TwoSlowTestsExample extends SuiteExamples {
     ignore("second test", mytags.SlowAsMolasses) { s => }
   }
 
-  lazy val suite = new SuiteExample
-  lazy val fixtureSuite = new FixtureSuiteExample
+  lazy val spec = new SpecExample
+  lazy val fixtureSpec = new FixtureSpecExample
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample

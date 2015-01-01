@@ -22,12 +22,12 @@ trait SuiteExamples extends Tables {
 
   type FixtureServices
 
-  val suite: Suite with FixtureServices
-  val fixtureSuite: fixture.Suite with FixtureServices
+  val spec: Spec with FixtureServices
+  val fixtureSpec: fixture.Spec with FixtureServices
 
   val funSuite: FunSuite with FixtureServices
   val fixtureFunSuite: fixture.FunSuite with FixtureServices
-  
+
   val funSpec: FunSpec with FixtureServices
   val nestedFunSpec: FunSpec with FixtureServices
   val deeplyNestedFunSpec: FunSpec with FixtureServices
@@ -99,8 +99,8 @@ trait SuiteExamples extends Tables {
   def examples =
     Table(
       "suite",
-      suite,
-      fixtureSuite,
+      spec,
+      fixtureSpec, // TODO: Need nested ones
       
       funSuite,
       fixtureFunSuite,
