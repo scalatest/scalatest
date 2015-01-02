@@ -886,54 +886,74 @@ val propertyCheckForAllTemplate = """
 """
 
 val propertyCheckForEveryPreamble = """
-  /**
-  */
-  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+
+  case class ForResult[T](passedCount: Int = 0,
+                          discardedCount: Int = 0,
+                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
+                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty,
+                          failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
+
+
+  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
     import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
-    def runAndCollectErrorMessage[T <: Product](itr: Iterator[T], messageList: IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException], index: Int)(fun: T => Unit): IndexedSeq[exceptions.TableDrivenPropertyCheckFailedException] = {
+    def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
       if (itr.hasNext) {
         val head = itr.next
-        val newMessageList =
+        val newResult =
           try {
             fun(head)
-            messageList
+            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
           }
           catch {
-            case _: exceptions.DiscardedEvaluationException => messageList // discard this evaluation and move on to the next
+            case _: exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
             case ex if !shouldPropagate(ex) =>
-              messageList :+ new exceptions.TableDrivenPropertyCheckFailedException(
-                (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
-                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                  "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-                  (
-                    ex match {
-                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                        "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                      case _ => ""
-                    }
-                    ) +
-                  "  " + FailureMessages("occurredAtRow", index) + "\n" +
-                  indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
-                    name + " = " + value
-                  }.toIndexedSeq).mkString("\n") +
-                  "  )"),
-                Some(ex),
-                getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
-                None,
-                FailureMessages("undecoratedPropertyCheckFailureMessage"),
-                head.productIterator.toList,
-                namesOfArgs,
-                index
+              result.copy(failedElements =
+                result.failedElements :+ (index,
+                  head,
+                  new exceptions.TableDrivenPropertyCheckFailedException(
+                    (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                      (sde.failedCodeFileNameAndLineNumberString match {
+                        case Some(s) => " (" + s + ")";
+                        case None => ""
+                      }) + "\n" +
+                      "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                      (
+                        ex match {
+                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                            "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                          case _ => ""
+                        }
+                        ) +
+                      "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                      indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+                        name + " = " + value
+                      }.toIndexedSeq).mkString("\n") +
+                      "  )"),
+                    Some(ex),
+                    getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+                    None,
+                    FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                    head.productIterator.toList,
+                    namesOfArgs,
+                    index
+                  )
+                )
               )
           }
 
-        runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
+        innerRunAndCollectResult(itr, newResult, index + 1)(fun)
       }
       else
-        messageList
+        result
     }
-    val messageList = runAndCollectErrorMessage(rows.toIterator, IndexedSeq.empty, 0)(fun)
+    innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
+  }
+
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val messageList = result.failedElements.map(_._3)
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
         sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
@@ -983,6 +1003,53 @@ val propertyCheckForEveryTemplate = """
     doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "$filename$", "forEvery", 3)(fun.tupled)
   }
 """
+
+
+  val propertyCheckExistsPreamble = """
+
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    if (result.passedCount == 0) {
+      val messageList = result.failedElements.map(_._3)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+    }
+  }
+
+                                      """
+
+
+  val propertyCheckExistsTemplateFor1 = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor1</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  }
+
+                                          """
+
+  val propertyCheckExistsTemplate = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor$n$</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
+    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "$filename$", "exists", 3)(fun.tupled)
+  }
+                                      """
+
 
 val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
 /*
@@ -1117,6 +1184,45 @@ $columnsOfTwos$
     }
   }
 
+  def `table exists $n$ that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+  }
+
+  def `table exists $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (numbers) { ($names$) =>
+      whenever (a > 0) {
+        assert(a > 0)
+      }
+    }
+  }
+
+  def `table exists $n$, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    intercept[exceptions.TestFailedException] {
+      exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+    }
+  }
+
   def `table for $n$ apply, length, and iterator methods work correctly` {
 
     val examples =
@@ -1237,6 +1343,26 @@ $columnsOfIndexes$
         bw.write(st.toString)
       }
 
+      {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckExistsPreamble)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      for (i <- 1 to 22) {
+        val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
+        val st = new org.antlr.stringtemplate.StringTemplate(template)
+        val alphaLower = alpha.take(i).mkString(", ")
+        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+        val strings = List.fill(i)("String").mkString(", ")
+        st.setAttribute("n", i)
+        st.setAttribute("alphaLower", alphaLower)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
       bw.write("}\n")
       bw.write(tableDrivenPropertyChecksCompanionObjectVerbatimString)
     }
@@ -1297,7 +1423,7 @@ $columnsOfIndexes$
         val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
         val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
         val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =                              
+        val rawRows =
           for (idx <- 0 to 9) yield                
             List.fill(i)("  " + idx).mkString("        (", ", ", ")")
         val columnsOfIndexes = rawRows.mkString(",\n")
