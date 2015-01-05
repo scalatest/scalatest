@@ -1311,7 +1311,7 @@ trait WebBrowser {
      *
      * @return true if the passed object is equal to this one
      */
-    override def equals(other: Any): Boolean = underlying.equals(other)
+    override def equals(other: Any): Boolean = underlying == other
 
     /**
      * Returns the result of invoking <code>hashCode</code> on the underlying <code>Element</code>.
@@ -1427,7 +1427,7 @@ trait WebBrowser {
      *
      * @return true if the passed object is equal to this one
      */
-    override def equals(other: Any): Boolean = underlying.equals(other)
+    override def equals(other: Any): Boolean = underlying == other
 
     /**
      * Returns the result of invoking <code>hashCode</code> on the underlying <code>Cookie</code>.

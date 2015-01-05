@@ -91,7 +91,7 @@ class TableDrivenPropertyCheckFailedExceptionSpec extends FunSpec with Matchers 
 
     it("should be equal to itself") {
       val tfe = new TableDrivenPropertyCheckFailedException(sde => "doody", None, sde => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
-      assert(tfe equals tfe)
+      assert(tfe == tfe)
     }
   }
 }

@@ -279,7 +279,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
 
     it("should be equal to itself") {
       val tfe = new TestCanceledException(Some("doody"), None, 3)
-      assume(tfe equals tfe)
+      assume(tfe == tfe)
     }
   }
 }

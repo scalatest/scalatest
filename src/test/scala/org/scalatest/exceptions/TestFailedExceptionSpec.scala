@@ -267,7 +267,7 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
 
     it("should be equal to itself") {
       val tfe = new TestFailedException(Some("doody"), None, 3)
-      assert(tfe equals tfe)
+      assert(tfe == tfe)
     }
   }
   
