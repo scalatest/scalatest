@@ -49,20 +49,4 @@ import org.scalatest._
  * @author Bill Venners
  */
 final case class NameInfo(suiteName: String, suiteId: String, suiteClassName: Option[String], testName: Option[String])
-// TODO: to put in an auxiliary constructor for existing code to go through.
-
-/**
- * Companion object for case class <a href="NameInfo.html"><code>NameInfo</code></a>.
- */
-object NameInfo {
-  /**
-   * <strong>This factory method has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * the factory method taking five parameters (including the suiteId, added in ScalaTest 2.0) instead.</strong>
-   */
-  @deprecated("Use the factory method taking five parameters (including the suiteId, added in ScalaTest 2.0) instead.")
-  def apply(suiteName: String, suiteClassName: Option[String], testName: Option[String]): NameInfo = {
-    val suiteId = suiteClassName getOrElse suiteName
-    apply(suiteName, suiteId, suiteClassName, testName)
-  }
-}
 

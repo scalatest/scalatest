@@ -178,6 +178,8 @@ import scala.collection.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
+import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 """
 
 val tableScaladocTemplate = """
@@ -335,6 +337,7 @@ $namesAndValues$
               "  )",
             Some(ex),
             getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", 2),
+            None, // Payload
             FailureMessages("undecoratedPropertyCheckFailureMessage"),
             List($alphaLower$),
             List($alphaName$),

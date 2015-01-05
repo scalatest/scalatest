@@ -46,20 +46,6 @@ class GeneratorDrivenPropertyCheckFailedException(
 ) extends PropertyCheckFailedException(
   messageFun, cause, failedCodeStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
 ) {
-  /**
-   * This constructor has been deprecated and will be removed in a future version of ScalaTest. Please
-   * use the primary constructor instead.
-   */
-  @deprecated("Please use the primary constructor instead.")
-  def this(
-    messageFun: StackDepthException => String,
-    cause: Option[Throwable],
-    failedCodeStackDepthFun: StackDepthException => Int,
-    undecoratedMessage: String,
-    args: List[Any],
-    namesOfArgs: Option[List[String]],
-    labels: List[String]
- ) = this(messageFun, cause, failedCodeStackDepthFun, None, undecoratedMessage, args, namesOfArgs, labels)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,

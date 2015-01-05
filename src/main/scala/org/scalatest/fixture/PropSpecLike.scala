@@ -269,9 +269,6 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def propertiesFor(unit: Unit) {}
 
-  @deprecated("Use propertiesFor instead.")
-  protected def testsFor(unit: Unit) {}
-
   import scala.language.implicitConversions
 
   /**

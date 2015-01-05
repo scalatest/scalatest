@@ -25,9 +25,7 @@ import org.scalacheck.Prop
 import org.scalacheck.Test
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
-/* Uncomment this when remove the deprecated type aliases in the org.scalatest.prop package object.
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-*/
 
 /**
  * Trait that contains several &ldquo;check&rdquo; methods that perform ScalaCheck property checks.

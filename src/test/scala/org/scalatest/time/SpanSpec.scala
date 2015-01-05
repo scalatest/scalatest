@@ -1010,7 +1010,6 @@ class SpanSpec extends FunSpec with Matchers with SpanMatchers with SeveredStack
   describe("The Span.Zero value") {
     it("should return a Span with a 0 span length") {
       Span.Zero should equal (Span(0, Nanoseconds))
-      Span.ZeroLength should equal (Span(0, Nanoseconds)) // While still deprecated
     }
   }
 }
