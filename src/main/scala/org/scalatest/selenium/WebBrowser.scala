@@ -1328,15 +1328,6 @@ trait WebBrowser {
     override def toString: String = underlying.toString 
   }
 
-  /**
-   * <p>
-   * <strong>This trait has been moved as separate trait in <code>org.scalatest.selenium</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of this to <code>org.scalatest.selenium.Page</code>.</strong>
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.selenium.Page instead.")
-  type Page = org.scalatest.selenium.Page
-
   // fluentLinium has a doubleClick. Wonder how they are doing that?
 
   /**

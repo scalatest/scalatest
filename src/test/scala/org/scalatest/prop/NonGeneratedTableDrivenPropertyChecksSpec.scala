@@ -10,6 +10,7 @@ import org.scalatest.FailureMessages._
 import org.scalatest.SharedHelpers._
 import org.scalatest._
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.DiscardedEvaluationException
 
 /**
  * Separate non-generated tests, for completeness

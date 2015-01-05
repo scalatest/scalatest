@@ -388,7 +388,7 @@ trait AsyncAssertions extends PatienceConfiguration {
         while (dismissedCount < dismissals && !timedOut && thrown.isEmpty) {
           val timeLeft: Span = {
             val diff = endTime - System.nanoTime
-            if (diff > 0) Span(diff, Nanoseconds) else Span.ZeroLength
+            if (diff > 0) Span(diff, Nanoseconds) else Span.Zero
           }
           wait(timeLeft.millisPart, timeLeft.nanosPart)
         }
