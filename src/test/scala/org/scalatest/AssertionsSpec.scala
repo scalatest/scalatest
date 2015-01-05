@@ -117,14 +117,6 @@ class AssertionsSpec extends FunSpec {
       caught.someRandomMethod()
     }
 
-    it("should return the caught exception") {
-      val e = new RuntimeException
-      val result = intercept[RuntimeException] {
-        throw e
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      assert(result eq e)
-    }
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
