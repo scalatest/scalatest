@@ -3151,7 +3151,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def equal[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "equal", 1) { e =>
         if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
@@ -5173,7 +5173,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldEqual[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
         if (!evidence.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
@@ -5815,10 +5815,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldNot[U <: T](rightMatcherX1: Matcher[U]) {
+    def shouldNot[U <: T](rightMatcher: Matcher[U]) {
       doCollected(collected, xs, original, "shouldNot", 1) { e =>
         val result = 
-          try rightMatcherX1.apply(e.asInstanceOf[U])
+          try rightMatcher.apply(e.asInstanceOf[U])
           catch {
             case tfe: TestFailedException => 
               throw newTestFailedException(tfe.getMessage, tfe.cause, 6)
@@ -6828,6 +6828,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   sealed class AnyShouldWrapper[T](val leftSideValue: T) {
 
     /**
+     * This is an attempt at a compiler performance optimization.
+    */
+    def should[R](rightEqualOrBeExpression: EqualOrBeExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightEqualOrBeExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint)))
+    }
+
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
@@ -6835,8 +6842,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
+    def should(rightMatcher: Matcher[T]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcher)
     }
 
     /**
@@ -6957,7 +6964,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldEqual[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
@@ -7296,8 +7303,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
+    def shouldNot(rightMatcher: Matcher[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcher)
     }
     
     /**

@@ -47,6 +47,7 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Prettifier
 import org.scalactic.Every
+import org.scalactic.EqualityConstraint
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -64,7 +65,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+  def equal[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
     if (evidence.areEqual(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -83,7 +84,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+  def be[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
     if (evidence.areEqual(left, right) != shouldBeTrue) {
       val rightIsBoolean = right.isInstanceOf[Boolean]
       val wasNotEqualTo = if (rightIsBoolean) "wasNot" else "wasNotEqualTo"
@@ -102,7 +103,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * result should not be (7)
+   * result should not be_== (7)
    *                   ^
    * </pre>
    */

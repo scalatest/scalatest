@@ -363,6 +363,8 @@ trait EqualityPolicy {
 
   def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with NativeSupport
 
+  def convertEqualityUnconstrained[A, B](equalityOfA: Equality[A]): EqualityConstraint[A, B]
+
   /**
    * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
    * that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equivalence[B]</code>.

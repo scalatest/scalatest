@@ -238,6 +238,7 @@ trait CheckedEquality extends LowPriorityCheckedEqualityConstraints {
 
   override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new BasicConstraint[A, B](equalityOfA)
   override def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with NativeSupport = new BasicEqualityConstraint[A, B](equalityOfA)
+  override def convertEqualityUnconstrained[A, B](equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
   // For TypeCheckedTripleEquals (deprecated)
   override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)

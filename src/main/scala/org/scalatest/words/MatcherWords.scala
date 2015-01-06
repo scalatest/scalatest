@@ -299,8 +299,8 @@ trait MatcherWords {
    * </p>
    *
    */
-  def equal[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] =
-    new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
+  def equal[R](right: R): EqualOrBeExpression[R] = 
+    new EqualOrBeExpression[R] {
       def matcher[T <: Any : EvidenceThat[R]#CanEqual]: Matcher[T] = {
         val equality = implicitly[EvidenceThat[R]#CanEqual[T]]
         new Matcher[T] {
