@@ -18,5 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalatest.enablers.EvidenceThat
 
-abstract class EqualOrBeExpression[R] extends MatcherFactory1[Any, EvidenceThat[R]#CanEqual]
+// Pragmatic subclass to get a better error message and faster compile in the 90% case of
+// these being used outside and, or, and not expressions.
+abstract class AggregatingExpression[R] extends MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation]
 

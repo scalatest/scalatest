@@ -35,6 +35,9 @@ import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalactic.Equality
 import org.scalactic.EqualityPolicy.TripleEqualsInvocationOnSpread
 import org.scalactic.EqualityConstraint
+import org.scalactic.enablers.ContainingConstraint
+import org.scalactic.enablers.AggregatingConstraint
+import org.scalactic.enablers.SequencingConstraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
 import MatchersHelper.andMatchersAndApply
@@ -5148,6 +5151,53 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 */
 
     /**
+     * This is an attempt at a compiler performance optimization.
+    */
+    def should[R](rightEqualityExpression: EqualityExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
+      val rightMatcher = rightEqualityExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightContainingExpression: ContainingExpression[R])(implicit constraint: ContainingConstraint[T, R]) {
+      val rightMatcher = rightContainingExpression.matcher((new EvidenceThat[R]).canBeContainedIn[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightAggregatingExpression: AggregatingExpression[R])(implicit constraint: AggregatingConstraint[T, R]) {
+      val rightMatcher = rightAggregatingExpression.matcher((new EvidenceThat[R]).canBeContainedInAggregation[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightSequencingExpression: SequencingExpression[R])(implicit constraint: SequencingConstraint[T, R]) {
+      val rightMatcher = rightSequencingExpression.matcher((new EvidenceThat[R]).canBeContainedInSequence[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
@@ -6830,8 +6880,20 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     /**
      * This is an attempt at a compiler performance optimization.
     */
-    def should[R](rightEqualOrBeExpression: EqualOrBeExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightEqualOrBeExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint)))
+    def should[R](rightEqualityExpression: EqualityExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightEqualityExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint)))
+    }
+
+    def should[R](rightContainingExpression: ContainingExpression[R])(implicit constraint: ContainingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightContainingExpression.matcher((new EvidenceThat[R]).canBeContainedIn[T](constraint)))
+    }
+
+    def should[R](rightAggregatingExpression: AggregatingExpression[R])(implicit constraint: AggregatingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightAggregatingExpression.matcher((new EvidenceThat[R]).canBeContainedInAggregation[T](constraint)))
+    }
+
+    def should[R](rightSequencingExpression: SequencingExpression[R])(implicit constraint: SequencingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightSequencingExpression.matcher((new EvidenceThat[R]).canBeContainedInSequence[T](constraint)))
     }
 
     /**

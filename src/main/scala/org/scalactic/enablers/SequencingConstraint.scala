@@ -20,6 +20,7 @@ import org.scalactic.EqualityPolicy.BasicEqualityConstraint
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
+import annotation.implicitNotFound
 
 /**
  * Typeclass that enables for sequencing certain <code>contain</code> syntax in the ScalaTest matchers DSL.
@@ -58,6 +59,7 @@ import scala.collection.JavaConverters._
  * type <code>U</code> by defining an <code>Sequencing[U]</code> for the type and making it available implicitly.
  * </p>
  */
+@implicitNotFound(msg = "Could not find evidence that ${R} can be contained in ${S}; the missing implicit parameter is of type org.scalactic.enablers.SequencingConstraint[${S},${R}]")
 trait SequencingConstraint[-S, R] {
 
   /**

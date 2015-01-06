@@ -26,7 +26,7 @@ import scala.util.{Try,Success,Failure}
  * For more information on how this class is used, see the documentation of <a href="EqualityPolicy.html"><code>EqualityPolicy</code></a>.
  * </p>
  */
-@implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.EqualityConstraint[${A},${B}]")
+@implicitNotFound(msg = "Could not find evidence that ${A} can equal ${B}; the missing implicit parameter is of type org.scalactic.EqualityConstraint[${A},${B}]")
 abstract class EqualityConstraint[A, B] { thisConstraint =>
 
   /**

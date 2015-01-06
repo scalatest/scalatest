@@ -487,8 +487,8 @@ final class BeWord {
    *               ^
    * </pre>
    */
-  def apply[R](right: R): EqualOrBeExpression[R] =
-    new EqualOrBeExpression[R] {
+  def apply[R](right: R): EqualityExpression[R] =
+    new EqualityExpression[R] {
       def matcher[T <: Any : EvidenceThat[R]#CanEqual]: Matcher[T] = {
         val equality = implicitly[EvidenceThat[R]#CanEqual[T]]
         new Matcher[T] {
