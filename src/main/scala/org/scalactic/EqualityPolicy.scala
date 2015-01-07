@@ -156,14 +156,6 @@ trait EqualityPolicy {
      * @return true if the value passed to the constructor as <code>leftSide</code> is non-<code>null</code>.
      */
     def !==(literalNull: Null): Boolean = leftSide != null
-
-    // Could just use a Containing here, but that would require defining a Containing (which we
-    // actually already have, but...
-    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      ev.contains(rightSide, leftSide)
-
-    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      !(ev.contains(rightSide, leftSide))
   }
 
   /**
@@ -290,12 +282,6 @@ trait EqualityPolicy {
      * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
     def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
-
-    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      ev.contains(rightSide, leftSide)
-
-    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      !(ev.contains(rightSide, leftSide))
   }
 
   /**
