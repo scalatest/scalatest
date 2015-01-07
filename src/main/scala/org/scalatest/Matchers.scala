@@ -3200,7 +3200,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def be[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "be", 1) { e =>
         if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
@@ -3793,7 +3793,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](expectedElement: R)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](expectedElement: R)(implicit evidence: ContainingConstraint[T, R]) {
       doCollected(collected, xs, original, "contain", 1) { e =>
         val right = expectedElement
         if ((evidence.contains(e, right)) != shouldBeTrue) {
@@ -3818,7 +3818,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](oneOf: ResultOfOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](oneOf: ResultOfOneOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = oneOf.right
 
@@ -3844,7 +3844,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](oneElementOf: ResultOfOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](oneElementOf: ResultOfOneElementOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = oneElementOf.right
 
@@ -3870,7 +3870,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atLeastOneOf.right
 
@@ -3896,7 +3896,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atLeastOneElementOf.right
 
@@ -3922,7 +3922,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = noneOf.right
 
@@ -3948,7 +3948,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = noElementsOf.right
 
@@ -3974,7 +3974,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](theSameElementsAs: ResultOfTheSameElementsAsApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](theSameElementsAs: ResultOfTheSameElementsAsApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = theSameElementsAs.right
 
@@ -4000,7 +4000,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = theSameElementsInOrderAs.right
 
@@ -4026,7 +4026,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfOnlyApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfOnlyApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4058,7 +4058,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfInOrderOnlyApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](only: ResultOfInOrderOnlyApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4084,7 +4084,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfAllOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfAllOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4110,7 +4110,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4136,7 +4136,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](inOrder: ResultOfInOrderApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](inOrder: ResultOfInOrderApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = inOrder.right
 
@@ -4162,7 +4162,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = inOrderElementsOf.right
 
@@ -4188,7 +4188,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atMostOneOf.right
 
@@ -4214,7 +4214,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atMostOneElementOf.right
 
@@ -4471,7 +4471,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: ContainingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
@@ -4497,7 +4497,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: ContainingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "oneElementOf"))
@@ -4523,7 +4523,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def noElementsOf[R](elements: GenTraversable[R])(implicit containing: ContainingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
@@ -4549,7 +4549,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
@@ -4575,7 +4575,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
@@ -4601,7 +4601,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: ContainingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
@@ -4627,7 +4627,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       doCollected(collected, xs, original, "theSameElementsAs", 1) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -4650,7 +4650,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: SequencingConstraint[T, R]) {
       doCollected(collected, xs, original, "theSameElementsInOrderAs", 1) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -4673,7 +4673,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def only[R](right: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def only[R](right: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       if (right.isEmpty)
         throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
       if (right.distinct.size != right.size)
@@ -4706,7 +4706,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
@@ -4732,7 +4732,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
@@ -4758,7 +4758,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "allElementsOf"))
@@ -4784,7 +4784,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
@@ -4810,7 +4810,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: SequencingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
@@ -4836,7 +4836,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
@@ -4862,7 +4862,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
@@ -5584,7 +5584,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldBe[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e => // May have just broke tests because changed wasNot to wasNotEqualTo
         if (!evidence.areEqual(e, right)) {
           val rightIsBoolean = right.isInstanceOf[Boolean]
@@ -7131,7 +7131,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) { // TODO: Tests and behavior for special Boolean err msg
+    def shouldBe[R](right: R)(implicit evidence: EqualityConstraint[T, R]) { // TODO: Tests and behavior for special Boolean err msg
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))

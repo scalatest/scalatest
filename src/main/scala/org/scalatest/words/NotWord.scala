@@ -38,6 +38,10 @@ import org.scalactic.EqualityPolicy.Spread
 import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic.EqualityConstraint
+import org.scalactic.enablers.ContainingConstraint
+import org.scalactic.enablers.AggregatingConstraint
+import org.scalactic.enablers.SequencingConstraint
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -46,6 +50,58 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * @author Bill Venners
  */
 final class NotWord {
+
+  def apply[R](rightEqualityExpression: EqualityExpression[R]): EqualityExpression[R] = {
+    new EqualityExpression[R] {
+      def matcher[V](implicit constraint: EvidenceThat[R]#CanEqual[V]): Matcher[V] = {
+        val innerMatcher: Matcher[V] = rightEqualityExpression.matcher(constraint)
+        new Matcher[V] {
+          def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not (" + Prettifier.default(rightEqualityExpression) + ")"
+        }
+      }
+      override def toString: String = "not (" + Prettifier.default(rightEqualityExpression) + ")"
+    }
+  }
+
+  def apply[R](rightContainingExpression: ContainingExpression[R]): ContainingExpression[R] = {
+    new ContainingExpression[R] {
+      def matcher[V](implicit constraint: EvidenceThat[R]#CanBeContainedIn[V]): Matcher[V] = {
+        val innerMatcher: Matcher[V] = rightContainingExpression.matcher(constraint)
+        new Matcher[V] {
+          def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not (" + Prettifier.default(rightContainingExpression) + ")"
+        }
+      }
+      override def toString: String = "not (" + Prettifier.default(rightContainingExpression) + ")"
+    }
+  }
+
+  def apply[R](rightAggregatingExpression: AggregatingExpression[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
+      def matcher[V](implicit constraint: EvidenceThat[R]#CanBeContainedInAggregation[V]): Matcher[V] = {
+        val innerMatcher: Matcher[V] = rightAggregatingExpression.matcher(constraint)
+        new Matcher[V] {
+          def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not (" + Prettifier.default(rightAggregatingExpression) + ")"
+        }
+      }
+      override def toString: String = "not (" + Prettifier.default(rightAggregatingExpression) + ")"
+    }
+  }
+
+  def apply[R](rightSequencingExpression: SequencingExpression[R]): SequencingExpression[R] = {
+    new SequencingExpression[R] {
+      def matcher[V](implicit constraint: EvidenceThat[R]#CanBeContainedInSequence[V]): Matcher[V] = {
+        val innerMatcher: Matcher[V] = rightSequencingExpression.matcher(constraint)
+        new Matcher[V] {
+          def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not (" + Prettifier.default(rightSequencingExpression) + ")"
+        }
+      }
+      override def toString: String = "not (" + Prettifier.default(rightSequencingExpression) + ")"
+    }
+  }
 
   /**
    * This method enables the following syntax, where <code>tempFile</code>, for example, refers to a <code>java.io.File</code>
@@ -172,7 +228,7 @@ final class NotWord {
    *                 ^
    * </pre>
    */
-  def equal[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = apply(MatcherWords.equal(right))
+  def equal[R](right: R): EqualityExpression[R] = apply(MatcherWords.equal(right))
 
   /**
    * This method enables the following syntax for the "primitive" numeric types: 
@@ -743,8 +799,8 @@ final class NotWord {
    *                   ^
    * </pre>
    */
-  def be[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = //apply(MatcherWords.be(right))
-    new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
+  def be[R](right: R): EqualityExpression[R] = //apply(MatcherWords.be(right))
+    new EqualityExpression[R] {
       val innerMatcherFactory = MatcherWords.be(right)
       def matcher[V <: Any : EvidenceThat[R]#CanEqual]: Matcher[V] = {
         val innerMatcher: Matcher[V] = innerMatcherFactory.matcher
@@ -1002,8 +1058,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](expectedElement: R): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+  def contain[R](expectedElement: R): ContainingExpression[R] = {
+    new ContainingExpression[R] {
       def matcher[L : EvidenceThat[R]#CanBeContainedIn]: Matcher[L] = 
         new Matcher[L] {
           def apply(left: L): MatchResult = {
@@ -1029,8 +1085,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](oneOf: ResultOfOneOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+  def contain[R](oneOf: ResultOfOneOfApplication[R]): ContainingExpression[R] = {
+    new ContainingExpression[R] {
       def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1059,8 +1115,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](oneElementOf: ResultOfOneElementOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+  def contain[R](oneElementOf: ResultOfOneElementOfApplication[R]): ContainingExpression[R] = {
+    new ContainingExpression[R] {
       def matcher[T](implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1089,8 +1145,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1119,8 +1175,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1149,8 +1205,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](noneOf: ResultOfNoneOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+  def contain[R](noneOf: ResultOfNoneOfApplication[R]): ContainingExpression[R] = {
+    new ContainingExpression[R] {
       def matcher[T](implicit containing: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1179,8 +1235,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedIn] {
+  def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R]): ContainingExpression[R] = {
+    new ContainingExpression[R] {
       def matcher[T](implicit containing: EvidenceThat[R]#CanBeContainedIn[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1209,8 +1265,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](theSameElementAs: ResultOfTheSameElementsAsApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](theSameElementAs: ResultOfTheSameElementsAsApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1239,8 +1295,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+  def contain[R](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R]): SequencingExpression[R] = {
+    new SequencingExpression[R] {
       def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1269,8 +1325,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](only: ResultOfOnlyApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](only: ResultOfOnlyApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1305,8 +1361,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](inOrderOnly: ResultOfInOrderOnlyApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+  def contain[R](inOrderOnly: ResultOfInOrderOnlyApplication[R]): SequencingExpression[R] = {
+    new SequencingExpression[R] {
       def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1335,8 +1391,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](allOf: ResultOfAllOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](allOf: ResultOfAllOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1365,8 +1421,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](allElementsOf: ResultOfAllElementsOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](allElementsOf: ResultOfAllElementsOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1395,8 +1451,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](inOrder: ResultOfInOrderApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+  def contain[R](inOrder: ResultOfInOrderApplication[R]): SequencingExpression[R] = {
+    new SequencingExpression[R] {
       def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1425,8 +1481,8 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInSequence] {
+  def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R]): SequencingExpression[R] = {
+    new SequencingExpression[R] {
       def matcher[T](implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1455,8 +1511,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1485,8 +1541,8 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R]): MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] = {
-    new MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation] {
+  def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R]): AggregatingExpression[R] = {
+    new AggregatingExpression[R] {
       def matcher[T](implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
