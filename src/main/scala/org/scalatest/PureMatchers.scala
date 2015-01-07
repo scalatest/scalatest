@@ -1784,7 +1784,7 @@ import exceptions.TestFailedException
  * @author Bill Venners
  * @author Chua Chee Seng
  */
-trait PureMatchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
+trait PureMatchers extends Assertions with Tolerance with MatcherWords with Explicitly { matchers =>
 
   import scala.language.implicitConversions
 
@@ -2717,15 +2717,68 @@ trait PureMatchers extends Assertions with Tolerance with ShouldVerb with Matche
      * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
      * </p>
      */
-    def length(expectedLength: Long)(implicit len: Length[A]) {
+    def length(expectedLength: Long)(implicit len: Length[A]): Fact = {
       val leftLength = len.lengthOf(left)
-      if ((leftLength == expectedLength) != willBeTrue)
-        throw newTestFailedException(
+      if ((leftLength == expectedLength) != willBeTrue) { // No
+        if (willBeTrue) {
+          No(
+            Resources("hadLengthInsteadOfExpectedLength"),
+            Resources("hadLength"),
+            Vector(left, leftLength, expectedLength),
+            Vector(left, expectedLength)
+          )
+        }
+        else {
+          No(
+            Resources("hadLength"),
+            Resources("hadLengthInsteadOfExpectedLength"),
+            Vector(left, expectedLength),
+            Vector(left, leftLength, expectedLength)
+          )
+        }
+      }
+      else { // Yes
+        if (willBeTrue) {
+          Yes(
+            Resources("hadLengthInsteadOfExpectedLength"),
+            Resources("hadLength"),
+            Vector(left, leftLength, expectedLength),
+            Vector(left, expectedLength)
+          )
+        }
+        else {
+          Yes(
+            Resources("hadLength"),
+            Resources("hadLengthInsteadOfExpectedLength"),
+            Vector(left, expectedLength),
+            Vector(left, leftLength, expectedLength)
+          )
+        }
+      }
+/*
+        No(
           if (willBeTrue) 
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadLength", left, expectedLength),
+
+          if (!willBeTrue)
             FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
           else
             FailureMessages("hadLength", left, expectedLength)
         )
+      else Yes(
+        if (willBeTrue)
+          FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+        else
+          FailureMessages("hadLength", left, expectedLength),
+
+        if (!willBeTrue)
+          FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+        else
+          FailureMessages("hadLength", left, expectedLength)
+      )
+*/
     }
 
     /**
@@ -7919,7 +7972,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringWillWrapper(val leftSideString: String) extends AnyWillWrapper(leftSideString) with StringShouldWrapperForVerb {
+  final class StringWillWrapper(val leftSideString: String) extends AnyWillWrapper(leftSideString) {
 
     /**
      * This method enables syntax such as the following:

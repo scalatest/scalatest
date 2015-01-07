@@ -16,74 +16,14 @@
 package org.scalactic.algebra
 
 import org.scalactic.{Bad, Good, Or}
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{Yes, No, Fact, Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 import org.scalacheck._
 
 import scala.language.higherKinds
 
 class LawSpec extends FlatSpec with Matchers {
-
-  /* Local def of Functor */
-  trait FunctorProxy[Context[_], A] {
-    def map[B](f: A => B): Context[B]
-  }
-
-  trait Functor[Context[_]] {
-    def apply[A](ct: Context[A]): FunctorProxy[Context, A]
-  }
-
-  trait ApplicativeProxy[Context[_], A] extends FunctorProxy[Context, A] {
-    def ap[B](cab: Context[A => B]): Context[B]
-  }
-
-  trait Applicative[Context[_]] extends Functor[Context] {
-    def apply[A](ca: Context[A]): ApplicativeProxy[Context, A]
-
-    // a.k.a. pure, point
-    def insert[A](a: A): Context[A]
-  }
-
-  trait MonadProxy[Context[_], A] extends ApplicativeProxy[Context, A] {
-    // a.k.a. bind
-    def flatMap[B](acb: A => Context[B]): Context[B]
-  }
-
-  trait Monad[Context[_]] extends Applicative[Context] {
-    def apply[A](ca: Context[A]): MonadProxy[Context, A]
-  }
-
-  trait Laws[Context[_]] {
-    type Law = () => Unit
-
-    def laws: Seq[Law]
-
-    def assert(): Unit = laws.foreach(law => law())
-  }
-
-  class FunctorLaws[Context[_], A, B, C](implicit fun: Functor[Context],
-    arbCa: Arbitrary[Context[A]],
-    shrCa: Shrink[Context[A]],
-    arbAb: Arbitrary[A => B],
-    shrAb: Shrink[A => B],
-    arbBc: Arbitrary[B => C],
-    shrBc: Shrink[B => C]) extends Laws[Context] {
-
-    // mapping over an identity function (e.g. a => a) should cause no change
-    val checkFunctorIdentity: Law = () =>
-      forAll { (ca: Context[A]) =>
-        (fun(ca) map identity[A]) shouldEqual ca
-      }
-
-    // conforms if (ca map f map g) is the same as (ca map (g(f)), via the proxy
-    val checkFunctorComposition: Law = () =>
-      forAll { (ca: Context[A], ab: A => B, bc: B => C) =>
-        (fun(fun(ca) map ab) map bc) shouldEqual (fun(ca) map (bc compose ab))
-      }
-
-    override def laws = Seq(checkFunctorIdentity, checkFunctorComposition)
-  }
-
+/**
   class ApplicativeLaws[Context[_], A, B, C](implicit applic: Applicative[Context],
     arbA: Arbitrary[A],
     shrA: Shrink[A],
@@ -124,16 +64,15 @@ class LawSpec extends FlatSpec with Matchers {
         (applic(applic.insert(a)) ap cab) shouldEqual (applic(cab) ap applic.insert((ab: A => B) => ab(a)))
       }
 
-    val checkApplicativeMapConsistentWithAp: Law = () =>
-      forAll { (ca: Context[A], ab: A => B) =>
-        (applic(ca) map ab) shouldEqual (applic(ca) ap applic.insert(ab))
-      }
+//    val checkApplicativeMapConsistentWithAp: Law = () =>
+//      forAll { (ca: Context[A], ab: A => B) =>
+//        (applic(ca) map ab) shouldEqual (applic(ca) ap applic.insert(ab))
+//      }
 
     override def laws = super.laws ++ Seq(
       checkApplicativeComposition,
       checkApplicativeHomomorphism,
-      checkApplicativeInterchange,
-      checkApplicativeMapConsistentWithAp)
+      checkApplicativeInterchange)
   }
 
   class MonadLaws[Context[_], A, B, C]()(implicit monad: Monad[Context],
@@ -207,7 +146,7 @@ class LawSpec extends FlatSpec with Matchers {
 
 
   "Option" should "obey the functor laws via its map method" in {
-    class OptionFunctorProxy[T](opt: Option[T]) extends FunctorProxy[Option, T] {
+    class OptionFunctorProxy[T](opt: Option[T]) extends FunctorAdapter[Option, T] {
       override def map[U](f: (T) => U): Option[U] = opt.map(f)
     }
 
@@ -238,7 +177,7 @@ class LawSpec extends FlatSpec with Matchers {
 
   "List" should "obey the functor laws via its map method" in {
     /* functor def for List */
-    class ListFunctorProxy[T](list: List[T]) extends FunctorProxy[List, T] {
+    class ListFunctorProxy[T](list: List[T]) extends FunctorAdapter[List, T] {
       override def map[U](f: (T) => U): List[U] = list.map(f)
     }
 
@@ -251,7 +190,7 @@ class LawSpec extends FlatSpec with Matchers {
 
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
 
-    class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorProxy[OrWithBad[Bad]#AndGood, Good] {
+    class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithBad[Bad]#AndGood, Good] {
       def map[C](gc: Good => C): C Or Bad = ctx.map(gc)
     }
 
@@ -266,7 +205,7 @@ class LawSpec extends FlatSpec with Matchers {
 
   "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
 
-    class BadOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorProxy[OrWithGood[Good]#AndBad, Bad] {
+    class BadOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithGood[Good]#AndBad, Bad] {
       def map[C](bc: Bad => C): Good Or C = ctx.badMap(bc)
     }
 
@@ -299,4 +238,5 @@ class LawSpec extends FlatSpec with Matchers {
 
     new MonadLaws[OrWithBad[Int]#AndGood, Int, String, Double]().assert()
   }
+  **/
 }

@@ -18,7 +18,7 @@ package org.scalactic.algebra
 import org.scalactic.UnitSpec
 
 class MonadSpec extends UnitSpec {
-
+/**
   class OptionMonadProxy[T](underlying: Option[T]) extends MonadProxy[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
     def flatMap[U](f: T => Option[U]): Option[U]  = underlying.flatMap(f)
@@ -66,5 +66,6 @@ class MonadSpec extends UnitSpec {
     val optFun: Monad[Option] = new OptionMonad
     optFun.insert(Option(3)) shouldEqual Some(Some(3))
   }
+  **/
 }
 

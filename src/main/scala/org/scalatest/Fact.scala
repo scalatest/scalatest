@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.Prettifier
 import java.text.MessageFormat
 
-private[scalatest] sealed abstract class Fact {
+sealed abstract class Fact {
     val rawFailureMessage: String
     val rawNegatedFailureMessage: String
     val rawMidSentenceFailureMessage: String
@@ -76,7 +76,7 @@ private[scalatest] sealed abstract class Fact {
   }
 }
 
-private[scalatest] object Fact {
+object Fact {
   def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
     case (false,false) => Resources("commaAnd")
     case (false,true) => Resources("rightParensCommaAnd")
@@ -119,7 +119,7 @@ private[scalatest] object Fact {
 
 import org.scalatest.Fact._
 
-private[scalatest] case class No(
+case class No(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -176,7 +176,7 @@ private[scalatest] case class No(
  *
  * @author Bill Venners
  */
-private[scalatest] object No {
+object No {
 
   /**
    * Factory method that constructs a new <code>No</code> with passed <code>failureMessage</code>, 
@@ -318,7 +318,7 @@ private[scalatest] object No {
 }
 
 
-private[scalatest] case class Yes(
+case class Yes(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -377,7 +377,7 @@ private[scalatest] case class Yes(
  *
  * @author Bill Venners
  */
-private[scalatest] object Yes {
+object Yes {
 
   /**
    * Factory method that constructs a new <code>Yes</code> with passed code>failureMessage</code>, 

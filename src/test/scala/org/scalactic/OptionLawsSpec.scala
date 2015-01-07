@@ -22,7 +22,7 @@ import algebra._
 import exceptions.TestFailedException
 
 class OptionLawsSpec extends UnitSpec with CheckedEquality {
-
+/**
   class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorProxy[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
   }
@@ -199,6 +199,7 @@ class OptionLawsSpec extends UnitSpec with CheckedEquality {
     // assertObeys[Option](functorLaws)
     // assertObeys[Option](functorLawsUsing[Int, String, Char])
   }
+  **/
 }
 
 

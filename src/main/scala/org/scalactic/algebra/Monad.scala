@@ -25,19 +25,19 @@ import scala.language.higherKinds
  * A <code>MonadProxy</code> instance wraps an object that in some way behaves as a <code>Monad</code>.
  * </p>
  */
-trait MonadProxy[Context[_], T] {
+trait MonadProxy[Context[_], A] {
 
   /**
    * Applies the given function to the value contained in this context, returning the result 
    * of the function lifted into the same context.
    */
-  def map[U](f: T => U): Context[U]
+  def map[B](f: A => B): Context[B]
 
   /**
    * Applies the given function to the value contained in this context, returning the result 
-   * of the function, which is another value wrapped in the same context.
+   * of the function, which is a value wrapped in another context of the same type.
    */
-  def flatMap[U](f: T => Context[U]): Context[U]
+  def flatMap[B](f: A => Context[B]): Context[B]
 }
 
 /**
@@ -49,11 +49,11 @@ trait Monad[Context[_]] {
   /**
    * Produces a <code>MonadProxy</code> wrapping the given context instance.
    */
-  def apply[T](o: Context[T]): MonadProxy[Context, T]
+  def apply[A](o: Context[A]): MonadProxy[Context, A]
 
   /**
    * Inserts a value into a context.
    */
-  def insert[T](o: T): Context[T]
+  def insert[A](o: A): Context[A]
 }
 

@@ -24,7 +24,7 @@ import scala.language.higherKinds
  * A <code>FunctorProxy</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
  * </p>
  */
-trait FunctorProxy[Context[_], T] {
+trait FunctorAdapter[Context[_], A] {
 
   /**
    * Applies the given function to the value contained in this context, returning the result 
@@ -49,7 +49,7 @@ trait FunctorProxy[Context[_], T] {
    * <li>composite: <code>functorProxy.map(g).map(f)</code> <code>===</code> <code>functorProxy.map(f compose g)</code></li>
    * </ul>
    */
-  def map[U](f: T => U): Context[U]
+  def map[B](f: A => B): Context[B]
 }
 
 /**
@@ -60,6 +60,5 @@ trait Functor[Context[_]] {
   /**
    * Produces a <code>FunctorProxy</code> wrapping the given context instance.
    */
-  def apply[T](f: Context[T]): FunctorProxy[Context, T]
+  def apply[A](ct: Context[A]): FunctorAdapter[Context, A]
 }
-

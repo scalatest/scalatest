@@ -19,7 +19,7 @@ import org.scalactic.UnitSpec
 
 class FunctorSpec extends UnitSpec {
 
-  class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorProxy[Option, T] {
+  class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorAdapter[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
   }
   "A FunctorProxy" should "offer a map method that has the usual signature" in {
@@ -29,7 +29,7 @@ class FunctorSpec extends UnitSpec {
 
   "A Functor" should "offer an apply method that takes a TC[_] instance" in {
     class OptionFunctor extends Functor[Option] {
-      def apply[T](opt: Option[T]): FunctorProxy[Option, T] = new OptionFunctorProxy[T](opt)
+      def apply[T](opt: Option[T]): FunctorAdapter[Option, T] = new OptionFunctorProxy[T](opt)
     }
     val opt = Some(3)
     val optFun = new OptionFunctor
