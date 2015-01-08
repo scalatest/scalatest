@@ -18,15 +18,18 @@ package org.scalactic.algebra
 import scala.language.higherKinds
 
 /**
- * A Semigroup requires a binaray associative operation, monoids satisfy
- * this requirement with the addition of a zero, or identity element.
+ * An Associative (or Semigroup in Category Theory terminology) requires a binaray 
+ * associative operation.  Monoids satisfy this requirement with the addition of 
+ * a zero, or identity element.
  */
-trait Semigroup[A] {
+trait Associative[A] {
     
-    /**
-     * An associative binary operation that is 
-     * required to satisfy the Associate/Semigroup laws.
-     */
-    def op(a1: A, a2: A): A
+  val underlying: A
+
+  /**
+   * An associative binary operation that is 
+   * required to satisfy the Associate/Semigroup laws.
+   */ 
+  def op(other: Associative[A]): Associative[A]
     
 }

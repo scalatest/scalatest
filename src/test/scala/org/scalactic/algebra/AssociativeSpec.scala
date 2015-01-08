@@ -21,18 +21,40 @@ import org.scalactic.Every
 class AssociativeSpec extends UnitSpec {
 
   // Every non-empty vector    
-  trait EveryAssociative[A] extends Associative[Every[A]] {
-    def op(a1: Every[A], a2: Every[A]): Every[A] = a1 ++ a2
+  case class EveryAssociative[A](underlying: Every[A]) extends Associative[Every[A]] {
+    override 
+    def op(other: Associative[Every[A]]): EveryAssociative[A] = EveryAssociative(underlying ++ other.underlying)
   }
   
-  "An Associative (Semigroup) " should " have a binaray associative op" in {
-    val semi = new EveryAssociative[Int] { }
-    val a = Every(1,2)
-    val b = Every(5,6,7)
-    val c = Every(9,9)
-    val op = semi.op _
-    op( op(a, b), c ) shouldEqual op( a, op(b, c) )
+  case class IntMultiplicationAssociative(underlying: Int) extends Associative[Int] {
+    override 
+    def op(other: Associative[Int]): IntMultiplicationAssociative = IntMultiplicationAssociative(underlying * other.underlying )
+  }
+  
+  case class BadSubstractionAssociative(underlying: Int) extends Associative[Int] {
+    override 
+    def op(other: Associative[Int]): BadSubstractionAssociative = BadSubstractionAssociative(underlying - other.underlying )
+  }
+    
+  "An Every Associative (Semigroup) " should " have a binaray associative op" in {
+    val a = EveryAssociative(Every(1,2))
+    val b = EveryAssociative(Every(5,6,7))
+    val c = EveryAssociative(Every(9,9))
+    ((a op b) op c) shouldEqual (a op (b op c))
+  }
+  
+  "An Int Associative (Semigroup) " should  "have a binaray associative op" in {
+    val a = IntMultiplicationAssociative(1)
+    val b = IntMultiplicationAssociative(64)
+    val c = IntMultiplicationAssociative(256)
+    ((a op b) op c) shouldEqual (a op (b op c))
+  }
+  
+  "A BadSubstractionAssociative " should  " fail to be associative" in {
+      val a = BadSubstractionAssociative(1)
+      val b = BadSubstractionAssociative(64)
+      val c = BadSubstractionAssociative(256)
+      ((a op b) op c) should not be (a op (b op c))
   }
   
 }
-
