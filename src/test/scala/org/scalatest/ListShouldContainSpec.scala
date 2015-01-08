@@ -88,7 +88,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -147,7 +147,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -212,7 +212,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -276,7 +276,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -337,7 +337,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -402,7 +402,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -505,7 +505,7 @@ class ListShouldContainSpec extends Spec {
             s.toLowerCase
           }
           def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
+          def normalizedOrSame(b: Any): Any =
             b match {
               case s: String => normalized(s)
               case _ => b

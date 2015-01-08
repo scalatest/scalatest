@@ -39,7 +39,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
 
         // Trying the use case of passing an existing list of mocks for
         // the heck of it.
-        val mocks = List(oneFishMock, twoFishMock)
+        val mocks: List[AnyRef] = List(oneFishMock, twoFishMock)
 
         whenExecuting(mocks: _*) {
           oneFishMock.eat("red fish")

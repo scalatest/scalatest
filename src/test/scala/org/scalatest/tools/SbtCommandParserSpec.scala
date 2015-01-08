@@ -24,7 +24,7 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
   val parser = new SbtCommandParser
 
   def canParsePhrase(s: String) {
-      val result = parser.parseResult(s)
+      val result: parser.ParseResult[Any] = parser.parseResult(s)
       result match {
         case ns: parser.NoSuccess => fail(ns.toString)
         case _ => 
@@ -32,7 +32,7 @@ class SbtCommandParserSpec extends FunSpec with Matchers {
   }
 
   def cannotParsePhrase(s: String) {
-      val result = parser.parseResult(s)
+      val result: parser.ParseResult[Any] = parser.parseResult(s)
       result match {
         case parser.Success(result, _) => fail("wasn't supposed to, but parsed: " + result)
         case _ =>

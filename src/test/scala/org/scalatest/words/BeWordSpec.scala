@@ -684,7 +684,7 @@ class BeWordSpec extends Spec with FileMocks {
     
     object `apply(Boolean) method returns MatcherFactory (that gives "was not" style error messages instead of "was not equal to")` {
 
-      val mtf = be (true)
+      val mtf: matchers.MatcherFactory1[Any, enablers.EvidenceThat[Boolean]#CanEqual] = be (true)
       val mt = mtf.matcher[Boolean]
       
       def `should have pretty toString` {
@@ -733,7 +733,7 @@ class BeWordSpec extends Spec with FileMocks {
     }
     
     object `apply(Null) method returns Matcher` {
-      val mt = be (null)
+      val mt: matchers.Matcher[AnyRef] = be (null)
       
       def `should have pretty toString` {
         mt.toString should be ("be (null)")
@@ -783,7 +783,7 @@ class BeWordSpec extends Spec with FileMocks {
     }
     
     object `apply(Symbol) method returns Matcher` {
-      val mt = be ('file)
+      val mt: matchers.Matcher[AnyRef] = be ('file)
       
       def `should have pretty toString` {
         mt.toString should be ("be ('file)")
@@ -965,7 +965,7 @@ class BeWordSpec extends Spec with FileMocks {
       val myFileLeft = MyFile("test left", true, false)
       val myFileRight = MyFile("test right", true, false)
       
-      val mtf = be (myFileRight)
+      val mtf: matchers.MatcherFactory1[Any, enablers.EvidenceThat[MyFile]#CanEqual] = be (myFileRight)
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
@@ -1015,7 +1015,7 @@ class BeWordSpec extends Spec with FileMocks {
     
     object `apply(SortedWord) method returns MatcherFactory` {
       
-      val mtf = be (sorted)
+      val mtf: matchers.MatcherFactory1[Any, enablers.Sortable] = be (sorted)
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
@@ -1186,7 +1186,7 @@ class BeWordSpec extends Spec with FileMocks {
       val clazz = classOf[MyFile]
       val resultOfAType = new ResultOfATypeInvocation(clazz)
       
-      val mt = be (resultOfAType)
+      val mt: matchers.Matcher[Any] = be (resultOfAType)
       
       def `should have pretty toString` {
         mt.toString should be ("be (a [" + clazz.getName + "])")
@@ -1246,7 +1246,7 @@ class BeWordSpec extends Spec with FileMocks {
       val clazz = classOf[MyFile]
       val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
       
-      val mt = be (resultOfAnType)
+      val mt: matchers.Matcher[Any] = be (resultOfAnType)
       
       def `should have pretty toString` {
         mt.toString should be ("be (an [" + clazz.getName + "])")
@@ -1301,7 +1301,7 @@ class BeWordSpec extends Spec with FileMocks {
         def isReadable: Boolean = true
       }
       
-      val mtf = be (readable)
+      val mtf: matchers.MatcherFactory1[Any, enablers.Readability] = be (readable)
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
@@ -1357,7 +1357,7 @@ class BeWordSpec extends Spec with FileMocks {
         def isWritable: Boolean = true
       }
       
-      val mtf = be (writable)
+      val mtf: matchers.MatcherFactory1[Any, enablers.Writability] = be (writable)
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
@@ -1409,7 +1409,7 @@ class BeWordSpec extends Spec with FileMocks {
     
     object `apply(EmptyWord) method returns MatcherFactory` {
       
-      val mtf = be (empty)
+      val mtf: matchers.MatcherFactory1[Any, enablers.Emptiness] = be (empty)
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
@@ -1461,7 +1461,7 @@ class BeWordSpec extends Spec with FileMocks {
     
     object `apply(DefinedWord) method returns MatcherFactory` {
       
-      val mtf = be (defined)
+      val mtf: matchers.MatcherFactory1[Any, enablers.Definition] = be (defined)
       val mt = mtf.matcher[Option[Int]]
       
       def `should have pretty toString` {
