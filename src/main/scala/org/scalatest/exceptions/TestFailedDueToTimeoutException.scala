@@ -67,7 +67,7 @@ class TestFailedDueToTimeoutException(
    * the modified optional payload for the result instance of <code>TestFailedDueToTimeoutException</code>.
    */
   override def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedDueToTimeoutException = {
-    val currentPayload = payload
+    val currentPayload: Option[Any] = payload
     val mod = new TestFailedDueToTimeoutException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload), timeout)
     mod.setStackTrace(getStackTrace)
     mod

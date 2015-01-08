@@ -183,7 +183,7 @@ trait PrivateMethodTester {
             // If arg.asInstanceOf[AnyRef] has class java.lang.Integer, this needs to match the paramType Class instance for int
 
             def argMatchesParamType(arg: Any, paramType: Class[_]) = {
-              val anyRefArg = arg.asInstanceOf[AnyRef]
+              val anyRefArg: AnyRef = arg.asInstanceOf[AnyRef]
               paramType match {
                 case java.lang.Long.TYPE => anyRefArg.getClass == classOf[java.lang.Long]
                 case java.lang.Integer.TYPE => anyRefArg.getClass == classOf[java.lang.Integer]
@@ -199,7 +199,7 @@ trait PrivateMethodTester {
 
             // The args classes need only be assignable to the parameter type. So therefore the parameter type
             // must be assignable *from* the corresponding arg class type.
-            val invalidArgs =
+            val invalidArgs: List[Any] =
               for ((arg, paramType) <- zipped if !argMatchesParamType(arg, paramType)) yield arg
             invalidArgs.length == 0
           }
@@ -248,7 +248,7 @@ trait PrivateMethodTester {
       else if (methodArray.length > 1)
         throw new IllegalArgumentException("Found two methods")
       else {
-        val anyRefArgs = // Need to box these myself, because that's invoke is expecting an Array[Object], which maps to an Array[AnyRef]
+        val anyRefArgs: Seq[AnyRef] = // Need to box these myself, because that's invoke is expecting an Array[Object], which maps to an Array[AnyRef]
           for (arg <- args) yield arg match {
             case anyRef: AnyRef => anyRef
             case any: Any => any.asInstanceOf[AnyRef] // Can't use AnyVal in 2.8

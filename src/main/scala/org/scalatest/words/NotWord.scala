@@ -745,7 +745,7 @@ final class NotWord {
    */
   def be[R](right: R): MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = //apply(MatcherWords.be(right))
     new MatcherFactory1[Any, EvidenceThat[R]#CanEqual] {
-      val innerMatcherFactory = MatcherWords.be(right)
+      val innerMatcherFactory: MatcherFactory1[Any, EvidenceThat[R]#CanEqual] = MatcherWords.be(right)
       def matcher[V <: Any : EvidenceThat[R]#CanEqual]: Matcher[V] = {
         val innerMatcher: Matcher[V] = innerMatcherFactory.matcher
         new Matcher[V] {
@@ -1520,7 +1520,7 @@ final class NotWord {
       def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedKey = resultOfKeyWordApplication.expectedKey
+            val expectedKey: Any = resultOfKeyWordApplication.expectedKey
             MatchResult(
               !keyMapping.containsKey(left, expectedKey),
               Resources("containedKey"),
@@ -1548,7 +1548,7 @@ final class NotWord {
       def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedValue = resultOfValueWordApplication.expectedValue
+            val expectedValue: Any = resultOfValueWordApplication.expectedValue
             MatchResult(
               !valueMapping.containsValue(left, expectedValue),
               Resources("containedValue"),

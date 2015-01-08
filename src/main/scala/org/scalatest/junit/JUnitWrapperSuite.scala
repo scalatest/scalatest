@@ -118,7 +118,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
     try { // works for junit-4.4.jar
       val method = requestClass.getMethod("classes", classOf[String],
                                           classOf[Array[Class[_]]])
-      val result = method.invoke(null, "", classArgs)
+      val result: AnyRef = method.invoke(null, "", classArgs)
 
       result.asInstanceOf[Request]
     }
@@ -127,7 +127,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
         try { // works for junit-4.6.jar
           val method = requestClass.getMethod("classes",
                                               classOf[Array[Class[_]]])
-          val result = method.invoke(null, classArgs)
+          val result: AnyRef = method.invoke(null, classArgs)
 
           result.asInstanceOf[Request]
         }

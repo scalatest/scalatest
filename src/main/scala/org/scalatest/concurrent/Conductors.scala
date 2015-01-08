@@ -875,7 +875,7 @@ trait Conductors extends PatienceConfiguration {
 
       // methods in Clock that access or modify the private instance vars of this
       // Clock are synchronized on the object referenced from lock
-      private val lock = new AnyRef
+      private val lock: AnyRef = new AnyRef
 
       /**
        * Read locks are acquired when clock is frozen and must be

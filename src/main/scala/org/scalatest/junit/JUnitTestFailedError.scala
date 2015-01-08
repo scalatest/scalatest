@@ -212,7 +212,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * the modified optional payload for the result instance of <code>JUnitTestFailedError</code>.
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): JUnitTestFailedError = {
-    val currentPayload = payload
+    val currentPayload: Option[Any] = payload
     val mod = new JUnitTestFailedError(message, cause, failedCodeStackDepth, fun(currentPayload))
     mod.setStackTrace(getStackTrace)
     mod

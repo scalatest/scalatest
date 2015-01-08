@@ -180,7 +180,7 @@ trait Requirements {
      * @param arguments arguments to check for <code>null</code> value
      */
     def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any]) {
-      val nullList = arguments.zipWithIndex.filter { case (e, idx) =>
+      val nullList: Array[(Any, Int)] = arguments.zipWithIndex.filter { case (e, idx) =>
         e == null
       }
       val nullCount = nullList.size

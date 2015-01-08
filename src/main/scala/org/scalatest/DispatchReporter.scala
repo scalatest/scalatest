@@ -57,7 +57,7 @@ private[scalatest] class DispatchReporter(
   private final val highestOrdinalSeenSoFar: AtomicReference[Ordinal] = new AtomicReference[Ordinal](new Ordinal(0))
 
   // Can be either Event or Dispose.type. Be nice to capture that in the type param.
-  private final val queue = new LinkedBlockingQueue[AnyRef]
+  private final val queue: LinkedBlockingQueue[AnyRef] = new LinkedBlockingQueue[AnyRef]
 
   private final val slowpokeItems: Option[(SlowpokeDetector, Timer)] =
     if (detectSlowpokes) {

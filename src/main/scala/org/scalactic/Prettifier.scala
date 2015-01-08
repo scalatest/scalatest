@@ -321,7 +321,7 @@ object Prettifier {
       (s, t)
   }
 
-  private[org] def getObjectsForFailureMessage(a: Any, b: Any) =
+  private[org] def getObjectsForFailureMessage(a: Any, b: Any): (Any, Any) =
     a match {
       case aStr: String => {
         b match {

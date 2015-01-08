@@ -451,7 +451,7 @@ object Checkers extends Checkers {
     }
   }
   
-  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
+  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]): List[Arg[Any]] = {
     if (argNames.isDefined) {
       // length of scalaCheckArgs should equal length of argNames
       val zipped = argNames.get zip scalaCheckArgs

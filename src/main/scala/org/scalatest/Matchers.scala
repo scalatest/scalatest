@@ -4239,7 +4239,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedKey = resultOfKeyWordApplication.expectedKey
+        val expectedKey: Any = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
@@ -4264,7 +4264,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedValue = resultOfValueWordApplication.expectedValue
+        val expectedValue: Any = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(

@@ -85,7 +85,7 @@ private[scalatest] object SuiteDiscoveryHelper {
     val fileSeparator = if (!fileSeparatorString.isEmpty) fileSeparatorString(0) else ':'
 
     def getJarFileFromURL(url: URL): Option[JarFile] = {
-      val o = url.openConnection().getContent()
+      val o: AnyRef = url.openConnection().getContent()
       if (o != null) {
         try {
           Some(o.asInstanceOf[JarFile])

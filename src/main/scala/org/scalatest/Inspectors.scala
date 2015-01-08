@@ -637,9 +637,9 @@ private[scalatest] object InspectorsHelper {
       else
         indexes.mkString(", ")
       
-    val (prefixResourceName, elements) = xs match {
+    val (prefixResourceName: String, elements: IndexedSeq[Any]) = xs match {
       case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
-        val elements = passedElements.map{ case (index, e) =>
+        val elements: IndexedSeq[Any] = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
             case entry: java.util.Map.Entry[_, _] => entry.getKey

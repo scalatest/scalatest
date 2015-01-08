@@ -533,7 +533,7 @@ private[scalatest] class DashboardReporter(directory: String,
         }
 
       val summary  = summaryOption.getOrElse(Summary(0, 0, 0, 0, 0, 0, 0, 0))
-      val duration = durationOption.getOrElse(0)
+      val duration = durationOption.getOrElse(0L)
 
       "<summary index=\"" + nextIndex() + "\" text=\"\" " +
       "duration=\""             + duration                     + "\" " +
@@ -645,7 +645,7 @@ private[scalatest] class DashboardReporter(directory: String,
   // complete xml string for the <suite> element.
   //
   class SuiteRecord(startEvent: SuiteStarting) {
-    var nestedElements = List[Any]()
+    var nestedElements: List[Any] = List.empty[Any]
     var endEvent: Event = null
 
     //
