@@ -24,7 +24,7 @@ class MatcherWordsSpec extends Spec with MatcherWords {
     
     object `equal(Any) method returns MatcherFactory1` {
       
-      val mtf = equal ("tommy")
+      val mtf: matchers.MatcherFactory1[Any, enablers.EvidenceThat[String]#CanEqual] = equal ("tommy")
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
