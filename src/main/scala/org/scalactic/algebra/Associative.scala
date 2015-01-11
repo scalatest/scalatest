@@ -34,6 +34,6 @@ trait AssociativeAdapter[A] {
    * An associative binary operation that is 
    * required to satisfy the Associate/Semigroup laws.
    */ 
-  def op(other: A): AssociativeAdapter[A]
+  def op(other: A): A
   
 }

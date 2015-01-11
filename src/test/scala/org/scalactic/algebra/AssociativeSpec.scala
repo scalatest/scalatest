@@ -26,11 +26,10 @@ class AssociativeSpec extends UnitSpec {
   }
   
   case class EveryAssociativeAdapter[A](underlying: Every[A]) extends AssociativeAdapter[Every[A]] {
-    def op(other: Every[A]): EveryAssociativeAdapter[A] = EveryAssociativeAdapter(underlying ++ other)
+    def op(other: Every[A]): Every[A] = underlying ++ other
   }
 
   implicit def Every2EveryAssociativeAdapter[A](every: Every[A]) = new EveryAssociative[A].apply(every)
-  implicit def EveryAssociativeAdapter2Every[A](adapt: EveryAssociativeAdapter[A]): Every[A] = adapt.underlying
   
   // Int Multiplication Associatvie
   class IntMultiAssociative extends Associative[Int] {
@@ -39,10 +38,8 @@ class AssociativeSpec extends UnitSpec {
 
   case class IntMultiAA(underlying: Int) extends AssociativeAdapter[Int] {
     override 
-    def op(other: Int): IntMultiAA = IntMultiAA(underlying * other)
+    def op(other: Int): Int = underlying * other
   }
-  implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
-  implicit def IntMultiAA2Int(adapt: IntMultiAA): Int = adapt.underlying
   
   // Bad case Substraction Associative, should fail.
   class BadSubstractionAssociative extends Associative[Int] {
@@ -52,32 +49,32 @@ class AssociativeSpec extends UnitSpec {
   
   case class BadSubstractionAA(underlying: Int) extends AssociativeAdapter[Int] {
     override 
-    def op(other: Int): BadSubstractionAA = BadSubstractionAA(underlying - other)
+    def op(other: Int): Int = underlying - other
   }
-  implicit def Int2IntBadSubAssociativeAdapter(x: Int): BadSubstractionAA = new BadSubstractionAssociative().apply(x)
-  implicit def BadSubstractionAA2Int(adapt: BadSubstractionAA): Int = adapt.underlying
   
   "An Every Associative (Semigroup) " should " have a binaray associative op" in {
     val a = Every(1,2)
     val b = Every(5,6,7)
     val c = Every(9,9)
-    ((a op b) op c).underlying shouldEqual (a op (b op c)).underlying
-  }
-  
-  "An Int Associative (Semigroup) " should  "have a binaray associative op" in {
-    val intAssoc = new IntMultiAssociative()
-    val a = intAssoc(1)
-    val b = intAssoc(64)
-    val c = intAssoc(256)
     ((a op b) op c) shouldEqual (a op (b op c))
   }
   
+  "An Int Associative (Semigroup) " should  "have a binaray associative op" in {
+    implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
+    val intAssoc = new IntMultiAssociative()
+    val a = intAssoc(1)
+    val b = 64
+    val c = 256
+    ((a op b) op c) shouldEqual (a op (b op c))
+   }
+    
   "A BadSubstractionAssociative " should  " fail to be associative" in {
+    implicit def Int2IntBadSubAssociativeAdapter(x: Int): BadSubstractionAA = new BadSubstractionAssociative().apply(x)
     val badSubAssoc = new BadSubstractionAssociative()
     val a = badSubAssoc(1)
-    val b = badSubAssoc(64)
-    val c = badSubAssoc(256)
+    val b = 64
+    val c = 256
     ((a op b) op c) should not be (a op (b op c))
-  }
+   }
   
 }
