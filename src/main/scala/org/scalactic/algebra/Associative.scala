@@ -23,13 +23,17 @@ import scala.language.higherKinds
  * a zero, or identity element.
  */
 trait Associative[A] {
+  
+  def apply(a: A): AssociativeAdapter[A]
     
-  val underlying: A
+}
+
+trait AssociativeAdapter[A] {
 
   /**
    * An associative binary operation that is 
    * required to satisfy the Associate/Semigroup laws.
    */ 
-  def op(other: Associative[A]): Associative[A]
-    
+  def op(other: A): AssociativeAdapter[A]
+  
 }

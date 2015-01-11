@@ -19,42 +19,65 @@ import org.scalactic.UnitSpec
 import org.scalactic.Every
 
 class AssociativeSpec extends UnitSpec {
+  
+  // Every Associative
+  class EveryAssociative[A] extends Associative[Every[A]] {
+    def apply(a: Every[A]): EveryAssociativeAdapter[A] = EveryAssociativeAdapter(a)
+  }
+  
+  case class EveryAssociativeAdapter[A](underlying: Every[A]) extends AssociativeAdapter[Every[A]] {
+    def op(other: Every[A]): EveryAssociativeAdapter[A] = EveryAssociativeAdapter(underlying ++ other)
+  }
 
-  // Every non-empty vector    
-  case class EveryAssociative[A](underlying: Every[A]) extends Associative[Every[A]] {
+  implicit def Every2EveryAssociativeAdapter[A](every: Every[A]) = new EveryAssociative[A].apply(every)
+  implicit def EveryAssociativeAdapter2Every[A](adapt: EveryAssociativeAdapter[A]): Every[A] = adapt.underlying
+  
+  // Int Multiplication Associatvie
+  class IntMultiAssociative extends Associative[Int] {
+    def apply(x: Int): IntMultiAA = IntMultiAA(x)
+  }
+
+  case class IntMultiAA(underlying: Int) extends AssociativeAdapter[Int] {
     override 
-    def op(other: Associative[Every[A]]): EveryAssociative[A] = EveryAssociative(underlying ++ other.underlying)
+    def op(other: Int): IntMultiAA = IntMultiAA(underlying * other)
+  }
+  implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
+  implicit def IntMultiAA2Int(adapt: IntMultiAA): Int = adapt.underlying
+  
+  // Bad case Substraction Associative, should fail.
+  class BadSubstractionAssociative extends Associative[Int] {
+    override 
+    def apply(x: Int): BadSubstractionAA = BadSubstractionAA(x)
   }
   
-  case class IntMultiplicationAssociative(underlying: Int) extends Associative[Int] {
+  case class BadSubstractionAA(underlying: Int) extends AssociativeAdapter[Int] {
     override 
-    def op(other: Associative[Int]): IntMultiplicationAssociative = IntMultiplicationAssociative(underlying * other.underlying )
+    def op(other: Int): BadSubstractionAA = BadSubstractionAA(underlying - other)
   }
+  implicit def Int2IntBadSubAssociativeAdapter(x: Int): BadSubstractionAA = new BadSubstractionAssociative().apply(x)
+  implicit def BadSubstractionAA2Int(adapt: BadSubstractionAA): Int = adapt.underlying
   
-  case class BadSubstractionAssociative(underlying: Int) extends Associative[Int] {
-    override 
-    def op(other: Associative[Int]): BadSubstractionAssociative = BadSubstractionAssociative(underlying - other.underlying )
-  }
-    
   "An Every Associative (Semigroup) " should " have a binaray associative op" in {
-    val a = EveryAssociative(Every(1,2))
-    val b = EveryAssociative(Every(5,6,7))
-    val c = EveryAssociative(Every(9,9))
-    ((a op b) op c) shouldEqual (a op (b op c))
+    val a = Every(1,2)
+    val b = Every(5,6,7)
+    val c = Every(9,9)
+    ((a op b) op c).underlying shouldEqual (a op (b op c)).underlying
   }
   
   "An Int Associative (Semigroup) " should  "have a binaray associative op" in {
-    val a = IntMultiplicationAssociative(1)
-    val b = IntMultiplicationAssociative(64)
-    val c = IntMultiplicationAssociative(256)
+    val intAssoc = new IntMultiAssociative()
+    val a = intAssoc(1)
+    val b = intAssoc(64)
+    val c = intAssoc(256)
     ((a op b) op c) shouldEqual (a op (b op c))
   }
   
   "A BadSubstractionAssociative " should  " fail to be associative" in {
-      val a = BadSubstractionAssociative(1)
-      val b = BadSubstractionAssociative(64)
-      val c = BadSubstractionAssociative(256)
-      ((a op b) op c) should not be (a op (b op c))
+    val badSubAssoc = new BadSubstractionAssociative()
+    val a = badSubAssoc(1)
+    val b = badSubAssoc(64)
+    val c = badSubAssoc(256)
+    ((a op b) op c) should not be (a op (b op c))
   }
   
 }
