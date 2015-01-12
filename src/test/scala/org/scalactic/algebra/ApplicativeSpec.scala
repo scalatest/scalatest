@@ -22,7 +22,7 @@ class ApplicativeSpec extends UnitSpec {
 
   "Option" should "obey the applicative functor laws" in {
     class OptionApplicativeAdapter[A](ap: Applicative[Option], optA: Option[A]) extends ApplicativeAdapter[Option, A](ap, optA) {
-      override def applying[B](optAB: Option[A => B]): Option[B] = optA.map(optAB.get)
+      override def applying[B](optAB: Option[A => B]): Option[B] = optAB.flatMap(ab => optA.map(ab))
     }
     class OptionApplicativeAdapter2[A, B](ap: Applicative[Option], optA: Option[A], optB: Option[B]) extends ApplicativeAdapter2[Option, A, B](ap, optA, optB)
     class OptionApplicativeAdapter3[A, B, C](ap: Applicative[Option], optA: Option[A], optB: Option[B], optC: Option[C]) extends ApplicativeAdapter3[Option, A, B, C](ap, optA, optB, optC)
