@@ -37,42 +37,33 @@ trait Applicative[Context[_]] {
 }
 
 abstract class ApplicativeAdapter[Context[_], A](ap: Applicative[Context], ca: Context[A]) {
-  def inMap[B](cab: Context[A => B]): Context[B]
+  def applying[B](cab: Context[A => B]): Context[B]
 
-  def map[B](f: A => B): Context[B] = inMap(ap.insert(f))
+  def map[B](f: A => B): Context[B] = applying(ap.insert(f))
 }
 
 class ApplicativeAdapter2[Context[_], A, B](ap: Applicative[Context], ca: Context[A], cb: Context[B]) {
 
-  def inMapAll[C](cf: Context[(A, B) => C]): Context[C] = {
-    val ap1 = ap.apply(ca).inMap(ap.apply(cf).map(_.curried))
-    val ap2 = ap.apply(cb).inMap(ap1)
+  def applying[C](cf: Context[(A, B) => C]): Context[C] = {
+    val ap1 = ap.apply(ca).applying(ap.apply(cf).map(_.curried))
+    val ap2 = ap.apply(cb).applying(ap1)
     ap2
   }
 
-  def mapAll[C](f: (A, B) => C): Context[C] = {
-    val ap1 = ap.apply(ca).inMap(ap.insert(f.curried))  // gives us Context[B => C] with A partially applied
-    val ap2 = ap.apply(cb).inMap(ap1)
-    ap2
-  }
+  def mapAll[C](f: (A, B) => C): Context[C] = applying(ap.insert(f))
 
   def tupled: ApplicativeAdapter[Context, (A, B)] = ap.apply(mapAll((_,_)))
 }
 
 class ApplicativeAdapter3[Context[_], A, B, C](ap: Applicative[Context], ca: Context[A], cb: Context[B], cc: Context[C]) {
-  def inMapAll[D](cf: Context[(A, B, C) => D]): Context[D] = {
-    val ap1 = ap.apply(ca).inMap(ap.apply(cf).map(_.curried))
-    val ap2 = ap.apply(cb).inMap(ap1)
-    val ap3 = ap.apply(cc).inMap(ap2)
+  def applying[D](cf: Context[(A, B, C) => D]): Context[D] = {
+    val ap1 = ap.apply(ca).applying(ap.apply(cf).map(_.curried))
+    val ap2 = ap.apply(cb).applying(ap1)
+    val ap3 = ap.apply(cc).applying(ap2)
     ap3
   }
 
-  def mapAll[D](f: (A, B, C) => D): Context[D] = {
-    val ap1 = ap.apply(ca).inMap(ap.insert(f.curried))  // gives us Context[B => C] with A partially applied
-    val ap2 = ap.apply(cb).inMap(ap1)
-    val ap3 = ap.apply(cc).inMap(ap2)
-    ap3
-  }
+  def mapAll[D](f: (A, B, C) => D): Context[D] = applying(ap.insert(f))
 
   def tupled: ApplicativeAdapter[Context, (A, B, C)] = ap.apply(mapAll((_,_,_)))
 }

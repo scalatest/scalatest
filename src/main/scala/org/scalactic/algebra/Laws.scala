@@ -21,24 +21,38 @@ import org.scalatest.Matchers._
 
 import scala.language.higherKinds
 
+abstract class Laws(val lawsName: String) {
+  // in order to allow access to the law name, a law takes the law name as a parameter
+  type Law = String => Fact
+  //val laws: Seq[Law]
+  def test(): Fact
+  //def test: Fact = laws.map(_.test()).reduceLeft(_ && _)
+  def assert(): Unit = test() shouldBe a [Yes]
+}
+
+object Laws {
+  // note: should probably be a method on object Fact that takes pos, neg, and boolean, e.g.
+  //   Fact(expr, "is larger than the max size", "is not larger than the max size")
+  def yes(lawsName: String, lawName: String) = Yes("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
+  def no(lawsName: String, lawName: String) = No("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
+}
+
+/**
+ * A law is a requirement expressed in the form of a boolean expression
+ * augmented with explanatory information.  As generalized, laws take no
+ * parameters, but are rather designed to be used where required parameters
+ * are in scope.  Commonly, this will be a class that takes implicit generators
+ * for any required parameters.
+ */
 trait Law {
   val name: String
-  val test: () => Fact
-
-  def assert(): Unit = test() shouldBe a [Yes]
-  val no = No("does not satisfy the $name", "satisfies the $name")
-  val yes = Yes("does not satisfy the $name", "satisfies the $name")
+  val test: String => Fact
+  def assert(): Unit = test(name) shouldBe a [Yes]
 }
 
-trait Laws[Context[_]] {
-  val name: String
-  def laws: Every[Law]
-  def test: Fact = laws.map(_.test()).reduceLeft(_ && _)
-  def assert(): Unit = laws foreach (_.assert())
-}
 
 object Law {
-  def apply(lawName: String)(code: () => Fact) = new Law {
+  def apply(lawName: String)(code: String => Fact): Law = new Law {
     override val name = lawName
     override val test = code
   }

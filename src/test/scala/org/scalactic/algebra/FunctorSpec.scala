@@ -15,26 +15,95 @@
  */
 package org.scalactic.algebra
 
-import org.scalactic.UnitSpec
+import org.scalacheck.Arbitrary
+import org.scalactic.{Bad, Good, Or, UnitSpec}
 
 class FunctorSpec extends UnitSpec {
 
   class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorAdapter[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
   }
-  "A FunctorProxy" should "offer a map method that has the usual signature" in {
-    val proxy = new OptionFunctorProxy(Some(3))
-    proxy.map(_ + 1) shouldEqual Some(4)
+
+  "Option" should "obey the functor laws via its map method" in {
+    class OptionFunctorAdapter[T](opt: Option[T]) extends FunctorAdapter[Option, T] {
+      override def map[U](f: (T) => U): Option[U] = opt.map(f)
+    }
+
+    implicit object OptionFunctor extends Functor[Option] {
+      def apply[T](opt: Option[T]) = new OptionFunctorProxy[T](opt)
+    }
+
+    new FunctorLaws[Option]().assert()
   }
 
-  "A Functor" should "offer an apply method that takes a TC[_] instance" in {
-    class OptionFunctor extends Functor[Option] {
-      def apply[T](opt: Option[T]): FunctorAdapter[Option, T] = new OptionFunctorProxy[T](opt)
+  "List" should "obey the functor laws via its map method" in {
+    class ListFunctorAdapter[T](list: List[T]) extends FunctorAdapter[List, T] {
+      override def map[U](f: (T) => U): List[U] = list.map(f)
     }
-    val opt = Some(3)
-    val optFun = new OptionFunctor
-    val proxy = optFun(opt)
-    proxy.map(_ + 1) shouldEqual Some(4)
+
+    implicit object ListFunctor extends Functor[List] {
+      def apply[T](list: List[T]) = new ListFunctorAdapter[T](list)
+    }
+
+    new FunctorLaws[List]().assert()
   }
+
+  /**
+   * This trait is used to curry the type parameters of Or, which takes two type parameters,
+   * into a type (the trait) which takes one parameter, and another (the type member) which
+   * takes the other.  The resulting type (OrWithBad[B]#AndGood) takes a single (Good) type
+   * parameter.
+   */
+  trait OrWithBad[B] {
+    type AndGood[G] = G Or B
+  }
+
+  /**
+   * This trait is used to curry the type parameters of Or, which takes two type parameters,
+   * into a type (the trait) which takes one parameter, and another (the type member) which
+   * takes the other.  The resulting type (OrWithGood[G]#AndBad) takes a single (Bad) type
+   * parameter.
+   */
+  trait OrWithGood[G] {
+    type AndBad[B] = G Or B
+  }
+
+  // generator used for verifying the Good nature of Or
+  def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+
+  // generator used for verifying the Bad nature of Or
+  def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] = Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
+
+
+  "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
+
+    class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithBad[Bad]#AndGood, Good] {
+      def map[C](gc: Good => C): C Or Bad = ctx.map(gc)
+    }
+
+    implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#AndGood] = new Functor[OrWithBad[B]#AndGood] {
+      def apply[G](ctx: G Or B) = new GoodOrFunctorProxy[G, B](ctx)
+    }
+
+    implicit def orArb[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = orArbGood
+
+    new FunctorLaws[OrWithBad[Int]#AndGood]().assert()
+  }
+
+  "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
+
+    class BadOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithGood[Good]#AndBad, Bad] {
+      def map[C](bc: Bad => C): Good Or C = ctx.badMap(bc)
+    }
+
+    implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] = new Functor[OrWithGood[G]#AndBad] {
+      def apply[B](ctx: G Or B) = new BadOrFunctorProxy[G, B](ctx)
+    }
+
+    implicit def orArb[G, B](implicit arbB: Arbitrary[B]): Arbitrary[G Or B] = orArbBad
+
+    new FunctorLaws[OrWithGood[Int]#AndBad]().assert()
+  }
+
 }
 

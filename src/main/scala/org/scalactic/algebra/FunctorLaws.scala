@@ -1,54 +1,49 @@
 package org.scalactic.algebra
 
 import org.scalacheck._
-import org.scalactic.CheckedEquality._
-import org.scalactic.Every
+
+import org.scalactic.{Equality, CheckedEquality}
 import org.scalatest._
+import org.scalatest.Matchers._
+
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
 import scala.language.higherKinds
 
-class FunctorLaws {}
 /**
- * Implementation of Laws for Funcgtors
+ *
  */
-/**
-class FunctorLaws[Context[_], A, B, C](implicit functor: Functor[Context],
-  arbCa: Arbitrary[Context[A]],
-  shrCa: Shrink[Context[A]],
-  arbAb: Arbitrary[A => B],
-  shrAb: Shrink[A => B],
-  arbBc: Arbitrary[B => C],
-  shrBc: Shrink[B => C]) extends Laws[Context] {
 
-  val name = "Functor Laws"
+class FunctorLaws[Context[_]](implicit functor: Functor[Context],
+  arbCa: Arbitrary[Context[Int]],
+  shrCa: Shrink[Context[Int]],
+  arbAb: Arbitrary[Int => String],
+  shrAb: Shrink[Int => String],
+  arbBc: Arbitrary[String => Double],
+  shrBc: Shrink[String => Double],
+  aqCa: Equality[Context[Int]]) extends Laws("functor") {
 
-  val laws = Every  (
-    new Law {
-      override val name = "functorIdentityLaw"
-      override val test() = {
-        forAll { (ca: Context[A]) =>
-          val fca = functor(ca)
-          if ( (fca map identity[A]) !== ca )
-            return no
-        }
-        yes
+  def id(): Fact = {
+    val lawName = "identity"
+    forAll { (ca: Context[Int]) =>
+      //if (true) {
+      if (functor(ca).map(identity[Int]) !== ca) {
+        return Laws.no(lawsName, lawName)
       }
     }
-  )
+    Laws.yes(lawsName, lawName)
+  }
 
-    if ((functor(ca) map identity[A]) == ca)
-      Yes("Obeys ")
+  def composition(): Fact = {
+    val lawName = "composition"
+    // (ca map f map g) should be equal to (ca map (g(f))
+    forAll { (ca: Context[Int], ab: Int => String, bc: String => Double) =>
+      if ((functor(functor(ca) map ab) map bc) !== (functor(ca) map (bc compose ab)))
+        return Laws.no(lawsName, lawName)
+    }
+    Laws.yes(lawsName, lawName)
+  }
+
+  override def test = id() && composition()
+
 }
-    **/
-
-/*
-    val checkFunctorIdentity: Law = () =>
-
-    // conforms if (ca map f map g) is the same as (ca map (g(f)), via the proxy
-    val checkFunctorComposition: Law = () =>
-      forAll { (ca: Context[A], ab: A => B, bc: B => C) =>
-        (fun(fun(ca) map ab) map bc) shouldEqual (fun(ca) map (bc compose ab))
-      }
-
- */
