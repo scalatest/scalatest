@@ -22,45 +22,27 @@ class AssociativeSpec extends UnitSpec {
   
   // Every Associative
   class EveryAssociative[A] extends Associative[Every[A]] {
-    def apply(a: Every[A]): EveryAssociativeAdapter[A] = EveryAssociativeAdapter(a)
-  }
-  
-  case class EveryAssociativeAdapter[A](underlying: Every[A]) extends AssociativeAdapter[Every[A]] {
-    def op(other: Every[A]): Every[A] = underlying ++ other
+    def op(a: Every[A], b: Every[A]): Every[A] = a ++ b
   }
 
-  implicit def Every2EveryAssociativeAdapter[A](every: Every[A]) = new EveryAssociative[A].apply(every)
-  
   // Int Multiplication Associatvie
   class IntMultiAssociative extends Associative[Int] {
-    def apply(x: Int): IntMultiAA = IntMultiAA(x)
+    def op(a: Int, b: Int): Int = a * b
   }
 
-  case class IntMultiAA(underlying: Int) extends AssociativeAdapter[Int] {
-    override 
-    def op(other: Int): Int = underlying * other
-  }
-  
-  // Bad case Substraction Associative, should fail.
-  class BadSubstractionAssociative extends Associative[Int] {
-    override 
-    def apply(x: Int): BadSubstractionAA = BadSubstractionAA(x)
-  }
-  
-  case class BadSubstractionAA(underlying: Int) extends AssociativeAdapter[Int] {
-    override 
-    def op(other: Int): Int = underlying - other
-  }
-  
-  "An Every Associative (Semigroup) " should " have a binaray associative op" in {
+  "An Every Associative (Semigroup)" should "have a binary associative op" in {
+    implicit val assoc = new EveryAssociative[Int]
+    import AssociativeAdapter.adapt
     val a = Every(1,2)
     val b = Every(5,6,7)
     val c = Every(9,9)
     ((a op b) op c) shouldEqual (a op (b op c))
   }
   
-  "An Int Associative (Semigroup) " should  "have a binaray associative op" in {
-    implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
+  "An Int Associative (Semigroup)" should  "have a binary associative op" in {
+    // implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
+    implicit val assoc = new IntMultiAssociative
+    import AssociativeAdapter.adapt
     val intAssoc = new IntMultiAssociative()
     val a = intAssoc(1)
     val b = 64
@@ -68,13 +50,26 @@ class AssociativeSpec extends UnitSpec {
     ((a op b) op c) shouldEqual (a op (b op c))
    }
     
-  "A BadSubstractionAssociative " should  " fail to be associative" in {
-    implicit def Int2IntBadSubAssociativeAdapter(x: Int): BadSubstractionAA = new BadSubstractionAssociative().apply(x)
+  "A BadSubstractionAssociative" should  "fail to be associative" in {
+    // Bad case Substraction Associative, should fail.
+    class BadSubstractionAssociative extends Associative[Int] {
+      def op(a: Int, b: Int): Int = a - b
+    }
+    implicit val assoc = new BadSubstractionAssociative 
+    import AssociativeAdapter.adapt
     val badSubAssoc = new BadSubstractionAssociative()
     val a = badSubAssoc(1)
     val b = 64
     val c = 256
     ((a op b) op c) should not be (a op (b op c))
    }
-  
+
+   "Associative" should "offer an op method directly" in {
+     val a = Every(1,2)
+     val b = Every(5,6,7)
+     val c = Every(9,9)
+     val assoc = new EveryAssociative[Int]
+     import assoc.op
+     op(op(a, b), c) shouldEqual op(a, op(b, c))
+   }
 }
