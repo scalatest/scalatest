@@ -83,7 +83,7 @@ class TableDrivenPropertyCheckFailedException(
    * the modified optional payload for the result instance of <code>TableDrivenPropertyCheckFailedException</code>.
    */
   override def modifyPayload(fun: Option[Any] => Option[Any]): TableDrivenPropertyCheckFailedException = {
-    val currentPayload = payload
+    val currentPayload: Option[Any] = payload
     val mod =
       new TableDrivenPropertyCheckFailedException(
         messageFun,

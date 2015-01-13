@@ -199,7 +199,7 @@ private[scalatest] object TypeMatcherMacro {
     import context.universe._
 
     // create a negated matcher from notATypeMatcher
-    val rhs = notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = notATypeMatcher(context)(aType)
 
     /**
      * Generate AST for code that call the 'and' method on the Matcher instance (reference through 'owner'):
@@ -231,7 +231,7 @@ private[scalatest] object TypeMatcherMacro {
     import context.universe._
 
     // create a negated matcher from notAnTypeMatcher
-    val rhs = notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = notAnTypeMatcher(context)(anType)
 
     /**
      * Generate AST for code that call the 'and' method on the Matcher instance (reference through 'owner'):
@@ -263,7 +263,7 @@ private[scalatest] object TypeMatcherMacro {
     import context.universe._
 
     // create a negated matcher from notATypeMatcher
-    val rhs = notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = notATypeMatcher(context)(aType)
 
     /**
      * Generate AST for code that call the 'or' method on the Matcher instance (reference through 'owner'):
@@ -295,7 +295,7 @@ private[scalatest] object TypeMatcherMacro {
     import context.universe._
 
     // create a negated matcher from notAnTypeMatcher
-    val rhs = notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = notAnTypeMatcher(context)(anType)
 
     /**
      * Generate AST for code that call the 'or' method on the Matcher instance (reference through 'owner'):

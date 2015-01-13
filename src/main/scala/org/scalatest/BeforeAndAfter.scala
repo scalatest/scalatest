@@ -116,8 +116,8 @@ import exceptions.NotAllowedException
  */
 trait BeforeAndAfter extends SuiteMixin { this: Suite =>
 
-  private val beforeFunctionAtomic = new AtomicReference[Option[() => Any]](None)
-  private val afterFunctionAtomic = new AtomicReference[Option[() => Any]](None)
+  private val beforeFunctionAtomic: AtomicReference[Option[() => Any]] = new AtomicReference[Option[() => Any]](None)
+  private val afterFunctionAtomic: AtomicReference[Option[() => Any]] = new AtomicReference[Option[() => Any]](None)
   @volatile private var runHasBeenInvoked = false
 
   /**

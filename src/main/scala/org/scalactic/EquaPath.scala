@@ -1925,7 +1925,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def toArray: Array[T] = {
       // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
       // No ClassTag available for T
-      val arr = new Array[Any](underlying.size)
+      val arr: Array[Any] = new Array[Any](underlying.size)
       underlying.map(_.value).copyToArray(arr)
       arr.asInstanceOf[Array[T]]
     }

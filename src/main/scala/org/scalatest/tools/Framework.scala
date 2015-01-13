@@ -950,7 +950,7 @@ class Framework extends SbtFramework {
         class React(is: ObjectInputStream) {
           @annotation.tailrec 
           final def react() { 
-            val event = is.readObject
+            val event: AnyRef = is.readObject
             event match {
               case e: TestStarting =>
                 dispatchReporter(e) 

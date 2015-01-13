@@ -39,7 +39,7 @@ class ShouldNotShorthandForAllSpec extends Spec with EmptyMocks with BookPropert
       all(List(otherString)) shouldNot { be theSameInstanceAs (string) }
       all(List(otherString)) shouldNot be theSameInstanceAs (string)
       
-      val list1 = List(obj)
+      val list1: List[AnyRef] = List(obj)
       val caught1 = intercept[TestFailedException] {
         all(list1) shouldNot { be theSameInstanceAs (string) }
       }
@@ -47,7 +47,7 @@ class ShouldNotShorthandForAllSpec extends Spec with EmptyMocks with BookPropert
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
-      val list2 = List(obj)
+      val list2: List[AnyRef] = List(obj)
       val caught2 = intercept[TestFailedException] {
         all(list2) shouldNot be theSameInstanceAs string
       }

@@ -2901,7 +2901,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def andNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notATypeMatcher(context)(aType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2924,7 +2924,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def orNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notATypeMatcher(context)(aType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2947,7 +2947,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def andNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2970,7 +2970,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def orNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>

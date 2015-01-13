@@ -46,7 +46,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
         case s: StringWrapper => true
         case _ => false
       }
-    def normalizedOrSame(b: Any) =
+    def normalizedOrSame(b: Any): Any =
       b match {
         case s: StringWrapper => normalized(s)
         case _ => b
@@ -90,7 +90,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
                 false
             case _ => false
           }
-        def normalizedOrSame(b: Any) =
+        def normalizedOrSame(b: Any): Any =
           b match {
             case arr: Array[_] =>
               if (arr.forall(_.isInstanceOf[String]))

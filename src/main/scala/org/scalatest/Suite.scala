@@ -1714,7 +1714,7 @@ private[scalatest] object Suite {
   
   // If the objects are two strings, replace them with whatever is returned by diffStrings.
   // Otherwise, use the same objects.
-  def getObjectsForFailureMessage(a: Any, b: Any) = Prettifier.getObjectsForFailureMessage(a, b)
+  def getObjectsForFailureMessage(a: Any, b: Any): (Any, Any) = Prettifier.getObjectsForFailureMessage(a, b)
 
   //
   // Use MotionToSuppress on aggregator Suites, i.e. Suites that
@@ -1938,7 +1938,7 @@ used for test events like succeeded/failed, etc.
 
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload
@@ -1972,7 +1972,7 @@ used for test events like succeeded/failed, etc.
       recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]) {
 
     val message = getMessageForException(throwable)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload
@@ -2346,7 +2346,7 @@ used for test events like succeeded/failed, etc.
   ) {
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testName, 1, true)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload

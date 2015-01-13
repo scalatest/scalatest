@@ -188,7 +188,7 @@ class TestFailedException(
    * the modified optional payload for the result instance of <code>TestFailedException</code>.
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedException = {
-    val currentPayload = payload
+    val currentPayload: Option[Any] = payload
     val mod = new TestFailedException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod

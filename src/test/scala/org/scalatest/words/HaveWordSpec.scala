@@ -184,7 +184,7 @@ class HaveWordSpec extends Spec with Matchers {
     
     object `apply(ResultOfLengthWordApplication) method returns MatcherFactory1` {
       
-      val mtf = have (new ResultOfLengthWordApplication(3))
+      val mtf: matchers.MatcherFactory1[Any, enablers.Length] = have (new ResultOfLengthWordApplication(3))
       val mt = mtf.matcher[Array[Int]]
       
       def `should have pretty toString` {
@@ -236,7 +236,7 @@ class HaveWordSpec extends Spec with Matchers {
     
     object `size(ResultOfSizeWordApplication) method returns MatcherFactory1` {
       
-      val mtf = have (new ResultOfSizeWordApplication(3))
+      val mtf: matchers.MatcherFactory1[Any, enablers.Size] = have (new ResultOfSizeWordApplication(3))
       val mt = mtf.matcher[Array[Int]]
       
       def `should have pretty toString` {

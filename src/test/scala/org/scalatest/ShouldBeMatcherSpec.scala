@@ -389,7 +389,7 @@ class ShouldBeMatcherSpec extends Spec with Checkers with ReturnsNormallyThrowsA
         }
       }
       val unlikable = new UnlikableMatcher
-      val likable = not (unlikable)
+      val likable: matchers.BeMatcher[Any] = not (unlikable)
 
       1 should be (likable)
       2 should not be (unlikable)

@@ -242,7 +242,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * 
    * @param    testName    the name of the test method to be executed
    */
-  private def setupTestNGToRunSingleMethod(testName: String, testng: TestNG) = {
+  private def setupTestNGToRunSingleMethod(testName: String, testng: TestNG): AnyRef = {
     // NOTE: There was another option - we could TestNG's XmlSuites to specify which method to run.
     // This approach was about as much work, offered no clear benefits, and no additional problems either.
     
@@ -324,13 +324,13 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
       val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources("testNGConfigFailed")
       val testName = result.getName + params(result)
       val formatter = getIndentedTextForTest(testName, 1, true)
-      val payload = 
-      throwable match {
-        case optPayload: PayloadField => 
-          optPayload.payload
-        case _ => 
-          None
-      }
+      val payload: Option[Any] =
+        throwable match {
+          case optPayload: PayloadField =>
+            optPayload.payload
+          case _ =>
+            None
+        }
       report(TestFailed(tracker.nextOrdinal(), message, thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), testName, testName, Vector.empty, throwable, None, Some(formatter), Some(SeeStackDepthException), Some(className), payload)) // Can I add a duration?
       status.setFailed()
     }

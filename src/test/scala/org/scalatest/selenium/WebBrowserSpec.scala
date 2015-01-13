@@ -787,9 +787,9 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
   describe("executeScript") {
     it("should execute the passed JavaScript") {
       go to (host + "index.html")
-      val result1 = executeScript("return document.title;")
+      val result1: AnyRef = executeScript("return document.title;")
       result1 should be ("Test Title")
-      val result2 = executeScript("return 'Hello ' + arguments[0]", "ScalaTest")
+      val result2: AnyRef = executeScript("return 'Hello ' + arguments[0]", "ScalaTest")
       result2 should be ("Hello ScalaTest")
     }
   }
@@ -802,7 +802,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
         window.setTimeout(function() {callback('Hello ScalaTest')}, 500);
         """
       setScriptTimeout(1 second)
-      val result = executeAsyncScript(script)
+      val result: AnyRef = executeAsyncScript(script)
       result should be ("Hello ScalaTest")
     }
   }

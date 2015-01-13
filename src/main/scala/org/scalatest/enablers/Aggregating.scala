@@ -183,7 +183,7 @@ object Aggregating {
     @tailrec
     def findNext(value: T, rightItr: Iterator[Any], processedSet: Set[Any]): Set[Any] = 
       if (rightItr.hasNext) {
-        val nextRight = rightItr.next
+        val nextRight: Any = rightItr.next
         if (tryEquality(nextRight, value, equality))
           processedSet + nextRight
         else
@@ -199,7 +199,7 @@ object Aggregating {
         if (processedSet.find(tryEquality(_, nextLeft, equality)).isDefined) // The nextLeft is contained in right, let's continue next
           checkEqual(leftItr, rightItr, processedSet)
         else {
-          val newProcessedSet = findNext(nextLeft, rightItr, processedSet)
+          val newProcessedSet: Set[Any] = findNext(nextLeft, rightItr, processedSet)
           if (newProcessedSet.find(tryEquality(_, nextLeft, equality)).isDefined) // The nextLeft is contained in right, let's continue next
             checkEqual(leftItr, rightItr, newProcessedSet)
           else // The nextLeft is not in right, let's fail early
@@ -216,7 +216,7 @@ object Aggregating {
     @tailrec
     def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
-        val nextRight = rightItr.next
+        val nextRight: Any = rightItr.next
         if (left.exists(t => equality.areEqual(t, nextRight))) 
           checkEqual(left, rightItr)
         else

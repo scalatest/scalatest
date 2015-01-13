@@ -45,9 +45,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assert(a1 === a2)
       intercept[TestFailedException] {
@@ -55,9 +55,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assert(a1 === a2)
       intercept[TestFailedException] {
@@ -117,14 +117,6 @@ class AssertionsSpec extends FunSpec {
       caught.someRandomMethod()
     }
 
-    it("should return the caught exception") {
-      val e = new RuntimeException
-      val result = intercept[RuntimeException] {
-        throw e
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      assert(result eq e)
-    }
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
@@ -5815,9 +5807,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1) { a2 }
       intercept[TestFailedException] {
@@ -5825,9 +5817,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1) { a2 }
       intercept[TestFailedException] {
@@ -5877,9 +5869,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1, "a clue") { a2 }
       intercept[TestFailedException] {
@@ -5887,9 +5879,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1, "a clue") { a2 }
       intercept[TestFailedException] {

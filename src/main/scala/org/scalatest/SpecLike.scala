@@ -104,7 +104,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
               val scopeDesc = getScopeDesc(m)
               def scopeFun = {
                 try {
-                  val scopeObj = m.invoke(o)
+                  val scopeObj: AnyRef = m.invoke(o)
                   register(scopeObj)
                 }
                 catch {

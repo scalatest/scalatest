@@ -1576,7 +1576,7 @@ final class NotWord {
       def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedKey = resultOfKeyWordApplication.expectedKey
+            val expectedKey: Any = resultOfKeyWordApplication.expectedKey
             MatchResult(
               !keyMapping.containsKey(left, expectedKey),
               Resources("containedKey"),
@@ -1604,7 +1604,7 @@ final class NotWord {
       def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedValue = resultOfValueWordApplication.expectedValue
+            val expectedValue: Any = resultOfValueWordApplication.expectedValue
             MatchResult(
               !valueMapping.containsValue(left, expectedValue),
               Resources("containedValue"),
