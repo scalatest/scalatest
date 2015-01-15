@@ -16,6 +16,7 @@
 package org.scalactic.algebra
 
 import scala.language.higherKinds
+import scala.language.implicitConversions
 
 /**
  * Trait representing a binary operation that obeys the associative law.
@@ -38,18 +39,7 @@ trait Associative[A] {
   /**
    * Wraps an object in an <code>AssociativeAdapter</code>.
    */
-  def apply(a: A): AssociativeAdapter[A] = new AssociativeAdapter(this, a)
-}
-
-/**
- * Adapter class for <code>Associative</code>.
- */
-class AssociativeAdapter[A](associative: Associative[A], a1: A) {
-
-  /**
-   * A binary operation that obeys the associative law.
-   */ 
-  def op(a2: A): A = associative.op(a1, a2)
+  def adapt(a: A): Associative.Adapter[A] = new Associative.Adapter(this, a)
 }
 
 /**
@@ -57,12 +47,24 @@ class AssociativeAdapter[A](associative: Associative[A], a1: A) {
  * an implicit conversion that wraps an object in an <code>AssociativeAdapter</code>
  * so long as an implicit <code>Associative</code> is available.
  */
-object AssociativeAdapter {
+object Associative {
+
+  /**
+   * Adapter class for <code>Associative</code>.
+   */
+  class Adapter[A](val associative: Associative[A], a1: A) {
+
+    /**
+     * A binary operation that obeys the associative law.
+     */ 
+    def op(a2: A): A = associative.op(a1, a2)
+  }
+
   /**
    * Implicitly wraps an object in an <code>AssociativeAdapter</code>
    * so long as an implicit <code>Associative</code> is available.
    */
-  implicit def adapt[A](a: A)(implicit ev: Associative[A]): AssociativeAdapter[A] = ev(a)
+  implicit def conversions[A](a: A)(implicit ev: Associative[A]): Associative.Adapter[A] = ev.adapt(a)
 }
 
 

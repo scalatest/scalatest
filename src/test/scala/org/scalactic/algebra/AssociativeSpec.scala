@@ -32,7 +32,7 @@ class AssociativeSpec extends UnitSpec {
 
   "An Every Associative (Semigroup)" should "have a binary associative op" in {
     implicit val assoc = new EveryAssociative[Int]
-    import AssociativeAdapter.adapt
+    import Associative.conversions
     val a = Every(1,2)
     val b = Every(5,6,7)
     val c = Every(9,9)
@@ -42,9 +42,9 @@ class AssociativeSpec extends UnitSpec {
   "An Int Associative (Semigroup)" should  "have a binary associative op" in {
     // implicit def Int2IntMultiAA(x: Int): IntMultiAA = new IntMultiAssociative().apply(x)
     implicit val assoc = new IntMultiAssociative
-    import AssociativeAdapter.adapt
+    import Associative.conversions
     val intAssoc = new IntMultiAssociative()
-    val a = intAssoc(1)
+    val a = intAssoc.adapt(1)
     val b = 64
     val c = 256
     ((a op b) op c) shouldEqual (a op (b op c))
@@ -56,9 +56,9 @@ class AssociativeSpec extends UnitSpec {
       def op(a: Int, b: Int): Int = a - b
     }
     implicit val assoc = new BadSubstractionAssociative 
-    import AssociativeAdapter.adapt
+    import Associative.conversions
     val badSubAssoc = new BadSubstractionAssociative()
-    val a = badSubAssoc(1)
+    val a = badSubAssoc.adapt(1)
     val b = 64
     val c = 256
     ((a op b) op c) should not be (a op (b op c))
