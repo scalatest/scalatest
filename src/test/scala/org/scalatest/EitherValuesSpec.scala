@@ -33,9 +33,9 @@ class EitherValuesSpec extends FunSpec {
     it("should throw TestFailedException if left.value is empty") {
       val e: Either[String, String] = Right("hi there")
       val caught = 
-        evaluating {
+        the [TestFailedException] thrownBy {
           e.left.value should startWith ("hi")
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
       caught.message.value should be (Resources("eitherLeftValueNotDefined"))
@@ -50,9 +50,9 @@ class EitherValuesSpec extends FunSpec {
     it("should throw TestFailedException if right.value is empty") {
       val e: Either[String, String] = Left("hi there")
       val caught = 
-        evaluating {
+        the [TestFailedException] thrownBy {
           e.right.value should startWith ("hi")
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
       caught.message.value should be (Resources("eitherRightValueNotDefined"))

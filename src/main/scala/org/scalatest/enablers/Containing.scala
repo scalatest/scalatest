@@ -194,11 +194,11 @@ object Containing {
       import scala.collection.JavaConverters._
       def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         
-        val foundSet = checkOneOf[E](javaColl.asScala, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[E](javaColl.asScala, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](javaColl.asScala, elements, equality)
+        val found: Option[Any] = checkNoneOf[E](javaColl.asScala, elements, equality)
         !found.isDefined
       }
     }
@@ -240,17 +240,17 @@ object Containing {
       def contains(trav: TRAV[E], ele: Any): Boolean = {
         equality match {
           case normEq: NormalizingEquality[_] => 
-            val normRight = normEq.normalizedOrSame(ele)
+            val normRight: Any = normEq.normalizedOrSame(ele)
             trav.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
           case _ => trav.exists((e: E) => equality.areEqual(e, ele))
         }
       }
       def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[E](trav, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[E](trav, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](trav, elements, equality)
+        val found: Option[Any] = checkNoneOf[E](trav, elements, equality)
         !found.isDefined
       }
     }
@@ -290,11 +290,11 @@ object Containing {
         opt.exists((e: E) => equality.areEqual(e, ele))
       }
       def containsOneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[E](opt, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[E](opt, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](opt, elements, equality)
+        val found: Option[Any] = checkNoneOf[E](opt, elements, equality)
         !found.isDefined
       }
     }
@@ -331,11 +331,11 @@ object Containing {
       def contains(arr: Array[E], ele: Any): Boolean =
         arr.exists((e: E) => equality.areEqual(e, ele))
       def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[E](arr, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[E](arr, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](arr, elements, equality)
+        val found: Option[Any] = checkNoneOf[E](arr, elements, equality)
         !found.isDefined
       }
     }
@@ -370,11 +370,11 @@ object Containing {
       def contains(str: String, ele: Any): Boolean =
         str.exists((e: Char) => equality.areEqual(e, ele))
       def containsOneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[Char](str, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[Char](str, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[Char](str, elements, equality)
+        val found: Option[Any] = checkNoneOf[Char](str, elements, equality)
         !found.isDefined
       }
     }
@@ -414,11 +414,11 @@ object Containing {
         map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
       }
       def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
+        val found: Option[Any] = checkNoneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
         !found.isDefined
       }
     }
@@ -459,16 +459,16 @@ object Containing {
       def contains(every: Every[E], ele: Any): Boolean =
         equality match {
           case normEq: NormalizingEquality[_] =>
-            val normRight = normEq.normalizedOrSame(ele)
+            val normRight: Any = normEq.normalizedOrSame(ele)
             every.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
           case _ => every.exists((e: E) => equality.areEqual(e, ele))
         }
       def containsOneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = checkOneOf[E](every, elements, equality)
+        val foundSet: Set[Any] = checkOneOf[E](every, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val found = checkNoneOf[E](every, elements, equality)
+        val found: Option[Any] = checkNoneOf[E](every, elements, equality)
         !found.isDefined
       }
     }

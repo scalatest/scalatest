@@ -41,20 +41,6 @@ abstract class PropertyCheckFailedException(
   optionalArgNames: Option[List[String]]
 ) extends TestFailedException(sde => Some(messageFun(sde)), cause, failedCodeStackDepthFun, payload) {
 
-  /**
-   * This constructor has been deprecated and will be removed in a future version of ScalaTest. Please
-   * use the primary constructor instead.
-   */
-  @deprecated("Please use the primary constructor instead.")
-  def this(
-    messageFun: StackDepthException => String,
-    cause: Option[Throwable],
-    failedCodeStackDepthFun: StackDepthException => Int,
-    undecoratedMessage: String,
-    args: List[Any],
-    optionalArgNames: Option[List[String]]
-   ) = this(messageFun, cause, failedCodeStackDepthFun, None, undecoratedMessage, args, optionalArgNames)
-  
   if (messageFun == null) throw new NullPointerException("messageFun was null")
 
   if (cause == null) throw new NullPointerException("cause was null")

@@ -15,9 +15,7 @@
  */
 package org.scalatest.prop
 
-/* Uncomment this when remove the deprecated type aliases in the org.scalatest.prop package object.
 import org.scalatest.exceptions.DiscardedEvaluationException
-*/
 
 /**
  * Trait that contains the <code>whenever</code> clause that can be used in table- or generator-driven property checks.

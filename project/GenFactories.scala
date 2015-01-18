@@ -1012,12 +1012,16 @@ $endif$
       thisMatcherFactory.and(MatcherWords.not.be(resultOfGreaterThanOrEqualToComparison))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * aMatcherFactory and not be === (6)
-     *                         ^
-     * </pre>
+     * <strong>
+     * The deprecation period for the should be === syntax has expired, and the syntax may no longer be
+     * used.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
+     * </strong>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation))
@@ -2303,12 +2307,16 @@ $endif$
       thisMatcherFactory.or(MatcherWords.not.be(resultOfGreaterThanOrEqualToComparison))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * aMatcherFactory or not be === (8)
-     *                        ^
-     * </pre>
+     * <strong>
+     * The deprecation period for the "be ===" syntax has expired, and the syntax 
+     * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
+     * </strong>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation))
@@ -2893,7 +2901,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def andNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notATypeMatcher(context)(aType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2916,7 +2924,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def orNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notATypeMatcher(context)(aType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notATypeMatcher(context)(aType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2939,7 +2947,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def andNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>
@@ -2962,7 +2970,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
   def orNotAnTypeMatcherFactory$arity$(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
 
-    val rhs = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
+    val rhs: context.Expr[Matcher[Any]] = TypeMatcherMacro.notAnTypeMatcher(context)(anType)
 
     context.macroApplication match {
       case Apply(Select(qualifier, _), _) =>

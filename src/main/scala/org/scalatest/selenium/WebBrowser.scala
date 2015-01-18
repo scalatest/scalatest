@@ -1311,7 +1311,7 @@ trait WebBrowser {
      *
      * @return true if the passed object is equal to this one
      */
-    override def equals(other: Any): Boolean = underlying.equals(other)
+    override def equals(other: Any): Boolean = underlying == other
 
     /**
      * Returns the result of invoking <code>hashCode</code> on the underlying <code>Element</code>.
@@ -1327,15 +1327,6 @@ trait WebBrowser {
      */
     override def toString: String = underlying.toString 
   }
-
-  /**
-   * <p>
-   * <strong>This trait has been moved as separate trait in <code>org.scalatest.selenium</code> package. The deprecated type alias that has been left in its place will
-   * be removed in a future version of ScalaTest. Please change any uses of this to <code>org.scalatest.selenium.Page</code>.</strong>
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.selenium.Page instead.")
-  type Page = org.scalatest.selenium.Page
 
   // fluentLinium has a doubleClick. Wonder how they are doing that?
 
@@ -1427,7 +1418,7 @@ trait WebBrowser {
      *
      * @return true if the passed object is equal to this one
      */
-    override def equals(other: Any): Boolean = underlying.equals(other)
+    override def equals(other: Any): Boolean = underlying == other
 
     /**
      * Returns the result of invoking <code>hashCode</code> on the underlying <code>Cookie</code>.

@@ -274,9 +274,6 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    */
   protected def propertiesFor(unit: Unit) {}
 
-  @deprecated("Use propertiesFor instead.")
-  protected def testsFor(unit: Unit) {}
-
   import scala.language.implicitConversions
 
   /**

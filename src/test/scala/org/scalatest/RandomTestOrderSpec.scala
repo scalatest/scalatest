@@ -24,34 +24,6 @@ import Retries._
 
 class RandomTestOrderSpec extends Spec {
 
-  class ExampleSuite(listBuffer: ListBuffer[Int]) extends Suite with RandomTestOrder {
-    def test1() {
-      listBuffer += 0
-    }
-    def test2() {
-      listBuffer += 1
-    }
-    def test3() {
-      listBuffer += 2
-    }
-
-    override def newInstance = new ExampleSuite(listBuffer)
-  }
-
-  class ExampleFixtureSuite(listBuffer: ListBuffer[Int]) extends fixture.Suite with StringFixture with RandomTestOrder {
-    def test1() {
-      listBuffer += 0
-    }
-    def test2() {
-      listBuffer += 1
-    }
-    def test3() {
-      listBuffer += 2
-    }
-
-    override def newInstance = new ExampleFixtureSuite(listBuffer)
-  }
-
   class ExampleSpec(listBuffer: ListBuffer[Int]) extends Spec with RandomTestOrder {
     def `test 1` {
       listBuffer += 0
@@ -295,8 +267,6 @@ class RandomTestOrderSpec extends Spec {
   def examples =
     Table(
       ("suite", "test1Name", "test2Name", "test3Name"),
-      ((buffer: ListBuffer[Int]) => new ExampleSuite(buffer), "test1", "test2", "test3"),
-      ((buffer: ListBuffer[Int]) => new ExampleFixtureSuite(buffer), "test1", "test2", "test3"),
       ((buffer: ListBuffer[Int]) => new ExampleSpec(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureSpec(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFunSuite(buffer), "test 1", "test 2", "test 3"),

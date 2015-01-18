@@ -152,13 +152,8 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    *
    * <p>
    * This trait's implementation
-   * of <code>run</code> invokes the overloaded form of this method that
-   * takes a <code>configMap</code> (which has been deprecated) before executing
-   * any tests or nested suites. This trait's implementation of that <code>beforeAll(ConfigMap)</code>
-   * method simply invokes this <code>beforeAll()</code>
-   * method. Thus this method can be used to set up a test fixture
-   * needed by the entire suite, when you don't need anything from the <code>configMap</code>.
-   * This trait's implementation of this method does nothing.
+   * of <code>run</code> invokes this <code>beforeAll()</code>
+   * method. This trait's implementation of this method does nothing.
    * </p>
    */
   protected def beforeAll() = ()
@@ -169,11 +164,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    *
    * <p>
    * This trait's implementation
-   * of <code>run</code> invokes the overloaded form of this method that
-   * takes a <code>configMap</code> (which has been deprecated) after executing
-   * all tests and nested suites. This trait's implementation of that <code>afterAll(ConfigMap)</code> method simply invokes this
-   * <code>afterAll()</code> method. Thus this method can be used to tear down a test fixture
-   * needed by the entire suite, when you don't need anything from the <code>configMap</code>.
+   * of <code>run</code> invokes this <code>afterAll()</code> method.
    * This trait's implementation of this method does nothing.
    * </p>
    */

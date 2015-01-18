@@ -58,6 +58,11 @@ object GenInspectors {
     override val children = details
   }
 
+  class ExistsErrMsgTemplate(headerFailedPrefix: String, elementText: String, details: List[Template]) extends ErrorMessageTemplate {
+    val header = headerFailedPrefix + " failed, because " + elementText + " satisfied the assertion block: \\n\" + " + "\n"
+    override val children = details
+  }
+
   class ForAtMostErrMsgTemplate(headerFailedPrefix: String, max: Int, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String) extends Template {
     val xsName: String = "xs"
     val maxSucceed = max + 1
@@ -156,6 +161,15 @@ object GenInspectors {
           override val xsName: String = "xs(" + index + ")"
         }
 
+      case "exists" =>
+        val details =
+          for (x <- 0 until xs.length) yield {
+            new ErrorDetailTemplate(x + "", fileName, lineNumber, detailTemplate)
+          }
+        new ExistsErrMsgTemplate("exists", "no element", details.toList) {
+          override val xsName: String = "xs(" + index + ")"
+        }
+
       case "forAtMost" =>
         new ForAtMostErrMsgTemplate("forAtMost(3)", 3, xs.length + " elements", "NotEqualBoolean", "EqualBoolean", "false", if (forNested) "Int" else "List[Int]") {
           override val xsName: String = "xs(" + index + ")"
@@ -212,6 +226,7 @@ object GenInspectors {
     outerName match {
       case "forAll" => new ForAllErrMsgTemplate("forAll", innerDetails(0)) // should have at least one element
       case "forAtLeast" => new ForAtLeastErrMsgTemplate("forAtLeast(3)", "no element", innerDetails.toList)
+      case "exists" => new ExistsErrMsgTemplate("exists", "no element", innerDetails.toList)
       case "forAtMost" => new ForAtMostErrMsgTemplate("forAtMost(1)", 1, "2 elements", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]")
       case "forExactly" => new ForExactlyErrMsgTemplate("forExactly(1)", "no element", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]", innerDetails.toList)
       case "forNo" => new ForNoErrMsgTemplate("forNo", "0", true)
@@ -621,6 +636,125 @@ object GenInspectors {
             "val col = " + col + "\n" +
             "intercept[VirtualMachineError] {\n" +
             "  forAtLeast(1, col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
+  class ExistsTemplate(colName: String, col: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new DefTemplate("should pass when one element passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "exists(col) { e => assert(" + lhs + " == 2) }"
+          )
+        ),
+        new DefTemplate("should pass when more than minimum count of elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "exists(col) { e => assert(" + lhs + " < 3) }"
+          )
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when none of the elements passed for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "exists(col) { e => \n" +
+            "  assert(" + lhs + " > 5) \n" +
+            "}",
+            "ExistsInspectorsSpec.scala",
+            "\"exists failed, because no element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not greater than 5 (ExistsInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 5 (ExistsInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 5 (ExistsInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should pass when all of the elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "exists(col) { e => assert(" + lhs + " < 5) }"
+          )
+        ),
+        new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestPendingException] {\n" +
+            "  exists(col) { e => pending }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestCanceledException] {\n" +
+            "  exists(col) { e => cancel }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[AnnotationFormatError] {\n" +
+            "  exists(col) { e => throw new AnnotationFormatError(\"test\") }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[CoderMalfunctionError] {\n" +
+            "  exists(col) { e => throw new CoderMalfunctionError(new RuntimeException(\"test\")) }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[FactoryConfigurationError] {\n" +
+            "  exists(col) { e => throw new FactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.LinkageError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[LinkageError] {\n" +
+            "  exists(col) { e => throw new LinkageError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.ThreadDeath thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[ThreadDeath] {\n" +
+            "  exists(col) { e => throw new ThreadDeath() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[TransformerFactoryConfigurationError] {\n" +
+            "  forAtLeast(1, col) { e => throw new TransformerFactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.VirtualMachineError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[VirtualMachineError] {\n" +
+            "  exists(col) { e => throw new VirtualMachineError() {} }\n" +
             "}"
           )
         )
@@ -1502,6 +1636,34 @@ object GenInspectors {
     )
   }
 
+  def genExistsSpecFile(targetDir: File) {
+    val existsSpecFile = new File(targetDir, "ExistsInspectorsSpec.scala")
+    genFile(
+      existsSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.exists"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "ExistsInspectorsSpec"
+          override val extendName = Some("Spec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new ExistsTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
   def genForAtMostSpecFile(targetDir: File) {
     val forAtMostSpecFile = new File(targetDir, "ForAtMostInspectorsSpec.scala")
     genFile(
@@ -1663,7 +1825,8 @@ object GenInspectors {
             
             val succeededNestedList = List(("forAll", "forAll(l) { n =>\n"), 
                             ("forAtLeast", "forAtLeast(3, l) { n =>\n"), 
-                            ("forAtMost", "forAtMost(3, l) { n =>\n"), 
+                            ("exists", "exists(l) { n =>\n"),
+                            ("forAtMost", "forAtMost(3, l) { n =>\n"),
                             ("forExactly", "forExactly(3, l) { n =>\n"), 
                             ("forNo", "forNo(l) { n =>\n"), 
                             ("forBetween", "forBetween(2, 4, l) { n =>\n"), 
@@ -1671,7 +1834,8 @@ object GenInspectors {
             
             val failedNestedList = List(("forAll", "forAll(l) { n =>\n"), 
                             ("forAtLeast", "forAtLeast(3, l) { n =>\n"), 
-                            ("forAtMost", "forAtMost(3, l) { n =>\n"), 
+                            ("exists", "exists(l) { n =>\n"),
+                            ("forAtMost", "forAtMost(3, l) { n =>\n"),
                             ("forExactly", "forExactly(4, l) { n =>\n"), 
                             ("forNo", "forNo(l) { n =>\n"), 
                             ("forBetween", "forBetween(2, 4, l) { n =>\n"), 
@@ -1685,7 +1849,9 @@ object GenInspectors {
                (name: String, text: String) => if (name != "forNo") succeededAssertion else failedAssertion), 
               ("forAtLeast", "forAtLeast(2, List(List(2, 4, 6), List(8, 10, 12)))", 
                (name: String, text: String) => if (name != "forNo") succeededAssertion else failedAssertion), 
-              ("forAtMost", "forAtMost(2, List(List(2, 4, 6), List(8, 10, 12)))", 
+              ("exists", "exists(List(List(2, 4, 6), List(8, 10, 12)))",
+               (name: String, text: String) => if (name != "forNo") succeededAssertion else failedAssertion),
+              ("forAtMost", "forAtMost(2, List(List(2, 4, 6), List(8, 10, 12)))",
                (name: String, text: String) => if (name != "forNo") succeededAssertion else failedAssertion), 
               ("forExactly", "forExactly(2, List(List(2, 4, 6), List(8, 10, 12)))", 
                (name: String, text: String) => if (name != "forNo") succeededAssertion else failedAssertion), 
@@ -1705,7 +1871,9 @@ object GenInspectors {
                  (name: String, text: String) => if (name != "forNo" && name != "forAtMost") failedAssertion else succeededAssertion),        
                ("forAtLeast", "forAtLeast(3, xs)", true, 
                  (name: String, text: String) => if (name != "forNo" && name != "forAtMost") failedAssertion else succeededAssertion), 
-               ("forAtMost", "forAtMost(1, xs)", true, 
+               ("exists", "exists(xs)", true,
+                 (name: String, text: String) => if (name != "forNo" && name != "forAtMost") failedAssertion else succeededAssertion),
+               ("forAtMost", "forAtMost(1, xs)", true,
                  (name: String, text: String) => if (name != "forNo" && name != "forAtMost") succeededAssertion else failedAssertion), 
                ("forExactly", "forExactly(1, xs)", true, 
                  (name: String, text: String) => if (name != "forNo" && name != "forAtMost") failedAssertion else succeededAssertion), 
@@ -1757,6 +1925,7 @@ object GenInspectors {
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     genForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
+    genExistsSpecFile(targetDir(targetBaseDir, "exists"))
     genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
     genForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
     genForNoSpecFile(targetDir(targetBaseDir, "forno"))

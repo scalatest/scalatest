@@ -76,12 +76,12 @@ import scala.collection.mutable.ListBuffer
  * </p>
  *
  * <ul>
- *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by sbt</li>
+ *   <li><code>-R</code> -- runpath is not supported because test path and discovery is handled by sbt</li>
  *   <li><code>-s</code> -- suite is not supported because sbt's <code>test-only</code> serves the similar purpose</li>
  *   <li><code>-A</code> -- again is not supported because sbt's <code>test-quick</code> serves the similar purpose</li>
  *   <li><code>-j</code> -- junit is not supported because in sbt different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-b</code> -- testng is not supported because in sbt different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
- *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by sbt.</li>
+ *   <li><code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by sbt.</li>
  *   <li><code>-q</code> is not supported because test discovery should be handled by sbt, and sbt's test-only or test filter serves the similar purpose</li>
  *   <li><code>-T</code> is not supported because correct ordering of text output is handled by sbt</li>
  *   <li><code>-g</code> is not supported because current Graphic Reporter implementation works differently than standard reporter</li>
@@ -950,7 +950,7 @@ class Framework extends SbtFramework {
         class React(is: ObjectInputStream) {
           @annotation.tailrec 
           final def react() { 
-            val event = is.readObject
+            val event: AnyRef = is.readObject
             event match {
               case e: TestStarting =>
                 dispatchReporter(e) 
@@ -1073,7 +1073,7 @@ class Framework extends SbtFramework {
     ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
     
     if (!runpathArgs.isEmpty)
-      throw new IllegalArgumentException("Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
+      throw new IllegalArgumentException("Specifying a runpath (-R <runpath>) is not supported when running ScalaTest from sbt.")
     
     if (!againArgs.isEmpty)
       throw new IllegalArgumentException("Run again (-A) is not supported when running ScalaTest from sbt; Please use sbt's test-quick instead.")
@@ -1085,7 +1085,7 @@ class Framework extends SbtFramework {
       throw new IllegalArgumentException("Running TestNG tests (-b <testng>) is not supported when running ScalaTest from sbt.")
 
     if (!concurrentArgs.isEmpty)
-      throw new IllegalArgumentException("-c, -P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
+      throw new IllegalArgumentException("-P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
     
     if (!suffixes.isEmpty)
       throw new IllegalArgumentException("Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")

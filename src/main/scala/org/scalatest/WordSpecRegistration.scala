@@ -264,7 +264,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
    * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
    * traits, which <code>WordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
-   * in <code>ShouldMatchers</code> and <code>MustMatchers</code>. 
+   * in <code>Matchers</code> and <code>MustMatchers</code>. 
    * </p>
    *
    * @author Bill Venners

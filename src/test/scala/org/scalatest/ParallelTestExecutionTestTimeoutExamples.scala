@@ -32,8 +32,6 @@ trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution
 
 object ParallelTestExecutionTestTimeoutExamples extends Tables {
 
-  def testTimeoutSuite = new ExampleParallelTestExecutionTestTimeoutSuite()
-  def testTimeoutFixtureSuite = new ExampleParallelTestExecutionTestTimeoutFixtureSuite()
   def testTimeoutSpec = new ExampleParallelTestExecutionTestTimeoutSpec()
   def testTimeoutFixtureSpec = new ExampleParallelTestExecutionTestTimeoutFixtureSpec()
   def testTimeoutFunSuite = new ExampleParallelTestExecutionTestTimeoutFunSuite()
@@ -54,8 +52,6 @@ object ParallelTestExecutionTestTimeoutExamples extends Tables {
   def testTimeoutExamples =
     Table(
       "suite1",
-      testTimeoutSuite, 
-      testTimeoutFixtureSuite, 
       testTimeoutSpec, 
       testTimeoutFixtureSpec, 
       testTimeoutFunSuite, 
@@ -91,58 +87,6 @@ class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) 
       case Some(event) => dispatch(event)
       case None =>
     }
-  }
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutSuite extends Suite with ParallelTestExecution with TestTimeoutExpectedResults {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
-  
-  val holdTestSucceededName = "testMethod2"
-  val holdUntilEventCount = 5
-  
-  override protected[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
-    holdingReporter = new TestHoldingReporter(super.createTestSpecificReporter(testSorter, testName), holdTestSucceededName)
-    holdingReporter
-  }
-  
-  def assertTestTimeoutTest(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testMethod1")
-    checkTestSucceeded(events(1), "testMethod1")
-    checkTestStarting(events(2), "testMethod2")
-    checkTestStarting(events(3), "testMethod3")
-    checkTestSucceeded(events(4), "testMethod3")
-    // The missing one
-    checkTestSucceeded(events(5), "testMethod2")
-  }
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutFixtureSuite extends fixture.Suite with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
-  
-  val holdTestSucceededName = "testMethod2"
-  val holdUntilEventCount = 5
-  
-  override protected[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
-    holdingReporter = new TestHoldingReporter(super.createTestSpecificReporter(testSorter, testName), holdTestSucceededName)
-    holdingReporter
-  }
-  
-  def assertTestTimeoutTest(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testMethod1")
-    checkTestSucceeded(events(1), "testMethod1")
-    checkTestStarting(events(2), "testMethod2")
-    checkTestStarting(events(3), "testMethod3")
-    checkTestSucceeded(events(4), "testMethod3")
-    // The missing one
-    checkTestSucceeded(events(5), "testMethod2")
   }
 }
 

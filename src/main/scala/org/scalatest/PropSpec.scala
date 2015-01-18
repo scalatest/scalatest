@@ -36,7 +36,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import scala.collection.immutable._
  * 
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
  * 
  *   val examples =
  *     Table(
@@ -144,7 +144,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import scala.collection.immutable._
  * 
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
  * 
  *   val examples =
  *     Table(
@@ -462,7 +462,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import scala.collection.immutable._
  * 
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
  * 
  *   val examples =
  *     Table(
@@ -559,7 +559,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import scala.collection.immutable._
  * 
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
  * 
  *   val examples =
  *     Table(
@@ -827,7 +827,7 @@ import Suite.autoTagClassAnnotations
  *   def treeSet = TreeSet.empty[Int]
  * }
  * 
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
  * 
  *   property("an empty Set should have size 0") {
  *     new EmptySetExamples {

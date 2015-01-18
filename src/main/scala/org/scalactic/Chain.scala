@@ -1606,9 +1606,13 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @param idx the position of the replacement
    * @param elem the replacing element
+   * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>Chain<code>
    * @return a copy of this <code>Chain</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
    */
-  final def updated[U >: T](idx: Int, elem: U): Chain[U] = new Chain(underlying.updated(idx, elem))
+  final def updated[U >: T](idx: Int, elem: U): Chain[U] =
+    try new Chain(underlying.updated(idx, elem))
+    catch { case _: UnsupportedOperationException => throw new IndexOutOfBoundsException(idx.toString) } // This is needed for 2.10 support. Can drop after.
+                                                                                                         // Because 2.11 throws IndexOutOfBoundsException.
 
   /**
    * Returns a <code>Chain</code> formed from this <code>Chain</code> and an iterable collection by combining corresponding

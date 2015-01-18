@@ -106,7 +106,6 @@ if [[ $MODE = 'ScalacticTests' ]] ; then
   echo "Doing 'sbt scalactic/test'"
 
   while true; do echo "..."; sleep 60; done &
-  sbt ++$TRAVIS_SCALA_VERSION compile
   sbt ++$TRAVIS_SCALA_VERSION scalactic/test
   rc=$?
   echo first try, exitcode $rc

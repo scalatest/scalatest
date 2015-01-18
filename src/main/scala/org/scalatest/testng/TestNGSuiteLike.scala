@@ -50,6 +50,92 @@ import Suite.wrapReporterIfNecessary
  */
 trait TestNGSuiteLike extends Suite { thisSuite =>
 
+  // This was also originally inherited from Suite, but would never be used. I think I'll leave it off.
+/*
+  override protected def runTest(testName: String, args: Args): Status = {
+
+    if (testName == null)
+      throw new NullPointerException("testName was null")
+    if (args == null)
+      throw new NullPointerException("args was null")
+    
+    import args._
+
+    val (theStopper, report, method, testStartTime) =
+      getSuiteRunTestGoodies(thisSuite, stopper, reporter, testName)
+
+    reportTestStarting(this, report, tracker, testName, testName, rerunner, Some(getTopOfMethod(thisSuite, testName)))
+
+    val formatter = getEscapedIndentedTextForTest(testName, 1, true)
+
+    val messageRecorderForThisTest = new MessageRecorder(report)
+    val informerForThisTest =
+      MessageRecordingInformer(
+        messageRecorderForThisTest, 
+        (message, payload, isConstructingThread, testWasPending, testWasCanceled, location) => createInfoProvided(thisSuite, report, tracker, Some(testName), message, payload, 2, location, isConstructingThread, true)
+      )
+
+    // TODO: Was using reportInfoProvided here before, to double check with Bill for changing to markup provided.
+    val documenterForThisTest =
+      MessageRecordingDocumenter(
+        messageRecorderForThisTest, 
+        (message, _, isConstructingThread, testWasPending, testWasCanceled, location) => createMarkupProvided(thisSuite, report, tracker, Some(testName), message, 2, location, isConstructingThread) // TODO: Need a test that fails because testWasCanceleed isn't being passed
+      )
+
+    val argsArray: Array[Object] =
+      if (testMethodTakesAnInformer(testName)) {
+        Array(informerForThisTest)  
+      }
+      else Array()
+
+    try {
+      val theConfigMap = configMap
+      val testData = testDataFor(testName, theConfigMap)
+      withFixture(
+        new NoArgTest {
+          val name = testData.name
+          def apply(): Outcome = { outcomeOf { method.invoke(thisSuite, argsArray: _*) } }
+          val configMap = testData.configMap
+          val scopes = testData.scopes
+          val text = testData.text
+          val tags = testData.tags
+        }
+      ).toUnit
+      val duration = System.currentTimeMillis - testStartTime
+      reportTestSucceeded(this, report, tracker, testName, testName, messageRecorderForThisTest.recordedEvents(false, false), duration, formatter, rerunner, Some(getTopOfMethod(thisSuite, method)))
+      SucceededStatus
+    }
+    catch { 
+      case ite: InvocationTargetException =>
+        val t = ite.getTargetException
+        t match {
+          case _: TestPendingException =>
+            val duration = System.currentTimeMillis - testStartTime
+            // testWasPending = true so info's printed out in the finally clause show up yellow
+            reportTestPending(this, report, tracker, testName, testName, messageRecorderForThisTest.recordedEvents(true, false), duration, formatter, Some(getTopOfMethod(thisSuite, method)))
+            SucceededStatus
+          case e: TestCanceledException =>
+            val duration = System.currentTimeMillis - testStartTime
+            val message = getMessageForException(e)
+            val formatter = getEscapedIndentedTextForTest(testName, 1, true)
+            // testWasCanceled = true so info's printed out in the finally clause show up yellow
+            reportTestCanceled(this, report, t, testName, testName, messageRecorderForThisTest.recordedEvents(false, true), rerunner, tracker, duration, formatter, Some(TopOfMethod(thisSuite.getClass.getName, method.toGenericString())))
+            SucceededStatus                 
+          case e if !anExceptionThatShouldCauseAnAbort(e) =>
+            val duration = System.currentTimeMillis - testStartTime
+            handleFailedTest(thisSuite, t, testName, messageRecorderForThisTest.recordedEvents(false, false), report, tracker, getEscapedIndentedTextForTest(testName, 1, true), duration)
+            FailedStatus
+          case e => throw e
+        }
+      case e if !anExceptionThatShouldCauseAnAbort(e) =>
+        val duration = System.currentTimeMillis - testStartTime
+        handleFailedTest(thisSuite, e, testName, messageRecorderForThisTest.recordedEvents(false, false), report, tracker, getEscapedIndentedTextForTest(testName, 1, true), duration)
+        FailedStatus
+      case e: Throwable => throw e  
+    }
+  }
+*/
+
   /**
    * Execute this <code>TestNGSuite</code>.
    * 
@@ -65,6 +151,14 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     status.setCompleted()
     status
   }
+
+  // This seems wrong. Should ask TestNG if possible, but not sure that's even possible. Anyway some tests
+  // rely on this behavior that used to be inherited, but is no more.
+  override def testNames: Set[String] = super.yeOldeTestNames
+
+  override def tags: Map[String, Set[String]] = super.yeOldeTags
+
+  override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = super.yeOldeTestDataFor(testName, theConfigMap)
 
   /**
    * Runs TestNG with no test name, no groups. All tests in the class will be executed.
@@ -148,7 +242,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
    * 
    * @param    testName    the name of the test method to be executed
    */
-  private def setupTestNGToRunSingleMethod(testName: String, testng: TestNG) = {
+  private def setupTestNGToRunSingleMethod(testName: String, testng: TestNG): AnyRef = {
     // NOTE: There was another option - we could TestNG's XmlSuites to specify which method to run.
     // This approach was about as much work, offered no clear benefits, and no additional problems either.
     
@@ -230,13 +324,13 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
       val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources("testNGConfigFailed")
       val testName = result.getName + params(result)
       val formatter = getIndentedTextForTest(testName, 1, true)
-      val payload = 
-      throwable match {
-        case optPayload: PayloadField => 
-          optPayload.payload
-        case _ => 
-          None
-      }
+      val payload: Option[Any] =
+        throwable match {
+          case optPayload: PayloadField =>
+            optPayload.payload
+          case _ =>
+            None
+        }
       report(TestFailed(tracker.nextOrdinal(), message, thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), testName, testName, Vector.empty, throwable, None, Some(formatter), Some(SeeStackDepthException), Some(className), payload)) // Can I add a duration?
       status.setFailed()
     }

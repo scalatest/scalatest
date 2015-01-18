@@ -20,8 +20,6 @@ trait AllSuiteProp extends MethodSuiteProp with FunctionSuiteProp {
   override def examples =
     Table[Suite with FixtureServices](
       "suite",
-      suite,
-      fixtureSuite,
       spec,
       fixtureSpec, 
       junit3Suite, 

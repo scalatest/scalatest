@@ -28,8 +28,6 @@ class StatusProp extends AllSuiteProp {
   
   type FixtureServices = StatusFixtureServices
 
-  def suite = new ExampleStatusSuite
-  def fixtureSuite = new ExampleStatusFixtureSuite
   def spec = new ExampleStatusSpec
   def fixtureSpec = new ExampleStatusFixtureSpec
   def junit3Suite = new ExampleStatusJUnit3Suite
@@ -131,22 +129,6 @@ trait StatusFixtureServices { suite: Suite =>
   val testNameToRun: String
   def testRunTest(args: Args): Status = 
     suite.runTest(testNameToRun, args)
-}
-
-@DoNotDiscover
-class ExampleStatusSuite extends Suite with StatusFixtureServices with ParallelTestExecution {
-  def testMethod1() {}
-  def testMethod2() { throw new VirtualMachineError {} }
-  def testMethod3() {}
-  val testNameToRun = "testMethod2"
-}
-
-@DoNotDiscover
-class ExampleStatusFixtureSuite extends fixture.Suite with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  def testMethod1() {}
-  def testMethod2() { throw new VirtualMachineError {} }
-  def testMethod3() {}
-  val testNameToRun = "testMethod2"
 }
 
 @DoNotDiscover

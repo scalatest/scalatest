@@ -23,13 +23,11 @@ import Prop._
 import org.scalatest.Matchers._
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
-/* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-*/
 
-class CheckersSuite extends Suite with Checkers {
+class CheckersSpec extends Spec with Checkers {
 
-  def testCheckProp() {
+  def `test check prop` = {
 
     // Ensure a success does not fail in an exception
     val propConcatLists = forAll((a: List[Int], b: List[Int]) => a.size + b.size == (a ::: b).size)
@@ -102,7 +100,7 @@ class CheckersSuite extends Suite with Checkers {
     }
   }
 
-  def testCheckPropWithSuccessOf() {
+  def `test check prop with success of` = {
 
     // Ensure a success does not fail in an exception
     val propConcatLists = forAll { (a: List[Int], b: List[Int]) =>
@@ -206,7 +204,7 @@ class CheckersSuite extends Suite with Checkers {
       assertResult(expectedLineNumber)(ex.failedCodeLineNumber.getOrElse(-1))
   }
   
-  def testCheckPropStackDepth() {
+  def `test check prop stack depth` = {
     val ex1 = intercept[GeneratorDrivenPropertyCheckFailedException] { check((a: List[Int]) => a.size == a.size + 1) }
     expectFileNameLineNumber(ex1, "CheckersSuite.scala", thisLineNumber - 1)
     val ex2 = intercept[GeneratorDrivenPropertyCheckFailedException] { check((a: List[Int], b: List[Int]) => a.size + b.size == (a ::: b).size + 1) }
@@ -239,7 +237,7 @@ class CheckersSuite extends Suite with Checkers {
   // argument that the Pretty function is used to display the argument
   // when a failure occurs.
   //
-  def testArgBPretty() {
+  def `test arg b pretty` = {
     class Thingie(val whatzit: Int)
 
     val g = new Thingie(23)

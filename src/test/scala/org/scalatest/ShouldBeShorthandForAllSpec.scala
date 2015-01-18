@@ -725,7 +725,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(string1, string2)) shouldBe a [String]
       all(List(string1, int)) shouldBe a [Any]
 
-      val list = List(string1, int, string2)
+      val list: List[Any] = List(string1, int, string2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [String]
       }
@@ -743,7 +743,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(int1, int2)) shouldBe a [java.lang.Integer]
       all(List(int1, str)) shouldBe a [Any]
 
-      val list = List(int1, int2)
+      val list: List[Any] = List(int1, int2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Int]
       }
@@ -761,7 +761,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(long1, long2)) shouldBe a [java.lang.Long]
       all(List(long1, str)) shouldBe a [Any]
 
-      val list = List(long1, long2)
+      val list: List[Any] = List(long1, long2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Long]
       }
@@ -779,7 +779,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(short1, short2)) shouldBe a [java.lang.Short]
       all(List(short1, str)) shouldBe a [Any]
 
-      val list = List(short1, short2)
+      val list: List[Any] = List(short1, short2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Short]
       }
@@ -797,7 +797,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(byte1, byte2)) shouldBe a [java.lang.Byte]
       all(List(byte1, str)) shouldBe a [Any]
 
-      val list = List(byte1, byte2)
+      val list: List[Any] = List(byte1, byte2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Byte]
       }
@@ -815,7 +815,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(double1, double2)) shouldBe a [java.lang.Double]
       all(List(double1, str)) shouldBe a [Any]
 
-      val list = List(double1, double2)
+      val list: List[Any] = List(double1, double2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Double]
       }
@@ -833,7 +833,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(float1, float2)) shouldBe a [java.lang.Float]
       all(List(float1, str)) shouldBe a [Any]
 
-      val list = List(float1, float2)
+      val list: List[Any] = List(float1, float2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Float]
       }
@@ -851,7 +851,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(bool1, bool2)) shouldBe a [java.lang.Boolean]
       all(List(bool1, str)) shouldBe a [Any]
 
-      val list = List(bool1, bool2)
+      val list: List[Any] = List(bool1, bool2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Boolean]
       }
@@ -869,7 +869,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(c1, c2)) shouldBe a [java.lang.Character]
       all(List(c1, str)) shouldBe a [Any]
 
-      val list = List(c1, c2)
+      val list: List[Any] = List(c1, c2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Char]
       }
@@ -887,7 +887,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(string1, string2)) shouldBe an [String]
       all(List(string1, int)) shouldBe an [Any]
 
-      val list = List(string1, int, string2)
+      val list: List[Any] = List(string1, int, string2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [String]
       }
@@ -905,7 +905,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(int1, int2)) shouldBe an [java.lang.Integer]
       all(List(int1, str)) shouldBe an [Any]
 
-      val list = List(int1, int2)
+      val list: List[Any] = List(int1, int2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Int]
       }
@@ -923,7 +923,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(long1, long2)) shouldBe an [java.lang.Long]
       all(List(long1, str)) shouldBe an [Any]
 
-      val list = List(long1, long2)
+      val list: List[Any] = List(long1, long2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Long]
       }
@@ -941,7 +941,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(short1, short2)) shouldBe an [java.lang.Short]
       all(List(short1, str)) shouldBe an [Any]
 
-      val list = List(short1, short2)
+      val list: List[Any] = List(short1, short2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Short]
       }
@@ -959,7 +959,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(byte1, byte2)) shouldBe an [java.lang.Byte]
       all(List(byte1, str)) shouldBe an [Any]
 
-      val list = List(byte1, byte2)
+      val list: List[Any] = List(byte1, byte2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Byte]
       }
@@ -977,7 +977,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(double1, double2)) shouldBe an [java.lang.Double]
       all(List(double1, str)) shouldBe an [Any]
 
-      val list = List(double1, double2)
+      val list: List[Any] = List(double1, double2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Double]
       }
@@ -995,7 +995,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(float1, float2)) shouldBe an [java.lang.Float]
       all(List(float1, str)) shouldBe an [Any]
 
-      val list = List(float1, float2, str)
+      val list: List[Any] = List(float1, float2, str)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Float]
       }
@@ -1013,7 +1013,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(bool1, bool2)) shouldBe an [java.lang.Boolean]
       all(List(bool1, str)) shouldBe an [Any]
 
-      val list = List(bool1, bool2)
+      val list: List[Any] = List(bool1, bool2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Boolean]
       }
@@ -1031,7 +1031,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(c1, c2)) shouldBe an [java.lang.Character]
       all(List(c1, str)) shouldBe an [Any]
 
-      val list = List(c1, c2)
+      val list: List[Any] = List(c1, c2)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Char]
       }

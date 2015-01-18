@@ -156,14 +156,6 @@ trait EqualityPolicy {
      * @return true if the value passed to the constructor as <code>leftSide</code> is non-<code>null</code>.
      */
     def !==(literalNull: Null): Boolean = leftSide != null
-
-    // Could just use a Containing here, but that would require defining a Containing (which we
-    // actually already have, but...
-    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      ev.contains(rightSide, leftSide)
-
-    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      !(ev.contains(rightSide, leftSide))
   }
 
   /**
@@ -290,12 +282,6 @@ trait EqualityPolicy {
      * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
     def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
-
-    def isIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      ev.contains(rightSide, leftSide)
-
-    def isNotIn[R](rightSide: R)(implicit ev: ContainingConstraint[R, L]): Boolean =
-      !(ev.contains(rightSide, leftSide))
   }
 
   /**
@@ -362,6 +348,8 @@ trait EqualityPolicy {
   def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B]
 
   def unconstrainedFreshEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] with NativeSupport
+
+  def convertEqualityUnconstrained[A, B](equalityOfA: Equality[A]): EqualityConstraint[A, B]
 
   /**
    * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
@@ -590,8 +578,6 @@ trait EqualityPolicy {
   def enabledEqualityConstraintFor[A](implicit equivalenceOfA: Equivalence[A], ev: EnabledEqualityFor[A]): EqualityConstraint[A, A] with NativeSupport
   def lowPriorityEnabledEqualityConstraintBetween[B, A](implicit equalityOfB: Equality[B], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[B, A]
   def enabledEqualityConstraintBetween[A, B](implicit equalityOfA: Equality[A], ev: EnabledEqualityBetween[A, B]): EqualityConstraint[A, B]
-  def lowPriorityEnabledEqualityConstraintConverting[A, B](implicit equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]): EqualityConstraint[A, B]
-  def enabledEqualityConstraintConverting[A, B](implicit equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]): EqualityConstraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate
@@ -759,14 +745,6 @@ object EqualityPolicy {
     override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
   }
   
-  final class AToBEnabledEqualityConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: EnabledEqualityConverting[A, B]) extends EqualityConstraint[A, B] {
-    override def areEqual(a: A, b: B): Boolean = equivalenceOfB.areEquivalent(cnv(a), b)
-  }
-  
-  final class BToAEnabledEqualityConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: EnabledEqualityConverting[B, A]) extends EqualityConstraint[A, B] {
-    override def areEqual(a: A, b: B): Boolean = equivalenceOfA.areEquivalent(a, cnv(b))
-  }
-
   /**
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code>
    * and a conversion function from <code>B</code> to <code>A</code>. 

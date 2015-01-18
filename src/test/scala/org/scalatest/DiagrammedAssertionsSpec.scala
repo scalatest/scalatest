@@ -97,6 +97,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
 
     val a = 3
     val b = 5
+    val c = "8"
 
     val bob = "bob"
     val alice = "alice"
@@ -237,36 +238,37 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check c == null") {
         val e = intercept[TestFailedException] {
-          assert(a == null)
+          assert(c == null)
         }
         e.message should be (
           Some(
             """
               |
-              |assert(a == null)
+              |assert(c == null)
               |       | |  |
-              |       3 |  null
-              |         false
+              |       | |  null
+              |       | false
+              |       "8"
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
         val e = intercept[TestFailedException] {
-          assert(null == a)
+          assert(null == c)
         }
         e.message should be (
           Some(
             """
               |
-              |assert(null == a)
+              |assert(null == c)
               |       |    |  |
-              |       null |  3
+              |       null |  "8"
               |            false
               |""".stripMargin
           )
@@ -2606,36 +2608,37 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check c == null") {
         val e = intercept[TestFailedException] {
-          assert(a == null, "this is a clue")
+          assert(c == null, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assert(a == null, "this is a clue")
+              |assert(c == null, "this is a clue")
               |       | |  |
-              |       3 |  null
-              |         false
+              |       | |  null
+              |       | false
+              |       "8"
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
         val e = intercept[TestFailedException] {
-          assert(null == a, "this is a clue")
+          assert(null == c, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assert(null == a, "this is a clue")
+              |assert(null == c, "this is a clue")
               |       |    |  |
-              |       null |  3
+              |       null |  "8"
               |            false
               |""".stripMargin
           )
@@ -4975,36 +4978,37 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check c == null") {
         val e = intercept[TestCanceledException] {
-          assume(a == null)
+          assume(c == null)
         }
         e.message should be (
           Some(
             """
               |
-              |assume(a == null)
+              |assume(c == null)
               |       | |  |
-              |       3 |  null
-              |         false
+              |       | |  null
+              |       | false
+              |       "8"
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check null == c") {
         val e = intercept[TestCanceledException] {
-          assume(null == a)
+          assume(null == c)
         }
         e.message should be (
           Some(
             """
               |
-              |assume(null == a)
+              |assume(null == c)
               |       |    |  |
-              |       null |  3
+              |       null |  "8"
               |            false
               |""".stripMargin
           )
@@ -7344,36 +7348,37 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check c == null") {
         val e = intercept[TestCanceledException] {
-          assume(a == null, "this is a clue")
+          assume(c == null, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assume(a == null, "this is a clue")
+              |assume(c == null, "this is a clue")
               |       | |  |
-              |       3 |  null
-              |         false
+              |       | |  null
+              |       | false
+              |       "8"
               |""".stripMargin
           )
         )
         e.failedCodeFileName should be (Some(fileName))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
 
-      it("should throw TestCanceledException with correct message and stack depth when is used to check null == a") {
+      it("should throw TestCanceledException with correct message and stack depth when is used to check null == c") {
         val e = intercept[TestCanceledException] {
-          assume(null == a, "this is a clue")
+          assume(null == c, "this is a clue")
         }
         e.message should be (
           Some(
             """this is a clue
               |
-              |assume(null == a, "this is a clue")
+              |assume(null == c, "this is a clue")
               |       |    |  |
-              |       null |  3
+              |       null |  "8"
               |            false
               |""".stripMargin
           )

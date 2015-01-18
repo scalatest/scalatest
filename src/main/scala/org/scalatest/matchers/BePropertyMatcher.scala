@@ -76,7 +76,7 @@ package org.scalatest.matchers
  * </p>
  *
  * <pre class="stHighlight">
- * class ExampleSpec extends Spec with ShouldMatchers with CustomMatchers {
+ * class ExampleSpec extends Spec with Matchers with CustomMatchers {
  * 
  *   describe("A temp file") {
  * 

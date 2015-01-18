@@ -137,7 +137,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
     }
 
     object `apply(Null) method returns Matcher` {
-      val mt = be_== (null)
+      val mt: matchers.Matcher[AnyRef] = be_== (null)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (null)")
@@ -187,7 +187,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
     }
 
     object `when used with Symbol should use == to check for equality to the passed in Symbol` {
-      val mt = be_== ('file)
+      val mt: matchers.Matcher[Any] = be_== ('file)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== ('file)")
@@ -247,7 +247,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       }
       val odd = new OddMatcher
 
-      val mt = be_== (odd)
+      val mt: matchers.Matcher[Any] = be_== (odd)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (" + odd + ")")
@@ -311,7 +311,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       val myFile = MyFile("test", true, false)
       val file = new FileBePropertyMatcher
 
-      val mt = be_== (file)
+      val mt: matchers.Matcher[Any] = be_== (file)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (" + file + ")")
@@ -369,7 +369,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       val myFileLeft = MyFile("test left", true, false)
       val myFileRight = MyFile("test right", true, false)
 
-      val mt = be_== (myFileRight)
+      val mt: matchers.Matcher[Any] = be_== (myFileRight)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (" + myFileRight + ")")
@@ -418,7 +418,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
 
     object `when used with SortedWord should use == to check for equality to the passed in SortedWord` {
 
-      val mt = be_== (sorted)
+      val mt: matchers.Matcher[Any] = be_== (sorted)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (" + sorted + ")")
@@ -479,7 +479,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
 
       val resultOfDefinedAt = new ResultOfDefinedAt(8)
 
-      val mt = be_== (resultOfDefinedAt)
+      val mt: matchers.Matcher[Any] = be_== (resultOfDefinedAt)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (definedAt (8))")
@@ -537,7 +537,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       val clazz = classOf[MyFile]
       val resultOfAType = new ResultOfATypeInvocation(clazz)
 
-      val mt = be_== (resultOfAType)
+      val mt: matchers.Matcher[Any] = be_== (resultOfAType)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (a [" + clazz.getName + "])")
@@ -597,7 +597,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
       val clazz = classOf[MyFile]
       val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
 
-      val mt = be_== (resultOfAnType)
+      val mt: matchers.Matcher[Any] = be_== (resultOfAnType)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (an [" + clazz.getName + "])")
@@ -652,7 +652,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
         def isReadable: Boolean = true
       }
 
-      val mt = be_== (readable)
+      val mt: matchers.Matcher[Any] = be_== (readable)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (readable)")
@@ -706,7 +706,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
         def isWritable: Boolean = true
       }
 
-      val mt = be_== (writable)
+      val mt: matchers.Matcher[Any] = be_== (writable)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (writable)")
@@ -756,7 +756,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
 
     object `when used with EmptyWord should use == to check for equality to the passed in EmptyWord` {
 
-      val mt = be_== (empty)
+      val mt: matchers.Matcher[Any] = be_== (empty)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (empty)")
@@ -806,7 +806,7 @@ class BeEqualEqualWordSpec extends Spec with FileMocks {
 
     object `when used with DefinedWord should use == to check for equality to the passed in DefinedWord` {
 
-      val mt = be_== (defined)
+      val mt: matchers.Matcher[Any] = be_== (defined)
 
       def `should have pretty toString` {
         mt.toString should be ("be_== (defined)")

@@ -16,10 +16,9 @@
 package org.scalatest.words
 
 import scala.collection.GenTraversable
-import org.scalatest.enablers.Containing
-import org.scalatest.enablers.EvidenceThat
-import org.scalatest.enablers.Aggregating
-import org.scalatest.enablers.Sequencing
+import org.scalactic.enablers.ContainingConstraint
+import org.scalactic.enablers.AggregatingConstraint
+import org.scalactic.enablers.SequencingConstraint
 import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
 import org.scalatest.MatchersHelper.newTestFailedException
@@ -45,7 +44,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[L]) {
+  def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: ContainingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
@@ -67,7 +66,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[L]) {
+  def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: ContainingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneElementOf"))
@@ -89,7 +88,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
@@ -111,7 +110,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneElementOf"))
@@ -133,7 +132,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[L]) {
+  def noElementsOf[R](elements: GenTraversable[R])(implicit containing: ContainingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "noElementsOf"))
@@ -155,7 +154,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: EvidenceThat[R]#CanBeContainedIn[L]) {
+  def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: ContainingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
@@ -177,7 +176,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: AggregatingConstraint[L, R]) {
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -196,7 +195,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[L]) {
+  def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: SequencingConstraint[L, R]) {
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -215,7 +214,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def only[R](right: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def only[R](right: R*)(implicit aggregating: AggregatingConstraint[L, R]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("ResultOfContainWord.scala", "only"))
     if (right.distinct.size != right.size)
@@ -244,7 +243,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[L]) {
+  def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
@@ -266,7 +265,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "allOf"))
@@ -288,7 +287,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "allElementsOf"))
@@ -310,7 +309,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[L]) {
+  def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
@@ -332,7 +331,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[L]) {
+  def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: SequencingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrderElementsOf"))
@@ -390,7 +389,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
@@ -412,7 +411,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[L]) {
+  def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[L, R]) {
     val right = elements.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneElementOf"))

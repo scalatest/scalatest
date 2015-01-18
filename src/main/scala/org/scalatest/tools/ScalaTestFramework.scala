@@ -74,12 +74,12 @@ import java.util.concurrent.atomic.AtomicLong
  * </p>
  *
  * <ul>
- *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by SBT</li>
+ *   <li><code>-R</code> -- runpath is not supported because test path and discovery is handled by SBT</li>
  *   <li><code>-s</code> -- suite is not supported because SBT's <code>test-only</code> serves the similar purpose</li>
  *   <li><code>-A</code> -- again is not supported because SBT's <code>test-quick</code> serves the similar purpose</li>
  *   <li><code>-j</code> -- junit is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-b</code> -- testng is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
- *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
+ *   <li><code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
  *   <li><code>-q</code> is not supported because test discovery should be handled by SBT, and SBT's test-only or test filter serves the similar purpose</li>
  *   <li><code>-T</code> is not supported because correct ordering of text output is handled by SBT</li>
  *   <li><code>-g</code> is not supported because current Graphic Reporter implementation works differently than standard reporter</li>
@@ -161,7 +161,7 @@ class ScalaTestFramework extends SbtFramework {
           ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
           
           if (!runpathArgs.isEmpty)
-            throw new IllegalArgumentException("-p, -R (runpath) is not supported when runs in SBT.")
+            throw new IllegalArgumentException("-R (runpath) is not supported when runs in SBT.")
                
           if (!suiteArgs.isEmpty)
             throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
@@ -176,7 +176,7 @@ class ScalaTestFramework extends SbtFramework {
             throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
           
           if (!concurrentArgs.isEmpty)
-            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+            throw new IllegalArgumentException("-P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
           
           if (!suffixes.isEmpty)
             throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")

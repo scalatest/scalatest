@@ -228,9 +228,9 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    it("should give the proper line on evaluating {} should produce [IllegalArgumentException] {}") {
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
       try {
-        evaluating {} should produce[IllegalArgumentException]
+        an [IllegalArgumentException] should be thrownBy {}
       }
       catch {
         case e: TestCanceledException =>
@@ -239,27 +239,27 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
               if (s != ("TestCanceledExceptionSpec.scala:" + (baseLineNumber + 204))) {
                 cancel("s was: " + s, e)
               }
-            case None => fail("evaluating {} should produce [IllegalArgumentException] didn't produce a file name and line number string", e)
+            case None => fail("an [IllegalArgumentException] should be thrownBy {} didn't produce a file name and line number string", e)
           }
         case e: Throwable =>
-          cancel("evaluating {} should produce [IllegalArgumentException] didn't produce a TestCanceledException", e)
+          cancel("an [IllegalArgumentException] should be thrownBy {} didn't produce a TestCanceledException", e)
       }
     }
 
-    it("should give the proper line on evaluating { throw new RuntimeException } should produce [IllegalArgumentException]") {
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
-        evaluating {
+        an [IllegalArgumentException] should be thrownBy {
           if (false) 1 else throw new RuntimeException
-        } should produce[IllegalArgumentException]
+        }
       }
       catch {
         case e: TestCanceledException =>
           e.failedCodeFileNameAndLineNumberString match {
             case Some(s) => s should equal("TestCanceledExceptionSpec.scala:" + (baseLineNumber + 222))
-            case None => fail("evaluating { throw new RuntimeException } should produce [IllegalArgumentException] didn't produce a file name and line number string", e)
+            case None => fail("an [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a file name and line number string", e)
           }
         case e: Throwable =>
-          cancel("evaluating { throw new RuntimeException } should produce [IllegalArgumentException] didn't produce a TestCanceledException", e)
+          cancel("an [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a TestCanceledException", e)
       }
     }
 
@@ -279,7 +279,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
 
     it("should be equal to itself") {
       val tfe = new TestCanceledException(Some("doody"), None, 3)
-      assume(tfe equals tfe)
+      assume(tfe == tfe)
     }
   }
 }

@@ -25,9 +25,7 @@ import org.scalacheck.Prop
 import org.scalacheck.Test
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
-/* Uncomment this when remove the deprecated type aliases in the org.scalatest.prop package object.
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-*/
 
 /**
  * Trait that contains several &ldquo;check&rdquo; methods that perform ScalaCheck property checks.
@@ -447,24 +445,11 @@ object Checkers extends Checkers {
             None,
             scalaCheckLabels.toList
           )
-
-        case Test.GenException(e) =>
-
-          throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => prettyTestStats(result),
-            Some(e),
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-            None,
-            FailureMessages("generatorException", UnquotedString(e.getClass.getName)),
-            args,
-            None,
-            labels
-          )
       }
     }
   }
   
-  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
+  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]): List[Arg[Any]] = {
     if (argNames.isDefined) {
       // length of scalaCheckArgs should equal length of argNames
       val zipped = argNames.get zip scalaCheckArgs
@@ -516,9 +501,6 @@ object Checkers extends Checkers {
 
     case Test.PropException(args, e, labels) =>
       FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
-
-    case Test.GenException(e) =>
-      "Exception \"" + e + "\" (included as the TestFailedException's cause) was thrown during argument generation."
   }
 
   private def prettyLabels(labels: Set[String]) = {

@@ -24,8 +24,6 @@ trait InfoExpectedResults extends EventHelpers {
 
 object ParallelTestExecutionInfoExamples extends Tables {
 
-  def infoSuite = new ExampleParallelTestExecutionInfoSuite()
-  def infoFixtureSuite = new ExampleParallelTestExecutionInfoFixtureSuite()
   def infoSpec = new ExampleParallelTestExecutionInfoSpec()
   def infoFixtureSpec = new ExampleParallelTestExecutionInfoFixtureSpec()
   def infoFunSuite = new ExampleParallelTestExecutionInfoFunSuite()
@@ -46,8 +44,6 @@ object ParallelTestExecutionInfoExamples extends Tables {
   def infoExamples =
     Table(
       "suite1",
-      infoSuite, 
-      infoFixtureSuite, 
       infoSpec, 
       infoFixtureSpec, 
       infoFunSuite, 
@@ -65,44 +61,6 @@ object ParallelTestExecutionInfoExamples extends Tables {
       infoWordSpec, 
       infoFixtureWordSpec
     )
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionInfoSuite extends Suite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
-  before {}  // how to fire info here?
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
-  after {} // how to fire info here?
-  
-  def assertBeforeAfterInfo(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testMethod1")
-    checkTestSucceeded(events(1), "testMethod1")
-    checkTestStarting(events(2), "testMethod2")
-    checkTestSucceeded(events(3), "testMethod2")
-    checkTestStarting(events(4), "testMethod3")
-    checkTestSucceeded(events(5), "testMethod3")
-  }
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionInfoFixtureSuite extends fixture.Suite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
-  before {}  // how to fire info here?
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
-  after {}  // how to fire info here?
-  
-  def assertBeforeAfterInfo(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testMethod1")
-    checkTestSucceeded(events(1), "testMethod1")
-    checkTestStarting(events(2), "testMethod2")
-    checkTestSucceeded(events(3), "testMethod2")
-    checkTestStarting(events(4), "testMethod3")
-    checkTestSucceeded(events(5), "testMethod3")
-  }
 }
 
 @DoNotDiscover

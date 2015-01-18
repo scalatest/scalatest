@@ -201,7 +201,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
     it("should throw an IAE from completedTest if no tests have been passed to distributingTest") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      evaluating { tsr.completedTest("fred") } should produce [IllegalArgumentException]
+      an [IllegalArgumentException] should be thrownBy { tsr.completedTest("fred") }
     }
 
     it("should throw an IAE from completedTest if that test is not among those passed to distributingTest") {
@@ -212,7 +212,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       dispatch.distributingTest(s1s2t1Starting.testName)
       dispatch("Scope 1 Scope 2 Test 1", s1s2t1Starting)
       dispatch.distributingTest(s1s2t2Starting.testName)
-      evaluating { dispatch.completedTest("fred") } should produce [IllegalArgumentException]
+      an [IllegalArgumentException] should be thrownBy { dispatch.completedTest("fred") }
     }
 
     it("should throw an IAE from completedTest if that test does not exist in the waiting list") {
@@ -228,19 +228,19 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       dispatch("Scope 1 Scope 2 Test 3", s1s2t3Starting)
       dispatch("Scope 1 Scope 2 Test 3", s1s2t3Succeeded)
       dispatch.completedTest("Scope 1 Scope 2 Test 3")
-      evaluating { dispatch.completedTest("Scope 1 Scope 2 Test 3") } should produce [IllegalArgumentException]
+      an [IllegalArgumentException] should be thrownBy { dispatch.completedTest("Scope 1 Scope 2 Test 3") }
     }
 
     it("should throw an NPE from completedTest if null is passed") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      evaluating { tsr.completedTest(null) } should produce [NullPointerException]
+      an [NullPointerException] should be thrownBy { tsr.completedTest(null) }
     }
 
     it("should throw an NPE from distributingTest if null is passed") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      evaluating { tsr.distributingTest(null) } should produce [NullPointerException]
+      a [NullPointerException] should be thrownBy { tsr.distributingTest(null) }
     }
 
     it("should throw an IAE from distributingTest if that test was already passed to distributingTest and it hasn't completed") {
@@ -251,7 +251,7 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       dispatch.distributingTest(s1s2t1Starting.testName)
       dispatch("Scope 1 Scope 2 Test 1", s1s2t1Starting)
       dispatch.distributingTest(s1s2t2Starting.testName)
-      evaluating { dispatch.distributingTest(s1s2t2Starting.testName) } should produce [IllegalArgumentException]
+      an [IllegalArgumentException] should be thrownBy { dispatch.distributingTest(s1s2t2Starting.testName) }
     }
 
     it("should throw an IAE from distributingTest if that test was already passed to distributingTest and its events haven't yet been completely reported about") {
@@ -263,15 +263,15 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       dispatch("Scope 1 Scope 2 Test 1", s1s2t1Starting)
       dispatch.distributingTest(s1s2t2Starting.testName)
       dispatch.completedTest(s1s2t2Starting.testName)
-      evaluating { dispatch.distributingTest(s1s2t2Starting.testName) } should produce [IllegalArgumentException]
+      an [IllegalArgumentException] should be thrownBy { dispatch.distributingTest(s1s2t2Starting.testName) }
     }
 
     it("should throw an NPE from apply(String, Event) if null is passed for either param") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      evaluating { tsr.apply(null, scope1Opened) } should produce [NullPointerException]
-      evaluating { tsr.apply("howdy", null) } should produce [NullPointerException]
-      evaluating { tsr.apply(null, null) } should produce [NullPointerException]
+      a [NullPointerException] should be thrownBy { tsr.apply(null, scope1Opened) }
+      a [NullPointerException] should be thrownBy { tsr.apply("howdy", null) }
+      a [NullPointerException] should be thrownBy { tsr.apply(null, null) }
     }
     
     it("should timeout if a test with no event fired is blocking") {

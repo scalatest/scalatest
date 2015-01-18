@@ -181,7 +181,7 @@ class MatcherFactorySpec extends Spec {
     
     object `and(MatcherFactory1) method returns MatcherFactory1` {
       
-      val mtf1 = equal ("Bob")
+      val mtf1: matchers.MatcherFactory1[Any, enablers.EvidenceThat[String]#CanEqual] = equal ("Bob")
       val mtf = mtf1 and (equal ("Alice"))
       val mt = mtf.matcher[String]
       
@@ -192,7 +192,7 @@ class MatcherFactorySpec extends Spec {
     
     object `or(MatcherFactory1) method returns MatcherFactory1` {
       
-      val mtf1 = equal ("Bob")
+      val mtf1: matchers.MatcherFactory1[Any, enablers.EvidenceThat[String]#CanEqual] = equal ("Bob")
       val mtf = mtf1 or (equal ("Alice"))
       val mt = mtf.matcher[String]
       

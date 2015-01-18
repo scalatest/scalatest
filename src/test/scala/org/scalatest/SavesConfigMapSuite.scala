@@ -34,6 +34,6 @@ class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
 
 object SavesConfigMapSuite {
   private var theConfigMap: Option[Map[String, Any]] = None
-  def savedConfigMap = theConfigMap
+  def savedConfigMap: Option[Map[String,Any]] = theConfigMap
   def resetConfigMap() { theConfigMap = None }
 }

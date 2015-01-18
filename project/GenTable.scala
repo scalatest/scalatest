@@ -17,6 +17,7 @@ import java.io.File
 import java.io.FileWriter
 import java.io.BufferedWriter
 import java.util.Calendar
+
 import scala.collection.JavaConversions._
 
 object GenTable {
@@ -178,6 +179,8 @@ import scala.collection.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
+import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 """
 
 val tableScaladocTemplate = """
@@ -335,6 +338,7 @@ $namesAndValues$
               "  )",
             Some(ex),
             getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", 2),
+            None, // Payload
             FailureMessages("undecoratedPropertyCheckFailureMessage"),
             List($alphaLower$),
             List($alphaName$),
@@ -499,6 +503,10 @@ object Tables extends Tables
 """
 
 val propertyCheckPreamble = """
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.StackDepth
+import scala.annotation.tailrec
+
 /**
  * Trait containing methods that faciliate property checks against tables of data.
  *
@@ -593,8 +601,8 @@ val propertyCheckPreamble = """
  * </pre>
  *
  * <p>
- * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>forAll</code> methods
- * that allow you to check properties using the data provided by a table. Each <code>forAll</code>
+ * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>forAll</code> and <code>forEvery</code> methods
+ * that allow you to check properties using the data provided by a table. Each <code>forAll</code> or <code>forEvery</code>
  * method takes two parameter lists. The first parameter list is a table. The second parameter list
  * is a function whose argument types and number matches that of the tuples in the table. For
  * example, if the tuples in the table supplied to <code>forAll</code> each contain an
@@ -609,6 +617,15 @@ val propertyCheckPreamble = """
  * a condition required by the property function is not met by a row
  * of passed data, will simply cause <code>forAll</code> to skip that row of data.
  * <p>
+ *
+ * <p>
+ * The full list of table methods are:
+ * </p>
+ *
+ * <ul>
+ * <li><code>forAll</code> - succeeds if the assertion holds true for every element</li>
+ * <li><code>forEvery</code> - same as <code>forAll</code>, but lists all failing elements if it fails (whereas <code>forAll</code> just reports the first failing element) and throws <code>TestFailedException</code> with the first failed checks as the cause.</li>
+ * </ul>
  *
  * <a name="testingStatefulFunctions"></a><h2>Testing stateful functions</h2>
  *
@@ -871,6 +888,172 @@ val propertyCheckForAllTemplate = """
   }
 """
 
+val propertyCheckForEveryPreamble = """
+
+  case class ForResult[T](passedCount: Int = 0,
+                          discardedCount: Int = 0,
+                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
+                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty,
+                          failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
+
+
+  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
+    import InspectorsHelper.{shouldPropagate, indentErrorMessages}
+    @tailrec
+    def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
+      if (itr.hasNext) {
+        val head = itr.next
+        val newResult =
+          try {
+            fun(head)
+            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+          }
+          catch {
+            case _: exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
+            case ex if !shouldPropagate(ex) =>
+              result.copy(failedElements =
+                result.failedElements :+ (index,
+                  head,
+                  new exceptions.TableDrivenPropertyCheckFailedException(
+                    (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                      (sde.failedCodeFileNameAndLineNumberString match {
+                        case Some(s) => " (" + s + ")";
+                        case None => ""
+                      }) + "\n" +
+                      "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                      (
+                        ex match {
+                          case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                            "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                          case _ => ""
+                        }
+                        ) +
+                      "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                      indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+                        name + " = " + value
+                      }.toIndexedSeq).mkString("\n") +
+                      "  )"),
+                    Some(ex),
+                    getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+                    None,
+                    FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                    head.productIterator.toList,
+                    namesOfArgs,
+                    index
+                  )
+                )
+              )
+          }
+
+        innerRunAndCollectResult(itr, newResult, index + 1)(fun)
+      }
+      else
+        result
+    }
+    innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
+  }
+
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val messageList = result.failedElements.map(_._3)
+    if (messageList.size > 0)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+  }
+
+"""
+
+
+val propertyCheckForEveryTemplateFor1 = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor1</code> and reporting every error.
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "$filename$", "forEvery", 3){a => fun(a._1)}
+  }
+
+"""
+
+val propertyCheckForEveryTemplate = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor$n$</code> and reporting every error.
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def forEvery[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
+    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "$filename$", "forEvery", 3)(fun.tupled)
+  }
+"""
+
+
+  val propertyCheckExistsPreamble = """
+
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+    import InspectorsHelper.indentErrorMessages
+    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    if (result.passedCount == 0) {
+      val messageList = result.failedElements.map(_._3)
+      throw new exceptions.TestFailedException(
+        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        messageList.headOption,
+        getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+      )
+    }
+  }
+
+                                      """
+
+
+  val propertyCheckExistsTemplateFor1 = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor1</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  }
+
+                                          """
+
+  val propertyCheckExistsTemplate = """
+  /**
+   * Performs a property check by applying the specified property check function to each row
+   * of the specified <code>TableFor$n$</code> and succeeding if at least one element satisfies the property check.
+   *
+   * @param table the table of data with which to perform the property check
+   * @param fun the property check function to apply to each row of data in the table
+   */
+  def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
+    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "$filename$", "exists", 3)(fun.tupled)
+  }
+                                      """
+
+
 val tableDrivenPropertyChecksCompanionObjectVerbatimString = """
 /*
  * Companion object that facilitates the importing of <code>TableDrivenPropertyChecks</code> members as 
@@ -926,7 +1109,7 @@ class TableSuite extends Spec with TableDrivenPropertyChecks {
 """
 
 val tableSuiteTemplate = """
-  def `table for $n$ that succeeds` {
+  def `table forAll $n$ that succeeds` {
 
     val examples =
       Table(
@@ -937,7 +1120,7 @@ $columnsOfOnes$
     forAll (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
   }
 
-  def `table for $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+  def `table forAll $n$, which succeeds even though DiscardedEvaluationException is thrown` {
     val numbers =
       Table(
         ($argNames$),
@@ -953,7 +1136,7 @@ $columnsOfOnes$
     }
   }
 
-  def `table for $n$, which fails` {
+  def `table forAll $n$, which fails` {
 
     val examples =
       Table(
@@ -963,6 +1146,83 @@ $columnsOfTwos$
 
     intercept[TableDrivenPropertyCheckFailedException] {
       forAll (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+    }
+  }
+
+  def `table forEvery $n$ that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfOnes$
+      )
+
+    forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+  }
+
+  def `table forEvery $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    forEvery (numbers) { ($names$) =>
+      whenever (a > 0) {
+        assert(a > 0)
+      }
+    }
+  }
+
+  def `table forEvery $n$, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    intercept[exceptions.TestFailedException] {
+      forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+    }
+  }
+
+  def `table exists $n$ that succeeds` {
+
+    val examples =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
+  }
+
+  def `table exists $n$, which succeeds even though DiscardedEvaluationException is thrown` {
+    val numbers =
+      Table(
+        ($argNames$),
+$columnOfMinusOnes$
+$columnsOfOnes$
+      )
+
+    exists (numbers) { ($names$) =>
+      whenever (a > 0) {
+        assert(a > 0)
+      }
+    }
+  }
+
+  def `table exists $n$, which fails` {
+    val examples =
+      Table(
+        ($argNames$),
+$columnsOfTwos$
+      )
+
+    intercept[exceptions.TestFailedException] {
+      exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
     }
   }
 
@@ -1044,9 +1304,9 @@ $columnsOfIndexes$
   }
 
   def genPropertyChecks(targetDir: File) {
+    val filename = "TableDrivenPropertyChecks.scala"
+    val bw = new BufferedWriter(new FileWriter(new File(targetDir, filename)))
 
-    val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableDrivenPropertyChecks.scala")))
- 
     try {
       val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
       st.setAttribute("year", thisYear);
@@ -1062,6 +1322,47 @@ $columnsOfIndexes$
         st.setAttribute("alphaLower", alphaLower)
         st.setAttribute("alphaUpper", alphaUpper)
         st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForEveryPreamble)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      for (i <- 1 to 22) {
+        val template = if (i == 1) propertyCheckForEveryTemplateFor1 else propertyCheckForEveryTemplate
+        val st = new org.antlr.stringtemplate.StringTemplate(template)
+        val alphaLower = alpha.take(i).mkString(", ")
+        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+        val strings = List.fill(i)("String").mkString(", ")
+        st.setAttribute("n", i)
+        st.setAttribute("alphaLower", alphaLower)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      {
+        val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckExistsPreamble)
+        st.setAttribute("filename", filename)
+        bw.write(st.toString)
+      }
+
+      for (i <- 1 to 22) {
+        val template = if (i == 1) propertyCheckExistsTemplateFor1 else propertyCheckExistsTemplate
+        val st = new org.antlr.stringtemplate.StringTemplate(template)
+        val alphaLower = alpha.take(i).mkString(", ")
+        val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+        val strings = List.fill(i)("String").mkString(", ")
+        st.setAttribute("n", i)
+        st.setAttribute("alphaLower", alphaLower)
+        st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("strings", strings)
+        st.setAttribute("filename", filename)
         bw.write(st.toString)
       }
 
@@ -1125,7 +1426,7 @@ $columnsOfIndexes$
         val columnsOfOnes = List.fill(i)("        (" + rowOfOnes + ")").mkString(",\n")
         val columnOfMinusOnes = "        (" + rowOfMinusOnes + "),"
         val columnsOfTwos = List.fill(i)("        (" + rowOfTwos + ")").mkString(",\n")
-        val rawRows =                              
+        val rawRows =
           for (idx <- 0 to 9) yield                
             List.fill(i)("  " + idx).mkString("        (", ", ", ")")
         val columnsOfIndexes = rawRows.mkString(",\n")

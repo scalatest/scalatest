@@ -225,38 +225,6 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Network
   @org.scalatest.tags.Retryable
   @org.scalatest.tags.Slow
-  class BaseTagSuite extends Suite with FixtureServices
-  class InheritedTagSuite extends BaseTagSuite {
-    def testSomething() {}
-  }
-  def suite = new InheritedTagSuite
-
-  @org.scalatest.tags.ChromeBrowser
-  @org.scalatest.tags.FirefoxBrowser
-  @org.scalatest.tags.HtmlUnitBrowser
-  @org.scalatest.tags.InternetExplorerBrowser
-  @org.scalatest.tags.SafariBrowser
-  @org.scalatest.tags.CPU
-  @org.scalatest.tags.Disk
-  @org.scalatest.tags.Network
-  @org.scalatest.tags.Retryable
-  @org.scalatest.tags.Slow
-  class BaseTagFixtureSuite extends fixture.Suite with StringFixture with FixtureServices
-  class InheritedTagFixtureSuite extends BaseTagFixtureSuite {
-    def testSomething() {}
-  }
-  def fixtureSuite = new InheritedTagFixtureSuite
-
-  @org.scalatest.tags.ChromeBrowser
-  @org.scalatest.tags.FirefoxBrowser
-  @org.scalatest.tags.HtmlUnitBrowser
-  @org.scalatest.tags.InternetExplorerBrowser
-  @org.scalatest.tags.SafariBrowser
-  @org.scalatest.tags.CPU
-  @org.scalatest.tags.Disk
-  @org.scalatest.tags.Network
-  @org.scalatest.tags.Retryable
-  @org.scalatest.tags.Slow
   class BaseTagJUnit3Suite extends JUnit3Suite with InheritedTagFixtureServices
   class InheritedTagJUnit3Suite extends BaseTagJUnit3Suite {
     def testSomething() {}

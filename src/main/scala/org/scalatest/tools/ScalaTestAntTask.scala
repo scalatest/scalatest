@@ -779,18 +779,6 @@ class ScalaTestAntTask extends Task {
   }
 
   /**
-   * Sets value of the <code>concurrent</code> attribute.
-   * <b>Note: The <code>concurrent</code> attribute has been deprecated and will be removed in a future version of ScalaTest.
-   * Please use the <code>parallel</code> attribute instead.</b>
-   */
-  @deprecated("Please use parallel instead")
-  def setConcurrent(concurrent: Boolean) {
-    Console.err.println("WARNING: 'concurrent' attribute is deprecated " +
-                        "- please use 'parallel' instead")
-    this.parallel = concurrent
-  }
-
-  /**
    * Sets value of the <code>numthreads</code> attribute.
    */
   def setNumthreads(numthreads: Int) {
@@ -846,19 +834,6 @@ class ScalaTestAntTask extends Task {
    */
   def addConfiguredJvmArg(arg: JvmArg) {
     jvmArgs += arg.getValue
-  }
-
-  /**
-   * Sets values from nested element <code>property</code>.
-   * <b>The <code>property</code> attribute has been deprecated and will be removed in a future version of ScalaTest.
-   * Please use the <code>config</code> attribute instead.</b>
-   */
-  @deprecated("Please use config instead")
-  def addConfiguredProperty(property: NameValuePair) {
-    Console.err.println("WARNING: <property> is deprecated - " +
-                        "please use <config> instead [name: " +
-                        property.getName + "]")
-    properties += property
   }
 
   /**
@@ -950,36 +925,10 @@ class ScalaTestAntTask extends Task {
   }
 
   /**
-   * Sets value from nested element <code>includes</code>.
-   * <b>The <code>includes</code> attribute has been deprecated and will be removed in a future version of ScalaTest.
-   * Please use the <code>tagsToInclude</code> attribute instead.</b>
-   */
-  @deprecated("Please use tagsToInclude instead")
-  def addConfiguredIncludes(includes: TextElement) {
-    Console.err.println("WARNING: 'includes' is deprecated - " +
-                        "use 'tagsToInclude' instead [includes: " +
-                        includes.getText + "]")
-    addConfiguredTagsToInclude(includes)
-  }
-
-  /**
    * Sets value from nested element <code>tagsToExclude</code>.
    */
   def addConfiguredTagsToExclude(tagsToExclude: TextElement) {
     this.excludes += " " + tagsToExclude.getText
-  }
-
-  /**
-   * Sets value from nested element <code>excludes</code>.
-   * <b>The <code>excludes</code> attribute has been deprecated and will be removed in a future version of ScalaTest.
-   * Please use the <code>tagsToExclude</code> attribute instead.</b>
-   */
-  @deprecated("Please use tagsToExclude instead")
-  def addConfiguredExcludes(excludes: TextElement) {
-    Console.err.println("WARNING: 'excludes' is deprecated - " +
-                        "use 'tagsToExclude' instead [excludes: " +
-                        excludes.getText + "]")
-    addConfiguredTagsToExclude(excludes)
   }
 
   //

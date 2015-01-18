@@ -654,7 +654,7 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    */
   val value: Boolean = expression
 
-  private def getObjectsForFailureMessage =
+  private def getObjectsForFailureMessage: (Any, Any) =
     left match {
       case aEqualizer: org.scalactic.EqualityPolicy#Equalizer[_] =>
         Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, right)

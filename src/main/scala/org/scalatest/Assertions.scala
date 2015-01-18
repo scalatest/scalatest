@@ -1372,7 +1372,7 @@ object Assertions extends Assertions {
     }
   }
   private[scalatest] def checkNoException(fun: => Any) {
-    val caught = try {
+    try {
       fun
     }
     catch {

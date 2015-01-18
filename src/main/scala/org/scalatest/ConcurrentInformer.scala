@@ -145,11 +145,11 @@ private[scalatest] object ConcurrentDocumenter {
 //
 private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAwareness {
 
-  private var messages = List[(String, Option[Any], RecordedMessageEventFun, Option[Location])]()
+  private var messages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] = List.empty
 
   // Should only be called by the thread that constructed this
   // ConcurrentInformer, because don't want to worry about synchronization here. Just send stuff from
-  // other threads whenever they come in. So only call record after first checking isConstructingThread
+  // other threads whenever thConcurrentInformerey come in. So only call record after first checking isConstructingThread
   private def record(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]) {
     require(isConstructingThread)
     messages ::= (message, payload, eventFun, location)

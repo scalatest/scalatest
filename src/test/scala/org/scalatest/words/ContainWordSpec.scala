@@ -32,7 +32,7 @@ class ContainWordSpec extends Spec {
     
     object `apply(Any) method returns MatcherFactory1` {
       
-      val mtf = contain (2)
+      val mtf: matchers.MatcherFactory1[Any, enablers.EvidenceThat[Int]#CanBeContainedIn] = contain (2)
       val mt = mtf.matcher[Array[Int]]
       
       def `should have pretty toString` {

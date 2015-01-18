@@ -60,17 +60,6 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
     case None =>
   }
 
-  /*
-   * <strong>This constructor has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * the factory method, named <code>apply</code>, in the <code>Filter</code> companion object instead.
-   * (<em>I.e.</em>, to get rid of the deprecation warning, just remove <code>new</code> in front
-   * of <code>Filter</code>).</strong>
-   */
-/* TODO: REMOVE ME IF TESTS PASS
-  @deprecated("This overloaded constructor has been deprecated and will be removed in a future version of ScalaTest. Please use the factory method (named apply) in the Filter companion object instead.")
-  def this(tagsToInclude: Option[Set[String]], tagsToExclude: Set[String]) = this(tagsToInclude, tagsToExclude, false, DynaTags(Map.empty, Map.empty))
-*/
-
   private def includedTestNames(testNamesAsList: List[String], tags: Map[String, Set[String]]): List[String] = 
     tagsToInclude match {
       case None => testNamesAsList
@@ -218,20 +207,10 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @param testName the test name to be filtered
    * @param tags a map from test name to tags, containing only test names that have at least one tag
+   * @param suiteId the suite Id of the suite to filter
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
-/* TODO: REMOVE THIS IF TESTS PASS, AND MOVE THE DOCUMENTATION DOWN, ADDING SUITE ID IN THERE.
-  @deprecated("Please use the apply method that takes a suite instead, the one with this signature: def apply(testName: String, testTags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean)")
-  def apply(testName: String, tags: Map[String, Set[String]]): (Boolean, Boolean) = {
-    val list = apply(Set(testName), tags)
-    if (list.isEmpty)
-      (true, false)
-    else
-      (false, list.head._2)
-  }
-*/
-  
   def apply(testName: String, tags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean) = {
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, Set(testName))
     val list = apply(Set(testName), testTags)
@@ -254,26 +233,10 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    * @param testNames test names to be filtered
    * @param tags a map from test name to tags, containing only test names included in the <code>testNames</code> set, and
    *   only test names that have at least one tag
+   * @param suiteId the suite Id of the suite to filter
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
-/* TODO: REMOVE THIS ONCE TESTS PASS
-  @deprecated("Please use the runnableTestCount method that takes a suiteId instead, the one with this signature: def runnableTestCount(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): Int")
-  def runnableTestCount(testNames: Set[String], tags: Map[String, Set[String]]): Int = {
-
-    verifyPreconditionsForMethods(testNames, tags)
-
-    val testNamesAsList = testNames.toList // to preserve the order
-    val runnableTests = 
-      for {
-        testName <- includedTestNames(testNamesAsList, tags)
-        if !tags.contains(testName) || (!tags(testName).contains(IgnoreTag) && (tags(testName) intersect tagsToExclude).size == 0)
-      } yield testName
-
-    runnableTests.size
-  }
-*/
-
   def runnableTestCount(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): Int = {
     val tags: Map[String, Set[String]] = mergeTestDynamicTags(testTags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, tags)

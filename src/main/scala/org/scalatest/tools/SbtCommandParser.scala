@@ -26,7 +26,7 @@ private[scalatest] class SbtCommandParser extends StandardTokenParsers {
 
   def parseCommand(command: String) {
     val tokens = new lexical.Scanner(command)
-    val result = phrase(cmd)(tokens)
+    val result: ParseResult[Any] = phrase(cmd)(tokens)
     result match {
       case Success(tree, _) => println("success: " + tree)
       case e: NoSuccess => {
@@ -35,7 +35,7 @@ private[scalatest] class SbtCommandParser extends StandardTokenParsers {
     }
   }
 
-  def parseResult(command: String) = {
+  def parseResult(command: String): ParseResult[Any] = {
     val tokens = new lexical.Scanner(command)
     phrase(cmd)(tokens)
   }

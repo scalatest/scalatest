@@ -279,7 +279,7 @@ import org.scalactic.Prettifier
  *
  * <p>
  * ScalaTest also supports another style of assertions via its matchers DSL. By mixing in
- * trait <a href="matchers/ShouldMatchers.html"><code>ShouldMatchers</code></a>, you can 
+ * trait <a href="matchers/Matchers.html"><code>Matchers</code></a>, you can 
  * write suites that look like:
  * </p>
  *
@@ -288,7 +288,7 @@ import org.scalactic.Prettifier
  *
  * import org.scalatest._
  *
- * class SetSuite extends Suite with ShouldMatchers {
+ * class SetSuite extends Suite with Matchers {
  *
  *   def &#96;test: an empty Set should have size 0&#96; {
  *     Set.empty.size should equal (0)
@@ -322,15 +322,6 @@ import org.scalactic.Prettifier
  * This trait provides an interface composed of "lifecycle methods" that allow suites of tests to be run.
  * Its implementation enables a default way of writing and executing tests.  Subtraits and subclasses can
  * override <code>Suite</code>'s lifecycle methods to enable other ways of writing and executing tests.
- * </p>
- *
- * <p>
- * <strong>Prior to ScalaTest 2.0.M4, trait <code>Suite</code> served two purposes: 1) It served as the base
- * class of ScalaTest's family of style traits, and 2) It was itself a style trait in which tests are methods.
- * Although it will continue to serve its first purpose, it has been deprecated as a style trait. Pre-existing code
- * that used <code>Suite</code> as a style trait to define tests as methods will continue to work during the
- * deprecation period, but will generate a deprecation warning. Please change all such uses of <code>Suite</code>
- * to use trait <a href="Spec.html"><code>Spec</code></a> instead.</strong>
  * </p>
  *
  * <h2>Nested suites</h2>
@@ -929,7 +920,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * returned <code>Map</code>.
    * </p>
    */
-  def tags: Map[String, Set[String]] = {
+  def tags: Map[String, Set[String]] = Map.empty
+
+  private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
     val testNameSet = testNames
       
     val testTags = Map() ++ 
@@ -950,104 +943,12 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
    *
    * <p>
-   * <strong><code>Suite</code> has been deprecated as a style trait. During the deprecation period, the following behavior will continue
-   * to work as before, but will go away at the conclusion of the deprecation period:</strong>
-   * This trait's implementation of this method uses Java reflection to discover all public methods whose name starts with <code>"test"</code>,
-   * which take either nothing or a single <code>Informer</code> as parameters. For each discovered test method, it assigns a test name
-   * comprised of just the method name if the method takes no parameters, or the method name plus <code>(Informer)</code> if the
-   * method takes a <code>Informer</code>. Here are a few method signatures and the names that this trait's implementation assigns them:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def testCat() {}         // test name: "testCat"
-   * def testCat(Informer) {} // test name: "testCat(Informer)"
-   * def testDog() {}         // test name: "testDog"
-   * def testDog(Informer) {} // test name: "testDog(Informer)"
-   * def test() {}            // test name: "test"
-   * def test(Informer) {}    // test name: "test(Informer)"
-   * </pre>
-   *
-   * <p>
-   * This trait's implementation of this method returns an immutable <code>Set</code> of all such names, excluding the name
-   * <code>testNames</code>. The iterator obtained by invoking <code>elements</code> on this
-   * returned <code>Set</code> will produce the test names in their <em>natural order</em>, as determined by <code>String</code>'s
-   * <code>compareTo</code> method.
-   * </p>
-   *
-   * <p>
-   * This trait's implementation of <code>runTests</code> invokes this method
-   * and calls <code>runTest</code> for each test name in the order they appear in the returned <code>Set</code>'s iterator.
-   * Although this trait's implementation of this method returns a <code>Set</code> whose iterator produces <code>String</code>
-   * test names in a well-defined order, the contract of this method does not required a defined order. Subclasses are free to
-   * override this method and return test names in an undefined order, or in a defined order that's different from <code>String</code>'s
-   * natural order.
-   * </p>
-   *
-   * <p>
-   * Subclasses may override this method to produce test names in a custom manner. One potential reason to override <code>testNames</code> is
-   * to run tests in a different order, for example, to ensure that tests that depend on other tests are run after those other tests.
-   * Another potential reason to override is allow tests to be defined in a different manner, such as methods annotated <code>@Test</code> annotations
-   * (as is done in <code>JUnitSuite</code> and <code>TestNGSuite</code>) or test functions registered during construction (as is
-   * done in <code>FunSuite</code> and <code>FunSpec</code>).
-   * </p>
-   *
-   * <p>
-   * In ScalaTest's event model, a test may be surrounded by &ldquo;scopes.&rdquo; Each test and scope is associated with string of text.
-   * A test's name is concatenation of the text of any surrounding scopes followed by the text provided with the test
-   * itself, after each text element has been trimmed and one space inserted between each component. Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * package org.scalatest.examples.freespec
-   *
-   * import org.scalatest.FreeSpec
-   *
-   * class SetSpec extends FreeSpec {
-   *
-   *   "A Set" - {
-   *     "when empty" - {
-   *       "should have size 0" in {
-   *         assert(Set.empty.size === 0)
-   *       }
-   *
-   *       "should produce NoSuchElementException when head is invoked" in {
-   *         intercept[NoSuchElementException] {
-   *           Set.empty.head
-   *         }
-   *       }
-   *     }
-   *   }
-   * }
-   * </pre>
-   *
-   * <p>
-   * The above <code>FreeSpec</code> contains two tests, both nested inside the same two scopes. The outermost scope names
-   * the subject, <code>A Set</code>. The nested scope qualifies the subject with <code>when empty</code>. Inside that
-   * scope are the two tests. The text of the tests are:
-   * <p>
-   *
-   * <ul>
-   * <li><code>should have size 0</code></li>
-   * <li><code>should produce NoSuchElementException when head is invoked</code></li>
-   * </ul>
-   *
-   * <p>
-   * Therefore, the names of these two tests are:
-   * </p>
-   *
-   * <ul>
-   * <li><code>A Stack when empty should have size 0</code></li>
-   * <li><code>A Stack when empty should produce NoSuchElementException when head is invoked</code></li>
-   * </ul>
-   *
-   * <p>
-   * Note that because the component scope and test text strings are trimmed, any leading or trailing space will be dropped
-   * before they are strung together to form the test name, with each trimmed component separated by a space. If the scopes
-   * in the above example had text <code>" A Set "</code> and <code>" when empty "</code>, and the first test had text
-   * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
-   * </p>
+   * This trait's implementation of this method returns an empty <code>Set</code>.
    */
-  def testNames: Set[String] = {
+  def testNames: Set[String] = Set.empty
+
+  // Leave this around for a while so can print out a warning if we find testXXX methods.
+  private[scalatest] def yeOldeTestNames: Set[String] = {
 
     def isTestMethod(m: Method) = {
 
@@ -1126,16 +1027,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * Run a test.
    *
    * <p>
-   * This trait's implementation uses Java reflection to invoke on this object the test method identified by the passed <code>testName</code>.
-   * </p>
-   *
-   * <p>
-   * Implementations of this method are responsible for ensuring a <code>TestStarting</code> event
-   * is fired to the <code>Reporter</code> before executing any test, and either <code>TestSucceeded</code>,
-   * <code>TestFailed</code>, <code>TestPending</code> or <code>TestCanceled</code> after executing any nested
-   * <code>Suite</code>. (If a test is marked with the <code>org.scalatest.Ignore</code> tag, the
-   * <code>runTests</code> method is responsible for ensuring a <code>TestIgnored</code> event is fired and that
-   * this <code>runTest</code> method is not invoked for that ignored test.)
+   * This trait's implementation returns the <code>Succeeded</code> singleton.
    * </p>
    *
    * @param testName the name of one test to run.
@@ -1146,7 +1038,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
-  protected def runTest(testName: String, args: Args): Status = {
+  protected def runTest(testName: String, args: Args): Status = SucceededStatus
+
+  private[scalatest] def yeOldeRunTest(testName: String, args: Args): Status = {
 
     if (testName == null)
       throw new NullPointerException("testName was null")
@@ -1303,8 +1197,10 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     if (args == null)
       throw new NullPointerException("args was null")
     
-    if (!this.isInstanceOf[Spec] && !this.isInstanceOf[Suites] && !this.isInstanceOf[Sequential] && !this.isInstanceOf[Stepwise])
-      println("Unfortunately Suite has been deprecated as a style trait. Please use trait Spec instead.")
+    if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
+      if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
+      else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
+    }
 
     import args._
 
@@ -1727,6 +1623,15 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @return a <code>TestData</code> instance for the specified test, which includes the specified config map
    */
   def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
+    new TestData { // TODO: Document that we return a "null object" here. Seems odd actually, shouldn't this return an Option?
+      val configMap = theConfigMap 
+      val name = testName
+      val scopes = Vector.empty
+      val text = testName
+      val tags = Set.empty[String]
+    }
+  }
+  private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     val suiteTags = for { 
       a <- this.getClass.getAnnotations
       annotationClass = a.annotationType
@@ -1809,7 +1714,7 @@ private[scalatest] object Suite {
   
   // If the objects are two strings, replace them with whatever is returned by diffStrings.
   // Otherwise, use the same objects.
-  def getObjectsForFailureMessage(a: Any, b: Any) = Prettifier.getObjectsForFailureMessage(a, b)
+  def getObjectsForFailureMessage(a: Any, b: Any): (Any, Any) = Prettifier.getObjectsForFailureMessage(a, b)
 
   //
   // Use MotionToSuppress on aggregator Suites, i.e. Suites that
@@ -2033,7 +1938,7 @@ used for test events like succeeded/failed, etc.
 
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload
@@ -2067,7 +1972,7 @@ used for test events like succeeded/failed, etc.
       recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]) {
 
     val message = getMessageForException(throwable)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload
@@ -2441,7 +2346,7 @@ used for test events like succeeded/failed, etc.
   ) {
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testName, 1, true)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload

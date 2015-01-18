@@ -27,7 +27,7 @@ class ExistWordSpec extends Spec with Matchers {
     
     object `matcherFactory produces Matcher that` {
       
-      val mtf = existWord.matcherFactory
+      val mtf: matchers.MatcherFactory1[Any, enablers.Existence] = existWord.matcherFactory
       val mt = mtf.matcher[File]
       
       def `should have pretty toString` {

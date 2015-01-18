@@ -51,21 +51,6 @@ class TableDrivenPropertyCheckFailedException(
 ) {
 
   /**
-   * This constructor has been deprecated and will be removed in a future version of ScalaTest. Please
-   * use the primary constructor instead.
-   */
-  @deprecated("Please use the primary constructor instead.")
-  def this(
-    messageFun: StackDepthException => String,
-    cause: Option[Throwable],
-    failedCodeStackDepthFun: StackDepthException => Int,
-    undecoratedMessage: String,
-    args: List[Any],
-    namesOfArgs: List[String],
-    row: Int
-  ) = this(messageFun, cause, failedCodeStackDepthFun, None, undecoratedMessage, args, namesOfArgs, row)
-
-  /**
    * Returns an instance of this exception's class, identical to this exception,
    * except with the detail message option string replaced with the result of passing
    * the current detail message to the passed function, <code>fun</code>.
@@ -98,7 +83,7 @@ class TableDrivenPropertyCheckFailedException(
    * the modified optional payload for the result instance of <code>TableDrivenPropertyCheckFailedException</code>.
    */
   override def modifyPayload(fun: Option[Any] => Option[Any]): TableDrivenPropertyCheckFailedException = {
-    val currentPayload = payload
+    val currentPayload: Option[Any] = payload
     val mod =
       new TableDrivenPropertyCheckFailedException(
         messageFun,

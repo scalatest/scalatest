@@ -45,9 +45,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assert(a1 === a2)
       intercept[TestFailedException] {
@@ -55,9 +55,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assert(a1 === a2)
       intercept[TestFailedException] {
@@ -92,6 +92,31 @@ class AssertionsSpec extends FunSpec {
     }
   }
   describe("The intercept method") {
+    it("should  catches subtypes") {
+      class MyException extends RuntimeException
+      class MyExceptionSubClass extends MyException
+      intercept[MyException] {
+        throw new MyException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      intercept[MyException] {
+        throw new MyExceptionSubClass
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      // Try with a trait
+      trait MyTrait {
+        def someRandomMethod() {}
+      }
+      class AnotherException extends RuntimeException with MyTrait
+      val caught = intercept[MyTrait] {
+        throw new AnotherException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      // Make sure the result type is the type passed in, so I can 
+      // not cast and still invoke any method on it I want
+      caught.someRandomMethod()
+    }
+
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
@@ -127,15 +152,6 @@ class AssertionsSpec extends FunSpec {
       // Make sure the result type is the type passed in, so I can 
       // not cast and still invoke any method on it I want
       caught.someRandomMethod()
-    }
-
-    it("should return the caught exception") {
-      val e = new RuntimeException
-      val result = intercept[RuntimeException] {
-        throw e
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      assert(result eq e)
     }
   }
   describe("The trap method") {
@@ -306,6 +322,7 @@ class AssertionsSpec extends FunSpec {
   describe("The assert(boolean) method") {
     val a = 3
     val b = 5
+    val c = "8"
     
     val bob = "bob"
     val alice = "alice"
@@ -393,20 +410,20 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
     
-    it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check c == null") {
       val e = intercept[TestFailedException] { 
-        assert(a == null) 
+        assert(c == null)
       }
-      assert(e.message === Some(didNotEqual(3, null)))
+      assert(e.message === Some(didNotEqual(c, null)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
     
-    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
       val e = intercept[TestFailedException] { 
-        assert(null == a) 
+        assert(null == c)
       }
-      assert(e.message === Some(didNotEqual(null, 3)))
+      assert(e.message === Some(didNotEqual(null, c)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -1619,6 +1636,7 @@ class AssertionsSpec extends FunSpec {
   describe("The assert(boolean, clue) method") {
     val a = 3
     val b = 5
+    val c = "8"
 
     val bob = "bob"
     val alice = "alice"
@@ -1713,20 +1731,20 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check c == null") {
       val e = intercept[TestFailedException] {
-        assert(a == null, ". dude")
+        assert(c == null, ". dude")
       }
-      assert(e.message === Some(didNotEqual(3, null) + ". dude"))
+      assert(e.message === Some(didNotEqual(c, null) + ". dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
       val e = intercept[TestFailedException] {
-        assert(null == a, "; dude")
+        assert(null == c, "; dude")
       }
-      assert(e.message === Some(didNotEqual(null, 3) + "; dude"))
+      assert(e.message === Some(didNotEqual(null, c) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -2940,6 +2958,7 @@ class AssertionsSpec extends FunSpec {
   describe("The assume(boolean) method") {
     val a = 3
     val b = 5
+    val c = "8"
 
     val bob = "bob"
     val alice = "alice"
@@ -3027,20 +3046,20 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+    it("should throw TestCanceledException with correct message and stack depth when is used to check c == null") {
       val e = intercept[TestCanceledException] {
-        assume(a == null)
+        assume(c == null)
       }
-      assert(e.message === Some(didNotEqual(3, null)))
+      assert(e.message === Some(didNotEqual(c, null)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
       val e = intercept[TestCanceledException] {
-        assume(null == a)
+        assume(null == c)
       }
-      assert(e.message === Some(didNotEqual(null, 3)))
+      assert(e.message === Some(didNotEqual(null, c)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -4253,6 +4272,7 @@ class AssertionsSpec extends FunSpec {
   describe("The assume(boolean, clue) method") {
     val a = 3
     val b = 5
+    val c = "8"
 
     val bob = "bob"
     val alice = "alice"
@@ -4347,20 +4367,20 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+    it("should throw TestCanceledException with correct message and stack depth when is used to check c == null") {
       val e = intercept[TestCanceledException] {
-        assume(a == null, ", dude")
+        assume(c == null, ", dude")
       }
-      assert(e.message === Some(didNotEqual(3, null) + ", dude"))
+      assert(e.message === Some(didNotEqual(c, null) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
       val e = intercept[TestCanceledException] {
-        assume(null == a, ". dude")
+        assume(null == c, ". dude")
       }
-      assert(e.message === Some(didNotEqual(null, 3) + ". dude"))
+      assert(e.message === Some(didNotEqual(null, c) + ". dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -5787,9 +5807,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1) { a2 }
       intercept[TestFailedException] {
@@ -5797,9 +5817,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1) { a2 }
       intercept[TestFailedException] {
@@ -5849,9 +5869,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays deeply") {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1, "a clue") { a2 }
       intercept[TestFailedException] {
@@ -5859,9 +5879,9 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should compare arrays containing nulls fine") {
-      val a1 = Array(1, Array("a", null), 3)
-      val a2 = Array(1, Array("a", null), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", null), 3)
+      val a2: Array[Any] = Array(1, Array("a", null), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       assert(a1 ne a2)
       assertResult(a1, "a clue") { a2 }
       intercept[TestFailedException] {

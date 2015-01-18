@@ -108,7 +108,7 @@ object Sequencing {
     def checkEqual(left: Iterator[T], right: Iterator[Any]): Boolean = {
       if (left.hasNext && right.hasNext) {
         val nextLeft = left.next
-        val nextRight = right.next
+        val nextRight: Any = right.next
         if (!equality.areEqual(nextLeft, nextRight))
           false
         else
@@ -174,7 +174,7 @@ object Sequencing {
     @tailrec
     def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
-        val nextRight = rightItr.next
+        val nextRight: Any = rightItr.next
         lastIndexOf(left.toIterator, nextRight, None, 0) match {
           case Some(idx) => 
             checkEqual(left.drop(idx).tail, rightItr)

@@ -23,8 +23,6 @@ import org.scalatest.testng.TestNGSuite
 trait MethodSuiteExamples extends Tables {
   type FixtureServices
   
-  def suite: Suite with FixtureServices
-  def fixtureSuite: fixture.Suite with FixtureServices
   def spec: Spec with FixtureServices
   def fixtureSpec: fixture.Spec with FixtureServices
   def junit3Suite: JUnit3Suite with FixtureServices
@@ -34,8 +32,6 @@ trait MethodSuiteExamples extends Tables {
   def examples =
     Table[Suite with FixtureServices](
       "suite",
-      suite,
-      fixtureSuite,
       spec,
       fixtureSpec, 
       junit3Suite, 

@@ -85,10 +85,10 @@ trait AbstractStringUniformity extends Uniformity[String] {
    *
    * @return a normalized form of any passed <code>String</code>, or the same object if not a <code>String</code>.
    */
-  final def normalizedOrSame(b: Any) =
+  final def normalizedOrSame(b: Any): String =
     b match {
       case s: String => normalized(s)
-      case _ => b
+      case _ => b.toString
    }
 }
 

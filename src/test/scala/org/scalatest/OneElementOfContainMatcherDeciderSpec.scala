@@ -35,7 +35,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case (_: Int, _: String) => true
           case _ => false
         }
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case (k: Int, v: String) => normalized((k, v))
           case _ => b
@@ -55,7 +55,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
             }
           case _ => false
         }
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case entry: java.util.Map.Entry[_, _] =>
             (entry.getKey, entry.getValue) match {
@@ -74,7 +74,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
         s + count
       }
       def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Int]
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case i: Int => normalized(i)
           case _ => b
@@ -93,7 +93,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case (_: Int, _: String) => true
           case _ => false
         }
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case (k: Int, v: String) => normalized((k, v))
           case _ => b
@@ -108,7 +108,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
         s + count
       }
       def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case s: String => normalized(s)
           case _ => b
@@ -127,7 +127,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case (_: Int, _: String) => true
           case _ => false
         }
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case (k: Int, v: String) => normalized((k, v))
           case _ => b
@@ -150,7 +150,7 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
             }
           case _ => false
         }
-      def normalizedOrSame(b: Any) =
+      def normalizedOrSame(b: Any): Any =
         b match {
           case entry: java.util.Map.Entry[_, _] =>
             (entry.getKey, entry.getValue) match {

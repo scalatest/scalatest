@@ -28,6 +28,7 @@ class TypeCheckedAssertionsSpec extends FunSpec {
 
     val a = 3
     val b = 5
+    val c = "8"
 
     val bob = "bob"
     val alice = "alice"
@@ -125,20 +126,20 @@ class TypeCheckedAssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check c == null") {
       val e = intercept[TestFailedException] {
-        assert(a == null)
+        assert(c == null)
       }
-      assert(e.message === Some(didNotEqual(3, null)))
+      assert(e.message === Some(didNotEqual(c, null)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == c") {
       val e = intercept[TestFailedException] {
-        assert(null == a)
+        assert(null == c)
       }
-      assert(e.message === Some(didNotEqual(null, 3)))
+      assert(e.message === Some(didNotEqual(null, c)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }

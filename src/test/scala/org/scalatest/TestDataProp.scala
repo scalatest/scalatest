@@ -25,8 +25,6 @@ class TestDataProp extends AllSuiteProp {
 
   type FixtureServices = TestDataFixtureServices
   
-  def suite = new ExampleTestDataSuite
-  def fixtureSuite = new ExampleTestDataFixtureSuite
   def spec = new ExampleTestDataSpec
   def fixtureSpec = new ExampleTestDataFixtureSpec
   def junit3Suite = new ExampleTestDataJUnit3Suite
@@ -71,42 +69,6 @@ trait TestDataFixtureServices {
 }
 
 object TestDataTag extends Tag("org.scalatest.tags.TestDataTag")
-
-@DoNotDiscover
-class ExampleTestDataSuite extends Suite with TestDataFixtureServices {
-  val expectedTestData = new TestData {
-    val configMap = ConfigMap("key1" -> "value1") 
-    val name = "testMethod1"
-    val scopes = Vector.empty
-    val text = "testMethod1"
-    val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.SlowAsMolasses")
-  }
-  var testData: TestData = null
-  override def withFixture(test: NoArgTest): Outcome = {
-    testData = test
-    super.withFixture(test)
-  }
-  @SlowAsMolasses
-  def testMethod1() {}
-}
-
-@DoNotDiscover
-class ExampleTestDataFixtureSuite extends fixture.Suite with TestDataFixtureServices with StringFixture {
-  val expectedTestData = new TestData {
-    val configMap = ConfigMap("key1" -> "value1") 
-    val name = "testMethod1(FixtureParam)"
-    val scopes = Vector.empty
-    val text = "testMethod1(FixtureParam)"
-    val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.SlowAsMolasses")
-  }
-  var testData: TestData = null
-  override def withFixture(test: OneArgTest): Outcome = {
-    testData = test
-    super.withFixture(test)
-  }
-  @SlowAsMolasses
-  def testMethod1(fixture: String) {}
-}
 
 @DoNotDiscover
 class ExampleTestDataSpec extends Spec with TestDataFixtureServices {

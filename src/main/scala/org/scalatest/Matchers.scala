@@ -35,6 +35,9 @@ import org.scalactic.EqualityPolicy.TripleEqualsInvocation
 import org.scalactic.Equality
 import org.scalactic.EqualityPolicy.TripleEqualsInvocationOnSpread
 import org.scalactic.EqualityConstraint
+import org.scalactic.enablers.ContainingConstraint
+import org.scalactic.enablers.AggregatingConstraint
+import org.scalactic.enablers.SequencingConstraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
 import MatchersHelper.andMatchersAndApply
@@ -127,55 +130,6 @@ import exceptions.TestFailedException
  * The two traits differ only in the English semantics of the verb: <!-- PRESERVE --><code>should</code>
  * is informal, making the code feel like conversation between the writer and the reader; <code>must</code> is more formal, making the code feel more like 
  * a written specification.
- * </p>
- *
- * <a name="matchersMigration"></a>
- * <h2>Matchers migration in ScalaTest 2.0 and 2.1.0</h2>
- *
- * <h3>Deprecations</h3>
- *
- * <p>
- * Prior to 2.0, ScalaTest's matchers DSL was provided by traits
- * <code>org.scalatest.matchers.ShouldMatchers</code> and
- * <code>org.scalatest.matchers.MustMatchers</code>. These are now deprecated in favor of
- * traits in package <code>org.scalatest</code>. The fully qualified name of the original
- * <code>ShouldMatchers</code> is now <code>org.scalatest.Matchers</code>, and the fully qualified
- * name of the original <code>MustMatchers</code> is now <code>org.scalatest.MustMatchers</code>.
- * The old fully qualified names will continue to work during a lengthy deprecation cycle, but
- * will generate a deprecation warning and eventually be removed in a future version
- * of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> by simply importing
- * or mixing in <code>org.scalatest.Matchers</code> instead of
- * <code>org.scalatest.matchers.ShouldMatchers</code>, and can migrate existing
- * uses of <code>org.scalatest.matchers.MustMatchers</code> by importing or
- * mixing in <code>org.scalatest.MustMatchers</code> instead of <code>org.scalatest.matchers.MustMatchers</code>.
- * </p>
- *
- * <p>
- * Two other deprecations in ScalaTest 2.0 matchers are <code>be</code> <code>===</code> <code>&lt;value&gt;</code> and <code>evaluating</code> <code>...</code>
- * <code>should</code> <code>produce</code> syntax. This will both continue to work as before, but will generate a deprecation
- * warning and eventually be removed in a future version of ScalaTest. the <code>be</code> <code>===</code> syntax is being deprecated so that all uses
- * of <code>===</code> in ScalaTest consistently provide the new
- * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
- * ways to check equality described in the next section. The <code>eventually</code> syntax is being deprecated because it is replaced by <code>thrownBy</code>
- * clauses, as <a href="#expectedExceptions">described below</a>.
- * </p>
- *
- * <h3>Potential breakages</h3>
- * 
- * <p>
- * Although ScalaTest's matchers have undergone a major refactor in 2.0, all previously documented syntax for matchers should continue to work exactly
- * the same with one potential exception, which should in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
- * along with custom have-property matchers that you wrote, you'll get a compiler error. To fix such an error, add after
- * your <code>length</code> or <code>size</code> invocation an <code>(of [&lt;type&gt;])</code> clause, as
- * <a href="#lengthSizeHavePropertyMatchers">described below</a>.
- * </p>
- *
- * <p>
- * The only other source of potential breakage is the fragile base class problem. We have added fields and methods to <code>Matchers</code> in 2.0 that may
- * conflict with fields and methods in your existing classes and cause a compiler error. Such issues can usually be easily fixed locally with simple renames or refactors,
- * but if you prefer to subtract a token from <code>Matchers</code>, you can do so by mixing together your own <code>Matchers</code> trait
- * from component traits, as <a>described below</a>. Note that you should not see any new implicit conflicts, because we managed to <em>reduce</em> the number
- * of implicits brought into scope by 2.0 matchers compared to 1.x by about 75%.
  * </p>
  *
  * <a name="checkingEqualityWithMatchers"></a>
@@ -1687,20 +1641,6 @@ import exceptions.TestFailedException
  * noException should be thrownBy 0 / 1
  * </pre>
  * 
- * <p>
- * Note: the following syntax from ScalaTest 1.x has been deprecated:
- * </p>
- *
- * <pre class="stHighlight">
- * evaluating { s.charAt(-1) } should produce [IndexOutOfBoundsException]
- * </pre>
- *
- * <p>
- * Such uses will continue to work during the deprecation cycle, but support for this syntax will
- * eventually be removed in a future version of ScalaTest. Please change all uses to
- * a corresponding use of the syntax described previously in this section.
- * <p>
- *
  * <a name="thosePeskyParens"></a>
  * <h2>Those pesky parens</h2>
  * 
@@ -2842,73 +2782,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfEvaluatingApplication(val fun: () => Any) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-     *                                ^
-     * </pre>
-     */
-     def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
-       val clazz = resultOfProduceApplication.clazz
-       val caught = try {
-         fun()
-         None
-       }
-       catch {
-         case u: Throwable => {
-           if (!clazz.isAssignableFrom(u.getClass)) {
-             val s = Resources("wrongException", clazz.getName, u.getClass.getName)
-             throw newTestFailedException(s, Some(u))
-             // throw new TestFailedException(s, u, 3) 
-           }
-           else {
-             Some(u)
-           }
-         }
-       }
-       caught match {
-         case None =>
-           val message = Resources("exceptionExpected", clazz.getName)
-           throw newTestFailedException(message)
-           // throw new TestFailedException(message, 3)
-         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
-       }
-     }
-
-    /**
-     * Overrides to return pretty toString.
-     *
-     * @return "evaluating { ... }"
-     */
-    override def toString: String = "evaluating { ... }"
-  }
-
-  /**
-   * <strong>The <code>evaluating { ... } should produce [...Exception]</code> syntax has been deprecated and
-   * will be removed in a future version of ScalaTest. Please use <code>a/an [...Exception] should be
-   * thrownBy { ... }</code> instead.</strong>
-   *
-   * This method enables syntax such as the following:
-   *
-   * <pre class="stHighlight">
-   * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-   * ^
-   * </pre>
-   */
-  @deprecated("Please use 'an [Exception] should be thrownBy { ... }' syntax instead")
-  def evaluating(fun: => Any): ResultOfEvaluatingApplication =
-    new ResultOfEvaluatingApplication(fun _)
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
   final class ResultOfProduceInvocation[T](val clazz: Class[T]) {
     /**
      * Overrides to return pretty toString.
@@ -3281,7 +3154,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def equal[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "equal", 1) { e =>
         if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
@@ -3327,7 +3200,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def be[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "be", 1) { e =>
         if ((evidence.areEqual(e, right)) != shouldBeTrue)
           throw newTestFailedException(
@@ -3440,36 +3313,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
     /**
      * <strong>
-     * The should be === syntax has been deprecated and may no longer be
-     * used.  Please use should equal, should ===, shouldEqual,
-     * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
-     * checkable equality comparison.
+     * The deprecation period for the "be ===" syntax has expired, and the syntax 
+     * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead.
      * </strong>
-     *
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should not be === (7)
-     *                    ^
-     * </pre>
+     * 
+     * <p>
+     * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+     * cases still compile, but silently wouldn't work.
+     * </p>
      */
-    @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-    def be(comparison: TripleEqualsInvocation[_]) {
+    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+    def be(comparison: TripleEqualsInvocation[_]): Unit = {
       throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
-                                    getStackDepthFun("Matchers.scala", "be ===")) 
-      doCollected(collected, xs, original, "be", 1) { e => 
-        if ((e == comparison.right) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
-              e,
-              comparison.right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
+                                    getStackDepthFun("Matchers.scala", "be")) 
     }
 
     /**
@@ -3936,7 +3793,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](expectedElement: R)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](expectedElement: R)(implicit evidence: ContainingConstraint[T, R]) {
       doCollected(collected, xs, original, "contain", 1) { e =>
         val right = expectedElement
         if ((evidence.contains(e, right)) != shouldBeTrue) {
@@ -3961,7 +3818,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](oneOf: ResultOfOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](oneOf: ResultOfOneOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = oneOf.right
 
@@ -3987,7 +3844,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](oneElementOf: ResultOfOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](oneElementOf: ResultOfOneElementOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = oneElementOf.right
 
@@ -4013,7 +3870,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atLeastOneOf: ResultOfAtLeastOneOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atLeastOneOf.right
 
@@ -4039,7 +3896,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atLeastOneElementOf.right
 
@@ -4065,7 +3922,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](noneOf: ResultOfNoneOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = noneOf.right
 
@@ -4091,7 +3948,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def contain[R](noElementsOf: ResultOfNoElementsOfApplication[R])(implicit evidence: ContainingConstraint[T, R]) {
 
       val right = noElementsOf.right
 
@@ -4117,7 +3974,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](theSameElementsAs: ResultOfTheSameElementsAsApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](theSameElementsAs: ResultOfTheSameElementsAsApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = theSameElementsAs.right
 
@@ -4143,7 +4000,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = theSameElementsInOrderAs.right
 
@@ -4169,7 +4026,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfOnlyApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfOnlyApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4201,7 +4058,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfInOrderOnlyApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](only: ResultOfInOrderOnlyApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4227,7 +4084,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfAllOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfAllOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4253,7 +4110,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](only: ResultOfAllElementsOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = only.right
 
@@ -4279,7 +4136,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](inOrder: ResultOfInOrderApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](inOrder: ResultOfInOrderApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = inOrder.right
 
@@ -4305,7 +4162,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def contain[R](inOrderElementsOf: ResultOfInOrderElementsOfApplication[R])(implicit evidence: SequencingConstraint[T, R]) {
 
       val right = inOrderElementsOf.right
 
@@ -4331,7 +4188,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atMostOneOf: ResultOfAtMostOneOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atMostOneOf.right
 
@@ -4357,7 +4214,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R])(implicit evidence: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def contain[R](atMostOneElementOf: ResultOfAtMostOneElementOfApplication[R])(implicit evidence: AggregatingConstraint[T, R]) {
 
       val right = atMostOneElementOf.right
 
@@ -4385,7 +4242,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedKey = resultOfKeyWordApplication.expectedKey
+        val expectedKey: Any = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
@@ -4410,7 +4267,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedValue = resultOfValueWordApplication.expectedValue
+        val expectedValue: Any = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
@@ -4614,7 +4471,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: ContainingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
@@ -4640,7 +4497,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: ContainingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "oneElementOf"))
@@ -4666,7 +4523,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def noElementsOf[R](elements: GenTraversable[R])(implicit containing: ContainingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
@@ -4692,7 +4549,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
@@ -4718,7 +4575,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
@@ -4744,7 +4601,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
+    def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: ContainingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
@@ -4770,7 +4627,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def theSameElementsAs[R](right: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       doCollected(collected, xs, original, "theSameElementsAs", 1) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -4793,7 +4650,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def theSameElementsInOrderAs[R](right: GenTraversable[R])(implicit sequencing: SequencingConstraint[T, R]) {
       doCollected(collected, xs, original, "theSameElementsInOrderAs", 1) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -4816,7 +4673,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def only[R](right: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def only[R](right: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       if (right.isEmpty)
         throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
       if (right.distinct.size != right.size)
@@ -4849,7 +4706,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
@@ -4875,7 +4732,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
@@ -4901,7 +4758,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "allElementsOf"))
@@ -4927,7 +4784,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: SequencingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
@@ -4953,7 +4810,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
+    def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: SequencingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
@@ -4979,7 +4836,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
@@ -5005,7 +4862,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
+    def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: AggregatingConstraint[T, R]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
@@ -5294,6 +5151,53 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 */
 
     /**
+     * This is an attempt at a compiler performance optimization.
+    */
+    def should[R](rightEqualityExpression: EqualityExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
+      val rightMatcher = rightEqualityExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightContainingExpression: ContainingExpression[R])(implicit constraint: ContainingConstraint[T, R]) {
+      val rightMatcher = rightContainingExpression.matcher((new EvidenceThat[R]).canBeContainedIn[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightAggregatingExpression: AggregatingExpression[R])(implicit constraint: AggregatingConstraint[T, R]) {
+      val rightMatcher = rightAggregatingExpression.matcher((new EvidenceThat[R]).canBeContainedInAggregation[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    def should[R](rightSequencingExpression: SequencingExpression[R])(implicit constraint: SequencingConstraint[T, R]) {
+      val rightMatcher = rightSequencingExpression.matcher((new EvidenceThat[R]).canBeContainedInSequence[T](constraint))
+      doCollected(collected, xs, original, "should", 1) { e =>
+        rightMatcher(e) match {
+          case MatchFailed(failureMessage) => 
+            throw newTestFailedException(failureMessage, None, 6)
+          case _ => ()
+        }
+      }
+    }
+
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
@@ -5319,7 +5223,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldEqual[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
         if (!evidence.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
@@ -5680,7 +5584,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldBe[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e => // May have just broke tests because changed wasNot to wasNotEqualTo
         if (!evidence.areEqual(e, right)) {
           val rightIsBoolean = right.isInstanceOf[Boolean]
@@ -5961,10 +5865,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldNot[U <: T](rightMatcherX1: Matcher[U]) {
+    def shouldNot[U <: T](rightMatcher: Matcher[U]) {
       doCollected(collected, xs, original, "shouldNot", 1) { e =>
         val result = 
-          try rightMatcherX1.apply(e.asInstanceOf[U])
+          try rightMatcher.apply(e.asInstanceOf[U])
           catch {
             case tfe: TestFailedException => 
               throw newTestFailedException(tfe.getMessage, tfe.cause, 6)
@@ -6974,6 +6878,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   sealed class AnyShouldWrapper[T](val leftSideValue: T) {
 
     /**
+     * This is an attempt at a compiler performance optimization.
+    */
+    def should[R](rightEqualityExpression: EqualityExpression[R])(implicit constraint: EqualityConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightEqualityExpression.matcher((new EvidenceThat[R]).canEqualByConstraint[T](constraint)))
+    }
+
+    def should[R](rightContainingExpression: ContainingExpression[R])(implicit constraint: ContainingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightContainingExpression.matcher((new EvidenceThat[R]).canBeContainedIn[T](constraint)))
+    }
+
+    def should[R](rightAggregatingExpression: AggregatingExpression[R])(implicit constraint: AggregatingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightAggregatingExpression.matcher((new EvidenceThat[R]).canBeContainedInAggregation[T](constraint)))
+    }
+
+    def should[R](rightSequencingExpression: SequencingExpression[R])(implicit constraint: SequencingConstraint[T, R]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightSequencingExpression.matcher((new EvidenceThat[R]).canBeContainedInSequence[T](constraint)))
+    }
+
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
@@ -6981,8 +6904,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
+    def should(rightMatcher: Matcher[T]) {
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcher)
     }
 
     /**
@@ -7103,7 +7026,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+    def shouldEqual[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
@@ -7208,7 +7131,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) { // TODO: Tests and behavior for special Boolean err msg
+    def shouldBe[R](right: R)(implicit evidence: EqualityConstraint[T, R]) { // TODO: Tests and behavior for special Boolean err msg
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
@@ -7442,8 +7365,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
+    def shouldNot(rightMatcher: Matcher[T]) {
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcher)
     }
     
     /**

@@ -803,7 +803,7 @@ object SharedHelpers extends Assertions {
 
   def indexElement[T](itr: Iterator[T], xs: GenTraversable[T], errorFun: T => Boolean): Array[String] = {
     val element = getNext[T](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
@@ -813,7 +813,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementForJavaIterator[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], errorFun: T => Boolean): Array[String] = {
     val element = getNextInJavaIterator[T](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
@@ -829,7 +829,7 @@ object SharedHelpers extends Assertions {
 
   def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
     val element = getNext[String](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
@@ -839,7 +839,7 @@ object SharedHelpers extends Assertions {
 
   def indexLengthElement[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
     val element = getNextInJavaIterator[String](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
@@ -849,7 +849,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
     val element = getNext[String](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
@@ -859,7 +859,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthString[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
     val element = getNextInJavaIterator[String](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
@@ -869,7 +869,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = {
     val element = getNext[GenTraversable[T]](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
@@ -879,7 +879,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = {
     val element = getNext[Array[T]](itr, errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
@@ -889,7 +889,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthJavaCol[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = {
     val element = getNextInJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
@@ -899,7 +899,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementLengthJavaMap[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = {
     val element = getNextInJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], errorFun)
-    val indexOrKey =
+    val indexOrKey: Any =
       xs match {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)

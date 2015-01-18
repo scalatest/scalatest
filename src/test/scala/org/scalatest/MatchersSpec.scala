@@ -75,7 +75,7 @@ class MatchersSpec extends Spec {
     
     object `equal(Null) method returns Matcher` {
       
-      val mt = equal (null)
+      val mt: matchers.Matcher[AnyRef] = equal (null)
       
       def `should have pretty toString` {
         mt.toString should be ("equal (null)")
@@ -128,7 +128,7 @@ class MatchersSpec extends Spec {
       object `apply(Any) returns HavePropertyMatcher` {
         
         val generator = new HavePropertyMatcherGenerator('name)
-        val havePropMatcher = generator("test")
+        val havePropMatcher: matchers.HavePropertyMatcher[AnyRef,Any] = generator("test")
         
         def `should have pretty toString` {
           havePropMatcher.toString should be ("HavePropertyMatcher[AnyRef, Any](expectedValue = \"test\")")
@@ -217,13 +217,6 @@ class MatchersSpec extends Spec {
       def `should have pretty toString` {
         val word = "Bob" should have
         word.toString should be ("ResultOfHaveWordForExtent(\"Bob\", true)")
-      }
-    }
-
-    object `ResultOfEvaluatingApplication ` {
-      def `should have pretty toString` {
-        val word = evaluating { "hi".charAt(-1) }
-        word.toString should be ("evaluating { ... }")
       }
     }
 

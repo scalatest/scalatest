@@ -37,9 +37,9 @@ class TryValuesSpec extends FunSpec {
     it("should throw TestFailedException if the Try is a Success") {
       val t: Try[String] = Success("hi there")
       val caught = 
-        evaluating {
+        the [TestFailedException] thrownBy {
           t.failure.exception should equal (new Exception)
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
       caught.message.value should be (Resources("tryNotAFailure"))
@@ -54,9 +54,9 @@ class TryValuesSpec extends FunSpec {
       val ex = new Exception
       val t: Try[String] = Failure(ex)
       val caught = 
-        evaluating {
+        the [TestFailedException] thrownBy {
           t.success.value should startWith ("hi")
-        } should produce [TestFailedException]
+        }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
       caught.message.value should be (Resources("tryNotASuccess"))

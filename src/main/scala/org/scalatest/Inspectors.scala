@@ -89,6 +89,7 @@ import scala.language.higherKinds
  * </p>
  *
  * <ul>
+ * <li><code>exists</code> - succeeds if the assertion holds true for any element</li>
  * <li><code>forAll</code> - succeeds if the assertion holds true for every element</li>
  * <li><code>forAtLeast</code> - succeeds if the assertion holds true for at least the specified number of elements</li>
  * <li><code>forAtMost</code> - succeeds if the assertion holds true for at most the specified number of elements</li>
@@ -307,6 +308,47 @@ trait Inspectors {
    */
   def forAtLeast(min: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  }
+
+  /**
+   * Ensure that at least one element of a given collection pass the given inspection function.
+   *
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def exists[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAtLeast(1, collecting.genTraversableFrom(xs), xs, "existsFailed", "Inspectors.scala", "exists", 0)(fun)
+  }
+
+  /**
+   * Ensure that at least one element in a given <code>java.util.Map</code> pass the given inspection function.
+   *
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def exists[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalactic.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalactic.Entry[K, V],JMAP[K, V]]) {
+    doForAtLeast(1, collecting.genTraversableFrom(xs), xs, "existsFailed", "Inspectors.scala", "exists", 0)(fun)
+  }
+
+  /**
+   * Ensure that at least one character in a given <code>String</code> pass the given inspection function.
+   *
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def exists(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAtLeast(1, collecting.genTraversableFrom(xs), xs, "existsFailed", "Inspectors.scala", "exists", 0)(fun)
   }
 
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
@@ -595,9 +637,9 @@ private[scalatest] object InspectorsHelper {
       else
         indexes.mkString(", ")
       
-    val (prefixResourceName, elements) = xs match {
+    val (prefixResourceName: String, elements: IndexedSeq[Any]) = xs match {
       case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
-        val elements = passedElements.map{ case (index, e) =>
+        val elements: IndexedSeq[Any] = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
             case entry: java.util.Map.Entry[_, _] => entry.getKey
@@ -672,8 +714,18 @@ private[scalatest] object InspectorsHelper {
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
-  
-  def doForEvery[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+
+  def createMessageForThrowable(e: Throwable, element: Any, index: Int, original: Any): String = {
+    val resourceNamePrefix = getResourceNamePrefix(original)
+    val messageKey = element match {
+      case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+      case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
+      case _ => index.toString
+    }
+    createMessage(messageKey, e, resourceNamePrefix)
+  }
+
+  def doForEvery[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, createMsg: (Throwable, Any, Int, Any) => String = createMessageForThrowable _)(fun: T => Unit) {
     @tailrec
     def runAndCollectErrorMessage[T](itr: Iterator[T], messageList: IndexedSeq[String], index: Int)(fun: T => Unit): IndexedSeq[String] = {
       if (itr.hasNext) {
@@ -684,14 +736,8 @@ private[scalatest] object InspectorsHelper {
             messageList
           }
           catch {
-            case e if !shouldPropagate(e) => 
-              val resourceNamePrefix = getResourceNamePrefix(original)
-              val messageKey = head match {
-                case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
-                case entry: org.scalactic.Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
-                case _ => index.toString
-              }
-              messageList :+ createMessage(messageKey, e, resourceNamePrefix)
+            case e if !shouldPropagate(e) =>
+              messageList :+ createMsg(e, head, index, original)
           }
         
         runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)

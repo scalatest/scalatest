@@ -584,9 +584,6 @@ object Span {
    */
   val Max: Span = new Span(Long.MaxValue.toDouble / 1000 / 1000 / 1000 / 60 / 60 / 24, Days)
 
-  @deprecated("Please use Span.Zero instead")
-  val ZeroLength: Span = new Span(0, Nanoseconds)
-
   /**
    * A <code>Span</code> with representing a zero-length span of time.
    *

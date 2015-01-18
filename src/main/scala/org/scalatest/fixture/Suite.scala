@@ -23,18 +23,10 @@ import org.scalatest.events._
 import org.scalatest.Suite._
 import exceptions.{TestCanceledException, TestPendingException}
 import OutcomeOf.outcomeOf
+import scala.reflect.NameTransformer.decode
 
 /**
  * Base trait for a family of style traits that can pass a fixture object into tests.
- *
- * <p>
- * <strong>Prior to ScalaTest 2.0.M4, trait <code>fixture.Suite</code> served two purposes: 1) It served as the base
- * class of ScalaTest's family of "fixture" style traits, and 2) It was itself a style trait in which tests are methods
- * that take a fixture parameter. Although it will continue to serve its first purpose, <code>fixture.Suite</code> has
- * been deprecated as a style trait. Pre-existing code that used <code>fixture.Suite</code> as a style trait to define
- * tests as methods will continue to work during the deprecation period, but will generate a deprecation warning. Please
- * change all such uses of <code>fixture.Suite</code> to use trait <a href="Spec.html"><code>fixture.Spec</code></a> instead.</strong>
- * </p>
  *
  * @author Bill Venners
  */
@@ -172,12 +164,10 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
     val tags = testData.tags
   }
 
-  /**
+  /*
    * A <code>Set</code> of test names. If this <code>fixture.Suite</code> contains no tests, this method returns an empty <code>Set</code>.
    *
    * <p>
-   * <strong><code>Suite</code> has been deprecated as a style trait. During the deprecation period, the following behavior will continue
-   * to work as before, but will go away at the conclusion of the deprecation period:</strong>
    * This trait's implementation of this method uses Java reflection to discover all public methods whose name starts with <code>"test"</code>,
    * which take either nothing, a single <code>Informer</code>, a single <code>FixtureParam</code> or two parameters of type <code>FixtureParam</code>
    * and <code>Informer</code>. For each discovered test method, it assigns a test name
@@ -281,6 +271,9 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
    * </p>
    */
+   // Can just inherit the supertrait implementation of testnames that returns an empty set
+
+/*
   override def testNames: Set[String] = {
 
     def takesTwoParamsOfTypesAnyAndInformer(m: Method) = {
@@ -315,6 +308,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
 
     TreeSet[String]() ++ testNameArray
   }
+*/
 
   /**
    * Run a test.
@@ -340,6 +334,8 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
+  // Can just inheirt the supertrait implementation of runTest that 
+/*
   protected override def runTest(testName: String, args: Args): Status = {
 
     if (testName == null)
@@ -438,6 +434,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
       case e: Throwable => throw e
     }
   }
+*/
 
 /*
   // Overriding this in fixture.Suite to reduce duplication of tags method

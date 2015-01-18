@@ -56,7 +56,7 @@ import exceptions._
           Resources("jUnitTestFailed")
 
       val formatter = getIndentedTextForTest(testName, 1, true)
-      val payload = 
+      val payload: Option[Any] =
         throwable match {
           case optPayload: PayloadField => 
             optPayload.payload

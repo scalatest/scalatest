@@ -24,8 +24,6 @@ trait OrderExpectedResults extends EventHelpers {
 
 object ParallelTestExecutionOrderExamples extends Tables {
 
-  def orderSuite = new ExampleParallelTestExecutionOrderSuite
-  def orderFixtureSuite = new ExampleParallelTestExecutionOrderFixtureSuite
   def orderSpec = new ExampleParallelTestExecutionOrderSpec
   def orderFixtureSpec = new ExampleParallelTestExecutionOrderFixtureSpec
   def orderFunSuite = new ExampleParallelTestExecutionOrderFunSuite
@@ -46,8 +44,6 @@ object ParallelTestExecutionOrderExamples extends Tables {
   def orderExamples =
     Table(
       "suite1",
-      orderSuite, 
-      orderFixtureSuite, 
       orderSpec,
       orderFixtureSpec,
       orderFunSuite, 
@@ -65,40 +61,6 @@ object ParallelTestExecutionOrderExamples extends Tables {
       orderWordSpec, 
       orderFixtureWordSpec
     )
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionOrderSuite extends Suite with OrderExpectedResults with ParallelTestExecution {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
-  
-  def assertOrderTest(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testMethod1")
-    checkTestSucceeded(events(1), "testMethod1")
-    checkTestStarting(events(2), "testMethod2")
-    checkTestSucceeded(events(3), "testMethod2")
-    checkTestStarting(events(4), "testMethod3")
-    checkTestSucceeded(events(5), "testMethod3")
-  }
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureSuite extends fixture.Suite with OrderExpectedResults with ParallelTestExecution with StringFixture {
-  def testFixtureMethod1() {}
-  def testFixtureMethod2() {}
-  def testFixtureMethod3() {}
-  
-  def assertOrderTest(events: List[Event]) {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "testFixtureMethod1")
-    checkTestSucceeded(events(1), "testFixtureMethod1")
-    checkTestStarting(events(2), "testFixtureMethod2")
-    checkTestSucceeded(events(3), "testFixtureMethod2")
-    checkTestStarting(events(4), "testFixtureMethod3")
-    checkTestSucceeded(events(5), "testFixtureMethod3")
-  }
 }
 
 @DoNotDiscover

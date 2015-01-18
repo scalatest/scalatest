@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
+package fixture
 
 import scala.reflect.NameTransformer.encode
 import org.scalatest.events._
@@ -1916,6 +1917,77 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
       }
     }
+    // TODO: This fails, and it looks like a real bug. Investigate and if true, fix.
+    ignore("should pass a NoArgTest to withFixture for test methods that take no arguments") {
+      class MySpec extends fixture.Spec {
+        type FixtureParam = String
+        var aNoArgTestWasPassed = false
+        var aOneArgTestWasPassed = false
+        override def withFixture(test: NoArgTest): Outcome = {
+          println("GOT HERE?")
+          aNoArgTestWasPassed = true
+          test()
+        }
+        def withFixture(test: OneArgTest): Outcome = {
+          println("GOT HERE INSTEAD?")
+          aOneArgTestWasPassed = true
+          test("Dude")
+        }
+        def `test something` = {
+          println("EXECUTED THE TEST")
+          assert(1 + 1 === 2)
+        }
+      } 
+        
+      val s = new MySpec
+      s.run(None, Args(SilentReporter))
+      assert(s.aNoArgTestWasPassed)
+      assert(!s.aOneArgTestWasPassed)
+    }
+    it("should allow primitive type fixtures") {
+      val a = new Spec {
+      
+        type FixtureParam = Int
+        def withFixture(test: OneArgTest): Outcome = {
+          test(99)
+        }
+      
+        var takesNoArgsInvoked = false
+        def `test takes no args`() = { takesNoArgsInvoked = true }
+      
+        var takesAFixtureInvoked = false
+        def `test takes a fixture`(i: Int) = { takesAFixtureInvoked = true }
+      } 
+      
+      import scala.language.reflectiveCalls
+
+      a.run(None, Args(SilentReporter))
+      assert(a.testNames.size === 2, a.testNames)
+      assert(a.takesNoArgsInvoked)
+      assert(a.takesAFixtureInvoked)
+    }
+    it("should allow both tests that take fixtures and tests that don't") {
+      val a = new Spec {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = {
+          test("Hello, world!")
+        }
+
+        var takesNoArgsInvoked = false
+        def `test takes no args`() ={ takesNoArgsInvoked = true }
+
+        var takesAFixtureInvoked = false
+        def `test takes a fixture`(s: String) ={ takesAFixtureInvoked = true }
+      }
+
+      import scala.language.reflectiveCalls
+
+      a.run(None, Args(SilentReporter))
+      assert(a.testNames.size === 2, a.testNames)
+      assert(a.takesNoArgsInvoked)
+      assert(a.takesAFixtureInvoked)
+    }
   }
   
   describe("A Suite's execute method") {
@@ -2482,6 +2554,33 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some("SpecSpec.scala"))
+    }
+  }
+  describe("A OneArgTest") {
+    it("should provide an easy way to invoke a NoArgTest") {
+
+      var noArgWithFixtureWasCalled = false
+
+      val a = new Spec {
+
+        type FixtureParam = String
+
+        override def withFixture(test: NoArgTest): Outcome = {
+          noArgWithFixtureWasCalled = true
+          test()
+        }
+
+        def withFixture(test: OneArgTest): Outcome = {
+          withFixture(test.toNoArgTest("hi"))
+        }
+
+        def `test something`(fixture: String) = { assert(fixture === "hi") }
+      }
+
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      assert(noArgWithFixtureWasCalled)
+      assert(rep.eventsReceived.exists(_.isInstanceOf[TestSucceeded]))
     }
   }
 }

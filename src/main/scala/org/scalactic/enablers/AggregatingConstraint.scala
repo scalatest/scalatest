@@ -20,6 +20,7 @@ import org.scalactic.EqualityPolicy.BasicEqualityConstraint
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
+import annotation.implicitNotFound
 
 /**
  * Typeclass that enables for aggregations certain <code>contain</code> syntax in the ScalaTest matchers DSL.
@@ -63,6 +64,7 @@ import scala.collection.JavaConverters._
  * versus Aggregating</a> section of the main documentation for trait <code>Containing</code>.
  * </p>
  */
+@implicitNotFound(msg = "Could not find evidence that ${R} can be contained in ${A}; the missing implicit parameter is of type org.scalactic.enablers.AggregatingConstraint[${A},${R}]")
 trait AggregatingConstraint[-A, R] {
 
 // TODO: Write tests that a NotAllowedException is thrown when no elements are passed, maybe if only one element is passed, and 

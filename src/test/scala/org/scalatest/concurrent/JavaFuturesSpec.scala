@@ -68,9 +68,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
           val task = new CallableTask(new Sleeper(Span(1, Second)))
           val canceledFuture = execSvc.submit(task)
           canceledFuture.cancel(true)
-          val caught = evaluating {
+          val caught = the [TestFailedException] thrownBy {
             canceledFuture.isReadyWithin(Span(1, Millisecond))
-          } should produce[TestFailedException]
+          }
           caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
@@ -147,9 +147,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
           val task = new CallableTask(new Sleeper(Span(1, Second)))
           val canceledFuture = execSvc.submit(task)
           canceledFuture.cancel(true)
-          val caught = evaluating {
+          val caught = the [TestFailedException] thrownBy {
             canceledFuture.futureValue
-          } should produce[TestFailedException]
+          }
           caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
@@ -167,9 +167,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
-          val caught = evaluating {
+          val caught = the [TestFailedException] thrownBy {
             neverReadyFuture.futureValue
-          } should produce[TestFailedException]
+          }
 
           caught.message.value should be(Resources("wasNeverReady"))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
@@ -186,21 +186,21 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           def neverReadyFuture = execSvc.submit(task)
-          val caught1 = evaluating {
+          val caught1 = the [TestFailedException] thrownBy {
             neverReadyFuture.futureValue(timeout(Span(100, Millis)), interval(Span(1, Millisecond)))
-          } should produce[TestFailedException]
+          }
           caught1.failedCodeLineNumber.value should equal(thisLineNumber - 2)
           caught1.failedCodeFileName.value should be("JavaFuturesSpec.scala")
 
-          val caught3 = evaluating {
+          val caught3 = the [TestFailedException] thrownBy {
             neverReadyFuture.futureValue(timeout(Span(100, Millis)))
-          } should produce[TestFailedException]
+          }
           caught3.failedCodeLineNumber.value should equal(thisLineNumber - 2)
           caught3.failedCodeFileName.value should be("JavaFuturesSpec.scala")
 
-          val caught4 = evaluating {
+          val caught4 = the [TestFailedException] thrownBy {
             neverReadyFuture.futureValue(interval(Span(1, Millisecond)))
-          } should produce[TestFailedException]
+          }
           caught4.failedCodeLineNumber.value should equal(thisLineNumber - 2)
           caught4.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }
@@ -215,9 +215,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
-          evaluating {
+          a [TestFailedException] should be thrownBy {
             neverReadyFuture.futureValue
-          } should produce[TestFailedException]
+          }
           (System.currentTimeMillis - startTime).toInt should be >= (150)
         }
         finally {
@@ -279,11 +279,11 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
           val task = new CallableTask(new Sleeper(Span(1, Second)))
           val canceledFuture = execSvc.submit(task)
           canceledFuture.cancel(true)
-          val caught = evaluating {
+          val caught = the [TestFailedException] thrownBy {
             whenReady(canceledFuture) { s =>
               s should equal ("hi")
             }
-          } should produce[TestFailedException]
+          }
           caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
@@ -301,11 +301,11 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
-          val caught = evaluating {
+          val caught = the [TestFailedException] thrownBy {
             whenReady(neverReadyFuture) { s =>
               s should equal ("hi")
             }
-          } should produce[TestFailedException]
+          }
 
           caught.message.value should be(Resources("wasNeverReady"))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
@@ -322,27 +322,27 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           def neverReadyFuture = execSvc.submit(task)
-          val caught1 = evaluating {
+          val caught1 = the [TestFailedException] thrownBy {
             whenReady(neverReadyFuture, timeout(Span(100, Millis)), interval(Span(1, Millisecond))) { s =>
               s should be ("hi")
             }
-          } should produce[TestFailedException]
+          }
           caught1.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           caught1.failedCodeFileName.value should be("JavaFuturesSpec.scala")
 
-          val caught3 = evaluating {
+          val caught3 = the [TestFailedException] thrownBy {
             whenReady(neverReadyFuture, timeout(Span(100, Millis))) { s =>
               s should be ("hi")
             }
-          } should produce[TestFailedException]
+          }
           caught3.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           caught3.failedCodeFileName.value should be("JavaFuturesSpec.scala")
 
-          val caught4 = evaluating {
+          val caught4 = the [TestFailedException] thrownBy {
             whenReady(neverReadyFuture, interval(Span(1, Millisecond))) { s =>
               s should be ("hi")
             }
-          } should produce[TestFailedException]
+          }
           caught4.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           caught4.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }
@@ -357,11 +357,11 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         try {
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
-          evaluating {
+          a [TestFailedException] should be thrownBy {
             whenReady(neverReadyFuture) { s =>
               s should be ("hi")
             }
-          } should produce[TestFailedException]
+          }
           (System.currentTimeMillis - startTime).toInt should be >= (150)
         }
         finally {

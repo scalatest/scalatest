@@ -91,7 +91,7 @@ class NotWordSpec extends Spec with FileMocks {
     
     object `apply(MatcherFactory1) method returns MatcherFactory1` {
       
-      val mtf = not (equal (3))
+      val mtf: matchers.MatcherFactory1[Any, enablers.EvidenceThat[Int]#CanEqual] = not (equal (3))
       val mt = mtf.matcher[Int]
       
       def `should have pretty toString` {
@@ -141,12 +141,12 @@ class NotWordSpec extends Spec with FileMocks {
     
     object `apply(MatcherFactory2) method returns MatcherFactory2` {
       
-      val mtf1 = equal (3)
+      val mtf1: matchers.MatcherFactory1[Any, enablers.EvidenceThat[Int]#CanEqual] = equal (3)
       val mt1 = mtf1.matcher[Int]
       val mtf2 = not equal ("3")
       val mt2 = mtf2.matcher[Int]
       val matcherFactory2 = mtf1 and mtf2
-      val mtf = not (matcherFactory2)
+      val mtf: matchers.MatcherFactory2[Any, enablers.EvidenceThat[Int]#CanEqual, enablers.EvidenceThat[String]#CanEqual] = not (matcherFactory2)
       val mt = mtf.matcher[Int]
       
       def `should have pretty toString` {
@@ -358,7 +358,7 @@ class NotWordSpec extends Spec with FileMocks {
       val tempDir = createTempDirectory()
       val lhs = File.createTempFile("delete", "me", tempDir)
       
-      val existVal = not.exist
+      val existVal: matchers.MatcherFactory1[Any, enablers.Existence] = not.exist
       val mt = existVal.matcher[File]
       
       def `should have pretty toString` {

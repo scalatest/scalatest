@@ -47,6 +47,7 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Prettifier
 import org.scalactic.Every
+import org.scalactic.EqualityConstraint
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -64,7 +65,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def equal[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+  def equal[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
     if (evidence.areEqual(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -83,7 +84,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
+  def be[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
     if (evidence.areEqual(left, right) != shouldBeTrue) {
       val rightIsBoolean = right.isInstanceOf[Boolean]
       val wasNotEqualTo = if (rightIsBoolean) "wasNot" else "wasNotEqualTo"
@@ -102,7 +103,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * result should not be (7)
+   * result should not be_== (7)
    *                   ^
    * </pre>
    */
@@ -218,31 +219,20 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
   /**
    * <strong>
-   * The should be === syntax has been deprecated and is no longer allowed. Please use should equal, should ===, shouldEqual,
-   * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
-   * checkable equality comparison.
+   * The deprecation period for the "be ===" syntax has expired, and the syntax 
+   * will now throw <code>NotAllowedException</code>.  Please use should equal, should ===, shouldEqual,
+   * should be, or shouldBe instead.
    * </strong>
    *
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * result should not be === (7)
-   *                   ^
-   * </pre>
+   * <p>
+   * Note: usually syntax will be removed after its deprecation period. This was left in because otherwise the syntax could in some
+   * cases still compile, but silently wouldn't work.
+   * </p>
    */
-  @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def be(comparison: TripleEqualsInvocation[_]) {
+  @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+  def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
-                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be ===")) 
-    if ((left == comparison.right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
-          left,
-          comparison.right
-        )
-      )
-    }
+                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be")) 
   }
 
   /**
@@ -1026,7 +1016,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   }
 
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
-    val right = resultOfKeyWordApplication.expectedKey
+    val right: Any = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
@@ -1038,7 +1028,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
-    val right = resultOfValueWordApplication.expectedValue
+    val right: Any = resultOfValueWordApplication.expectedValue
     if (valueMapping.containsValue(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(

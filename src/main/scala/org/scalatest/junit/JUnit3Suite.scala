@@ -376,7 +376,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
 
     val formatter = getIndentedTextForTest(testCase.toString, 1, true)
     val suiteName = getSuiteNameForTestCase(testCase)
-    val payload = 
+    val payload: Option[Any] =
       throwable match {
         case optPayload: PayloadField => 
           optPayload.payload

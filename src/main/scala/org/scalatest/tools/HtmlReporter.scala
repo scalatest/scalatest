@@ -723,9 +723,9 @@ private[scalatest] class HtmlReporter(
     else
       prefix
       
-  private def durationDisplay(duration: Option[Long]) = 
+  private def durationDisplay(duration: Option[Long]): String =
     duration match {
-      case Some(duration) => duration
+      case Some(duration) => duration.toString
       case None => "-"
     }
     

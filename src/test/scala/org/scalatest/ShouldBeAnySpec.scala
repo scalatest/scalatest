@@ -37,9 +37,9 @@ class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAsser
     }
 
     def `should compare arrays deeply` {
-      val a1 = Array(1, Array("a", "b"), 3)
-      val a2 = Array(1, Array("a", "b"), 3)
-      val a3 = Array(1, Array("c", "d"), 3)
+      val a1: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a2: Array[Any] = Array(1, Array("a", "b"), 3)
+      val a3: Array[Any] = Array(1, Array("c", "d"), 3)
       a1 should not be theSameInstanceAs (a2)
       a1 should be (a2)
       intercept[TestFailedException] {

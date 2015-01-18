@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest.words
 
-class EnabledEqualityConverting[A, B](implicit cnv: A => B) {
-  def apply(a: A): B = cnv(a)
-}
+import org.scalatest.matchers._
+import org.scalatest.enablers.EvidenceThat
 
-object EnabledEqualityConverting {
-  def apply[A, B](implicit cnv: A => B): EnabledEqualityConverting[A, B] = new EnabledEqualityConverting[A, B]
-}
+// Pragmatic subclass to get a better error message and faster compile in the 90% case of
+// these being used outside and, or, and not expressions.
+abstract class AggregatingExpression[R] extends MatcherFactory1[Any, EvidenceThat[R]#CanBeContainedInAggregation]
+

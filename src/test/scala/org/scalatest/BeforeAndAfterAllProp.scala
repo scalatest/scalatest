@@ -26,8 +26,6 @@ class BeforeAndAfterAllProp extends AllSuiteProp {
 
   type FixtureServices = BeforeAndAfterAllPropFixtureServices
   
-  def suite = new ExampleBeforeAndAfterAllPropSuite
-  def fixtureSuite = new ExampleBeforeAndAfterAllPropFixtureSuite
   def spec = new ExampleBeforeAndAfterAllPropSpec
   def fixtureSpec = new ExampleBeforeAndAfterAllPropFixtureSpec
   def junit3Suite = new ExampleBeforeAndAfterAllPropJUnit3Suite
@@ -89,34 +87,6 @@ trait BeforeAndAfterAllPropFixtureServices {
   }
   @volatile var beforeAllTime: Long = 0
   @volatile var afterAllTime: Long = 0
-}
-
-@DoNotDiscover
-class ExampleBeforeAndAfterAllPropSuite extends Suite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  def testMethod1() { Thread.sleep(10) }
-  def testMethod2() { Thread.sleep(10) }
-  def testMethod3() { Thread.sleep(10) }
-  
-  override protected def beforeAll() {
-    beforeAllTime = System.currentTimeMillis
-  }
-  override protected def afterAll() {
-    afterAllTime = System.currentTimeMillis
-  }
-}
-
-@DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureSuite extends fixture.Suite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  def testMethod1() { Thread.sleep(10) }
-  def testMethod2() { Thread.sleep(10) }
-  def testMethod3() { Thread.sleep(10) }
-  
-  override protected def beforeAll() {
-    beforeAllTime = System.currentTimeMillis
-  }
-  override protected def afterAll() {
-    afterAllTime = System.currentTimeMillis
-  }
 }
 
 @DoNotDiscover
