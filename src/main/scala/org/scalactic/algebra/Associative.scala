@@ -35,16 +35,11 @@ trait Associative[A] {
    * A binary operation that obeys the associative law.
    */ 
   def op(a1: A, a2: A): A
-
-  /**
-   * Wraps an object in an <code>AssociativeAdapter</code>.
-   */
-  def adapt(a: A): Associative.Adapter[A] = new Associative.Adapter(this, a)
 }
 
 /**
- * Companion object for <code>AssociativeAdapter</code> that offers
- * an implicit conversion that wraps an object in an <code>AssociativeAdapter</code>
+ * Companion object for <code>Associative</code> that offers
+ * an implicit conversion that wraps an object in an <code>Associative.Adapter</code>
  * so long as an implicit <code>Associative</code> is available.
  */
 object Associative {
@@ -52,24 +47,18 @@ object Associative {
   /**
    * Adapter class for <code>Associative</code>.
    */
-  class Adapter[A](val associative: Associative[A], a1: A) {
+  class Adapter[A](val underlying: A)(implicit val associative: Associative[A]) {
 
     /**
      * A binary operation that obeys the associative law.
      */ 
-    def op(a2: A): A = associative.op(a1, a2)
+    def op(a2: A): A = associative.op(underlying, a2)
   }
 
-  /**
-   * Implicitly wraps an object in an <code>AssociativeAdapter</code>
-   * so long as an implicit <code>Associative</code> is available.
+  /*
+   * Implicitly wraps an object in an <code>Associative.Adapter[A]</code>
+   * so long as an implicit <code>Associative[A]</code> is available.
    */
-  implicit def conversions[A](a: A)(implicit ev: Associative[A]): Associative.Adapter[A] = ev.adapt(a)
+  implicit def adapters[A](a: A)(implicit ev: Associative[A]): Associative.Adapter[A] = new Adapter(a)(ev)
 }
-
-
-
-
-
-
 
