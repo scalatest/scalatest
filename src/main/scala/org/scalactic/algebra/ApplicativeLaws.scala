@@ -21,6 +21,8 @@ import org.scalactic.CheckedEquality._
 import org.scalatest.Fact
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
+import ApplicativeAdapter.adapt
+
 import scala.language.higherKinds
 
 
@@ -44,10 +46,10 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
     val lawName = "composition"
     forAll { (ca: Context[Int], cab: Context[Int => String], cbc: Context[String => Double]) =>
       // (ca ap cab ap cbc) should be the same as (ca ap (cab ap (cbc map (bc compose ab))))
-      if ((ap(ap(ca) applying cab) applying cbc) !==
-          (ap(ca) applying
-            (ap(cab) applying
-              (ap(cbc) map ((bc: String => Double) => (ab: Int => String) => bc compose ab)))))
+      if (((ca applying cab) applying cbc) !==
+          (ca applying
+            (cab applying
+              (cbc map ((bc: String => Double) => (ab: Int => String) => bc compose ab)))))
         return Laws.no(lawsName, lawName)
     }
     Laws.yes(lawsName, lawName)
@@ -57,7 +59,7 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   def id(): Fact = {
     val lawName = "identity"
     forAll { (ca: Context[Int]) =>
-      if ((ap(ca) applying ap.insert((a: Int) => a)) !== ca)
+      if ((ca applying ap.insert((a: Int) => a)) !== ca)
         return Laws.no(lawsName, lawName)
     }
     Laws.yes(lawsName, lawName)
@@ -68,7 +70,7 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   def homomorphism(): Fact = {
     val lawName = "interchange"
     forAll { (a: Int, ab: Int => String) =>
-      if ((ap(ap.insert(a)) applying ap.insert(ab)) !== ap.insert(ab(a)))
+      if ((ap.insert(a) applying ap.insert(ab)) !== ap.insert(ab(a)))
         return Laws.no(lawsName, lawName)
     }
     Laws.yes(lawsName, lawName)
@@ -77,7 +79,7 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   def interchange(): Fact = {
     val lawName = "interchange"
     forAll { (a: Int, cab: Context[Int => String]) =>
-      if ((ap(ap.insert(a)) applying cab) !== (ap(cab) applying ap.insert((ab: Int => String) => ab(a))))
+      if ((ap.insert(a) applying cab) !== (cab applying ap.insert((ab: Int => String) => ab(a))))
         return Laws.no(lawsName, lawName)
     }
     Laws.yes(lawsName, lawName)

@@ -16,7 +16,6 @@
 package org.scalactic.algebra
 
 import org.scalactic.UnitSpec
-//import org.scalatest.Matchers._
 
 class ApplicativeSpec extends UnitSpec {
 

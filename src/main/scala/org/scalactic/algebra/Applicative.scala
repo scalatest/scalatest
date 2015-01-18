@@ -42,6 +42,10 @@ abstract class ApplicativeAdapter[Context[_], A](applicative: Applicative[Contex
   def map[B](f: A => B): Context[B] = applying(applicative.insert(f))
 }
 
+object ApplicativeAdapter {
+  implicit def adapt[Context[_], A](ca: Context[A])(implicit ev: Applicative[Context]): ApplicativeAdapter[Context, A] = ev.apply(ca)
+}
+
 class ApplicativeAdapter2[Context[_], A, B](applicative: Applicative[Context], ca: Context[A], cb: Context[B]) {
 
   def applying[C](cf: Context[(A, B) => C]): Context[C] = {
