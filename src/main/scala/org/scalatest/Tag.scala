@@ -48,7 +48,7 @@ package org.scalatest
  *
  * <p>
  * Given this annotation's fully qualified name is <code>com.mycompany.myproject.testing.tags.DbTest</code> the corresponding <code>Tag</code>
- * object decaration must have that name passed to its constructor, like this:
+ * object declaration must have that name passed to its constructor, like this:
  * </p>
  *
  * <pre class="stHighlight">
