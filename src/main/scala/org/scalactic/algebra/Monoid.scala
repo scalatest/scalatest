@@ -16,6 +16,7 @@
 package org.scalactic.algebra
 
 import scala.language.higherKinds
+import scala.language.implicitConversions
 
 /**
  * Trait represents a monoid: a category of one type with an associative binary operation 
@@ -34,4 +35,14 @@ trait Monoid[A] extends Associative[A] {
      */
     def z: A
 
+}
+
+object Monoid {
+  
+  /**
+   * Implicitly wraps an object in an <code>Associative.Adapter[A]</code>
+   * so long as an implicit <code>Associative[A]</code> is available.
+   */
+  implicit def adapters[A](a: A)(implicit ev: Associative[A]) = Associative.adapters(a)
+  
 }

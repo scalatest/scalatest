@@ -19,29 +19,44 @@ import org.scalactic.UnitSpec
 
 class MonoidSpec extends UnitSpec {
    
-  def listMonoid = new Monoid[List[_]] {
+  val listMonoid = new Monoid[List[_]] {
     def z: List[_] = Nil
     def op(xs: List[_], ys: List[_]): List[_] = xs ++ ys
   }
-
+  
+  def listMonoidTyped[A] = new Monoid[List[A]] {
+    def z: List[A] = Nil
+    def op(xs: List[A], ys: List[A]): List[A] = xs ++ ys
+  }
+  
   val additionMonoid = new Monoid[Int] { 
     def z: Int = 0
     def op(a1: Int, a2: Int): Int = a1 + a2
   }
   
-  "The list monoid " should " have a binaray associative op" in {
-      val as = List(1,2,3)
-      val bs = List(5,6)
-      val cs = List(10)
-      val op = listMonoid.op _
-      op( as, op(bs, cs) ) shouldEqual op( op(as, bs), cs )
+  "The list monoid of any type " should " have a binaray associative op" in {
+    val as = List(1,2,3)
+    val bs = List("five","six")
+    val cs = List(10)
+    val op = listMonoid.op _
+    op( as, op(bs, cs) ) shouldEqual op( op(as, bs), cs )
   }
   
-  "The list monoid " should " have a zero element that when combined with another monoid has no effect (identity)" in {
-      val a = List(1,2,3)
-      val op = listMonoid.op _
-      op(a, listMonoid.z) shouldEqual a
-      op(listMonoid.z, a) shouldEqual a
+  "The list monoid " should " have a binaray associative op that supports infix notation" in {
+    import Monoid.adapters
+    implicit val monoid = listMonoidTyped[Int]
+    val as = List(1,2,3)
+    val bs = List(5,6)
+    val cs = List(10)
+    ((as op bs) op cs) shouldEqual (as op (bs op cs))
+  }
+  
+  "The list monoid " should " have a zero element that is a left identity and right identity" in {
+    import Monoid.adapters
+    implicit val monoid = listMonoidTyped[Int]
+    val as = List(1,2,3)
+    (as op monoid.z) shouldEqual as
+    (monoid.z op as) shouldEqual as
   }
   
   "The list monoid " should " be foldable over a collections of types " in {
@@ -51,18 +66,19 @@ class MonoidSpec extends UnitSpec {
   }
   
   "The addition monoid " should " have a binary associative op " in {
+    import Monoid.adapters
+    implicit val monoid = additionMonoid
     val x = 80 
     val y = 86
     val z = 70
-    val op = additionMonoid.op _
-    op( x, op(y, z) ) shouldEqual op( op(x, y), z)
+    ((x op y) op z) shouldEqual (x op (y op z))
   } 
   
   "The addition monoid " should " have a zero element, i.e. an identity element." in {
-    val m = additionMonoid
+    import Monoid.adapters
+    implicit val monoid = additionMonoid
     val x = 8086
-    val op = m.op _
-    op(x, m.z) shouldEqual x 
+    (x op monoid.z) shouldEqual x 
   }
   
   "The addition monoid's op and zero element " should " enable summing over a List of ints " in {
