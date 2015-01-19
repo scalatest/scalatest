@@ -21,14 +21,10 @@ import org.scalactic.CheckedEquality._
 import org.scalatest.Fact
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
-import ApplicativeAdapter.adapt
+import ApplicativeAdapter.conversions._
 
 import scala.language.higherKinds
 
-
-/**
- * Created by rgf on 1/11/15.
- */
 class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
@@ -40,7 +36,9 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   shrCab: Shrink[Context[Int => String]],
   arbCbc: Arbitrary[Context[String => Double]],
   shrCbc: Shrink[Context[String => Double]],
-  eqCa: Equality[Context[Int]]) extends Laws("applicative") {
+  eqCa: Equality[Context[Int]]) extends Laws {
+
+  override val lawsName = "applicative"
 
   def composition(): Fact = {
     val lawName = "composition"
@@ -65,10 +63,9 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
     Laws.yes(lawsName, lawName)
   }
 
-
   // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
   def homomorphism(): Fact = {
-    val lawName = "interchange"
+    val lawName = "homomorphism"
     forAll { (a: Int, ab: Int => String) =>
       if ((ap.insert(a) applying ap.insert(ab)) !== ap.insert(ab(a)))
         return Laws.no(lawsName, lawName)
@@ -86,5 +83,4 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   }
 
   override def test() = id() && composition() && homomorphism() && interchange()
-
 }

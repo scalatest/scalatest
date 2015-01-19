@@ -25,7 +25,7 @@ import scala.language.higherKinds
  * A <code>MonadProxy</code> instance wraps an object that in some way behaves as a <code>Monad</code>.
  * </p>
  */
-trait MonadProxy[Context[_], A] {
+trait MonadAdapter[Context[_], A] extends Applicative[Context] {
 
   /**
    * Applies the given function to the value contained in this context, returning the result 
@@ -49,7 +49,7 @@ trait Monad[Context[_]] {
   /**
    * Produces a <code>MonadProxy</code> wrapping the given context instance.
    */
-  def apply[A](o: Context[A]): MonadProxy[Context, A]
+  def apply[A](ca: Context[A]): MonadAdapter[Context, A]
 
   /**
    * Inserts a value into a context.

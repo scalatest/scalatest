@@ -15,28 +15,29 @@
  */
 package org.scalactic.algebra
 
-import org.scalactic.UnitSpec
+import Applicatives._
+import ApplicativeAdapter.conversions._
+import org.scalacheck.Arbitrary
+
+import org.scalactic._
+
+import scala.language.implicitConversions
 
 class ApplicativeSpec extends UnitSpec {
 
-  "Option" should "obey the applicative functor laws" in {
-    class OptionApplicativeAdapter[A](ap: Applicative[Option], optA: Option[A]) extends ApplicativeAdapter[Option, A](ap, optA) {
-      override def applying[B](optAB: Option[A => B]): Option[B] = optAB.flatMap(ab => optA.map(ab))
-    }
-    class OptionApplicativeAdapter2[A, B](ap: Applicative[Option], optA: Option[A], optB: Option[B]) extends ApplicativeAdapter2[Option, A, B](ap, optA, optB)
-    class OptionApplicativeAdapter3[A, B, C](ap: Applicative[Option], optA: Option[A], optB: Option[B], optC: Option[C]) extends ApplicativeAdapter3[Option, A, B, C](ap, optA, optB, optC)
-
-    implicit object OptionApplicative extends Applicative[Option] {
-      def apply[A](opt: Option[A]) = new OptionApplicativeAdapter[A](this, opt)
-      def apply[A, B](optA: Option[A], optB: Option[B]) = new OptionApplicativeAdapter2(this, optA, optB)
-      def apply[A, B, C](optA: Option[A], optB: Option[B], optC: Option[C]) = new OptionApplicativeAdapter3(this, optA, optB, optC)
-
-      // a.k.a. pure, point
-      override def insert[T](t: T): Option[T] = Option(t)
-    }
-
+  "Option" should "obey the applicative laws" in {
     new ApplicativeLaws[Option]().assert()
+  }
 
+  "List" should "obey the applicative laws" in {
+    new ApplicativeLaws[List]().assert()
+  }
+
+  "The good nature of Or" should "obey the applicative laws" in {
+    // generator used for verifying the Good nature of Or
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+
+    new ApplicativeLaws[OrWithBad[Int]#AndGood].assert()
   }
 
 }

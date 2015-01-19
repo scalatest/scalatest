@@ -21,13 +21,15 @@ import org.scalatest.Matchers._
 
 import scala.language.higherKinds
 
-abstract class Laws(val lawsName: String) {
+trait Laws {
+  val lawsName: String
   // in order to allow access to the law name, a law takes the law name as a parameter
   type Law = String => Fact
   //val laws: Seq[Law]
   def test(): Fact
   //def test: Fact = laws.map(_.test()).reduceLeft(_ && _)
-  def assert(): Unit = test() shouldBe a [Yes]
+  //def assert(): Unit = test() shouldBe a [Yes]
+  def assert(): Unit = test().isInstanceOf[Yes] shouldBe true
 }
 
 object Laws {
@@ -47,7 +49,7 @@ object Laws {
 trait Law {
   val name: String
   val test: String => Fact
-  def assert(): Unit = test(name) shouldBe a [Yes]
+  def assert(): Unit = test(name).isInstanceOf[Yes] shouldBe true
 }
 
 

@@ -21,7 +21,9 @@ class FunctorLaws[Context[_]](implicit functor: Functor[Context],
   shrAb: Shrink[Int => String],
   arbBc: Arbitrary[String => Double],
   shrBc: Shrink[String => Double],
-  aqCa: Equality[Context[Int]]) extends Laws("functor") {
+  aqCa: Equality[Context[Int]]) extends Laws {
+
+  override val lawsName = "functor"
 
   def id(): Fact = {
     val lawName = "identity"

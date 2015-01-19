@@ -1180,3 +1180,25 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def fold[V](gf: G => V, bf: B => V): V = bf(b)
 }
 
+/**
+ * This trait is used to curry the type parameters of Or, which takes two type parameters,
+ * into a type (the trait) which takes one parameter, and another (the type member) which
+ * takes the other.  The resulting type (OrWithBad[B]#AndGood) takes a single (Good) type
+ * parameter.
+ */
+trait OrWithBad[B] {
+  type AndGood[G] = G Or B
+}
+
+/**
+ * This trait is used to curry the type parameters of Or, which takes two type parameters,
+ * into a type (the trait) which takes one parameter, and another (the type member) which
+ * takes the other.  The resulting type (OrWithGood[G]#AndBad) takes a single (Bad) type
+ * parameter.
+ */
+trait OrWithGood[G] {
+  type AndBad[B] = G Or B
+}
+
+
+

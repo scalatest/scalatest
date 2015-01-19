@@ -18,10 +18,21 @@ package org.scalactic.algebra
 import scala.language.higherKinds
 
 /**
- * Proxy for algebraic structure containing a <em>mapping</em> method that obeys laws of <em>identity</em> and <em>composition</em>.
+ * Algebraic structure containing a <em>map</em> method that obeys laws of <em>identity</em> and <em>composition</em>.
+ */
+trait Functor[Context[_]] {
+
+  /**
+   * Produces a <code>FunctorAdapter</code> wrapping the given context instance.
+   */
+  def apply[A](ct: Context[A]): FunctorAdapter[Context, A]
+}
+
+/**
+ * Adapter for algebraic structure containing a <em>mapping</em> method that obeys laws of <em>identity</em> and <em>composition</em>.
  *
  * <p>
- * A <code>FunctorProxy</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
+ * A <code>FunctorAdapter</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
  * </p>
  */
 trait FunctorAdapter[Context[_], A] {
@@ -35,9 +46,9 @@ trait FunctorAdapter[Context[_], A] {
    * </p>
    *
    * <ul>
-   * <li><code>id</code>: <code>T => T</code> // Identity function, <code>(o: T) => o</code></li>
-   * <li><code>g</code>: <code>T => U</code></li>
-   * <li><code>f</code>: <code>U => V</code></li>
+   * <li><code>id</code>: <code>A => A</code> // Identity function, <code>(o: T) => o</code></li>
+   * <li><code>g</code>: <code>A => B</code></li>
+   * <li><code>f</code>: <code>B => C</code></li>
    * </ul>
    *
    * <p>
@@ -45,20 +56,9 @@ trait FunctorAdapter[Context[_], A] {
    * </p>
    *
    * <ul>
-   * <li>identity: <code>functorProxy.map(id)</code> <code>===</code> <code>functorProxy</code></li>
-   * <li>composite: <code>functorProxy.map(g).map(f)</code> <code>===</code> <code>functorProxy.map(f compose g)</code></li>
+   * <li>identity: <code>functor.map(a => a)</code> <code>===</code> <code>functor</code></li>
+   * <li>composite: <code>functor.map(g).map(f)</code> <code>===</code> <code>functor.map(f compose g)</code></li>
    * </ul>
    */
   def map[B](f: A => B): Context[B]
-}
-
-/**
- * Algebraic structure containing a <em>map</em> methods that obeys laws of <em>identity</em> and <em>composition</em>.
- */
-trait Functor[Context[_]] {
-
-  /**
-   * Produces a <code>FunctorProxy</code> wrapping the given context instance.
-   */
-  def apply[A](ct: Context[A]): FunctorAdapter[Context, A]
 }
