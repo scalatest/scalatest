@@ -27,5 +27,9 @@ trait TrySugar {
   } 
 } 
 
+/**
+ * Companion object for <code>TrySugar</code> enabling its members to be
+ * imported as an alternative to mixing them in.
+ */
 object TrySugar extends TrySugar
 
