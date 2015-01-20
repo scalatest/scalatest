@@ -16,29 +16,16 @@
 package org.scalactic.algebra
 
 import scala.language.higherKinds
+import scala.language.implicitConversions
 
 /**
- * Algebraic structure containing a <em>map</em> method that obeys laws of <em>identity</em> and <em>composition</em>.
+ * Typeclass trait representing an algebraic structure containing a <em>map</em> method that
+ * obeys laws of <em>identity</em> and <em>composition</em>.
  */
-trait Functor[Context[_]] {
+trait Functor[Context[_], A] {
 
   /**
-   * Produces a <code>FunctorAdapter</code> wrapping the given context instance.
-   */
-  def apply[A](ct: Context[A]): FunctorAdapter[Context, A]
-}
-
-/**
- * Adapter for algebraic structure containing a <em>mapping</em> method that obeys laws of <em>identity</em> and <em>composition</em>.
- *
- * <p>
- * A <code>FunctorAdapter</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
- * </p>
- */
-trait FunctorAdapter[Context[_], A] {
-
-  /**
-   * Applies the given function to the value contained in this context, returning the result 
+   * Applies the given function to the value contained in this context, returning the result
    * of the function lifted into the same context.
    *
    * <p>
@@ -59,6 +46,32 @@ trait FunctorAdapter[Context[_], A] {
    * <li>identity: <code>functor.map(a => a)</code> <code>===</code> <code>functor</code></li>
    * <li>composite: <code>functor.map(g).map(f)</code> <code>===</code> <code>functor.map(f compose g)</code></li>
    * </ul>
+   *
    */
-  def map[B](f: A => B): Context[B]
+  def map[B](ca: Context[A])(f: A => B): Context[B]
+}
+
+object Functor {
+
+  /**
+   * Summons an implicitly available Functor.
+   */
+  def apply[Context[_], A](implicit ev: Functor[Context, A]): Functor[Context, A] = ev
+
+  /**
+   * Adapter for [[Functor]]
+   *
+   * <p>
+   * A <code>Functor.Adapter</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
+   * </p>
+   */
+   class Adapter[Context[_], A](ca: Context[A])(implicit val functor: Functor[Context, A]) {
+    def map[B](f: A => B): Context[B] = functor.map(ca)(f)
+  }
+
+  /**
+   * Implicitly wraps an object in a <code>Functor.Adapter</code>
+   */
+  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Functor[Context, A]): Functor.Adapter[Context, A] =
+    new Functor.Adapter(ca)(ev)
 }

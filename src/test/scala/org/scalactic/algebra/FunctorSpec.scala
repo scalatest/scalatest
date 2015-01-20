@@ -18,72 +18,58 @@ package org.scalactic.algebra
 import org.scalacheck.Arbitrary
 import org.scalactic._
 
+import scala.language.implicitConversions
+
 class FunctorSpec extends UnitSpec {
 
-  class OptionFunctorProxy[T](underlying: Option[T]) extends FunctorAdapter[Option, T] {
-    def map[U](f: T => U): Option[U]  = underlying.map(f)
+  class ListFunctor[A] extends Functor[List, A] {
+    override def map[B](ca: List[A])(f: (A) => B): List[B] = ca.map(f)
+  }
+
+  class OptionFunctor[A] extends Functor[Option, A] {
+    override def map[B](ca: Option[A])(f: (A) => B): Option[B] = ca.map(f)
   }
 
   "Option" should "obey the functor laws via its map method" in {
-    class OptionFunctorAdapter[T](opt: Option[T]) extends FunctorAdapter[Option, T] {
-      override def map[U](f: (T) => U): Option[U] = opt.map(f)
-    }
+    implicit val optionIntFunctor = new OptionFunctor[Int]
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
 
-    implicit object OptionFunctor extends Functor[Option] {
-      def apply[T](opt: Option[T]) = new OptionFunctorProxy[T](opt)
-    }
 
     new FunctorLaws[Option]().assert()
   }
 
   "List" should "obey the functor laws via its map method" in {
-    class ListFunctorAdapter[T](list: List[T]) extends FunctorAdapter[List, T] {
-      override def map[U](f: (T) => U): List[U] = list.map(f)
-    }
-
-    implicit object ListFunctor extends Functor[List] {
-      def apply[T](list: List[T]) = new ListFunctorAdapter[T](list)
-    }
+    implicit val listIntFunctor = new ListFunctor[Int]
 
     new FunctorLaws[List]().assert()
   }
 
-  // generator used for verifying the Good nature of Or
-  def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
-
-  // generator used for verifying the Bad nature of Or
-  def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] = Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
-
-
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
 
-    class GoodOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithBad[Bad]#AndGood, Good] {
-      def map[C](gc: Good => C): C Or Bad = ctx.map(gc)
+    // generator used for verifying the Good nature of Or
+
+    class GoodOrFunctor[Good, Bad] extends Functor[OrWithBad[Bad]#AndGood, Good] {
+      override def map[B](ca: OrWithBad[Bad]#AndGood[Good])(f: (Good) => B): OrWithBad[Bad]#AndGood[B] = ca.map(f)
     }
 
-    implicit def goodOrFunctor[B]: Functor[OrWithBad[B]#AndGood] = new Functor[OrWithBad[B]#AndGood] {
-      def apply[G](ctx: G Or B) = new GoodOrFunctorProxy[G, B](ctx)
-    }
-
-    implicit def orArb[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = orArbGood
+    implicit val badOrFunctor = new GoodOrFunctor[Int, Int]
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
     new FunctorLaws[OrWithBad[Int]#AndGood]().assert()
   }
 
   "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
 
-    class BadOrFunctorProxy[Good, Bad](ctx: Good Or Bad) extends FunctorAdapter[OrWithGood[Good]#AndBad, Bad] {
-      def map[C](bc: Bad => C): Good Or C = ctx.badMap(bc)
+    // generator used for verifying the Bad nature of Or
+
+    class BadOrFunctor[Good, Bad]extends Functor[OrWithGood[Good]#AndBad, Bad] {
+      override def map[B](ca: OrWithGood[Good]#AndBad[Bad])(f: (Bad) => B): OrWithGood[Good]#AndBad[B] = ca.badMap(f)
     }
 
-    implicit def badOrFunctor[G]: Functor[OrWithGood[G]#AndBad] = new Functor[OrWithGood[G]#AndBad] {
-      def apply[B](ctx: G Or B) = new BadOrFunctorProxy[G, B](ctx)
-    }
-
-    implicit def orArb[G, B](implicit arbB: Arbitrary[B]): Arbitrary[G Or B] = orArbBad
+    implicit val badOrFunctor = new BadOrFunctor[Int, Int]
+    implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] = Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
 
     new FunctorLaws[OrWithGood[Int]#AndBad]().assert()
   }
-
 }
 

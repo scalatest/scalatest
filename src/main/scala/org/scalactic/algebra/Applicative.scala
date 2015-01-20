@@ -40,14 +40,14 @@ trait Applicative[Context[_]] {
 
 object Applicative {
 
-  //def apply[A](implicit ap: Applicative[A]): Applicative[A] = ap
+  def apply[Context[_], A](implicit ap: Applicative[Context]): Applicative[Context] = ap
 
-  abstract class Adapter[Context[_], A](ca: Context[A])(implicit applicative: Applicative[Context]) {
+  abstract class Adapter[Context[_], A](ca: Context[A])(implicit val applicative: Applicative[Context]) {
     def applying[B](cab: Context[A => B]): Context[B]
     def map[B](f: A => B): Context[B] = applying(applicative.insert(f))
   }
 
-  class Adapter2[Context[_], A, B](ca: Context[A], cb: Context[B])(implicit applicative: Applicative[Context]) {
+  class Adapter2[Context[_], A, B](ca: Context[A], cb: Context[B])(implicit val applicative: Applicative[Context]) {
     def applying2[C](cf: Context[(A, B) => C]): Context[C] = {
       val ap1 = applicative(ca).applying(applicative(cf).map(_.curried))
       val ap2 = applicative(cb).applying(ap1)
@@ -58,7 +58,7 @@ object Applicative {
     def mapAll[C](f: (A, B) => C): Context[C] = map2(f)
   }
 
-  class Adapter3[Context[_], A, B, C](ca: Context[A], cb: Context[B], cc: Context[C])(implicit applicative: Applicative[Context]) {
+  class Adapter3[Context[_], A, B, C](ca: Context[A], cb: Context[B], cc: Context[C])(implicit val applicative: Applicative[Context]) {
     def applying3[D](cf: Context[(A, B, C) => D]): Context[D] = {
       val ap1 = applicative(ca).applying(applicative(cf).map(_.curried))
       val ap2 = applicative(cb).applying(ap1)
