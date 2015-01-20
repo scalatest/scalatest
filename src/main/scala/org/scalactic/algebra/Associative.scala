@@ -19,11 +19,11 @@ import scala.language.higherKinds
 import scala.language.implicitConversions
 
 /**
- * Trait representing a binary operation that obeys the associative law.
+ * Typeclass trait representing a binary operation that obeys the associative law.
  *
  * <p>
  * The associative law states that given values <code>a</code>, <code>b</code>, and <code>c</code>
- * of type <code>A</code>, and the implicit <code>Associative.adapters</code> imported: 
+ * of type <code>A</code> (and implicit <code>Associative.adapters</code> imported): 
  * </p>
  *
  * <pre>
