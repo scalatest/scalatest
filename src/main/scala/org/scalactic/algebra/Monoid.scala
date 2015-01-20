@@ -90,5 +90,15 @@ object Monoid {
    * so long as an implicit <code>Monoid[A]</code> is available.
    */
   implicit def adapters[A](a: A)(implicit ev: Monoid[A]): Monoid.Adapter[A] = new Adapter(a)(ev)
+
+  /**
+   * Summons an implicitly available <code>Monoid[A]</code>.
+   *
+   * <p>
+   * This method allows you to write expressions like <code>Monoid[List[String]]</code> instead of
+   * <code>implicitly[Monoid[List[String]]]</code>.
+   * </p>
+   */
+  def apply[A](implicit ev: Monoid[A]): Monoid[A] = ev
 }
 

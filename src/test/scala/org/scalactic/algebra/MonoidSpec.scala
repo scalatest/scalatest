@@ -87,6 +87,11 @@ class MonoidSpec extends UnitSpec {
     val foldResult = listInts.fold(m.z)(m.op)
     foldResult shouldEqual 20
   }
-   
+
+  "Monoid" should "provide an parameterless apply method in its companion to summon an implicit" in {
+    implicit val monoid = listMonoidTyped[Int]
+    monoid should be theSameInstanceAs implicitly[Monoid[List[Int]]]
+    monoid should be theSameInstanceAs Monoid[List[Int]]
+  }
 }
 

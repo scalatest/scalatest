@@ -75,5 +75,15 @@ object Associative {
    * so long as an implicit <code>Associative[A]</code> is available.
    */
   implicit def adapters[A](a: A)(implicit ev: Associative[A]): Associative.Adapter[A] = new Adapter(a)(ev)
+
+  /**
+   * Summons an implicitly available <code>Associative[A]</code>.
+   *
+   * <p>
+   * This method allows you to write expressions like <code>Associative[String]</code> instead of
+   * <code>implicitly[Associative[String]]</code>.
+   * </p>
+   */
+  def apply[A](implicit ev: Associative[A]): Associative[A] = ev
 }
 

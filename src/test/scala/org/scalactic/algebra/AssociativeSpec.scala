@@ -62,14 +62,20 @@ class AssociativeSpec extends UnitSpec {
     val b = 64
     val c = 256
     ((a op b) op c) should not be (a op (b op c))
-   }
+  }
 
-   "Associative" should "offer an op method directly" in {
-     val a = Every(1,2)
-     val b = Every(5,6,7)
-     val c = Every(9,9)
-     val assoc = new EveryAssociative[Int]
-     import assoc.op
-     op(op(a, b), c) shouldEqual op(a, op(b, c))
-   }
+  "Associative" should "offer an op method directly" in {
+    val a = Every(1,2)
+    val b = Every(5,6,7)
+    val c = Every(9,9)
+    val assoc = new EveryAssociative[Int]
+    import assoc.op
+    op(op(a, b), c) shouldEqual op(a, op(b, c))
+  }
+
+  it should "provide an parameterless apply method in its companion to summon an implicit" in {
+    implicit val assoc = new IntMultiAssociative
+    assoc should be theSameInstanceAs implicitly[Associative[Int]]
+    assoc should be theSameInstanceAs Associative[Int]
+  }
 }
