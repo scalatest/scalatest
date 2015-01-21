@@ -16,44 +16,36 @@
 package org.scalactic.algebra
 
 import scala.language.higherKinds
+import scala.language.implicitConversions
 
 /**
- * Proxy for algebraic structure containing <em>insertion</em> and <em>flat-mapping</em> methods that obey
+ * Typeclass trait for algebraic structure containing <em>insertion</em> and <em>flat-mapping</em> methods that obey
  * laws of <em>identity</em> and <em>associativity</em>.
  *
  * <p>
- * A <code>MonadProxy</code> instance wraps an object that in some way behaves as a <code>Monad</code>.
+ * A <code>Monad/code> instance wraps an object that in some way behaves as a <code>Monad</code>.
  * </p>
  */
-trait MonadAdapter[Context[_], A] extends Applicative[Context] {
-
+trait Monad[Context[_]] extends Applicative[Context] {
   /**
    * Applies the given function to the value contained in this context, returning the result 
-   * of the function lifted into the same context.
+   * of the function, which is a value wrapped in another context.
    */
-  def map[B](f: A => B): Context[B]
-
-  /**
-   * Applies the given function to the value contained in this context, returning the result 
-   * of the function, which is a value wrapped in another context of the same type.
-   */
-  def flatMap[B](f: A => Context[B]): Context[B]
+  def flatMap[A, B](ca: Context[A])(f: A => Context[B]): Context[B]
 }
 
 /**
- * Algebraic structure containing <em>insertion</em> and <em>flat-mapping</em> methods that obey
- * laws of <em>identity</em> and <em>associativity</em>.
+ * Companion object for <code>Monad</code> typeclass.
  */
-trait Monad[Context[_]] {
+object Monad {
 
-  /**
-   * Produces a <code>MonadProxy</code> wrapping the given context instance.
-   */
-  def apply[A](ca: Context[A]): MonadAdapter[Context, A]
+  def apply[Context[_]](implicit ev: Applicative[Context]): Applicative[Context] = ev
 
-  /**
-   * Inserts a value into a context.
-   */
-  def insert[A](o: A): Context[A]
+  class Adapter[Context[_], A](val underlying: Context[A])(implicit val monad: Monad[Context]) {
+    def map[B](f: A => B) = monad.map(underlying)(f)
+    def flatMap[B](f: A => Context[B]) = monad.flatMap(underlying)(f)
+  }
+
+  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
+    new Adapter(ca)(ev)
 }
-

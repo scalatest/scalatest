@@ -68,5 +68,5 @@ object Applicative {
   }
 
   implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Applicative[Context]): Adapter[Context, A] =
-    new Applicative.Adapter(ca)(ev)
+    new Adapter(ca)(ev)
 }
