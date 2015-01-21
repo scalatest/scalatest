@@ -15,7 +15,6 @@
  */
 package org.scalactic.algebra
 
-import org.scalactic.Every
 import org.scalatest.{No, Yes, Fact}
 import org.scalatest.Matchers._
 
@@ -23,18 +22,14 @@ import scala.language.higherKinds
 
 trait Laws {
   val lawsName: String
-  // in order to allow access to the law name, a law takes the law name as a parameter
+  // in order to allow access to the name, a law takes the law name as a parameter
   type Law = String => Fact
-  //val laws: Seq[Law]
   def test(): Fact
   //def test: Fact = laws.map(_.test()).reduceLeft(_ && _)
-  //def assert(): Unit = test() shouldBe a [Yes]
   def assert(): Unit = test().isInstanceOf[Yes] shouldBe true
 }
 
 object Laws {
-  // note: should probably be a method on object Fact that takes pos, neg, and boolean, e.g.
-  //   Fact(expr, "is larger than the max size", "is not larger than the max size")
   def yes(lawsName: String, lawName: String) = Yes("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
   def no(lawsName: String, lawName: String) = No("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
 }
