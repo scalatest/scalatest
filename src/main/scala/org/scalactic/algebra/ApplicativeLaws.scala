@@ -21,7 +21,7 @@ import org.scalactic.CheckedEquality._
 import org.scalatest.Fact
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
-import Applicative.Adapters._
+import Applicative.adapters
 
 import scala.language.higherKinds
 

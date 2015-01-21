@@ -22,7 +22,7 @@ import scala.language.implicitConversions
  * Typeclass trait representing an algebraic structure containing a <em>map</em> method that
  * obeys laws of <em>identity</em> and <em>composition</em>.
  */
-trait Functor[Context[_], A] {
+trait Functor[Context[_]] {
 
   /**
    * Applies the given function to the value contained in this context, returning the result
@@ -48,7 +48,7 @@ trait Functor[Context[_], A] {
    * </ul>
    *
    */
-  def map[B](ca: Context[A])(f: A => B): Context[B]
+  def map[A, B](ca: Context[A])(f: A => B): Context[B]
 }
 
 object Functor {
@@ -56,7 +56,7 @@ object Functor {
   /**
    * Summons an implicitly available Functor.
    */
-  def apply[Context[_], A](implicit ev: Functor[Context, A]): Functor[Context, A] = ev
+  def apply[Context[_]](implicit ev: Functor[Context]): Functor[Context] = ev
 
   /**
    * Adapter for [[Functor]]
@@ -65,13 +65,13 @@ object Functor {
    * A <code>Functor.Adapter</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
    * </p>
    */
-   class Adapter[Context[_], A](ca: Context[A])(implicit val functor: Functor[Context, A]) {
-    def map[B](f: A => B): Context[B] = functor.map(ca)(f)
+   class Adapter[Context[_], A](val underlying: Context[A])(implicit val functor: Functor[Context]) {
+    def map[B](f: A => B): Context[B] = functor.map(underlying)(f)
   }
 
   /**
    * Implicitly wraps an object in a <code>Functor.Adapter</code>
    */
-  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Functor[Context, A]): Functor.Adapter[Context, A] =
+  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Functor[Context]): Functor.Adapter[Context, A] =
     new Functor.Adapter(ca)(ev)
 }

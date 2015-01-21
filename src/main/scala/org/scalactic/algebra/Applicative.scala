@@ -19,66 +19,54 @@ package org.scalactic.algebra
 import scala.language.implicitConversions
 import scala.language.higherKinds
 
-trait Applicative[Context[_]] {
-  def apply[A](ca: Context[A]): Applicative.Adapter[Context, A]
-  def apply[A, B](ca: Context[A], cb: Context[B]): Applicative.Adapter2[Context, A, B]
-  def apply[A, B, C](ca: Context[A], cb: Context[B], cc: Context[C]): Applicative.Adapter3[Context, A, B, C]
+trait Applicative[Context[_]] extends Functor[Context] {
+
+  def applying[A, B](ca: Context[A])(cab: Context[A => B]): Context[B]
+
+  def applying2[A, B, C](ca: Context[A], cb: Context[B])(cf: Context[(A, B) => C]): Context[C] = {
+    val ap1 = applying(ca)(map(cf)(_.curried))
+    val ap2 = applying(cb)(ap1)
+    ap2
+  }
+
+  def applying3[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(cf: Context[(A, B, C) => D]): Context[D] = {
+    val ap1 = applying(ca)(map(cf)(_.curried))
+    val ap2 = applying(cb)(ap1)
+    val ap3 = applying(cc)(ap2)
+    ap3
+  }
 
   // a.k.a. pure, point
   def insert[A](a: A): Context[A]
 
+  def map[A, B](ca: Context[A])(f: A => B): Context[B] = applying(ca)(insert(f))
+
+  def map2[A, B, C](ca: Context[A], cb: Context[B])(f: (A, B) => C): Context[C] =
+    applying2(ca, cb)(insert(f))
+
+  def map3[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(f: (A, B, C) => D): Context[D] =
+    applying3(ca, cb, cc)(insert(f))
+
   def lift[A, B](f: A => B): Context[A] => Context[B] =
-    (ca: Context[A]) => apply(ca).map(f)
+    (ca: Context[A]) => map(ca)(f)
 
   def lift2[A, B, C](f: (A, B) => C): (Context[A], Context[B]) => Context[C] =
-    (ca: Context[A], cb: Context[B]) => apply(ca, cb).map2(f)
+    (ca: Context[A], cb: Context[B]) => map2(ca, cb)(f)
 
   def lift3[A, B, C, D](f: (A, B, C) => D): (Context[A], Context[B], Context[C]) => Context[D] =
-    (ca: Context[A], cb: Context[B], cc: Context[C]) => apply(ca, cb, cc).map3(f)
+    (ca: Context[A], cb: Context[B], cc: Context[C]) => map3(ca, cb, cc)(f)
 
 }
 
 object Applicative {
 
-  def apply[Context[_], A](implicit ap: Applicative[Context]): Applicative[Context] = ap
+  def apply[Context[_]](implicit ev: Applicative[Context]): Applicative[Context] = ev
 
-  abstract class Adapter[Context[_], A](ca: Context[A])(implicit val applicative: Applicative[Context]) {
-    def applying[B](cab: Context[A => B]): Context[B]
-    def map[B](f: A => B): Context[B] = applying(applicative.insert(f))
+  class Adapter[Context[_], A](val underlying: Context[A])(implicit val applicative: Applicative[Context]) {
+    def applying[B](cab: Context[A => B]): Context[B] = applicative.applying(underlying)(cab)
+    def map[B](f: A => B): Context[B] = applicative.map(underlying)(f)
   }
 
-  class Adapter2[Context[_], A, B](ca: Context[A], cb: Context[B])(implicit val applicative: Applicative[Context]) {
-    def applying2[C](cf: Context[(A, B) => C]): Context[C] = {
-      val ap1 = applicative(ca).applying(applicative(cf).map(_.curried))
-      val ap2 = applicative(cb).applying(ap1)
-      ap2
-    }
-    def map2[C](f: (A, B) => C): Context[C] = applying2(applicative.insert(f))
-    def tupled2: Adapter[Context, (A, B)] = applicative.apply(map2((_,_)))
-    def mapAll[C](f: (A, B) => C): Context[C] = map2(f)
-  }
-
-  class Adapter3[Context[_], A, B, C](ca: Context[A], cb: Context[B], cc: Context[C])(implicit val applicative: Applicative[Context]) {
-    def applying3[D](cf: Context[(A, B, C) => D]): Context[D] = {
-      val ap1 = applicative(ca).applying(applicative(cf).map(_.curried))
-      val ap2 = applicative(cb).applying(ap1)
-      val ap3 = applicative(cc).applying(ap2)
-      ap3
-    }
-    def map3[D](f: (A, B, C) => D): Context[D] = applying3(applicative.insert(f))
-    def tupled3: Adapter[Context, (A, B, C)] = applicative(mapAll((_,_,_)))
-    def mapAll[D](f: (A, B, C) => D): Context[D] = map3(f)
-  }
-
-  object Adapters {
-    implicit def adapt[Context[_], A](ca: Context[A])(implicit applicative: Applicative[Context]): Adapter[Context, A] =
-      applicative.apply(ca)
-
-    implicit def adapt2[Context[_], A, B](tup: (Context[A], Context[B]))(implicit applicative: Applicative[Context]): Adapter2[Context, A, B] =
-      applicative.apply(tup._1, tup._2)
-
-    implicit def adapt3[Context[_], A, B, C](tup: (Context[A], Context[B], Context[C]))(implicit applicative: Applicative[Context]): Adapter3[Context, A, B, C] =
-      applicative.apply(tup._1, tup._2, tup._3)
-
-  }
+  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Applicative[Context]): Adapter[Context, A] =
+    new Applicative.Adapter(ca)(ev)
 }
