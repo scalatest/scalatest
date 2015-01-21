@@ -161,15 +161,6 @@ class AssertionsSpec extends FunSpec {
       // not cast and still invoke any method on it I want
       caught.someRandomMethod()
     }
-
-    it("should return the caught exception") {
-      val e = new RuntimeException
-      val result = intercept[RuntimeException] {
-        throw e
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      assert(result eq e)
-    }
   }
   describe("The trap method") {
     it("should be a shorthand for catch and return any thrown exception that would cause a test to fail") {
