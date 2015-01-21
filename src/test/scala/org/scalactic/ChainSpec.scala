@@ -21,7 +21,7 @@ import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-class ChainSpec extends UnitSpec with CheckedEquality {
+class ChainSpec extends UnitSpec {
   "A Chain" can "be constructed with one element" in {
     val onesie = Chain(3)
     onesie.length shouldBe 1
