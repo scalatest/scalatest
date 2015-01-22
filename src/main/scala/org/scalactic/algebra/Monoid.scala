@@ -61,15 +61,13 @@ trait Monoid[A] extends Associative[A] {
 }
 
 /**
- * Companion object for <code>Monoid</code> that contains
- * an <code>Adapter</code> that wraps a value of type <code>A</code> given an
- * implicit <code>Monoid[A]</code> as well as an
- * an implicit conversion method from <code>A</code> to <code>Monoid.Adapter[A]</code>
+ * Companion object for trait <a href="Monoid.html"><code>Monoid</code></a>.
  */
 object Monoid {
 
   /**
-   * Adapter class for <a href="Monoid.html"><code>Monoid</code></a>.
+   * Adapter class for <a href="Monoid.html"><code>Monoid</code></a> that wraps a value of
+   * type <code>A</code> given an implicit <code>Monoid[A]</code>.
    *
    * @param underlying The value of type <code>A</code> to wrap.
    * @param monoid The captured <code>Monoid[A]</code> whose behavior

@@ -46,15 +46,15 @@ trait Associative[A] {
 }
 
 /**
- * Companion object for <code>Associative</code> that contains
- * an <code>Adapter</code> that wraps a value of type <code>A</code> given an
- * implicit <code>Associative[A]</code> as well as an
+ * Companion object for <code>Associative</code>.
  * an implicit conversion method from <code>A</code> to <code>Associative.Adapter[A]</code>
  */
 object Associative {
 
   /**
-   * Adapter class for <a href="Associative.html"><code>Associative</code></a>.
+   * Adapter class for <a href="Associative.html"><code>Associative</code></a>
+   * that wraps a value of type <code>A</code> given an
+   * implicit <code>Associative[A]</code>.
    *
    * @param underlying The value of type <code>A</code> to wrap.
    * @param associative The captured <code>Associative[A]</code> whose behavior

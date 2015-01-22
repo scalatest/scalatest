@@ -19,8 +19,27 @@ import scala.language.higherKinds
 import scala.language.implicitConversions
 
 /**
- * Typeclass trait representing an algebraic structure containing a <em>map</em> method that
+ * Typeclass trait representing an algebraic structure defined by a <code>map</code> method that
  * obeys laws of <em>identity</em> and <em>composition</em>.
+ *
+ * <p>
+ * The <em>identity law</em> states that given a value <code>ca</code> of type <code>Context[A]</code> and
+ * the identity function, <code>(a: A) => a</code> (and implicit <code>Functor.adapters</code> imported): 
+ * </p>
+ *
+ * <pre>
+ * ca.map((a: A) =&gt; a) === ca
+ * </pre>
+ *
+ * <p>
+ * The <em>composition law</em> states that given a value <code>ca</code> of type <code>Context[A]</code> and
+ * two functions, <code>f</code> of type <code>A =&gt; B</code> and <code>g</code> of type <code>B =&gt; C</code>
+ * (and implicit <code>Functor.adapters</code> imported): 
+ * </p>
+ *
+ * <pre>
+ * ca.map(f).map(g) === ca.map(g compose f)
+ * </pre>
  */
 trait Functor[Context[_]] {
 
@@ -29,49 +48,50 @@ trait Functor[Context[_]] {
    * of the function lifted into the same context.
    *
    * <p>
-   * Given the functions:
+   * See the main documentation for this trait for more detail.
    * </p>
-   *
-   * <ul>
-   * <li><code>id</code>: <code>A => A</code> // Identity function, <code>(o: T) => o</code></li>
-   * <li><code>g</code>: <code>A => B</code></li>
-   * <li><code>f</code>: <code>B => C</code></li>
-   * </ul>
-   *
-   * <p>
-   * Implementations of this trait obey the following laws:
-   * </p>
-   *
-   * <ul>
-   * <li>identity: <code>functor.map(a => a)</code> <code>===</code> <code>functor</code></li>
-   * <li>composite: <code>functor.map(g).map(f)</code> <code>===</code> <code>functor.map(f compose g)</code></li>
-   * </ul>
-   *
    */
   def map[A, B](ca: Context[A])(f: A => B): Context[B]
 }
 
+/**
+ * Companion object for trait <a href="Functor.html"><code>Functor</code></a>.
+ */
 object Functor {
 
   /**
-   * Summons an implicitly available Functor.
-   */
-  def apply[Context[_]](implicit ev: Functor[Context]): Functor[Context] = ev
-
-  /**
-   * Adapter for [[Functor]]
+   * Adapter class for <a href="Functor.html"><code>Functor</code></a>
+   * that wraps a value of type <code>Context[A]</code> given an
+   * implicit <code>Functor[Context]</code>.
    *
-   * <p>
-   * A <code>Functor.Adapter</code> instance wraps an object that in some way behaves as a <code>Functor</code>.
-   * </p>
+   * @param underlying The value of type <code>Context[A]</code> to wrap.
+   * @param functor The captured <code>Functor[Context]</code> whose behavior
+   *   is used to implement this class's methods.
    */
    class Adapter[Context[_], A](val underlying: Context[A])(implicit val functor: Functor[Context]) {
+
+    /**
+     * A mapping operation that obeys the identity and composition laws.
+     *
+     * See the main documentation for trait <a href="Functor.html"><code>Functor</code></a> for more detail.
+     */ 
     def map[B](f: A => B): Context[B] = functor.map(underlying)(f)
   }
 
   /**
-   * Implicitly wraps an object in a <code>Functor.Adapter</code>
+   * Implicitly wraps an object in a <code>Functor.Adapter[Context, A]</code>
+   * so long as an implicit <code>Functor[Context]</code> is available.
    */
   implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Functor[Context]): Functor.Adapter[Context, A] =
     new Functor.Adapter(ca)(ev)
+
+  /**
+   * Summons an implicitly available Functor[Context].
+   *
+   * <p>
+   * This method allows you to write expressions like <code>Functor[List]</code> instead of
+   * <code>implicitly[Functor[List]]</code>.
+   * </p>
+   */
+  def apply[Context[_]](implicit ev: Functor[Context]): Functor[Context] = ev
 }
