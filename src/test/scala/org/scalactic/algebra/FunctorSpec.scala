@@ -47,11 +47,11 @@ class FunctorSpec extends UnitSpec {
 
     // generator used for verifying the Good nature of Or
 
-    class GoodOrFunctor extends Functor[Or.B[Int]#G] {
-      override def map[G, H](ca: G Or Int)(f: G => H): H Or Int = ca.map(f)
+    class OrFunctor[BAD] extends Functor[Or.B[BAD]#G] {
+      override def map[G, H](ca: G Or BAD)(f: G => H): H Or BAD = ca.map(f)
     }
 
-    implicit val badOrFunctor = new GoodOrFunctor
+    implicit val orFunctor = new OrFunctor[Int]
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
     new FunctorLaws[Or.B[Int]#G]().assert()
