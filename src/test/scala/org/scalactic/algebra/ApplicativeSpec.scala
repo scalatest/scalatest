@@ -52,16 +52,16 @@ class ApplicativeSpec extends UnitSpec {
 
   "The good nature of Or" should "obey the applicative laws" in {
 
-    class GoodOrApplicative[Bad] extends Applicative[OrWithBad[Bad]#AndGood] {
-      override def applying[A, B](ca: OrWithBad[Bad]#AndGood[A])(cab: OrWithBad[Bad]#AndGood[(A) => B]): OrWithBad[Bad]#AndGood[B] = ca.flatMap(a => cab.map(ab => ab(a)))
+    class GoodOrApplicative[BAD] extends Applicative[Or.B[BAD]#G] {
+      override def applying[A, B](ca: Or.B[BAD]#G[A])(cab: Or.B[BAD]#G[(A) => B]): Or.B[BAD]#G[B] = ca.flatMap(a => cab.map(ab => ab(a)))
 
       // a.k.a. pure, point
-      override def insert[A](a: A): OrWithBad[Bad]#AndGood[A] = Good(a)
+      override def insert[A](a: A): Or.B[BAD]#G[A] = Good(a)
     }
 
     implicit val goodOrApplicative = new GoodOrApplicative[Int]
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
-    new ApplicativeLaws[OrWithBad[Int]#AndGood]().assert()
+    new ApplicativeLaws[Or.B[Int]#G]().assert()
   }
 }
