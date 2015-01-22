@@ -44,8 +44,8 @@ import scala.language.implicitConversions
 trait Functor[Context[_]] {
 
   /**
-   * Applies the given function to the value contained in this context, returning the result
-   * of the function lifted into the same context.
+   * Applies the given function to the given value in context, returning the result in
+   * the context.
    *
    * <p>
    * See the main documentation for this trait for more detail.
@@ -83,7 +83,7 @@ object Functor {
    * so long as an implicit <code>Functor[Context]</code> is available.
    */
   implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Functor[Context]): Functor.Adapter[Context, A] =
-    new Functor.Adapter(ca)(ev)
+    new Adapter(ca)(ev)
 
   /**
    * Summons an implicitly available Functor[Context].

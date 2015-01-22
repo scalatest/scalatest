@@ -1784,7 +1784,7 @@ import exceptions.TestFailedException
  * @author Bill Venners
  * @author Chua Chee Seng
  */
-trait PureMatchers extends Assertions with Tolerance with MatcherWords with Explicitly { matchers =>
+private[scalatest] trait PureMatchers extends Assertions with Tolerance with MatcherWords with Explicitly { matchers =>
 
   import scala.language.implicitConversions
 
