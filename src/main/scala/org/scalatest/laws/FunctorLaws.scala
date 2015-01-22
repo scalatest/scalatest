@@ -1,4 +1,4 @@
-package org.scalactic.algebra
+package org.scalatest.laws
 
 import org.scalacheck._
 
@@ -7,6 +7,8 @@ import org.scalactic.CheckedEquality._
 import org.scalatest._
 
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+
+import org.scalactic.algebra._
 
 import Functor.adapters
 

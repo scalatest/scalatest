@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.algebra
+package org.scalatest.laws
 
 import org.scalacheck.{Arbitrary, Shrink}
 import org.scalactic.Equality
@@ -21,9 +21,12 @@ import org.scalactic.CheckedEquality._
 import org.scalatest.Fact
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
+import org.scalactic.algebra._
+
 import Applicative.adapters
 
 import scala.language.higherKinds
+
 
 class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   arbCa: Arbitrary[Context[Int]],

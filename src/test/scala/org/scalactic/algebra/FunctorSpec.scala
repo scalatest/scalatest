@@ -17,6 +17,7 @@ package org.scalactic.algebra
 
 import org.scalacheck.Arbitrary
 import org.scalactic._
+import org.scalatest.laws._
 
 import scala.language.implicitConversions
 
