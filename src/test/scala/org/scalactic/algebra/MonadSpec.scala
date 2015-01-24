@@ -29,7 +29,6 @@ class MonadSpec extends UnitSpec {
     class ListMonad extends Monad[List] {
       override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
       override def insert[A](a: A): List[A] = List(a)
-      override def applying[A, B](list: List[A])(listAB: List[A => B]): List[B] = list.flatMap(a => listAB.map(ab => ab(a)))
     }
 
     implicit val listMonad = new ListMonad
@@ -41,7 +40,6 @@ class MonadSpec extends UnitSpec {
     class OptionMonad extends Monad[Option] {
       override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
       override def insert[A](a: A): Option[A] = Option(a)
-      override def applying[A, B](ca: Option[A])(cab: Option[(A) => B]): Option[B] = ca.flatMap(a => cab.map(ab => ab(a)))
     }
 
     implicit val optionMonad = new OptionMonad
@@ -54,8 +52,6 @@ class MonadSpec extends UnitSpec {
       override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
         ca.flatMap(f)
       override def insert[A](a: A): B[BAD]#G[A] = Good(a)
-      override def applying[A, B](ca: Or.B[BAD]#G[A])(cab: Or.B[BAD]#G[(A) => B]): Or.B[BAD]#G[B] =
-        ca.flatMap(a => cab.map(ab => ab(a)))
     }
 
     implicit val orMonad = new OrMonad[Int]

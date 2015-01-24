@@ -32,6 +32,13 @@ trait Monad[Context[_]] extends Applicative[Context] {
    * of the function, which is a value wrapped in another context.
    */
   def flatMap[A, B](ca: Context[A])(f: A => Context[B]): Context[B]
+
+  // TODO: Flesh out the scaladoc, explaining the implementation here.
+  /**
+   * Applies the given function in context to the given value in context, returning the result in
+   * the context.
+   */
+  def applying[A, B](ca: Context[A])(cab: Context[A => B]): Context[B] = flatMap(ca)(a => map(cab)(ab => ab(a)))
 }
 
 /**
