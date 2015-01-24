@@ -117,6 +117,18 @@ trait Applicative[Context[_]] extends Functor[Context] {
    */
   def lift3[A, B, C, D](f: (A, B, C) => D): (Context[A], Context[B], Context[C]) => Context[D] =
     (ca: Context[A], cb: Context[B], cc: Context[C]) => map3(ca, cb, cc)(f)
+
+  /**
+   * Transforms two contexts containing values into a context containing a tuple of the two corresponding values.
+   */
+  def tupled2[A, B](ca: Context[A], cb: Context[B]): Context[(A, B)] =
+    map2(ca, cb)((_,_))
+
+  /**
+   * Transforms three contexts containing values into a context containing a tuple of the three corresponding values.
+   */
+  def tupled3[A, B, C](ca: Context[A], cb: Context[B], cc: Context[C]): Context[(A, B, C)] =
+    map3(ca, cb, cc)((_,_,_))
 }
 
 /**
