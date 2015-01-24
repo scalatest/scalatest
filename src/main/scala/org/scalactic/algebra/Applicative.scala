@@ -130,7 +130,7 @@ object Applicative {
    * implicit <code>Applicative[Context]</code>.
    *
    * @param underlying The value of type <code>Context[A]</code> to wrap.
-   * @param functor The captured <code>Applicative[Context]</code> whose behavior
+   * @param applicative The captured <code>Applicative[Context]</code> whose behavior
    *   is used to implement this class's methods.
    */
   class Adapter[Context[_], A](val underlying: Context[A])(implicit val applicative: Applicative[Context]) {

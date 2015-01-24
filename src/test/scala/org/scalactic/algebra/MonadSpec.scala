@@ -15,10 +15,58 @@
  */
 package org.scalactic.algebra
 
-import org.scalactic.UnitSpec
+import org.scalacheck.Arbitrary
+import org.scalactic.Or.B
+import org.scalactic.{Good, Or, UnitSpec}
+import org.scalatest.laws.MonadLaws
+
+import scala.language.implicitConversions
 
 class MonadSpec extends UnitSpec {
-/**
+
+  "List" should "obey the monad laws" in {
+
+    class ListMonad extends Monad[List] {
+      override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
+      override def insert[A](a: A): List[A] = List(a)
+      override def applying[A, B](list: List[A])(listAB: List[A => B]): List[B] = list.flatMap(a => listAB.map(ab => ab(a)))
+    }
+
+    implicit val listMonad = new ListMonad
+
+    new MonadLaws[List].assert()
+  }
+
+
+  "Option" should "obey the monad laws" in {
+    class OptionMonad extends Monad[Option] {
+      override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
+      override def insert[A](a: A): Option[A] = Option(a)
+      override def applying[A, B](ca: Option[A])(cab: Option[(A) => B]): Option[B] = ca.flatMap(a => cab.map(ab => ab(a)))
+    }
+
+    implicit val optionMonad = new OptionMonad
+
+    new MonadLaws[Option].assert()
+  }
+
+  "The good " should "obey the monad laws" in {
+    class OrMonad[BAD] extends Monad[Or.B[BAD]#G] {
+      override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
+        ca.flatMap(f)
+      override def insert[A](a: A): B[BAD]#G[A] = Good(a)
+      override def applying[A, B](ca: Or.B[BAD]#G[A])(cab: Or.B[BAD]#G[(A) => B]): Or.B[BAD]#G[B] =
+        ca.flatMap(a => cab.map(ab => ab(a)))
+    }
+
+    implicit val orMonad = new OrMonad[Int]
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+
+    new MonadLaws[Or.B[Int]#G].assert()
+  }
+
+
+  /**
   class OptionMonadProxy[T](underlying: Option[T]) extends MonadProxy[Option, T] {
     def map[U](f: T => U): Option[U]  = underlying.map(f)
     def flatMap[U](f: T => Option[U]): Option[U]  = underlying.flatMap(f)

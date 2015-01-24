@@ -39,8 +39,6 @@ trait Monad[Context[_]] extends Applicative[Context] {
  */
 object Monad {
 
-  def apply[Context[_]](implicit ev: Applicative[Context]): Applicative[Context] = ev
-
   class Adapter[Context[_], A](val underlying: Context[A])(implicit val monad: Monad[Context]) {
     def map[B](f: A => B) = monad.map(underlying)(f)
     def flatMap[B](f: A => Context[B]) = monad.flatMap(underlying)(f)
@@ -48,4 +46,13 @@ object Monad {
 
   implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
     new Adapter(ca)(ev)
+
+  /**
+   * Summons an implicitly available <code>Monad[Context]</code>.
+   *
+   * @param ev Evidence (implicit typeclass) that Context is an Applicative.
+   * @tparam Context The type of teh <code>Monad[Context]</code> to summon.
+   * @return The <code>Monad[Context]</code> instance.
+   */
+  def apply[Context[_]](implicit ev: Monad[Context]): Monad[Context] = ev
 }
