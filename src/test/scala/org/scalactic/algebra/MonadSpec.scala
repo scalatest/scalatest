@@ -37,7 +37,6 @@ class MonadSpec extends UnitSpec {
     new MonadLaws[List].assert()
   }
 
-
   "Option" should "obey the monad laws" in {
     class OptionMonad extends Monad[Option] {
       override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
@@ -50,7 +49,7 @@ class MonadSpec extends UnitSpec {
     new MonadLaws[Option].assert()
   }
 
-  "The good " should "obey the monad laws" in {
+  "The good nature of Or" should "obey the monad laws" in {
     class OrMonad[BAD] extends Monad[Or.B[BAD]#G] {
       override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
         ca.flatMap(f)
@@ -64,56 +63,5 @@ class MonadSpec extends UnitSpec {
 
     new MonadLaws[Or.B[Int]#G].assert()
   }
-
-
-  /**
-  class OptionMonadProxy[T](underlying: Option[T]) extends MonadProxy[Option, T] {
-    def map[U](f: T => U): Option[U]  = underlying.map(f)
-    def flatMap[U](f: T => Option[U]): Option[U]  = underlying.flatMap(f)
-  }
-
-  class OptionMonad extends Monad[Option] {
-    def apply[T](opt: Option[T]): MonadProxy[Option, T] = new OptionMonadProxy[T](opt)
-    def insert[T](o: T): Option[T] = Option(o) 
-  }
-
-  class ListMonadProxy[T](underlying: List[T]) extends MonadProxy[List, T] {
-     def map[U](f: T => U): List[U]  = underlying.map(f)
-     def flatMap[U](f: T => List[U]): List[U]  = underlying.flatMap(f)
-   }
-
-   class ListMonad extends Monad[List] {
-     def apply[T](ls: List[T]): MonadProxy[List, T] = new ListMonadProxy[T](ls)
-     def insert[T](o: T): List[T] = List(o)
-   }
-
-  "A MonadProxy" should "offer a map method that has the usual signature" in {
-    val proxy: MonadProxy[Option, Int] = new OptionMonadProxy(Some(3))
-    proxy.map(_ + 1) shouldEqual Some(4)
-  }
-  
-  it should "also offer a flatmap" in {
-    val proxy: MonadProxy[Option, Int] = new OptionMonadProxy(Some(3))
-    val f: Int => Option[Int] = (x: Int) => Some(x + 1) 
-    proxy.flatMap(f) shouldEqual Some(4)
-  }
-
-  "A Monad" should "offer an apply method that takes a TC[_] instance" in {
-    val opt = Some(3)
-    val optFun: Monad[Option] = new OptionMonad
-    val proxy = optFun(opt)
-    proxy.map(_ + 1) shouldEqual Some(4)
-  }
-
-  it should "offer an insert method that given a T return a TC[T]" in {
-    val optFun: Monad[Option] = new OptionMonad
-    optFun.insert(3) shouldEqual Some(3)
-  }
-  
-  it should "allow you to nest a TC inside a TC" in {
-    val optFun: Monad[Option] = new OptionMonad
-    optFun.insert(Option(3)) shouldEqual Some(Some(3))
-  }
-  **/
 }
 
