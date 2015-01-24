@@ -17,7 +17,7 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.4
-  val buildScalaVersion = "2.11.4"
+  val buildScalaVersion = "2.11.5"
 
   val releaseVersion = "3.0.0-SNAP4"
   val githubTag = "release-3.0.0-SNAP4-for-scala-2.11-and-2.10" // for scaladoc source urls
