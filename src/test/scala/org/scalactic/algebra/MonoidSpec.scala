@@ -38,7 +38,7 @@ class MonoidSpec extends UnitSpec {
     val as = List(1,2,3)
     val bs = List("five","six")
     val cs = List(10)
-    val op = listMonoid.op _
+    val op: (List[_], List[_]) => List[Any] = listMonoid.op _
     op( as, op(bs, cs) ) shouldEqual op( op(as, bs), cs )
   }
   
@@ -61,7 +61,7 @@ class MonoidSpec extends UnitSpec {
   
   "The list monoid " should " be foldable over a collections of types " in {
     val lists = List(List(1,2,3), List(4,5,6), List(7,8))
-    val foldResult = lists.fold(listMonoid.z)(listMonoid.op)
+    val foldResult: List[Any] = lists.fold(listMonoid.z)(listMonoid.op)
     foldResult shouldEqual List(1,2,3,4,5,6,7,8)
   }
   
