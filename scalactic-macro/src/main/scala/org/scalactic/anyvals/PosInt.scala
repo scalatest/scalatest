@@ -449,8 +449,8 @@ object PosInt {
   implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.from(pos.value).get
   implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.from(pos.value).get
 
-  implicit def widenToPozInt(pos: PosInt): PozInt = PozInt.from(pos.value).get
-  implicit def widenToPozLong(pos: PosInt): PozLong = PozLong.from(pos.value).get
-  implicit def widenToPozFloat(pos: PosInt): PozFloat = PozFloat.from(pos.value).get
-  implicit def widenToPozDouble(pos: PosInt): PozDouble = PozDouble.from(pos.value).get
+  implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.from(pos.value).get
+  implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.from(pos.value).get
 }

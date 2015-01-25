@@ -29,8 +29,8 @@ class PropertyCheckConfigHelperSuite extends FunSuite with Matchers {
   val DefaultMaxDiscarded = 99
   val PassedMaxDiscarded = 33
 
-  val DefaultMinSize: PozInt = 99
-  val PassedMinSize: PozInt = 33
+  val DefaultMinSize: PosZInt = 99
+  val PassedMinSize: PosZInt = 33
 
   val DefaultMaxSize = 99
   val PassedMaxSize = 33

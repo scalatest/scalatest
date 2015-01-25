@@ -185,9 +185,9 @@ final class PosFloat private (val value: Float) extends AnyVal {
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
-  def round: PozInt = PozInt.from(math.round(value)).get // Also could be zero.
+  def round: PosZInt = PosZInt.from(math.round(value)).get // Also could be zero.
   def ceil: PosFloat = PosFloat.from(math.ceil(value.toDouble).toFloat).get // I think this one is safe, but try NaN
-  def floor: PozFloat = PozFloat.from(math.floor(value.toDouble).toFloat).get // Could be zero.
+  def floor: PosZFloat = PosZFloat.from(math.floor(value.toDouble).toFloat).get // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -250,7 +250,7 @@ object PosFloat {
 
   implicit def widenToPosDouble(pos: PosFloat): PosDouble = PosDouble.from(pos.value).get
 
-  implicit def widenToPozFloat(pos: PosFloat): PozFloat = PozFloat.from(pos.value).get
-  implicit def widenToPozDouble(pos: PosFloat): PozDouble = PozDouble.from(pos.value).get
+  implicit def widenToPosZFloat(pos: PosFloat): PosZFloat = PosZFloat.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.from(pos.value).get
 }
 

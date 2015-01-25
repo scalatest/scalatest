@@ -52,10 +52,10 @@ class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
       (PosLong(3L): PosFloat) shouldEqual PosFloat(3.0F)
       (PosLong(3L): PosDouble) shouldEqual PosDouble(3.0)
 
-      "PosLong(3L): PozInt" shouldNot typeCheck
-      (PosLong(3L): PozLong) shouldEqual PozLong(3L)
-      (PosLong(3L): PozFloat) shouldEqual PozFloat(3.0F)
-      (PosLong(3L): PozDouble) shouldEqual PozDouble(3.0)
+      "PosLong(3L): PosZInt" shouldNot typeCheck
+      (PosLong(3L): PosZLong) shouldEqual PosZLong(3L)
+      (PosLong(3L): PosZFloat) shouldEqual PosZFloat(3.0F)
+      (PosLong(3L): PosZDouble) shouldEqual PosZDouble(3.0)
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
@@ -85,18 +85,18 @@ class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
         val opPosDouble = PosLong(3L) + PosDouble(3.0)
         opPosDouble shouldEqual 6.0
 
-        // When adding a *Poz
-        val opPoz = PosLong(3L) + PozInt(3)
-        opPoz shouldEqual 6L
+        // When adding a *PosZ
+        val opPosZ = PosLong(3L) + PosZInt(3)
+        opPosZ shouldEqual 6L
 
-        val opPozLong = PosLong(3L) + PozLong(3L)
-        opPozLong shouldEqual 6L
+        val opPosZLong = PosLong(3L) + PosZLong(3L)
+        opPosZLong shouldEqual 6L
 
-        val opPozFloat = PosLong(3L) + PozFloat(3.0F)
-        opPozFloat shouldEqual 6.0F
+        val opPosZFloat = PosLong(3L) + PosZFloat(3.0F)
+        opPosZFloat shouldEqual 6.0F
 
-        val opPozDouble = PosLong(3L) + PozDouble(3.0)
-        opPozDouble shouldEqual 6.0
+        val opPosZDouble = PosLong(3L) + PosZDouble(3.0)
+        opPosZDouble shouldEqual 6.0
       }
     }
 

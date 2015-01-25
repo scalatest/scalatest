@@ -18,15 +18,16 @@ package org.scalactic.anyvals
 import reflect.macros.Context
 import org.scalactic.Resources
 
-private[scalactic] object PozIntMacro extends CompileTimeAssertions {
+private[scalactic] object PosZFloatMacro extends CompileTimeAssertions {
 
-  def apply(c: Context)(value: c.Expr[Int]): c.Expr[PozInt] = {
-    val notValidMsg = Resources("notValidPozInt")
-    val notLiteralMsg = Resources("notLiteralPozInt")
+  def apply(c: Context)(value: c.Expr[Float]): c.Expr[PosZFloat] = {
+    val notValidMsg = Resources("notValidPosZFloat")
+    val notLiteralMsg = Resources("notLiteralPosZFloat")
 
     import c.universe._
 
-    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0 }
-    reify { PozInt.from(value.splice).get }
+    ensureValidFloatLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i >= 0.0F }
+    reify { PosZFloat.from(value.splice).get }
   }
 }
+

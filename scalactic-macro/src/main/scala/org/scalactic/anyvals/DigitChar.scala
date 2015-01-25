@@ -35,7 +35,7 @@ final class DigitChar private (val value: Char) extends AnyVal {
     else that
   def asDigit: Int = Character.digit(value, Character.MAX_RADIX) // from RichChar
   def asDigitPosInt: PosInt = PosInt.from(asDigit).get
-  def asDigitPozInt: PozInt = PozInt.from(asDigit).get
+  def asDigitPosZInt: PosZInt = PosZInt.from(asDigit).get
 
  /**
  * Returns the bitwise negation of this value.
@@ -438,9 +438,9 @@ object DigitChar {
   implicit def digitChar2PosFloat(x: DigitChar): PosFloat = PosFloat.from(x.toFloat).get
   implicit def digitChar2PosDouble(x: DigitChar): PosDouble = PosDouble.from(x.toDouble).get
 
-  implicit def digitChar2PozInt(x: DigitChar): PozInt = PozInt.from(x.toInt).get
-  implicit def digitChar2PozLong(x: DigitChar): PozLong = PozLong.from(x.toLong).get
-  implicit def digitChar2PozFloat(x: DigitChar): PozFloat = PozFloat.from(x.toFloat).get
-  implicit def digitChar2PozDouble(x: DigitChar): PozDouble = PozDouble.from(x.toDouble).get
+  implicit def digitChar2PosZInt(x: DigitChar): PosZInt = PosZInt.from(x.toInt).get
+  implicit def digitChar2PosZLong(x: DigitChar): PosZLong = PosZLong.from(x.toLong).get
+  implicit def digitChar2PosZFloat(x: DigitChar): PosZFloat = PosZFloat.from(x.toFloat).get
+  implicit def digitChar2PosZDouble(x: DigitChar): PosZDouble = PosZDouble.from(x.toDouble).get
 }
 

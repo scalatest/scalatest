@@ -20,126 +20,126 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 import org.scalactic.StrictCheckedEquality
 
-class PozIntSpec extends Spec with Matchers with StrictCheckedEquality {
-  object `A PozInt` {
+class PosZIntSpec extends Spec with Matchers with StrictCheckedEquality {
+  object `A PosZInt` {
     object `should offer a from factory method that` {
-      def `returns Some[PozInt] if the passed Int is greater than or equal to 0`
+      def `returns Some[PosZInt] if the passed Int is greater than or equal to 0`
       {
-        PozInt.from(0).value.value shouldBe 0
-        PozInt.from(50).value.value shouldBe 50
-        PozInt.from(100).value.value shouldBe 100
+        PosZInt.from(0).value.value shouldBe 0
+        PosZInt.from(50).value.value shouldBe 50
+        PosZInt.from(100).value.value shouldBe 100
       }
       def `returns None if the passed Int is NOT greater than or equal to 0` {
-        PozInt.from(-1) shouldBe None
-        PozInt.from(-99) shouldBe None
+        PosZInt.from(-1) shouldBe None
+        PosZInt.from(-99) shouldBe None
       }
     } 
     def `should have a pretty toString` {
-      PozInt.from(42).value.toString shouldBe "PozInt(42)"
+      PosZInt.from(42).value.toString shouldBe "PosZInt(42)"
     }
     def `should return the same type from its unary_+ method` {
-      +PozInt(3) shouldEqual PozInt(3)
+      +PosZInt(3) shouldEqual PosZInt(3)
     } 
     def `should be automatically widened to compatible AnyVal targets` {
-      (PozInt(3): Int) shouldEqual 3
-      (PozInt(3): Long) shouldEqual 3L
-      (PozInt(3): Float) shouldEqual 3.0F
-      (PozInt(3): Double) shouldEqual 3.0
+      (PosZInt(3): Int) shouldEqual 3
+      (PosZInt(3): Long) shouldEqual 3L
+      (PosZInt(3): Float) shouldEqual 3.0F
+      (PosZInt(3): Double) shouldEqual 3.0
 
-      "(PozInt(3): PosInt)" shouldNot typeCheck
-      "(PozInt(3): PosLong)" shouldNot typeCheck
-      "(PozInt(3): PosFloat)" shouldNot typeCheck
-      "(PozInt(3): PosDouble)" shouldNot typeCheck
+      "(PosZInt(3): PosInt)" shouldNot typeCheck
+      "(PosZInt(3): PosLong)" shouldNot typeCheck
+      "(PosZInt(3): PosFloat)" shouldNot typeCheck
+      "(PosZInt(3): PosDouble)" shouldNot typeCheck
 
-      (PozInt(3): PozInt) shouldEqual PozInt(3)
-      (PozInt(3): PozLong) shouldEqual PozLong(3L)
-      (PozInt(3): PozFloat) shouldEqual PozFloat(3.0F)
-      (PozInt(3): PozDouble) shouldEqual PozDouble(3.0)
+      (PosZInt(3): PosZInt) shouldEqual PosZInt(3)
+      (PosZInt(3): PosZLong) shouldEqual PosZLong(3L)
+      (PosZInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
+      (PosZInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
         // When adding a "primitive"
-        val opInt = PozInt(3) + 3
+        val opInt = PosZInt(3) + 3
         opInt shouldEqual 6
 
-        val opLong = PozInt(3) + 3L
+        val opLong = PosZInt(3) + 3L
         opLong shouldEqual 6L
 
-        val opFloat = PozInt(3) + 3.0F
+        val opFloat = PosZInt(3) + 3.0F
         opFloat shouldEqual 6.0F
 
-        val opDouble = PozInt(3) + 3.0
+        val opDouble = PosZInt(3) + 3.0
         opDouble shouldEqual 6.0
 
-        // When adding a Poz*
-        val opPosInt = PozInt(3) + PosInt(3)
+        // When adding a PosZ*
+        val opPosInt = PosZInt(3) + PosInt(3)
         opPosInt shouldEqual 6
 
-        val opPosLong = PozInt(3) + PosLong(3L)
+        val opPosLong = PosZInt(3) + PosLong(3L)
         opPosLong shouldEqual 6L
 
-        val opPosFloat = PozInt(3) + PosFloat(3.0F)
+        val opPosFloat = PosZInt(3) + PosFloat(3.0F)
         opPosFloat shouldEqual 6.0F
 
-        val opPosDouble = PozInt(3) + PosDouble(3.0)
+        val opPosDouble = PosZInt(3) + PosDouble(3.0)
         opPosDouble shouldEqual 6.0
 
-        // When adding a *Poz
-        val opPoz = PozInt(3) + PozInt(3)
-        opPoz shouldEqual 6
+        // When adding a *PosZ
+        val opPosZ = PosZInt(3) + PosZInt(3)
+        opPosZ shouldEqual 6
 
-        val opPozLong = PozInt(3) + PozLong(3L)
-        opPozLong shouldEqual 6L
+        val opPosZLong = PosZInt(3) + PosZLong(3L)
+        opPosZLong shouldEqual 6L
 
-        val opPozFloat = PozInt(3) + PozFloat(3.0F)
-        opPozFloat shouldEqual 6.0F
+        val opPosZFloat = PosZInt(3) + PosZFloat(3.0F)
+        opPosZFloat shouldEqual 6.0F
 
-        val opPozDouble = PozInt(3) + PozDouble(3.0)
-        opPozDouble shouldEqual 6.0
+        val opPosZDouble = PosZInt(3) + PosZDouble(3.0)
+        opPosZDouble shouldEqual 6.0
       }
     }
 
     object `when created with apply method` {
 
       def `should compile when 8 is passed in`: Unit = {
-        "PozInt(8)" should compile
-        PozInt(8).value shouldEqual 8
+        "PosZInt(8)" should compile
+        PosZInt(8).value shouldEqual 8
       }
 
       def `should compile when 0 is passed in`: Unit = {
-        "PozInt(0)" should compile
-        PozInt(0).value shouldEqual 0
+        "PosZInt(0)" should compile
+        PosZInt(0).value shouldEqual 0
       }
 
       def `should not compile when -8 is passed in`: Unit = {
-        "PozInt(-8)" shouldNot compile
+        "PosZInt(-8)" shouldNot compile
       }
 
       def `should not compile when x is passed in`: Unit = {
         val x: Int = -8
-        "PozInt(x)" shouldNot compile
+        "PosZInt(x)" shouldNot compile
       }
     }
     object `when specified as a plain-old Int` {
 
-      def takesPozInt(pos: PozInt): Int = pos.value
+      def takesPosZInt(pos: PosZInt): Int = pos.value
 
       def `should compile when 8 is passed in`: Unit = {
-        "takesPozInt(8)" should compile
-        takesPozInt(8) shouldEqual 8
+        "takesPosZInt(8)" should compile
+        takesPosZInt(8) shouldEqual 8
       }
 
       def `should compile when 0 is passed in`: Unit = {
-        "takesPozInt(0)" should compile
+        "takesPosZInt(0)" should compile
       }
 
       def `should not compile when -8 is passed in`: Unit = {
-        "takesPozInt(-8)" shouldNot compile
+        "takesPosZInt(-8)" shouldNot compile
       }
 
       def `should not compile when x is passed in`: Unit = {
         val x: Int = -8
-        "takesPozInt(x)" shouldNot compile
+        "takesPosZInt(x)" shouldNot compile
       }
     }
   }

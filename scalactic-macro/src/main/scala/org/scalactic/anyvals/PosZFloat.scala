@@ -23,8 +23,8 @@ import scala.collection.immutable.NumericRange
 // (Pronounced like "posey".)
 //
 
-final class PozFloat private (val value: Float) extends AnyVal {
-  override def toString: String = s"PozFloat($value)"
+final class PosZFloat private (val value: Float) extends AnyVal {
+  override def toString: String = s"PosZFloat($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
   def toChar: Char = value.toChar
@@ -34,7 +34,7 @@ final class PozFloat private (val value: Float) extends AnyVal {
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
-  def unary_+ : PozFloat = this
+  def unary_+ : PosZFloat = this
   /** Returns the negation of this value. */
   def unary_- : Float = -value
 
@@ -178,30 +178,30 @@ final class PozFloat private (val value: Float) extends AnyVal {
   // Stuff from RichFloat
   def isPosInfinity: Boolean = Float.PositiveInfinity == value
 
-  def max(that: PozFloat): PozFloat = if (math.max(value, that.value) == value) this else that
-  def min(that: PozFloat): PozFloat = if (math.min(value, that.value) == value) this else that
+  def max(that: PosZFloat): PosZFloat = if (math.max(value, that.value) == value) this else that
+  def min(that: PosZFloat): PosZFloat = if (math.min(value, that.value) == value) this else that
 
   def isWhole = {
     val longValue = value.toLong
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
-  def round: PozInt = PozInt.from(math.round(value)).get
-  def ceil: PozFloat = PozFloat.from(math.ceil(value).toFloat).get
-  def floor: PozFloat = PozFloat.from(math.floor(value).toFloat).get
+  def round: PosZInt = PosZInt.from(math.round(value)).get
+  def ceil: PosZFloat = PosZFloat.from(math.ceil(value).toFloat).get
+  def floor: PosZFloat = PosZFloat.from(math.floor(value).toFloat).get
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
   *
   * @return the measurement of the angle x in radians.
   */
-  def toRadians: PozFloat = PozFloat.from(math.toRadians(value).toFloat).get
+  def toRadians: PosZFloat = PosZFloat.from(math.toRadians(value).toFloat).get
 
   /** Converts an angle measured in radians to an approximately equivalent
   * angle measured in degrees.
   * @return the measurement of the angle x in degrees.
   */
-  def toDegrees: PozFloat = PozFloat.from(math.toDegrees(value).toFloat).get
+  def toDegrees: PosZFloat = PosZFloat.from(math.toDegrees(value).toFloat).get
 
   // adapted from RichInt:
   /**
@@ -239,16 +239,16 @@ final class PozFloat private (val value: Float) extends AnyVal {
     value.to(end, step)
 }
 
-object PozFloat {
-  def from(value: Float): Option[PozFloat] =
-    if (value >= 0.0F) Some(new PozFloat(value)) else None
+object PosZFloat {
+  def from(value: Float): Option[PosZFloat] =
+    if (value >= 0.0F) Some(new PosZFloat(value)) else None
   import language.experimental.macros
   import scala.language.implicitConversions
-  implicit def apply(value: Float): PozFloat = macro PozFloatMacro.apply
+  implicit def apply(value: Float): PosZFloat = macro PosZFloatMacro.apply
 
-  implicit def widenToFloat(poz: PozFloat): Float = poz.value
-  implicit def widenToDouble(poz: PozFloat): Double = poz.value
+  implicit def widenToFloat(poz: PosZFloat): Float = poz.value
+  implicit def widenToDouble(poz: PosZFloat): Double = poz.value
 
-  implicit def widenToPozDouble(poz: PozFloat): PozDouble = PozDouble.from(poz.value).get
+  implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.from(poz.value).get
 }
 

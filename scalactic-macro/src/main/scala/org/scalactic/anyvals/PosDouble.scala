@@ -185,9 +185,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PozLong = PozLong.from(math.round(value)).get // Also could be zero.
+  def round: PosZLong = PosZLong.from(math.round(value)).get // Also could be zero.
   def ceil: PosDouble = PosDouble.from(math.ceil(value)).get // I think this one is safe, but try NaN
-  def floor: PozDouble = PozDouble.from(math.floor(value)).get // Could be zero.
+  def floor: PosZDouble = PosZDouble.from(math.floor(value)).get // Could be zero.
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -246,6 +246,6 @@ object PosDouble {
   implicit def apply(value: Double): PosDouble = macro PosDoubleMacro.apply
 
   implicit def widenToDouble(pos: PosDouble): Double = pos.value
-  implicit def widenToPozDouble(pos: PosDouble): PozDouble = PozDouble.from(pos.value).get
+  implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.from(pos.value).get
 }
 

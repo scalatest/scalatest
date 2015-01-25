@@ -23,8 +23,8 @@ import scala.collection.immutable.NumericRange
 // (Pronounced like "posey".)
 //
 
-final class PozDouble private (val value: Double) extends AnyVal {
-  override def toString: String = s"PozDouble($value)"
+final class PosZDouble private (val value: Double) extends AnyVal {
+  override def toString: String = s"PosZDouble($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
   def toChar: Char = value.toChar
@@ -34,7 +34,7 @@ final class PozDouble private (val value: Double) extends AnyVal {
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
-  def unary_+ : PozDouble = this
+  def unary_+ : PosZDouble = this
   /** Returns the negation of this value. */
   def unary_- : Double = -value
 
@@ -178,17 +178,17 @@ final class PozDouble private (val value: Double) extends AnyVal {
   // Stuff from RichDouble
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
-  def max(that: PozDouble): PozDouble = if (math.max(value, that.value) == value) this else that
-  def min(that: PozDouble): PozDouble = if (math.min(value, that.value) == value) this else that
+  def max(that: PosZDouble): PosZDouble = if (math.max(value, that.value) == value) this else that
+  def min(that: PosZDouble): PosZDouble = if (math.min(value, that.value) == value) this else that
 
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
   }
 
-  def round: PozLong = PozLong.from(math.round(value)).get
-  def ceil: PozDouble = PozDouble.from(math.ceil(value)).get
-  def floor: PozDouble = PozDouble.from(math.floor(value)).get
+  def round: PosZLong = PosZLong.from(math.round(value)).get
+  def ceil: PosZDouble = PosZDouble.from(math.ceil(value)).get
+  def floor: PosZDouble = PosZDouble.from(math.floor(value)).get
 
   /** Converts an angle measured in degrees to an approximately equivalent
   * angle measured in radians.
@@ -239,13 +239,13 @@ final class PozDouble private (val value: Double) extends AnyVal {
     value.to(end, step)
 }
 
-object PozDouble {
-  def from(value: Double): Option[PozDouble] =
-    if (value >= 0.0) Some(new PozDouble(value)) else None
+object PosZDouble {
+  def from(value: Double): Option[PosZDouble] =
+    if (value >= 0.0) Some(new PosZDouble(value)) else None
   import language.experimental.macros
   import scala.language.implicitConversions
-  implicit def apply(value: Double): PozDouble = macro PozDoubleMacro.apply
+  implicit def apply(value: Double): PosZDouble = macro PosZDoubleMacro.apply
 
-  implicit def widenToDouble(poz: PozDouble): Double = poz.value
+  implicit def widenToDouble(poz: PosZDouble): Double = poz.value
 }
 

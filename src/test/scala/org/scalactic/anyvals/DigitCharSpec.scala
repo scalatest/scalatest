@@ -51,8 +51,8 @@ class DigitCharSpec extends Spec with Matchers with StrictCheckedEquality {
       DigitChar('9').asDigit shouldBe 9
       DigitChar('1').asDigitPosInt shouldBe PosInt(1)
       DigitChar('9').asDigitPosInt shouldBe PosInt(9)
-      DigitChar('0').asDigitPozInt shouldBe PozInt(0)
-      DigitChar('9').asDigitPozInt shouldBe PozInt(9)
+      DigitChar('0').asDigitPosZInt shouldBe PosZInt(0)
+      DigitChar('9').asDigitPosZInt shouldBe PosZInt(9)
     } 
     def `should have a pretty toString` {
       DigitChar.from('0').value.toString shouldBe "DigitChar(0)"
@@ -72,10 +72,10 @@ class DigitCharSpec extends Spec with Matchers with StrictCheckedEquality {
       (DigitChar('3'): PosFloat) shouldEqual PosFloat.from('3'.toFloat).get
       (DigitChar('3'): PosDouble) shouldEqual PosDouble.from('3'.toDouble).get
 
-      (DigitChar('3'): PozInt) shouldEqual PozInt.from('3'.toInt).get
-      (DigitChar('3'): PozLong) shouldEqual PozLong.from('3'.toLong).get
-      (DigitChar('3'): PozFloat) shouldEqual PozFloat.from('3'.toFloat).get
-      (DigitChar('3'): PozDouble) shouldEqual PozDouble.from('3'.toDouble).get
+      (DigitChar('3'): PosZInt) shouldEqual PosZInt.from('3'.toInt).get
+      (DigitChar('3'): PosZLong) shouldEqual PosZLong.from('3'.toLong).get
+      (DigitChar('3'): PosZFloat) shouldEqual PosZFloat.from('3'.toFloat).get
+      (DigitChar('3'): PosZDouble) shouldEqual PosZDouble.from('3'.toDouble).get
     }
     object `when a compatible AnyVal is passed to a + method invoked on it` {
       def `should give the same AnyVal type back at compile time, and correct value at runtime` {
@@ -105,18 +105,18 @@ class DigitCharSpec extends Spec with Matchers with StrictCheckedEquality {
         val opPosDouble = DigitChar('3') + PosDouble(3.0)
         opPosDouble shouldEqual '3'.toInt + 3.0
 
-        // When adding a *Poz
-        val opPoz = DigitChar('3') + PozInt(3)
-        opPoz shouldEqual '3'.toInt + 3
+        // When adding a *PosZ
+        val opPosZ = DigitChar('3') + PosZInt(3)
+        opPosZ shouldEqual '3'.toInt + 3
 
-        val opPozLong = DigitChar('3') + PozLong(3L)
-        opPozLong shouldEqual '3'.toInt + 3L
+        val opPosZLong = DigitChar('3') + PosZLong(3L)
+        opPosZLong shouldEqual '3'.toInt + 3L
 
-        val opPozFloat = DigitChar('3') + PozFloat(3.0F)
-        opPozFloat shouldEqual '3'.toInt + 3.0F
+        val opPosZFloat = DigitChar('3') + PosZFloat(3.0F)
+        opPosZFloat shouldEqual '3'.toInt + 3.0F
 
-        val opPozDouble = DigitChar('3') + PozDouble(3.0)
-        opPozDouble shouldEqual '3'.toInt + 3.0
+        val opPosZDouble = DigitChar('3') + PosZDouble(3.0)
+        opPosZDouble shouldEqual '3'.toInt + 3.0
       }
     }
 

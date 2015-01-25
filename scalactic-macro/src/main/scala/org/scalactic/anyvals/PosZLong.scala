@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.immutable.Range
+import scala.collection.immutable.NumericRange
 
 //
 // Numbers greater than or equal to zero.
@@ -23,8 +23,8 @@ import scala.collection.immutable.Range
 // (Pronounced like "posey".)
 //
 
-final class PozInt private (val value: Int) extends AnyVal {
-  override def toString: String = s"PozInt($value)"
+final class PosZLong private (val value: Long) extends AnyVal {
+  override def toString: String = s"PosZLong($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
   def toChar: Char = value.toChar
@@ -32,76 +32,80 @@ final class PozInt private (val value: Int) extends AnyVal {
   def toLong: Long = value.toLong
   def toFloat: Float = value.toFloat
   def toDouble: Double = value.toDouble
-  /**
-  * Returns the bitwise negation of this value.
-  * @example {{{
-  * ~5 == -6
-  * // in binary: ~00000101 ==
-  * // 11111010
-  * }}}
-  */
-  def unary_~ : Int = ~value
+
+ /**
+ * Returns the bitwise negation of this value.
+ * @example {{{
+ * ~5 == -6
+ * // in binary: ~00000101 ==
+ * //             11111010
+ * }}}
+ */
+  def unary_~ : Long = ~value
   /** Returns this value, unmodified. */
-  def unary_+ : PozInt = this
+  def unary_+ : PosZLong = this
   /** Returns the negation of this value. */
-  def unary_- : Int = -value
+  def unary_- : Long = -value
+
   def +(x: String): String = value + x
+
   /**
   * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the new right bits with zeroes.
+  *         filling in the new right bits with zeroes.
   * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
   */
-  def <<(x: Int): Int = value << x
+  def <<(x: Int): Long = value << x
   /**
   * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the new right bits with zeroes.
+  *         filling in the new right bits with zeroes.
   * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
   */
-  def <<(x: Long): Int = value << x
+  def <<(x: Long): Long = value << x
   /**
   * Returns this value bit-shifted right by the specified number of bits,
-  * filling the new left bits with zeroes.
+  *         filling the new left bits with zeroes.
   * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
   * @example {{{
   * -21 >>> 3 == 536870909
   * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
-  * // 00011111 11111111 11111111 11111101
+  * //            00011111 11111111 11111111 11111101
   * }}}
   */
-  def >>>(x: Int): Int = value >>> x
+  def >>>(x: Int): Long = value >>> x
   /**
   * Returns this value bit-shifted right by the specified number of bits,
-  * filling the new left bits with zeroes.
+  *         filling the new left bits with zeroes.
   * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
   * @example {{{
   * -21 >>> 3 == 536870909
   * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
-  * // 00011111 11111111 11111111 11111101
+  * //            00011111 11111111 11111111 11111101
   * }}}
   */
-  def >>>(x: Long): Int = value >>> x
+  def >>>(x: Long): Long = value >>> x
   /**
   * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the right bits with the same value as the left-most bit of this.
-  * The effect of this is to retain the sign of the value.
+  *         filling in the right bits with the same value as the left-most bit of this.
+  *         The effect of this is to retain the sign of the value.
   * @example {{{
   * -21 >> 3 == -3
   * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
-  * // 11111111 11111111 11111111 11111101
+  * //            11111111 11111111 11111111 11111101
   * }}}
   */
-  def >>(x: Int): Int = value >> x
+  def >>(x: Int): Long = value >> x
   /**
   * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the right bits with the same value as the left-most bit of this.
-  * The effect of this is to retain the sign of the value.
+  *         filling in the right bits with the same value as the left-most bit of this.
+  *         The effect of this is to retain the sign of the value.
   * @example {{{
   * -21 >> 3 == -3
   * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
-  * // 11111111 11111111 11111111 11111101
+  * //            11111111 11111111 11111111 11111101
   * }}}
   */
-  def >>(x: Long): Int = value >> x
+  def >>(x: Long): Long = value >> x
+
   /** Returns `true` if this value is less than x, `false` otherwise. */
   def <(x: Byte): Boolean = value < x
   /** Returns `true` if this value is less than x, `false` otherwise. */
@@ -116,6 +120,7 @@ final class PozInt private (val value: Int) extends AnyVal {
   def <(x: Float): Boolean = value < x
   /** Returns `true` if this value is less than x, `false` otherwise. */
   def <(x: Double): Boolean = value < x
+
   /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
   def <=(x: Byte): Boolean = value <= x
   /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
@@ -130,6 +135,7 @@ final class PozInt private (val value: Int) extends AnyVal {
   def <=(x: Float): Boolean = value <= x
   /** Returns `true` if this value is less than or equal to x, `false` otherwise. */
   def <=(x: Double): Boolean = value <= x
+
   /** Returns `true` if this value is greater than x, `false` otherwise. */
   def >(x: Byte): Boolean = value > x
   /** Returns `true` if this value is greater than x, `false` otherwise. */
@@ -144,6 +150,7 @@ final class PozInt private (val value: Int) extends AnyVal {
   def >(x: Float): Boolean = value > x
   /** Returns `true` if this value is greater than x, `false` otherwise. */
   def >(x: Double): Boolean = value > x
+
   /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
   def >=(x: Byte): Boolean = value >= x
   /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
@@ -158,235 +165,243 @@ final class PozInt private (val value: Int) extends AnyVal {
   def >=(x: Float): Boolean = value >= x
   /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
   def >=(x: Double): Boolean = value >= x
+
   /**
   * Returns the bitwise OR of this value and `x`.
   * @example {{{
   * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
+  * // in binary:   11110000
+  * //            | 10101010
+  * //              --------
+  * //              11111010
   * }}}
   */
-  def |(x: Byte): Int = value | x
+  def |(x: Byte): Long = value | x
   /**
   * Returns the bitwise OR of this value and `x`.
   * @example {{{
   * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
+  * // in binary:   11110000
+  * //            | 10101010
+  * //              --------
+  * //              11111010
   * }}}
   */
-  def |(x: Short): Int = value | x
+  def |(x: Short): Long = value | x
   /**
   * Returns the bitwise OR of this value and `x`.
   * @example {{{
   * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
+  * // in binary:   11110000
+  * //            | 10101010
+  * //              --------
+  * //              11111010
   * }}}
   */
-  def |(x: Char): Int = value | x
+  def |(x: Char): Long = value | x
   /**
   * Returns the bitwise OR of this value and `x`.
   * @example {{{
   * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
+  * // in binary:   11110000
+  * //            | 10101010
+  * //              --------
+  * //              11111010
   * }}}
   */
-  def |(x: Int): Int = value | x
+  def |(x: Int): Long = value | x
   /**
   * Returns the bitwise OR of this value and `x`.
   * @example {{{
   * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
+  * // in binary:   11110000
+  * //            | 10101010
+  * //              --------
+  * //              11111010
   * }}}
   */
   def |(x: Long): Long = value | x
+
   /**
   * Returns the bitwise AND of this value and `x`.
   * @example {{{
   * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
+  * // in binary:   11110000
+  * //            & 10101010
+  * //              --------
+  * //              10100000
   * }}}
   */
-  def &(x: Byte): Int = value & x
+  def &(x: Byte): Long = value & x
   /**
   * Returns the bitwise AND of this value and `x`.
   * @example {{{
   * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
+  * // in binary:   11110000
+  * //            & 10101010
+  * //              --------
+  * //              10100000
   * }}}
   */
-  def &(x: Short): Int = value & x
+  def &(x: Short): Long = value & x
   /**
   * Returns the bitwise AND of this value and `x`.
   * @example {{{
   * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
+  * // in binary:   11110000
+  * //            & 10101010
+  * //              --------
+  * //              10100000
   * }}}
   */
-  def &(x: Char): Int = value & x
+  def &(x: Char): Long = value & x
   /**
   * Returns the bitwise AND of this value and `x`.
   * @example {{{
   * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
+  * // in binary:   11110000
+  * //            & 10101010
+  * //              --------
+  * //              10100000
   * }}}
   */
-  def &(x: Int): Int = value & x
+  def &(x: Int): Long = value & x
   /**
   * Returns the bitwise AND of this value and `x`.
   * @example {{{
   * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
+  * // in binary:   11110000
+  * //            & 10101010
+  * //              --------
+  * //              10100000
   * }}}
   */
   def &(x: Long): Long = value & x
+
   /**
   * Returns the bitwise XOR of this value and `x`.
   * @example {{{
   * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
+  * // in binary:   11110000
+  * //            ^ 10101010
+  * //              --------
+  * //              01011010
   * }}}
   */
-  def ^(x: Byte): Int = value ^ x
+  def ^(x: Byte): Long = value ^ x
   /**
   * Returns the bitwise XOR of this value and `x`.
   * @example {{{
   * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
+  * // in binary:   11110000
+  * //            ^ 10101010
+  * //              --------
+  * //              01011010
   * }}}
   */
-  def ^(x: Short): Int = value ^ x
+  def ^(x: Short): Long = value ^ x
   /**
   * Returns the bitwise XOR of this value and `x`.
   * @example {{{
   * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
+  * // in binary:   11110000
+  * //            ^ 10101010
+  * //              --------
+  * //              01011010
   * }}}
   */
-  def ^(x: Char): Int = value ^ x
+  def ^(x: Char): Long = value ^ x
   /**
   * Returns the bitwise XOR of this value and `x`.
   * @example {{{
   * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
+  * // in binary:   11110000
+  * //            ^ 10101010
+  * //              --------
+  * //              01011010
   * }}}
   */
-  def ^(x: Int): Int = value ^ x
+  def ^(x: Int): Long = value ^ x
   /**
   * Returns the bitwise XOR of this value and `x`.
   * @example {{{
   * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
+  * // in binary:   11110000
+  * //            ^ 10101010
+  * //              --------
+  * //              01011010
   * }}}
   */
   def ^(x: Long): Long = value ^ x
+
   /** Returns the sum of this value and `x`. */
-  def +(x: Byte): Int = value + x
+  def +(x: Byte): Long = value + x
   /** Returns the sum of this value and `x`. */
-  def +(x: Short): Int = value + x
+  def +(x: Short): Long = value + x
   /** Returns the sum of this value and `x`. */
-  def +(x: Char): Int = value + x
+  def +(x: Char): Long = value + x
   /** Returns the sum of this value and `x`. */
-  def +(x: Int): Int = value + x
+  def +(x: Int): Long = value + x
   /** Returns the sum of this value and `x`. */
   def +(x: Long): Long = value + x
   /** Returns the sum of this value and `x`. */
   def +(x: Float): Float = value + x
   /** Returns the sum of this value and `x`. */
   def +(x: Double): Double = value + x
+
   /** Returns the difference of this value and `x`. */
-  def -(x: Byte): Int = value - x
+  def -(x: Byte): Long = value - x
   /** Returns the difference of this value and `x`. */
-  def -(x: Short): Int = value - x
+  def -(x: Short): Long = value - x
   /** Returns the difference of this value and `x`. */
-  def -(x: Char): Int = value - x
+  def -(x: Char): Long = value - x
   /** Returns the difference of this value and `x`. */
-  def -(x: Int): Int = value - x
+  def -(x: Int): Long = value - x
   /** Returns the difference of this value and `x`. */
   def -(x: Long): Long = value - x
   /** Returns the difference of this value and `x`. */
   def -(x: Float): Float = value - x
   /** Returns the difference of this value and `x`. */
   def -(x: Double): Double = value - x
+
   /** Returns the product of this value and `x`. */
-  def *(x: Byte): Int = value * x
+  def *(x: Byte): Long = value * x
   /** Returns the product of this value and `x`. */
-  def *(x: Short): Int = value * x
+  def *(x: Short): Long = value * x
   /** Returns the product of this value and `x`. */
-  def *(x: Char): Int = value * x
+  def *(x: Char): Long = value * x
   /** Returns the product of this value and `x`. */
-  def *(x: Int): Int = value * x
+  def *(x: Int): Long = value * x
   /** Returns the product of this value and `x`. */
   def *(x: Long): Long = value * x
   /** Returns the product of this value and `x`. */
   def *(x: Float): Float = value * x
   /** Returns the product of this value and `x`. */
   def *(x: Double): Double = value * x
+
   /** Returns the quotient of this value and `x`. */
-  def /(x: Byte): Int = value / x
+  def /(x: Byte): Long = value / x
   /** Returns the quotient of this value and `x`. */
-  def /(x: Short): Int = value / x
+  def /(x: Short): Long = value / x
   /** Returns the quotient of this value and `x`. */
-  def /(x: Char): Int = value / x
+  def /(x: Char): Long = value / x
   /** Returns the quotient of this value and `x`. */
-  def /(x: Int): Int = value / x
+  def /(x: Int): Long = value / x
   /** Returns the quotient of this value and `x`. */
   def /(x: Long): Long = value / x
   /** Returns the quotient of this value and `x`. */
   def /(x: Float): Float = value / x
   /** Returns the quotient of this value and `x`. */
   def /(x: Double): Double = value / x
+
   /** Returns the remainder of the division of this value by `x`. */
-  def %(x: Byte): Int = value % x
+  def %(x: Byte): Long = value % x
   /** Returns the remainder of the division of this value by `x`. */
-  def %(x: Short): Int = value % x
+  def %(x: Short): Long = value % x
   /** Returns the remainder of the division of this value by `x`. */
-  def %(x: Char): Int = value % x
+  def %(x: Char): Long = value % x
   /** Returns the remainder of the division of this value by `x`. */
-  def %(x: Int): Int = value % x
+  def %(x: Int): Long = value % x
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Long): Long = value % x
   /** Returns the remainder of the division of this value by `x`. */
@@ -394,59 +409,60 @@ final class PozInt private (val value: Int) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
-  // Stuff from Richint:
-  def toBinaryString: String = java.lang.Integer.toBinaryString(value)
-  def toHexString: String = java.lang.Integer.toHexString(value)
-  def toOctalString: String = java.lang.Integer.toOctalString(value)
+  // Stuff from RichLong:
+  def toBinaryString: String = java.lang.Long.toBinaryString(value)
+  def toHexString: String = java.lang.Long.toHexString(value)
+  def toOctalString: String = java.lang.Long.toOctalString(value)
 
+  // No point to call abs on a PosZLong.
+  def max(that: PosZLong): PosZLong = if (math.max(value, that.value) == value) this else that
+  def min(that: PosZLong): PosZLong = if (math.min(value, that.value) == value) this else that
+
+  // adapted from RichInt:
   /**
   * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range]] from `this` up to but
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Int): Range = Range(value, end)
+  def until(end: Long): NumericRange.Exclusive[Long] = value.until(end)
 
   /**
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.Range]] from `this` up to but
+  * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
   * not including `end`.
   */
-  def until(end: Int, step: Int): Range = Range(value, end, step)
+  def until(end: Long, step: Long): NumericRange.Exclusive[Long] =
+    value.until(end, step)
 
   /**
   * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
+  def to(end: Long): NumericRange.Inclusive[Long] = value.to(end)
 
   /**
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+  * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
   * and including `end`.
   */
-  def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
-
-  // No point to call abs on a PozInt.
-  def max(that: PozInt): PozInt = if (math.max(value, that.value) == value) this else that
-  def min(that: PozInt): PozInt = if (math.min(value, that.value) == value) this else that
+  def to(end: Long, step: Long): NumericRange.Inclusive[Long] =
+    value.to(end, step)
 }
 
-object PozInt {
-  def from(value: Int): Option[PozInt] =
-    if (value >= 0) Some(new PozInt(value)) else None
+object PosZLong {
+  def from(value: Long): Option[PosZLong] =
+    if (value >= 0L) Some(new PosZLong(value)) else None
   import language.experimental.macros
   import scala.language.implicitConversions
-  implicit def apply(value: Int): PozInt = macro PozIntMacro.apply
+  implicit def apply(value: Long): PosZLong = macro PosZLongMacro.apply
 
-  implicit def widenToInt(poz: PozInt): Int = poz.value
-  implicit def widenToLong(poz: PozInt): Long = poz.value
-  implicit def widenToFloat(poz: PozInt): Float = poz.value
-  implicit def widenToDouble(poz: PozInt): Double = poz.value
+  implicit def widenToLong(poz: PosZLong): Long = poz.value
+  implicit def widenToFloat(poz: PosZLong): Float = poz.value
+  implicit def widenToDouble(poz: PosZLong): Double = poz.value
 
-  implicit def widenToPozLong(poz: PozInt): PozLong = PozLong.from(poz.value).get
-  implicit def widenToPozFloat(poz: PozInt): PozFloat = PozFloat.from(poz.value).get
-  implicit def widenToPozDouble(poz: PozInt): PozDouble = PozDouble.from(poz.value).get
+  implicit def widenToPosZFloat(poz: PosZLong): PosZFloat = PosZFloat.from(poz.value).get
+  implicit def widenToPosZDouble(poz: PosZLong): PosZDouble = PosZDouble.from(poz.value).get
 }
