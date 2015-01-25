@@ -15,42 +15,32 @@
  */
 package org.scalatest.laws
 
-import org.scalatest.{No, Yes, Fact}
-import org.scalatest.Matchers._
+import org.scalatest._
+import org.scalactic._
+import Matchers._
 
 import scala.language.higherKinds
 
-trait Laws {
-  val lawsName: String
-  // in order to allow access to the name, a law takes the law name as a parameter
-  type Law = String => Fact
-  def test(): Fact
-  //def test: Fact = laws.map(_.test()).reduceLeft(_ && _)
-  def assert(): Unit = test().isInstanceOf[Yes] shouldBe true
-}
-
-object Laws {
-  def yes(lawsName: String, lawName: String) = Yes("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
-  def no(lawsName: String, lawName: String) = No("does not satisfy the $lawsName $lawName", "satisfies the $lawsName $lawName")
-}
-
 /**
- * A law is a requirement expressed in the form of a boolean expression
+ * A law is a requirement expressed in the form of an assertion function
  * augmented with explanatory information.  As generalized, laws take no
  * parameters, but are rather designed to be used where required parameters
  * are in scope.  Commonly, this will be a class that takes implicit generators
  * for any required parameters.
  */
-trait Law {
-  val name: String
-  val test: String => Fact
-  def assert(): Unit = test(name).isInstanceOf[Yes] shouldBe true
-}
+case class Law(lawsName: String, lawName: String, fun: () => Unit)
 
+/**
+ * A Laws class represents a list of Laws, together with a name
+ * for the group and methods to assert all of the laws.
+ * @param lawsName  The name of the group of laws.
+ */
+abstract class Laws(val lawsName: String) {
+  def laws: Every[Law]
 
-object Law {
-  def apply(lawName: String)(code: String => Fact): Law = new Law {
-    override val name = lawName
-    override val test = code
+  def law(name: String)(code: () => Unit): Law = Law(lawsName, name, code)
+
+  def assert() = laws.foreach { law =>
+    withClue(s"The ${law.lawsName} ${law.lawName} law could not be verified: ")(law.fun())
   }
 }

@@ -33,7 +33,8 @@ class FunctorSpec extends UnitSpec {
 
   "Option" should "obey the functor laws via its map method" in {
     implicit val optionIntFunctor = new OptionFunctor
-    implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
+    implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] =
+      Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
 
     new FunctorLaws[Option]().assert()
   }
@@ -46,28 +47,26 @@ class FunctorSpec extends UnitSpec {
 
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
 
-    // generator used for verifying the Good nature of Or
-
     class OrFunctor[BAD] extends Functor[Or.B[BAD]#G] {
       override def map[G, H](ca: G Or BAD)(f: G => H): H Or BAD = ca.map(f)
     }
 
     implicit val orFunctor = new OrFunctor[Int]
-    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] =
+      Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
     new FunctorLaws[Or.B[Int]#G]().assert()
   }
 
   "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
 
-    // generator used for verifying the Bad nature of Or
-
     class BadOrFunctor[GOOD] extends Functor[Or.G[GOOD]#B] {
       override def map[B, C](ca: GOOD Or B)(f: B => C): GOOD Or C = ca.badMap(f)
     }
 
     implicit val badOrFunctor = new BadOrFunctor[Int]
-    implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] = Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
+    implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] =
+      Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
 
     new FunctorLaws[Or.G[Int]#B]().assert()
   }

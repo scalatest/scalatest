@@ -16,54 +16,46 @@
 package org.scalatest.laws
 
 import org.scalacheck.{Arbitrary, Shrink}
-import org.scalactic.CheckedEquality._
-import org.scalactic.Equality
+import org.scalactic.Every
 import org.scalactic.algebra._
-import org.scalatest.Fact
+import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
 import Monad.adapters
 
 import scala.language.higherKinds
 
-
+/**
+ * Represents the laws that should hold true for an algebraic structure (a Monad) which
+ * contains a "flatMap" operation and obeys the laws of associativity, right identity,
+ * and left identity.
+ */
 class MonadLaws[Context[_]](implicit monad: Monad[Context],
   arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
   arbCab: Arbitrary[Int => Context[String]],
   shrCab: Shrink[Int => Context[String]],
   arbCbc: Arbitrary[String => Context[Double]],
-  shrCbc: Shrink[String => Context[Double]],
-  eqCa: Equality[Context[Int]]) extends Laws {
+  shrCbc: Shrink[String => Context[Double]]) extends Laws("monad") {
 
-  override val lawsName = "monad"
+  override val laws = Every (
 
-  def associativity(): Fact = {
-    val lawName = "associativity"
-    forAll { (ca: Context[Int], acb: Int => Context[String], bcc: String => Context[Double]) =>
-      if (((ca flatMap acb) flatMap bcc) !== (ca flatMap ((a: Int) => acb(a) flatMap bcc)))
-        return Laws.no(lawsName, lawName)
+    law("associativity") { () =>
+      forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Double]) =>
+        ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
+      }
+    },
+
+    law("left identity") { () =>
+      forAll { (ca: Context[Int]) =>
+        ca.flatMap(a => monad.insert(a)) shouldEqual ca
+      }
+    },
+
+    law("right identity") { () =>
+      forAll { (a: Int, f: Int => Context[String]) =>
+        (monad.insert(a) flatMap f) shouldEqual f(a)
+      }
     }
-    Laws.yes(lawsName, lawName)
-  }
-
-  def leftIdentity(): Fact = {
-    val lawName = "left identity"
-    forAll { (ca: Context[Int]) =>
-        if (ca flatMap (a => monad.insert(a)) !== ca)
-          return Laws.no(lawsName, lawName)
-    }
-    Laws.yes(lawsName, lawName)
-  }
-
-  def rightIdentity(): Fact = {
-    val lawName = "right identity"
-    forAll { (a: Int, f: Int => Context[String]) =>
-        if ((monad.insert(a) flatMap f) !== f(a))
-          return Laws.no(lawsName, lawName)
-    }
-    Laws.yes(lawsName, lawName)
-  }
-
-  override def test() = associativity() && leftIdentity() && rightIdentity()
+  )
 }

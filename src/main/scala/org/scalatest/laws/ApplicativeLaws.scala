@@ -16,17 +16,15 @@
 package org.scalatest.laws
 
 import org.scalacheck.{Arbitrary, Shrink}
-import org.scalactic.Equality
-import org.scalactic.CheckedEquality._
-import org.scalatest.Fact
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-
+import org.scalactic._
 import org.scalactic.algebra._
+import org.scalatest._
+import org.scalatest.Matchers._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
 import Applicative.adapters
 
 import scala.language.higherKinds
-
 
 class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   arbCa: Arbitrary[Context[Int]],
@@ -38,52 +36,34 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
   arbCab: Arbitrary[Context[Int => String]],
   shrCab: Shrink[Context[Int => String]],
   arbCbc: Arbitrary[Context[String => Double]],
-  shrCbc: Shrink[Context[String => Double]],
-  eqCa: Equality[Context[Int]]) extends Laws {
+  shrCbc: Shrink[Context[String => Double]]) extends Laws("applicative") {
 
-  override val lawsName = "applicative"
+  override val laws = Every(
+    law("composition") { () =>
+      forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
+        ((ca applying cf) applying cg) shouldEqual
+          (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
+      }
+    },
 
-  def composition(): Fact = {
-    val lawName = "composition"
-    forAll { (ca: Context[Int], cab: Context[Int => String], cbc: Context[String => Double]) =>
-      // (ca ap cab ap cbc) should be the same as (ca ap (cab ap (cbc map (bc compose ab))))
-      if (((ca applying cab) applying cbc) !==
-          (ca applying
-            (cab applying
-              (cbc map ((bc: String => Double) => (ab: Int => String) => bc compose ab)))))
-        return Laws.no(lawsName, lawName)
+    // ca ap (a => a) should be the same as ca
+    law("identity") { () =>
+      forAll { (ca: Context[Int]) =>
+        (ca applying ap.insert((a: Int) => a)) shouldEqual ca
+      }
+    },
+
+    // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
+    law("homomorphism") { () =>
+      forAll { (a: Int, f: Int => String) =>
+        (ap.insert(a) applying ap.insert(f)) shouldEqual ap.insert(f(a))
+      }
+    },
+
+    law("interchange") { () =>
+      forAll { (a: Int, cf: Context[Int => String]) =>
+        (ap.insert(a) applying cf) shouldEqual (cf applying ap.insert((f: Int => String) => f(a)))
+      }
     }
-    Laws.yes(lawsName, lawName)
-  }
-
-  // ca ap (a => a) should be the same as ca
-  def id(): Fact = {
-    val lawName = "identity"
-    forAll { (ca: Context[Int]) =>
-      if ((ca applying ap.insert((a: Int) => a)) !== ca)
-        return Laws.no(lawsName, lawName)
-    }
-    Laws.yes(lawsName, lawName)
-  }
-
-  // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
-  def homomorphism(): Fact = {
-    val lawName = "homomorphism"
-    forAll { (a: Int, ab: Int => String) =>
-      if ((ap.insert(a) applying ap.insert(ab)) !== ap.insert(ab(a)))
-        return Laws.no(lawsName, lawName)
-    }
-    Laws.yes(lawsName, lawName)
-  }
-
-  def interchange(): Fact = {
-    val lawName = "interchange"
-    forAll { (a: Int, cab: Context[Int => String]) =>
-      if ((ap.insert(a) applying cab) !== (cab applying ap.insert((ab: Int => String) => ab(a))))
-        return Laws.no(lawsName, lawName)
-    }
-    Laws.yes(lawsName, lawName)
-  }
-
-  override def test() = id() && composition() && homomorphism() && interchange()
+  )
 }
