@@ -34,7 +34,7 @@ import scala.language.implicitConversions
 trait Commutative[A] {
 
   /**
-   * A binary operation that obeys the associative law.
+   * A binary operation that obeys the commutative law.
    *
    * See the main documentation for this trait for more detail.
    */ 
