@@ -21,7 +21,7 @@ import org.scalactic.algebra._
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 
-import Monad.adapters
+import Monad.adapters._
 
 import scala.language.higherKinds
 
