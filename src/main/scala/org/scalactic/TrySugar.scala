@@ -15,13 +15,28 @@
  */
 package org.scalactic
 
-import scala.util.Try 
-
+import scala.util.Try
+/**
+ * Trait providing an implicit class that adds a <code>toOr</code> method to
+ * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
+ * and <code>Failure</code> to <code>Bad</code>.
+ */
 trait TrySugar {
 
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
+   * and <code>Failure</code> to <code>Bad</code>.
+   */
   implicit class Tryizer[G](theTry: Try[G]) {
     def toOr: G Or Throwable = Or.from(theTry)
   }
+
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
+   * and <code>Failure</code> to <code>Bad</code>.
+   */
   implicit class NothingSuccessTryizer(theTry: Try[Nothing]) {
     def toOr: Nothing Or Throwable = Or.from(theTry)
   } 
