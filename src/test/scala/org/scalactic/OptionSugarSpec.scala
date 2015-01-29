@@ -32,5 +32,13 @@ class OptionSugarSpec extends UnitSpec with Accumulation with OptionSugar {
     None.toOr("oops") shouldBe Bad("oops")
     (None: Option[String]).toOr("oops") shouldBe Bad("oops")
   }
+  it should "take a byName for the orElse" in {
+    var noneChangedThis = false
+    var someChangedThis = false
+    None.toOr{noneChangedThis = true; "oops"} shouldBe Bad("oops")
+    Some(12).toOr{noneChangedThis = true; "oops"} shouldBe Good(12)
+    noneChangedThis shouldBe true
+    someChangedThis shouldBe false
+  }
 }
 
