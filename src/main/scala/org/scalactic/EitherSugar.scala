@@ -40,8 +40,8 @@ trait EitherSugar {
   }
   /**
    * Implicit class that adds a <code>toOr</code> method to
-   * <code>Either</code>, which converts <code>Success</code> to <code>Good</code>,
-   * and <code>Failure</code> to <code>Bad</code>.
+   * <code>Either</code>, which converts <code>Left</code> to <code>Bad</code>,
+   * and <code>Right</code> to <code>Good</code>.
    */
   implicit class NothingRightEitherizer[L](either: Either[L, Nothing]) {
     def toOr: Nothing Or L = Or.from(either)
