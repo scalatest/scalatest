@@ -61,7 +61,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  * <p>
  * Note that although <code>Nil</code> is a <code>List[Nothing]</code>, <code>End</code> is
  * not a <code>Chain[Nothing]</code>, because no empty <code>Chain</code> exists. (A chain is a series
- * of connect links; if you have no links, you have no chain.)
+ * of connected links; if you have no links, you have no chain.)
  * </p>
  *
  * <pre class="stHighlight">
