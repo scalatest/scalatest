@@ -15,14 +15,34 @@
  */
 package org.scalactic
 
+/**
+ * Trait providing an implicit class that adds a <code>toOr</code> method to
+ * <code>Either</code>, which converts <code>Left</code> to <code>Bad</code>,
+ * and <code>Right</code> to <code>Good</code>.
+ */
 trait EitherSugar {
 
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Either</code>, which converts <code>Left</code> to <code>Bad</code>,
+   * and <code>Right</code> to <code>Good</code>.
+   */
   implicit class Eitherizer[L, R](either: Either[L, R]) {
     def toOr: R Or L = Or.from(either)
   }
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Either</code>, which converts <code>Left</code> to <code>Bad</code>,
+   * and <code>Right</code> to <code>Good</code>.
+   */
   implicit class NothingLeftEitherizer[R](either: Either[Nothing, R]) {
     def toOr: R Or Nothing = Or.from(either)
   }
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Either</code>, which converts <code>Success</code> to <code>Good</code>,
+   * and <code>Failure</code> to <code>Bad</code>.
+   */
   implicit class NothingRightEitherizer[L](either: Either[L, Nothing]) {
     def toOr: Nothing Or L = Or.from(either)
   }
