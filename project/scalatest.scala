@@ -134,16 +134,19 @@ object ScalatestBuild extends Build {
     docScalacOptionsSetting
   )
 
+  def scalacheckDependency(config: String) =
+    "org.scalacheck" %% "scalacheck" % "1.12.1" % config
+
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
+          scalacheckDependency("optional")
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
+        Seq(scalacheckDependency("optional"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -231,7 +234,7 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genMain),
+         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
      testOptions in Test := scalatestTestOptions,
        // include the macro classes and resources in the main jar
        mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
@@ -289,6 +292,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
+      libraryDependencies ++= Seq(scalacheckDependency("test")),
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile <+=
         (baseDirectory, sourceDirectory in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
@@ -627,7 +631,7 @@ object ScalatestBuild extends Build {
 
   val genVersions = TaskKey[Unit]("genversions", "Generate Versions object")
   val genVersionsTask = genVersions <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenVersions.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
+    GenVersions.genScalaTestVersions(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
   
   val genContain1 = TaskKey[Unit]("gencontain1", "Generate contain matcher tests 1")
