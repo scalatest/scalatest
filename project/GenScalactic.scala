@@ -44,7 +44,7 @@ object GenScalactic {
       val destFile = new File(scalacticPackageDir, sourceFile.getName)
       copyFile(sourceFile, destFile)
     }
-    GenVersions.genMain(scalacticPackageDir, version, scalaVersion)
+    GenVersions.genScalacticVersions(scalacticPackageDir, version, scalaVersion)
 
     val scalautilsPackageDir = new File(targetDir, "org/scalautils")
     scalautilsPackageDir.mkdirs()
