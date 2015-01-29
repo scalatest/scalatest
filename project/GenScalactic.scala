@@ -54,7 +54,7 @@ object GenScalactic {
     val scalacticPackageDir = new File(targetDir, "org/scalactic")
     copyDir(scalacticSourceDir, scalacticPackageDir)
 
-    GenVersions.genMain(scalacticPackageDir, version, scalaVersion)
+    GenVersions.genScalacticVersions(scalacticPackageDir, version, scalaVersion)
 
     val sourceCssFile = new File("src/main/html/addl.css")
     val destCssDir = new File(targetDir.getParentFile, "html")
