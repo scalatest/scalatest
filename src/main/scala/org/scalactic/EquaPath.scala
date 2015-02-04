@@ -1699,6 +1699,39 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
   }
 
+  trait EquaMap[V]/* extends Function[T, V] with Equals*/ {
+
+    /**
+     * Add a key/value pair to this `EquaMap`, returning a new `EquaMap`.
+     * @param kv the key/value pair.
+     * @return A new `EquaMap` with the new binding added to this `EquaMap`.
+     */
+    def + [V1 >: V](kv: (T, V1)): EquaMap[V1]
+
+    /**
+     * Tests if this `EquaMap` is empty.
+     *
+     * @return `true` if there is no element in the set, `false` otherwise.
+     */
+    def isEmpty: Boolean
+
+    /**
+     * The size of this `EquaMap`.
+     *
+     * @return the number of elements in this `EquaMap`.
+     */
+    def size: Int
+
+    /**
+     * Converts this `EquaSet` to a set of `EquaBox`.
+     *
+     * @return a set containing all elements of this `EquaSet`, boxed in `EquaBox`.
+     */
+    def toEquaBoxMap: Map[thisEquaPath.EquaBox, V]
+
+    val path: thisEquaPath.type
+  }
+
   class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
     override def collect(pf: PartialFunction[S, T]): thisEquaPath.FastEquaSet =
       thisEquaPath.FastEquaSet.empty ++ (from collect pf)
@@ -1995,6 +2028,30 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     // TODO: Study this one...
     implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
       new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
+  }
+  class FastEquaMap[V] private[scalactic] (private val underlying: Map[EquaBox, V]) extends EquaMap[V] { thisFastEquaMap =>
+    def + [V1 >: V](kv: (T, V1)): FastEquaMap[V1] = new FastEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
+    def isEmpty: Boolean = underlying.isEmpty
+    def size: Int = underlying.size
+    def toEquaBoxMap: Map[thisEquaPath.EquaBox, V] = underlying
+    val path: thisEquaPath.type = thisEquaPath
+    def stringPrefix: String = "EquaMap"
+    override def toString: String = s"$stringPrefix(${underlying.toVector.map(e => e._1.value + " -> " + e._2).mkString(", ")})"
+    override def equals(other: Any): Boolean = {
+      other match {
+        case thatEquaMap: EquaPath[_]#EquaMap[_] =>
+          (thisEquaPath.equality eq thatEquaMap.path.equality) && underlying == thatEquaMap.toEquaBoxMap
+        case _ => false
+      }
+    }
+  }
+  object FastEquaMap {
+    def empty[V]: FastEquaMap[V] = new FastEquaMap[V](Map.empty)
+    def apply[V](entries: (T, V)*): FastEquaMap[V] = new FastEquaMap[V](Map.empty ++ entries.map(e => EquaBox(e._1) -> e._2))
+  }
+  object EquaMap {
+    def empty[V]: EquaMap[V] = new FastEquaMap[V](Map.empty)
+    def apply[V](entries: (T, V)*): EquaMap[V] = new FastEquaMap[V](Map.empty ++ entries.map(e => EquaBox(e._1) -> e._2))
   }
 }
 

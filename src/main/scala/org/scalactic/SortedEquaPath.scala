@@ -1029,6 +1029,45 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def apply(elems: T*): TreeEquaSet = 
       new TreeEquaSet(TreeSet(elems.map(EquaBox(_)): _*)(ordering))
   }
+
+  /*trait SortedEquaMap[V] extends EquaMap[V] {
+    /**
+     * Tests if this `SortedEquaMap` is empty.
+     *
+     * @return `true` if there is no element in the `SortedEquaMap`, `false` otherwise.
+     */
+    def isEmpty: Boolean
+
+    /**
+     * The size of this `SortedEquaMap`.
+     *
+     * @return the number of elements in this `SortedEquaMap`.
+     */
+    def size: Int
+
+    override val path: thisEquaPath.type
+
+    /**
+     * Converts this `SortedEquaMap` to a `Map` with `EquaBox` as its key type.
+     *
+     * @return a `Map` containing all entries of this `SortedEquaMap`, with its key boxed in `EquaBox`.
+     */
+    def toEquaBoxMap: SortedMap[thisEquaPath.EquaBox, V]
+  }
+
+  class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[EquaBox, V]) extends SortedEquaMap[V] {thisTreeEquaSet =>
+    def isEmpty: Boolean = underlying.isEmpty
+    def size: Int = underlying.size
+    val path: thisEquaPath.type = thisEquaPath
+    def toEquaBoxSet: TreeMap[thisEquaPath.EquaBox, V] = underlying
+  }
+
+  object SortedEquaMap {
+    def empty[V]: SortedEquaMap[V] = TreeEquaMap.empty[V]
+  }
+  object TreeEquaMap {
+    def empty[V]: TreeEquaMap[V] = new TreeEquaMap(TreeMap.empty[EquaBox, V](ordering))
+  }*/
 }
 
 object SortedEquaPath {
