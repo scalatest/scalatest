@@ -1706,7 +1706,29 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      * @param kv the key/value pair.
      * @return A new `EquaMap` with the new binding added to this `EquaMap`.
      */
-    def + [V1 >: V](kv: (T, V1)): EquaMap[V1]
+    def +[V1 >: V](kv: (T, V1)): EquaMap[V1]
+
+    /**
+     * Creates a new `EquaMap` with additional entries.
+     *
+     * This method takes two or more entries to be added. Another overloaded
+     * variant of this method handles the case where a single entry is added.
+     *
+     * @param entry1 the first entry to add.
+     * @param entry2 the second entry to add.
+     * @param entries the remaining entries to add.
+     * @return a new `EquaMap` with the given entries added.
+     */
+    def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): thisEquaPath.EquaMap[V1]
+
+    /**
+     * Creates a new `EquaMap` with entry with given key removed from this `EquaMap`.
+     *
+     * @param elem the key for entry to be removed
+     * @return a new `EquaMap` that contains all elements of this `EquaMap` but that does not
+     * contain entry with `key`.
+     */
+    def -(key: T): thisEquaPath.EquaMap[V]
 
     /**
      * Tests if this `EquaMap` is empty.
@@ -1721,6 +1743,13 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      * @return the number of elements in this `EquaMap`.
      */
     def size: Int
+
+    /**
+     * Converts this `EquaMap` to a `Map`.
+     *
+     * @return a `Map` containing all entries of this `EquaMap`.
+     */
+    def toMap: Map[T, V]
 
     /**
      * Converts this `EquaSet` to a set of `EquaBox`.
@@ -2031,8 +2060,12 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
   }
   class FastEquaMap[V] private[scalactic] (private val underlying: Map[EquaBox, V]) extends EquaMap[V] { thisFastEquaMap =>
     def + [V1 >: V](kv: (T, V1)): FastEquaMap[V1] = new FastEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
+    def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): FastEquaMap[V1] =
+      new FastEquaMap(underlying + (EquaBox(entry1._1) -> entry1._2, EquaBox(entry2._1) -> entry2._2, entries.map(e => EquaBox(e._1) -> e._2): _*))
+    def -(key: T): FastEquaMap[V] = new FastEquaMap(underlying - EquaBox(key))
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
+    def toMap: Map[T, V] = underlying.map(e => (e._1.value, e._2))
     def toEquaBoxMap: Map[thisEquaPath.EquaBox, V] = underlying
     val path: thisEquaPath.type = thisEquaPath
     def stringPrefix: String = "EquaMap"
