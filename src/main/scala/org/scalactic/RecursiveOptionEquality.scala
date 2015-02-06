@@ -19,9 +19,31 @@ import scala.language.higherKinds
 
 trait RecursiveOptionEquality {
 
-  implicit def recursiveOptionEquality[E, OPT[e] <: Option[e]](implicit equalityOfE: Equality[E]): Equality[OPT[E]] =
+  // The following does not work in 2.10, it breaks implicit lookup somehow and breaks matchers tests compile.
+  // We can use the following when we no longer need to support Scala 2.11.
+  /*implicit def recursiveOptionEquality[E, OPT[e] <: Option[e]](implicit equalityOfE: Equality[E]): Equality[OPT[E]] =
     new Equality[OPT[E]] {
       def areEqual(a: OPT[E], b: Any): Boolean = {
+        (a, b) match {
+          case (Some(aEle), Some(bEle)) => equalityOfE.areEqual(aEle, bEle)
+          case _ => a == b // false should work here, because None on the left won't match this implicit because of element type Nothing, but just in case, will ask ==
+        }
+      }
+    }*/
+
+  implicit def recursiveOptionEquality[E](implicit equalityOfE: Equality[E]): Equality[Option[E]] =
+    new Equality[Option[E]] {
+      def areEqual(a: Option[E], b: Any): Boolean = {
+        (a, b) match {
+          case (Some(aEle), Some(bEle)) => equalityOfE.areEqual(aEle, bEle)
+          case _ => a == b // false should work here, because None on the left won't match this implicit because of element type Nothing, but just in case, will ask ==
+        }
+      }
+    }
+
+  implicit def recursiveSomeEquality[E](implicit equalityOfE: Equality[E]): Equality[Some[E]] =
+    new Equality[Some[E]] {
+      def areEqual(a: Some[E], b: Any): Boolean = {
         (a, b) match {
           case (Some(aEle), Some(bEle)) => equalityOfE.areEqual(aEle, bEle)
           case _ => a == b // false should work here, because None on the left won't match this implicit because of element type Nothing, but just in case, will ask ==
