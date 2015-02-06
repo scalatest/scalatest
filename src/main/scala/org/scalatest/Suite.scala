@@ -831,22 +831,26 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val formatter = formatterForSuiteStarting(thisSuite)
       dispatch(SuiteStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), formatter, Some(getTopOfClass(thisSuite))))
 
-      run(
-        None,
-        Args(dispatch,
-        Stopper.default,
-        filter,
-        configMap,
-        None,
-        tracker,
-        Set.empty)
-      )
-      val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
-      val duration = System.currentTimeMillis - suiteStartTime
-      dispatch(SuiteCompleted(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(duration), suiteCompletedFormatter, Some(getTopOfClass(thisSuite))))
-      if (stats) {
-        val duration = System.currentTimeMillis - runStartTime
-        dispatch(RunCompleted(tracker.nextOrdinal(), Some(duration)))
+      val status =
+        run(
+          None,
+          Args(dispatch,
+          Stopper.default,
+          filter,
+          configMap,
+          None,
+          tracker,
+          Set.empty)
+        )
+
+      status.whenCompleted { result =>
+        val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
+        val duration = System.currentTimeMillis - suiteStartTime
+        dispatch(SuiteCompleted(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(duration), suiteCompletedFormatter, Some(getTopOfClass(thisSuite))))
+        if (stats) {
+          val duration = System.currentTimeMillis - runStartTime
+          dispatch(RunCompleted(tracker.nextOrdinal(), Some(duration)))
+        }
       }
     }
     catch {
