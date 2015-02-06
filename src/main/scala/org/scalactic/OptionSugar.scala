@@ -89,7 +89,7 @@ trait OptionSugar {
     /**
      * Converts the wrapped <code>Option</code> to an <code>Or</code>.
      */
-    def toOr[B](orElse: B): G Or B = Or.from(option, orElse)
+    def toOr[B](orElse: => B): G Or B = Or.from(option, orElse)
   }
 } 
 

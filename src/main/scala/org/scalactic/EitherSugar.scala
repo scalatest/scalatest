@@ -20,7 +20,7 @@ package org.scalactic
  * <code>Either</code>, which converts <code>Left</code> to <code>Bad</code>,
  * and <code>Right</code> to <code>Good</code>.
  */
-trait EitherSugar {
+private[scalactic] trait EitherSugar {
 
   /**
    * Implicit class that adds a <code>toOr</code> method to
