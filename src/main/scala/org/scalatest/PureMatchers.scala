@@ -4438,7 +4438,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedKey = resultOfKeyWordApplication.expectedKey
+        val expectedKey: Any = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != willBeTrue) {
           throw newTestFailedException(
             FailureMessages(
@@ -4463,7 +4463,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
       doCollected(collected, xs, original, "contain", 1) { map =>
-        val expectedValue = resultOfValueWordApplication.expectedValue
+        val expectedValue: Any = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != willBeTrue) {
           throw newTestFailedException(
             FailureMessages(
