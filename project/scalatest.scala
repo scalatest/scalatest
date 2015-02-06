@@ -186,7 +186,7 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genMain),
+         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
                                                "-m", "org.scalatest",
                                                "-m", "org.scalactic",
@@ -459,7 +459,7 @@ object ScalatestBuild extends Build {
 
   val genVersions = TaskKey[Unit]("genversions", "Generate Versions object")
   val genVersionsTask = genVersions <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenVersions.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
+    GenVersions.genScalaTestVersions(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
   
   val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
