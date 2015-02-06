@@ -1722,6 +1722,22 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): thisEquaPath.EquaMap[V1]
 
     /**
+     * Creates a new `EquaMap` by adding all elements contained in another collection to this `EquaSet`.
+     *
+     *  @param entries     the collection containing the added elements.
+     *  @return          a new `EquaSet` with the given elements added.
+     */
+    def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): thisEquaPath.EquaMap[V1]
+
+    /**
+     * Creates a new `EquaMap` by adding entries contained in another `EquaMap`.
+     *
+     * @param that     the other `EquaMap` containing the added entries.
+     * @return         a new `EquaMap` with the given entries added.
+     */
+    def ++[V1 >: V](that: EquaMap[V1]): thisEquaPath.EquaMap[V1]
+
+    /**
      * Creates a new `EquaMap` with entry with given key removed from this `EquaMap`.
      *
      * @param elem the key for entry to be removed
@@ -1731,11 +1747,93 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def -(key: T): thisEquaPath.EquaMap[V]
 
     /**
+     * Creates a new `EquaMap` from this `EquaMap` with some elements removed.
+     *
+     * This method takes two or more key of entries to be removed. Another overloaded
+     * variant of this method handles the case where a single key of entry is
+     * removed.
+     * @param key1 the first key of entry to remove.
+     * @param key2 the second key of entry to remove.
+     * @param keys the remaining keys of entries to remove.
+     * @return a new `EquaMap` that contains all elements of the current `EquaMap`
+     * except entries with the given keys.
+     */
+    def -(key1: T, key2: T, keys: T*): thisEquaPath.EquaMap[V]
+
+    /**
+     * Creates a new `EquaMap` from this `EquaMap` by removing all entries of another
+     *  collection.
+     *
+     *  @param keys     the collection containing the keys of entries to remove.
+     *  @return a new `EquaMap` that contains all entries of the current `EquaMap`
+     *  except those with key contained in the given collection.
+     */
+    def --(keys: GenTraversableOnce[T]): thisEquaPath.EquaMap[V]
+
+    /**
+     * Creates a new `EquaMap` from this `EquaMap` by removing all entries with keys specified by the given `EquaSet`
+     *
+     * @param equaSet       the `EquaSet` containing the keys of entries to be removed.
+     * @return a new `EquaMap` that contains all entries of the current `EquaMap` minus entries with keys contained in the passed in `EquaSet`.
+     */
+    def --(equaSet: thisEquaPath.EquaSet): thisEquaPath.EquaMap[V]
+
+    /**
+     * Applies a binary operator to a start value and all entries of this `EquaMap`,
+     *  going left to right.
+     *
+     *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
+     *  `xs foldLeft z`.
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (5 /: a)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (5 /: a)((x,y) => x + y)
+     *      c: Int = 15
+     *  }}}
+     *
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  @param   z    the start value.
+     *  @param   op   the binary operator.
+     *  @tparam  R    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive elements of this `EquaMap`,
+     *           going left to right with the start value `z` on the left:
+     *           {{{
+     *             op(...op(op(z, x_1), x_2), ..., x_n)
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the elements of this `EquaMap`.
+     */
+    def /:[R](z: R)(op: (R, (T, V)) => R): R
+
+    /**
      * Tests if this `EquaMap` is empty.
      *
      * @return `true` if there is no element in the set, `false` otherwise.
      */
     def isEmpty: Boolean
+
+    /**
+     * Get an instance of `Iterator` for keys of this `EquaMap`.
+     *
+     * @return an instance of `Iterator` for keys of this `EquaMap`
+     */
+    def keysIterator: Iterator[T]
+
+    /**
+     * Get an instance of `Iterator` for values of this `EquaMap`.
+     *
+     * @return an instance of `Iterator` for values of this `EquaMap`
+     */
+    def valuesIterator: Iterator[V]
 
     /**
      * The size of this `EquaMap`.
@@ -2062,7 +2160,19 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def + [V1 >: V](kv: (T, V1)): FastEquaMap[V1] = new FastEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
     def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): FastEquaMap[V1] =
       new FastEquaMap(underlying + (EquaBox(entry1._1) -> entry1._2, EquaBox(entry2._1) -> entry2._2, entries.map(e => EquaBox(e._1) -> e._2): _*))
+    def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): FastEquaMap[V1] = new FastEquaMap(underlying ++ entries.toList.map(e => (EquaBox(e._1) -> e._2)))
+    def ++[V1 >: V](that: EquaMap[V1]): FastEquaMap[V1] = new FastEquaMap(underlying ++ that.toEquaBoxMap)
     def -(key: T): FastEquaMap[V] = new FastEquaMap(underlying - EquaBox(key))
+    def -(key1: T, key2: T, keys: T*): FastEquaMap[V] =
+      new FastEquaMap(underlying - (EquaBox(key1), EquaBox(key2), keys.map(EquaBox(_)): _*))
+    def --(keys: GenTraversableOnce[T]): FastEquaMap[V] =
+      new FastEquaMap(underlying -- keys.toList.map(EquaBox(_)))
+    def --(equaSet: thisEquaPath.EquaSet): FastEquaMap[V] =
+      new FastEquaMap(underlying -- equaSet.toEquaBoxSet)
+    def /:[R](z: R)(op: (R, (T, V)) => R): R =
+      underlying.toSeq.map(e => (e._1.value, e._2))./:(z)((r: R, e: (T, V)) => op(r, e))
+    def keysIterator: Iterator[T] = underlying.keysIterator.map(_.value)
+    def valuesIterator: Iterator[V] = underlying.valuesIterator
     def isEmpty: Boolean = underlying.isEmpty
     def size: Int = underlying.size
     def toMap: Map[T, V] = underlying.map(e => (e._1.value, e._2))
