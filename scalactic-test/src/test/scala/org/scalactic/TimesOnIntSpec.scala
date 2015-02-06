@@ -16,8 +16,6 @@
 package org.scalactic
 
 import org.scalatest._
-import org.scalatest.events._
-import SharedHelpers._
 
 class TimesOnIntSpec extends FunSpec with TimesOnInt {
 

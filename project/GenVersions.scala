@@ -2,7 +2,7 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenVersions {
 
-  def genScalacticVersions(targetDir: File, version: String, scalaVersion: String): Unit = {
+  def genScalacticVersions(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val shortScalaVersion = scalaVersion.split("\\.").take(2).mkString(".")
     targetDir.mkdirs()
 
@@ -22,6 +22,8 @@ object GenVersions {
     scalacticVersionsFileWriter.flush()
     scalacticVersionsFileWriter.close()
     println("Generated " + scalacticVersionsFile.getAbsolutePath)
+    Seq(scalacticVersionsFile)
+
   }
 
   def genScalaTestVersions(targetDir: File, version: String, scalaVersion: String): Unit = {

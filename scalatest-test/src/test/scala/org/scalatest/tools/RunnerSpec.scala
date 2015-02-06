@@ -1803,7 +1803,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
 
     Runner.readMemoryFiles(
-      List("src/test/scala/org/scalatest/tools/memoryfile.eg"),
+      List("scalatest-test/src/test/scala/org/scalatest/tools/memoryfile.eg"),
       reporter, tracker)
 
     assert(1 === events.filter(_.isInstanceOf[AlertProvided]).size)

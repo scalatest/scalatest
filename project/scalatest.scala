@@ -155,7 +155,45 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
-  lazy val scalatest = Project("scalatest", file("."))
+  lazy val commonTest = Project("common-test", file("common-test"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Common test classes used by scalactic and scalatest"
+    ).dependsOn(LocalProject("scalatest"))
+
+  lazy val scalactic = Project("scalactic", file("scalactic"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic",
+      organization := "org.scalactic",
+      initialCommands in console := "import org.scalactic._",
+      sourceGenerators in Compile += {
+        Def.task{
+          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalacticDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalactic",
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "Scalactic",
+        "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+        "Bundle-DocURL" -> "http://www.scalactic.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    )
+
+  lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test",
+      organization := "org.scalactic"
+    ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
+
+  lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
@@ -187,30 +225,6 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
-                                               "-m", "org.scalatest",
-                                               "-m", "org.scalactic",
-                                               "-m", "org.scalatest.fixture",
-                                               "-m", "org.scalatest.concurrent",
-                                               "-m", "org.scalatest.testng",
-                                               "-m", "org.scalatest.junit",
-                                               "-m", "org.scalatest.events",
-                                               "-m", "org.scalatest.prop",
-                                               "-m", "org.scalatest.tools",
-                                               "-m", "org.scalatest.matchers",
-                                               "-m", "org.scalatest.suiteprop",
-                                               "-m", "org.scalatest.mock",
-                                               "-m", "org.scalatest.path",
-                                               "-m", "org.scalatest.selenium",
-                                               "-m", "org.scalatest.exceptions",
-                                               "-m", "org.scalatest.time",
-                                               "-m", "org.scalatest.words",
-                                               "-m", "org.scalatest.enablers",
-                                               "-m", "org.scalautils",
-                                               "-oDI",
-                                               "-h", "target/html",
-                                               "-u", "target/junit",
-                                               "-fW", "target/result.txt")),
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -243,44 +257,47 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   )
+   ).dependsOn(scalactic)
 
-  lazy val scalactic = Project("scalactic", file("genscalactic"))
+  lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "Scalactic",
-      organization := "org.scalactic",
-      initialCommands in console := "import org.scalactic._",
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
-      resourceDirectories in Compile += {
-        (sourceManaged in Compile).value / "resources"
-      },
-      // TODO - This is a hack to get us on the resources list..
-      resourceGenerators in Compile += {
-        Def.task{
-          Seq((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties")
-        }.taskValue
-      },
-      // Note this should be removable.
-      mappings in (Compile, packageBin) += {
-        ((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties") -> "org/scalactic/ScalacticBundle.properties"
-      },
-      scalacticDocTaskSetting
-    ).settings(osgiSettings: _*).settings(
-      OsgiKeys.exportPackage := Seq(
-        "org.scalactic",
-        "org.scalautils"
-      ),
-      OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "Scalactic",
-        "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
-        "Bundle-DocURL" -> "http://www.scalactic.org/",
-        "Bundle-Vendor" -> "Artima, Inc."
-      )
-    ).dependsOn(scalatest % "test")
+      projectTitle := "ScalaTest Test",
+      organization := "org.scalatest",
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+        "-m", "org.scalatest",
+        "-m", "org.scalactic",
+        "-m", "org.scalatest.fixture",
+        "-m", "org.scalatest.concurrent",
+        "-m", "org.scalatest.testng",
+        "-m", "org.scalatest.junit",
+        "-m", "org.scalatest.events",
+        "-m", "org.scalatest.prop",
+        "-m", "org.scalatest.tools",
+        "-m", "org.scalatest.matchers",
+        "-m", "org.scalatest.suiteprop",
+        "-m", "org.scalatest.mock",
+        "-m", "org.scalatest.path",
+        "-m", "org.scalatest.selenium",
+        "-m", "org.scalatest.exceptions",
+        "-m", "org.scalatest.time",
+        "-m", "org.scalatest.words",
+        "-m", "org.scalatest.enablers",
+        "-m", "org.scalautils",
+        "-oDI",
+        "-h", "target/html",
+        "-u", "target/junit",
+        "-fW", "target/result.txt"))
+    ).dependsOn(scalatest % "test", commonTest % "test")
+
+  lazy val scalatestAll = Project("scalatest-all", file("."))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest All",
+      organization := "org.scalatest"
+    ).dependsOn(scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest, scalacticTest, scalatestTest)
 
   def gentestsLibraryDependencies =
     Seq(

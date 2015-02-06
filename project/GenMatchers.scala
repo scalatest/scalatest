@@ -53,7 +53,7 @@ object GenMatchers {
     val mustMatchersFile = new File(targetDir, "MustMatchers.scala")
     val mustMatchersWriter = new BufferedWriter(new FileWriter(mustMatchersFile))
     try {
-      val lines = Source.fromFile(new File("src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
+      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
       for (line <- lines) {
         val mustLine = translateShouldToMust(line)
         mustMatchersWriter.write(mustLine)
