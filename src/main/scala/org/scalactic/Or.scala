@@ -897,20 +897,6 @@ object Or {
       case Some(g) => Good(g)
       case None => Bad(orElse)
     }
-
-  /**
-   * Constructs a new <code>Or</code> from the given <code>Option</code>.
-   *
-   * @param option the <code>Option</code> to convert to an <code>Or</code>
-   * @param orElse the <code>Bad</code> value to use if the <code>Option</code> passed as <code>option</code> is <code>None</code>.
-   * @return a new <code>Or</code> whose <code>Good</code> type is the <code>Option</code>'s type and whose
-   *    <code>Bad</code> type is the type of the passed <code>orElse</code> parameter.
-   */
-  def from[G, B](option: Option[G], orElse: => B): G Or B =
-    option match {
-      case Some(g) => Good(g)
-      case None => Bad(orElse)
-    }
 }
 
 /**
