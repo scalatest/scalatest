@@ -1029,6 +1029,214 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def apply(elems: T*): TreeEquaSet = 
       new TreeEquaSet(TreeSet(elems.map(EquaBox(_)): _*)(ordering))
   }
+
+  trait SortedEquaMap[V] extends EquaMap[V] {
+
+    /**
+     * Add a key/value pair to this `SortedEquaMap`, returning a new `SortedEquaMap`.
+     * @param kv the key/value pair.
+     * @return A new `SortedEquaMap` with the new binding added to this `SortedEquaMap`.
+     */
+    def +[V1 >: V](kv: (T, V1)): SortedEquaMap[V1]
+
+    /**
+     * Creates a new `SortedEquaMap` with additional entries.
+     *
+     * This method takes two or more entries to be added. Another overloaded
+     * variant of this method handles the case where a single entry is added.
+     *
+     * @param entry1 the first entry to add.
+     * @param entry2 the second entry to add.
+     * @param entries the remaining entries to add.
+     * @return a new `SortedEquaMap` with the given entries added.
+     */
+    def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): thisEquaPath.SortedEquaMap[V1]
+
+    /** Creates a new `SortedEquaMap` by adding all entries contained in another collection to this `SortedEquaMap`.
+      *
+      *  @param entries     the collection containing the added entries.
+      *  @return          a new `SortedEquaMap` with the given entries added.
+      */
+    def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): thisEquaPath.SortedEquaMap[V1]
+
+    /**
+     * Creates a new `SortedEquaMap` by adding entries contained in another `EquaMap`.
+     *
+     * @param that     the other `EquaMap` containing the added entries.
+     * @return         a new `SortedEquaMap` with the given entries added.
+     */
+    def ++[V1 >: V](that: EquaMap[V1]): thisEquaPath.SortedEquaMap[V1]
+
+    /**
+     * Creates a new `SortedEquaMap` with entry having the given key removed from this `SortedEquaMap`.
+     *
+     * @param key the key of entry to be removed
+     * @return a new `SortedEquaMap` that contains all elements of this `SortedEquaMap` but that does not
+     * contain entry with the given `key`.
+     */
+    def -(key: T): thisEquaPath.SortedEquaMap[V]
+
+    /**
+     * Creates a new `SortedEquaMap` from this `SortedEquaMap` with entries of the given keys removed.
+     *
+     * This method takes two or more keys of entries to be removed. Another overloaded
+     * variant of this method handles the case where a single key of entry is
+     * removed.
+     * @param key1 the first key of entry to remove.
+     * @param key2 the second key of entry to remove.
+     * @param keys the remaining keys of entries to remove.
+     * @return a new `SortedEquaMap` that contains all entries of the current `SortedEquaMap`
+     * except those with given keys.
+     */
+    def -(key1: T, key2: T, keys: T*): thisEquaPath.SortedEquaMap[V]
+
+    /**
+     * Creates a new `SortedEquaMap` from this `SortedEquaMap` by removing all entries with keys contained in given
+     *  collection.
+     *
+     *  @param keys     the collection containing the keys for entries to remove.
+     *  @return a new `SortedEquaMap` that contains all entries of the current `SortedEquaMap`
+     *  except entries with keys specified by the given collection.
+     */
+    def --(keys: GenTraversableOnce[T]): thisEquaPath.SortedEquaMap[V]
+
+    /**
+     * Creates a new `SortedEquaMap` from this `SortedEquaMap` by removing all entries with keys contains in the given `EquaSet`
+     *
+     * @param equaSet       the `EquaSet` containing keys of entries to be removed.
+     * @return a new `SortedEquaMap` that contains all entries of the current `EquaMap` minus entries with keys contained in the passed in `EquaSet`.
+     */
+    def --(equaSet: thisEquaPath.EquaSet): thisEquaPath.SortedEquaMap[V]
+
+    /**
+     * Applies a binary operator to a start value and all elements of this `SortedEquaMap`,
+     *  going left to right.
+     *
+     *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
+     *  `xs foldLeft z`.
+     *
+     *  Examples:
+     *
+     *  Note that the folding function used to compute b is equivalent to that used to compute c.
+     *  {{{
+     *      scala> val a = List(1,2,3,4)
+     *      a: List[Int] = List(1, 2, 3, 4)
+     *
+     *      scala> val b = (5 /: a)(_+_)
+     *      b: Int = 15
+     *
+     *      scala> val c = (5 /: a)((x,y) => x + y)
+     *      c: Int = 15
+     *  }}}
+     *
+     *  $willNotTerminateInf
+     *  $orderDependentFold
+     *
+     *  @param   z    the start value.
+     *  @param   op   the binary operator.
+     *  @tparam  R    the result type of the binary operator.
+     *  @return  the result of inserting `op` between consecutive entries of this `SortedEquaMap`,
+     *           going left to right with the start value `z` on the left:
+     *           {{{
+     *             op(...op(op(z, x_1), x_2), ..., x_n)
+     *           }}}
+     *           where `x,,1,,, ..., x,,n,,` are the entries of this `SortedEquaMap`.
+     */
+    def /:[R](z: R)(op: (R, (T, V)) => R): R
+
+    /**
+     * Tests if this `SortedEquaMap` is empty.
+     *
+     * @return `true` if there is no element in the `SortedEquaMap`, `false` otherwise.
+     */
+    def isEmpty: Boolean
+
+    /**
+     * Get an instance of `Iterator` for keys of this `SortedEquaMap`.
+     *
+     * @return an instance of `Iterator` for keys of this `SortedEquaMap`
+     */
+    def keysIterator: Iterator[T]
+
+    /**
+     * Get an instance of `Iterator` for values of this `SortedEquaMap`.
+     *
+     * @return an instance of `Iterator` for values of this `SortedEquaMap`
+     */
+    def valuesIterator: Iterator[V]
+
+    /**
+     * The size of this `SortedEquaMap`.
+     *
+     * @return the number of elements in this `SortedEquaMap`.
+     */
+    def size: Int
+
+    override val path: thisEquaPath.type
+
+    /**
+     * Converts this `SortedEquaMap` to a `Map`.
+     *
+     * @return a `Map` containing all entries of this `SortedEquaMap`.
+     */
+    def toMap: SortedMap[T, V]
+
+    /**
+     * Converts this `SortedEquaMap` to a `Map` with `EquaBox` as its key type.
+     *
+     * @return a `Map` containing all entries of this `SortedEquaMap`, with its key boxed in `EquaBox`.
+     */
+    def toEquaBoxMap: SortedMap[thisEquaPath.EquaBox, V]
+  }
+
+  class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[EquaBox, V]) extends SortedEquaMap[V] {thisTreeEquaSet =>
+    def +[V1 >: V](kv: (T, V1)): TreeEquaMap[V1] = new TreeEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
+    def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): TreeEquaMap[V1] =
+      new TreeEquaMap(underlying + (EquaBox(entry1._1) -> entry1._2, EquaBox(entry2._1) -> entry2._2, entries.map(e => EquaBox(e._1) -> e._2): _*))
+    def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): TreeEquaMap[V1] =
+      new TreeEquaMap(underlying ++ entries.toSeq.map(e => (EquaBox(e._1) -> e._2)))
+    def ++[V1 >: V](that: EquaMap[V1]): TreeEquaMap[V1] = new TreeEquaMap(underlying ++ that.toEquaBoxMap)
+    def -(key: T): TreeEquaMap[V] = new TreeEquaMap(underlying - EquaBox(key))
+    def -(key1: T, key2: T, keys: T*): TreeEquaMap[V] = new TreeEquaMap(underlying - (EquaBox(key1), EquaBox(key2), keys.map(EquaBox(_)): _*))
+    def --(keys: GenTraversableOnce[T]): TreeEquaMap[V] =
+      new TreeEquaMap(underlying -- keys.toSeq.map(EquaBox(_)))
+    def --(equaSet: thisEquaPath.EquaSet): TreeEquaMap[V] =
+      new TreeEquaMap(underlying -- equaSet.toEquaBoxSet)
+    def /:[R](z: R)(op: (R, (T, V)) => R): R =
+      underlying.toSeq.map(e => (e._1.value, e._2))./:(z)((r: R, e: (T, V)) => op(r, e))
+    def isEmpty: Boolean = underlying.isEmpty
+    def keysIterator: Iterator[T] = underlying.keysIterator.map(_.value)
+    def valuesIterator: Iterator[V] = underlying.valuesIterator
+    def size: Int = underlying.size
+    val path: thisEquaPath.type = thisEquaPath
+    def toMap: TreeMap[T, V] = {
+      val keyOrdering: Ordering[T] =
+        new Ordering[T] {
+          def compare(a: T, b: T): Int =
+            equality.compare(a, b)
+        }
+      TreeMap(underlying.map(e => (e._1.value, e._2)).toList: _*)(keyOrdering)
+    }
+    def toEquaBoxMap: TreeMap[thisEquaPath.EquaBox, V] = underlying
+    def stringPrefix: String = "TreeEquaMap"
+    override def toString: String = s"$stringPrefix(${underlying.toVector.map(e => e._1.value + " -> " + e._2).mkString(", ")})"
+    override def equals(other: Any): Boolean = {
+      other match {
+        case thatEquaMap: EquaPath[_]#EquaMap[_] =>
+          (thisEquaPath.equality eq thatEquaMap.path.equality) && underlying == thatEquaMap.toEquaBoxMap
+        case _ => false
+      }
+    }
+  }
+
+  object SortedEquaMap {
+    def empty[V]: SortedEquaMap[V] = TreeEquaMap.empty[V]
+    def apply[V](entries: (T, V)*): SortedEquaMap[V] = new TreeEquaMap[V](TreeMap(entries.map(e => EquaBox(e._1) -> e._2): _*)(ordering))
+  }
+  object TreeEquaMap {
+    def empty[V]: TreeEquaMap[V] = new TreeEquaMap(TreeMap.empty[EquaBox, V](ordering))
+    def apply[V](entries: (T, V)*): TreeEquaMap[V] = new TreeEquaMap[V](TreeMap(entries.map(e => EquaBox(e._1) -> e._2): _*)(ordering))
+  }
 }
 
 object SortedEquaPath {
