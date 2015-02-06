@@ -39,6 +39,11 @@ trait Monad[Context[_]] extends Applicative[Context] {
    * the context.
    */
   def applying[A, B](ca: Context[A])(cab: Context[A => B]): Context[B] = flatMap(ca)(a => map(cab)(ab => ab(a)))
+
+  /**
+   * Flattens a nested context into a single context.
+   */
+  def flatten[A](cca: Context[Context[A]]): Context[A] = flatMap(cca)(a => a)
 }
 
 /**
@@ -46,19 +51,40 @@ trait Monad[Context[_]] extends Applicative[Context] {
  */
 object Monad {
 
+  /**
+   * Monad adapter class for any Context[A].
+   */
   class Adapter[Context[_], A](val underlying: Context[A])(implicit val monad: Monad[Context]) {
     def map[B](f: A => B) = monad.map(underlying)(f)
     def flatMap[B](f: A => Context[B]) = monad.flatMap(underlying)(f)
   }
 
-  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
-    new Adapter(ca)(ev)
+  /**
+   * Monad adapter class for any nested context (<code>Context[ Context[A] ]</code>).
+   */
+  class NestedAdapter[Context[_], A](val underlying: Context[Context[A]])(implicit val monad: Monad[Context]) {
+    def flatten: Context[A] = monad.flatten(underlying)
+  }
+
+  implicit object adapters {
+    /**
+     * Implicit conversion from a Context[A] to a Monad.Adapter.
+     */
+    implicit def adapter[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
+      new Adapter(ca)(ev)
+
+    /**
+     * Implicit conversion from a nested context (Context[ Context[A] ]) to a Monad.NestedAdapter
+     */
+    implicit def flattenAdapter[Context[_], A](cca: Context[Context[A]])(implicit ev: Monad[Context]): NestedAdapter[Context, A] =
+      new NestedAdapter[Context, A](cca)(ev)
+  }
 
   /**
    * Summons an implicitly available <code>Monad[Context]</code>.
    *
    * @param ev Evidence (implicit typeclass) that Context is an Applicative.
-   * @tparam Context The type of teh <code>Monad[Context]</code> to summon.
+   * @tparam Context The type of the <code>Monad[Context]</code> to summon.
    * @return The <code>Monad[Context]</code> instance.
    */
   def apply[Context[_]](implicit ev: Monad[Context]): Monad[Context] = ev
