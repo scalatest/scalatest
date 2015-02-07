@@ -57,28 +57,14 @@ object Monad {
   class Adapter[Context[_], A](val underlying: Context[A])(implicit val monad: Monad[Context]) {
     def map[B](f: A => B) = monad.map(underlying)(f)
     def flatMap[B](f: A => Context[B]) = monad.flatMap(underlying)(f)
+    def flatten[B](implicit ev: A <:< Context[B]) = monad.flatMap(underlying)(ev)
   }
 
   /**
-   * Monad adapter class for any nested context (<code>Context[ Context[A] ]</code>).
+   * Implicit conversion from a Context[A] to a Monad.Adapter.
    */
-  class NestedAdapter[Context[_], A](val underlying: Context[Context[A]])(implicit val monad: Monad[Context]) {
-    def flatten: Context[A] = monad.flatten(underlying)
-  }
-
-  implicit object adapters {
-    /**
-     * Implicit conversion from a Context[A] to a Monad.Adapter.
-     */
-    implicit def adapter[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
-      new Adapter(ca)(ev)
-
-    /**
-     * Implicit conversion from a nested context (Context[ Context[A] ]) to a Monad.NestedAdapter
-     */
-    implicit def flattenAdapter[Context[_], A](cca: Context[Context[A]])(implicit ev: Monad[Context]): NestedAdapter[Context, A] =
-      new NestedAdapter[Context, A](cca)(ev)
-  }
+  implicit def adapters[Context[_], A](ca: Context[A])(implicit ev: Monad[Context]): Adapter[Context, A] =
+    new Adapter(ca)(ev)
 
   /**
    * Summons an implicitly available <code>Monad[Context]</code>.

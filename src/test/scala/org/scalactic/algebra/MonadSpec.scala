@@ -59,5 +59,27 @@ class MonadSpec extends UnitSpec {
 
     new MonadLaws[Or.B[Int]#G].assert()
   }
+
+  "A Monad" should "offer a flatten method" in {
+    class ListMonad extends Monad[List] {
+      override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
+      override def insert[A](a: A): List[A] = List(a)
+    }
+
+    implicit val listMonad = new ListMonad
+
+    Monad[List].flatten(List(List(1, 2), List(3, 4), List(5, 6))) shouldEqual List(1, 2, 3, 4, 5, 6)
+  }
+  "A Monad Adapter" should "offer a flatten method" in {
+    class ListMonad extends Monad[List] {
+      override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
+      override def insert[A](a: A): List[A] = List(a)
+    }
+
+    implicit val listMonad = new ListMonad
+
+    val adapted = new Monad.Adapter[List, List[Int]]((List(List(1, 2), List(3, 4), List(5, 6))))
+    adapted.flatten shouldEqual List(1, 2, 3, 4, 5, 6)
+  }
 }
 
