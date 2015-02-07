@@ -2824,6 +2824,12 @@ trait WebBrowser {
       }
       catch {
         case e: org.openqa.selenium.NoSuchElementException => None
+        case e: org.openqa.selenium.WebDriverException =>
+          if (e.getMessage.contains("Unable to find element") && e.getMessage.contains(queryString)) {
+            None
+          } else {
+            throw e
+        }
       }
 
     /**
