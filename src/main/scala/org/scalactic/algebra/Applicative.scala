@@ -63,7 +63,7 @@ trait Applicative[Context[_]] extends Functor[Context] {
    * Applies the given function in context to the given values in context, returning the result in
    * the context.
    */
-  def applying2[A, B, C](ca: Context[A], cb: Context[B])(cf: Context[(A, B) => C]): Context[C] = {
+  def applying[A, B, C](ca: Context[A], cb: Context[B])(cf: Context[(A, B) => C]): Context[C] = {
     val ap1 = applying(ca)(map(cf)(_.curried))
     val ap2 = applying(cb)(ap1)
     ap2
@@ -73,7 +73,7 @@ trait Applicative[Context[_]] extends Functor[Context] {
    * Applies the given function in context to the given values in context, returning the result in
    * the context.
    */
-  def applying3[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(cf: Context[(A, B, C) => D]): Context[D] = {
+  def applying[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(cf: Context[(A, B, C) => D]): Context[D] = {
     val ap1 = applying(ca)(map(cf)(_.curried))
     val ap2 = applying(cb)(ap1)
     val ap3 = applying(cc)(ap2)
@@ -90,15 +90,15 @@ trait Applicative[Context[_]] extends Functor[Context] {
    * Applies the given function to the given values in context, returning the result in
    * the context.
    */
-  def map2[A, B, C](ca: Context[A], cb: Context[B])(f: (A, B) => C): Context[C] =
-    applying2(ca, cb)(insert(f))
+  def mapAll[A, B, C](ca: Context[A], cb: Context[B])(f: (A, B) => C): Context[C] =
+    applying(ca, cb)(insert(f))
 
   /**
    * Applies the given function to the given values in context, returning the result in
    * the context.
    */
-  def map3[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(f: (A, B, C) => D): Context[D] =
-    applying3(ca, cb, cc)(insert(f))
+  def mapAll[A, B, C, D](ca: Context[A], cb: Context[B], cc: Context[C])(f: (A, B, C) => D): Context[D] =
+    applying(ca, cb, cc)(insert(f))
 
   /**
    * Transforms the given function into another function where the parameter and result types are lifted into a context.
@@ -109,26 +109,26 @@ trait Applicative[Context[_]] extends Functor[Context] {
   /**
    * Transforms the given function into another function where each parameter type and the result type are lifted into a context.
    */
-  def lift2[A, B, C](f: (A, B) => C): (Context[A], Context[B]) => Context[C] =
-    (ca: Context[A], cb: Context[B]) => map2(ca, cb)(f)
+  def lift[A, B, C](f: (A, B) => C): (Context[A], Context[B]) => Context[C] =
+    (ca: Context[A], cb: Context[B]) => mapAll(ca, cb)(f)
 
   /**
    * Transforms the given function into another function where each parameter type and the result type are lifted into a context.
    */
-  def lift3[A, B, C, D](f: (A, B, C) => D): (Context[A], Context[B], Context[C]) => Context[D] =
-    (ca: Context[A], cb: Context[B], cc: Context[C]) => map3(ca, cb, cc)(f)
+  def lift[A, B, C, D](f: (A, B, C) => D): (Context[A], Context[B], Context[C]) => Context[D] =
+    (ca: Context[A], cb: Context[B], cc: Context[C]) => mapAll(ca, cb, cc)(f)
 
   /**
    * Transforms two contexts containing values into a context containing a tuple of the two corresponding values.
    */
-  def tupled2[A, B](ca: Context[A], cb: Context[B]): Context[(A, B)] =
-    map2(ca, cb)((_,_))
+  def tupled[A, B](ca: Context[A], cb: Context[B]): Context[(A, B)] =
+    mapAll(ca, cb)((_,_))
 
   /**
    * Transforms three contexts containing values into a context containing a tuple of the three corresponding values.
    */
-  def tupled3[A, B, C](ca: Context[A], cb: Context[B], cc: Context[C]): Context[(A, B, C)] =
-    map3(ca, cb, cc)((_,_,_))
+  def tupled[A, B, C](ca: Context[A], cb: Context[B], cc: Context[C]): Context[(A, B, C)] =
+    mapAll(ca, cb, cc)((_,_,_))
 }
 
 /**
