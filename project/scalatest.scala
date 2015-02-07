@@ -296,7 +296,47 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest All",
-      organization := "org.scalatest"
+      name := "scalatest-all",
+      organization := "org.scalatest",
+      // include the scalactic classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
+      // include the scalactic sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalactic, Compile, packageSrc).value,
+      // include the scalatest classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatest, Compile, packageBin).value,
+      // include the scalatest sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatest, Compile, packageSrc).value
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.concurrent",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.fixture",
+        "org.scalatest.junit",
+        "org.scalatest.matchers",
+        "org.scalatest.mock",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.selenium",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.testng",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.verb",
+        "org.scalatest.words",
+        "org.scalactic",
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
     ).dependsOn(scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest, scalacticTest, scalatestTest)
 
   def gentestsLibraryDependencies =
