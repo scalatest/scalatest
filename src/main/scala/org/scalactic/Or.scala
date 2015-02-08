@@ -843,6 +843,9 @@ sealed abstract class Or[+G,+B] {
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Or</code>'s value
    */
   def fold[V](gf: G => V, bf: B => V): V
+
+  @deprecated("This is no longer necessary. Please just delete invocations of asOr")
+  def asOr: G Or B = this
 }
 
 /**
@@ -1089,7 +1092,7 @@ object Or {
  *
  * @param g the &ldquo;good&rdquo; value
  */
-final case class Good[+G,+B](g: G) extends Or[G,B] {
+final case class Good[+G](g: G) extends Or[G,Nothing] {
   override val isGood: Boolean = true
 
   /**
@@ -1157,7 +1160,7 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
    * res3: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(9)
    * </pre>
    */
-  def asOr: G Or B = this
+  override def asOr: G Or Nothing = this
 
   /**
    * Narrows the <code>Bad</code> type of this <code>Good</code> to the given type.
@@ -1182,15 +1185,15 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
    * res1: org.scalactic.Good[Int,String] = Good(3)
    * </pre>
    */
-  def orBad[C](implicit ev: B <:< C): Good[G, C] = this.asInstanceOf[Good[G, C]]
+  def orBad[C]: G Or C = this.asInstanceOf[Or[G, C]]
   def get: G = g
-  def map[H](f: G => H): H Or B = Good(f(g))
-  def badMap[C](f: B => C): G Or C = this.asInstanceOf[G Or C]
-  def recover[H >: G](f: B => H): H Or B = this.asInstanceOf[H Or B]
-  def recoverWith[H >: G, C](f: B => H Or C): H Or C = this.asInstanceOf[H Or C]
+  def map[H](f: G => H): H Or Nothing = Good(f(g))
+  def badMap[C](f: Nothing => C): G Or C = this.asInstanceOf[G Or C]
+  def recover[H >: G](f: Nothing => H): H Or Nothing = this.asInstanceOf[H Or Nothing]
+  def recoverWith[H >: G, C](f: Nothing => H Or C): H Or C = this.asInstanceOf[H Or C]
   def foreach(f: G => Unit): Unit = f(g)
-  def flatMap[H, C >: B](f: G => H Or C): H Or C = f(g)
-  def filter[C >: B](f: G => Validation[C]): G Or C =
+  def flatMap[H, C >: Nothing](f: G => H Or C): H Or C = f(g)
+  def filter[C >: Nothing](f: G => Validation[C]): G Or C =
     f(g) match {
       case Fail(error) => Bad(error)
       case Pass => this
@@ -1198,15 +1201,15 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def exists(p: G => Boolean): Boolean = p(g)
   def forall(p: G => Boolean): Boolean = p(g)
   def getOrElse[H >: G](default: => H): G = g
-  def orElse[H >: G, C >: B](alternative: => H Or C): G Or B = this
+  def orElse[H >: G, C >: Nothing](alternative: => H Or C): G Or Nothing = this
   def toOption: Some[G] = Some(g)
   def toSeq: scala.collection.immutable.IndexedSeq[G] = Vector(g)
-  def toEither: Either[B, G] = Right(g)
-  def accumulating: G Or One[B] = Good(g)
-  def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
-  def swap: B Or G = Bad(g)
-  def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = gf(g)
-  def fold[V](gf: G => V, bf: B => V): V = gf(g)
+  def toEither: Either[Nothing, G] = Right(g)
+  def accumulating: G Or One[Nothing] = Good(g)
+  def toTry(implicit ev: Nothing <:< Throwable): Success[G] = Success(g)
+  def swap: Nothing Or G = Bad(g)
+  def transform[H, C](gf: G => H Or C, bf: Nothing => H Or C): H Or C = gf(g)
+  def fold[V](gf: G => V, bf: Nothing => V): V = gf(g)
 }
 
 /**
@@ -1238,7 +1241,7 @@ object Good {
      * @param b the &ldquo;bad&rdquo; value
      * @return a new <code>Bad</code> instance containing the passed <code>b</code> value
      */
-    def orBad[B](b: B): Bad[G, B] = Bad[G, B](b)
+    def orBad[B](b: B): G Or B = Bad[B](b)
 
     override def toString: String = "GoodType"
   }
@@ -1282,7 +1285,7 @@ object Good {
  *
  * @param b the &ldquo;bad&rdquo; value
  */
-final case class Bad[+G,+B](b: B) extends Or[G,B] {
+final case class Bad[+B](b: B) extends Or[Nothing,B] {
   override val isBad: Boolean = true
 
   /**
@@ -1337,25 +1340,25 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
    * res5: org.scalactic.Or[Int,ErrorMessage] = Bad(No even nums)
    * </pre>
    */
-  def asOr: G Or B = this
-  def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
-  def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
-  def badMap[C](f: B => C): G Or C = Bad(f(b))
-  def recover[H >: G](f: B => H): H Or B = Good(f(b))
-  def recoverWith[H >: G, C](f: B => H Or C): H Or C = f(b)
-  def foreach(f: G => Unit): Unit = ()
-  def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
-  def filter[C >: B](f: G => Validation[C]): G Or C = this
-  def exists(p: G => Boolean): Boolean = false
-  def forall(p: G => Boolean): Boolean = true
-  def getOrElse[H >: G](default: => H): H = default
-  def orElse[H >: G, C >: B](alternative: => H Or C): H Or C = alternative
+  override def asOr: Nothing Or B = this
+  def get: Nothing = throw new NoSuchElementException("Bad(" + b + ").get")
+  def map[H](f: Nothing => H): H Or B = this.asInstanceOf[H Or B]
+  def badMap[C](f: B => C): Nothing Or C = Bad(f(b))
+  def recover[H >: Nothing](f: B => H): H Or B = Good(f(b))
+  def recoverWith[H >: Nothing, C](f: B => H Or C): H Or C = f(b)
+  def foreach(f: Nothing => Unit): Unit = ()
+  def flatMap[H, C >: B](f: Nothing => H Or C): H Or C = this.asInstanceOf[H Or C]
+  def filter[C >: B](f: Nothing => Validation[C]): Nothing Or C = this
+  def exists(p: Nothing => Boolean): Boolean = false
+  def forall(p: Nothing => Boolean): Boolean = true
+  def getOrElse[H >: Nothing](default: => H): H = default
+  def orElse[H >: Nothing, C >: B](alternative: => H Or C): H Or C = alternative
   def toOption: None.type = None
-  def toSeq: scala.collection.immutable.IndexedSeq[G] = Vector.empty
-  def toEither: Either[B, G] = Left(b)
-  def accumulating: G Or One[B] = Bad(One(b))
-  def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
-  def swap: B Or G = Good(b)
-  def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = bf(b)
-  def fold[V](gf: G => V, bf: B => V): V = bf(b)
+  def toSeq: scala.collection.immutable.IndexedSeq[Nothing] = Vector.empty
+  def toEither: Either[B, Nothing] = Left(b)
+  def accumulating: Nothing Or One[B] = Bad(One(b))
+  def toTry(implicit ev: B <:< Throwable): Failure[Nothing] = Failure(b)
+  def swap: B Or Nothing = Good(b)
+  def transform[H, C](gf: Nothing => H Or C, bf: B => H Or C): H Or C = bf(b)
+  def fold[V](gf: Nothing => V, bf: B => V): V = bf(b)
 }
