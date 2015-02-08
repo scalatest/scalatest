@@ -78,29 +78,33 @@ object EqualityConstraint extends LowPriorityEqualityConstraints {
 
   implicit def orOnBothSidesWithBadNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Or[ELG, Nothing]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Or[ELG, Nothing], Or[ERG, Nothing]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, Nothing], Or[ERG, Nothing]](equalityOfL)
 
-  implicit def goodOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG, ELB]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG, ELB], Or[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Good[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+  implicit def goodOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG], Or[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Good[ELG], Or[ERG, ERB]](equalityOfL)
 
-  implicit def goodOnLeftOrOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG, Nothing]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG, Nothing], Or[ERG, Nothing]] with NativeSupport = new BasicEqualityConstraint[Good[ELG, Nothing], Or[ERG, Nothing]](equalityOfL)
+  implicit def goodOnLeftOrOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG], Or[ERG, Nothing]] with NativeSupport = new BasicEqualityConstraint[Good[ELG], Or[ERG, Nothing]](equalityOfL)
 
-  implicit def orOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Or[ELG, ELB], Good[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, ELB], Good[ERG, ERB]](equalityOfL)
+  implicit def orOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Or[ELG, ELB], Good[ERG]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, ELB], Good[ERG]](equalityOfL)
 
-  implicit def orOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Or[ELG, Nothing]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Or[ELG, Nothing], Good[ERG, Nothing]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, Nothing], Good[ERG, Nothing]](equalityOfL)
+  // XXX
+  implicit def orOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Or[ELG, Nothing]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Or[ELG, Nothing], Good[ERG]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, Nothing], Good[ERG]](equalityOfL)
 
-  implicit def goodOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG, ELB]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG, ELB], Good[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Good[ELG, ELB], Good[ERG, ERB]](equalityOfL)
+  implicit def goodOnLeftGoodOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Good[ELG]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG], Good[ERG]] with NativeSupport = new BasicEqualityConstraint[Good[ELG], Good[ERG]](equalityOfL)
 
-  implicit def goodOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG, Nothing]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG, Nothing], Good[ERG, Nothing]] with NativeSupport = new BasicEqualityConstraint[Good[ELG, Nothing], Good[ERG, Nothing]](equalityOfL)
+  // XXX
+  // implicit def goodOnLeftGoodOnRightNothingConstraint[ELG, ERG](implicit equalityOfL: Equality[Good[ELG]], ev: EqualityConstraint[ELG, ERG] with NativeSupport): EqualityConstraint[Good[ELG], Good[ERG]] with NativeSupport = new BasicEqualityConstraint[Good[ELG], Good[ERG]](equalityOfL)
 
-  implicit def badOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELG, ELB], Or[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELG, ELB], Or[ERG, ERB]](equalityOfL)
+  implicit def badOnLeftOrOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELB], Or[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELB], Or[ERG, ERB]](equalityOfL)
 
-  implicit def badOnLeftOrOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[Nothing, ELB], Or[Nothing, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[Nothing, ELB], Or[Nothing, ERB]](equalityOfL)
+  // XXX
+  implicit def badOnLeftOrOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELB], Or[Nothing, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELB], Or[Nothing, ERB]](equalityOfL)
 
-  implicit def orOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[ELG, ELB], Bad[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
+  implicit def orOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Or[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[ELG, ELB], Bad[ERB]] with NativeSupport = new BasicEqualityConstraint[Or[ELG, ELB], Bad[ERB]](equalityOfL)
 
-  implicit def orOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Or[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[Nothing, ELB], Bad[Nothing, ERB]] with NativeSupport = new BasicEqualityConstraint[Or[Nothing, ELB], Bad[Nothing, ERB]](equalityOfL)
+  // XXX
+  implicit def orOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Or[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Or[Nothing, ELB], Bad[ERB]] with NativeSupport = new BasicEqualityConstraint[Or[Nothing, ELB], Bad[ERB]](equalityOfL)
 
-  implicit def badOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELG, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELG, ELB], Bad[ERG, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELG, ELB], Bad[ERG, ERB]](equalityOfL)
+  implicit def badOnLeftBadOnRightEqualityConstraint[ELG, ELB, ERG, ERB](implicit equalityOfL: Equality[Bad[ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELB], Bad[ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELB], Bad[ERB]](equalityOfL)
 
-  implicit def badOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[Nothing, ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[Nothing, ELB], Bad[Nothing, ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[Nothing, ELB], Bad[Nothing, ERB]](equalityOfL)
+  // implicit def badOnLeftBadOnRightNothingConstraint[ELB, ERB](implicit equalityOfL: Equality[Bad[ELB]], ev: EqualityConstraint[ELB, ERB] with NativeSupport): EqualityConstraint[Bad[ELB], Bad[ERB]] with NativeSupport = new BasicEqualityConstraint[Bad[ELB], Bad[ERB]](equalityOfL)
 
   // Either (in x === y, x is the "target" of the === invocation, y is the "parameter")
   // ETL Element Target Left
