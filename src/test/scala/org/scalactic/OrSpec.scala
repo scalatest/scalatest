@@ -34,10 +34,10 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Bad("oops") shouldBe 'bad
 
     Good(7) shouldBe an [Or[_, _]]
-    Good(7) shouldBe an [Good[_, _]]
+    Good(7) shouldBe an [Good[_]]
 
     Bad("oops") shouldBe an [Or[_, _]]
-    Bad("oops") shouldBe an [Bad[_, _]]
+    Bad("oops") shouldBe an [Bad[_]]
   }
   it can "have its non-inferred type widened by an apply call with a type param" in {
     /*
@@ -76,14 +76,14 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good[Int].orBad("oops") shouldBe Bad("oops")
 
     // You could also do it this way:
-    Good[Int, String](3) shouldBe Good(3)
-    Bad[Int, String]("oops") shouldBe Bad("oops")
+    Good[Int](3) shouldBe Good(3)
+    Bad[String]("oops") shouldBe Bad("oops")
 
     // But that requires that you also give a type that would be inferred from the value. This
     // would only be necessary if you wanted a more general type than that which
     // would otherwise be inferred from the given value, such as:
-    Good[AnyVal, String](3) shouldBe Good(3)
-    Bad[Int, AnyRef]("oops") shouldBe Bad("oops")
+    Good[AnyVal](3) shouldBe Good(3)
+    Bad[AnyRef]("oops") shouldBe Bad("oops")
 
     // In that case, though, I recommend a type ascription, because I think it is easier to read:
     (Good(3): AnyVal Or String) shouldBe Good(3)
@@ -233,18 +233,18 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   it can "be used with zip" in {
     Good(12).orBad[Every[ErrorMessage]] zip Good("hi").orBad[Every[ErrorMessage]] should === (Good((12, "hi")).orBad[Every[ErrorMessage]])
     Good[Int].orBad(One("so")) zip Good[String].orBad(One("ho")) should === (Bad(Many("so", "ho")))
-    (Good(12): Int Or Every[ErrorMessage]) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
-    Bad[Int, Every[ErrorMessage]](One("so")) zip Good[String, Every[ErrorMessage]]("hi") should === (Bad(One("so")))
+    (Good(12): Int Or Every[ErrorMessage]) zip Bad[Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
+    Bad[Every[ErrorMessage]](One("so")) zip Good[String]("hi") should === (Bad(One("so")))
 
-    Good[Int, One[ErrorMessage]](12) zip Good[String, Every[ErrorMessage]]("hi") should === (Good[(Int, String), Every[ErrorMessage]]((12, "hi")))
-    Bad[Int, One[ErrorMessage]](One("so")) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
-    Good[Int, One[ErrorMessage]](12) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
-    Bad[Int, One[ErrorMessage]](One("so")) zip Good[String, Every[ErrorMessage]]("hi") should === (Bad(One("so")))
+    Good[Int](12) zip Good[String]("hi") should === (Good[(Int, String)]((12, "hi")))
+    Bad[One[ErrorMessage]](One("so")) zip Bad[Every[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
+    Good[Int](12) zip Bad[Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
+    Bad[One[ErrorMessage]](One("so")) zip Good[String]("hi") should === (Bad(One("so")))
 
-    Good[Int, Every[ErrorMessage]](12) zip Good[String, One[ErrorMessage]]("hi") should === (Good[(Int, String), Every[ErrorMessage]]((12, "hi")))
-    Bad[Int, Every[ErrorMessage]](One("so")) zip Bad[String, One[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
-    Good[Int, Every[ErrorMessage]](12) zip Bad[String, One[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
-    Bad[Int, Every[ErrorMessage]](One("so")) zip Good[String, One[ErrorMessage]]("hi") should === (Bad(One("so")))
+    Good[Int](12) zip Good[String]("hi") should === (Good[(Int, String)]((12, "hi")))
+    Bad[Every[ErrorMessage]](One("so")) zip Bad[One[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
+    Good[Int](12) zip Bad[One[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
+    Bad[Every[ErrorMessage]](One("so")) zip Good[String]("hi") should === (Bad(One("so")))
 
     // Works when right hand side ERR type is a supertype of left hand side ERR type, because that's what Every's ++ does.
     Good[Int].orBad(One("oops")) zip Good[Int].orBad(One(-1: Any)) shouldBe Bad(Many("oops", -1))
@@ -254,32 +254,32 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   }
 
   it can "be used with when" in {
-    Good[Int, Every[ErrorMessage]](12).when(
+    Good[Int](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 100) Pass else Fail(i + " was not less than 100"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Good(12)
-    Good[Int, Every[ErrorMessage]](12).when(
+    Good[Int](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("12 was not less than 3"))
-    Good[Int, Every[ErrorMessage]](12).when(
+    Good[Int](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not less than 3", "12 was not odd"))
-    Good[Int, Every[ErrorMessage]](12).when(
+    Good[Int](12).when(
       (i: Int) => if (i > 99) Pass else Fail(i + " was not greater than 99"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not greater than 99", "12 was not less than 3", "12 was not odd"))
-    Bad[Int, Every[ErrorMessage]](One("original error")).when(
+    Good[Int].orBad[Every[ErrorMessage]](One("original error")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("original error"))
-    Bad[Int, Every[ErrorMessage]](Many("original error 1", "original error 2")).when(
+    Good[Int].orBad[Every[ErrorMessage]](Many("original error 1", "original error 2")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
@@ -485,8 +485,8 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
     // Set
     Set.empty[Int Or Every[String]].combined shouldBe Good(Set.empty[Int])
-    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).asInstanceOf[Set[Int Or Every[String]]].combined shouldBe Bad(One("oops"))
-    Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).combined shouldBe Bad(One("oops"))
+    Set(Good[Int](3), Bad[Every[String]](Every("oops"))).asInstanceOf[Set[Int Or Every[String]]].combined shouldBe Bad(One("oops"))
+    Set(Good[Int](3), Bad[Every[String]](Every("oops"))).combined shouldBe Bad(One("oops"))
 
     Set(Good(3)).combined shouldBe Good(Set(3))
     Set(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
