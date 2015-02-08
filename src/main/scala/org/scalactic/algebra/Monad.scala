@@ -23,7 +23,7 @@ import scala.language.implicitConversions
  * laws of <em>identity</em> and <em>associativity</em>.
  *
  * <p>
- * A <code>Monad/code> instance wraps an object that in some way behaves as a <code>Monad</code>.
+ * A <code>Monad</code> instance wraps an object that in some way behaves as a <code>Monad</code>.
  * </p>
  */
 trait Monad[Context[_]] extends Applicative[Context] {
