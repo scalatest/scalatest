@@ -209,7 +209,7 @@ import org.scalatest.exceptions.DiscardedEvaluationException
  *
  * <p>
  * To test the behavior of <code>Fraction</code>, you could mix in or import the members of <code>GeneratorDrivenPropertyChecks</code>
- * (and <code>ShouldMatchers</code>) and check a property using a <code>forAll</code> method, like this:
+ * (and <code>Matchers</code>) and check a property using a <code>forAll</code> method, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1131,7 +1131,8 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 
 val generatorSuitePreamble = """
 
-import matchers.ShouldMatchers
+import org.scalatest.Matchers
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Gen
 """
 
@@ -1143,7 +1144,7 @@ val generatorSuitePostamble = """
   val sevenEleven: Gen[String] =
     Gen.sized { (size: Int) =>
       if (size >= 7 && size <= 11)
-        Gen.value("OKAY")
+        Gen.const("OKAY")
       else
         throw new Exception("expected 7 <= size <= 11 but got " + size)
     }
@@ -1151,7 +1152,7 @@ val generatorSuitePostamble = """
   val fiveFive: Gen[String] =
     Gen.sized { (size: Int) =>
       if (size == 5)
-        Gen.value("OKAY")
+        Gen.const("OKAY")
       else
         throw new Exception("expected size 5 but got " + size)
     }

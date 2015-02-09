@@ -35,27 +35,27 @@ object GenTheyWord {
   }
   
   def genTest(dir: File, version: String, scalaVersion: String) {
-    generateFile("src/test/scala/org/scalatest", 
+    generateFile("scalatest-test/src/test/scala/org/scalatest",
                  "FunSpecSuite", 
                  dir.getAbsolutePath, 
                  "FunSpecSuiteUsingThey")
-    generateFile("src/test/scala/org/scalatest", 
+    generateFile("scalatest-test/src/test/scala/org/scalatest",
                  "FunSpecSpec", 
                  dir.getAbsolutePath, 
                  "FunSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest", 
+    generateFile("scalatest-test/src/test/scala/org/scalatest",
                  "FlatSpecSpec", 
                  dir.getAbsolutePath, 
                  "FlatSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest/path", 
+    generateFile("scalatest-test/src/test/scala/org/scalatest/path",
                  "FunSpecSpec", 
                  dir.getAbsolutePath, 
                  "PathFunSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest/fixture", 
+    generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
                  "FunSpecSpec", 
                  dir.getAbsolutePath, 
                  "FixtureFunSpecSpecUsingThey")
-    generateFile("src/test/scala/org/scalatest/fixture",
+    generateFile("scalatest-test/src/test/scala/org/scalatest/fixture",
                  "FlatSpecSpec",
                  dir.getAbsolutePath,
                  "FixtureFlatSpecSpecUsingThey")

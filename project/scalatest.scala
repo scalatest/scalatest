@@ -158,7 +158,8 @@ object ScalatestBuild extends Build {
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "Common test classes used by scalactic and scalatest"
+      projectTitle := "Common test classes used by scalactic and scalatest",
+      libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
     ).dependsOn(LocalProject("scalatest"))
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
@@ -356,21 +357,13 @@ object ScalatestBuild extends Build {
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
-  lazy val gentestsHelper = Project("gentestsHelper", file("gentests/helper"))
-    .settings(gentestsSharedSettings: _*)
-    .settings(
-      genTestsHelperTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest)
-    ).dependsOn(scalatest)
-
   lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
     .settings(gentestsSharedSettings: _*)
@@ -378,7 +371,7 @@ object ScalatestBuild extends Build {
       genGenTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
@@ -386,7 +379,7 @@ object ScalatestBuild extends Build {
       genTablesTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
     .settings(gentestsSharedSettings: _*)
@@ -394,7 +387,7 @@ object ScalatestBuild extends Build {
       genInspectorsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
     .settings(gentestsSharedSettings: _*)
@@ -402,7 +395,7 @@ object ScalatestBuild extends Build {
       genInspectorsShorthandsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
     .settings(gentestsSharedSettings: _*)
@@ -410,7 +403,7 @@ object ScalatestBuild extends Build {
       genTheyWordTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
     .settings(gentestsSharedSettings: _*)
@@ -418,7 +411,7 @@ object ScalatestBuild extends Build {
       genContainTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
     .settings(gentestsSharedSettings: _*)
@@ -426,7 +419,7 @@ object ScalatestBuild extends Build {
       genSortedTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
     .settings(gentestsSharedSettings: _*)
@@ -434,7 +427,7 @@ object ScalatestBuild extends Build {
       genLoneElementTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
     .settings(gentestsSharedSettings: _*)
@@ -442,7 +435,7 @@ object ScalatestBuild extends Build {
       genEmptyTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
-    ).dependsOn(scalatest, gentestsHelper % "test->test")
+    ).dependsOn(scalatest, commonTest)
 
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
@@ -537,11 +530,6 @@ object ScalatestBuild extends Build {
   val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
   val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), theVersion, theScalaVersion)
-  }
-
-  val genTestsHelper = TaskKey[Unit]("gentestshelper", "Generate helper classes for gentests project")
-  val genTestsHelperTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenTestsHelper.genTest(new File(testTargetDir, "scala/gentestshelper"), theVersion, theScalaVersion)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")

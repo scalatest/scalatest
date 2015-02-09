@@ -34,7 +34,7 @@ object GenEmpty {
   
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
     
-    val sourceBaseDir = new File("src/test/scala/org/scalatest")
+    val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
     val targetDir = new File(targetBaseDir, "emptyTests")
     targetDir.mkdirs()
     
