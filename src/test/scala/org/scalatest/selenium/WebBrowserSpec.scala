@@ -2029,7 +2029,80 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       """ should compile
     }
   }
-  
+
+  describe("jquery.$$") {
+    import jquery._
+
+    it("should return an empty list when no matching elements are found") {
+      goTo(host + "jquery.html")
+      $$("#nonexistent").size should be (0)
+    }
+
+    it("should return 3 elements containing our spans") {
+      goTo(host + "jquery.html")
+      val inners = $$(".inner")
+      inners.size should be (3)
+      inners foreach (_.tagName should be ("span"))
+    }
+  }
+
+  describe("jquery.$") {
+    import org.openqa.selenium.NoSuchElementException
+    import jquery._
+
+    it("should find an individual element that exists") {
+      goTo(host + "jquery.html")
+      $("#main").tagName should be ("div")
+    }
+
+    it("should throw an exception when no elements are found") {
+      goTo(host + "jquery.html")
+      intercept[NoSuchElementException]($(".nonexistent"))
+    }
+
+    it("should throw an exception when more than one element is found") {
+      goTo(host + "jquery.html")
+      intercept[NoSuchElementException]($(".inner"))
+    }
+  }
+
+  describe("jquery.EnhancedElement.findAll") {
+    import org.openqa.selenium.NoSuchElementException
+    import jquery._
+
+    it("should return an empty list when no matching elements are found") {
+      goTo(host + "jquery.html")
+      $("#main").findAll(".nonexistent").size should be (0)
+    }
+
+    it("should return 3 elements containing our spans") {
+      goTo(host + "jquery.html")
+      val inners = $("#main").findAll(".inner")
+      inners.size should be (3)
+      inners foreach (_.tagName should be ("span"))
+    }
+  }
+
+  describe("jquery.EnhancedElement.find") {
+    import org.openqa.selenium.NoSuchElementException
+    import jquery._
+
+    it("should find an individual element that exists") {
+      goTo(host + "jquery.html")
+      $(".outer").find(".zero").text should be ("0")
+    }
+
+    it("should throw an exception when no elements are found") {
+      goTo(host + "jquery.html")
+      intercept[NoSuchElementException]($(".outer").find(".nonexistent"))
+    }
+
+    it("should throw an exception when more than one element is found") {
+      goTo(host + "jquery.html")
+      intercept[NoSuchElementException]($(".outer").find(".inner"))
+    }
+  }
+
   def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace
 
