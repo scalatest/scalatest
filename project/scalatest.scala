@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    )
+    ).aggregate(LocalProject("scalactic-test"))
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
@@ -257,7 +257,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalactic)
+   ).dependsOn(scalactic).aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
@@ -337,7 +337,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest, scalacticTest, scalatestTest)
+    ).dependsOn(scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
 
   def gentestsLibraryDependencies =
     Seq(
