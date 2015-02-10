@@ -193,6 +193,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
+        "org.scalactic.anyvals",
         "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
