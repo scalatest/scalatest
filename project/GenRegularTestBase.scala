@@ -41,7 +41,7 @@ trait GenRegularTestsBase {
 
   def copyFile(targetBaseDir: File, filePath: String): Unit = {
     val source = new File(filePath)
-    val targetDir = new File(targetBaseDir, source.getPath.substring("src/test/scala/".length, source.getPath.lastIndexOf("/")))
+    val targetDir = new File(targetBaseDir, source.getPath.substring("scalatest-test/src/test/scala/".length, source.getPath.lastIndexOf("/")))
     targetDir.mkdirs()
     val target = new File(targetDir, source.getName)
     copyFile(source, target)
@@ -51,7 +51,7 @@ trait GenRegularTestsBase {
     targetDir.mkdirs()
     for (sourceFile <- dir.listFiles) {
       val sourceFileName = sourceFile.getName
-      if (!GenTestsHelper.fileList.contains(sourceFile.getPath) && includeFile(sourceFile)) {
+      if (includeFile(sourceFile)) {
         val outputFile = new File(targetDir, sourceFileName)
         copyFile(new File(dir, sourceFileName), outputFile)
       }
@@ -76,7 +76,7 @@ trait GenRegularTestsBase {
   def copyJavaDir(targetBaseDir: File): Unit = {
     val testDir = targetBaseDir.getParentFile.getParentFile
     val javaDir = new File(testDir, "java")
-    processJavaDir(new File("src/test/java"), new File(javaDir, name))
+    processJavaDir(new File("scalatest-test/src/test/java"), new File(javaDir, name))
   }
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String) {

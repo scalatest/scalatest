@@ -2357,7 +2357,7 @@ trait GenInspectorsShorthandsBase {
     val stringTypes =
       stdStringTypes(simpleMessageFun, '3', "indexElement", true, true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'should equal' failed" &&
-          condition != "'should be' failed"
+        condition != "'should be' failed"
       }
 
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5"))

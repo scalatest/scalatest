@@ -1131,6 +1131,8 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 
 val generatorSuitePreamble = """
 
+import org.scalatest.Matchers
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Gen
 """
 
@@ -1142,7 +1144,7 @@ val generatorSuitePostamble = """
   val sevenEleven: Gen[String] =
     Gen.sized { (size: Int) =>
       if (size >= 7 && size <= 11)
-        Gen.value("OKAY")
+        Gen.const("OKAY")
       else
         throw new Exception("expected 7 <= size <= 11 but got " + size)
     }
@@ -1150,7 +1152,7 @@ val generatorSuitePostamble = """
   val fiveFive: Gen[String] =
     Gen.sized { (size: Int) =>
       if (size == 5)
-        Gen.value("OKAY")
+        Gen.const("OKAY")
       else
         throw new Exception("expected size 5 but got " + size)
     }
