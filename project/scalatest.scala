@@ -119,16 +119,19 @@ object ScalatestBuild extends Build {
     docScalacOptionsSetting
   )
 
+  def scalacheckDependency(config: String) =
+    "org.scalacheck" %% "scalacheck" % "1.12.1" % config
+
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
+          scalacheckDependency("optional")
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
+        Seq(scalacheckDependency("optional"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -155,12 +158,21 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
+  lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Macro",
+      organization := "org.scalactic",
+      // Disable publishing macros directly, included in scalactic main jar
+      publish := {},
+      publishLocal := {})
+
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
-    ).dependsOn(LocalProject("scalatest"))
+      libraryDependencies += scalacheckDependency("optional")
+    ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
@@ -173,6 +185,10 @@ object ScalatestBuild extends Build {
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
+      // include the macro classes and resources in the main jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
+      // include the macro sources in the main source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
       scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -185,7 +201,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).aggregate(LocalProject("scalactic-test"))
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal").aggregate(LocalProject("scalactic-test"))
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
@@ -258,7 +274,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalactic).aggregate(LocalProject("scalatest-test"))
+   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
