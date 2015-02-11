@@ -46,6 +46,10 @@ notifications:
     - bill@artima.com
     - cheeseng@amaseng.com
 
+cache:
+  directories:
+  - $HOME/.m2
+
 #after_success:
 #  # only 'scalatest/scalatest' 'master' branch is published from the first node
 #  - |
