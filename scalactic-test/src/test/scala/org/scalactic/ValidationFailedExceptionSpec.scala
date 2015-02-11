@@ -40,6 +40,11 @@ class ValidationFailedExceptionSpec extends UnitSpec {
   }
 
   it should "take any type of error object, and pass the toString up as message" in {
+    case class ErrorValue(msg: String) {
+      override def toString = msg
+    }
+    ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
+    new ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
   }
 }
 

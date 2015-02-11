@@ -17,7 +17,7 @@ package org.scalactic
 
 import Requirements._
 
-case class ValidationFailedException(error: ErrorMessage) extends Exception(error.toString) {
+case class ValidationFailedException[E](error: E) extends Exception(error.toString) {
   requireNonNull(error)
 }
 
