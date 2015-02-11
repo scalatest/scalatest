@@ -15,9 +15,7 @@
  */
 package org.scalactic
 
-import Requirements._
-
 case class ValidationFailedException[E](error: E) extends Exception(error.toString) {
-  requireNonNull(error)
+  require(error != null, "error was null")  
 }
 
