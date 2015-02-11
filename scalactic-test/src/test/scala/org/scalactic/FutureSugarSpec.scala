@@ -17,12 +17,9 @@ package org.scalactic
 
 import java.text._
 import org.scalatest._
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
+import scala.concurrent.Future
 import prop.TableDrivenPropertyChecks._
 
-/*
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar {
 
   def isRound(i: Int): Validation[ErrorMessage] =
@@ -31,11 +28,25 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
 
-  it should "offer a validating method that takes a T => Validation" in {
-    Future.successful(12).validating(isRound) shouldBe Failure(ValidationException("12 was not a round number"))
-    Future.successful(10).validating(isRound) shouldBe Success(10)
-    Future.failed(new "oops").validating(isRound) shouldBe Failure("oops")
+  case class SomeException(msg: String) extends Exception(msg)
+
+/*
+  "FutureSugar" should "offer a validating method that takes a T => Validation" in {
+    Future.successful(12).validating(isRound) shouldBe Future.failed(ValidationFailedException("12 was not a round number"))
+    Future.successful(10).validating(isRound) shouldBe Future.successful(10)
+    Future.failed(SomeException("oops")).validating(isRound) shouldBe Future.failed(SomeException("oops"))
   }
+
+  it should "allow multiple validation functions to be passed to validating" in {
+    Future.successful(12).validating(isRound, isDivBy3) shouldBe Future.failed(ValidationFailedException("12 was not a round number"))
+    Future.successful(10).validating(isRound, isDivBy3) shouldBe Future.failed(ValidationFailedException("10 was not divisible by 3"))
+    Future.successful(30).validating(isRound, isDivBy3) shouldBe Future.successful(30)
+    Future.failed(SomeException("oops")).validating(isRound) shouldBe Future.failed(SomeException("oops"))
+  }
+
+  it should "require at least one parameter to be passed to validating" in {
+    "Try(30).validating()" shouldNot compile
+  }
+*/
 }
 
-*/

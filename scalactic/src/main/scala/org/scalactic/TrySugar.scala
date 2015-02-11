@@ -59,7 +59,7 @@ trait TrySugar {
  */
 object TrySugar extends TrySugar {
   @tailrec
-  private def passOrFirstFail[G](g: G, fs: List[G => Validation[ErrorMessage]]): Validation[ErrorMessage] = {
+  private[scalactic] def passOrFirstFail[G](g: G, fs: List[G => Validation[ErrorMessage]]): Validation[ErrorMessage] = {
     fs match {
       case Nil => Pass
       case head :: tail => 
