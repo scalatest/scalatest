@@ -37,7 +37,7 @@ trait TrySugar {
       theTry.flatMap { (g: G) =>
         TrySugar.passOrFirstFail(g, hd :: tl.toList) match {
           case Pass => theTry
-          case Fail(errMsg) => Failure(ValidationException(errMsg))
+          case Fail(errMsg) => Failure(ValidationFailedException(errMsg))
         }
       }
     }

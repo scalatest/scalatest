@@ -22,21 +22,21 @@ import scala.util.Success
 import scala.util.Failure
 import prop.TableDrivenPropertyChecks._
 
-class ValidationExceptionSpec extends UnitSpec {
+class ValidationFailedExceptionSpec extends UnitSpec {
 
-  "ValidationException" should "require an error message string and return it from message" in {
-    ValidationException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
-    new ValidationException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
+  "ValidationFailedException" should "require an error message string and return it from message" in {
+    ValidationFailedException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
+    new ValidationFailedException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
   }
 
   it should "throw a NPE if null is passed for the error message" in {
-    a [NullPointerException] shouldBe thrownBy { ValidationException(null) }
-    a [NullPointerException] shouldBe thrownBy { new ValidationException(null) }
+    a [NullPointerException] shouldBe thrownBy { ValidationFailedException(null) }
+    a [NullPointerException] shouldBe thrownBy { new ValidationFailedException(null) }
   }
 
   it should "return that same error message from getMessage" in {
-    ValidationException("I meant to do that!").getMessage shouldBe "I meant to do that!"
-    new ValidationException("I meant to do that!").getMessage shouldBe "I meant to do that!"
+    ValidationFailedException("I meant to do that!").getMessage shouldBe "I meant to do that!"
+    new ValidationFailedException("I meant to do that!").getMessage shouldBe "I meant to do that!"
   }
 }
 
