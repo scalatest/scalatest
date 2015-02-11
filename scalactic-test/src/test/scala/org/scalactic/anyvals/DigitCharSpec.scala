@@ -21,6 +21,7 @@ import OptionValues._
 import org.scalactic.StrictCheckedEquality
 
 class DigitCharSpec extends Spec with Matchers with StrictCheckedEquality {
+
   object `A DigitChar` {
     object `should offer a from factory method that` {
       def `returns Some[DigitChar] if the passed Char is between '0' and '9'` {

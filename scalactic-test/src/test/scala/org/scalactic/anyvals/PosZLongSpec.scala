@@ -21,6 +21,7 @@ import OptionValues._
 import org.scalactic.StrictCheckedEquality
 
 class PosZLongSpec extends Spec with Matchers with StrictCheckedEquality {
+
   object `A PosZLong` {
     object `should offer a from factory method that` {
       def `returns Some[PosZLong] if the passed Long is greater than or equal to 0` {

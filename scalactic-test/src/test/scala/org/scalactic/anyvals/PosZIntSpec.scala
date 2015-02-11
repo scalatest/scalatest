@@ -21,6 +21,7 @@ import OptionValues._
 import org.scalactic.StrictCheckedEquality
 
 class PosZIntSpec extends Spec with Matchers with StrictCheckedEquality {
+
   object `A PosZInt` {
     object `should offer a from factory method that` {
       def `returns Some[PosZInt] if the passed Int is greater than or equal to 0`

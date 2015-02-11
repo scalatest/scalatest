@@ -206,8 +206,8 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
-    ).dependsOn(LocalProject("scalatest"))
+      libraryDependencies += scalacheckDependency("optional")
+    ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
@@ -238,6 +238,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
+        "org.scalactic.anyvals",
         "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(

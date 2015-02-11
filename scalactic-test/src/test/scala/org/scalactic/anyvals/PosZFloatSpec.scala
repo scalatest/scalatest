@@ -21,6 +21,7 @@ import OptionValues._
 import org.scalactic.StrictCheckedEquality
 
 class PosZFloatSpec extends Spec with Matchers with StrictCheckedEquality {
+
   object `An PosZFloat` {
     object `should offer a from factory method that` {
       def `returns Some[PosZFloat] if the passed Float is greater than or equal to 0`
