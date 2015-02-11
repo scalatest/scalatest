@@ -16,6 +16,8 @@
 package org.scalactic
 
 import scala.util.Try
+import scala.util.Failure
+
 /**
  * Trait providing an implicit class that adds a <code>toOr</code> method to
  * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
@@ -30,6 +32,13 @@ trait TrySugar {
    */
   implicit class Tryizer[G](theTry: Try[G]) {
     def toOr: G Or Throwable = Or.from(theTry)
+    def validating(isValid: G => Validation[ErrorMessage]): Try[G] =
+      theTry.flatMap((g: G) =>
+        isValid(g) match {
+          case Pass => theTry
+          case Fail(errMsg) => Failure(ValidationException(errMsg))
+        }
+      )
   }
 
   /**

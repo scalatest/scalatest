@@ -24,12 +24,23 @@ import prop.TableDrivenPropertyChecks._
 
 class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
 
+  def isRound(i: Int): Validation[ErrorMessage] =
+    if (i % 10 == 0) Pass else Fail(i + " was not a round number")
+
+  def isDivBy3(i: Int): Validation[ErrorMessage] =
+    if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
+
   "TrySugar" should "enable toOr to be invoked on Trys" in {
     Success(12).toOr shouldBe Good(12)
     (Success(12): Try[Int]).toOr shouldBe Good(12)
     val ex = new Exception("oops")
     Failure(ex).toOr shouldBe Bad(ex)
     (Failure(ex): Try[Int]).toOr shouldBe Bad(ex)
+  }
+
+  it should "offer a validating method that takes a T => Validation" in {
+    Success(12).validating(isRound) shouldBe Failure(ValidationException("12 was not a round number"))
+    Success(10).validating(isRound) shouldBe Success(10)
   }
 }
 

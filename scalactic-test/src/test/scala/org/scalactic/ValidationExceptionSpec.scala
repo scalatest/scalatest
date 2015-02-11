@@ -33,5 +33,10 @@ class ValidationExceptionSpec extends UnitSpec {
     a [NullPointerException] shouldBe thrownBy { ValidationException(null) }
     a [NullPointerException] shouldBe thrownBy { new ValidationException(null) }
   }
+
+  it should "return that same error message from getMessage" in {
+    ValidationException("I meant to do that!").getMessage shouldBe "I meant to do that!"
+    new ValidationException("I meant to do that!").getMessage shouldBe "I meant to do that!"
+  }
 }
 
