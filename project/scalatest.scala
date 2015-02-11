@@ -234,7 +234,7 @@ object ScalatestBuild extends Build {
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      scalacticDocTaskSetting
+      docTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -290,7 +290,7 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     scalatestDocTaskSetting
+     docTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -374,6 +374,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
+        "org.scalactic.anyvals",
         "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
@@ -836,7 +837,7 @@ object ScalatestBuild extends Build {
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", docSourceUrl)
 
-  val scalatestDocTaskSetting =
+  val docTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
                               name.value)
