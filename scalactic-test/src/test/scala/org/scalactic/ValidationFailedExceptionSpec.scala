@@ -45,6 +45,9 @@ class ValidationFailedExceptionSpec extends UnitSpec {
     }
     ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
     new ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
+
+    ValidationFailedException(ErrorValue("I meant to do that too!")).getMessage shouldBe "I meant to do that too!"
+    new ValidationFailedException(ErrorValue("I meant to do that too!")).getMessage shouldBe "I meant to do that too!"
   }
 }
 

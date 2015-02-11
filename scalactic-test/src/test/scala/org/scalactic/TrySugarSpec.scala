@@ -50,11 +50,27 @@ class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
     Success(12).validating(isRound, isDivBy3) shouldBe Failure(ValidationFailedException("12 was not a round number"))
     Success(10).validating(isRound, isDivBy3) shouldBe Failure(ValidationFailedException("10 was not divisible by 3"))
     Success(30).validating(isRound, isDivBy3) shouldBe Success(30)
-    Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
+    Failure(SomeException("oops")).validating(isRound, isDivBy3) shouldBe Failure(SomeException("oops"))
   }
 
   it should "require at least one parameter to be passed to validating" in {
     "Try(30).validating()" shouldNot compile
+  }
+
+  it should "take validation functions of any type of error object" in {
+    case class ErrorValue(msg: String) {
+      override def toString = msg
+    }
+    def isRoundValue(i: Int): Validation[ErrorValue] =
+      if (i % 10 == 0) Pass else Fail(ErrorValue(i + " was not a round number"))
+
+    def isDivBy3Value(i: Int): Validation[ErrorValue] =
+      if (i % 3 == 0) Pass else Fail(ErrorValue(i + " was not divisible by 3"))
+
+    Success(12).validating(isRoundValue, isDivBy3Value) shouldBe Failure(ValidationFailedException(ErrorValue("12 was not a round number")))
+    Success(10).validating(isRoundValue, isDivBy3Value) shouldBe Failure(ValidationFailedException(ErrorValue("10 was not divisible by 3")))
+    Success(30).validating(isRoundValue, isDivBy3Value) shouldBe Success(30)
+    Failure(SomeException("oops")).validating(isRoundValue, isDivBy3Value) shouldBe Failure(SomeException("oops"))
   }
 }
 

@@ -31,13 +31,13 @@ trait TrySugar {
    * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
    * and <code>Failure</code> to <code>Bad</code>.
    */
-  implicit class Tryizer[G](theTry: Try[G]) {
-    def toOr: G Or Throwable = Or.from(theTry)
-    def validating(hd: G => Validation[ErrorMessage], tl: (G => Validation[ErrorMessage])*): Try[G] = {
-      theTry.flatMap { (g: G) =>
-        TrySugar.passOrFirstFail(g, hd :: tl.toList) match {
+  implicit class Tryizer[T](theTry: Try[T]) {
+    def toOr: T Or Throwable = Or.from(theTry)
+    def validating[E](hd: T => Validation[E], tl: (T => Validation[E])*): Try[T] = {
+      theTry.flatMap { (o: T) =>
+        TrySugar.passOrFirstFail(o, hd :: tl.toList) match {
           case Pass => theTry
-          case Fail(errMsg) => Failure(ValidationFailedException(errMsg))
+          case Fail(errorValue) => Failure(ValidationFailedException(errorValue))
         }
       }
     }
@@ -59,12 +59,12 @@ trait TrySugar {
  */
 object TrySugar extends TrySugar {
   @tailrec
-  private[scalactic] def passOrFirstFail[G](g: G, fs: List[G => Validation[ErrorMessage]]): Validation[ErrorMessage] = {
+  private[scalactic] def passOrFirstFail[T, E](o: T, fs: List[T => Validation[E]]): Validation[E] = {
     fs match {
       case Nil => Pass
       case head :: tail => 
-        head(g) match {
-          case Pass => passOrFirstFail(g, tail)
+        head(o) match {
+          case Pass => passOrFirstFail(o, tail)
           case firstFail => firstFail
         }
     }
