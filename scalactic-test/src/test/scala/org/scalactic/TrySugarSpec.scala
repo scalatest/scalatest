@@ -52,5 +52,9 @@ class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
     Success(30).validating(isRound, isDivBy3) shouldBe Success(30)
     Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
   }
+
+  it should "require at least one parameter to be passed to validating" in {
+    "Try(30).validating()" shouldNot compile
+  }
 }
 
