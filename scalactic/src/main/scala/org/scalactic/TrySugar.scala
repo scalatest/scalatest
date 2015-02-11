@@ -17,6 +17,7 @@ package org.scalactic
 
 import scala.util.Try
 import scala.util.Failure
+import annotation.tailrec
 
 /**
  * Trait providing an implicit class that adds a <code>toOr</code> method to
@@ -32,13 +33,14 @@ trait TrySugar {
    */
   implicit class Tryizer[G](theTry: Try[G]) {
     def toOr: G Or Throwable = Or.from(theTry)
-    def validating(isValid: G => Validation[ErrorMessage]): Try[G] =
-      theTry.flatMap((g: G) =>
-        isValid(g) match {
+    def validating(isValid: (G => Validation[ErrorMessage])*): Try[G] = {
+      theTry.flatMap { (g: G) =>
+        TrySugar.passOrFirstFail(g, isValid.toList) match {
           case Pass => theTry
           case Fail(errMsg) => Failure(ValidationException(errMsg))
         }
-      )
+      }
+    }
   }
 
   /**
@@ -46,7 +48,7 @@ trait TrySugar {
    * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
    * and <code>Failure</code> to <code>Bad</code>.
    */
-  implicit class NothingSuccessTryizer(theTry: Try[Nothing]) {
+  implicit class NothingSuccessTryizer(theTry: Try[Nothing]) {// TODO: Challenge this one. vaidating works on Try[Nothing] already. Does toOr?
     def toOr: Nothing Or Throwable = Or.from(theTry)
   } 
 } 
@@ -55,5 +57,16 @@ trait TrySugar {
  * Companion object for <code>TrySugar</code> enabling its members to be
  * imported as an alternative to mixing them in.
  */
-object TrySugar extends TrySugar
-
+object TrySugar extends TrySugar {
+  @tailrec
+  private def passOrFirstFail[G](g: G, fs: List[G => Validation[ErrorMessage]]): Validation[ErrorMessage] = {
+    fs match {
+      case Nil => Pass
+      case head :: tail => 
+        head(g) match {
+          case Pass => passOrFirstFail(g, tail)
+          case firstFail => firstFail
+        }
+    }
+  }
+}

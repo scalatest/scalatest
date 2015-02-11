@@ -30,6 +30,8 @@ class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
 
+  case class SomeException(msg: String) extends Exception(msg)
+
   "TrySugar" should "enable toOr to be invoked on Trys" in {
     Success(12).toOr shouldBe Good(12)
     (Success(12): Try[Int]).toOr shouldBe Good(12)
@@ -41,6 +43,14 @@ class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
   it should "offer a validating method that takes a T => Validation" in {
     Success(12).validating(isRound) shouldBe Failure(ValidationException("12 was not a round number"))
     Success(10).validating(isRound) shouldBe Success(10)
+    Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
+  }
+
+  it should "allow multiple validation functions to be passed to validating" in {
+    Success(12).validating(isRound, isDivBy3) shouldBe Failure(ValidationException("12 was not a round number"))
+    Success(10).validating(isRound, isDivBy3) shouldBe Failure(ValidationException("10 was not divisible by 3"))
+    Success(30).validating(isRound, isDivBy3) shouldBe Success(30)
+    Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
   }
 }
 
