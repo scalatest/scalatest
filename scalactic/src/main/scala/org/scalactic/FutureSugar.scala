@@ -15,15 +15,31 @@
  */
 package org.scalactic
 
-import scala.util.Try
-import scala.util.Failure
-import annotation.tailrec
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 /**
  * Trait providing an implicit class that adds a <code>toOr</code> method to
  * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
  * and <code>Failure</code> to <code>Bad</code>.
  */
-trait FutureSugar
+trait FutureSugar {
+
+  /**
+   * Implicit class that adds a <code>toOr</code> method to
+   * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
+   * and <code>Failure</code> to <code>Bad</code>.
+   */
+  implicit class Futureizer[T](theFuture: Future[T]) {
+    def validating[E](hd: T => Validation[E], tl: (T => Validation[E])*)(implicit executor: ExecutionContext): Future[T] = {
+      theFuture.flatMap { (o: T) =>
+        TrySugar.passOrFirstFail(o, hd :: tl.toList) match {
+          case Pass => theFuture
+          case Fail(errorValue) => Future.failed(ValidationFailedException(errorValue))
+        }
+      }
+    }
+  }
+}
 
 object FutureSugar extends FutureSugar
