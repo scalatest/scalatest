@@ -202,13 +202,16 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal").aggregate(LocalProject("scalactic-test"))
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal").aggregate(LocalProject("scalactic-test")).settings(aggregate in publish := false)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Test",
-      organization := "org.scalactic"
+      organization := "org.scalactic",
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
@@ -275,13 +278,16 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test"))
+   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test")).settings(aggregate in publish := false)
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
