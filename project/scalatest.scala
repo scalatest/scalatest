@@ -19,8 +19,8 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.4
   val buildScalaVersion = "2.11.5"
 
-  val releaseVersion = "2.3.0-SNAP1"
-  val githubTag = "release-2.3.0-SNAP1-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.3.0-SNAP2"
+  val githubTag = "release-2.3.0-SNAP2-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -328,7 +328,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test"))
+   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic).aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
