@@ -350,6 +350,8 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest All",
       name := "scalatest-all",
       organization := "org.scalatest",
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalatestLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
       // include the scalactic sources in the source jar
