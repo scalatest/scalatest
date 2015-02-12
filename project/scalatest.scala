@@ -8,16 +8,23 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
  
+  // To run gentests
+  // rm -rf gentests
+  // sbt genGenTests/test  (etc., look at specific failures on CI output)
+
+  // To enable deprecation warnings on the fly
+  // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
+
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.4
-  val buildScalaVersion = "2.11.2"
+  val buildScalaVersion = "2.11.5"
 
   val releaseVersion = "2.3.0-SNAP1"
   val githubTag = "release-2.3.0-SNAP1-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
-    "/src/main/scala€{FILE_PATH}.scala"
+    "€{FILE_PATH}.scala"
 
   def envVar(name: String): Option[String] =
     try {
@@ -66,7 +73,7 @@ object ScalatestBuild extends Build {
     scalaVersion := buildScalaVersion,
     crossScalaVersions := Seq(buildScalaVersion, "2.10.4"),
     version := releaseVersion,
-    scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
+    scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
     publishTo <<= version { v: String =>
@@ -113,7 +120,15 @@ object ScalatestBuild extends Build {
       ),
     credentials += getNexusCredentials,
     pgpSecretRing := file(getGPGFilePath),
-    pgpPassphrase := getGPGPassphase,
+    pgpPassphrase := getGPGPassphase
+  )
+
+  lazy val sharedDocSettings = Seq(
+    dependencyClasspath in (Compile, doc) := {
+      val deps = (dependencyClasspath in (Compile, doc)).value
+      val macroClassDir = (classDirectory in (scalacticMacro, Compile)).value
+      deps.filterNot(_.data == macroClassDir)
+    },
     docsrcDirSetting,
     docSourcesSetting,
     docScalacOptionsSetting
@@ -158,14 +173,34 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
-  lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "Scalactic Macro",
-      organization := "org.scalactic",
-      // Disable publishing macros directly, included in scalactic main jar
-      publish := {},
-      publishLocal := {})
+  def scalatestTestOptions =
+    Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.algebra",
+      "-m", "org.scalactic.enablers",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.testng",
+      "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.mock",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.selenium",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-m", "org.scalautils",
+      "-oDI",
+      "-h", "target/html",
+      "-u", "target/junit",
+      "-fW", "target/result.txt"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -173,6 +208,16 @@ object ScalatestBuild extends Build {
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional")
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
+
+  lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Macro",
+      organization := "org.scalactic",
+      // Disable publishing macros directly, included in scalactic main jar
+      publish := {},
+      publishLocal := {}
+    )
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
@@ -202,13 +247,14 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal").aggregate(LocalProject("scalactic-test")).settings(aggregate in publish := false)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal").aggregate(LocalProject("scalactic-test"))  // avoid dependency in pom on non-existent scalactic-macro artifact, per discussion in http://grokbase.com/t/gg/simple-build-tool/133shekp07/sbt-avoid-dependence-in-a-macro-based-project
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
+      libraryDependencies += scalacheckDependency("test"), 
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -216,6 +262,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
+   .settings(sharedDocSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
@@ -269,6 +316,9 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
+        "org.scalactic.enablers",
+        "org.scalactic.anyvals",
+        "org.scalactic.algebra",
         "org.scalautils"
       ),
       OsgiKeys.additionalHeaders:= Map(
@@ -278,42 +328,20 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test")).settings(aggregate in publish := false)
+   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
+    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {},
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
-        "-m", "org.scalatest",
-        "-m", "org.scalactic",
-        "-m", "org.scalatest.fixture",
-        "-m", "org.scalatest.concurrent",
-        "-m", "org.scalatest.testng",
-        "-m", "org.scalatest.junit",
-        "-m", "org.scalatest.events",
-        "-m", "org.scalatest.prop",
-        "-m", "org.scalatest.tools",
-        "-m", "org.scalatest.matchers",
-        "-m", "org.scalatest.suiteprop",
-        "-m", "org.scalatest.mock",
-        "-m", "org.scalatest.path",
-        "-m", "org.scalatest.selenium",
-        "-m", "org.scalatest.exceptions",
-        "-m", "org.scalatest.time",
-        "-m", "org.scalatest.words",
-        "-m", "org.scalatest.enablers",
-        "-m", "org.scalautils",
-        "-oDI",
-        "-h", "target/html",
-        "-u", "target/junit",
-        "-fW", "target/result.txt"))
+      testOptions in Test := scalatestTestOptions, 
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestAll = Project("scalatest-all", file("."))
@@ -362,12 +390,14 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
 
   def gentestsLibraryDependencies =
     Seq(
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
+      "org.testng" % "testng" % "6.8.7" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
@@ -381,13 +411,81 @@ object ScalatestBuild extends Build {
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
-  lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
+  lazy val genRegularTests1 = Project("genRegularTests1", file("gentests/GenRegular1"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask1,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular1", "GenRegular1.scala")(GenRegularTests1.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genRegularTests2 = Project("genRegularTests2", file("gentests/GenRegular2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask2,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genRegularTests3 = Project("genRegularTests3", file("gentests/GenRegular3"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask3,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genRegularTests4 = Project("genRegularTests4", file("gentests/GenRegular4"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask4,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := scalatestTestOptions,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular4", "GenRegularTests1.scala")(GenRegularTests4.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genRegularTests5 = Project("genRegularTests5", file("gentests/GenRegular5"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genRegularTask5,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      testOptions in Test := scalatestTestOptions,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genMustMatchersTests1 = Project("genMustMatchersTests1", file("gentests/MustMatchers1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
-    ).dependsOn(scalatest, commonTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers1", "GenMustMatchersTests.scala")(GenMustMatchersTests1.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genMustMatchersTests2 = Project("genMustMatchersTests2", file("gentests/MustMatchers2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers2", "GenMustMatchersTests.scala")(GenMustMatchersTests2.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genMustMatchersTests3 = Project("genMustMatchersTests3", file("gentests/MustMatchers3"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers3", "GenMustMatchersTests.scala")(GenMustMatchersTests3.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genMustMatchersTests4 = Project("genMustMatchersTests4", file("gentests/MustMatchers4"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers4", "GenMustMatchersTests.scala")(GenMustMatchersTests4.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
     .settings(gentestsSharedSettings: _*)
@@ -395,7 +493,7 @@ object ScalatestBuild extends Build {
       genGenTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
@@ -403,7 +501,7 @@ object ScalatestBuild extends Build {
       genTablesTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
     .settings(gentestsSharedSettings: _*)
@@ -411,15 +509,23 @@ object ScalatestBuild extends Build {
       genInspectorsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
+  lazy val genInspectorsShorthandsTests1 = Project("genInspectorsShorthandsTests1", file("gentests/GenInspectorsShorthands1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genInspectorsShorthandsTask,
+      genInspectorsShorthandsTask1,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
-    ).dependsOn(scalatest, commonTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands1", "GenInspectorsShorthands.scala")(GenInspectorsShorthands1.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genInspectorsShorthandsTests2 = Project("genInspectorsShorthandsTests2", file("gentests/GenInspectorsShorthands2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genInspectorsShorthandsTask2,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands2", "GenInspectorsShorthands.scala")(GenInspectorsShorthands2.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
     .settings(gentestsSharedSettings: _*)
@@ -427,15 +533,23 @@ object ScalatestBuild extends Build {
       genTheyWordTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
+  lazy val genContainTests1 = Project("genContainTests1", file("gentests/GenContain1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genContainTask,
+      genContainTask1,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
-    ).dependsOn(scalatest, commonTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain1", "GenContain1.scala")(GenContain1.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
+  lazy val genContainTests2 = Project("genContainTests2", file("gentests/GenContain2"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genContainTask2,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain2", "GenContain2.scala")(GenContain2.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
     .settings(gentestsSharedSettings: _*)
@@ -443,7 +557,7 @@ object ScalatestBuild extends Build {
       genSortedTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
     .settings(gentestsSharedSettings: _*)
@@ -451,7 +565,7 @@ object ScalatestBuild extends Build {
       genLoneElementTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
     .settings(gentestsSharedSettings: _*)
@@ -459,21 +573,60 @@ object ScalatestBuild extends Build {
       genEmptyTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
-    ).dependsOn(scalatest, commonTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val gentests = Project("gentests", file("gentests"))
-    .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
-               genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
+    .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
+    val jdir = outDir / "java" / name
     val genSource = basedir / "project" / generatorSource
-    def results = (tdir ** "*.scala").get
+
+    def results = (tdir ** "*.scala").get ++ (jdir ** "*.java").get
     if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
       tdir.mkdirs()
       gen(tdir, theVersion, theScalaVersion)
     }
     results
+  }
+
+  def genJavaFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
+    val tdir = outDir / "java" / name
+    val genSource = basedir / "project" / generatorSource
+
+    def results = (tdir ** "*.java").get
+    if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
+      tdir.mkdirs()
+      gen(tdir, theVersion, theScalaVersion)
+    }
+    results
+  }
+
+  val genRegular1 = TaskKey[Unit]("genregular1", "Generate regular tests 1")
+  val genRegularTask1 = genRegular1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests1.genTest(new File(testTargetDir, "scala/genregular1"), theVersion, theScalaVersion)
+  }
+
+  val genRegular2 = TaskKey[Unit]("genregular2", "Generate regular tests 2")
+  val genRegularTask2 = genRegular2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests2.genTest(new File(testTargetDir, "scala/genregular2"), theVersion, theScalaVersion)
+  }
+
+  val genRegular3 = TaskKey[Unit]("genregular3", "Generate regular tests 3")
+  val genRegularTask3 = genRegular3 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests3.genTest(new File(testTargetDir, "scala/genregular3"), theVersion, theScalaVersion)
+  }
+
+  val genRegular4 = TaskKey[Unit]("genregular4", "Generate regular tests 4")
+  val genRegularTask4 = genRegular4 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests4.genTest(new File(testTargetDir, "scala/genregular4"), theVersion, theScalaVersion)
+  }
+
+  val genRegular5 = TaskKey[Unit]("genregular5", "Generate regular tests 5")
+  val genRegularTask5 = genRegular5 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenRegularTests5.genTest(new File(testTargetDir, "scala/genregular5"), theVersion, theScalaVersion)
   }
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
@@ -481,11 +634,16 @@ object ScalatestBuild extends Build {
     projName match {
       case "scalatest" =>
         GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
-      case "gentests" =>
-        GenMatchers.genTest(new File(testTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
+      case "genMustMatchersTests1" =>
+        GenMustMatchersTests1.genTest(new File(testTargetDir, "scala/genmatchers1"), theVersion, theScalaVersion)
+      case "genMustMatchersTests2" =>
+        GenMustMatchersTests2.genTest(new File(testTargetDir, "scala/genmatchers2"), theVersion, theScalaVersion)
+      case "genMustMatchersTests3" =>
+        GenMustMatchersTests3.genTest(new File(testTargetDir, "scala/genmatchers3"), theVersion, theScalaVersion)
+      case "genMustMatchersTests4" =>
+        GenMustMatchersTests4.genTest(new File(testTargetDir, "scala/genmatchers4"), theVersion, theScalaVersion)
     }
   }
-  
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
   val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     projName match {
@@ -516,9 +674,14 @@ object ScalatestBuild extends Build {
     GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), theVersion, theScalaVersion)
   }
 
-  val genInspectorsShorthands = TaskKey[Unit]("geninspectorsshorthands", "Generate Inspectors Shorthands tests")
-  val genInspectorsShorthandsTask = genInspectorsShorthands <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
-    GenInspectorsShorthands.genTest(new File(testTargetDir, "scala/geninspectorsshorthands"), theVersion, theScalaVersion)
+  val genInspectorsShorthands1 = TaskKey[Unit]("geninspectorsshorthands1", "Generate Inspectors Shorthands tests 1")
+  val genInspectorsShorthandsTask1 = genInspectorsShorthands1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+    GenInspectorsShorthands1.genTest(new File(testTargetDir, "scala/geninspectorsshorthands1"), theVersion, theScalaVersion)
+  }
+
+  val genInspectorsShorthands2 = TaskKey[Unit]("geninspectorsshorthands2", "Generate Inspectors Shorthands tests 2")
+  val genInspectorsShorthandsTask2 = genInspectorsShorthands2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+    GenInspectorsShorthands2.genTest(new File(testTargetDir, "scala/geninspectorsshorthands2"), theVersion, theScalaVersion)
   }
   
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
@@ -536,9 +699,14 @@ object ScalatestBuild extends Build {
     GenVersions.genScalaTestVersions(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
   
-  val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
-  val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenContain.genTest(new File(testTargetDir, "scala/gencontain"), theVersion, theScalaVersion)
+  val genContain1 = TaskKey[Unit]("gencontain1", "Generate contain matcher tests 1")
+  val genContainTask1 = genContain1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenContain1.genTest(new File(testTargetDir, "scala/gencontain1"), theVersion, theScalaVersion)
+  }
+
+  val genContain2 = TaskKey[Unit]("gencontain2", "Generate contain matcher tests 2")
+  val genContainTask2 = genContain2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenContain2.genTest(new File(testTargetDir, "scala/gencontain2"), theVersion, theScalaVersion)
   }
   
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
@@ -567,27 +735,22 @@ object ScalatestBuild extends Build {
   //
   // Prepares source files for running scaladoc.
   //
-  def genDocSources(srcFiles: Seq[File], srcMain: File,
-                    managedSrcMain: File, docsrcDir: File): Seq[File] =
+  def genDocSources(srcFiles: Seq[File], 
+                    srcDirs: Seq[File], 
+                    docsrcDir: File): Seq[File] =
   {
-    val srcMainScalaDir = srcMain / "scala"
-    val managedSrcMainScalaDir = managedSrcMain / "scala"
-
     val scalaFiles =
       for {
         srcFile <- srcFiles
         if srcFile.name.endsWith(".scala")
       } yield {
         val srcPath = srcFile.getPath
-        val docsrcPath =
-          srcPath.
-            replaceFirst(srcMainScalaDir.getPath, docsrcDir.getPath).
-            replaceFirst(managedSrcMainScalaDir.getPath, docsrcDir.getPath)
-
-        if (srcPath == docsrcPath)
-          throw new RuntimeException("unexpected source path ["+ srcPath +"]")
-
-        copyDocFile(srcFile, file(docsrcPath))
+        val maybeSourceFile = srcDirs.flatMap(srcFile.relativeTo).headOption
+        maybeSourceFile match {
+          case Some(docsrcFile) => copyDocFile(srcFile, new File(docsrcDir.asFile, docsrcFile.getPath))
+          case None             => 
+             throw new RuntimeException("unexpected source path ["+ srcPath +"] not relative to " + srcDirs.mkString("[", ", ", "]"))
+        }
       }
 
     val javaSources = srcFiles.filter(_.name.endsWith(".java")).toSet
@@ -666,14 +829,16 @@ object ScalatestBuild extends Build {
 
   val docSourcesSetting =
      sources in (Compile, doc) :=
-       genDocSources((sources in Compile).value,
-                     (sourceDirectory in Compile).value,
-                     (sourceManaged in Compile).value,
+       genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value, 
+                     Seq((sourceManaged in Compile).value, 
+                         baseDirectory.value,
+                         file(".").getCanonicalFile),
                      docsrcDir.value)
 
   val docScalacOptionsSetting =
     scalacOptions in (Compile, doc) ++= 
       Seq[String](
+        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", docSourceUrl)
@@ -682,4 +847,13 @@ object ScalatestBuild extends Build {
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
                               name.value)
+
+  val scalacticDocTaskSetting =
+    doc in Compile := docTask((doc in Compile).value,
+                              (sourceDirectory in Compile).value,
+                              name.value)
 }
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-Xlog-implicits"
+// set scalacOptions in (Compile, console) += "-nowarn"
