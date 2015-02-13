@@ -254,7 +254,10 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
-      libraryDependencies += scalacheckDependency("test")
+      libraryDependencies += scalacheckDependency("test"), 
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
@@ -325,7 +328,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro, scalactic).aggregate(LocalProject("scalatest-test"))
+   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic).aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
@@ -335,7 +338,10 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      testOptions in Test := scalatestTestOptions
+      testOptions in Test := scalatestTestOptions, 
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
     ).dependsOn(scalatest % "test", commonTest % "test")
 
   lazy val scalatestAll = Project("scalatest-all", file("."))
@@ -344,6 +350,8 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest All",
       name := "scalatest-all",
       organization := "org.scalatest",
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalatestLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
       // include the scalactic sources in the source jar
