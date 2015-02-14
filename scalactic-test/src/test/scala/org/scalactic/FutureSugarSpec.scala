@@ -48,21 +48,5 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with S
   it should "require at least one parameter to be passed to validating" in {
     "Try(30).validating()" shouldNot compile
   }
-
-  it should "take validation functions of any type of error object" in {
-    case class ErrorValue(msg: String) {
-      override def toString = msg
-    }
-    def isRoundValue(i: Int): Validation[ErrorValue] =
-      if (i % 10 == 0) Pass else Fail(ErrorValue(i + " was not a round number"))
-
-    def isDivBy3Value(i: Int): Validation[ErrorValue] =
-      if (i % 3 == 0) Pass else Fail(ErrorValue(i + " was not divisible by 3"))
-
-    Future.successful(12).validating(isRoundValue, isDivBy3Value).failed.futureValue shouldBe ValidationFailedException(ErrorValue("12 was not a round number"))
-    Future.successful(10).validating(isRoundValue, isDivBy3Value).failed.futureValue shouldBe ValidationFailedException(ErrorValue("10 was not divisible by 3"))
-    Future.successful(30).validating(isRoundValue, isDivBy3Value).futureValue shouldBe 30
-    Future.failed(SomeException("oops")).validating(isRoundValue, isDivBy3Value).failed.futureValue shouldBe SomeException("oops")
-  }
 }
 

@@ -31,11 +31,11 @@ trait FutureSugar {
    * and <code>Failure</code> to <code>Bad</code>.
    */
   implicit class Futureizer[T](theFuture: Future[T]) {
-    def validating[E](hd: T => Validation[E], tl: (T => Validation[E])*)(implicit executor: ExecutionContext): Future[T] = {
+    def validating(hd: T => Validation[ErrorMessage], tl: (T => Validation[ErrorMessage])*)(implicit executor: ExecutionContext): Future[T] = {
       theFuture.flatMap { (o: T) =>
         TrySugar.passOrFirstFail(o, hd :: tl.toList) match {
           case Pass => theFuture
-          case Fail(errorValue) => Future.failed(ValidationFailedException(errorValue))
+          case Fail(errorMessage) => Future.failed(ValidationFailedException(errorMessage))
         }
       }
     }

@@ -33,11 +33,11 @@ trait TrySugar {
    */
   implicit class Tryizer[T](theTry: Try[T]) {
     def toOr: T Or Throwable = Or.from(theTry)
-    def validating[E](hd: T => Validation[E], tl: (T => Validation[E])*): Try[T] = {
+    def validating(hd: T => Validation[ErrorMessage], tl: (T => Validation[ErrorMessage])*): Try[T] = {
       theTry.flatMap { (o: T) =>
         TrySugar.passOrFirstFail(o, hd :: tl.toList) match {
           case Pass => theTry
-          case Fail(errorValue) => Failure(ValidationFailedException(errorValue))
+          case Fail(errorMessage) => Failure(ValidationFailedException(errorMessage))
         }
       }
     }
