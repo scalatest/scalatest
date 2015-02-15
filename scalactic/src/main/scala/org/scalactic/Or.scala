@@ -854,6 +854,186 @@ sealed abstract class Or[+G,+B] {
 object Or {
 
   /**
+   * Trait providing a concise <em>type lambda</em> syntax for <code>Or</code> types partially applied on their "bad" type.
+   *
+   * <p>
+   * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
+   * into a type (this trait) which takes one parameter, and another (its type member) which
+   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
+   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.B[BAD]#G[GOOD]</code>.
+   * Leaving off the final <code>GOOD</code> type parameter yields a "type lambda," such as <code>Or.B[ErrorMessage]#G</code>.
+   * </p>
+   *
+   * <p>
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * type named <code>A</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; def example[Context[_], A](ca: Context[A]) = ca
+   * example: [Context[_], A](ca: Context[A])Context[A]
+   * </pre>
+   *
+   * <p>
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>
+   * and can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example(List(1, 2, 3))
+   * res0: List[Int] = List(1, 2, 3)
+   * </pre>
+   *
+   * <p>
+   * But because <code>Or</code> takes two type parameters, <code>G</code> for the "good" type and <code>B</code> for the "bad" type, it
+   * cannot simply be passed, because the compiler doesn't know which of <code>G</code> or </code>B</code> you'd want to abstract over:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example(Good(3))
+   * &lt;console&gt;:26: error: no type parameters for method example: (ca: Context[A])Context[A] exist
+   *     so that it can be applied to arguments (org.scalactic.Good[Int,Nothing])
+   *  --- because ---
+   * argument expression's type is not compatible with formal parameter type;
+   *  found   : org.scalactic.Good[Int,Nothing]
+   *  required: ?Context[?A]
+   *               example(Good(3))
+   *               ^
+   * &lt;console&gt;:26: error: type mismatch;
+   *  found   : org.scalactic.Good[Int,Nothing]
+   *  required: Context[A]
+   *               example(Good(3))
+   *                           ^
+   * </pre>
+   *
+   * <p>
+   * You must therefore tell the compiler which one you want with a "type lambda." Here's an example:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example[({type L[G] = G Or String})#L, Int](Good(3))
+   * res1: org.scalactic.Or[Int,String] = Good(3)
+   * </pre>
+   *
+   * <p>
+   * The alternate type lambda syntax provided by this trait is more concise and hopefully easier to remember and read:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example[Or.B[String]#G, Int](Good(3))
+   * res2: org.scalactic.Or[Int,String] = Good(3)
+   * </pre>
+   * 
+   * <p>
+   * You can read <code>Or.B[String]#G</code> as: an <code>Or</code> with its "bad" type, <code>B</code>,
+   * fixed to <code>String</code> and its "good" type, <code>G</code>, left unspecified. The type constructors
+   * are named <code>G</code> and <code>B</code> after the names of the type parameters to <code>Or</code>,
+   * which is declared as <code>class Or[+G, +B]</code>.
+   * </p>
+   */
+  trait B[BAD] {
+
+    /**
+     * Type member that provides a curried alias to  <code>GOOD</code><code>Or</code> <code>BAD</code>.
+     *
+     * <p>
+     * See the main documentation for trait <code>B</code> for more detail.
+     * </p>
+     */
+    type G[GOOD] = GOOD Or BAD
+  }
+
+  /**
+   * Trait providing a concise <em>type lambda</em> syntax for <code>Or</code> types partially applied on their "good" type.
+   *
+   * <p>
+   * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
+   * into a type (this trait) which takes one parameter, and another (its type member) which
+   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
+   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.G[GOOD]#B[BAD]</code>.
+   * Leaving off the final <code>BAD</code> type parameter yields a "type lambda," such as <code>Or.G[Int]#B</code>.
+   * </p>
+   *
+   * <p>
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * type named <code>A</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; def example[Context[_], A](ca: Context[A]) = ca
+   * example: [Context[_], A](ca: Context[A])Context[A]
+   * </pre>
+   *
+   * <p>
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>
+   * and can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example(List(1, 2, 3))
+   * res0: List[Int] = List(1, 2, 3)
+   * </pre>
+   *
+   * <p>
+   * But because <code>Or</code> takes two type parameters, <code>G</code> for the "good" type and <code>B</code> for the "bad" type, it
+   * cannot simply be passed, because the compiler doesn't know which of <code>G</code> or </code>B</code> you'd want to abstract over:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example(Good(3))
+   * &lt;console&gt;:26: error: no type parameters for method example: (ca: Context[A])Context[A] exist
+   *     so that it can be applied to arguments (org.scalactic.Good[Int,Nothing])
+   *  --- because ---
+   * argument expression's type is not compatible with formal parameter type;
+   *  found   : org.scalactic.Good[Int,Nothing]
+   *  required: ?Context[?A]
+   *               example(Good(3))
+   *               ^
+   * &lt;console&gt;:26: error: type mismatch;
+   *  found   : org.scalactic.Good[Int,Nothing]
+   *  required: Context[A]
+   *               example(Good(3))
+   *                           ^
+   * </pre>
+   *
+   * <p>
+   * You must therefore tell the compiler which one you want with a "type lambda." Here's an example:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example[({type L[B] = Int Or B})#L, String](Good(3))
+   * res1: org.scalactic.Or[Int,String] = Good(3)
+   * </pre>
+   *
+   * <p>
+   * The alternate type lambda syntax provided by this trait is more concise and hopefully easier to remember and read:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; example[Or.G[Int]#B, String](Good(3))
+   * res15: org.scalactic.Or[Int,String] = Good(3)
+   * </pre>
+   * 
+   * <p>
+   * You can read <code>Or.G[Int]#B</code> as: an <code>Or</code> with its "good" type, <code>G</code>,
+   * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified. The type constructors
+   * are named <code>G</code> and <code>B</code> after the names of the type parameters to <code>Or</code>,
+   * which is declared as <code>class Or[+G, +B]</code>.
+   * </p>
+   */
+  trait G[GOOD] {
+
+    /**
+     * Type member that provides a curried alias to  <code>GOOD</code><code>Or</code> <code>BAD</code>.
+     *
+     * <p>
+     * See the main documentation for trait <code>B</code> for more detail.
+     * </p>
+     */
+    type B[BAD] = GOOD Or BAD
+  }
+
+  /**
    * Constructs a new <code>Or</code> from the given <code>Try</code>.
    *
    * @param theTry the <code>Try</code> to convert to an <code>Or</code>
@@ -1182,4 +1362,3 @@ final case class Bad[+B](b: B) extends Or[Nothing,B] {
   def transform[H, C](gf: Nothing => H Or C, bf: B => H Or C): H Or C = bf(b)
   def fold[V](gf: Nothing => V, bf: B => V): V = bf(b)
 }
-
