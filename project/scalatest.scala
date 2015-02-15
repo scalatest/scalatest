@@ -359,7 +359,14 @@ object ScalatestBuild extends Build {
       // include the scalatest classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalatest, Compile, packageBin).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatest, Compile, packageSrc).value
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatest, Compile, packageSrc).value,
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      }
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",

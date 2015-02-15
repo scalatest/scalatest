@@ -25,8 +25,8 @@ import prop.TableDrivenPropertyChecks._
 class ValidationFailedExceptionSpec extends UnitSpec {
 
   "ValidationFailedException" should "require an error message string and return it from message" in {
-    ValidationFailedException("I meant to do that!").error shouldBe "I meant to do that!"
-    new ValidationFailedException("I meant to do that!").error shouldBe "I meant to do that!"
+    ValidationFailedException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
+    new ValidationFailedException("I meant to do that!").errorMessage shouldBe "I meant to do that!"
   }
 
   it should "throw a NPE if null is passed for the error message" in {
@@ -39,15 +39,9 @@ class ValidationFailedExceptionSpec extends UnitSpec {
     new ValidationFailedException("I meant to do that!").getMessage shouldBe "I meant to do that!"
   }
 
-  it should "take any type of error object, and pass the toString up as message" in {
-    case class ErrorValue(msg: String) {
-      override def toString = msg
-    }
-    ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
-    new ValidationFailedException(ErrorValue("I meant to do that too!")).error shouldBe ErrorValue("I meant to do that too!")
-
-    ValidationFailedException(ErrorValue("I meant to do that too!")).getMessage shouldBe "I meant to do that too!"
-    new ValidationFailedException(ErrorValue("I meant to do that too!")).getMessage shouldBe "I meant to do that too!"
+  it should "pass the errorMessage up as the Throwble's message" in {
+    ValidationFailedException("I meant to do that too!").getMessage shouldBe "I meant to do that too!"
+    new ValidationFailedException("I meant to do that too!").getMessage shouldBe "I meant to do that too!"
   }
 }
 
