@@ -864,6 +864,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       case e: Throwable =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        if (!NonFatal(e))
+          throw e
     }
     finally {
       dispatch.dispatchDisposeAndWaitUntilDone()
