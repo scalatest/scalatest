@@ -15,6 +15,7 @@
  */
 package org.scalatest.tools
 
+import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest._
 import org.scalatest.events._
 
@@ -32,11 +33,11 @@ object DiscoverySuiteCompanionFriend {
 }
 */
 
-class DiscoverySuiteSuite extends Suite {
+class DiscoverySuiteSuite extends FunSpec {
   
   val loader = DiscoverySuite.getClass.getClassLoader
 
-  def testConstructor() {
+  it("test constructor") {
     intercept[NullPointerException] {
       new DiscoverySuite(null, Set(), false, loader)
     }
@@ -64,5 +65,19 @@ class DiscoverySuiteSuite extends Suite {
     assertResult(Nil) {
       DiscoverySuite.nestedSuiteNames("a.b.c", Set("a.b.c.d.Hi"), false)
     }
+  }
+
+  val testClassLoader = getClass.getClassLoader
+
+  it("test fire SuiteStarting and SuiteAborted when nested suite burst during construction") {
+
+    val discoverySuite = new DiscoverySuite("org.scalatest.tools.scalasbt", Set("org.scalatest.tools.scalasbt.AbortedSuite2"), false, testClassLoader)
+    val rep = new EventRecordingReporter
+    intercept[VirtualMachineError] { // should propagate Error
+      discoverySuite.run(None, Args(rep))
+    }
+    assert(rep.suiteStartingEventsReceived.length == 1)
+    assert(rep.suiteAbortedEventsReceived.length == 1)
+
   }
 }

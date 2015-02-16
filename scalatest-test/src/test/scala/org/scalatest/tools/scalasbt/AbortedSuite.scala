@@ -39,3 +39,7 @@ class AbortedSuite extends WordSpec {
   override def nestedSuites = Vector(new NestedSuite)
 
 }
+
+class AbortedSuite2 extends WordSpec {
+  throw new VirtualMachineError("Fails during construction time.") {}
+}
