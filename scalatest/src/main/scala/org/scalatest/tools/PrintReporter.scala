@@ -28,7 +28,6 @@ import java.util.Set
 import java.io.StringWriter
 import org.scalatest.events._
 import PrintReporter._
-import org.scalatest.junit.JUnitTestFailedError
 
 /**
  * A <code>Reporter</code> that prints test status information to
