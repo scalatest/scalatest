@@ -26,7 +26,7 @@ object GenVersions {
 
   }
 
-  def genScalaTestVersions(targetDir: File, version: String, scalaVersion: String): Unit = {
+  def genScalaTestVersions(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val shortScalaVersion = scalaVersion.split("\\.").take(2).mkString(".")
 
     val scalaTestVersionsFile = new File(targetDir, "ScalaTestVersions.scala")
@@ -45,6 +45,7 @@ object GenVersions {
     scalaTestVersionsFileWriter.flush()
     scalaTestVersionsFileWriter.close()
     println("Generated " + scalaTestVersionsFile.getAbsolutePath)
+    Seq(scalaTestVersionsFile)
   }
 
 }
