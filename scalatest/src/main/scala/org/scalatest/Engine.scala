@@ -19,7 +19,7 @@ import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import FunSuite.IgnoreTagName
+import Suite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
 import org.scalatest.events.SeeStackDepthException

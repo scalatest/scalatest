@@ -16,20 +16,12 @@
 package org.scalatest
 
 import java.lang.annotation._
-import java.io.Serializable
-import java.lang.reflect.Constructor
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
+import java.lang.reflect.{InvocationTargetException, Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import Suite.simpleNameForTest
-import Suite.parseSimpleName
-import Suite.stripDollars
 import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
-import Suite.checkForPublicNoArgConstructor
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.anExceptionThatShouldCauseAnAbort
@@ -39,7 +31,6 @@ import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
 import Suite.testMethodTakesAnInformer
 import scala.collection.immutable.TreeSet
-import Suite.getIndentedTextForTest
 import Suite.getEscapedIndentedTextForTest
 import Suite.getTopOfClass
 import Suite.getTopOfMethod
@@ -54,7 +45,6 @@ import Suite.reportTestIgnored
 import Suite.reportTestSucceeded
 import Suite.reportTestPending
 import Suite.reportTestCanceled
-import Suite.reportInfoProvided
 import Suite.createInfoProvided
 import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
@@ -64,11 +54,9 @@ import tools.SuiteDiscoveryHelper
 import tools.Runner
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
-import exceptions._
 import collection.mutable.ListBuffer
 import collection.GenTraversable
 import annotation.tailrec
-import collection.immutable
 import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 
@@ -2454,6 +2442,8 @@ used for test events like succeeded/failed, etc.
    if (theSuite.nestedSuites.isEmpty) simpleName
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
+
+  val IgnoreTagName = "org.scalatest.Ignore"
 }
 
 
