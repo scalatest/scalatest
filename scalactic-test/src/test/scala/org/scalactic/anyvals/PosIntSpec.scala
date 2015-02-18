@@ -16,11 +16,15 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
+import prop.GeneratorDrivenPropertyChecks 
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-//import org.scalactic.StrictCheckedEquality
+import org.scalacheck.Gen
+import org.scalacheck.Gen.choose
+import org.scalacheck.Arbitrary
 
-class PosIntSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
+class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
+
   object `A PosInt` {
     object `should offer a from factory method that` {
       def `returns Some[PosInt] if the passed Int is greater than 0`
@@ -140,6 +144,18 @@ class PosIntSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         val x: Int = -8
         "takesPosInt(x)" shouldNot compile
       }
+    }
+
+    val posIntGen: Gen[PosInt] =
+      for { i <- choose(1, Int.MaxValue) } yield PosInt.from(i).get
+
+    implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
+
+    def `should offer methods that behave like thoe on Int` {
+      forAll { (pint: PosInt, int: Int) =>
+
+println(s"$pint + $int")
+pint + int shouldEqual pint.toInt + int }
     }
   }
 }
