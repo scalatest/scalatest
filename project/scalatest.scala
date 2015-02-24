@@ -227,6 +227,11 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Macro",
       organization := "org.scalactic",
+      sourceGenerators in Compile += {
+        Def.task{
+          GenResources.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      },
       // Disable publishing macros directly, included in scalactic main jar
       publish := {},
       publishLocal := {}
@@ -241,7 +246,8 @@ object ScalatestBuild extends Build {
       initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile += {
         Def.task{
-          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenResources.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar

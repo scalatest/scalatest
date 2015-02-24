@@ -21,8 +21,8 @@ import org.scalactic.Resources
 private[scalactic] object PosZFloatMacro extends CompileTimeAssertions {
 
   def apply(c: Context)(value: c.Expr[Float]): c.Expr[PosZFloat] = {
-    val notValidMsg = Resources("notValidPosZFloat")
-    val notLiteralMsg = Resources("notLiteralPosZFloat")
+    val notValidMsg = Resources.notValidPosZFloat
+    val notLiteralMsg = Resources.notLiteralPosZFloat
 
     import c.universe._
 
