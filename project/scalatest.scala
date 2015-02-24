@@ -379,7 +379,6 @@ object ScalatestBuild extends Build {
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
     .settings(sharedSettings: _*)
-    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
@@ -399,6 +398,11 @@ object ScalatestBuild extends Build {
           GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value)
         }.taskValue
       },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestJS.genResource((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
@@ -416,8 +420,8 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),*/
-      docTaskSetting
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
+      docTaskSetting*/
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",

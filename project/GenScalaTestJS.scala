@@ -19,12 +19,21 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenScalaTestJS {
 
+  private def uncommentJsExport(line: String): String =
+    if (line.startsWith("//@scala.scalajs.js.annotation.JSExport"))
+      line.substring(2)
+    else
+      line
+
+  private def transformLine(line: String): String =
+    uncommentJsExport(line)
+
   private def copyFile(sourceFile: File, destFile: File): File = {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
       val lines = Source.fromFile(sourceFile).getLines.toList
       for (line <- lines) {
-        destWriter.write(line)
+        destWriter.write(transformLine(line))
         destWriter.newLine()
       }
       destFile
@@ -66,7 +75,6 @@ object GenScalaTestJS {
               "Outcome.scala",
               "TestData.scala",
               "ConfigMap.scala",
-              "Resources.scala",
               "Reporter.scala",
               "DispatchReporter.scala",
               "CatchReporter.scala",
@@ -195,7 +203,7 @@ object GenScalaTestJS {
 
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val sourceResourceFile = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
-    val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalatest")
+    val destResourceDir = new File(targetDir, "resources/org/scalatest")
     destResourceDir.mkdirs()
     val destResourceFile = new File(destResourceDir, "ScalaTestBundle.properties")
     copyFile(sourceResourceFile, destResourceFile)

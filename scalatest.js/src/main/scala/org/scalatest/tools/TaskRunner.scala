@@ -2,6 +2,7 @@ package org.scalatest.tools
 
 import sbt.testing._
 import org.scalajs.testinterface.TestUtils
+import org.scalatest.Suite
 
 final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
   def tags(): Array[String] = Array.empty
@@ -12,25 +13,9 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
   }
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
-    /*for (suite <- Platform.loadModule[TestSuite](task.fullyQualifiedName(), cl)) {
-      loggers.foreach(_.info(Console.GREEN + task.fullyQualifiedName() + Console.RESET))
+    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
 
-      for (property <- suite.properties) {
-        val startTS = System.currentTimeMillis()
-        val result = property(())
-        val endTS = System.currentTimeMillis()
-
-        loggers.foreach(_.info(result.formatted(property.name)))
-        eventHandler.handle(event(result, endTS - startTS))
-      }
-    }*/
-
-    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty)
-
-    /*for (suite <- Platform.loadModule[org.scalatest.Suite](task.fullyQualifiedName(), cl)) {
-
-    }*/
-
+    // TODO: Support nested suites
     Array.empty
   }
 }
