@@ -123,7 +123,7 @@ import exceptions.TestFailedException
  *
  * <pre class="stHighlight">
  * val attempted = 2
- * assert(attempted == 1, "Execution was attempted " + left + " times instead of 1 time")
+ * assert(attempted == 1, "Execution was attempted " + attempted + " times instead of 1 time")
  * </pre>
  *
  * <p>
