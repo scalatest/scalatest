@@ -15,12 +15,36 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
+import org.scalactic.Equality
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
+
+import scala.util.{Failure, Success, Try}
+
 //import org.scalactic.StrictCheckedEquality
 
 class PosZIntSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
+
+  val posZIntGen: Gen[PosZInt] =
+    for {i <- choose(0, Int.MaxValue)} yield PosZInt.from(i).get
+
+  implicit val arbPosZInt: Arbitrary[PosZInt] = Arbitrary(posZIntGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+
   object `A PosZInt` {
     object `should offer a from factory method that` {
       def `returns Some[PosZInt] if the passed Int is greater than or equal to 0`
@@ -140,6 +164,385 @@ class PosZIntSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       def `should not compile when x is passed in`: Unit = {
         val x: Int = -8
         "takesPosZInt(x)" shouldNot compile
+      }
+    }
+
+    def `should offer a unary ~ method that is consistent with Int` {
+      forAll { (pzint: PosZInt) =>
+        (~pzint) shouldEqual (~(pzint.toInt))
+      }
+    }
+
+    def `should offer a unary + method that is consistent with Int` {
+      forAll { (pzint: PosZInt) =>
+        (+pzint).toInt shouldEqual (+(pzint.toInt))
+      }
+    }
+
+    def `should offer a unary - method that is consistent with Int` {
+      forAll { (pzint: PosZInt) =>
+        (-pzint) shouldEqual (-(pzint.toInt))
+      }
+    }
+
+    def `should offer << methods that are consistent with Int` {
+      forAll { (pzint: PosZInt, shift: Int) =>
+        pzint << shift shouldEqual pzint.toInt << shift
+      }
+      forAll { (pzint: PosZInt, shift: Long) =>
+        pzint << shift shouldEqual pzint.toInt << shift
+      }
+    }
+
+    def `should offer >>> methods that are consistent with Int` {
+      forAll { (pzint: PosZInt, shift: Int) =>
+        pzint >>> shift shouldEqual pzint.toInt >>> shift
+      }
+      forAll { (pzint: PosZInt, shift: Long) =>
+        pzint >>> shift shouldEqual pzint.toInt >>> shift
+      }
+    }
+
+    def `should offer >> methods that are consistent with Int` {
+      forAll { (pzint: PosZInt, shift: Int) =>
+        pzint >> shift shouldEqual pzint.toInt >> shift
+      }
+      forAll { (pzint: PosZInt, shift: Long) =>
+        pzint >> shift shouldEqual pzint.toInt >> shift
+      }
+    }
+
+    def `should offer '<' comparison that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint < byte) shouldEqual (pzint.toInt < byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint < short) shouldEqual (pzint.toInt < short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint < char) shouldEqual (pzint.toInt < char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint < int) shouldEqual (pzint.toInt < int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint < long) shouldEqual (pzint.toInt < long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint < float) shouldEqual (pzint.toInt < float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint < double) shouldEqual (pzint.toInt < double)
+      }
+    }
+
+    def `should offer '<=' comparison that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint <= byte) shouldEqual (pzint.toInt <= byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint <= short) shouldEqual (pzint.toInt <= short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint <= char) shouldEqual (pzint.toInt <= char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint <= int) shouldEqual (pzint.toInt <= int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint <= long) shouldEqual (pzint.toInt <= long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint <= float) shouldEqual (pzint.toInt <= float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint <= double) shouldEqual (pzint.toInt <= double)
+      }
+    }
+
+    def `should offer '>' comparison that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint > byte) shouldEqual (pzint.toInt > byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint > short) shouldEqual (pzint.toInt > short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint > char) shouldEqual (pzint.toInt > char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint > int) shouldEqual (pzint.toInt > int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint > long) shouldEqual (pzint.toInt > long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint > float) shouldEqual (pzint.toInt > float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint > double) shouldEqual (pzint.toInt > double)
+      }
+    }
+
+    def `should offer '>=' comparison that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint >= byte) shouldEqual (pzint.toInt >= byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint >= short) shouldEqual (pzint.toInt >= short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint >= char) shouldEqual (pzint.toInt >= char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint >= int) shouldEqual (pzint.toInt >= int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint >= long) shouldEqual (pzint.toInt >= long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint >= float) shouldEqual (pzint.toInt >= float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint >= double) shouldEqual (pzint.toInt >= double)
+      }
+    }
+
+    def `should offer a '|' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint | byte) shouldEqual (pzint.toInt | byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint | short) shouldEqual (pzint.toInt | short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint | char) shouldEqual (pzint.toInt | char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint | int) shouldEqual (pzint.toInt | int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint | long) shouldEqual (pzint.toInt | long)
+      }
+    }
+
+    def `should offer an '&' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint & byte) shouldEqual (pzint.toInt & byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint & short) shouldEqual (pzint.toInt & short)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint & char) shouldEqual (pzint.toInt & char)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint & int) shouldEqual (pzint.toInt & int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint & long) shouldEqual (pzint.toInt & long)
+      }
+    }
+
+    def `should offer an '^' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint ^ byte) shouldEqual (pzint.toInt ^ byte)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint ^ char) shouldEqual (pzint.toInt ^ char)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint ^ short) shouldEqual (pzint.toInt ^ short)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint ^ int) shouldEqual (pzint.toInt ^ int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint ^ long) shouldEqual (pzint.toInt ^ long)
+      }
+    }
+
+    def `should offer a '+' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint + byte) shouldEqual (pzint.toInt + byte)
+      }
+      forAll { (pzint: PosZInt, char: Char) =>
+        (pzint + char) shouldEqual (pzint.toInt + char)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint + short) shouldEqual (pzint.toInt + short)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint + int) shouldEqual (pzint.toInt + int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint + long) shouldEqual (pzint.toInt + long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint + float) shouldEqual (pzint.toInt + float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint + double) shouldEqual (pzint.toInt + double)
+      }
+    }
+
+    def `should offer a '-' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint - byte) shouldEqual (pzint.toInt - byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint - short) shouldEqual (pzint.toInt - short)
+      }
+      forAll { (pzint: PosZInt, byte: Char) =>
+        (pzint - byte) shouldEqual (pzint.toInt - byte)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint - int) shouldEqual (pzint.toInt - int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint - long) shouldEqual (pzint.toInt - long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint - float) shouldEqual (pzint.toInt - float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint - double) shouldEqual (pzint.toInt - double)
+      }
+    }
+
+    def `should offer a '*' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        (pzint * byte) shouldEqual (pzint.toInt * byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        (pzint * short) shouldEqual (pzint.toInt * short)
+      }
+      forAll { (pzint: PosZInt, byte: Char) =>
+        (pzint * byte) shouldEqual (pzint.toInt * byte)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        (pzint * int) shouldEqual (pzint.toInt * int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        (pzint * long) shouldEqual (pzint.toInt * long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        (pzint * float) shouldEqual (pzint.toInt * float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        (pzint * double) shouldEqual (pzint.toInt * double)
+      }
+    }
+
+    def `should offer a '/' method that is consistent with Int`: Unit = {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        Try(pzint / byte) shouldEqual Try(pzint.toInt / byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        Try(pzint / short) shouldEqual Try(pzint.toInt / short)
+      }
+      forAll { (pzint: PosZInt, byte: Char) =>
+        Try(pzint / byte) shouldEqual Try(pzint.toInt / byte)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        Try(pzint / int) shouldEqual Try(pzint.toInt / int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        Try(pzint / long) shouldEqual Try(pzint.toInt / long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        Try(pzint / float) shouldEqual Try(pzint.toInt / float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        Try(pzint / double) shouldEqual Try(pzint.toInt / double)
+      }
+    }
+
+    def `should offer a '%' method that is consistent with Int`: Unit = {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
+      forAll { (pzint: PosZInt, byte: Byte) =>
+        Try(pzint % byte) shouldEqual Try(pzint.toInt % byte)
+      }
+      forAll { (pzint: PosZInt, short: Short) =>
+        Try(pzint % short) shouldEqual Try(pzint.toInt % short)
+      }
+      forAll { (pzint: PosZInt, byte: Char) =>
+        Try(pzint % byte) shouldEqual Try(pzint.toInt % byte)
+      }
+      forAll { (pzint: PosZInt, int: Int) =>
+        Try(pzint % int) shouldEqual Try(pzint.toInt % int)
+      }
+      forAll { (pzint: PosZInt, long: Long) =>
+        Try(pzint % long) shouldEqual Try(pzint.toInt % long)
+      }
+      forAll { (pzint: PosZInt, float: Float) =>
+        Try(pzint % float) shouldEqual Try(pzint.toInt % float)
+      }
+      forAll { (pzint: PosZInt, double: Double) =>
+        Try(pzint % double) shouldEqual Try(pzint.toInt % double)
+      }
+    }
+
+    def `should offer a 'toBinaryString' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt) =>
+        pzint.toBinaryString shouldEqual pzint.toInt.toBinaryString
+      }
+    }
+
+    def `should offer a 'toHexString' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt) =>
+        pzint.toHexString shouldEqual pzint.toInt.toHexString
+      }
+    }
+
+    def `should offer a 'toOctalString' method that is consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt) =>
+        pzint.toOctalString shouldEqual pzint.toInt.toOctalString
+      }
+    }
+
+    def `should offer 'to' and 'until' methods that are consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt, end: Int, step: Int) =>
+        Try(pzint.to(end)) shouldEqual Try(pzint.toInt.to(end))
+        Try(pzint.to(end, step)) shouldEqual Try(pzint.toInt.to(end, step))
+        Try(pzint.until(end)) shouldEqual Try(pzint.toInt.until(end))
+        Try(pzint.until(end, step)) shouldEqual Try(pzint.toInt.until(end, step))
+      }
+    }
+
+    def `should offer widening methods for basic types that are consistent with Int`: Unit = {
+      forAll { (pzint: PosZInt) =>
+        def widen(value: Int): Int = value
+        widen(pzint) shouldEqual widen(pzint.toInt)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: Long): Long = value
+        widen(pzint) shouldEqual widen(pzint.toInt)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: Float): Float = value
+        widen(pzint) shouldEqual widen(pzint.toInt)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: Double): Double = value
+        widen(pzint) shouldEqual widen(pzint.toInt)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: PosZLong): PosZLong = value
+        widen(pzint) shouldEqual widen(PosZLong.from(pzint.toInt).get)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: PosZFloat): PosZFloat = value
+        widen(pzint) shouldEqual widen(PosZFloat.from(pzint.toInt).get)
+      }
+      forAll { (pzint: PosZInt) =>
+        def widen(value: PosZDouble): PosZDouble = value
+        widen(pzint) shouldEqual widen(PosZDouble.from(pzint.toInt).get)
       }
     }
   }

@@ -15,19 +15,33 @@
  */
 package org.scalactic.anyvals
 
+import org.scalactic.Equality
 import org.scalatest._
 import prop.GeneratorDrivenPropertyChecks._
 import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.choose
 
+import scala.util.{Failure, Success, Try}
+
 
 class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
   val posLongGen: Gen[PosLong] =
-    for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
+    for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
 
   implicit val arbPosLong: Arbitrary[PosLong] = Arbitrary(posLongGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
 
   object `A PosLong` {
     object `should offer a from factory method that` {
@@ -163,19 +177,19 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
       def `should offer a unary ~ method that is consistent with Long` {
         forAll { (plong: PosLong) =>
-          (~plong) shouldEqual (~plong.toLong)
+          (~plong) shouldEqual (~(plong.toLong))
         }
       }
 
       def `should offer a unary + method that is consistent with Long` {
         forAll { (plong: PosLong) =>
-          (+plong).toInt shouldEqual (+plong.toLong)
+          (+plong).toLong shouldEqual (+(plong.toLong))
         }
       }
 
       def `should offer a unary - method that is consistent with Long` {
         forAll { (plong: PosLong) =>
-          (-plong) shouldEqual (-plong.toLong)
+          (-plong) shouldEqual (-(plong.toLong))
         }
       }
 
@@ -210,6 +224,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong < byte) shouldEqual (plong.toLong < byte)
         }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong < short) shouldEqual (plong.toLong < short)
+        }
         forAll { (plong: PosLong, char: Char) =>
           (plong < char) shouldEqual (plong.toLong < char)
         }
@@ -234,6 +251,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong, char: Char) =>
           (plong <= char) shouldEqual (plong.toLong <= char)
         }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong <= short) shouldEqual (plong.toLong <= short)
+        }
         forAll { (plong: PosLong, int: Int) =>
           (plong <= int) shouldEqual (plong.toLong <= int)
         }
@@ -251,6 +271,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       def `should offer '>' comparison that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong > byte) shouldEqual (plong.toLong > byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong > short) shouldEqual (plong.toLong > short)
         }
         forAll { (plong: PosLong, char: Char) =>
           (plong > char) shouldEqual (plong.toLong > char)
@@ -273,6 +296,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong >= byte) shouldEqual (plong.toLong >= byte)
         }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong >= short) shouldEqual (plong.toLong >= short)
+        }
         forAll { (plong: PosLong, char: Char) =>
           (plong >= char) shouldEqual (plong.toLong >= char)
         }
@@ -290,9 +316,12 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '|' method consistent with Long`: Unit = {
+      def `should offer a '|' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong | byte) shouldEqual (plong.toLong | byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong | short) shouldEqual (plong.toLong | short)
         }
         forAll { (plong: PosLong, char: Char) =>
           (plong | char) shouldEqual (plong.toLong | char)
@@ -305,9 +334,12 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '&' method consistent with Long`: Unit = {
+      def `should offer an '&' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong & byte) shouldEqual (plong.toLong & byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong & short) shouldEqual (plong.toLong & short)
         }
         forAll { (plong: PosLong, char: Char) =>
           (plong & char) shouldEqual (plong.toLong & char)
@@ -320,9 +352,12 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer an '^' method consistent with Long`: Unit = {
+      def `should offer an '^' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong ^ byte) shouldEqual (plong.toLong ^ byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong ^ short) shouldEqual (plong.toLong ^ short)
         }
         forAll { (plong: PosLong, char: Char) =>
           (plong ^ char) shouldEqual (plong.toLong ^ char)
@@ -338,6 +373,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       def `should offer a '+' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong + byte) shouldEqual (plong.toLong + byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong + short) shouldEqual (plong.toLong + short)
         }
         forAll { (plong: PosLong, char: Char) =>
           (plong + char) shouldEqual (plong.toLong + char)
@@ -360,8 +398,11 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong - byte) shouldEqual (plong.toLong - byte)
         }
-        forAll { (plong: PosLong, byte: Char) =>
-          (plong - byte) shouldEqual (plong.toLong - byte)
+        forAll { (plong: PosLong, short: Short) =>
+          (plong - short) shouldEqual (plong.toLong - short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong - char) shouldEqual (plong.toLong - char)
         }
         forAll { (plong: PosLong, int: Int) =>
           (plong - int) shouldEqual (plong.toLong - int)
@@ -381,8 +422,11 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong * byte) shouldEqual (plong.toLong * byte)
         }
-        forAll { (plong: PosLong, byte: Char) =>
-          (plong * byte) shouldEqual (plong.toLong * byte)
+        forAll { (plong: PosLong, short: Short) =>
+          (plong * short) shouldEqual (plong.toLong * short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong * char) shouldEqual (plong.toLong * char)
         }
         forAll { (plong: PosLong, int: Int) =>
           (plong * int) shouldEqual (plong.toLong * int)
@@ -400,67 +444,49 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
       def `should offer a '/' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
-          whenever(byte != 0) {
-            (plong / byte) shouldEqual (plong.toLong / byte)
-          }
+          Try(plong / byte) shouldEqual Try(plong.toLong / byte)
         }
-        forAll { (plong: PosLong, byte: Char) =>
-          whenever(byte != 0) {
-            (plong / byte) shouldEqual (plong.toLong / byte)
-          }
+        forAll { (plong: PosLong, short: Short) =>
+          Try(plong / short) shouldEqual Try(plong.toLong / short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          Try(plong / char) shouldEqual Try(plong.toLong / char)
         }
         forAll { (plong: PosLong, int: Int) =>
-          whenever(int != 0) {
-            (plong / int) shouldEqual (plong.toLong / int)
-          }
+          Try(plong / int) shouldEqual Try(plong.toLong / int)
         }
         forAll { (plong: PosLong, long: Long) =>
-          whenever(long != 0) {
-            (plong / long) shouldEqual (plong.toLong / long)
-          }
+          Try(plong / long) shouldEqual Try(plong.toLong / long)
         }
         forAll { (plong: PosLong, float: Float) =>
-          whenever(float != 0) {
-            (plong / float) shouldEqual (plong.toLong / float)
-          }
+          Try(plong / float) shouldEqual Try(plong.toLong / float)
         }
         forAll { (plong: PosLong, double: Double) =>
-          whenever(double != 0) {
-            (plong / double) shouldEqual (plong.toLong / double)
-          }
+          Try(plong / double) shouldEqual Try(plong.toLong / double)
         }
       }
 
       def `should offer a '%' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong, byte: Byte) =>
-          whenever(byte != 0) {
-            (plong % byte) shouldEqual (plong.toLong % byte)
-          }
+          Try(plong % byte) shouldEqual Try(plong.toLong % byte)
         }
-        forAll { (plong: PosLong, byte: Char) =>
-          whenever(byte != 0) {
-            (plong % byte) shouldEqual (plong.toLong % byte)
-          }
+        forAll { (plong: PosLong, short: Short) =>
+          Try(plong % short) shouldEqual Try(plong.toLong % short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          Try(plong % char) shouldEqual Try(plong.toLong % char)
         }
         forAll { (plong: PosLong, int: Int) =>
-          whenever(int != 0) {
-            (plong % int) shouldEqual (plong.toLong % int)
-          }
+          Try(plong % int) shouldEqual Try(plong.toLong % int)
         }
         forAll { (plong: PosLong, long: Long) =>
-          whenever(long != 0) {
-            (plong % long) shouldEqual (plong.toLong % long)
-          }
+          Try(plong % long) shouldEqual Try(plong.toLong % long)
         }
         forAll { (plong: PosLong, float: Float) =>
-          whenever(float != 0) {
-            (plong % float) shouldEqual (plong.toLong % float)
-          }
+          Try(plong % float) shouldEqual Try(plong.toLong % float)
         }
         forAll { (plong: PosLong, double: Double) =>
-          whenever(double != 0) {
-            (plong % double) shouldEqual (plong.toLong % double)
-          }
+          Try(plong % double) shouldEqual Try(plong.toLong % double)
         }
       }
 
@@ -482,24 +508,17 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer an 'until' method that is consistent with Long`: Unit = {
-        forAll { (plong: PosLong, end: Long) =>
-          plong.until(end) shouldEqual plong.toLong.until(end)
-        }
-        forAll { (plong: PosLong, end: Long, step: Long) =>
-          whenever(step != 0) {
-            plong.until(end, step) shouldEqual plong.toLong.until(end, step)
-          }
-        }
-      }
-
-      def `should offer a 'to' method that is consistent with Long`: Unit = {
-        forAll { (plong: PosLong, end: Long) =>
-          plong.to(end) shouldEqual plong.toLong.to(end)
-        }
-        forAll { (plong: PosLong, end: Long, step: Long) =>
-          whenever(step != 0) {
-            plong.to(end, step) shouldEqual plong.toLong.to(end, step)
+      def `should offer 'to' and 'until' method that is consistent with Long`: Unit = {
+        // make sure length ends up less than Integer.MAX_VALUE, or else various side
+        // effects of evaluating the range will throw exceptions in unexpected
+        val len = Math.abs(util.Random.nextInt())
+        forAll { (plong: PosLong, step: Long) =>
+          whenever (Long.MaxValue - len > plong && step != 0) {
+            val end = plong.toLong + len
+            Try(plong.until(end)) shouldEqual Try(plong.toLong.until(end))
+            Try(plong.until(end, step)) shouldEqual Try(plong.toLong.until(end, step))
+            Try(plong.to(end)) shouldEqual Try(plong.toLong.to(end))
+            Try(plong.to(end, step)) shouldEqual Try(plong.toLong.to(end, step))
           }
         }
       }
@@ -516,10 +535,6 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         forAll { (plong: PosLong) =>
           def widen(value: Double): Double = value
           widen(plong) shouldEqual widen(plong.toLong)
-        }
-        forAll { (plong: PosLong) =>
-          def widen(value: PosLong): PosLong = value
-          widen(plong) shouldEqual widen(PosLong.from(plong.toLong).get)
         }
         forAll { (plong: PosLong) =>
           def widen(value: PosFloat): PosFloat = value

@@ -15,11 +15,14 @@
  */
 package org.scalactic.anyvals
 
+import org.scalactic.Equality
 import org.scalatest._
 import prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.choose
+
+import scala.util.{Failure, Success, Try}
 
 class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -27,6 +30,17 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
     for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
 
   implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
 
   object `A PosInt` {
 
@@ -157,19 +171,19 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
 
     def `should offer a unary ~ method that is consistent with Int` {
       forAll { (pint: PosInt) =>
-        (~pint) shouldEqual (~pint.toInt)
+        (~pint) shouldEqual (~(pint.toInt))
       }
     }
 
     def `should offer a unary + method that is consistent with Int` {
       forAll { (pint: PosInt) =>
-        (+pint).toInt shouldEqual (+pint.toInt)
+        (+pint).toInt shouldEqual (+(pint.toInt))
       }
     }
 
     def `should offer a unary - method that is consistent with Int` {
       forAll { (pint: PosInt) =>
-        (-pint) shouldEqual (-pint.toInt)
+        (-pint) shouldEqual (-(pint.toInt))
       }
     }
 
@@ -204,6 +218,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint < byte) shouldEqual (pint.toInt < byte)
       }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint < short) shouldEqual (pint.toInt < short)
+      }
       forAll { (pint: PosInt, char: Char) =>
         (pint < char) shouldEqual (pint.toInt < char)
       }
@@ -224,6 +241,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
     def `should offer '<=' comparison that is consistent with Int`: Unit = {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint <= byte) shouldEqual (pint.toInt <= byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint <= short) shouldEqual (pint.toInt <= short)
       }
       forAll { (pint: PosInt, char: Char) =>
         (pint <= char) shouldEqual (pint.toInt <= char)
@@ -246,6 +266,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint > byte) shouldEqual (pint.toInt > byte)
       }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint > short) shouldEqual (pint.toInt > short)
+      }
       forAll { (pint: PosInt, char: Char) =>
         (pint > char) shouldEqual (pint.toInt > char)
       }
@@ -267,6 +290,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint >= byte) shouldEqual (pint.toInt >= byte)
       }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint >= short) shouldEqual (pint.toInt >= short)
+      }
       forAll { (pint: PosInt, char: Char) =>
         (pint >= char) shouldEqual (pint.toInt >= char)
       }
@@ -284,9 +310,12 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
     }
 
-    def `should offer a '|' method consistent with Int`: Unit = {
+    def `should offer a '|' method that is consistent with Int`: Unit = {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint | byte) shouldEqual (pint.toInt | byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint | short) shouldEqual (pint.toInt | short)
       }
       forAll { (pint: PosInt, char: Char) =>
         (pint | char) shouldEqual (pint.toInt | char)
@@ -299,9 +328,12 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
     }
 
-    def `should offer a '&' method consistent with Int`: Unit = {
+    def `should offer an '&' method that is consistent with Int`: Unit = {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint & byte) shouldEqual (pint.toInt & byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint & short) shouldEqual (pint.toInt & short)
       }
       forAll { (pint: PosInt, char: Char) =>
         (pint & char) shouldEqual (pint.toInt & char)
@@ -314,12 +346,15 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
     }
 
-    def `should offer an '^' method consistent with Int`: Unit = {
+    def `should offer an '^' method that is consistent with Int`: Unit = {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint ^ byte) shouldEqual (pint.toInt ^ byte)
       }
       forAll { (pint: PosInt, char: Char) =>
         (pint ^ char) shouldEqual (pint.toInt ^ char)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint ^ short) shouldEqual (pint.toInt ^ short)
       }
       forAll { (pint: PosInt, int: Int) =>
         (pint ^ int) shouldEqual (pint.toInt ^ int)
@@ -335,6 +370,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
       forAll { (pint: PosInt, char: Char) =>
         (pint + char) shouldEqual (pint.toInt + char)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint + short) shouldEqual (pint.toInt + short)
       }
       forAll { (pint: PosInt, int: Int) =>
         (pint + int) shouldEqual (pint.toInt + int)
@@ -353,6 +391,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
     def `should offer a '-' method that is consistent with Int`: Unit = {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint - byte) shouldEqual (pint.toInt - byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint - short) shouldEqual (pint.toInt - short)
       }
       forAll { (pint: PosInt, byte: Char) =>
         (pint - byte) shouldEqual (pint.toInt - byte)
@@ -375,6 +416,9 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       forAll { (pint: PosInt, byte: Byte) =>
         (pint * byte) shouldEqual (pint.toInt * byte)
       }
+      forAll { (pint: PosInt, short: Short) =>
+        (pint * short) shouldEqual (pint.toInt * short)
+      }
       forAll { (pint: PosInt, byte: Char) =>
         (pint * byte) shouldEqual (pint.toInt * byte)
       }
@@ -393,68 +437,56 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
     }
 
     def `should offer a '/' method that is consistent with Int`: Unit = {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
       forAll { (pint: PosInt, byte: Byte) =>
-        whenever(byte != 0) {
-          (pint / byte) shouldEqual (pint.toInt / byte)
-        }
+        Try(pint / byte) shouldEqual Try(pint.toInt / byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        Try(pint / short) shouldEqual Try(pint.toInt / short)
       }
       forAll { (pint: PosInt, byte: Char) =>
-        whenever(byte != 0) {
-          (pint / byte) shouldEqual (pint.toInt / byte)
-        }
+        Try(pint / byte) shouldEqual Try(pint.toInt / byte)
       }
       forAll { (pint: PosInt, int: Int) =>
-        whenever(int != 0) {
-          (pint / int) shouldEqual (pint.toInt / int)
-        }
+        Try(pint / int) shouldEqual Try(pint.toInt / int)
       }
       forAll { (pint: PosInt, long: Long) =>
-        whenever(long != 0) {
-          (pint / long) shouldEqual (pint.toInt / long)
-        }
+        Try(pint / long) shouldEqual Try(pint.toInt / long)
       }
       forAll { (pint: PosInt, float: Float) =>
-        whenever(float != 0) {
-          (pint / float) shouldEqual (pint.toInt / float)
-        }
+        Try(pint / float) shouldEqual Try(pint.toInt / float)
       }
       forAll { (pint: PosInt, double: Double) =>
-        whenever(double != 0) {
-          (pint / double) shouldEqual (pint.toInt / double)
-        }
+        Try(pint / double) shouldEqual Try(pint.toInt / double)
       }
     }
 
     def `should offer a '%' method that is consistent with Int`: Unit = {
+      // Note that Try (and associated Equality[Try]) are used since some values
+      // will legitimately throw an exception
+
       forAll { (pint: PosInt, byte: Byte) =>
-        whenever(byte != 0) {
-          (pint % byte) shouldEqual (pint.toInt % byte)
-        }
+        Try(pint % byte) shouldEqual Try(pint.toInt % byte)
+      }
+      forAll { (pint: PosInt, short: Short) =>
+        Try(pint % short) shouldEqual Try(pint.toInt % short)
       }
       forAll { (pint: PosInt, byte: Char) =>
-        whenever(byte != 0) {
-          (pint % byte) shouldEqual (pint.toInt % byte)
-        }
+        Try(pint % byte) shouldEqual Try(pint.toInt % byte)
       }
       forAll { (pint: PosInt, int: Int) =>
-        whenever(int != 0) {
-          (pint % int) shouldEqual (pint.toInt % int)
-        }
+        Try(pint % int) shouldEqual Try(pint.toInt % int)
       }
       forAll { (pint: PosInt, long: Long) =>
-        whenever(long != 0) {
-          (pint % long) shouldEqual (pint.toInt % long)
-        }
+        Try(pint % long) shouldEqual Try(pint.toInt % long)
       }
       forAll { (pint: PosInt, float: Float) =>
-        whenever(float != 0) {
-          (pint % float) shouldEqual (pint.toInt % float)
-        }
+        Try(pint % float) shouldEqual Try(pint.toInt % float)
       }
       forAll { (pint: PosInt, double: Double) =>
-        whenever(double != 0) {
-          (pint % double) shouldEqual (pint.toInt % double)
-        }
+        Try(pint % double) shouldEqual Try(pint.toInt % double)
       }
     }
 
@@ -476,25 +508,12 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
     }
 
-    def `should offer an 'until' method that is consistent with Int`: Unit = {
-      forAll { (pint: PosInt, end: Int) =>
-        pint.until(end) shouldEqual pint.toInt.until(end)
-      }
+    def `should offer 'to' and 'until' methods that are consistent with Int`: Unit = {
       forAll { (pint: PosInt, end: Int, step: Int) =>
-        whenever(step != 0) {
-          pint.until(end, step) shouldEqual pint.toInt.until(end, step)
-        }
-      }
-    }
-
-    def `should offer a 'to' method that is consistent with Int`: Unit = {
-      forAll { (pint: PosInt, end: Int) =>
-        pint.to(end) shouldEqual pint.toInt.to(end)
-      }
-      forAll { (pint: PosInt, end: Int, step: Int) =>
-        whenever(step != 0) {
-          pint.to(end, step) shouldEqual pint.toInt.to(end, step)
-        }
+        Try(pint.to(end)) shouldEqual Try(pint.toInt.to(end))
+        Try(pint.to(end, step)) shouldEqual Try(pint.toInt.to(end, step))
+        Try(pint.until(end)) shouldEqual Try(pint.toInt.until(end))
+        Try(pint.until(end, step)) shouldEqual Try(pint.toInt.until(end, step))
       }
     }
 
