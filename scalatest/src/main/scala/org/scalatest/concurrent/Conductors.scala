@@ -538,10 +538,10 @@ trait Conductors extends PatienceConfiguration {
     def thread(name: String)(fun: => Unit): Thread = {
       currentState.get match {
         case TestFinished =>
-          throw new NotAllowedException(Resources("threadCalledAfterConductingHasCompleted"), getStackDepthFun("Conductors.scala", "thread"))
+          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun("Conductors.scala", "thread"))
         case _ =>
           if (threadNames contains name)
-            throw new NotAllowedException(Resources("cantRegisterThreadsWithSameName", name), getStackDepthFun("Conductors.scala", "thread"))
+            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun("Conductors.scala", "thread"))
           val t = TestThread(name, fun _)
           threads add t
           threadNames add name
@@ -637,10 +637,10 @@ trait Conductors extends PatienceConfiguration {
     def whenFinished(fun: => Unit) {
 
       if (Thread.currentThread != mainThread)
-        throw new NotAllowedException(Resources("whenFinishedCanOnlyBeCalledByMainThread"), getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun("Conductors.scala", "whenFinished"))
 
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources("cannotInvokeWhenFinishedAfterConduct"), getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun("Conductors.scala", "whenFinished"))
 
       conduct()
 
@@ -656,9 +656,9 @@ trait Conductors extends PatienceConfiguration {
      */
     def waitForBeat(beat: Int) {
       if (beat == 0)
-        throw new NotAllowedException(Resources("cannotWaitForBeatZero"), getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun("Conductors.scala", "waitForBeat"))
       if (beat < 0)
-        throw new NotAllowedException(Resources("cannotWaitForNegativeBeat"), getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun("Conductors.scala", "waitForBeat"))
       clock waitForBeat beat
     }
 
@@ -789,7 +789,7 @@ trait Conductors extends PatienceConfiguration {
       // if the test was started already, explode
       // otherwise, change state to TestStarted
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources("cannotCallConductTwice"), getStackDepthFun("Conductors.scala", "conduct"))
+        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun("Conductors.scala", "conduct"))
       else
         currentState set TestStarted
 
@@ -1086,7 +1086,7 @@ trait Conductors extends PatienceConfiguration {
        * Stop the test due to a timeout.
        */
       private def stopDueToTimeout() {
-        val errorMessage = Resources("testTimedOut", timeout.prettyString)
+        val errorMessage = Resources.testTimedOut(timeout.prettyString)
         // The mainThread is likely joined to some test thread, so wake it up. It will look and
         // notice that the firstExceptionThrown is no longer empty, and will stop all live test threads,
         // then rethrow the first exception thrown.
@@ -1100,7 +1100,7 @@ trait Conductors extends PatienceConfiguration {
       private def detectDeadlock() {
         // Should never get to >= before ==, but just playing it safe
         if (deadlockCount >= MaxDeadlockDetectionsBeforeDeadlock) {
-          val errorMessage = Resources("suspectedDeadlock", MaxDeadlockDetectionsBeforeDeadlock.toString, (clockInterval scaledBy MaxDeadlockDetectionsBeforeDeadlock).prettyString)
+          val errorMessage = Resources.suspectedDeadlock(MaxDeadlockDetectionsBeforeDeadlock.toString, (clockInterval scaledBy MaxDeadlockDetectionsBeforeDeadlock).prettyString)
           firstExceptionThrown offer new RuntimeException(errorMessage)
 
           // The mainThread is likely joined to some test thread, so wake it up. It will look and

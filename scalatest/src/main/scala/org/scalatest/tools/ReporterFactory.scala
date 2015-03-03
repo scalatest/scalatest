@@ -32,8 +32,8 @@ private[scalatest] class ReporterFactory {
     catch {
       case e: ClassNotFoundException => {
 
-        val msg1 = Resources("cantLoadReporterClass", reporterClassName)
-        val msg2 = Resources("probarg", argString)
+        val msg1 = Resources.cantLoadReporterClass(reporterClassName)
+        val msg2 = Resources.probarg(argString)
         val msg = msg1 + "\n" + msg2
     
         val iae = new IllegalArgumentException(msg)
@@ -42,8 +42,8 @@ private[scalatest] class ReporterFactory {
       }
       case e: InstantiationException => {
 
-        val msg1 = Resources("cantInstantiateReporter", reporterClassName)
-        val msg2 = Resources("probarg", argString)
+        val msg1 = Resources.cantInstantiateReporter(reporterClassName)
+        val msg2 = Resources.probarg(argString)
         val msg = msg1 + "\n" + msg2
     
         val iae = new IllegalArgumentException(msg)
@@ -52,8 +52,8 @@ private[scalatest] class ReporterFactory {
       }
       case e: IllegalAccessException => {
 
-        val msg1 = Resources("cantInstantiateReporter", reporterClassName)
-        val msg2 = Resources("probarg", argString)
+        val msg1 = Resources.cantInstantiateReporter(reporterClassName)
+        val msg2 = Resources.probarg(argString)
         val msg = msg1 + "\n" + msg2
     
         val iae = new IllegalArgumentException(msg)

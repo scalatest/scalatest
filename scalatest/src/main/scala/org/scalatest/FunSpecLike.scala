@@ -44,7 +44,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait FunSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentSpecMod", "FunSpec")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "FunSpec")
   import engine._
 
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
@@ -93,11 +93,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -147,7 +147,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: => Unit) {
-      engine.registerTest(specText, Transformer(testFun _), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -259,7 +259,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: => Unit) {
-      engine.registerTest(specText, Transformer(testFun _), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -344,7 +344,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
     //engine.
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -355,12 +355,12 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def describe(description: String)(fun: => Unit) {
     try {
-      registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "describe", 4, -2, None)
+      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", 4, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
       case other: Throwable => throw other
     }
   }

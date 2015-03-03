@@ -43,8 +43,8 @@ final class IncludeWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left.indexOf(expectedSubstring) >= 0, 
-          Resources("didNotIncludeSubstring"),
-          Resources("includedSubstring"), 
+          Resources.rawDidNotIncludeSubstring,
+          Resources.rawIncludedSubstring,
           Vector(left, expectedSubstring)
         )
       override def toString: String = "include (" + Prettifier.default(expectedSubstring) + ")"
@@ -90,8 +90,8 @@ final class IncludeWord {
       def apply(left: String): MatchResult =
         MatchResult(
           expectedRegex.findFirstIn(left).isDefined,
-          Resources("didNotIncludeRegex"),
-          Resources("includedRegex"), 
+          Resources.rawDidNotIncludeRegex,
+          Resources.rawIncludedRegex,
           Vector(left, UnquotedString(expectedRegex.toString))
         )
       override def toString: String = "include regex \"" + Prettifier.default(expectedRegex) + "\""

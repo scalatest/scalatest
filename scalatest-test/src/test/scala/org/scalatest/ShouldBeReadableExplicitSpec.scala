@@ -42,10 +42,10 @@ class ShouldBeReadableExplicitSpec extends Spec {
   val fileName: String = "ShouldBeReadableExplicitSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages("wasNotReadable", left)
+    FailureMessages.wasNotReadable(left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages("wasReadable", left)
+    FailureMessages.wasReadable(left)
   
   def `book should be readable, stone should not be readable` {
     assert(book.canRead === true)
@@ -53,8 +53,8 @@ class ShouldBeReadableExplicitSpec extends Spec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `Readable matcher` {

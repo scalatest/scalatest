@@ -142,45 +142,45 @@ class StringReporterSummarySpec extends UnitSpec {
 
   val initialFragmentsForJustOneFailedTest: Vector[Fragment] =
     Vector(
-      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
-      Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
-      Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
-      Fragment(Resources("oneTestFailed"), AnsiRed),
+      Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources.totalNumberOfTestsRun(summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources.suiteSummary(summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources.testSummary(summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources.oneTestFailed, AnsiRed),
       Fragment("StringReporterSummarySpec:", AnsiRed),
       Fragment("the summaryFragments method ", AnsiRed),
-      Fragment(Resources("specTextAndNote", "- should fail on purpose", Resources("failedNote")), AnsiRed),
+      Fragment(Resources.specTextAndNote("- should fail on purpose", Resources.failedNote), AnsiRed),
       Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tfeLineNumber + ")", AnsiRed)
     )
 
   val fragmentsWhenNoReminderForOneFailedTest: Vector[Fragment] =
     Vector(
-      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
-      Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
-      Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
-      Fragment(Resources("oneTestFailed"), AnsiRed)
+      Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources.totalNumberOfTestsRun(summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources.suiteSummary(summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources.testSummary(summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources.oneTestFailed, AnsiRed)
     )
 
   val fragmentsWhenNoReminderForOneFailedAndOneCanceledTest: Vector[Fragment] =
     Vector(
-      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedAndOneCanceledTest.testsCompletedCount.toString), AnsiCyan),
-      Fragment(Resources("suiteSummary", summaryWithOneFailedAndOneCanceledTest.suitesCompletedCount.toString, summaryWithOneFailedAndOneCanceledTest.suitesAbortedCount.toString), AnsiCyan),
-      Fragment(Resources("testSummary", summaryWithOneFailedAndOneCanceledTest.testsSucceededCount.toString, summaryWithOneFailedAndOneCanceledTest.testsFailedCount.toString, summaryWithOneFailedAndOneCanceledTest.testsCanceledCount.toString, summaryWithOneFailedAndOneCanceledTest.testsIgnoredCount.toString, summaryWithOneFailedAndOneCanceledTest.testsPendingCount.toString), AnsiCyan),
-      Fragment(Resources("oneTestFailed"), AnsiRed)
+      Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources.totalNumberOfTestsRun(summaryWithOneFailedAndOneCanceledTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources.suiteSummary(summaryWithOneFailedAndOneCanceledTest.suitesCompletedCount.toString, summaryWithOneFailedAndOneCanceledTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources.testSummary(summaryWithOneFailedAndOneCanceledTest.testsSucceededCount.toString, summaryWithOneFailedAndOneCanceledTest.testsFailedCount.toString, summaryWithOneFailedAndOneCanceledTest.testsCanceledCount.toString, summaryWithOneFailedAndOneCanceledTest.testsIgnoredCount.toString, summaryWithOneFailedAndOneCanceledTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources.oneTestFailed, AnsiRed)
     )
 
   val initialFragmentsForOneFailedAndOneCanceledTest: Vector[Fragment] =
     Vector(
-      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedAndOneCanceledTest.testsCompletedCount.toString), AnsiCyan),
-      Fragment(Resources("suiteSummary", summaryWithOneFailedAndOneCanceledTest.suitesCompletedCount.toString, summaryWithOneFailedAndOneCanceledTest.suitesAbortedCount.toString), AnsiCyan),
-      Fragment(Resources("testSummary", summaryWithOneFailedAndOneCanceledTest.testsSucceededCount.toString, summaryWithOneFailedAndOneCanceledTest.testsFailedCount.toString, summaryWithOneFailedAndOneCanceledTest.testsCanceledCount.toString, summaryWithOneFailedAndOneCanceledTest.testsIgnoredCount.toString, summaryWithOneFailedAndOneCanceledTest.testsPendingCount.toString), AnsiCyan),
-      Fragment(Resources("oneTestFailed"), AnsiRed),
+      Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources.totalNumberOfTestsRun(summaryWithOneFailedAndOneCanceledTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources.suiteSummary(summaryWithOneFailedAndOneCanceledTest.suitesCompletedCount.toString, summaryWithOneFailedAndOneCanceledTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources.testSummary(summaryWithOneFailedAndOneCanceledTest.testsSucceededCount.toString, summaryWithOneFailedAndOneCanceledTest.testsFailedCount.toString, summaryWithOneFailedAndOneCanceledTest.testsCanceledCount.toString, summaryWithOneFailedAndOneCanceledTest.testsIgnoredCount.toString, summaryWithOneFailedAndOneCanceledTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources.oneTestFailed, AnsiRed),
       Fragment("StringReporterSummarySpec:", AnsiRed),
       Fragment("the summaryFragments method ", AnsiRed),
-      Fragment(Resources("specTextAndNote", "- should fail on purpose", Resources("failedNote")), AnsiRed),
+      Fragment(Resources.specTextAndNote("- should fail on purpose", Resources.failedNote), AnsiRed),
       Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tfeLineNumber + ")", AnsiRed)
     )
 
@@ -188,7 +188,7 @@ class StringReporterSummarySpec extends UnitSpec {
     Vector(
       Fragment("StringReporterSummarySpec:", AnsiYellow),
       Fragment("the summaryFragments method ", AnsiYellow),
-      Fragment(Resources("specTextAndNote", "- should cancel on purpose", Resources("canceledNote")), AnsiYellow),
+      Fragment(Resources.specTextAndNote("- should cancel on purpose", Resources.canceledNote), AnsiYellow),
       Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tceLineNumber + ")", AnsiYellow)
     )
 
@@ -206,7 +206,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false
         )
-      fragments should be (Vector(Fragment(Resources("runCompleted"), AnsiCyan)))
+      fragments should be (Vector(Fragment(Resources.runCompleted, AnsiCyan)))
     }
     def `should produce just a run stopped message when the run stops but the summary is not defined` {
       val fragments =
@@ -221,7 +221,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false
         )
-      fragments should be (Vector(Fragment(Resources("runStopped"), AnsiCyan)))
+      fragments should be (Vector(Fragment(Resources.runStopped, AnsiCyan)))
     }
 
     def `should produce a good summary when Summary is all zeroes` {
@@ -251,11 +251,11 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       fragments should be (
         Vector(
-          Fragment(Resources("runCompletedIn", makeDurationString(0)), AnsiCyan),
-          Fragment(Resources("totalNumberOfTestsRun", summary.testsCompletedCount.toString), AnsiCyan),
-          Fragment(Resources("suiteSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString), AnsiCyan),
-          Fragment(Resources("testSummary", summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString, summary.testsPendingCount.toString), AnsiCyan),
-          Fragment(Resources("noTestsWereExecuted"), AnsiYellow)
+          Fragment(Resources.runCompletedIn(makeDurationString(0)), AnsiCyan),
+          Fragment(Resources.totalNumberOfTestsRun(summary.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources.suiteSummary(summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString), AnsiCyan),
+          Fragment(Resources.testSummary(summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString, summary.testsPendingCount.toString), AnsiCyan),
+          Fragment(Resources.noTestsWereExecuted, AnsiYellow)
         )
       )
     }
@@ -287,11 +287,11 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       fragments should be (
         Vector(
-          Fragment(Resources("runCompletedIn", makeDurationString(0)), AnsiCyan),
-          Fragment(Resources("totalNumberOfTestsRun", summaryAllPassed.testsCompletedCount.toString), AnsiCyan),
-          Fragment(Resources("suiteSummary", summaryAllPassed.suitesCompletedCount.toString, summaryAllPassed.suitesAbortedCount.toString), AnsiCyan),
-          Fragment(Resources("testSummary", summaryAllPassed.testsSucceededCount.toString, summaryAllPassed.testsFailedCount.toString, summaryAllPassed.testsCanceledCount.toString, summaryAllPassed.testsIgnoredCount.toString, summaryAllPassed.testsPendingCount.toString), AnsiCyan),
-          Fragment(Resources("allTestsPassed"), AnsiGreen)
+          Fragment(Resources.runCompletedIn(makeDurationString(0)), AnsiCyan),
+          Fragment(Resources.totalNumberOfTestsRun(summaryAllPassed.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources.suiteSummary(summaryAllPassed.suitesCompletedCount.toString, summaryAllPassed.suitesAbortedCount.toString), AnsiCyan),
+          Fragment(Resources.testSummary(summaryAllPassed.testsSucceededCount.toString, summaryAllPassed.testsFailedCount.toString, summaryAllPassed.testsCanceledCount.toString, summaryAllPassed.testsIgnoredCount.toString, summaryAllPassed.testsPendingCount.toString), AnsiCyan),
+          Fragment(Resources.allTestsPassed, AnsiGreen)
         )
       )
     }
@@ -544,74 +544,39 @@ class StringReporterSummarySpec extends UnitSpec {
 
       val fragmentsWhenNoReminderForOneSuiteAborted: Vector[Fragment] =
         Vector(
+          Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+          Fragment(Resources.totalNumberOfTestsRun(summaryWithOneAbortedSuite.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources.suiteSummary(summaryWithOneAbortedSuite.suitesCompletedCount.toString, summaryWithOneAbortedSuite.suitesAbortedCount.toString), AnsiCyan),
           Fragment(
-            Resources(
-              "runCompletedIn",
-              makeDurationString(213L)),
-            AnsiCyan),
-          Fragment(
-            Resources(
-              "totalNumberOfTestsRun",
-              summaryWithOneAbortedSuite.testsCompletedCount.toString),
-            AnsiCyan),
-          Fragment(
-            Resources(
-              "suiteSummary",
-              summaryWithOneAbortedSuite.suitesCompletedCount.toString,
-              summaryWithOneAbortedSuite.suitesAbortedCount.toString),
-            AnsiCyan),
-          Fragment(
-            Resources(
-              "testSummary",
+            Resources.testSummary(
               summaryWithOneAbortedSuite.testsSucceededCount.toString,
               summaryWithOneAbortedSuite.testsFailedCount.toString,
               summaryWithOneAbortedSuite.testsCanceledCount.toString,
               summaryWithOneAbortedSuite.testsIgnoredCount.toString,
               summaryWithOneAbortedSuite.testsPendingCount.toString),
             AnsiCyan),
-          Fragment(
-            Resources(
-              "oneSuiteAborted"),
-            AnsiRed)
+          Fragment(Resources.oneSuiteAborted, AnsiRed)
         )
 
       val initialFragmentsForJustOneAbortedSuite: Vector[Fragment] =
         Vector(
           Fragment(
-            Resources(
-              "runCompletedIn",
-              makeDurationString(213L)),
-            AnsiCyan),
+            Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
           Fragment(
-            Resources(
-              "totalNumberOfTestsRun",
-              summaryWithOneAbortedSuite.testsCompletedCount.toString), 
-            AnsiCyan),
+            Resources.totalNumberOfTestsRun(summaryWithOneAbortedSuite.testsCompletedCount.toString), AnsiCyan),
           Fragment(
-            Resources(
-              "suiteSummary",
-              summaryWithOneAbortedSuite.suitesCompletedCount.toString,
-              summaryWithOneAbortedSuite.suitesAbortedCount.toString), 
-            AnsiCyan),
+            Resources.suiteSummary(summaryWithOneAbortedSuite.suitesCompletedCount.toString, summaryWithOneAbortedSuite.suitesAbortedCount.toString), AnsiCyan),
           Fragment(
-            Resources(
-              "testSummary",
+            Resources.testSummary(
               summaryWithOneAbortedSuite.testsSucceededCount.toString,
               summaryWithOneAbortedSuite.testsFailedCount.toString,
               summaryWithOneAbortedSuite.testsCanceledCount.toString,
               summaryWithOneAbortedSuite.testsIgnoredCount.toString,
               summaryWithOneAbortedSuite.testsPendingCount.toString), 
             AnsiCyan),
-          Fragment(
-            Resources(
-              "oneSuiteAborted"), 
-            AnsiRed),
-          Fragment(
-            "StringReporterSummarySpec:", 
-            AnsiRed),
-          Fragment(
-            Resources("specTextAndNote", "", Resources("abortedNote")),
-            AnsiRed),
+          Fragment(Resources.oneSuiteAborted, AnsiRed),
+          Fragment("StringReporterSummarySpec:", AnsiRed),
+          Fragment(Resources.specTextAndNote("", Resources.abortedNote), AnsiRed),
           Fragment(
             "  I meant to do that! (StringReporterSummarySpec.scala:" +
               tfeLineNumber + ")", 

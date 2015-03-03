@@ -61,17 +61,17 @@ class AllOfContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages("allOfDuplicate"))
+      e1.getMessage() should be (FailureMessages.allOfDuplicate)
       
       val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages("allOfDuplicate"))
+      e2.getMessage() should be (FailureMessages.allOfDuplicate)
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages("allOfDuplicate"))
+      e3.getMessage() should be (FailureMessages.allOfDuplicate)
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {

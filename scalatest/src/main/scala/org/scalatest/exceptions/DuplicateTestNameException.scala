@@ -34,7 +34,7 @@ import org.scalatest.Resources
  */
 class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(
-      Some(Resources("duplicateTestName", testName)),
+      Some(Resources.duplicateTestName(testName)),
       None,
       failedCodeStackDepthFun
     ) {

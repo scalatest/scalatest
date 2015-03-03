@@ -323,23 +323,23 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
           val ($alphaName$) = heading
 
           throw new TableDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) + 
+            sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+              "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
               (
                 ex match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages("occurredAtRow", idx) + "\n" +
+              "  " + FailureMessages.occurredAtRow(idx) + "\n" +
 $namesAndValues$
               "  )",
             Some(ex),
             getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", 2),
             None, // Payload
-            FailureMessages("undecoratedPropertyCheckFailureMessage"),
+            FailureMessages.undecoratedPropertyCheckFailureMessage,
             List($alphaLower$),
             List($alphaName$),
             idx
@@ -897,7 +897,7 @@ val propertyCheckForEveryPreamble = """
                           failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
 
 
-  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
+  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
     import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
     def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
@@ -915,20 +915,20 @@ val propertyCheckForEveryPreamble = """
                 result.failedElements :+ (index,
                   head,
                   new exceptions.TableDrivenPropertyCheckFailedException(
-                    (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                    (sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
                       (sde.failedCodeFileNameAndLineNumberString match {
                         case Some(s) => " (" + s + ")";
                         case None => ""
                       }) + "\n" +
-                      "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                      "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
                       (
                         ex match {
                           case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                            "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                            "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                           case _ => ""
                         }
                         ) +
-                      "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                      "  " + FailureMessages.occurredAtRow(index) + "\n" +
                       indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
                         name + " = " + value
                       }.toIndexedSeq).mkString("\n") +
@@ -936,7 +936,7 @@ val propertyCheckForEveryPreamble = """
                     Some(ex),
                     getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
                     None,
-                    FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                    FailureMessages.undecoratedPropertyCheckFailureMessage,
                     head.productIterator.toList,
                     namesOfArgs,
                     index
@@ -953,13 +953,13 @@ val propertyCheckForEveryPreamble = """
     innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
   }
 
-  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
     import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     val messageList = result.failedElements.map(_._3)
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
-        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
         messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -983,7 +983,7 @@ val propertyCheckForEveryTemplateFor1 = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "$filename$", "forEvery", 3){a => fun(a._1)}
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
   }
 
 """
@@ -1003,20 +1003,20 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def forEvery[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
-    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "$filename$", "forEvery", 3)(fun.tupled)
+    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
   }
 """
 
 
   val propertyCheckExistsPreamble = """
 
-  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
     import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     if (result.passedCount == 0) {
       val messageList = result.failedElements.map(_._3)
       throw new exceptions.TestFailedException(
-        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
         messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -1035,7 +1035,7 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
                                           """
@@ -1049,7 +1049,7 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Unit): Unit = {
-    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "$filename$", "exists", 3)(fun.tupled)
+    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
                                       """
 

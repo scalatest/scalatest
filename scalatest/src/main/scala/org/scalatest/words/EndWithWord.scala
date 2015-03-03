@@ -44,8 +44,8 @@ final class EndWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left endsWith right,
-          Resources("didNotEndWith"),
-          Resources("endedWith"), 
+          Resources.rawDidNotEndWith,
+          Resources.rawEndedWith,
           Vector(left, right)
         )
       override def toString: String = "endWith (" + Prettifier.default(right) + ")"
@@ -92,8 +92,8 @@ final class EndWithWord {
         val allMatches = rightRegex.findAllIn(left)
         MatchResult(
           allMatches.hasNext && (allMatches.end == left.length),
-          Resources("didNotEndWithRegex"),
-          Resources("endedWithRegex"), 
+          Resources.rawDidNotEndWithRegex,
+          Resources.rawEndedWithRegex,
           Vector(left, UnquotedString(rightRegex.toString))
         )
       }

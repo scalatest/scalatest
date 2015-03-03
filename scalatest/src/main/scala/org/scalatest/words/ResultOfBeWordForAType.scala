@@ -36,7 +36,7 @@ final class ResultOfBeWordForAType[T](clazz: Class[T]) {
    * </pre>
    */
   def thrownBy(fun: => Any) {
-    checkExpectedException(fun, clazz, "wrongException", "exceptionExpected", 5)
+    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, 5)
   }
   
   /**

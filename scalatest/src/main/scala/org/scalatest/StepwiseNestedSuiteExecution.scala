@@ -57,7 +57,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
         // Create a Rerunner if the Suite has a no-arg constructor 
         val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
 
-        val rawString = Resources("suiteExecutionStarting")
+        val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
 
         val suiteStartTime = System.currentTimeMillis
@@ -68,7 +68,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
           // Same thread, so OK to send same tracker
           val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
-          val rawString = Resources("suiteCompletedNormally")
+          val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
 
           val duration = System.currentTimeMillis - suiteStartTime
@@ -80,9 +80,9 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
             val eMessage = e.getMessage
             val rawString = 
               if (eMessage != null && eMessage.length > 0)
-                Resources("executeExceptionWithMessage", eMessage)
+                Resources.executeExceptionWithMessage(eMessage)
               else
-                Resources("executeException")
+                Resources.executeException
             val formatter = formatterForSuiteAborted(nestedSuite, rawString)
 
             val duration = System.currentTimeMillis - suiteStartTime

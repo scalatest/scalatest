@@ -50,7 +50,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait FunSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureSpecMod", "FixtureFunSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
   import engine._
   
   private[scalatest] val sourceFileName = "FunSpecLike.scala"
@@ -98,11 +98,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 1, 0, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, 0, None, testTags: _*)
   }
 
   /**
@@ -148,7 +148,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -261,7 +261,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -350,7 +350,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 6, -2, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 6, -2, None, testTags: _*)
   }
 
   /**
@@ -372,7 +372,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def ignore(specText: String)(testFun: FixtureParam => Any) {
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideAnItOrAThey"), getStackDepthFun(sourceFileName, "ignore"))
+      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideAnItOrAThey, getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
   }
 
@@ -387,12 +387,12 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def describe(description: String)(fun: => Unit) {
     try {
-      registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "describe", 4, -2, None)
+      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", 4, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
       case other: Throwable => throw other
     }
   }

@@ -40,7 +40,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("alertProvided", AlertText), AnsiYellow))
+        ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
       def `should display NoteProvided messages in green and unformatted` {
       
@@ -55,7 +55,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("noteProvided", NoteText), AnsiGreen))
+        ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
     }
     object `when a formatter is supplied but presentUnformatted is true` {
@@ -68,7 +68,7 @@ class StringReporterAlertSpec extends UnitSpec {
               "some alert",
               Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
               None,
-              Some(IndentedText(Resources("alertFormattedText", "some alert"), "some alert", 0))
+              Some(IndentedText(Resources.alertFormattedText("some alert"), "some alert", 0))
             ),
           presentUnformatted = true,
           presentAllDurations = false,
@@ -79,7 +79,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("alertProvided", AlertText), AnsiYellow))
+        ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
       def `should display NoteProvided messages in green and unformatted` {
       
@@ -90,7 +90,7 @@ class StringReporterAlertSpec extends UnitSpec {
               "some update",
               Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
               None,
-              Some(IndentedText(Resources("noteFormattedText", "some update"), "some update", 0))
+              Some(IndentedText(Resources.noteFormattedText("some update"), "some update", 0))
             ),
           presentUnformatted = true,
           presentAllDurations = false,
@@ -101,7 +101,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("noteProvided", NoteText), AnsiGreen))
+        ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
     }
     object `when a formatter is supplied and presentUnformatted is false` {
@@ -114,7 +114,7 @@ class StringReporterAlertSpec extends UnitSpec {
               "some alert",
               Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
               None,
-              Some(IndentedText(Resources("alertFormattedText", "some alert"), "some alert", 0))
+              Some(IndentedText(Resources.alertFormattedText("some alert"), "some alert", 0))
             ),
           presentUnformatted = false,
           presentAllDurations = false,
@@ -125,7 +125,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("alertFormattedText", "some alert "), AnsiYellow)) // TODO: I'm not sure where the extra space is coming from. Be nice to zap it.
+        ) shouldEqual Vector(Fragment(Resources.alertFormattedText("some alert "), AnsiYellow)) // TODO: I'm not sure where the extra space is coming from. Be nice to zap it.
       }
       def `should display NoteProvided messages formatted in green` {
 
@@ -136,7 +136,7 @@ class StringReporterAlertSpec extends UnitSpec {
               "some update",
               Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
               None,
-              Some(IndentedText(Resources("noteFormattedText", "some update"), "some update", 0))
+              Some(IndentedText(Resources.noteFormattedText("some update"), "some update", 0))
             ),
           presentUnformatted = false,
           presentAllDurations = false,
@@ -147,7 +147,7 @@ class StringReporterAlertSpec extends UnitSpec {
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
           reminderEvents = Seq.empty
-        ) shouldEqual Vector(Fragment(Resources("noteFormattedText", "some update "), AnsiGreen))
+        ) shouldEqual Vector(Fragment(Resources.noteFormattedText("some update "), AnsiGreen))
       }
     }
   }

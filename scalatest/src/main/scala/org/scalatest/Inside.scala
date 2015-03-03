@@ -109,8 +109,8 @@ trait Inside {
         }
       val indentation = "  " * (levelCount - 1)
       currentMessage match {
-        case Some(msg) => Some(Resources("insidePartialFunctionAppendSomeMsg", msg.trim, indentation, value.toString()))
-        case None => Some(Resources("insidePartialFunctionAppendNone", indentation, value.toString()))
+        case Some(msg) => Some(Resources.insidePartialFunctionAppendSomeMsg(msg.trim, indentation, value.toString()))
+        case None => Some(Resources.insidePartialFunctionAppendNone(indentation, value.toString()))
       }
     }
 
@@ -124,8 +124,8 @@ trait Inside {
       }
     }
     else
-      throw new TestFailedException(sde => Some(Resources("insidePartialFunctionNotDefined", value.toString())), None, getStackDepthFun("Inside.scala", "inside"))
-      //throw new TestFailedException(Resources("insidePartialFunctionNotDefined", value.toString()), 2)
+      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, getStackDepthFun("Inside.scala", "inside"))
+      //throw new TestFailedException(Resources.insidePartialFunctionNotDefined(value.toString()), 2)
   }
 }
 

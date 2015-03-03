@@ -806,10 +806,10 @@ $endif$
           def apply(left: SC): MatchResult = {
             MatchResult(
               left != null,
-              Resources("equaledNull"),
-              Resources("didNotEqualNull"),
-              Resources("midSentenceEqualedNull"),
-              Resources("didNotEqualNull"), 
+              Resources.rawEqualedNull,
+              Resources.rawDidNotEqualNull,
+              Resources.rawMidSentenceEqualedNull,
+              Resources.rawDidNotEqualNull,
               Vector.empty, 
               Vector(left)
             )
@@ -1958,10 +1958,10 @@ $endif$
           def apply(left: SC): MatchResult = {
             MatchResult(
               left != null,
-              Resources("equaledNull"),
-              Resources("didNotEqualNull"),
-              Resources("midSentenceEqualedNull"),
-              Resources("didNotEqualNull"), 
+              Resources.rawEqualedNull,
+              Resources.rawDidNotEqualNull,
+              Resources.rawMidSentenceEqualedNull,
+              Resources.rawDidNotEqualNull,
               Vector.empty, 
               Vector(left)
             )

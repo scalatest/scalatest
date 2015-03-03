@@ -23,10 +23,10 @@ class ShouldBeDefinedStructuralSpec extends FunSpec with Matchers {
   val fileName: String = "ShouldBeDefinedStructuralSpec.scala"
     
   def wasNotDefined(left: Any): String = 
-    FailureMessages("wasNotDefined", left)
+    FailureMessages.wasNotDefined(left)
     
   def wasDefined(left: Any): String = 
-    FailureMessages("wasDefined", left)
+    FailureMessages.wasDefined(left)
   
   describe("defined matcher") {
     

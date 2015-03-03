@@ -39,8 +39,8 @@ final class ExistWord {
             val existence = implicitly[Existence[T]]
             MatchResult(
               existence.exists(left), 
-              Resources("doesNotExist"), 
-              Resources("exists"), 
+              Resources.rawDoesNotExist,
+              Resources.rawExists,
               Vector(left)
             )
           }

@@ -229,7 +229,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       sourceGenerators in Compile += {
         Def.task{
-          GenResources.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
@@ -247,7 +247,7 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile += {
         Def.task{
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenResources.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -332,6 +332,12 @@ object ScalatestBuild extends Build {
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
      scalatestDocSourcesSetting,
+     sourceGenerators in Compile += {
+       Def.task{
+         ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+         ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+       }.taskValue
+     },
      docTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(

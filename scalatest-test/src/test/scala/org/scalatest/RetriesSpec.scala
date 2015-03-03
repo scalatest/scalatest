@@ -105,7 +105,7 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
         outcome match {
           case Canceled(ex) =>
-            ex.getMessage should be (Resources("testFlickered"))
+            ex.getMessage should be (Resources.testFlickered)
             ex.getCause should be (failed.exception)
           case _ => fail()
         }
@@ -190,7 +190,7 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
         outcome match {
           case Canceled(ex) =>
-            ex.getMessage should be (Resources("testFlickered"))
+            ex.getMessage should be (Resources.testFlickered)
             ex.getCause should be (failed.exception)
           case _ => fail()
         }
@@ -423,7 +423,7 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
         outcome match {
           case Canceled(ex) =>
-            ex.getMessage should be (Resources("testFlickered"))
+            ex.getMessage should be (Resources.testFlickered)
             ex.getCause should be (failed.exception)
           case _ => fail()
         }
@@ -542,7 +542,7 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
         outcome match {
           case Canceled(ex) =>
-            ex.getMessage should be (Resources("testFlickered"))
+            ex.getMessage should be (Resources.testFlickered)
             ex.getCause should be (failed.exception)
           case _ => fail()
         }

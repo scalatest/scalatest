@@ -152,8 +152,8 @@ private[scalatest] object AMatcher {
       def apply(left: T): MatchResult = 
         MatchResult(
           fun(left), 
-          Resources("wasNotA"), 
-          Resources("wasA"), 
+          Resources.rawWasNotA,
+          Resources.rawWasA,
           Vector(left, UnquotedString(nounName))
         )
       override def toString: String = "AMatcher[" + ev.erasure.getName + "](" + Prettifier.default(name) + ", " + ev.erasure.getName + " => Boolean)"

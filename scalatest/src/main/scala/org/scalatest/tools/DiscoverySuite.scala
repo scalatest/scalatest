@@ -80,7 +80,7 @@ private[scalatest] object DiscoverySuite {
     catch {
       case t: Throwable => { // TODO: Maybe include the e.getClass.getName and the message for e in the message cannotLoadDiscoveredSuite, because Jess had the problem
                              // That gradle cut off the stack trace so she couldn't see the cause.
-        val msg = Resources("cannotLoadDiscoveredSuite", suiteClassName)
+        val msg = Resources.cannotLoadDiscoveredSuite(suiteClassName)
         new DeferredAbortedSuite(new RuntimeException(msg, t))
       }
     }

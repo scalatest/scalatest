@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentSpecMod", "Spec")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
   import engine._
 
   /**
@@ -94,11 +94,11 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -121,7 +121,12 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit) {
-    engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -163,7 +168,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def of(description: String) {
-      registerFlatBranch(description, "behaviorOfCannotAppearInsideAnIn", "FlatSpecLike.scala", "of", 3, 0)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecLike.scala", "of", 3, 0)
     }
   }
 
@@ -1529,7 +1534,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
     (subject, verb, rest) => {
-      registerFlatBranch(subject, "shouldCannotAppearInsideAnIn", "FlatSpecLike.scala", "apply", 6, 0)
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", 6, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
 
         def is(testFun: => PendingNothing) {
@@ -1573,7 +1578,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected implicit val shorthandSharedTestRegistrationFunction: (String) => BehaveWord = {
     (left) => {
-      registerFlatBranch(left, "shouldCannotAppearInsideAnIn", "FlatSpecLike.scala", "apply", 5, 0)
+      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", 5, 0)
       new BehaveWord
     }
   }
@@ -1603,7 +1608,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**

@@ -42,10 +42,10 @@ class ShouldBeWritableImplicitSpec extends Spec {
   val fileName: String = "ShouldBeWritableImplicitSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages("wasNotWritable", left)
+    FailureMessages.wasNotWritable(left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages("wasWritable", left)
+    FailureMessages.wasWritable(left)
   
   def `book should be writable, stone should not be writable` {
     assert(book.canRead === true)
@@ -53,8 +53,8 @@ class ShouldBeWritableImplicitSpec extends Spec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `Writable matcher` {

@@ -45,7 +45,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
-        caught.getMessage should include (Resources("atCheckpointAt") +
+        caught.getMessage should include (Resources.atCheckpointAt +
                                           " CheckpointsSpec.scala:" +
                                           failConditionLineNumber)
       }
@@ -74,11 +74,11 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
 
-        caught.getMessage should include (Resources("atCheckpointAt") +
+        caught.getMessage should include (Resources.atCheckpointAt +
                                           " CheckpointsSpec.scala:" +
                                           failCondition1LineNumber)
 
-        caught.getMessage should include (Resources("atCheckpointAt") +
+        caught.getMessage should include (Resources.atCheckpointAt +
                                           " CheckpointsSpec.scala:" +
                                           failCondition2LineNumber)
       }
@@ -141,7 +141,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
-        caught.getMessage should include (Resources("atCheckpointAt") +
+        caught.getMessage should include (Resources.atCheckpointAt +
                                           " CheckpointsSpec.scala:" +
                                           failConditionLineNumber)
       }

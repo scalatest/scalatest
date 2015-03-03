@@ -131,8 +131,8 @@ class StringReporterSuite extends FunSuite with Matchers {
     val msg = "A stitch in time saves nine."
     val strings: Vector[String] =
       StringReporter.stringsToPrintOnError(
-        noteResourceName = "infoProvidedNote",
-        errorResourceName = "infoProvided",
+        noteMessageFun = Resources.infoProvidedNote,
+        errorMessageFun = Resources.infoProvided,
         message = msg,
         throwable = None,
         formatter = None,
