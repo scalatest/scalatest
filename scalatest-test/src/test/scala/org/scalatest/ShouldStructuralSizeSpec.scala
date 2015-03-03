@@ -27,16 +27,16 @@ import exceptions.TestFailedException
 class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
   
   def hadSizeInsteadOfExpectedSize(left: Any, leftSize: Long, expectedSize: Long): String = 
-    FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+    FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, expectedSize)
     
   def hadSize(left: Any, expectedSize: Int): String = 
-    FailureMessages("hadSize", left, expectedSize)
+    FailureMessages.hadSize(left, expectedSize)
     
   def commaAnd(left: String, right: String): String = 
-    FailureMessages("commaAnd", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
   
   def commaBut(left: String, right: String): String = 
-    FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
   
   describe("The 'have size (Int)' syntax ") {
     

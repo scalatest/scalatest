@@ -260,7 +260,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
         case None => jUnitCore.run(myClass)
         case Some(tn) =>
           if (!testNames.contains(tn))
-            throw new IllegalArgumentException(Resources("testNotFound", testName))
+            throw new IllegalArgumentException(Resources.testNotFound(testName))
           jUnitCore.run(Request.method(myClass, tn))
       }
     }

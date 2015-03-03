@@ -24,10 +24,10 @@ class ShouldBeWritableStructuralSpec extends FunSpec {
   val fileName: String = "ShouldBeWritableStructuralSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages("wasNotWritable", left)
+    FailureMessages.wasNotWritable(left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages("wasWritable", left)
+    FailureMessages.wasWritable(left)
   
   describe("writable matcher") {
     

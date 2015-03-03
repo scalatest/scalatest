@@ -378,9 +378,9 @@ object Checkers extends Checkers {
 
           val failureMsg =
             if (result.succeeded == 1)
-              FailureMessages("propCheckExhaustedAfterOne", result.discarded)
+              FailureMessages.propCheckExhaustedAfterOne(result.discarded)
             else
-              FailureMessages("propCheckExhausted", result.succeeded, result.discarded)
+              FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
 
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => failureMsg,
@@ -398,24 +398,24 @@ object Checkers extends Checkers {
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
               
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" + 
+            sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages("propertyFailed", result.succeeded) + "\n" +
+              "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages("occurredOnValues") + "\n" + 
+              "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
               "  )" + 
               getLabelDisplay(scalaCheckLabels),
             None,
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
-            FailureMessages("propertyFailed", result.succeeded),
+            FailureMessages.propertyFailed(result.succeeded),
             scalaCheckArgs,
             None,
             scalaCheckLabels.toList
@@ -424,23 +424,23 @@ object Checkers extends Checkers {
         case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
 
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" +
-              "  " + FailureMessages("thrownExceptionsMessage", if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
+            sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
+              "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
               (
                 e match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages("occurredOnValues") + "\n" +
+              "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
               "  )" + 
               getLabelDisplay(scalaCheckLabels),
             Some(e),
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
-            FailureMessages("propertyException", UnquotedString(e.getClass.getName)),
+            FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
             scalaCheckArgs,
             None,
             scalaCheckLabels.toList
@@ -461,7 +461,7 @@ object Checkers extends Checkers {
   
   private def getLabelDisplay(labels: Set[String]): String = 
     if (labels.size > 0)
-      "\n  " + Resources(if (labels.size == 1) "propCheckLabel" else "propCheckLabels") + "\n" + labels.map("    " + _).mkString("\n")
+      "\n  " + (if (labels.size == 1) Resources.propCheckLabel else Resources.propCheckLabels) + "\n" + labels.map("    " + _).mkString("\n")
     else
       ""
 
@@ -500,7 +500,7 @@ object Checkers extends Checkers {
           result.discarded + " tests were discarded."
 
     case Test.PropException(args, e, labels) =>
-      FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
+      FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
   }
 
   private def prettyLabels(labels: Set[String]) = {

@@ -1414,7 +1414,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1422,7 +1422,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -1437,7 +1437,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1445,7 +1445,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -1461,7 +1461,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages("exceptionWasThrownInDashClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

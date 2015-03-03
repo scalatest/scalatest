@@ -40,7 +40,7 @@ class OptionValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("OptionValuesSpec.scala")
-      caught.message.value should be (Resources("optionValueNotDefined"))
+      caught.message.value should be (Resources.optionValueNotDefined)
     }
   }
 }

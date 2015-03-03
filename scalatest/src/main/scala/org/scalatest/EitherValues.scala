@@ -120,7 +120,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources("eitherLeftValueNotDefined")), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
       }
     }
   }
@@ -148,7 +148,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources("eitherRightValueNotDefined")), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
       }
     }
   }

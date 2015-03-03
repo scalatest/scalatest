@@ -27,16 +27,16 @@ import exceptions.TestFailedException
 class ShouldStructuralLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
   
   def hadLengthInsteadOfExpectedLength(left: Any, leftLength: Long, expectedLength: Long): String = 
-    FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+    FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
     
   def hadLength(left: Any, expectedLength: Int): String = 
-    FailureMessages("hadLength", left, expectedLength)
+    FailureMessages.hadLength(left, expectedLength)
     
   def commaAnd(left: String, right: String): String = 
-    FailureMessages("commaAnd", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
   
   def commaBut(left: String, right: String): String = 
-    FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
     
   describe("The 'have length (Int)' syntax ") {
     

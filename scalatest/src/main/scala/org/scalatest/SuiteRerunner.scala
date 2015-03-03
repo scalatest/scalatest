@@ -61,14 +61,14 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
       val suiteStartTime = System.currentTimeMillis
       try {
 
-        val rawString = Resources("suiteExecutionStarting")
+        val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(suite)
 
         report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
         // TODO: I had to pass Set.empty for chosenStyles now. Fix this later.
         suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
-        val rawString2 = Resources("suiteCompletedNormally")
+        val rawString2 = Resources.suiteCompletedNormally
         val formatter2 = formatterForSuiteCompleted(suite)
         val duration = System.currentTimeMillis - suiteStartTime
 
@@ -79,9 +79,9 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
           val eMessage = e.getMessage
           val rawString3 = 
             if (eMessage != null && eMessage.length > 0)
-              Resources("executeExceptionWithMessage", eMessage)
+              Resources.executeExceptionWithMessage(eMessage)
             else
-              Resources("executeException")
+              Resources.executeException
           val formatter3 = formatterForSuiteAborted(suite, rawString3)
 
           val duration = System.currentTimeMillis - suiteStartTime
@@ -100,25 +100,25 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
     catch {
       case e: ClassNotFoundException => {
         val duration = System.currentTimeMillis - runStartTime
-        report(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadSuite", e.getMessage), Some(e), Some(duration)))
+        report(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadSuite(e.getMessage), Some(e), Some(duration)))
       }
       case e: InstantiationException => {
         val duration = System.currentTimeMillis - runStartTime
-        report(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(duration)))
+        report(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(duration)))
       }
       case e: IllegalAccessException => {
         val duration = System.currentTimeMillis - runStartTime
-        report(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(duration)))
+        report(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(duration)))
       }
       case e: SecurityException => {
         val duration = System.currentTimeMillis - runStartTime
-        report(RunAborted(tracker.nextOrdinal(), Resources("securityWhenRerruning", e.getMessage), Some(e), Some(duration)))
+        report(RunAborted(tracker.nextOrdinal(), Resources.securityWhenRerunning(e.getMessage), Some(e), Some(duration)))
       }
       case e: NoClassDefFoundError => {
         // Suggest the problem might be a bad runpath
         // Maybe even print out the current runpath
         val duration = System.currentTimeMillis - runStartTime
-        report(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadClass", e.getMessage), Some(e), Some(duration)))
+        report(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadClass(e.getMessage), Some(e), Some(duration)))
       }
       case e: Throwable => {
         val duration = System.currentTimeMillis - runStartTime

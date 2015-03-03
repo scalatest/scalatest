@@ -32,7 +32,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8")))
+      tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8")))
     }
   }
   object `The MatcherProducers trait` {
@@ -44,7 +44,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8")))
+      tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8")))
     }
     def `should enable failure messages to be modified via mapResult` {
       val beAsIntsGreaterThan = f composeTwice g mapResult { mr => MatchResult(mr.matches, mr.failureMessage.toUpperCase, mr.negatedFailureMessage.toUpperCase) }
@@ -52,7 +52,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8").toUpperCase))
+      tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8").toUpperCase))
     }
     def `should be able to modify failure message args via mapResult` {
       val beAsIntsGreaterThan = f composeTwice g mapResult { mr =>
@@ -67,7 +67,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7.toInt", "8.toInt")))
+      tfe.message should be (Some(Resources.wasNotGreaterThan("7.toInt", "8.toInt")))
     }
     def `should be able to modify failure message args via mapArgs` {
       val beAsIntsGreaterThan = f composeTwice g mapArgs { _ + ".toInt" }
@@ -75,7 +75,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7.toInt", "8.toInt")))
+      tfe.message should be (Some(Resources.wasNotGreaterThan("7.toInt", "8.toInt")))
     }
   }
 }

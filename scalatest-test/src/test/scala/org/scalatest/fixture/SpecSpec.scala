@@ -2486,17 +2486,17 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec")), None, new Tracker, Set.empty))
       }
     import OptionValues._
-    assert(caught.message.value === Resources("notTheChosenStyle", "org.scalatest.fixture.Spec", "org.scalatest.fixture.FunSpec"))
+    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.fixture.Spec", "org.scalatest.fixture.FunSpec"))
     val caught2 =
       intercept[NotAllowedException] {
         simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught2.message.value === Resources("notOneOfTheChosenStyles", "org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec"))))
+    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec"))))
     val caught3 =
       intercept[NotAllowedException] {
         simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught3.message.value === Resources("notOneOfTheChosenStyles", "org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec"))))
+    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec"))))
   }
   
   describe("when a test fails") {
@@ -2580,7 +2580,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideDefNotObject")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -2588,7 +2588,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("SpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -2607,7 +2607,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideDefNotObject")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -2615,7 +2615,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("SpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -2635,7 +2635,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages("exceptionWasThrownInObject", UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInObject(UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

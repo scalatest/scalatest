@@ -321,7 +321,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     override def onTestFailure(result: ITestResult) = {
       val throwableOrNull = result.getThrowable
       val throwable = if (throwableOrNull != null) Some(throwableOrNull) else None
-      val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources("testNGConfigFailed")
+      val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources.testNGConfigFailed
       val testName = result.getName + params(result)
       val formatter = getIndentedTextForTest(testName, 1, true)
       val payload = 
@@ -344,7 +344,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     override def onConfigurationFailure(result: ITestResult) = {
       val throwableOrNull = result.getThrowable
       val throwable = if (throwableOrNull != null) Some(throwableOrNull) else None
-      val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources("testNGConfigFailed")
+      val message = if (throwableOrNull != null && throwableOrNull.getMessage != null) throwableOrNull.getMessage else Resources.testNGConfigFailed
       val formatter = formatterForSuiteAborted(thisSuite, message)
       report(SuiteAborted(tracker.nextOrdinal(), message, thisSuite.suiteName, thisSuite.getClass.getName, Some(thisSuite.getClass.getName), throwable, None, formatter, Some(SeeStackDepthException)))
       status.setFailed()

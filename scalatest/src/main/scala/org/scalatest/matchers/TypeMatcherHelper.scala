@@ -37,8 +37,8 @@ object TypeMatcherHelper {
         val clazz = aType.clazz
         MatchResult(
           clazz.isAssignableFrom(left.getClass),
-          Resources("wasNotAnInstanceOf"),
-          Resources("wasAnInstanceOf"),
+          Resources.rawWasNotAnInstanceOf,
+          Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
           Vector(left, UnquotedString(clazz.getName))
         )
@@ -58,8 +58,8 @@ object TypeMatcherHelper {
         val clazz = anType.clazz
         MatchResult(
           clazz.isAssignableFrom(left.getClass),
-          Resources("wasNotAnInstanceOf"),
-          Resources("wasAnInstanceOf"),
+          Resources.rawWasNotAnInstanceOf,
+          Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
           Vector(left, UnquotedString(clazz.getName))
         )
@@ -79,8 +79,8 @@ object TypeMatcherHelper {
         val clazz = aType.clazz
         MatchResult(
           !clazz.isAssignableFrom(left.getClass),
-          Resources("wasAnInstanceOf"),
-          Resources("wasNotAnInstanceOf"),
+          Resources.rawWasAnInstanceOf,
+          Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         )
@@ -100,8 +100,8 @@ object TypeMatcherHelper {
         val clazz = anType.clazz
         MatchResult(
           !clazz.isAssignableFrom(left.getClass),
-          Resources("wasAnInstanceOf"),
-          Resources("wasNotAnInstanceOf"),
+          Resources.rawWasAnInstanceOf,
+          Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         )
@@ -120,7 +120,7 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
   }
 
@@ -135,7 +135,7 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
   }
 
@@ -151,12 +151,10 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
-          left,
-          UnquotedString(clazz.getName),
-          UnquotedString(left.getClass.getName)
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+        else
+          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
       )
     }
   }
@@ -173,12 +171,10 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
-          left,
-          UnquotedString(clazz.getName),
-          UnquotedString(left.getClass.getName)
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+        else
+          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
       )
     }
   }

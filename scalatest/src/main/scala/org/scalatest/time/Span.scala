@@ -17,7 +17,6 @@ package org.scalatest.time
 
 import Span.totalNanosForLongLength
 import Span.totalNanosForDoubleLength
-import org.scalatest.Resources
 import java.io.Serializable
 
 /**
@@ -334,13 +333,13 @@ import java.io.Serializable
  *
  * @author Bill Venners
  */
-final class Span private (totNanos: Long, lengthString: String, unitsResource: String, unitsName: String) extends Serializable {
+final class Span private (totNanos: Long, lengthString: String, unitsMessageFun: String => String, unitsName: String) extends Serializable {
 
   private[time] def this(length: Long, units: Units) {
     this(
       totalNanosForLongLength(length, units),
       length.toString,
-      if (length == 1) units.singularResourceName else units.pluralResourceName,
+      if (length == 1) units.singularMessageFun else units.pluralMessageFun,
       units.toString
     )
   }
@@ -349,7 +348,7 @@ final class Span private (totNanos: Long, lengthString: String, unitsResource: S
     this(
       totalNanosForDoubleLength(length, units),
       length.toString,
-      if (length == 1.0) units.singularResourceName else units.pluralResourceName,
+      if (length == 1.0) units.singularMessageFun else units.pluralMessageFun,
       units.toString
     )
   }
@@ -461,7 +460,7 @@ final class Span private (totNanos: Long, lengthString: String, unitsResource: S
    *
    * @return a localized string describing this <code>Span</code>
    */
-  lazy val prettyString: String = Resources(unitsResource, lengthString)
+  lazy val prettyString: String = unitsMessageFun(lengthString)
 
   /**
    * Returns a string that looks similar to a factory method call that would have produced this <code>Span</code>.

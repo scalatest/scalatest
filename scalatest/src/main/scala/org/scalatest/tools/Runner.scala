@@ -1487,8 +1487,8 @@ object Runner {
         case c: Char => { 
 
           // this should be moved to the checker, and just throw an exception here with a debug message. Or allow a MatchError.
-          val msg1 = Resources("invalidConfigOption", String.valueOf(c)) + '\n'
-          val msg2 =  Resources("probarg", reporterArg) + '\n'
+          val msg1 = Resources.invalidConfigOption(String.valueOf(c)) + '\n'
+          val msg2 =  Resources.probarg(reporterArg) + '\n'
 
           throw new IllegalArgumentException(msg1 + msg2)
         }
@@ -2435,7 +2435,7 @@ object Runner {
           }
           if (!unrunnableList.isEmpty) {
             val names = for (suiteParam <- unrunnableList) yield " " + suiteParam.className
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("nonSuite") + names.mkString(", "), None))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.nonSuite + names.mkString(", "), None))
             true
           }
           else {
@@ -2444,7 +2444,7 @@ object Runner {
         }
         catch {
           case e: ClassNotFoundException => {
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadSuite", e.getMessage), Some(e)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadSuite(e.getMessage), Some(e)))
             true
           }
         }
@@ -2569,11 +2569,11 @@ object Runner {
         }
         catch {
           case e: InstantiationException =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: IllegalAccessException =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: NoClassDefFoundError =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadClass", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadClass(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: Throwable =>
             dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
         }
@@ -2623,7 +2623,7 @@ object Runner {
       reporter.apply(
         AlertProvided(
           tracker.nextOrdinal,
-          Resources("cannotRerun", memento.eventName, memento.suiteId,
+          Resources.cannotRerun(memento.eventName, memento.suiteId,
                     memento.testName),
           None))
 
@@ -2724,7 +2724,7 @@ object Runner {
         // getDispatchReporter may complete abruptly with an exception, if there is an problem trying to load
         // or instantiate a custom reporter class.
         case ex: Throwable => {
-          System.err.println(Resources("bigProblemsMaybeCustomReporter"))
+          System.err.println(Resources.bigProblemsMaybeCustomReporter)
           ex.printStackTrace(System.err)
         }
       }

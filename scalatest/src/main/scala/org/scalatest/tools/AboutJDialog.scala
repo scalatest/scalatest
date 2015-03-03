@@ -36,15 +36,15 @@ import java.awt.Color
  */
 private[scalatest] class AboutJDialog(owner: JFrame, title: String) extends JDialog(owner, title) {
 
-  val name = Resources("AppName")
-  val copyright = Resources("AppCopyright")
-  val moreInfo = Resources("MoreInfo")
-  val url = Resources("AppURL")
+  val name = Resources.AppName
+  val copyright = Resources.AppCopyright
+  val moreInfo = Resources.MoreInfo
+  val url = Resources.AppURL
   val version = org.scalatest.ScalaTestVersion
   val scalaVersion = org.scalatest.ScalaTestVersions.BuiltForScalaVersion
-  val reason = Resources("Reason")
-  val trademarks = Resources("Trademarks")
-  val company = Resources("ArtimaInc")
+  val reason = Resources.Reason
+  val trademarks = Resources.Trademarks
+  val company = Resources.ArtimaInc
   val nameLabel = new JLabel(name, SwingConstants.CENTER)
   val copyrightLabel = new JLabel(copyright, SwingConstants.CENTER)
   val urlLabel = new JLabel(url, SwingConstants.CENTER)

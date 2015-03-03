@@ -36,7 +36,7 @@ class ShouldNotCompileSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           "val a = 1" shouldNot compile
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "val a = 1")))
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -60,7 +60,7 @@ class ShouldNotCompileSpec extends FunSpec {
             |val a = 1
             |""".stripMargin shouldNot compile
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", lineSeparator + "val a = 1" + lineSeparator)))
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone(lineSeparator + "val a = 1" + lineSeparator)))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }

@@ -42,14 +42,14 @@ class ShouldExistImplicitSpec extends Spec {
   val fileName = "ShouldExistImplicitSpec.scala"
   
   def doesNotExist(left: Any): String = 
-    FailureMessages("doesNotExist", left)
+    FailureMessages.doesNotExist(left)
     
   def exists(left: Any): String = 
-    FailureMessages("exists", left)
+    FailureMessages.exists(left)
     
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `The exist syntax when used with File` {

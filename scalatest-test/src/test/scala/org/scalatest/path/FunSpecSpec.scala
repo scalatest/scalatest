@@ -944,7 +944,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -952,7 +952,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     "should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope" in {
@@ -967,7 +967,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -975,7 +975,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
@@ -991,7 +991,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

@@ -18,42 +18,19 @@ import java.io._
 import scala.io.Source
 import scala.util.parsing.combinator.JavaTokenParsers
 
-object GenResources {
+trait GenResources {
 
-  def resourcesTemplate(methods: String): String =
-    s"""package org.scalactic
-      |
-      |import java.util.ResourceBundle
-      |import java.text.MessageFormat
-      |
-      |private[scalactic] object Resources {
-      |
-      |lazy val resourceBundle = ResourceBundle.getBundle("org.scalactic.ScalacticBundle")
-      |
-      |private def makeString(resourceName: String, args: Array[Any]): String = {
-      |  val raw = resourceBundle.getString(resourceName)
-      |  val msgFmt = new MessageFormat(raw)
-      |  msgFmt.format(args.toArray)
-      |}
-      |
-      |$methods
-      |
-      |}
-    """.stripMargin
+  def packageName: String
 
-  def failureMessagesTemplate(methods: String): String =
-    s"""package org.scalactic
-       |
-       |private[scalactic] object FailureMessages {
-       |
-       |def decorateToStringValue(o: Any): String = Prettifier.default(o)
-       |
-       |
-       |
-       |$methods
-       |
-       |}
-    """.stripMargin
+  def resourcesTemplate(methods: String): String
+
+  def failureMessagesTemplate(methods: String): String
+
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String
+
+  def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String
+
+  def propertiesFile: File
 
   val paramRegex = "\\{\\d+\\}".r
 
@@ -76,16 +53,15 @@ object GenResources {
   def genResources(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
 
-    val sourcePropertiesFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+    val sourcePropertiesFile = propertiesFile
     val lines = Source.fromFile(sourcePropertiesFile).getLines
 
     val resourcesMethods =
-      lines.map { line =>
+      lines.filter(!_.trim.isEmpty).map { line =>
         val kv = KeyValueParser.parse(line)
         val paramTokens = paramRegex.findAllIn(kv.value)
         val paramCount = if (paramTokens.isEmpty) 0 else paramTokens.map(t => t.substring(1, t.length - 1).toInt).max + 1
-        "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))" + "\n\n" +
-        "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
+        resourcesKeyValueTemplate(kv, paramCount)
       }.mkString("\n\n")
 
     val resourcesFile = new File(targetDir, "Resources.scala")
@@ -105,15 +81,15 @@ object GenResources {
   def genFailureMessages(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
 
-    val sourcePropertiesFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+    val sourcePropertiesFile = propertiesFile
     val lines = Source.fromFile(sourcePropertiesFile).getLines
 
     val failureMessagesMethods =
-      lines.map { line =>
+      lines.filter(!_.trim.isEmpty).map { line =>
         val kv = KeyValueParser.parse(line)
         val paramTokens = paramRegex.findAllIn(kv.value)
         val paramCount = if (paramTokens.isEmpty) 0 else paramTokens.map(t => t.substring(1, t.length - 1).toInt).max + 1
-        "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"
+        failureMessagesKeyValueTemplate(kv, paramCount)
       }.mkString("\n\n")
 
     val failureMessagesFile = new File(targetDir, "FailureMessages.scala")
@@ -130,4 +106,86 @@ object GenResources {
     Vector(failureMessagesFile)
   }
 
+}
+
+trait GenResourcesJVM extends GenResources {
+
+  def resourcesTemplate(methods: String): String =
+    s"""package org.$packageName
+       |
+       |import java.util.ResourceBundle
+       |import java.text.MessageFormat
+       |
+       |private[$packageName] object Resources {
+       |
+       |lazy val resourceBundle = ResourceBundle.getBundle("org.scalactic.ScalacticBundle")
+       |
+       |private def makeString(resourceName: String, args: Array[Any]): String = {
+       |  val raw = resourceBundle.getString(resourceName)
+       |  val msgFmt = new MessageFormat(raw)
+       |  msgFmt.format(args.toArray)
+       |}
+       |
+       |$methods
+       |
+       |}
+    """.stripMargin
+
+  def failureMessagesTemplate(methods: String): String =
+    s"""package org.$packageName
+       |
+       |private[$packageName] object FailureMessages {
+       |
+       |def decorateToStringValue(o: Any): String = org.scalactic.Prettifier.default(o)
+       |
+       |
+       |
+       |$methods
+        |
+        |}
+    """.stripMargin
+
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
+    "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))" + "\n\n" +
+      "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
+
+  def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
+    "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"
+
+}
+
+object ScalacticGenResourcesJVM extends GenResourcesJVM {
+  def packageName: String = "scalactic"
+  def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+
+}
+
+object ScalaTestGenResourcesJVM extends GenResourcesJVM {
+  def packageName: String = "scalatest"
+  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+
+  override def resourcesTemplate(methods: String): String =
+    s"""package org.$packageName
+        |
+        |import java.util.ResourceBundle
+        |import java.text.MessageFormat
+        |
+        |private[$packageName] object Resources {
+        |
+        |lazy val resourceBundle = ResourceBundle.getBundle("org.scalatest.ScalaTestBundle")
+        |
+        |private def makeString(resourceName: String, args: Array[Any]): String = {
+        |  val raw = resourceBundle.getString(resourceName)
+        |  val msgFmt = new MessageFormat(raw)
+        |  msgFmt.format(args.toArray)
+        |}
+        |
+        |$methods
+        |
+        |def bigProblems(ex: Throwable): String = {
+        |  val message = if (ex.getMessage == null) "" else ex.getMessage.trim
+        |  if (message.length > 0) Resources.bigProblemsWithMessage(message) else Resources.bigProblems
+        |}
+        |}
+    """.stripMargin
 }

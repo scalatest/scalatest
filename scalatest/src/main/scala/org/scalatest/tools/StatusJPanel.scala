@@ -43,9 +43,9 @@ private[scalatest] class StatusJPanel extends JPanel {
 
   private def initialize() {
 
-    val testsRunJLabel: JLabel = new JLabel(Resources("testsRun"))
-    val testsExpectedJLabel: JLabel = new JLabel(Resources("testsExpected"))
-    val testsFailedJLabel: JLabel = new JLabel(Resources("testsFailed"))
+    val testsRunJLabel: JLabel = new JLabel(Resources.testsRun)
+    val testsExpectedJLabel: JLabel = new JLabel(Resources.testsExpected)
+    val testsFailedJLabel: JLabel = new JLabel(Resources.testsFailed)
   
     val testsRunJPanel: JPanel = new JPanel()
   

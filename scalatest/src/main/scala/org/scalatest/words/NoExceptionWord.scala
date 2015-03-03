@@ -51,7 +51,7 @@ final class NoExceptionWord {
     }
     catch {
       case u: Throwable => {
-        val message = Resources("exceptionNotExpected", u.getClass.getName)
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
         throw newAssertionFailedException(Some(message), Some(u), 4)
       }
     }
@@ -82,7 +82,7 @@ final class NoExceptionWord {
     }
     catch {
       case u: Throwable => {
-        val message = Resources("exceptionNotExpected", u.getClass.getName)
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
         throw newAssertionFailedException(Some(message), Some(u), 4)
       }
     }

@@ -421,9 +421,9 @@ trait Eventually extends PatienceConfiguration {
               sde =>
                 Some(
                   if (e.getMessage == null)
-                    Resources("didNotEventuallySucceed", attempt.toString, durationSpan.prettyString)
+                    Resources.didNotEventuallySucceed(attempt.toString, durationSpan.prettyString)
                   else
-                    Resources("didNotEventuallySucceedBecause", attempt.toString, durationSpan.prettyString, e.getMessage)
+                    Resources.didNotEventuallySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
                 ),
               Some(e),
               getStackDepthFun("Eventually.scala", "eventually"),

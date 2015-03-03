@@ -297,8 +297,8 @@ trait MatcherWords {
             val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
             MatchResult(
               equality.areEqual(left, right),
-              Resources("didNotEqual"),
-              Resources("equaled"), 
+              Resources.rawDidNotEqual,
+              Resources.rawEqualed,
               Vector(leftee, rightee), 
               Vector(left, right)
             )

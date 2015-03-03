@@ -58,7 +58,7 @@ class InsideSpec extends FunSpec {
           name.first should be ("Sally")
         }
       }
-      caught.message.value should be (Resources("insidePartialFunctionNotDefined", rec.toString))
+      caught.message.value should be (Resources.insidePartialFunctionNotDefined(rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }
@@ -69,7 +69,7 @@ class InsideSpec extends FunSpec {
           age should be <= 21
         }
       }
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotLessThanOrEqualTo", "29", "21"), "", rec.toString))
+      caught.message.value should be (Resources.insidePartialFunctionAppendSomeMsg(Resources.wasNotLessThanOrEqualTo("29", "21"), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }
@@ -82,7 +82,7 @@ class InsideSpec extends FunSpec {
           }
         }
       }
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotEqualTo", "\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "", rec.toString))
+      caught.message.value should be (Resources.insidePartialFunctionAppendSomeMsg(Resources.insidePartialFunctionAppendSomeMsg(Resources.wasNotEqualTo("\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }
@@ -93,7 +93,7 @@ class InsideSpec extends FunSpec {
           throw new TestFailedException(None, None, 0)
         }
       }
-      caught.message.value should be (Resources("insidePartialFunctionAppendNone", "", rec))
+      caught.message.value should be (Resources.insidePartialFunctionAppendNone("", rec))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }
@@ -106,7 +106,7 @@ class InsideSpec extends FunSpec {
           }
         }
       }
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendNone", "  ", rec.name), "", rec.toString))
+      caught.message.value should be (Resources.insidePartialFunctionAppendSomeMsg(Resources.insidePartialFunctionAppendNone("  ", rec.name), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }

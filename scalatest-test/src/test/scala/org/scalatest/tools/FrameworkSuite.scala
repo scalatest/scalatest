@@ -1364,7 +1364,7 @@ class FrameworkSuite extends FunSuite {
           assert(suiteAbortedEvents.size === 1)
           suiteAbortedEvents(0).throwable match {
             case Some(e: NotAllowedException) => 
-              assert(e.getMessage === Resources("notTheChosenStyle", "org.scalatest.FunSuite", "org.scalatest.FunSpec"))
+              assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
             case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
           }
         case _ => fail("Expected to find EventRecordingReporter, but not found.")

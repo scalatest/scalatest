@@ -65,7 +65,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[String]("t")
         }
-      assert(caught.getMessage === Resources("configMapEntryNotFound", "t"))
+      assert(caught.getMessage === Resources.configMapEntryNotFound("t"))
     }
 
     def `should throw a TestCanceledException if a required entry has an unexpected type` {
@@ -77,7 +77,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Apple]("fruit")
         }
-      assert(caught1.getMessage === Resources("configMapEntryHadUnexpectedType", "fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
+      assert(caught1.getMessage === Resources.configMapEntryHadUnexpectedType("fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
 
       // Ensure Boolean works
       assert(cm.getRequired[Boolean]("boolean") === true)
@@ -87,7 +87,7 @@ class ConfigMapSpec extends Spec {
           cm.getRequired[Boolean]("string")
         }
 
-      assert(caught2.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "boolean", "aStringValue"))
+      assert(caught2.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "boolean", "aStringValue"))
 
       // Ensure Byte works
       assert(cm.getRequired[Byte]("byte") === 1.toByte)
@@ -97,7 +97,7 @@ class ConfigMapSpec extends Spec {
           cm.getRequired[Byte]("string")
         }
 
-      assert(caught3.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "byte", "aStringValue"))
+      assert(caught3.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "byte", "aStringValue"))
 
       // Ensure Short works
       assert(cm.getRequired[Short]("short") === 1.toShort)
@@ -106,7 +106,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Short]("string")
         }
-      assert(caught4.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "short", "aStringValue"))
+      assert(caught4.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "short", "aStringValue"))
 
       // Ensure Int works
       assert(cm.getRequired[Int]("int") === 1)
@@ -115,7 +115,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Int]("string")
         }
-      assert(caught5.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "int", "aStringValue"))
+      assert(caught5.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "int", "aStringValue"))
 
       // Ensure Long works
       assert(cm.getRequired[Long]("long") === Long.MaxValue)
@@ -124,7 +124,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Long]("string")
         }
-      assert(caught6.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "long", "aStringValue"))
+      assert(caught6.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "long", "aStringValue"))
 
       // Ensure Char works
       assert(cm.getRequired[Char]("char") === 'c')
@@ -134,7 +134,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Char]("string")
         }
-      assert(caught7.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "char", "aStringValue"))
+      assert(caught7.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "char", "aStringValue"))
 
       // Ensure Float works
       assert(cm.getRequired[Float]("float") === 1.0F)
@@ -143,7 +143,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Float]("string")
         }
-      assert(caught8.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "float", "aStringValue"))
+      assert(caught8.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "float", "aStringValue"))
 
       // Ensure Double works
       assert(cm.getRequired[Double]("double") === 1.0)
@@ -152,7 +152,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getRequired[Double]("string")
         }
-      assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
+      assert(caught9.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "double", "aStringValue"))
     }
 
     def `should provide a nice syntax for getting an optional entry` {
@@ -173,7 +173,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Apple]("fruit")
         }
-      assert(caught1.getMessage === Resources("configMapEntryHadUnexpectedType", "fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
+      assert(caught1.getMessage === Resources.configMapEntryHadUnexpectedType("fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
 
       // Ensure Boolean works
       assert(cm.getOptional[Boolean]("boolean") === Some(true))
@@ -183,7 +183,7 @@ class ConfigMapSpec extends Spec {
           cm.getOptional[Boolean]("string")
         }
 
-      assert(caught2.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "boolean", "aStringValue"))
+      assert(caught2.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "boolean", "aStringValue"))
 
       // Ensure Byte works
       assert(cm.getOptional[Byte]("byte") === Some(1.toByte))
@@ -193,7 +193,7 @@ class ConfigMapSpec extends Spec {
           cm.getOptional[Byte]("string")
         }
 
-      assert(caught3.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "byte", "aStringValue"))
+      assert(caught3.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "byte", "aStringValue"))
 
       // Ensure Short works
       assert(cm.getOptional[Short]("short") === Some(1.toShort))
@@ -202,7 +202,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Short]("string")
         }
-      assert(caught4.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "short", "aStringValue"))
+      assert(caught4.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "short", "aStringValue"))
 
       // Ensure Int works
       assert(cm.getOptional[Int]("int") === Some(1))
@@ -211,7 +211,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Int]("string")
         }
-      assert(caught5.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "int", "aStringValue"))
+      assert(caught5.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "int", "aStringValue"))
 
       // Ensure Long works
       assert(cm.getOptional[Long]("long") === Some(Long.MaxValue))
@@ -220,7 +220,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Long]("string")
         }
-      assert(caught6.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "long", "aStringValue"))
+      assert(caught6.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "long", "aStringValue"))
 
       // Ensure Char works
       assert(cm.getOptional[Char]("char") === Some('c'))
@@ -230,7 +230,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Char]("string")
         }
-      assert(caught7.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "char", "aStringValue"))
+      assert(caught7.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "char", "aStringValue"))
 
       // Ensure Float works
       assert(cm.getOptional[Float]("float") === Some(1.0F))
@@ -239,7 +239,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Float]("string")
         }
-      assert(caught8.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "float", "aStringValue"))
+      assert(caught8.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "float", "aStringValue"))
 
       // Ensure Double works
       assert(cm.getOptional[Double]("double") === Some(1.0))
@@ -248,7 +248,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getOptional[Double]("string")
         }
-      assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
+      assert(caught9.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "double", "aStringValue"))
     }
 
     def `should provide a nice syntax for getting an optional entry with a default value` {
@@ -267,7 +267,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Apple]("fruit", new Apple)
         }
-      assert(caught1.getMessage === Resources("configMapEntryHadUnexpectedType", "fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
+      assert(caught1.getMessage === Resources.configMapEntryHadUnexpectedType("fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
 
       // Ensure Boolean works
       assert(cm.getWithDefault[Boolean]("boolean", false) === true)
@@ -277,7 +277,7 @@ class ConfigMapSpec extends Spec {
           cm.getWithDefault[Boolean]("string", false)
         }
 
-      assert(caught2.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "boolean", "aStringValue"))
+      assert(caught2.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "boolean", "aStringValue"))
 
       // Ensure Byte works
       assert(cm.getWithDefault[Byte]("byte", 2.toByte) === 1.toByte)
@@ -287,7 +287,7 @@ class ConfigMapSpec extends Spec {
           cm.getWithDefault[Byte]("string", 2.toByte)
         }
 
-      assert(caught3.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "byte", "aStringValue"))
+      assert(caught3.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "byte", "aStringValue"))
 
       // Ensure Short works
       assert(cm.getWithDefault[Short]("short", 2.toShort) === 1.toShort)
@@ -296,7 +296,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Short]("string", 2.toShort)
         }
-      assert(caught4.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "short", "aStringValue"))
+      assert(caught4.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "short", "aStringValue"))
 
       // Ensure Int works
       assert(cm.getWithDefault[Int]("int", 2) === 1)
@@ -305,7 +305,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Int]("string", 2)
         }
-      assert(caught5.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "int", "aStringValue"))
+      assert(caught5.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "int", "aStringValue"))
 
       // Ensure Long works
       assert(cm.getWithDefault[Long]("long", 2.toLong) === Long.MaxValue)
@@ -314,7 +314,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Long]("string", 2.toLong)
         }
-      assert(caught6.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "long", "aStringValue"))
+      assert(caught6.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "long", "aStringValue"))
 
       // Ensure Char works
       assert(cm.getWithDefault[Char]("char", 'z') === 'c')
@@ -324,7 +324,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Char]("string", 'z')
         }
-      assert(caught7.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "char", "aStringValue"))
+      assert(caught7.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "char", "aStringValue"))
 
       // Ensure Float works
       assert(cm.getWithDefault[Float]("float", 2.0F) === 1.0F)
@@ -333,7 +333,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Float]("string", 2.0F)
         }
-      assert(caught8.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "float", "aStringValue"))
+      assert(caught8.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "float", "aStringValue"))
 
       // Ensure Double works
       assert(cm.getWithDefault[Double]("double", 2.0) === 1.0)
@@ -342,7 +342,7 @@ class ConfigMapSpec extends Spec {
         intercept[TestCanceledException] {
           cm.getWithDefault[Double]("string", 2.0)
         }
-      assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
+      assert(caught9.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "double", "aStringValue"))
     }
     def `should work with 'contain (...) syntax` {
       ConfigMap("one" -> 1, "two" -> 2) should contain ("one" -> 1)
