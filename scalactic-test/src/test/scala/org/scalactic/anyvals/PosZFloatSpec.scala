@@ -19,6 +19,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen._
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.StrictCheckedEquality
@@ -30,7 +31,7 @@ class PosZFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
   implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
 
-  object `An PosZFloat` {
+  object `A PosZFloat` {
     object `should offer a from factory method that` {
       def `returns Some[PosZFloat] if the passed Float is greater than or equal to 0`
       {
@@ -442,13 +443,21 @@ class PosZFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
     def `should offer 'min' and 'max' methods that are consistent with Float`: Unit = {
       forAll { (pfloat1: PosZFloat, pfloat2: PosZFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
-        pfloat1.min(pfloat2).toFloat shouldEqual (pfloat1.toFloat.min(pfloat2.toFloat) +- 0.00001f)
+        pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
       }
     }
 
     def `should offer an 'isWhole' method that is consistent with Float`: Unit = {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.isWhole shouldEqual pzfloat.toFloat.isWhole
+      }
+    }
+
+    def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat) =>
+        pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
+        pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
+        pzfloat.floor.toFloat shouldEqual pzfloat.toFloat.floor
       }
     }
 
@@ -460,17 +469,14 @@ class PosZFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
     }
 
     def `should offer 'to' and 'until' method that is consistent with Float`: Unit = {
-      // make sure length ends up less than Integer.MAX_VALUE, or else various side
-      // effects of evaluating the range will throw exceptions in unexpected
-      val len = Math.abs(util.Random.nextFloat())
-      forAll { (pzfloat: PosZFloat, step: Float) =>
-        whenever(Float.MaxValue - len > pzfloat && step != 0) {
-          val end = pzfloat.toFloat + len
-          pzfloat.until(end) shouldBe  pzfloat.toFloat.until(end)
-          pzfloat.until(end, step) shouldBe pzfloat.toFloat.until(end, step)
-          pzfloat.to(end) shouldBe pzfloat.toFloat.to(end)
-          pzfloat.to(end, step) shouldBe pzfloat.toFloat.to(end, step)
-        }
+      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        a.start == b.start && a.end == b.end && a.step == b.step
+
+      forAll { (pzfloat: PosZFloat, end: Float, step: Float) =>
+        rangeEqual(pzfloat.until(end).by(1f), pzfloat.toFloat.until(end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.until(end, step), pzfloat.toFloat.until(end, step)) shouldBe true
+        rangeEqual(pzfloat.to(end).by(1f), pzfloat.toFloat.to(end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
       }
     }
 

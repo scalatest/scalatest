@@ -17,6 +17,7 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
 import prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
@@ -487,6 +488,13 @@ class PosIntSpec extends Spec with Matchers with GeneratorDrivenPropertyChecks {
       }
       forAll { (pint: PosInt, double: Double) =>
         Try(pint % double) shouldEqual Try(pint.toInt % double)
+      }
+    }
+
+    def `should offer 'min' and 'max' methods that are consistent with Int`: Unit = {
+      forAll { (pint1: PosInt, pint2: PosInt) =>
+        pint1.max(pint2).toInt shouldEqual pint1.toInt.max(pint2.toInt)
+        pint1.min(pint2).toInt shouldEqual pint1.toInt.min(pint2.toInt)
       }
     }
 

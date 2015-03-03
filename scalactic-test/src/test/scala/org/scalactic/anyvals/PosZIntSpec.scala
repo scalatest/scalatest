@@ -488,6 +488,13 @@ class PosZIntSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
     }
 
+    def `should offer 'min' and 'max' methods that are consistent with Int`: Unit = {
+      forAll { (pzint1: PosZInt, pzint2: PosZInt) =>
+        pzint1.max(pzint2).toInt shouldEqual pzint1.toInt.max(pzint2.toInt)
+        pzint1.min(pzint2).toInt shouldEqual pzint1.toInt.min(pzint2.toInt)
+      }
+    }
+
     def `should offer a 'toBinaryString' method that is consistent with Int`: Unit = {
       forAll { (pzint: PosZInt) =>
         pzint.toBinaryString shouldEqual pzint.toInt.toBinaryString

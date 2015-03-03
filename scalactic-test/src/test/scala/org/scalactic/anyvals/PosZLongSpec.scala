@@ -20,6 +20,7 @@ import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -496,6 +497,13 @@ class PosZLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
     }
 
+    def `should offer 'min' and 'max' methods that are consistent with Long`: Unit = {
+      forAll { (pzlong1: PosZLong, pzlong2: PosZLong) =>
+        pzlong1.max(pzlong2).toLong shouldEqual pzlong1.toLong.max(pzlong2.toLong)
+        pzlong1.min(pzlong2).toLong shouldEqual pzlong1.toLong.min(pzlong2.toLong)
+      }
+    }
+
     def `should offer a 'toBinaryString' method that is consistent with Long`: Unit = {
       forAll { (pzlong: PosZLong) =>
         pzlong.toBinaryString shouldEqual pzlong.toLong.toBinaryString
@@ -515,17 +523,14 @@ class PosZLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
     }
 
     def `should offer 'to' and 'until' method that is consistent with Long`: Unit = {
-      // make sure length ends up less than Integer.MAX_VALUE, or else various side
-      // effects of evaluating the range will throw exceptions in unexpected
-      val len = Math.abs(util.Random.nextInt())
-      forAll { (pzlong: PosZLong, step: Long) =>
-        whenever (Long.MaxValue - len > pzlong && step != 0) {
-          val end = pzlong.toLong + len
-          Try(pzlong.until(end)) shouldEqual Try(pzlong.toLong.until(end))
-          Try(pzlong.until(end, step)) shouldEqual Try(pzlong.toLong.until(end, step))
-          Try(pzlong.to(end)) shouldEqual Try(pzlong.toLong.to(end))
-          Try(pzlong.to(end, step)) shouldEqual Try(pzlong.toLong.to(end, step))
-        }
+      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        a.start == b.start && a.end == b.end && a.step == b.step
+
+      forAll { (pzlong: PosZLong, end: Long, step: Long) =>
+        rangeEqual(pzlong.until(end), pzlong.toLong.until(end)) shouldBe true
+        rangeEqual(pzlong.until(end, step), pzlong.toLong.until(end, step)) shouldBe true
+        rangeEqual(pzlong.to(end), pzlong.toLong.to(end)) shouldBe true
+        rangeEqual(pzlong.to(end, step), pzlong.toLong.to(end, step)) shouldBe true
       }
     }
 

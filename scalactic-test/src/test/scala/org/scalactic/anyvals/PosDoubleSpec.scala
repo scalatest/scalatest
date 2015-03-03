@@ -20,6 +20,7 @@ import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -461,15 +462,23 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
 
       def `should offer 'min' and 'max' methods that are consistent with Double`: Unit = {
-        forAll { (pfloat1: PosDouble, pfloat2: PosDouble) =>
-          pfloat1.max(pfloat2).toDouble shouldEqual pfloat1.toDouble.max(pfloat2.toDouble)
-          pfloat1.min(pfloat2).toDouble shouldEqual (pfloat1.toDouble.min(pfloat2.toDouble) +- 0.00001f)
+        forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
+          pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)
+          pdouble1.min(pdouble2).toDouble shouldEqual pdouble1.toDouble.min(pdouble2.toDouble)
         }
       }
 
       def `should offer an 'isWhole' method that is consistent with Double`: Unit = {
         forAll { (pdouble: PosDouble) =>
           pdouble.isWhole shouldEqual pdouble.toDouble.isWhole
+        }
+      }
+
+      def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble) =>
+          pdouble.round.toDouble shouldEqual pdouble.toDouble.round
+          pdouble.ceil.toDouble shouldEqual pdouble.toDouble.ceil
+          pdouble.floor.toDouble shouldEqual pdouble.toDouble.floor
         }
       }
 
@@ -480,17 +489,14 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
 
       def `should offer 'to' and 'until' method that is consistent with Double`: Unit = {
-        // make sure length ends up less than Integer.MAX_VALUE, or else various side
-        // effects of evaluating the range will throw exceptions in unexpected
-        val len = Math.abs(util.Random.nextDouble())
-        forAll { (pdouble: PosDouble, step: Float) =>
-          whenever(Double.MaxValue - len > pdouble && step != 0) {
-            val end = pdouble.toDouble + len
-            pdouble.until(end) shouldBe  pdouble.toDouble.until(end)
-            pdouble.until(end, step) shouldBe pdouble.toDouble.until(end, step)
-            pdouble.to(end) shouldBe pdouble.toDouble.to(end)
-            pdouble.to(end, step) shouldBe pdouble.toDouble.to(end, step)
-          }
+        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+          a.start == b.start && a.end == b.end && a.step == b.step
+
+        forAll { (pdouble: PosDouble, end: Double, step: Double) =>
+          rangeEqual(pdouble.until(end).by(1f), pdouble.toDouble.until(end).by(1f)) shouldBe true
+          rangeEqual(pdouble.until(end, step), pdouble.toDouble.until(end, step)) shouldBe true
+          rangeEqual(pdouble.to(end).by(1f), pdouble.toDouble.to(end).by(1f)) shouldBe true
+          rangeEqual(pdouble.to(end, step), pdouble.toDouble.to(end, step)) shouldBe true
         }
       }
 

@@ -22,6 +22,7 @@ import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.choose
 
+import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 
 
@@ -490,6 +491,13 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
+      def `should offer 'min' and 'max' methods that are consistent with Long`: Unit = {
+        forAll { (plong1: PosLong, plong2: PosLong) =>
+          plong1.max(plong2).toLong shouldEqual plong1.toLong.max(plong2.toLong)
+          plong1.min(plong2).toLong shouldEqual plong1.toLong.min(plong2.toLong)
+        }
+      }
+
       def `should offer a 'toBinaryString' method that is consistent with Long`: Unit = {
         forAll { (plong: PosLong) =>
           plong.toBinaryString shouldEqual plong.toLong.toBinaryString
@@ -509,17 +517,14 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
 
       def `should offer 'to' and 'until' method that is consistent with Long`: Unit = {
-        // make sure length ends up less than Integer.MAX_VALUE, or else various side
-        // effects of evaluating the range will throw exceptions in unexpected
-        val len = Math.abs(util.Random.nextInt())
-        forAll { (plong: PosLong, step: Long) =>
-          whenever (Long.MaxValue - len > plong && step != 0) {
-            val end = plong.toLong + len
-            Try(plong.until(end)) shouldEqual Try(plong.toLong.until(end))
-            Try(plong.until(end, step)) shouldEqual Try(plong.toLong.until(end, step))
-            Try(plong.to(end)) shouldEqual Try(plong.toLong.to(end))
-            Try(plong.to(end, step)) shouldEqual Try(plong.toLong.to(end, step))
-          }
+        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+          a.start == b.start && a.end == b.end && a.step == b.step
+
+        forAll { (plong: PosLong, end: Long, step: Long) =>
+          rangeEqual(plong.until(end), plong.toLong.until(end)) shouldBe true
+          rangeEqual(plong.until(end, step), plong.toLong.until(end, step)) shouldBe true
+          rangeEqual(plong.to(end), plong.toLong.to(end)) shouldBe true
+          rangeEqual(plong.to(end, step), plong.toLong.to(end, step)) shouldBe true
         }
       }
 

@@ -22,6 +22,7 @@ import OptionValues._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.choose
 
+import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 
 class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
@@ -435,13 +436,21 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       def `should offer 'min' and 'max' methods that are consistent with Float`: Unit = {
         forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
           pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
-          pfloat1.min(pfloat2).toFloat shouldEqual (pfloat1.toFloat.min(pfloat2.toFloat) +- 0.00001f)
+          pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
         }
       }
 
       def `should offer an 'isWhole' method that is consistent with Float`: Unit = {
         forAll { (pfloat: PosFloat) =>
           pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
+        }
+      }
+
+      def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Float`: Unit = {
+        forAll { (pfloat: PosFloat) =>
+          pfloat.round.toFloat shouldEqual pfloat.toFloat.round
+          pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
+          pfloat.floor.toFloat shouldEqual pfloat.toFloat.floor
         }
       }
 
@@ -452,17 +461,14 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
 
       def `should offer 'to' and 'until' method that is consistent with Float`: Unit = {
-        // make sure length ends up less than Integer.MAX_VALUE, or else various side
-        // effects of evaluating the range will throw exceptions in unexpected
-        val len = Math.abs(util.Random.nextFloat())
-        forAll { (pfloat: PosFloat, step: Float) =>
-          whenever(Float.MaxValue - len > pfloat && step != 0) {
-            val end = pfloat.toFloat + len
-            pfloat.until(end) shouldBe  pfloat.toFloat.until(end)
-            pfloat.until(end, step) shouldBe pfloat.toFloat.until(end, step)
-            pfloat.to(end) shouldBe pfloat.toFloat.to(end)
-            pfloat.to(end, step) shouldBe pfloat.toFloat.to(end, step)
-          }
+        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+          a.start == b.start && a.end == b.end && a.step == b.step
+
+        forAll { (pfloat: PosFloat, end: Float, step: Float) =>
+          rangeEqual(pfloat.until(end).by(1f), pfloat.toFloat.until(end).by(1f)) shouldBe true
+          rangeEqual(pfloat.until(end, step), pfloat.toFloat.until(end, step)) shouldBe true
+          rangeEqual(pfloat.to(end).by(1f), pfloat.toFloat.to(end).by(1f)) shouldBe true
+          rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
         }
       }
 
