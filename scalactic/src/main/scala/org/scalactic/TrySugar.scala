@@ -42,15 +42,6 @@ trait TrySugar {
       }
     }
   }
-
-  /**
-   * Implicit class that adds a <code>toOr</code> method to
-   * <code>Try</code>, which converts <code>Success</code> to <code>Good</code>,
-   * and <code>Failure</code> to <code>Bad</code>.
-   */
-  implicit class NothingSuccessTryizer(theTry: Try[Nothing]) {// TODO: Challenge this one. vaidating works on Try[Nothing] already. Does toOr?
-    def toOr: Nothing Or Throwable = Or.from(theTry)
-  } 
 } 
 
 /**
