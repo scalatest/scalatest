@@ -15,11 +15,11 @@
 */
 package org.scalactic.anyvals
 
-final class DigitString private (val value: String) extends AnyVal {
+private[scalactic] final class DigitString private (val value: String) extends AnyVal {
   override def toString: String = s"DigitString($value)"
 }
 
-object DigitString {
+private[scalactic] object DigitString {
   def from(value: String): Option[DigitString] =
     if (value.forall(c => c >= '0' && c <= '9')) Some(new DigitString(value)) else None
   import scala.language.experimental.macros
