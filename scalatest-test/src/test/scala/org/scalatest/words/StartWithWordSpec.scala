@@ -87,6 +87,8 @@ class StartWithWordSpec extends FreeSpec with FileMocks {
       val mr = mt("2.7b")
       
       "should have correct MatcherResult" in {
+        println("###" + mr.failureMessageArgs.map(_.getClass.getName).mkString(", "))
+        println("###test: " + mr.failureMessageArgs(1) == UnquotedString(decimal))
         mr should have (
           'matches (true),
           'failureMessage ("\"2.7b\" did not start with a substring that matched the regular expression " + decimal),

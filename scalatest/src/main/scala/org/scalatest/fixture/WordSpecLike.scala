@@ -161,10 +161,10 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
 
     def registrationClosedMessageFun: String =
       verb match {
+        case "should" => Resources.shouldCannotAppearInsideAnIn
         case "when" => Resources.whenCannotAppearInsideAnIn
         case "which" => Resources.whichCannotAppearInsideAnIn
         case "that" => Resources.thatCannotAppearInsideAnIn
-        case "should" => Resources.shouldCannotAppearInsideAnIn
         case "must" => Resources.mustCannotAppearInsideAnIn
         case "can" => Resources.canCannotAppearInsideAnIn
       }
@@ -180,7 +180,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
       }
 
     try {
-      registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, sourceFileName, methodName, stackDepth, adjustment, None)
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)

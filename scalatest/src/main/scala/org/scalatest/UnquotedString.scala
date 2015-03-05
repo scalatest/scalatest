@@ -20,6 +20,12 @@ package org.scalatest
 // to talk about method names, for example.
 private[scalatest] class UnquotedString(s: String) {
   override def toString = s
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: UnquotedString => s == that.toString
+      case _ => false
+    }
+  override def hashCode: Int = s.hashCode
 }
 
 private[scalatest] object UnquotedString {

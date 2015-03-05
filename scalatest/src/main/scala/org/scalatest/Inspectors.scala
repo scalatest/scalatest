@@ -618,9 +618,9 @@ private[scalatest] object InspectorsHelper {
         Resources.forAssertionsIndexAndLabel(elements.dropRight(1).mkString(", "), elements.last.toString)
     else
       if (xsIsMap)
-        Resources.forAssertionsKeyLabel(elements.dropRight(1).mkString(", "), elements.last.toString)
+        Resources.forAssertionsKeyLabel(elements.mkString(", "))
       else
-        Resources.forAssertionsIndexLabel(elements.dropRight(1).mkString(", "), elements.last.toString)
+        Resources.forAssertionsIndexLabel(elements.mkString(", "))
   }
   
   def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
