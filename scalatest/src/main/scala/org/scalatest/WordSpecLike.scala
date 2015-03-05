@@ -153,10 +153,10 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
 
     def registrationClosedMessageFun: String =
       verb match {
+        case "should" => Resources.shouldCannotAppearInsideAnIn
         case "when" => Resources.whenCannotAppearInsideAnIn
         case "which" => Resources.whichCannotAppearInsideAnIn
         case "that" => Resources.thatCannotAppearInsideAnIn
-        case "should" => Resources.shouldCannotAppearInsideAnIn
         case "must" => Resources.mustCannotAppearInsideAnIn
         case "can" => Resources.canCannotAppearInsideAnIn
       }

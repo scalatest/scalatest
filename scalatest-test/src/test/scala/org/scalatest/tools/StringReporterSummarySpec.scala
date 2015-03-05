@@ -560,14 +560,10 @@ class StringReporterSummarySpec extends UnitSpec {
 
       val initialFragmentsForJustOneAbortedSuite: Vector[Fragment] =
         Vector(
-          Fragment(
-            Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
-          Fragment(
-            Resources.totalNumberOfTestsRun(summaryWithOneAbortedSuite.testsCompletedCount.toString), AnsiCyan),
-          Fragment(
-            Resources.suiteSummary(summaryWithOneAbortedSuite.suitesCompletedCount.toString, summaryWithOneAbortedSuite.suitesAbortedCount.toString), AnsiCyan),
-          Fragment(
-            Resources.testSummary(
+          Fragment(Resources.runCompletedIn(makeDurationString(213L)), AnsiCyan),
+          Fragment(Resources.totalNumberOfTestsRun(summaryWithOneAbortedSuite.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources.suiteSummary(summaryWithOneAbortedSuite.suitesCompletedCount.toString, summaryWithOneAbortedSuite.suitesAbortedCount.toString), AnsiCyan),
+          Fragment(Resources.testSummary(
               summaryWithOneAbortedSuite.testsSucceededCount.toString,
               summaryWithOneAbortedSuite.testsFailedCount.toString,
               summaryWithOneAbortedSuite.testsCanceledCount.toString,

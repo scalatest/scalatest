@@ -146,8 +146,13 @@ trait GenResourcesJVM extends GenResources {
     """.stripMargin
 
   def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
-    "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))" + "\n\n" +
-      "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
+    (
+      if (paramCount > 0)
+        "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))"
+      else
+        "def " + kv.key + "(): String = resourceBundle.getString(\"" + kv.key + "\")"
+    ) + "\n\n" +
+    "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
 
   def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
     "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"

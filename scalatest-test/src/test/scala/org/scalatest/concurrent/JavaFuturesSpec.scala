@@ -171,7 +171,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             neverReadyFuture.futureValue
           }
 
-          caught.message.value should be(Resources.wasNeverReady(1, "15 milliseconds"))
+          caught.message.value should be(Resources.wasNeverReady(1, UnquotedString("15 milliseconds")))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }
@@ -307,7 +307,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             }
           }
 
-          caught.message.value should be(Resources.wasNeverReady(1, "15 milliseconds"))
+          caught.message.value should be(Resources.wasNeverReady(1, UnquotedString("15 milliseconds")))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }
