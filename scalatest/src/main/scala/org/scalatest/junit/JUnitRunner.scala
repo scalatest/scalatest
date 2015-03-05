@@ -97,7 +97,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
     try {
       // TODO: What should this Tracker be?
       suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
-                                Stopper.default, Filter(), ConfigMap.empty, None,
+                                Stopper.default, buildFilter, ConfigMap.empty, None,
                                 new Tracker, Set.empty))
     }
     catch {
@@ -112,6 +112,13 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    *
    *  @return the expected number of tests that will run when this suite is run
    */
-  override def testCount() = suiteToRun.expectedTestCount(Filter())
+  override def testCount() = suiteToRun.expectedTestCount(buildFilter)
+
+  private def buildFilter:Filter =
+    Filter(tagsToInclude = commaPropsAsSet("tagsToInclude"),
+      tagsToExclude = commaPropsAsSet("tagsToExclude").getOrElse(Set()))
+
+  private def commaPropsAsSet(prop: String): Option[Set[String]] =
+    sys.props.get(prop).map(s => s.split("\\s*,\\s*").toSet)
 }
 
