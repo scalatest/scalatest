@@ -387,7 +387,15 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @param fun the function which makes up the body for the description
    */
   protected def describe(description: String)(fun: => Unit) {
-    registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "describe", 4, -2, None)
+    try {
+      registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "describe", 4, -2, None)
+    }
+    catch {
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case other: Throwable => throw other
+    }
   }
 
   /**

@@ -310,7 +310,16 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      * and immediately invoke the passed function.
      */
     def - (fun: => Unit) {
-      registerNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", sourceFileName, "-", 3, -2, None)
+      try {
+        registerNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", sourceFileName, "-", 3, -2, None)
+      }
+      catch {
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case tgce: exceptions.TestRegistrationClosedException => throw tgce
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDashClause", UnquotedString(other.getClass.getName), string), Some(other), e => 3)
+        case other: Throwable => throw other
+      }
     }
 
     /**
