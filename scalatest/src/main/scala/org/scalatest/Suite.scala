@@ -72,6 +72,8 @@ import collection.immutable
 import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 
+import scala.util.control.NonFatal
+
 /*
  * <h2>Using <code>info</code> and <code>markup</code></h2>
  *
@@ -862,6 +864,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       case e: Throwable =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        if (!NonFatal(e))
+          throw e
     }
     finally {
       dispatch.dispatchDisposeAndWaitUntilDone()
@@ -1402,7 +1406,10 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
             val duration = System.currentTimeMillis - suiteStartTime
             report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
-            FailedStatus
+            if (NonFatal(e.getCause))
+              FailedStatus
+            else
+              throw e.getCause
           }
         }
       }

@@ -358,6 +358,17 @@ class SuiteSuite extends Spec with SeveredStackTraces {
       formatterForSuiteStarting(nonEmptySuiteContainingNestedSuites) !==
         Some(MotionToSuppress))
   }
+
+  def `Suite.execute should propagate fatal error` = {
+    class ExampleSpec extends FunSpec {
+      override def run(testName: Option[String], args: Args): Status =
+        throw new VirtualMachineError("purposely") {}
+    }
+
+    intercept[VirtualMachineError] {
+      (new ExampleSpec).execute()
+    }
+  }
 }
 
 @DoNotDiscover
