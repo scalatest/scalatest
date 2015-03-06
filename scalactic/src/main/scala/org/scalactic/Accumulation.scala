@@ -326,6 +326,7 @@ trait Accumulation {
    * of the main documentation for class <code>Or</code>.
    * </p>
    */
+  @deprecated("Please use map on Or instead")
   def withGood[A, ERR, RESULT](
     a: A Or Every[ERR]
   )(

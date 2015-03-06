@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import scala.language.implicitConversions
 
-final class DigitChar private (val value: Char) extends AnyVal {
+private[scalactic] final class DigitChar private (val value: Char) extends AnyVal {
   override def toString: String = s"DigitChar($value)"
   def toByte: Byte = value.toByte
   def toShort: Short = value.toShort
@@ -414,7 +414,7 @@ final class DigitChar private (val value: Char) extends AnyVal {
   def %(x: Double): Double = value % x
 }
 
-object DigitChar {
+private[scalactic] object DigitChar {
   def from(value: Char): Option[DigitChar] =
     if (value >= MinValue && value <= MaxValue) Some(new DigitChar(value))
     else None
