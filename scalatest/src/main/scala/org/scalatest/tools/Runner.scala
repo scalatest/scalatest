@@ -27,10 +27,8 @@ import java.io.IOException
 import javax.swing.SwingUtilities
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.regex.Pattern
-import org.scalatest.testng.TestNGWrapperSuite
 import java.util.concurrent.Semaphore
 import org.scalatest.events._
-import org.scalatest.junit.JUnitWrapperSuite
 import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadFactory
@@ -40,6 +38,10 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
+// SKIP-SCALATESTJS-START
+import org.scalatest.junit.JUnitWrapperSuite
+import org.scalatest.testng.TestNGWrapperSuite
+// SKIP-SCALATESTJS-END
 
 /*
 Command line args:
@@ -851,7 +853,7 @@ object Runner {
     Thread.currentThread.setName("ScalaTest-main")
     val result = 
       if (args.contains("-v") || args.contains("--version")) {
-        val version = org.scalatest.ScalaTestVersion
+        val version = org.scalatest.ScalaTestVersions.ScalaTestVersion
         val scalaVersion = org.scalatest.ScalaTestVersions.BuiltForScalaVersion
         println("ScalaTest " + version + " (Built for Scala " + scalaVersion + ")")
         runOptionallyWithPassFailReporter(args.filter(arg => arg != "-v" && arg != "--version"), true)
@@ -982,6 +984,8 @@ object Runner {
       }
     fullReporterConfigurations.graphicReporterConfiguration match {
       case Some(GraphicReporterConfiguration(configSet)) => {
+        //SCALATESTJS-ONLY throw new UnsupportedOperationException("Graphical reporter not supported for scala.js version.")
+        // SKIP-SCALATESTJS-START
         val graphicEventsToPresent: Set[EventToPresent] = EventToPresent.allEventsToPresent filter
           (if (configSet.contains(FilterTestStarting)) {_ != PresentTestStarting} else etp => true) filter
           (if (configSet.contains(FilterTestSucceeded)) {_ != PresentTestSucceeded} else etp => true) filter
@@ -1030,6 +1034,7 @@ object Runner {
         // The GUI window exits.
         val rjf = abq.take()
         rjf.blockUntilWindowClosed()
+        // SKIP-SCALATESTJS-END
       }
       case None => { // Run the test without a GUI
         withClassLoaderAndDispatchReporter(
@@ -2457,6 +2462,7 @@ object Runner {
           
           val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
 
+          // SKIP-SCALATESTJS-START
           val junitSuiteInstances: List[SuiteConfig] =
             for (junitClassName <- junitsList)
               yield SuiteConfig(new JUnitWrapperSuite(junitClassName, loader), emptyDynaTags, false, true) // JUnit suite should exclude nested suites
@@ -2466,10 +2472,14 @@ object Runner {
               List(SuiteConfig(new TestNGWrapperSuite(testNGList), emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
             else
               Nil
+          // SKIP-SCALATESTJS-END
 
           val discoSuiteInstances = genDiscoSuites
 
+          // SKIP-SCALATESTJS-START
           val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: discoSuiteInstances ::: testNGWrapperSuiteList
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: discoSuiteInstances
 
           val testCountList =
             for (suiteConfig <- suiteInstances)

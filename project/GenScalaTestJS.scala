@@ -22,6 +22,8 @@ object GenScalaTestJS {
   private def uncommentJsExport(line: String): String =
     if (line.startsWith("//@scala.scalajs.js.annotation.JSExport"))
       line.substring(2)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
 
@@ -32,9 +34,16 @@ object GenScalaTestJS {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
       val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
       for (line <- lines) {
-        destWriter.write(transformLine(line))
-        destWriter.newLine()
+        if (line.trim == "// SKIP-SCALATESTJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS-END")
+          skipMode = false
+        else if (!skipMode) {
+          destWriter.write(transformLine(line))
+          destWriter.newLine()
+        }
       }
       destFile
     }
@@ -70,6 +79,7 @@ object GenScalaTestJS {
 
     copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest",
             List(
+              "Suite.scala",
               "OutcomeOf.scala",
               "Assertions.scala",
               "Outcome.scala",
@@ -96,7 +106,6 @@ object GenScalaTestJS {
               "PendingNothing.scala",
               "AssertionsMacro.scala",
               "CompileMacro.scala",
-              "FailureMessages.scala",
               "AppendedClues.scala",
               "Notifier.scala",
               "Alerter.scala",
@@ -115,7 +124,8 @@ object GenScalaTestJS {
               "Notifying.scala",
               "Alerting.scala",
               "Documenting.scala",
-              "Transformer.scala"
+              "Transformer.scala",
+              "DeferredAbortedSuite.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -161,7 +171,8 @@ object GenScalaTestJS {
         "TestSortingReporter.scala",
         "RunDoneListener.scala",
         "SbtDispatchReporter.scala",
-        "FriendlyParamsTranslator.scala"
+        "FriendlyParamsTranslator.scala",
+        "Runner.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
       List(

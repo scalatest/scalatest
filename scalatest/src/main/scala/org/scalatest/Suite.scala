@@ -939,6 +939,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def testNames: Set[String] = Set.empty
 
+  // SKIP-SCALATESTJS-START
   // Leave this around for a while so can print out a warning if we find testXXX methods.
   private[scalatest] def yeOldeTestNames: Set[String] = {
 
@@ -960,6 +961,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     }
     result
   }
+  // SKIP-SCALATESTJS-END
 
   /*
   Old style method names will have (Informer) at the end still, but new ones will
@@ -1188,11 +1190,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       throw new NullPointerException("testName was null")
     if (args == null)
       throw new NullPointerException("args was null")
-    
+
+    // SKIP-SCALATESTJS-START
     if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
       if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
       else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
     }
+    // SKIP-SCALATESTJS-END
 
     import args._
 

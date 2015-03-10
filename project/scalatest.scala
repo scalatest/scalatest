@@ -6,6 +6,7 @@ import scala.io.Source
 import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object ScalatestBuild extends Build {
  
@@ -277,7 +278,8 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       sourceGenerators in Compile += {
         Def.task {
-          GenScalacticJS.genScala((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       resourceGenerators in Compile += {
@@ -403,18 +405,16 @@ object ScalatestBuild extends Build {
         </dependency>,
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
+      jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value)
+          GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
-        Def.task {
-          GenScalaTestJS.genResource((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
@@ -432,8 +432,8 @@ object ScalatestBuild extends Build {
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-      docTaskSetting*/
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),*/
+      docTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
