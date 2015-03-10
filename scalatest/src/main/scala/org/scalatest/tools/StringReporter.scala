@@ -16,20 +16,9 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.io.OutputStreamWriter
-import java.io.PrintWriter
-import java.util.Iterator
-import java.util.Set
-import java.io.StringWriter
 import org.scalatest.events._
 import PrintReporter._
 import org.scalatest.exceptions.PropertyCheckFailedException
-import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import Suite.indentation
 import org.scalatest.exceptions.StackDepth
 import StringReporter._
