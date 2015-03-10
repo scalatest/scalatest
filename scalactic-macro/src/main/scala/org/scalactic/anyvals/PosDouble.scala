@@ -22,6 +22,11 @@ import scala.collection.immutable.NumericRange
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Double</code> value underlying this <code>PosDouble</code>.
+ */ 
 final class PosDouble private (val value: Double) extends AnyVal {
 
   /**
@@ -69,6 +74,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Double = -value
 
+  /**
+   * Converts this <code>PosDouble</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /** Returns `true` if this value is less than x, `false` otherwise. */

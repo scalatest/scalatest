@@ -23,6 +23,11 @@ import scala.collection.immutable.NumericRange
 // (Pronounced like "posey".)
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Long</code> value underlying this <code>PosZLong</code>.
+ */ 
 final class PosZLong private (val value: Long) extends AnyVal {
 
   /**
@@ -79,6 +84,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Long = -value
 
+  /**
+   * Converts this <code>PosZLong</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /**

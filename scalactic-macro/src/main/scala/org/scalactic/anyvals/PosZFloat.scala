@@ -23,6 +23,11 @@ import scala.collection.immutable.NumericRange
 // (Pronounced like "posey".)
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Float</code> value underlying this <code>PosZFloat</code>.
+ */ 
 final class PosZFloat private (val value: Float) extends AnyVal {
 
   /**
@@ -70,6 +75,9 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Float = -value
 
+  /**
+   * Converts this <code>PosZFloat</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /** Returns `true` if this value is less than x, `false` otherwise. */

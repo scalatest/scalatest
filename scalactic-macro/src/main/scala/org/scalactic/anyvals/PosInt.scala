@@ -22,6 +22,11 @@ import scala.collection.immutable.Range
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Int</code> value underlying this <code>PosInt</code>.
+ */ 
 final class PosInt private (val value: Int) extends AnyVal {
 
   /**
@@ -76,6 +81,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def unary_+ : PosInt = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
+  /**
+   * Converts this <code>PosInt</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
   /**
   * Returns this value bit-shifted left by the specified number of bits,

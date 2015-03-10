@@ -22,6 +22,11 @@ import scala.collection.immutable.NumericRange
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Long</code> value underlying this <code>PosLong</code>.
+ */ 
 final class PosLong private (val value: Long) extends AnyVal {
 
   /**
@@ -78,6 +83,9 @@ final class PosLong private (val value: Long) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Long = -value
 
+  /**
+   * Converts this <code>PosLong</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /**

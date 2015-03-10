@@ -23,6 +23,11 @@ import scala.collection.immutable.Range
 // (Pronounced like "posey".)
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Int</code> value underlying this <code>PosZInt</code>.
+ */ 
 final class PosZInt private (val value: Int) extends AnyVal {
 
   /**
@@ -77,6 +82,9 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def unary_+ : PosZInt = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
+  /**
+   * Converts this <code>PosZInt</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
   /**
   * Returns this value bit-shifted left by the specified number of bits,
