@@ -138,9 +138,9 @@ object GenScalaTestJS {
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
-        "StandardOutReporter.scala",
+        //"StandardOutReporter.scala",
         "SuiteDiscoveryHelper.scala",
-        "PrintReporter.scala",
+        //"PrintReporter.scala",
         "StringReporter.scala",
         "SuiteRunner.scala",
         "Fragment.scala",
@@ -152,27 +152,18 @@ object GenScalaTestJS {
         "DiscoverySuite.scala",
         "SuiteSortingReporter.scala",
         "ConcurrentDistributor.scala",
-        "Memento.scala",
-        "ReporterFactory.scala",
         "FilterReporter.scala",
-        "StandardErrReporter.scala",
-        "FileReporter.scala",
-        "XmlReporter.scala",
-        "HtmlReporter.scala",
-        "JUnitXmlReporter.scala",
-        "DashboardReporter.scala",
-        "XmlSocketReporter.scala",
-        "SocketReporter.scala",
-        "MemoryReporter.scala",
         "SuiteResult.scala",
+        "SuiteParam.scala",
+        "NestedSuiteParam.scala",
+        "TestSpec.scala",
         "DistributedTestRunnerSuite.scala",
         "SuiteResultHolder.scala",
         "Durations.scala",
         "TestSortingReporter.scala",
         "RunDoneListener.scala",
         "SbtDispatchReporter.scala",
-        "FriendlyParamsTranslator.scala",
-        "Runner.scala"
+        "FriendlyParamsTranslator.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
       List(

@@ -19,7 +19,7 @@ import org.scalatest._
 
 class PrintReporterSuite extends FunSuite {
 
-  import PrintReporter.makeDurationString
+  /*import PrintReporter.makeDurationString
 
   test("makeDurationString when duration < 1000") {
     assert(makeDurationString(23) === "23 milliseconds")
@@ -247,5 +247,5 @@ class PrintReporterSuite extends FunSuite {
 
   test("makeDurationString when duration == 10799999") {
     assert(makeDurationString(10799999) === "2 hours, 59 minutes, 59 seconds")
-  }
+  }*/
 }

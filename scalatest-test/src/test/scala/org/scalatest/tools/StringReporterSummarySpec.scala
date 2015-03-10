@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest.UnitSpec
 import org.scalatest.events.Summary
-import PrintReporter.makeDurationString
+import StringReporter.makeDurationString
 import StringReporter.summaryFragments
 import org.scalatest.Resources
 import org.scalatest.events.TestFailed

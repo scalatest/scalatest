@@ -19,7 +19,7 @@ import scala.reflect.NameTransformer.encode
 import org.scalatest.events._
 import collection.immutable.TreeSet
 import SharedHelpers._
-import tools.Runner.CHOSEN_STYLES
+import Suite.CHOSEN_STYLES
 import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException
 import exceptions.TestFailedException

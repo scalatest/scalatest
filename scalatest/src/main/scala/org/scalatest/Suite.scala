@@ -30,6 +30,7 @@ import Suite.takesInformer
 import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
 import Suite.testMethodTakesAnInformer
+import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import Suite.getEscapedIndentedTextForTest
 import Suite.getTopOfClass
@@ -38,7 +39,6 @@ import Suite.getTopOfMethod
 import Suite.getSuiteRunTestGoodies
 import Suite.autoTagClassAnnotations
 import org.scalatest.events._
-import org.scalatest.tools.StandardOutReporter
 import Suite.getMessageForException
 import Suite.reportTestStarting
 import Suite.reportTestIgnored
@@ -51,7 +51,6 @@ import Suite.wrapReporterIfNecessary
 import Suite.getMethodForTestName
 import scala.reflect.NameTransformer
 import tools.SuiteDiscoveryHelper
-import tools.Runner
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
 import collection.mutable.ListBuffer
@@ -59,8 +58,11 @@ import collection.GenTraversable
 import annotation.tailrec
 import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
-
 import scala.util.control.NonFatal
+
+// SKIP-SCALATESTJS-START
+import org.scalatest.tools.StandardOutReporter
+// SKIP-SCALATESTJS-END
 
 /*
  * <h2>Using <code>info</code> and <code>markup</code></h2>
@@ -581,6 +583,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   */
   def nestedSuites: collection.immutable.IndexedSeq[Suite] = Vector.empty
 
+  // SKIP-SCALATESTJS-START
   /**
    * Executes one or more tests in this <code>Suite</code>, printing results to the standard output.
    *
@@ -887,6 +890,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </pre>
    */
   final def execute { execute() }
+
+  // SKIP-SCALATESTJS-END
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tests that are tagged and
@@ -2285,8 +2290,8 @@ used for test events like succeeded/failed, etc.
 
   def checkChosenStyles(configMap: ConfigMap, styleName: String) {
     val chosenStyleSet = 
-        if (configMap.isDefinedAt(Runner.CHOSEN_STYLES))
-          configMap(Runner.CHOSEN_STYLES).asInstanceOf[Set[String]]
+        if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
+          configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
         else
           Set.empty[String]
     if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
@@ -2330,7 +2335,7 @@ used for test events like succeeded/failed, etc.
       else
         Map.empty[String, Set[String]]
     
-    Runner.mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
+    mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
   }
 
   def handleFailedTest(
@@ -2448,6 +2453,16 @@ used for test events like succeeded/failed, etc.
   }
 
   val IgnoreTagName = "org.scalatest.Ignore"
+
+  private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
+    (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
+      a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
+    }
+
+  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
+
+  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 }
 
 

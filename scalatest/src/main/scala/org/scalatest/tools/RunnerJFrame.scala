@@ -537,7 +537,7 @@ private[scalatest] class RunnerJFrame(
                   {
                     duration match {
                       case Some(milliseconds) =>
-                        <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsDuration + ":" }</span></td><td align="left">{ PrintReporter.makeDurationString(milliseconds) }</td></tr>
+                        <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsDuration + ":" }</span></td><td align="left">{ StringReporter.makeDurationString(milliseconds) }</td></tr>
                       case None => new scala.xml.NodeBuffer
                     }
                   }

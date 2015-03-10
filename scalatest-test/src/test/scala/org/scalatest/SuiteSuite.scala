@@ -23,7 +23,7 @@ import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import java.awt.AWTError
 import SharedHelpers._
-import tools.Runner.CHOSEN_STYLES
+import Suite.CHOSEN_STYLES
 import org.scalatest.Suite.formatterForSuiteStarting
 import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException

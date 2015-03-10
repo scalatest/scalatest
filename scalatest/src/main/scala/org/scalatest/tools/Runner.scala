@@ -38,10 +38,9 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
-// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitWrapperSuite
 import org.scalatest.testng.TestNGWrapperSuite
-// SKIP-SCALATESTJS-END
+import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 
 /*
 Command line args:
@@ -128,35 +127,8 @@ Z
 */
 
 private[tools] case class SuiteConfig(suite: Suite, dynaTags: DynaTags, requireSelectedTag: Boolean, excludeNestedSuites: Boolean)
-private[tools] case class TestSpec(spec: String, isSubstring: Boolean)
-private[tools] case class NestedSuiteParam(suiteId: String, testNames: Array[String], wildcardTestNames: Array[String])
 private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSortingReporter: Boolean)
 private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Long)
-
-private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
-{
-  private lazy val globRegex =
-    className.
-      replaceAll("""\.""", """\\.""").
-      replaceAll("""\?""", ".").
-      replaceAll("""\*""", ".*")
-
-  //
-  // A glob is a name that contains one of the following wildcard specs:
-  // - '*', which matches zero or more characters
-  // - '?', which matches exactly one character
-  // - square brackets, which specify a set of characters to match
-  //
-  def isGlob: Boolean = className.matches(""".*(\[|\*|\?).*""")
-
-  //
-  // Checks className against name to see if they match.
-  //
-  def matches(name: String) = {
-    if (!isGlob) name == className
-    else         name.matches(globRegex)
-  }
-}
 
 /**
  * Application that runs a suite of tests.
@@ -770,15 +742,10 @@ object Runner {
 
   private val RUNNER_JFRAME_START_X: Int = 150
   private val RUNNER_JFRAME_START_Y: Int = 100
-
-  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
   
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
   private final val DefaultNumFilesToArchive = 2
-
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
   
   //                     TO
   // We always include a PassFailReporter on runs in order to determine
@@ -984,8 +951,6 @@ object Runner {
       }
     fullReporterConfigurations.graphicReporterConfiguration match {
       case Some(GraphicReporterConfiguration(configSet)) => {
-        //SCALATESTJS-ONLY throw new UnsupportedOperationException("Graphical reporter not supported for scala.js version.")
-        // SKIP-SCALATESTJS-START
         val graphicEventsToPresent: Set[EventToPresent] = EventToPresent.allEventsToPresent filter
           (if (configSet.contains(FilterTestStarting)) {_ != PresentTestStarting} else etp => true) filter
           (if (configSet.contains(FilterTestSucceeded)) {_ != PresentTestSucceeded} else etp => true) filter
@@ -1034,7 +999,6 @@ object Runner {
         // The GUI window exits.
         val rjf = abq.take()
         rjf.blockUntilWindowClosed()
-        // SKIP-SCALATESTJS-END
       }
       case None => { // Run the test without a GUI
         withClassLoaderAndDispatchReporter(
@@ -2273,11 +2237,6 @@ object Runner {
       println("PresentRunAborted")
   }
 */
-
-  private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
-    (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
-    a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
-  }
   
   // We number our named threads so that people can keep track
   // of it as it goes through different suites. But in case the
@@ -2462,7 +2421,6 @@ object Runner {
           
           val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
 
-          // SKIP-SCALATESTJS-START
           val junitSuiteInstances: List[SuiteConfig] =
             for (junitClassName <- junitsList)
               yield SuiteConfig(new JUnitWrapperSuite(junitClassName, loader), emptyDynaTags, false, true) // JUnit suite should exclude nested suites
@@ -2472,14 +2430,10 @@ object Runner {
               List(SuiteConfig(new TestNGWrapperSuite(testNGList), emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
             else
               Nil
-          // SKIP-SCALATESTJS-END
 
           val discoSuiteInstances = genDiscoSuites
 
-          // SKIP-SCALATESTJS-START
           val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: discoSuiteInstances ::: testNGWrapperSuiteList
-          // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: discoSuiteInstances
 
           val testCountList =
             for (suiteConfig <- suiteInstances)

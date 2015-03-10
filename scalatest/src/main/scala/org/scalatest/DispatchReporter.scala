@@ -24,7 +24,7 @@ import java.util.TimerTask
 import java.util.Timer
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
-import tools.PrintReporter.makeDurationString
+import tools.StringReporter.makeDurationString
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.

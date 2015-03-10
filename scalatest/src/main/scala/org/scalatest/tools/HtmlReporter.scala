@@ -30,7 +30,8 @@ import java.util.Set
 import java.io.StringWriter
 import org.scalatest.events._
 import org.scalatest.exceptions.TestFailedException
-import PrintReporter.{BufferSize, makeDurationString}
+import StringReporter.makeDurationString
+import PrintReporter.BufferSize
 import HtmlReporter._
 import org.pegdown.PegDownProcessor
 import scala.collection.mutable.ListBuffer
