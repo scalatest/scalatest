@@ -24,13 +24,45 @@ import scala.collection.immutable.Range
 //
 
 final class PosZInt private (val value: Int) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosZInt</code>.
+   */
   override def toString: String = s"PosZInt($value)"
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosZInt</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosZInt</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
   /**
   * Returns the bitwise negation of this value.

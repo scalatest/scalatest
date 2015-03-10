@@ -24,13 +24,45 @@ import scala.collection.immutable.NumericRange
 //
 
 final class PosZLong private (val value: Long) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosZLong</code>.
+   */
   override def toString: String = s"PosZLong($value)"
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosZLong</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosZLong</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
 
  /**
