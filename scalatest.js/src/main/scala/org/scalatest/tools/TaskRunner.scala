@@ -14,8 +14,6 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
-
-    // TODO: Support nested suites
     Array.empty
   }
 }

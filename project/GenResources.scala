@@ -194,3 +194,68 @@ object ScalaTestGenResourcesJVM extends GenResourcesJVM {
         |}
     """.stripMargin
 }
+
+trait GenResourcesJSVM extends GenResources {
+
+  def resourcesTemplate(methods: String): String =
+    s"""package org.$packageName
+        |
+        |private[$packageName] object Resources {
+        |
+        |$methods
+        |
+        |def bigProblems(ex: Throwable): String = {
+        |  val message = if (ex.getMessage == null) "" else ex.getMessage.trim
+        |  if (message.length > 0) Resources.bigProblemsWithMessage(message) else Resources.bigProblems
+        |}
+        |}
+    """.stripMargin
+
+  def failureMessagesTemplate(methods: String): String =
+    s"""package org.$packageName
+        |
+        |private[$packageName] object FailureMessages {
+        |
+        |def decorateToStringValue(o: Any): String = org.scalactic.Prettifier.default(o)
+        |
+        |$methods
+        |
+        |}
+    """.stripMargin
+
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
+    "final val raw" + kv.key.capitalize + " = \"" + kv.value.replaceAllLiterally("\"", "\\\"") + "\"\n\n" +
+    (
+      if (paramCount == 0 )
+        "final val " + kv.key + " = raw" + kv.key.capitalize
+      else
+        "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
+        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + " + \"\")").mkString + "\n"
+        /*"object " + kv.key + " { \ndef apply(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
+        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + " + \"\")").mkString + "\n" +
+        "}"*/
+    )
+    /*"def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
+    "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + " + \"\")").mkString + "\n\n" +
+    "val raw" + kv.key.capitalize + ": String = \"" + kv.value.replaceAllLiterally("\"", "\\\"") + "\""*/
+
+  def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
+    if (paramCount == 0)
+      "final val " + kv.key + " = Resources." + kv.key
+    else
+      "object " + kv.key + " { \ndef apply(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
+      "  Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")" + "\n" +
+      "}"
+      //"def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"
+
+}
+
+object ScalacticGenResourcesJSVM extends GenResourcesJSVM {
+  def packageName: String = "scalactic"
+  def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+}
+
+object ScalaTestGenResourcesJSVM extends GenResourcesJSVM {
+  def packageName: String = "scalatest"
+  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+}
