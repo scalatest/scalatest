@@ -17,7 +17,6 @@ package org.scalatest.tools
 
 import org.scalatest._
 import org.scalatest.events._
-import PrintReporter._
 import org.scalatest.exceptions.PropertyCheckFailedException
 import Suite.indentation
 import org.scalatest.exceptions.StackDepth
@@ -997,6 +996,106 @@ private[scalatest] object StringReporter {
       else
         stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
     Vector.empty ++ resultAsList
+  }
+
+  final val ansiReset = "\033[0m"
+  final val ansiGreen = "\033[32m"
+  final val ansiCyan = "\033[36m"
+  final val ansiYellow = "\033[33m"
+  final val ansiRed = "\033[31m"
+
+  def makeDurationString(duration: Long) = {
+
+    val milliseconds = duration % 1000
+    val seconds = ((duration - milliseconds) / 1000) % 60
+    val minutes = ((duration - milliseconds) / 60000) % 60
+    val hours = (duration - milliseconds) / 3600000
+    val hoursInSeconds = hours * 3600
+    val hoursInMinutes = hours * 60
+
+    val durationInSeconds = duration / 1000
+    val durationInMinutes = durationInSeconds / 60
+
+    if (duration == 1)
+      Resources.oneMillisecond
+    else if (duration < 1000)
+      Resources.milliseconds(duration.toString)
+    else if (duration == 1000)
+      Resources.oneSecond
+    else if (duration == 1001)
+      Resources.oneSecondOneMillisecond
+    else if (duration % 1000 == 0 && duration < 60000) // 2 seconds, 10 seconds, etc.
+      Resources.seconds(seconds.toString)
+    else if (duration > 1001 && duration < 2000)// 1 second, 45 milliseconds, etc.
+      Resources.oneSecondMilliseconds(milliseconds.toString)
+    else if (durationInSeconds < 60)// 3 seconds, 45 milliseconds, etc.
+      Resources.secondsMilliseconds(seconds.toString, milliseconds.toString)
+    else if (durationInSeconds < 61)
+      Resources.oneMinute
+    else if (durationInSeconds < 62)
+      Resources.oneMinuteOneSecond
+    else if (durationInSeconds < 120)
+      Resources.oneMinuteSeconds(seconds.toString)
+    else if (durationInSeconds < 121)
+      Resources.minutes(minutes.toString) //
+    else if (durationInSeconds < 3600 && (durationInSeconds % 60) == 1)
+      Resources.minutesOneSecond(minutes.toString)
+    else if (durationInSeconds < 3600)
+      Resources.minutesSeconds(minutes.toString, seconds.toString)
+    else if (durationInSeconds < hoursInSeconds + 1) {
+      if (hours == 1)
+        Resources.oneHour
+      else
+        Resources.hours(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 2) {
+      if (hours == 1)
+        Resources.oneHourOneSecond
+      else
+        Resources.hoursOneSecond(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 60) {
+      if (hours == 1)
+        Resources.oneHourSeconds(seconds.toString)
+      else
+        Resources.hoursSeconds(hours.toString, seconds.toString)
+    }
+    else if (durationInSeconds == hoursInSeconds + 60) {
+      if (hours == 1)
+        Resources.oneHourOneMinute
+      else
+        Resources.hoursOneMinute(hours.toString)
+    }
+    else if (durationInSeconds == hoursInSeconds + 61) {
+      if (hours == 1)
+        Resources.oneHourOneMinuteOneSecond
+      else
+        Resources.hoursOneMinuteOneSecond(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 120) {
+      if (hours == 1)
+        Resources.oneHourOneMinuteSeconds(seconds.toString)
+      else
+        Resources.hoursOneMinuteSeconds(hours.toString, seconds.toString)
+    }
+    else if (durationInSeconds % 60 == 0) {
+      if (hours == 1)
+        Resources.oneHourMinutes(minutes.toString)
+      else
+        Resources.hoursMinutes(hours.toString, minutes.toString)
+    }
+    else if (durationInMinutes % 60 != 1 && durationInSeconds % 60 == 1) {
+      if (hours == 1)
+        Resources.oneHourMinutesOneSecond(minutes.toString)
+      else
+        Resources.hoursMinutesOneSecond(hours.toString, minutes.toString)
+    }
+    else {
+      if (hours == 1)
+        Resources.oneHourMinutesSeconds(minutes.toString, seconds.toString)
+      else
+        Resources.hoursMinutesSeconds(hours.toString, minutes.toString, seconds.toString)
+    }
   }
 }
 

@@ -153,7 +153,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    *
    * @return a maximum amount of time to wait for events while resorting them into sequential order
    */
-  protected def sortingTimeout: Span = Runner.testSortingReporterTimeout
+  protected def sortingTimeout: Span = Suite.testSortingReporterTimeout
 
   /**
    * Modifies the behavior of <code>super.run</code> to facilitate pseudo-random order test execution.

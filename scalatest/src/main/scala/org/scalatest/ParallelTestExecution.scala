@@ -17,7 +17,7 @@ package org.scalatest
 
 import events.Event
 import org.scalatest.time.Span
-import tools.{DistributedTestRunnerSuite, TestSortingReporter, Runner}
+import tools.{DistributedTestRunnerSuite, TestSortingReporter}
 
 /**
  * Trait that causes that the tests of any suite it is mixed into to be run in parallel if
@@ -226,7 +226,7 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
    *
    * @return a maximum amount of time to wait for events while resorting them into sequential order
    */
-  protected def sortingTimeout: Span = Runner.testSortingReporterTimeout
+  protected def sortingTimeout: Span = Suite.testSortingReporterTimeout
 
   /**
    * Modifies the behavior of <code>super.run</code> to facilitate parallel test execution.

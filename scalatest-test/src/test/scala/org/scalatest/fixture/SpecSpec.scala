@@ -27,10 +27,9 @@ import org.scalatest.{ PrivateMethodTester, Matchers, BeforeAndAfterEach, Before
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome, FailureMessages,
                         UnquotedString }
 import org.scalatest.SharedHelpers._
-import org.scalatest.tools.Runner.CHOSEN_STYLES
+import org.scalatest.Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.SharedHelpers._
-import org.scalatest.tools.Runner.CHOSEN_STYLES
 import java.lang.annotation.AnnotationFormatError
 import java.awt.AWTError
 import java.nio.charset.CoderMalfunctionError
