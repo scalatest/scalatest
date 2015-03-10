@@ -435,8 +435,87 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def %(x: Double): Double = value % x
 
   // Stuff from Richint:
+  /**
+   * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;2.
+   *
+   * <p>
+   * The unsigned integer value is the argument plus 2<sup>32</sup>
+   * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise it is equal to the
+   * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+   * in binary (base&nbsp;2) with no extra leading <code>0</code>s.
+   * If the unsigned magnitude is zero, it is represented by a
+   * single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The characters <code>'0'</code>
+   * (<code>'&#92;u0030'</code>) and <code>'1'</code>
+   * (<code>'&#92;u0031'</code>) are used as binary digits.
+   * </p>
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in binary (base&nbsp;2).
+   */
   def toBinaryString: String = java.lang.Integer.toBinaryString(value)
+
+  /**
+   * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;16.
+   *
+   * <p>
+   * The unsigned integer value is the argument plus 2<sup>32</sup>
+   * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise, it is equal to the
+   * this <code>PosZInt</code>'s underlying <code>Int</code>  This value is converted to a string of ASCII digits
+   * in hexadecimal (base&nbsp;16) with no extra leading
+   * <code>0</code>s. If the unsigned magnitude is zero, it is
+   * represented by a single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as
+   * hexadecimal digits:
+   * </p>
+   *
+   * <blockquote>
+   *  <code>0123456789abcdef</code>
+   * </blockquote>
+   *
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0039'</code> and <code>'&#92;u0061'</code> through
+   * <code>'&#92;u0066'</code>. If uppercase letters are
+   * desired, the <code>toUpperCase</code> method may
+   * be called on the result.
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in hexadecimal (base&nbsp;16).
+   */
   def toHexString: String = java.lang.Integer.toHexString(value)
+
+  /**
+   * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;8.
+   *
+   * <p>The unsigned integer value is this <code>PosZInt</code>'s underlying <code>Int</code> plus 2<sup>32</sup>
+   * if the underlying <code>Int</code> is negative; otherwise, it is equal to the
+   * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+   * in octal (base&nbsp;8) with no extra leading <code>0</code>s.
+   *
+   * <p>If the unsigned magnitude is zero, it is represented by a
+   * single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as octal
+   * digits:
+   *
+   * <blockquote>
+   * <code>01234567</code>
+   * </blockquote>
+   *
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0037'</code>.
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in octal (base&nbsp;8).
+   */
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**

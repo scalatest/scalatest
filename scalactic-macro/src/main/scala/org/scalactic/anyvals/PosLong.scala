@@ -449,8 +449,97 @@ final class PosLong private (val value: Long) extends AnyVal {
   def %(x: Double): Double = value % x
 
   // Stuff from RichLong:
+  /**
+   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * as an unsigned integer in base&nbsp;2.
+   *
+   * <p>
+   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
+   * equal to the underlying <code>Long</code>.  This value is converted to a string of
+   * ASCII digits in binary (base&nbsp;2) with no extra leading
+   * <code>0</code>s.  If the unsigned magnitude is zero, it is
+   * represented by a single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The characters <code>'0'</code>
+   * (<code>'&#92;u0030'</code>) and <code>'1'</code>
+   * (<code>'&#92;u0031'</code>) are used as binary digits.
+   * </p>
+   *
+   * @return  the string representation of the unsigned <code>long</code>
+   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in binary (base&nbsp;2).
+   */
   def toBinaryString: String = java.lang.Long.toBinaryString(value)
+
+  /**
+   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * as an unsigned integer in base&nbsp;16.
+   *
+   * <p>
+   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
+   * equal to the underlying <code>Long</code>.  This value is converted to a string of
+   * ASCII digits in hexadecimal (base&nbsp;16) with no extra
+   * leading <code>0</code>s.  If the unsigned magnitude is zero, it
+   * is represented by a single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as
+   * hexadecimal digits:
+   * </p>
+   *
+   * <blockquote>
+   *  <code>0123456789abcdef</code>
+   * </blockquote>
+   *
+   * <p>
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0039'</code> and  <code>'&#92;u0061'</code> through
+   * <code>'&#92;u0066'</code>.  If uppercase letters are desired,
+   * the <code>toUpperCase</code> method may be called
+   * on the result.
+   * </p>
+   *
+   * @return  the string representation of the unsigned <code>long</code>
+   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in hexadecimal
+   *          (base&nbsp;16).
+   */
   def toHexString: String = java.lang.Long.toHexString(value)
+
+  /**
+   * Returns a string representation of this <code>PosLong</code>'s underlying <code>Long</code>
+   * as an unsigned integer in base&nbsp;8.
+   *
+   * <p>
+   * The unsigned <code>long</code> value is this <code>PosLong</code>'s underlying <code>Long</code> plus
+   * 2<sup>64</sup> if the underlying <code>Long</code> is negative; otherwise, it is
+   * equal to the underlying <code>Long</code>.  This value is converted to a string of
+   * ASCII digits in octal (base&nbsp;8) with no extra leading
+   * <code>0</code>s.
+   * </p>
+   *
+   * <p>
+   * If the unsigned magnitude is zero, it is represented by a
+   * single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as octal
+   * digits:
+   * </p>
+   *
+   * <blockquote>
+   *  <code>01234567</code>
+   * </blockquote>
+   *
+   * <p>
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0037'</code>.
+   * </p>
+   *
+   * @return  the string representation of the unsigned <code>long</code>
+   *          value represented by this <code>PosLong</code>'s underlying <code>Long</code> in octal (base&nbsp;8).
+   */
   def toOctalString: String = java.lang.Long.toOctalString(value)
 
   // No point to call abs on a PosLong.
