@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import java.util.concurrent.ConcurrentLinkedQueue
 import scala.collection.JavaConverters._
 import exceptions.TestCanceledException
 import exceptions.TestFailedException
