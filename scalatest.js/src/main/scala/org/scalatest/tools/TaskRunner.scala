@@ -4,7 +4,7 @@ import org.scalatest.events.{TestFailed, ExceptionalEvent, Event}
 import org.scalatest.tools.StringReporter._
 import sbt.testing._
 import org.scalajs.testinterface.TestUtils
-import org.scalatest.Suite
+import org.scalatest.{Suite, Args}
 import java.util.concurrent.atomic.AtomicInteger
 
 final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
@@ -31,6 +31,7 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
       true,
       summaryCounter
     )
+    suite.run(None, Args(reporter))
     Array.empty
   }
 
