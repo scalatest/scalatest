@@ -1600,12 +1600,15 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def rerunner: Option[String] = {
     val suiteClass = getClass
+    // SKIP-SCALATESTJS-START
     val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
     val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
     if (isAccessible || hasWrapWithAnnotation)
       Some(suiteClass.getName)
     else
       None
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY Some(suiteClass.getName)
   }
   
   /**
@@ -2323,6 +2326,7 @@ used for test events like succeeded/failed, etc.
   }
   
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
+    // SKIP-SCALATESTJS-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
@@ -2336,6 +2340,8 @@ used for test events like succeeded/failed, etc.
         Map.empty[String, Set[String]]
     
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY Map.empty[String, Set[String]]
   }
 
   def handleFailedTest(

@@ -17,7 +17,7 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import PimpedThreadGroup._
-import _root_.java.util.concurrent._
+import _root_.java.util.concurrent.{CopyOnWriteArrayList, ArrayBlockingQueue}
 import _root_.java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.NotAllowedException
