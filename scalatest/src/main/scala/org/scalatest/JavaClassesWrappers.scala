@@ -43,3 +43,9 @@ private[scalatest] class CountDownLatch(count: Int) {
 
   def await(): Unit = latch.await()
 }
+
+private[scalatest] object NameTransformer {
+
+  def decode(encoded: String): String = scala.reflect.NameTransformer.decode(encoded)
+
+}
