@@ -32,10 +32,10 @@ class ShouldBeWritableSpec extends Spec {
   val fileName: String = "ShouldBeWritableSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages("wasNotWritable", left)
+    FailureMessages.wasNotWritable(left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages("wasWritable", left)
+    FailureMessages.wasWritable(left)
   
   def `writableFile should be writable, secretFile should not be writable` {
     assert(writableFile.canRead === true)
@@ -43,8 +43,8 @@ class ShouldBeWritableSpec extends Spec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `writable matcher` {

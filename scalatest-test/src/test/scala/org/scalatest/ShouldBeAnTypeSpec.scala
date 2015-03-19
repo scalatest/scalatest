@@ -25,22 +25,22 @@ class ShouldBeAnTypeSpec extends Spec with Matchers {
   case class Book(title: String)
   
   def wasNotAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
+    FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.getName), UnquotedString(left.getClass.getName))
     
   def wasAnInstanceOf(left: Any, right: Class[_]) = 
-    FailureMessages("wasAnInstanceOf", left, UnquotedString(right.getName))
+    FailureMessages.wasAnInstanceOf(left, UnquotedString(right.getName))
     
   def wasNotEqualTo(left: Any, right: Any) = 
-    FailureMessages("wasNotEqualTo", left, right)
+    FailureMessages.wasNotEqualTo(left, right)
     
   def wasEqualTo(left: Any, right: Any) = 
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
     
   def didNotEqual(left: Any, right: Any) = 
-    FailureMessages("didNotEqual", left, right)
+    FailureMessages.didNotEqual(left, right)
     
   def equaled(left: Any, right: Any) = 
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
     
   val aTaleOfTwoCities = new Book("A Tale of Two Cities")
   val aTaleOfThreeCities = new Book("A Tale of Three Cities")

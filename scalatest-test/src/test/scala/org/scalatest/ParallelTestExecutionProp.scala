@@ -168,7 +168,7 @@ class ParallelTestExecutionProp extends FunSuite {
   
   def withSuiteDistributor(suite1: Suite, suite2: Suite, fun: ControlledOrderDistributor => Unit) = {
     val recordingReporter = new EventRecordingReporter
-    val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(Runner.testSortingReporterTimeout.millisPart + 1000, Millis), System.err)
+    val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis), System.err)
     val distributor = new ControlledOrderDistributor
     val tracker = new Tracker()
     suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))

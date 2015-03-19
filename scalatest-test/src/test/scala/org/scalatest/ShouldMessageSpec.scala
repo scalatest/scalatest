@@ -22,22 +22,22 @@ import exceptions.TestFailedException
 class ShouldMessageSpec extends Spec with Matchers {
   
   def hadMessageInsteadOfExpectedMessage(left: Any, actualMessage: String, expectedMessage: String): String = 
-    FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, expectedMessage)
+    FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage)
     
   def hadMessage(left: Any, expectedMessage: String): String = 
-    FailureMessages("hadExpectedMessage", left, expectedMessage)
+    FailureMessages.hadExpectedMessage(left, expectedMessage)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
     
   def didNotEqual(left: Any, right: Any): String = 
-    FailureMessages("didNotEqual", left, right)
+    FailureMessages.didNotEqual(left, right)
     
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    FailureMessages("wasNotEqualTo", left, right)
+    FailureMessages.wasNotEqualTo(left, right)
   
   object `The 'have message (xxx)' syntax` {
     

@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import Fragment.countLeadingEOLs
 import Fragment.countTrailingEOLs
-import PrintReporter.ansiReset
+import StringReporter.ansiReset
 
 private[scalatest] case class Fragment(text: String, ansiColor: AnsiColor) {
   

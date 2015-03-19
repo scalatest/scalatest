@@ -101,7 +101,7 @@ trait JavaFutures extends Futures {
 
         if (javaFuture.isCanceled)
           throw new TestFailedException(
-            sde => Some(Resources("futureWasCanceled")),
+            sde => Some(Resources.futureWasCanceled),
             None,
             getStackDepthFun("JavaFutures.scala", methodName, adjustment)
           )
@@ -111,7 +111,7 @@ trait JavaFutures extends Futures {
         catch {
           case e: java.util.concurrent.TimeoutException =>
             throw new TestFailedException(
-              sde => Some(Resources("wasNeverReady")),
+              sde => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
               None,
               getStackDepthFun("JavaFutures.scala", methodName, adjustment)
             ) with TimeoutField {
@@ -126,9 +126,9 @@ trait JavaFutures extends Futures {
             throw new TestFailedException(
               sde => Some {
                 if (exToReport.getMessage == null)
-                  Resources("futureReturnedAnException", exToReport.getClass.getName)
+                  Resources.futureReturnedAnException(exToReport.getClass.getName)
                 else
-                  Resources("futureReturnedAnExceptionWithMessage", exToReport.getClass.getName, exToReport.getMessage)
+                  Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
               },
               Some(exToReport),
               getStackDepthFun("JavaFutures.scala", methodName, adjustment)

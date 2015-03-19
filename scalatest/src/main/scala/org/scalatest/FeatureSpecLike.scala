@@ -48,7 +48,7 @@ import org.scalatest.exceptions.NotAllowedException
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
 trait FeatureSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentFeatureSpecMod", "FeatureSpec")
+  private final val engine = new Engine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
   import engine._
 
   /**
@@ -94,11 +94,11 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -120,7 +120,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(Resources("scenario", specText.trim), Transformer(testFun _), "scenarioCannotAppearInsideAnotherScenario", "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -142,7 +142,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(Resources("scenario", specText), Transformer(testFun _), "ignoreCannotAppearInsideAScenario", "FeatureSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
   }
   
   /**
@@ -154,16 +154,16 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
   protected def feature(description: String)(fun: => Unit) {
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources("cantNestFeatureClauses"), getStackDepthFun("FeatureSpecLike.scala", "feature"))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecLike.scala", "feature"))
 
     try {
-      registerNestedBranch(Resources("feature", description.trim), None, fun, "featureCannotAppearInsideAScenario", "FeatureSpecLike.scala", "feature", 4, -2, None)
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", 4, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause"), Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause"), Some(e), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => 4)
       case nae: exceptions.NotAllowedException => throw nae
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInFeatureClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
       case other: Throwable => throw other
     }
   }

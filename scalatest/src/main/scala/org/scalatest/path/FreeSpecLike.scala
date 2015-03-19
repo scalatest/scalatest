@@ -112,7 +112,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    handleTest(thisSuite, specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    handleTest(thisSuite, specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**
@@ -135,7 +135,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    handleIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    handleIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**
@@ -246,13 +246,13 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      */
     def - (fun: => Unit) {
       try {
-        handleNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", "FreeSpecLike.scala", "-", 3, -2, None)
+        handleNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", 3, -2, None)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => 3)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => 3)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDashClause", UnquotedString(other.getClass.getName), string), Some(other), e => 3)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string), Some(other), e => 3)
         case other: Throwable => throw other
       }
     }

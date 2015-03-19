@@ -168,7 +168,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           neverReadyCountingFuture.futureValue
         }
 
-        caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
@@ -380,7 +380,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           }
         }
 
-        caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }

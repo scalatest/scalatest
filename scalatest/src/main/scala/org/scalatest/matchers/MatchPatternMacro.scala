@@ -40,7 +40,7 @@ private[scalatest] object MatchPatternMacro {
           case CaseDef(pat, _, body) if !defaultCase(pat) => // case definition, and not default case
             body match {
               case Literal(Constant(())) => // ok, empty body
-              case _ => context.abort(body.pos, Resources("nonEmptyMatchPatternCase"))  // not empty body, raise compiler error
+              case _ => context.abort(body.pos, Resources.nonEmptyMatchPatternCase)  // not empty body, raise compiler error
             }
 
           case _ => // other thing, just do nothing

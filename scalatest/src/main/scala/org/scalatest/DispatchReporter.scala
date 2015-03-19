@@ -24,7 +24,7 @@ import java.util.TimerTask
 import java.util.Timer
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
-import tools.PrintReporter.makeDurationString
+import tools.StringReporter.makeDurationString
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -69,7 +69,7 @@ private[scalatest] class DispatchReporter(
           if (!slowpokes.isEmpty) {
             val msgs =
               for (slowpoke <- slowpokes)
-              yield Resources("slowpokeDetected", makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
+              yield Resources.slowpokeDetected(makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
             val fullMessage = msgs.mkString("\n")
             val dispatch = thisDispatchReporter
             thisDispatchReporter.apply(
@@ -78,7 +78,7 @@ private[scalatest] class DispatchReporter(
                message = fullMessage,
                nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
                throwable = None,
-               formatter = Some(IndentedText(Resources("alertFormattedText", fullMessage), fullMessage, 0))
+               formatter = Some(IndentedText(Resources.alertFormattedText(fullMessage), fullMessage, 0))
               )
             )
           }
@@ -241,7 +241,7 @@ private[scalatest] class DispatchReporter(
             }
             catch {
               case e: Exception => 
-                val stringToPrint = Resources("reporterThrew", event)
+                val stringToPrint = Resources.reporterThrew(event)
                 out.println(stringToPrint)
                 e.printStackTrace(out)
             }
@@ -252,7 +252,7 @@ private[scalatest] class DispatchReporter(
             }
             catch {
               case e: Exception =>
-                val stringToPrint = Resources("reporterDisposeThrew")
+                val stringToPrint = Resources.reporterDisposeThrew
                 out.println(stringToPrint)
                 e.printStackTrace(out)
             }

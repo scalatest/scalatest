@@ -138,7 +138,7 @@ trait TimeLimitedTests extends SuiteMixin { this: Suite =>
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 
-        Exceptional(e.modifyMessage(opts => Some(Resources("testTimeLimitExceeded", e.timeout.prettyString))))
+        Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
       case t: Throwable => 
         Exceptional(t)
     }

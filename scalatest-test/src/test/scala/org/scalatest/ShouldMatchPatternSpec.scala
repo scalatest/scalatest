@@ -34,16 +34,16 @@ class ShouldMatchPatternSpec extends FunSpec with OptionValues {
   def matchedTheGivenPattern(left: Any): String =
     Prettifier.default(left) + " matched the given pattern"
   def equaled(left: Any, right: Any): String =
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
 
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages("didNotEqual", left, right)
+    FailureMessages.didNotEqual(left, right)
 
   def wasEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
 
   def wasNotEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotEqualTo", left, right)
+    FailureMessages.wasNotEqualTo(left, right)
 
   describe("should matchPattern syntax") {
 

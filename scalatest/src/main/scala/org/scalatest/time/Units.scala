@@ -15,6 +15,8 @@
  */
 package org.scalatest.time
 
+import org.scalatest.Resources
+
 /**
  * Defines a family of singleton objects representing units of time.
  *
@@ -29,8 +31,8 @@ package org.scalatest.time
  * </pre>
  */
 sealed abstract class Units {
-  private[scalatest] val singularResourceName: String
-  private[scalatest] val pluralResourceName: String
+  private[scalatest] def singularMessageFun(lengthString: String): String
+  private[scalatest] def pluralMessageFun(lengthString: String): String
 }
 
 /**
@@ -46,8 +48,8 @@ sealed abstract class Units {
  * </pre>
  */
 case object Nanosecond extends Units {
-  private[scalatest] val singularResourceName: String = "singularNanosecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralNanosecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularNanosecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralNanosecondUnits(lengthString)
 }
 
 /**
@@ -63,8 +65,8 @@ case object Nanosecond extends Units {
  * </pre>
  */
 case object Nanoseconds extends Units {
-  private[scalatest] val singularResourceName: String = "singularNanosecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralNanosecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularNanosecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralNanosecondUnits(lengthString)
 }
 
 /**
@@ -80,8 +82,8 @@ case object Nanoseconds extends Units {
  * </pre>
  */
 case object Microsecond extends Units {
-  private[scalatest] val singularResourceName: String = "singularMicrosecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMicrosecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMicrosecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMicrosecondUnits(lengthString)
 }
 
 /**
@@ -97,8 +99,8 @@ case object Microsecond extends Units {
  * </pre>
  */
 case object Microseconds extends Units {
-  private[scalatest] val singularResourceName: String = "singularMicrosecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMicrosecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMicrosecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMicrosecondUnits(lengthString)
 }
 
 /**
@@ -114,8 +116,8 @@ case object Microseconds extends Units {
  * </pre>
  */
 case object Millisecond extends Units {
-  private[scalatest] val singularResourceName: String = "singularMillisecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMillisecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMillisecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMillisecondUnits(lengthString)
 }
 
 /**
@@ -131,8 +133,8 @@ case object Millisecond extends Units {
  * </pre>
  */
 case object Milliseconds extends Units {
-  private[scalatest] val singularResourceName: String = "singularMillisecondUnits"
-  private[scalatest]  val pluralResourceName: String = "pluralMillisecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMillisecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMillisecondUnits(lengthString)
 }
 /**
  * Indicates millisecond units (shorthand form).
@@ -153,8 +155,8 @@ case object Milliseconds extends Units {
  * </p>
  */
 case object Millis extends Units {
-  private[scalatest] val singularResourceName: String = "singularMillisecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMillisecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMillisecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMillisecondUnits(lengthString)
 }
 
 /**
@@ -170,8 +172,8 @@ case object Millis extends Units {
  * </pre>
  */
 case object Second extends Units {
-  private[scalatest] val singularResourceName: String = "singularSecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralSecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularSecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralSecondUnits(lengthString)
 }
 
 /**
@@ -187,8 +189,8 @@ case object Second extends Units {
  * </pre>
  */
 case object Seconds extends Units {
-  private[scalatest] val singularResourceName: String = "singularSecondUnits"
-  private[scalatest] val pluralResourceName: String = "pluralSecondUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularSecondUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralSecondUnits(lengthString)
 }
 
 /**
@@ -204,8 +206,8 @@ case object Seconds extends Units {
  * </pre>
  */
 case object Minute extends Units {
-  private[scalatest] val singularResourceName: String = "singularMinuteUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMinuteUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMinuteUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMinuteUnits(lengthString)
 }
 
 /**
@@ -221,8 +223,8 @@ case object Minute extends Units {
  * </pre>
  */
 case object Minutes extends Units {
-  private[scalatest] val singularResourceName: String = "singularMinuteUnits"
-  private[scalatest] val pluralResourceName: String = "pluralMinuteUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularMinuteUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralMinuteUnits(lengthString)
 }
 
 /**
@@ -238,8 +240,8 @@ case object Minutes extends Units {
  * </pre>
  */
 case object Hour extends Units {
-  private[scalatest] val singularResourceName: String = "singularHourUnits"
-  private[scalatest] val pluralResourceName: String = "pluralHourUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularHourUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralHourUnits(lengthString)
 }
 
 /**
@@ -255,8 +257,8 @@ case object Hour extends Units {
  * </pre>
  */
 case object Hours extends Units {
-  private[scalatest] val singularResourceName: String = "singularHourUnits"
-  private[scalatest] val pluralResourceName: String = "pluralHourUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularHourUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralHourUnits(lengthString)
 }
 
 /**
@@ -272,8 +274,8 @@ case object Hours extends Units {
  * </pre>
  */
 case object Day extends Units {
-  private[scalatest] val singularResourceName: String = "singularDayUnits"
-  private[scalatest] val pluralResourceName: String = "pluralDayUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularDayUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralDayUnits(lengthString)
 }
 
 /**
@@ -289,7 +291,7 @@ case object Day extends Units {
  * </pre>
  */
 case object Days extends Units {
-  private[scalatest] val singularResourceName: String = "singularDayUnits"
-  private[scalatest] val pluralResourceName: String = "pluralDayUnits"
+  private[scalatest] def singularMessageFun(lengthString: String): String = Resources.singularDayUnits(lengthString)
+  private[scalatest] def pluralMessageFun(lengthString: String): String = Resources.pluralDayUnits(lengthString)
 }
 

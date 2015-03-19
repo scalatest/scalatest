@@ -44,8 +44,8 @@ final class FullyMatchWord {
       def apply(left: String): MatchResult =
         MatchResult(
           java.util.regex.Pattern.matches(rightRegexString, left),
-          Resources("didNotFullyMatchRegex"),
-          Resources("fullyMatchedRegex"), 
+          Resources.rawDidNotFullyMatchRegex,
+          Resources.rawFullyMatchedRegex,
           Vector(left, UnquotedString(rightRegexString))
         )
       override def toString: String = "fullyMatch regex " + Prettifier.default(rightRegexString)
@@ -80,8 +80,8 @@ final class FullyMatchWord {
       def apply(left: String): MatchResult =
         MatchResult(
           rightRegex.pattern.matcher(left).matches,
-          Resources("didNotFullyMatchRegex"),
-          Resources("fullyMatchedRegex"), 
+          Resources.rawDidNotFullyMatchRegex,
+          Resources.rawFullyMatchedRegex,
           Vector(left, UnquotedString(rightRegex.toString))
         )
       override def toString: String = "fullyMatch regex \"" + Prettifier.default(rightRegex) + "\""

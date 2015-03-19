@@ -41,7 +41,7 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           case nsme: NoSuchMethodException => false
         }
   
-      val rawString = Resources("suiteExecutionStarting")
+      val rawString = Resources.suiteExecutionStarting
       val formatter = formatterForSuiteStarting(suite)
       val dispatch = args.reporter
       val tracker = args.tracker
@@ -80,9 +80,9 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           val eMessage = e.getMessage
           val rawString3 = 
             if (eMessage != null && eMessage.length > 0)
-                Resources("executeExceptionWithMessage", eMessage)
+                Resources.executeExceptionWithMessage(eMessage)
               else
-                Resources("executeException")
+                Resources.executeException
           val formatter3 = formatterForSuiteAborted(suite, rawString3)
 
           val duration = System.currentTimeMillis - suiteStartTime

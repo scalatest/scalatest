@@ -168,10 +168,10 @@ private[scalatest] object MatchersHelper {
     else {
       MatchResult(
         rightMatchResult.matches,
-        Resources("commaBut"),
-        Resources("commaAnd"),
-        Resources("commaBut"),
-        Resources("commaAnd"),
+        Resources.rawCommaBut,
+        Resources.rawCommaAnd,
+        Resources.rawCommaBut,
+        Resources.rawCommaAnd,
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
@@ -187,10 +187,10 @@ private[scalatest] object MatchersHelper {
     else {
       MatchResult(
         rightMatchResult.matches,
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
-        Resources("commaAnd"),
+        Resources.rawCommaAnd,
+        Resources.rawCommaAnd,
+        Resources.rawCommaAnd,
+        Resources.rawCommaAnd,
         Vector(FailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(FailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
@@ -222,12 +222,10 @@ private[scalatest] object MatchersHelper {
           firstChar == 'o' || firstChar == 'u'
 
         throw newTestFailedException(
-          FailureMessages(
-            if (methodNameStartsWithVowel) "hasNeitherAnOrAnMethod" else "hasNeitherAOrAnMethod",
-            left,
-            UnquotedString(methodNameToInvoke),
-            UnquotedString(methodNameToInvokeWithIs)
-          ), 
+          if (methodNameStartsWithVowel)
+            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
+          else
+            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
           None, 
           stackDepth
         )
@@ -236,27 +234,27 @@ private[scalatest] object MatchersHelper {
 
         val (wasNot, was) =
           if (hasArticle) {
-            if (articleIsA) ("wasNotA", "wasA") else ("wasNotAn", "wasAn")
+            if (articleIsA) (Resources.rawWasNotA, Resources.rawWasA) else (Resources.rawWasNotAn, Resources.rawWasAn)
           }
-          else ("wasNot", "was")
+          else (Resources.rawWasNot, Resources.rawWas)
 
         MatchResult(
           result == true, // Right now I just leave the return value of accessProperty as Any
-          Resources(wasNot),
-          Resources(was), 
+          wasNot,
+          was,
           Vector(left, UnquotedString(propertyName))
         )
     }
   }
 
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
-                                 didNotMatchResourceName: String, matchResourceName: String, notGroupAtIndexResourceName: String, notGroupResourceName: String, 
-                                 andGroupResourceName: String): MatchResult = {
+                                 didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
+                                 andGroupMessage: => String): MatchResult = {
     if (groups.size == 0 || !matches)
       MatchResult(
         matches, 
-        Resources(didNotMatchResourceName), 
-        Resources(matchResourceName), 
+        didNotMatchMessage,
+        matchMessage,
         Vector(left, UnquotedString(regex.toString))
       )
     else {
@@ -270,8 +268,8 @@ private[scalatest] object MatchersHelper {
         case Some((group, idx)) =>
           MatchResult(
             false, 
-            Resources(if (groups.size > 1) notGroupAtIndexResourceName else notGroupResourceName), 
-            Resources(andGroupResourceName), 
+            if (groups.size > 1) notGroupAtIndexMessage else notGroupMessage,
+            andGroupMessage,
             if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
@@ -279,8 +277,8 @@ private[scalatest] object MatchersHelper {
           // None of group failed
           MatchResult(
             true, 
-            Resources(notGroupResourceName), 
-            Resources(andGroupResourceName), 
+            notGroupMessage,
+            andGroupMessage,
             Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
@@ -291,29 +289,29 @@ private[scalatest] object MatchersHelper {
   def fullyMatchRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.matches
-    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotFullyMatchRegex", "fullyMatchedRegex", "fullyMatchedRegexButNotGroupAtIndex", 
-                               "fullyMatchedRegexButNotGroup", "fullyMatchedRegexAndGroup")
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotFullyMatchRegex, Resources.rawFullyMatchedRegex, Resources.rawFullyMatchedRegexButNotGroupAtIndex,
+                               Resources.rawFullyMatchedRegexButNotGroup, Resources.rawFullyMatchedRegexAndGroup)
   }
   
   def startWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.lookingAt
-    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotStartWithRegex", "startedWithRegex", "startedWithRegexButNotGroupAtIndex", 
-                               "startedWithRegexButNotGroup", "startedWithRegexAndGroup")
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotStartWithRegex, Resources.rawStartedWithRegex, Resources.rawStartedWithRegexButNotGroupAtIndex,
+      Resources.rawStartedWithRegexButNotGroup, Resources.rawStartedWithRegexAndGroup)
   }
   
   def endWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val found = pMatcher.find
     val matches = found && pMatcher.end == left.length
-    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotEndWithRegex", "endedWithRegex", "endedWithRegexButNotGroupAtIndex", 
-                               "endedWithRegexButNotGroup", "endedWithRegexAndGroup")
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotEndWithRegex, Resources.rawEndedWithRegex, Resources.rawEndedWithRegexButNotGroupAtIndex,
+                               Resources.rawEndedWithRegexButNotGroup, Resources.rawEndedWithRegexAndGroup)
   }
   
   def includeRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.find
-    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotIncludeRegex", "includedRegex", "includedRegexButNotGroupAtIndex", 
-                               "includedRegexButNotGroup", "includedRegexAndGroup")
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotIncludeRegex, Resources.rawIncludedRegex, Resources.rawIncludedRegexButNotGroupAtIndex,
+                               Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
 }

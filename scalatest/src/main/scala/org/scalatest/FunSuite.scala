@@ -1564,7 +1564,3 @@ class FunSuite extends FunSuiteLike {
    */
   override def toString: String = Suite.suiteToString(None, this)
 }
-
-private[scalatest] object FunSuite {
-  val IgnoreTagName = "org.scalatest.Ignore"
-}

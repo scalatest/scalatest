@@ -56,12 +56,12 @@ private[fixture] object FixtureNodeFamily  {
       // Call to getPrefix is not tail recursive, but I don't expect
       // the describe nesting to be very deep (famous last words).
       case DescriptionBranch(parent, descriptionName) =>
-        Resources("prefixSuffix", getPrefix(parent), descriptionName)
+        Resources.prefixSuffix(getPrefix(parent), descriptionName)
       case VerbBranch(parent, descriptionName, verb) =>
         val prefix = getPrefix(parent)
         val suffix = if (prefix.indexOf(" (when ") != -1) ")" else ""
-        val withoutVerb = Resources("prefixSuffix", prefix, descriptionName + suffix)
-        Resources("prefixSuffix", withoutVerb, verb)
+        val withoutVerb = Resources.prefixSuffix(prefix, descriptionName + suffix)
+        Resources.prefixSuffix(withoutVerb, verb)
     }
   }
 
@@ -74,11 +74,11 @@ private[fixture] object FixtureNodeFamily  {
       // Call to getPrefix is not tail recursive, but I don't expect
       // the describe nesting to be very deep (famous last words).
       case DescriptionBranch(parent, descriptionName) =>
-        Resources("prefixSuffix", getPrefix(parent), descriptionName)
+        Resources.prefixSuffix(getPrefix(parent), descriptionName)
       case VerbBranch(parent, descriptionName, _) =>
         val prefix = getPrefix(parent)
         val suffix = if (prefix.indexOf(" (when ") != -1) ")" else "" // TODO: Search up the tree for a when clause?
-        Resources("prefixSuffix", prefix, descriptionName + suffix)
+        Resources.prefixSuffix(prefix, descriptionName + suffix)
     }
   }
 
@@ -91,7 +91,7 @@ private[fixture] object FixtureNodeFamily  {
       // Call to getTestPrefix is not tail recursive, but I don't expect
       // the describe nesting to be very deep (famous last words).
       case DescriptionBranch(parent, descriptionName) =>
-        Resources("prefixSuffix", getFormattedSpecTextPrefix(parent), descriptionName)
+        Resources.prefixSuffix(getFormattedSpecTextPrefix(parent), descriptionName)
       case VerbBranch(parent, descriptionName, verb) => verb
     }
   }
@@ -112,7 +112,7 @@ private[fixture] object FixtureNodeFamily  {
       //   }
       // }
       // Should yield: "A Stack must pop when asked"
-      Resources("prefixSuffix", prefix, specText)
+      Resources.prefixSuffix(prefix, specText)
     }
   }
 }

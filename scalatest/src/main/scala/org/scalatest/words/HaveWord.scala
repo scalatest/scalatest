@@ -50,8 +50,8 @@ final class HaveWord {
             val lengthOfLeft = length.lengthOf(left)
             MatchResult(
               lengthOfLeft == expectedLength,
-              Resources("hadLengthInsteadOfExpectedLength"),
-              Resources("hadLength"), 
+              Resources.rawHadLengthInsteadOfExpectedLength,
+              Resources.rawHadLength,
               Vector(left, lengthOfLeft, expectedLength), 
               Vector(left, expectedLength)
             )
@@ -86,8 +86,8 @@ final class HaveWord {
             val sizeOfLeft = size.sizeOf(left)
             MatchResult(
               sizeOfLeft == expectedSize,
-              FailureMessages("hadSizeInsteadOfExpectedSize"),
-              FailureMessages("hadSize"), 
+              Resources.rawHadSizeInsteadOfExpectedSize,
+              Resources.rawHadSize,
               Vector(left, sizeOfLeft, expectedSize), 
               Vector(left, expectedSize)
             )
@@ -115,8 +115,8 @@ final class HaveWord {
             val messageOfLeft = messaging.messageOf(left)
             MatchResult(
               messageOfLeft == expectedMessage,
-              FailureMessages("hadMessageInsteadOfExpectedMessage"),
-              FailureMessages("hadExpectedMessage"), 
+              Resources.rawHadMessageInsteadOfExpectedMessage,
+              Resources.rawHadExpectedMessage,
               Vector(left, messageOfLeft, expectedMessage), 
               Vector(left, expectedMessage)
             )
@@ -167,7 +167,7 @@ final class HaveWord {
             val failedVerification = firstFailure
             val (rawFailureMessage, failureMessageArgs) =
               (
-                Resources("propertyDidNotHaveExpectedValue"), 
+                Resources.rawPropertyDidNotHaveExpectedValue,
                 Vector(
                   UnquotedString(failedVerification.propertyName),
                   failedVerification.expectedValue,
@@ -177,7 +177,7 @@ final class HaveWord {
               )
             val (rawMidSentenceFailureMessage, midSentenceFailureMessageArgs) =
               (
-                Resources("midSentencePropertyDidNotHaveExpectedValue"), 
+                Resources.rawMidSentencePropertyDidNotHaveExpectedValue,
                 Vector(
                   UnquotedString(failedVerification.propertyName),
                   failedVerification.expectedValue,
@@ -194,7 +194,7 @@ final class HaveWord {
               if (justOneProperty) {
                 val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
                 (
-                  Resources("propertyHadExpectedValue"), 
+                  Resources.rawPropertyHadExpectedValue,
                   Vector(
                     UnquotedString(firstPropertyResult.propertyName),
                     firstPropertyResult.expectedValue,
@@ -202,13 +202,13 @@ final class HaveWord {
                   )
                 )
               }
-              else (Resources("allPropertiesHadExpectedValues"), Vector(left))
+              else (Resources.rawAllPropertiesHadExpectedValues, Vector(left))
 
             val (rawMidSentenceFailureMessage, rawMidSentenceFailureMessageArgs) =
               if (justOneProperty) {
                 val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
                 (
-                  Resources("midSentencePropertyHadExpectedValue"), 
+                  Resources.rawMidSentencePropertyHadExpectedValue,
                   Vector(
                     UnquotedString(firstPropertyResult.propertyName),
                     firstPropertyResult.expectedValue,
@@ -216,7 +216,7 @@ final class HaveWord {
                   )
                 )
               }
-              else (Resources("midSentenceAllPropertiesHadExpectedValues"), Vector(left))
+              else (Resources.rawMidSentenceAllPropertiesHadExpectedValues, Vector(left))
 
             MatchResult(true, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, rawMidSentenceFailureMessageArgs)
         }

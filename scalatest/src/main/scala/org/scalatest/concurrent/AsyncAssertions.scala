@@ -379,7 +379,7 @@ trait AsyncAssertions extends PatienceConfiguration {
      */
     private def awaitImpl(timeout: Span, dismissals: Int = 1) {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources("awaitMustBeCalledOnCreatingThread"), 2)
+        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, 2)
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
@@ -401,7 +401,7 @@ trait AsyncAssertions extends PatienceConfiguration {
         else if (dismissedCount >= dismissals)
           dismissedCount = 0 // reset the dismissed count to support multiple await calls        
         else if (timedOut)
-          throw new TestFailedException(Resources("awaitTimedOut"), 2)
+          throw new TestFailedException(Resources.awaitTimedOut, 2)
         else throw new Exception("Should never happen: thrown was not defined; dismissedCount was not greater than dismissals; and timedOut was false")
       }
     }

@@ -39,9 +39,10 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
+//@scala.scalajs.js.annotation.JSExportDescendentClasses
 trait FunSuiteLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
+  private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
   import engine._
 
   /**
@@ -87,11 +88,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -109,7 +110,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testName, Transformer(testFun _), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -128,7 +129,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideATest", "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
   }
 
   /**

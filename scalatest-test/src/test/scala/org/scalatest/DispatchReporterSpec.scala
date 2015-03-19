@@ -69,7 +69,7 @@ class DispatchReporterSpec extends Spec {
         val msg = alertProvidedEvent.message
         msg should (include ("the suite name") and include ("the test name"))
         inside (alertProvidedEvent.formatter.value) { case IndentedText(formattedText, rawText, indentationLevel) =>
-          formattedText should equal (Resources("alertFormattedText", msg))
+          formattedText should equal (Resources.alertFormattedText(msg))
           rawText should equal (msg)
           indentationLevel should equal (0)
         }

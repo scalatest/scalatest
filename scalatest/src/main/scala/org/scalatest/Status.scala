@@ -16,10 +16,7 @@
 package org.scalatest
 
 import org.scalatest.tools.SuiteRunner
-import java.util.concurrent.CountDownLatch
 import scala.collection.GenSet
-import java.util.concurrent.ConcurrentLinkedQueue
-import collection.JavaConverters._
 import java.io.Serializable
 
 /**
@@ -190,7 +187,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     synchronized {
       latch.countDown()
     }
-    for (f <- queue.iterator.asScala)
+    for (f <- queue.iterator)
       f(succeeded)
   }
 
@@ -279,7 +276,7 @@ final class StatefulStatus extends Status with Serializable {
     synchronized {
       latch.countDown()
     }
-    for (f <- queue.iterator.asScala)
+    for (f <- queue.iterator)
       f(succeeded)
   }
 
@@ -327,7 +324,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
       if (!st)
         succeeded = false
       if (latch.getCount == 0) {
-        for (f <- queue.iterator.asScala)
+        for (f <- queue.iterator)
           f(succeeded)
       }
     }

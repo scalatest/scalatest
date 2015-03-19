@@ -88,7 +88,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assert(a === null)
       }
-      assert(e1.message === Some(FailureMessages("didNotEqual", a, null)))
+      assert(e1.message === Some(FailureMessages.didNotEqual(a, null)))
     }
   }
   describe("The intercept method") {
@@ -174,7 +174,7 @@ class AssertionsSpec extends FunSpec {
       assert(trappedInt == NormalResult(12))
       val trappedString = trap { "12" }
       assert(trappedString == NormalResult("12"))
-      assert(trappedString.toString == Resources("resultWas", "\"12\""))
+      assert(trappedString.toString == Resources.resultWas("\"12\""))
       intercept[OutOfMemoryError] {
         trap { throw new OutOfMemoryError }
       }
@@ -183,44 +183,44 @@ class AssertionsSpec extends FunSpec {
 
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages("didNotEqual", leftee, rightee)
+    FailureMessages.didNotEqual(leftee, rightee)
   }
 
   def equaled(left: Any, right: Any): String =
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
 
   def expressionFailed(left: String): String =
-    FailureMessages("expressionFailed", UnquotedString(left))
+    FailureMessages.expressionFailed(UnquotedString(left))
 
   def wasNotGreaterThan(left: Any, right: Any): String =
-    FailureMessages("wasNotGreaterThan", left, right)
+    FailureMessages.wasNotGreaterThan(left, right)
 
   def wasGreaterThan(left: Any, right: Any): String =
-    FailureMessages("wasGreaterThan", left, right)
+    FailureMessages.wasGreaterThan(left, right)
 
   def wasNotGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotGreaterThanOrEqualTo", left, right)
+    FailureMessages.wasNotGreaterThanOrEqualTo(left, right)
 
   def wasGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasGreaterThanOrEqualTo", left, right)
+    FailureMessages.wasGreaterThanOrEqualTo(left, right)
 
   def wasNotLessThan(left: Any, right: Any): String =
-    FailureMessages("wasNotLessThan", left, right)
+    FailureMessages.wasNotLessThan(left, right)
 
   def wasLessThan(left: Any, right: Any): String =
-    FailureMessages("wasLessThan", left, right)
+    FailureMessages.wasLessThan(left, right)
 
   def wasNotLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotLessThanOrEqualTo", left, right)
+    FailureMessages.wasNotLessThanOrEqualTo(left, right)
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasLessThanOrEqualTo", left, right)
+    FailureMessages.wasLessThanOrEqualTo(left, right)
 
   def commaAnd(left: String, right: String): String =
-    FailureMessages("commaAnd", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
 
   def commaBut(left: String, right: String): String =
-    FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -277,16 +277,16 @@ class AssertionsSpec extends FunSpec {
     quoteString(left) + " was instance of " + className
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
-    FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
+    FailureMessages.hadLengthInsteadOfExpectedLength(left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
-    FailureMessages("hadLength", left, actual)
+    FailureMessages.hadLength(left, actual)
 
   def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
-    FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
+    FailureMessages.hadSizeInsteadOfExpectedSize(left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
-    FailureMessages("hadSize", left, actual)
+    FailureMessages.hadSize(left, actual)
 
   class Stateful {
     var state = false
@@ -5607,7 +5607,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertTypeError("val a = 1")
         }
-        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "val a = 1")))
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -5616,7 +5616,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertTypeError("println(\"test)")
         }
-        val errMsg = Resources("expectedTypeErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedTypeErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5642,7 +5642,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(Resources("expectedTypeErrorButGotNone", "" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
@@ -5655,7 +5655,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        val errMsg = Resources("expectedTypeErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedTypeErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0, "error message was: " + e.message.get)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5676,7 +5676,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertDoesNotCompile("val a = 1")
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "val a = 1")))
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("val a = 1")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
@@ -5705,7 +5705,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        assert(e.message == Some(Resources("expectedCompileErrorButGotNone", "" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
@@ -5734,7 +5734,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertCompiles("val a: String = 2")
         }
-        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5745,7 +5745,7 @@ class AssertionsSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           assertCompiles("println(\"test)")
         }
-        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5771,7 +5771,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("" + Prettifier.lineSeparator + "val a: String = 2" + Prettifier.lineSeparator + "") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5786,7 +5786,7 @@ class AssertionsSpec extends FunSpec {
               |""".stripMargin
           )
         }
-        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -5854,7 +5854,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a) { null }
       }
-      assert(e1.message === Some(FailureMessages("expectedButGot", a, null)))
+      assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
     }
   }
   describe("The assertResult method that 'gets a clue'") {
@@ -5916,7 +5916,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "a clue") { null }
       }
-      assert(e1.message === Some(FailureMessages("expectedButGot", a, null) + " a clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(a, null) + " a clue"))
     }
     it("should append clues in a satisfying manner") {
       val a = "hi"
@@ -5926,22 +5926,22 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "the clue") { b }
       }
-      assert(e1.message === Some(FailureMessages("expectedButGot", aDiff, bDiff) + " the clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + " the clue"))
 
       val e2 = intercept[TestFailedException] {
         assertResult(a, ", the clue") { b }
       }
-      assert(e2.message === Some(FailureMessages("expectedButGot", aDiff, bDiff) + ", the clue"))
+      assert(e2.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ", the clue"))
 
       val e3 = intercept[TestFailedException] {
         assertResult(a, ". the clue") { b }
       }
-      assert(e3.message === Some(FailureMessages("expectedButGot", aDiff, bDiff) + ". the clue"))
+      assert(e3.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ". the clue"))
 
       val e4 = intercept[TestFailedException] {
         assertResult(a, "; the clue") { b }
       }
-      assert(e4.message === Some(FailureMessages("expectedButGot", aDiff, bDiff) + "; the clue"))
+      assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
     }
   }
 }

@@ -67,7 +67,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
         else {
@@ -77,7 +77,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     }
     caught match {
       case None =>
-        val message = Resources("exceptionExpected", clazz.getName)
+        val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
@@ -123,7 +123,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
         else {
@@ -133,7 +133,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     }
     caught match {
       case None =>
-        val message = Resources("exceptionExpected", clazz.getName)
+        val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }

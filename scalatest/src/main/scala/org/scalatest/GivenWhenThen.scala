@@ -74,7 +74,7 @@ trait GivenWhenThen { this: Informing =>
    * @param message the message to forward to the passed informer
    */
   def Given(message: String) {
-    info(Resources("givenMessage", message))
+    info(Resources.givenMessage(message))
   }
   
   /**
@@ -83,7 +83,7 @@ trait GivenWhenThen { this: Informing =>
    * @param message the message to forward to the passed informer
    */
   def When(message: String) {
-    info(Resources("whenMessage", message))
+    info(Resources.whenMessage(message))
   }
   
   /**
@@ -92,7 +92,7 @@ trait GivenWhenThen { this: Informing =>
    * @param message the message to forward to the passed informer
    */
   def Then(message: String) {
-    info(Resources("thenMessage", message))
+    info(Resources.thenMessage(message))
   }
   
    /**
@@ -101,6 +101,6 @@ trait GivenWhenThen { this: Informing =>
    * @param message the message to forward to the passed informer
    */
   def And(message: String) {
-    info(Resources("andMessage", message))
+    info(Resources.andMessage(message))
   }
 }
