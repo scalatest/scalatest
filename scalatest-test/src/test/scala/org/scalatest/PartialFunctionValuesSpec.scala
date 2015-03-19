@@ -42,7 +42,7 @@ class PartialFunctionValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("PartialFunctionValuesSpec.scala")
-      caught.message.value should be (Resources("partialFunctionValueNotDefined", "5"))
+      caught.message.value should be (Resources.partialFunctionValueNotDefined("5"))
     }
     
   }

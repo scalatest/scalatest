@@ -41,7 +41,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 trait PropSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentPropSpecMod", "PropSpec")
+  private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
   import engine._
 
   /**
@@ -87,11 +87,11 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "PropSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "PropSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -109,7 +109,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def property(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testName, Transformer(testFun _), "propertyCannotAppearInsideAnotherProperty", "PropSpecLike.scala", "property", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -128,7 +128,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideAProperty", "PropSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
   }
 
   /**

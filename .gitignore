@@ -1,4 +1,5 @@
 target/
 test-output/
 gentests/
+scalatest.js/target/
 *.swp

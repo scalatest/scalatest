@@ -343,7 +343,7 @@ trait Retries {
     firstOutcome match {
       case Failed(ex) =>
         blk match {
-          case Succeeded => Canceled(Resources("testFlickered"), ex)
+          case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
         }
       case Canceled(ex) =>
@@ -566,7 +566,7 @@ trait Retries {
         if (delay != Span.Zero)
           Thread.sleep(delay.millisPart)
         blk match {
-          case Succeeded => Canceled(Resources("testFlickered"), ex)
+          case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
         }
       case other => other

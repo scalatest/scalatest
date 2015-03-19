@@ -494,13 +494,13 @@ trait Futures extends PatienceConfiguration {
         val interval = config.interval
         if (thisFuture.isCanceled)
           throw new TestFailedException(
-            sde => Some(Resources("futureWasCanceled")),
+            sde => Some(Resources.futureWasCanceled),
             None,
             getStackDepthFun("Futures.scala", methodName, adjustment)
           )
         if (thisFuture.isExpired)
           throw new TestFailedException(
-            sde => Some(Resources("futureExpired", attempt.toString, interval.prettyString)),
+            sde => Some(Resources.futureExpired(attempt.toString, interval.prettyString)),
             None,
             getStackDepthFun("Futures.scala", methodName, adjustment)
           )
@@ -519,9 +519,9 @@ trait Futures extends PatienceConfiguration {
                 throw new TestFailedException(
                   sde => Some {
                     if (cause.getMessage == null)
-                      Resources("futureReturnedAnException", cause.getClass.getName)
+                      Resources.futureReturnedAnException(cause.getClass.getName)
                     else
-                      Resources("futureReturnedAnExceptionWithMessage", cause.getClass.getName, cause.getMessage)
+                      Resources.futureReturnedAnExceptionWithMessage(cause.getClass.getName, cause.getMessage)
                   },
                   Some(cause),
                   getStackDepthFun("Futures.scala", methodName, adjustment)
@@ -531,9 +531,9 @@ trait Futures extends PatienceConfiguration {
             throw new TestFailedException(
               sde => Some {
                 if (e.getMessage == null)
-                  Resources("futureReturnedAnException", e.getClass.getName)
+                  Resources.futureReturnedAnException(e.getClass.getName)
                 else
-                  Resources("futureReturnedAnExceptionWithMessage", e.getClass.getName, e.getMessage)
+                  Resources.futureReturnedAnExceptionWithMessage(e.getClass.getName, e.getMessage)
               },
               Some(e),
               getStackDepthFun("Futures.scala", methodName, adjustment)
@@ -544,7 +544,7 @@ trait Futures extends PatienceConfiguration {
               Thread.sleep(interval.millisPart, interval.nanosPart)
             else {
               throw new TestFailedException(
-                sde => Some(Resources("wasNeverReady", attempt.toString, interval.prettyString)),
+                sde => Some(Resources.wasNeverReady(attempt.toString, interval.prettyString)),
                 None,
                 getStackDepthFun("Futures.scala", methodName, adjustment)
               ) with TimeoutField {

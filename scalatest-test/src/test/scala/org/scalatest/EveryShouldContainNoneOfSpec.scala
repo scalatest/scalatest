@@ -46,12 +46,12 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
         // Contains duplicate elements in the right list
         val e2 = intercept[NotAllowedException] {
           fumList should contain noneOf ("fee", "fam", "foe", "fam")
         }
-        e2.getMessage should be (Resources("noneOfDuplicate"))
+        e2.getMessage should be (Resources.noneOfDuplicate)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -76,7 +76,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -90,7 +90,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.containedAtLeastOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -115,7 +115,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -128,7 +128,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -153,7 +153,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -166,7 +166,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -191,7 +191,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -204,7 +204,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -229,7 +229,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -242,7 +242,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainAtLeastOneOf(decorateToStringValue(toList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -267,7 +267,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
   }
@@ -293,7 +293,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages("containedAtLeastOneOf", lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -325,7 +325,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -343,7 +343,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages("containedAtLeastOneOf", lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), UnquotedString("2, 3, 4")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -375,7 +375,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -389,7 +389,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("didNotContainAtLeastOneOf", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -415,7 +415,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -429,7 +429,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("didNotContainAtLeastOneOf", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -455,7 +455,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -469,7 +469,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("didNotContainAtLeastOneOf", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -495,7 +495,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
 
@@ -509,7 +509,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("didNotContainAtLeastOneOf", toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), UnquotedString("\"fee\", \"fie\", \"foe\", \"fum\"")) + " (EveryShouldContainNoneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -535,7 +535,7 @@ class EveryShouldContainNoneOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfDuplicate")))
+        e1.message should be (Some(Resources.noneOfDuplicate))
       }
     }
   }

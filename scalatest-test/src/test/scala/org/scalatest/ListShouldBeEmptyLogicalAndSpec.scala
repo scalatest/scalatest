@@ -26,30 +26,30 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
   val fileName: String = "ListShouldBeEmptyLogicalAndSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages("wasNotEqualTo", leftee, rightee)
+    FailureMessages.wasNotEqualTo(leftee, rightee)
   }
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
     
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages("didNotEqual", leftee, rightee)
+    FailureMessages.didNotEqual(leftee, rightee)
   }
   
   def wasNotEmpty(left: Any): String = 
-    FailureMessages("wasNotEmpty", left)
+    FailureMessages.wasNotEmpty(left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages("wasEmpty", left)
+    FailureMessages.wasEmpty(left)
     
   def allError(message: String, lineNumber: Int, left: Any): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
     
   val nonEmptyList = List(1, 2, 3)

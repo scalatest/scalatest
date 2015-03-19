@@ -99,7 +99,7 @@ private[scalatest] class RunnerJFrame(
   detectSlowpokes: Boolean,
   slowpokeDetectionDelay: Long,
   slowpokeDetectionPeriod: Long
-) extends JFrame(Resources("ScalaTestTitle")) with RunDoneListener with RunnerGUI {
+) extends JFrame(Resources.ScalaTestTitle) with RunDoneListener with RunnerGUI {
   
   // This should only be updated by the event handler thread.
   private var currentState: RunnerGUIState = RunningState
@@ -142,8 +142,8 @@ private[scalatest] class RunnerJFrame(
   private val progressBarPanel: ProgressBarPanel = new ProgressBarPanel()
   private val statusJPanel: StatusJPanel = new StatusJPanel()
   private val rerunColorBox: ColorBar = new ColorBar()
-  private val runJButton: JButton = new JButton(Resources("Run"))
-  private val rerunJButton: JButton = new JButton(Resources("Rerun"))
+  private val runJButton: JButton = new JButton(Resources.Run)
+  private val rerunJButton: JButton = new JButton(Resources.Rerun)
 
   private var testsCompletedCount: Int = 0
   private var rerunTestsCompletedCount: Int = 0
@@ -200,7 +200,7 @@ private[scalatest] class RunnerJFrame(
     progressJPanel.setLayout(new GridLayout(2, 1))
     progressJPanel.add(statusJPanel)
     progressJPanel.add(pBarRunBtnJPanel)
-    val eventsJLabel: JLabel = new JLabel(Resources("eventsLabel"))
+    val eventsJLabel: JLabel = new JLabel(Resources.eventsLabel)
 
     val southHuggingEventsLabelJPanel: JPanel = new JPanel()
 
@@ -217,7 +217,7 @@ private[scalatest] class RunnerJFrame(
     eventsJPanel.setLayout(new BorderLayout())
     eventsJPanel.add(southHuggingEventsLabelJPanel, BorderLayout.NORTH)
     eventsJPanel.add(eventsJScrollPane, BorderLayout.CENTER)
-    val detailsJLabel: JLabel = new JLabel(Resources("detailsLabel"))
+    val detailsJLabel: JLabel = new JLabel(Resources.detailsLabel)
 
     val southHuggingDetailsLabelJPanel: JPanel = new JPanel()
 
@@ -283,11 +283,7 @@ private[scalatest] class RunnerJFrame(
   
             val fontSize = eventsJList.getFont.getSize
 
-            val title = 
-              if (isRerun)
-                Resources("RERUN_" + RunnerJFrame.getUpperCaseName(event))
-              else
-                Resources(RunnerJFrame.getUpperCaseName(event))
+            val title = RunnerJFrame.getEventToPresentDisplayMessage(event, isRerun)
 
             val isFailureEvent =
               event match {
@@ -337,11 +333,11 @@ private[scalatest] class RunnerJFrame(
               if (cause != null) {
                 <table>
                 <tr valign="top">
-                <td align="right"><span class="label">{ Resources("DetailsCause") + ":" }</span></td>
+                <td align="right"><span class="label">{ Resources.DetailsCause + ":" }</span></td>
                 <td align="left">{ cause.getClass.getName }</td>
                 </tr>
                 <tr valign="top">
-                <td align="right"><span class="label">{ Resources("DetailsMessage") + ":" }</span></td>
+                <td align="right"><span class="label">{ Resources.DetailsMessage + ":" }</span></td>
                 <td align="left">
                   <span>
                   { 
@@ -349,7 +345,7 @@ private[scalatest] class RunnerJFrame(
                       // scala automatically change <br /> to <br></br>, which will cause 2 line breaks, use unparsedXml("<br />") to solve it.
                       for (line <- cause.getMessage.split('\n')) yield <span>{ xmlContent(line) }{ unparsedXml("<br />") }</span>
                     else 
-                      Resources("None") 
+                      Resources.None
                   }
                   </span>
                 </td>
@@ -481,22 +477,22 @@ private[scalatest] class RunnerJFrame(
                 </head>
                 <body>
                   <table>
-                  <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsEvent") + ":" }</span></td><td align="left"><span>{ title }</span></td></tr>
+                  <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsEvent + ":" }</span></td><td align="left"><span>{ title }</span></td></tr>
                   {
                     if (name.isDefined) {
-                      <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsName") + ":" }</span></td><td align="left">{ name.get }</td></tr>
+                      <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsName + ":" }</span></td><td align="left">{ name.get }</td></tr>
                     }
                     else <!-- -->
                   }
                   {
                     if (name.isDefined) {
-                      <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsSuiteId") + ":" }</span></td><td align="left">{ suiteId.get }</td></tr>
+                      <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsSuiteId + ":" }</span></td><td align="left">{ suiteId.get }</td></tr>
                     }
                     else <!-- -->
                   }
                   {
                     if (mainMessage.isDefined) {
-                      <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsMessage") + ":" }</span></td><td align="left">
+                      <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsMessage + ":" }</span></td><td align="left">
                       { 
                         // scala automatically change <br /> to <br></br>, which will cause 2 line breaks, use unparsedXml("<br />") to solve it.
                         def lineSpans = for (line <- mainMessage.get.split('\n')) yield <span>{ xmlContent(line) }{ unparsedXml("<br />") }</span>
@@ -513,7 +509,7 @@ private[scalatest] class RunnerJFrame(
                   {
                     fileAndLineOption match {
                       case Some(fileAndLine) =>
-                        <tr valign="top"><td align="right"><span class="label">{ Resources("LineNumber") + ":" }</span></td><td align="left"><span class="dark">{ "(" + fileAndLine + ")" }</span></td></tr>
+                        <tr valign="top"><td align="right"><span class="label">{ Resources.LineNumber + ":" }</span></td><td align="left"><span class="dark">{ "(" + fileAndLine + ")" }</span></td></tr>
                       case None =>
                     }
                   }
@@ -521,12 +517,11 @@ private[scalatest] class RunnerJFrame(
                     holder.summary match {
                       case Some(summary) => 
 
-                        <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsSummary") + ":" }</span></td><td align="left"><strong>{ Resources("totalNumberOfTestsRun", summary.testsCompletedCount.toString) }</strong></td></tr>
-                        <tr valign="top"><td align="right"><span class="label">&nbsp;</span></td><td align="left"><strong>{ Resources("suiteSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString) }</strong></td></tr>
+                        <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsSummary + ":" }</span></td><td align="left"><strong>{ Resources.totalNumberOfTestsRun(summary.testsCompletedCount.toString) }</strong></td></tr>
+                        <tr valign="top"><td align="right"><span class="label">&nbsp;</span></td><td align="left"><strong>{ Resources.suiteSummary(summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString) }</strong></td></tr>
                         <tr valign="top"><td align="right"><span class="label">&nbsp;</span></td><td align="left"><strong>
                           {
-                            Resources(
-                              "testSummary",
+                            Resources.testSummary(
                               summary.testsSucceededCount.toString,
                               summary.testsFailedCount.toString,
                               summary.testsCanceledCount.toString,
@@ -542,16 +537,16 @@ private[scalatest] class RunnerJFrame(
                   {
                     duration match {
                       case Some(milliseconds) =>
-                        <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsDuration") + ":" }</span></td><td align="left">{ PrintReporter.makeDurationString(milliseconds) }</td></tr>
+                        <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsDuration + ":" }</span></td><td align="left">{ StringReporter.makeDurationString(milliseconds) }</td></tr>
                       case None => new scala.xml.NodeBuffer
                     }
                   }
-                  <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsDate") + ":" }</span></td><td align="left">{ new java.util.Date(event.timeStamp) }</td></tr>
-                  <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsThread") + ":" }</span></td><td align="left">{ event.threadName }</td></tr>
+                  <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsDate + ":" }</span></td><td align="left">{ new java.util.Date(event.timeStamp) }</td></tr>
+                  <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsThread + ":" }</span></td><td align="left">{ event.threadName }</td></tr>
                   {
                     throwableTitle match {
                       case Some(title) =>
-                        <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsThrowable") + ":" }</span></td><td align="left">{ title }</td></tr>
+                        <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsThrowable + ":" }</span></td><td align="left">{ title }</td></tr>
                       case None => new scala.xml.NodeBuffer
                     }
                   }
@@ -600,7 +595,7 @@ private[scalatest] class RunnerJFrame(
     val runButtonSize: Dimension = runJButton.getPreferredSize()
     val rerunButtonSize: Dimension = rerunJButton.getPreferredSize()
     // Create a throw away button to get the size of Stop
-    val stopButtonSize: Dimension = new JButton(Resources("Stop")).getPreferredSize()
+    val stopButtonSize: Dimension = new JButton(Resources.Stop).getPreferredSize()
 
     val preferredSize = new Dimension(
       runButtonSize.width.max(rerunButtonSize.width.max(stopButtonSize.width)),
@@ -632,7 +627,7 @@ private[scalatest] class RunnerJFrame(
   // This initialize method idiom is a way to get rid of a var
   // when you have verbose initialization.
   private def initializeAboutBox() = {
-    val title2: String = Resources("AboutBoxTitle")
+    val title2: String = Resources.AboutBoxTitle
     new AboutJDialog(RunnerJFrame.this, title2)
   }
 
@@ -641,12 +636,12 @@ private[scalatest] class RunnerJFrame(
     val menuBar: JMenuBar = new JMenuBar()
 
     // The ScalaTest menu 
-    val scalaTestMenu: JMenu = new JMenu(Resources("ScalaTestMenu"))
+    val scalaTestMenu: JMenu = new JMenu(Resources.ScalaTestMenu)
     scalaTestMenu.setMnemonic(KeyEvent.VK_S)
     menuBar.add(scalaTestMenu)
 
     // The ScalaTest.About menu item
-    val aboutItem: JMenuItem = new JMenuItem(Resources("About"), KeyEvent.VK_A)
+    val aboutItem: JMenuItem = new JMenuItem(Resources.About, KeyEvent.VK_A)
     scalaTestMenu.add(aboutItem)
     aboutItem.addActionListener(
       new ActionListener() {
@@ -663,7 +658,7 @@ private[scalatest] class RunnerJFrame(
     scalaTestMenu.addSeparator()
 
     // The ScalaTest.Exit menu item
-    val exitItem: JMenuItem = new JMenuItem(Resources("Exit"), KeyEvent.VK_X)
+    val exitItem: JMenuItem = new JMenuItem(Resources.Exit, KeyEvent.VK_X)
     scalaTestMenu.add(exitItem)
     exitItem.addActionListener(
       new ActionListener() {
@@ -682,11 +677,11 @@ private[scalatest] class RunnerJFrame(
     )
 
     // The View menu
-    val viewMenu = new JMenu(Resources("ViewMenu"))
+    val viewMenu = new JMenu(Resources.ViewMenu)
     viewMenu.setMnemonic(KeyEvent.VK_V)
 
     // the View.Runs and Failures menu item
-    val runsFailuresItem: JMenuItem = new JMenuItem(Resources("runsFailures"), KeyEvent.VK_F)
+    val runsFailuresItem: JMenuItem = new JMenuItem(Resources.runsFailures, KeyEvent.VK_F)
     runsFailuresItem.setAccelerator(KeyStroke.getKeyStroke("control F"))
     viewMenu.add(runsFailuresItem)
     runsFailuresItem.addActionListener(
@@ -698,7 +693,7 @@ private[scalatest] class RunnerJFrame(
       }
     )
 
-    val allEventsItem: JMenuItem = new JMenuItem(Resources("allEvents"), KeyEvent.VK_A)
+    val allEventsItem: JMenuItem = new JMenuItem(Resources.allEvents, KeyEvent.VK_A)
     allEventsItem.setAccelerator(KeyStroke.getKeyStroke("control L"))
     viewMenu.add(allEventsItem)
     allEventsItem.addActionListener(
@@ -744,9 +739,7 @@ private[scalatest] class RunnerJFrame(
     var map: Map[EventToPresent, JCheckBoxMenuItem] = Map()
 
     for (option <- EventToPresent.allEventsToPresent) {
-
-      val rawOptionName = RunnerJFrame.getUpperCaseName(option)
-      val menuItemText: String = Resources("MENU_PRESENT_" + rawOptionName)
+      val menuItemText: String = RunnerJFrame.getEventToPresentMenuPresentDisplayMessage(option)
 
       val itemAction: AbstractAction =
         new AbstractAction(menuItemText) {
@@ -1121,8 +1114,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIForRunning() {
-    val stopText: String = Resources("Stop")
-    val rerunText: String = Resources("Rerun")
+    val stopText: String = Resources.Stop
+    val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
     rerunJButton.setText(rerunText)
     runJButton.setEnabled(true)
@@ -1138,8 +1131,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIWhileRunning() {
-    val stopText: String = Resources("Stop")
-    val rerunText: String = Resources("Rerun")
+    val stopText: String = Resources.Stop
+    val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
     rerunJButton.setText(rerunText)
     runJButton.setEnabled(true)
@@ -1149,8 +1142,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIForRerunning() {
-    val runText: String = Resources("Run")
-    val stopText: String = Resources("Stop")
+    val runText: String = Resources.Run
+    val stopText: String = Resources.Stop
     runJButton.setText(runText)
     rerunJButton.setText(stopText)
     runJButton.setEnabled(false)
@@ -1163,8 +1156,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIWhileRerunning() {
-    val runText: String = Resources("Run")
-    val stopText: String = Resources("Stop")
+    val runText: String = Resources.Run
+    val stopText: String = Resources.Stop
     runJButton.setText(runText)
     rerunJButton.setText(stopText)
     runJButton.setEnabled(false)
@@ -1173,8 +1166,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIForReady() {
-    val runText: String = Resources("Run")
-    val rerunText: String = Resources("Rerun")
+    val runText: String = Resources.Run
+    val rerunText: String = Resources.Rerun
     runJButton.setText(runText)
     rerunJButton.setText(rerunText)
     runJButton.setEnabled(true)
@@ -1184,8 +1177,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIForStopping() {
-    val stopText: String = Resources("Stop")
-    val rerunText: String = Resources("Rerun")
+    val stopText: String = Resources.Stop
+    val rerunText: String = Resources.Rerun
     runJButton.setText(stopText)
     rerunJButton.setText(rerunText)
     runJButton.setEnabled(false)
@@ -1194,8 +1187,8 @@ private[scalatest] class RunnerJFrame(
 
   // This must be called by the event handler thread
   def prepUIForReStopping() {
-    val runText: String = Resources("Run")
-    val stopText: String = Resources("Stop")
+    val runText: String = Resources.Run
+    val stopText: String = Resources.Stop
     runJButton.setText(runText)
     rerunJButton.setText(stopText)
     runJButton.setEnabled(false)
@@ -1662,6 +1655,58 @@ private[tools] object RunnerJFrame {
       case PresentRunStopped => "RUN_STOPPED"
       case PresentRunAborted => "RUN_ABORTED"
       case PresentRunCompleted => "RUN_COMPLETED"
+    }
+
+  def getEventToPresentDisplayMessage(event: Event, isRerun: Boolean): String =
+    eventToEventToPresent(event) match {
+      case PresentDiscoveryStarting => if (isRerun) Resources.RERUN_DISCOVERY_STARTING else Resources.DISCOVERY_STARTING
+      case PresentDiscoveryCompleted => if (isRerun) Resources.RERUN_DISCOVERY_COMPLETED else Resources.DISCOVERY_COMPLETED
+      case PresentRunStarting => if (isRerun) Resources.RERUN_RUN_STARTING else Resources.RUN_STARTING
+      case PresentTestStarting => if (isRerun) Resources.RERUN_TEST_STARTING else Resources.TEST_STARTING
+      case PresentTestFailed => if (isRerun) Resources.RERUN_TEST_FAILED else Resources.TEST_FAILED
+      case PresentTestSucceeded => if (isRerun) Resources.RERUN_TEST_SUCCEEDED else Resources.TEST_SUCCEEDED
+      case PresentTestIgnored => if (isRerun) Resources.RERUN_TEST_IGNORED else Resources.TEST_IGNORED
+      case PresentTestPending => if (isRerun) Resources.RERUN_TEST_PENDING else Resources.TEST_PENDING
+      case PresentTestCanceled => if (isRerun) Resources.RERUN_TEST_CANCELED else Resources.TEST_CANCELED
+      case PresentSuiteStarting => if (isRerun) Resources.RERUN_SUITE_STARTING else Resources.SUITE_STARTING
+      case PresentSuiteAborted => if (isRerun) Resources.RERUN_SUITE_ABORTED else Resources.SUITE_ABORTED
+      case PresentSuiteCompleted => if (isRerun) Resources.RERUN_SUITE_COMPLETED else Resources.SUITE_COMPLETED
+      case PresentInfoProvided => if (isRerun) Resources.RERUN_INFO_PROVIDED else Resources.INFO_PROVIDED
+      case PresentAlertProvided => if (isRerun) Resources.RERUN_ALERT_PROVIDED else Resources.ALERT_PROVIDED
+      case PresentNoteProvided => if (isRerun) Resources.RERUN_NOTE_PROVIDED else Resources.NOTE_PROVIDED
+      case PresentScopeOpened => if (isRerun) Resources.RERUN_SCOPE_OPENED else Resources.SCOPE_OPENED
+      case PresentScopeClosed => if (isRerun) Resources.RERUN_SCOPE_CLOSED else Resources.SCOPE_CLOSED
+      case PresentScopePending => if (isRerun) Resources.RERUN_SCOPE_PENDING else Resources.SCOPE_PENDING
+      case PresentMarkupProvided => if (isRerun) Resources.RERUN_MARKUP_PROVIDED else Resources.MARKUP_PROVIDED
+      case PresentRunStopped => if (isRerun) Resources.RERUN_RUN_STOPPED else Resources.RUN_STOPPED
+      case PresentRunAborted => if (isRerun) Resources.RERUN_RUN_ABORTED else Resources.RUN_ABORTED
+      case PresentRunCompleted => if (isRerun) Resources.RUN_COMPLETED else Resources.RUN_COMPLETED
+    }
+
+  def getEventToPresentMenuPresentDisplayMessage(eventToPresent: EventToPresent): String =
+    eventToPresent match {
+      case PresentDiscoveryStarting => Resources.MENU_PRESENT_DISCOVERY_STARTING
+      case PresentDiscoveryCompleted => Resources.MENU_PRESENT_DISCOVERY_COMPLETED
+      case PresentRunStarting => Resources.MENU_PRESENT_RUN_STARTING
+      case PresentTestStarting => Resources.MENU_PRESENT_TEST_STARTING
+      case PresentTestFailed => Resources.MENU_PRESENT_TEST_FAILED
+      case PresentTestSucceeded => Resources.MENU_PRESENT_TEST_SUCCEEDED
+      case PresentTestIgnored => Resources.MENU_PRESENT_TEST_IGNORED
+      case PresentTestPending => Resources.MENU_PRESENT_TEST_PENDING
+      case PresentTestCanceled => Resources.MENU_PRESENT_TEST_CANCELED
+      case PresentSuiteStarting => Resources.MENU_PRESENT_SUITE_STARTING
+      case PresentSuiteAborted => Resources.MENU_PRESENT_SUITE_ABORTED
+      case PresentSuiteCompleted => Resources.MENU_PRESENT_SUITE_COMPLETED
+      case PresentInfoProvided => Resources.MENU_PRESENT_INFO_PROVIDED
+      case PresentAlertProvided => Resources.MENU_PRESENT_ALERT_PROVIDED
+      case PresentNoteProvided => Resources.MENU_PRESENT_NOTE_PROVIDED
+      case PresentScopeOpened => Resources.MENU_PRESENT_SCOPE_OPENED
+      case PresentScopeClosed => Resources.MENU_PRESENT_SCOPE_CLOSED
+      case PresentScopePending => Resources.MENU_PRESENT_SCOPE_PENDING
+      case PresentMarkupProvided => Resources.MENU_PRESENT_MARKUP_PROVIDED
+      case PresentRunStopped => Resources.MENU_PRESENT_RUN_STOPPED
+      case PresentRunAborted => Resources.MENU_PRESENT_RUN_ABORTED
+      case PresentRunCompleted => Resources.MENU_PRESENT_RUN_COMPLETED
     }
 }
 

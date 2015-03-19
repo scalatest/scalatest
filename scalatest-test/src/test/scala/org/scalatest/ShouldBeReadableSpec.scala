@@ -31,10 +31,10 @@ class ShouldBeReadableSpec extends Spec with Matchers {
   val fileName: String = "ShouldBeReadableSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages("wasNotReadable", left)
+    FailureMessages.wasNotReadable(left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages("wasReadable", left)
+    FailureMessages.wasReadable(left)
   
   def `readableFile should be readable, secretFile should not be readable` {
     assert(readableFile.canRead === true)
@@ -42,8 +42,8 @@ class ShouldBeReadableSpec extends Spec with Matchers {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `Readable matcher` {

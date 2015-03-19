@@ -61,7 +61,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainInOrderOnlyElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -86,7 +86,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -98,7 +98,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList),  "\"fee\", \"fie\", \"foe\", \"fum\""))
+        e1.message.get should be (Resources.didNotContainInOrderOnlyElements(decorateToStringValue(fumList),  "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -123,7 +123,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -136,7 +136,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedInOrderOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedInOrderOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -161,7 +161,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -174,7 +174,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedInOrderOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedInOrderOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -199,7 +199,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
     
@@ -212,7 +212,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedInOrderOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedInOrderOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -237,7 +237,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -250,7 +250,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedInOrderOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedInOrderOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -275,7 +275,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
   }
@@ -343,7 +343,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -403,7 +403,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -443,7 +443,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -483,7 +483,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
     
@@ -523,7 +523,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
 
@@ -563,7 +563,7 @@ class ListShouldContainInOrderOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+        e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
     }
   }

@@ -468,7 +468,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
      found match {
        case Some(method) => method
        case None =>
-         throw new IllegalArgumentException(Resources("testNotFound", testName))
+         throw new IllegalArgumentException(Resources.testNotFound(testName))
      }
   }
 */

@@ -62,7 +62,7 @@ private[scalatest] class ProgressBarPanel() extends JPanel {
 
     // change text after adding panel in order to get panel to show up
     discoJLabel.setText("")
-    discoJLabel.setText(Resources("doingDiscovery"))
+    discoJLabel.setText(Resources.doingDiscovery)
   }
 
   private def showProgressBar() {

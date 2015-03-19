@@ -140,7 +140,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), "itCannotAppearInsideAnotherItOrThey", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
     }
     
     /**
@@ -252,7 +252,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), "theyCannotAppearInsideAnotherItOrThey", "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
     }
  
     /**
@@ -338,7 +338,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnItOrAThey", "FunSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
   }
   
   /**
@@ -356,12 +356,12 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   protected def describe(description: String)(fun: => Unit) {
     try {
-      handleNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", "FunSpecLike.scala", "describe", 4, -2, None)
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", 4, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
       case other: Throwable => throw other
     }
   }

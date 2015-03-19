@@ -24,10 +24,10 @@ class ShouldBeReadableStructuralSpec extends FunSpec {
   val fileName: String = "ShouldBeReadableStructuralSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages("wasNotReadable", left)
+    FailureMessages.wasNotReadable(left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages("wasReadable", left)
+    FailureMessages.wasReadable(left)
   
   describe("readable matcher") {
     

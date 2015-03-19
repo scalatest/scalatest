@@ -2653,7 +2653,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2661,7 +2661,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in must scope") {
@@ -2676,7 +2676,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2684,7 +2684,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in when scope") {
@@ -2699,7 +2699,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2707,7 +2707,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in that scope") {
@@ -2722,7 +2722,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2730,7 +2730,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in which scope") {
@@ -2745,7 +2745,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2753,7 +2753,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in can scope") {
@@ -2768,7 +2768,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2776,7 +2776,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in should scope") {
@@ -2791,7 +2791,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2799,7 +2799,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in must scope") {
@@ -2814,7 +2814,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2822,7 +2822,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in when scope") {
@@ -2837,7 +2837,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2845,7 +2845,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in that scope") {
@@ -2860,7 +2860,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2868,7 +2868,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in which scope") {
@@ -2883,7 +2883,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2891,7 +2891,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in can scope") {
@@ -2906,7 +2906,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause")))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -2914,7 +2914,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside should scope") {
@@ -2932,7 +2932,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInShouldClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -2954,7 +2954,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInMustClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -2976,7 +2976,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInWhenClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -2998,7 +2998,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInThatClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3020,7 +3020,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInWhichClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3042,7 +3042,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages("exceptionWasThrownInCanClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]

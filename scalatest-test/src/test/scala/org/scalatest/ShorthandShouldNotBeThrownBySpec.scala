@@ -25,13 +25,13 @@ class ShorthandShouldNotBeThrownBySpec extends Spec {
   val fileName: String = "ShorthandShouldNotBeThrownBySpec.scala"
     
   def exceptionNotExpected(clz: Class[_]): String = 
-    Resources("exceptionNotExpected", clz.getName)
+    Resources.exceptionNotExpected(clz.getName)
     
   def exceptionExpected(clz: Class[_]): String = 
-    Resources("exceptionExpected", clz.getName)
+    Resources.exceptionExpected(clz.getName)
     
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
-    FailureMessages("hadExpectedMessage", left, expectedMessage)
+    FailureMessages.hadExpectedMessage(left, expectedMessage)
   
   object `the [Exception] 'should not have message' syntax should` {
     

@@ -1197,10 +1197,10 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
           def apply(left: T): MatchResult = {
             MatchResult(
               left != null,
-              Resources("equaledNull"),
-              Resources("didNotEqualNull"),
-              Resources("midSentenceEqualedNull"),
-              Resources("didNotEqualNull"), 
+              Resources.rawEqualedNull,
+              Resources.rawDidNotEqualNull,
+              Resources.rawMidSentenceEqualedNull,
+              Resources.rawDidNotEqualNull,
               Vector.empty, 
               Vector(left)
             )
@@ -2343,10 +2343,10 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
           def apply(left: T): MatchResult = {
             MatchResult(
               left != null,
-              Resources("equaledNull"),
-              Resources("didNotEqualNull"),
-              Resources("midSentenceEqualedNull"),
-              Resources("didNotEqualNull"), 
+              Resources.rawEqualedNull,
+              Resources.rawDidNotEqualNull,
+              Resources.rawMidSentenceEqualedNull,
+              Resources.rawDidNotEqualNull,
               Vector.empty, 
               Vector(left)
             )

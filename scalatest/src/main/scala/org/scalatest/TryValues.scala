@@ -119,7 +119,7 @@ trait TryValues {
       theTry match {
         case failure: Failure[T] => failure
         case _ => 
-          throw new TestFailedException(sde => Some(Resources("tryNotAFailure")), None, getStackDepthFun("TryValues.scala", "failure"))
+          throw new TestFailedException(sde => Some(Resources.tryNotAFailure), None, getStackDepthFun("TryValues.scala", "failure"))
       }
     }
 
@@ -131,7 +131,7 @@ trait TryValues {
       theTry match {
         case success: Success[T] => success
         case _ => 
-          throw new TestFailedException(sde => Some(Resources("tryNotASuccess")), None, getStackDepthFun("TryValues.scala", "success"))
+          throw new TestFailedException(sde => Some(Resources.tryNotASuccess), None, getStackDepthFun("TryValues.scala", "success"))
       }
     }
   }

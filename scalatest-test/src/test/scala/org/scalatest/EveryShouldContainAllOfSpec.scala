@@ -59,7 +59,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAllOfElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -84,7 +84,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -98,7 +98,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAllOfElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -123,7 +123,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -136,7 +136,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAllOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedAllOfElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -161,7 +161,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -174,7 +174,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAllOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedAllOfElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -199,7 +199,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -212,7 +212,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAllOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedAllOfElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -237,7 +237,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -250,7 +250,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAllOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedAllOfElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -275,7 +275,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
   }
@@ -333,7 +333,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -383,7 +383,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -423,7 +423,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -463,7 +463,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -503,7 +503,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
 
@@ -543,7 +543,7 @@ class EveryShouldContainAllOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("allOfDuplicate")))
+        e1.message should be (Some(Resources.allOfDuplicate))
       }
     }
   }

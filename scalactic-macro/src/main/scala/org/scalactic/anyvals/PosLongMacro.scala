@@ -21,8 +21,8 @@ import org.scalactic.Resources
 private[scalactic] object PosLongMacro extends CompileTimeAssertions {
 
   def apply(c: Context)(value: c.Expr[Long]): c.Expr[PosLong] = {
-    val notValidMsg = Resources("notValidPosLong")
-    val notLiteralMsg = Resources("notLiteralPosLong")
+    val notValidMsg = Resources.notValidPosLong
+    val notLiteralMsg = Resources.notLiteralPosLong
 
     import c.universe._
 

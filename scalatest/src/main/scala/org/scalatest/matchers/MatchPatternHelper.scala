@@ -38,8 +38,8 @@ object MatchPatternHelper {
       def apply(left: Any): MatchResult = {
         MatchResult(
           right.isDefinedAt(left),
-          Resources("didNotMatchTheGivenPattern"),
-          Resources("matchedTheGivenPattern"),
+          Resources.rawDidNotMatchTheGivenPattern,
+          Resources.rawMatchedTheGivenPattern,
           Vector(left)
         )
       }
@@ -59,8 +59,8 @@ object MatchPatternHelper {
       def apply(left: Any): MatchResult = {
         MatchResult(
           !right.isDefinedAt(left),
-          Resources("matchedTheGivenPattern"),
-          Resources("didNotMatchTheGivenPattern"),
+          Resources.rawMatchedTheGivenPattern,
+          Resources.rawDidNotMatchTheGivenPattern,
           Vector(left)
         )
       }
@@ -78,10 +78,10 @@ object MatchPatternHelper {
   def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (resultOfNoWordForAny.shouldBeTrue) "didNotMatchTheGivenPattern" else "matchedTheGivenPattern",
-          resultOfNoWordForAny.left
-        )
+        if (resultOfNoWordForAny.shouldBeTrue)
+          FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
+        else
+          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
       )
   }
 

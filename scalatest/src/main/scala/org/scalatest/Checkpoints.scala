@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import java.util.concurrent.ConcurrentLinkedQueue
 import scala.collection.JavaConverters._
 import exceptions.TestCanceledException
 import exceptions.TestFailedException
@@ -155,7 +154,7 @@ trait Checkpoints {
       if (!failures.isEmpty) {
         val failMessages =
           for (failure <- failures.asScala)
-          yield failure.getMessage + " " + Resources("atCheckpointAt") + " " + getFailLine(failure)
+          yield failure.getMessage + " " + Resources.atCheckpointAt + " " + getFailLine(failure)
         throw new TestFailedException(failMessages.mkString("\n"), 1)
       }
     }

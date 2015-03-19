@@ -30,7 +30,8 @@ import java.util.Set
 import java.io.StringWriter
 import org.scalatest.events._
 import org.scalatest.exceptions.TestFailedException
-import PrintReporter.{BufferSize, makeDurationString}
+import StringReporter.makeDurationString
+import PrintReporter.BufferSize
 import HtmlReporter._
 import org.pegdown.PegDownProcessor
 import scala.collection.mutable.ListBuffer
@@ -120,44 +121,44 @@ private[scalatest] class HtmlReporter(
       case Some(testFailedException: TestFailedException) =>
         testFailedException.failedCodeFileNameAndLineNumberString match {
           case Some(lineNumberString) =>
-            Resources("printedReportPlusLineNumber", stringToPrint, lineNumberString)
+            Resources.printedReportPlusLineNumber(stringToPrint, lineNumberString)
           case None => stringToPrint
         }
       case _ => stringToPrint
     }
   }
   
-  private def stringsToPrintOnError(noteResourceName: String, errorResourceName: String, message: String, throwable: Option[Throwable],
+  private def stringsToPrintOnError(noteMessageFun: => String, errorMessageFun: Any => String, message: String, throwable: Option[Throwable],
     formatter: Option[Formatter], suiteName: Option[String], testName: Option[String], duration: Option[Long]): String = {
 
     formatter match {
       case Some(IndentedText(_, rawText, _)) =>
-        Resources("specTextAndNote", rawText, Resources(noteResourceName))
+        Resources.specTextAndNote(rawText, noteMessageFun)
       case _ =>
         // Deny MotionToSuppress directives in error events, because error info needs to be seen by users
           suiteName match {
             case Some(sn) =>
               testName match {
-                case Some(tn) => Resources(errorResourceName, sn + ": " + tn)
-                case None => Resources(errorResourceName, sn)
+                case Some(tn) => errorMessageFun(sn + ": " + tn)
+                case None => errorMessageFun(sn)
               }
             // Should not get here with built-in ScalaTest stuff, but custom stuff could get here.
-            case None => Resources(errorResourceName, Resources("noNameSpecified"))
+            case None => errorMessageFun(Resources.noNameSpecified)
           }
       }
   }
 
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String]): Option[String] =
-    stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, None)
+  private def stringToPrintWhenNoError(messageFun: Any => String, formatter: Option[Formatter], suiteName: String, testName: Option[String]): Option[String] =
+    stringToPrintWhenNoError(messageFun, formatter, suiteName, testName, None)
 
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], duration: Option[Long]): Option[String] = {
+  private def stringToPrintWhenNoError(messageFun: Any => String, formatter: Option[Formatter], suiteName: String, testName: Option[String], duration: Option[Long]): Option[String] = {
 
     formatter match {
       case Some(IndentedText(_, rawText, _)) =>
         duration match {
           case Some(milliseconds) =>
             if (presentAllDurations)
-              Some(Resources("withDuration", rawText, makeDurationString(milliseconds)))
+              Some(Resources.withDuration(rawText, makeDurationString(milliseconds)))
             else
               Some(rawText)
           case None => Some(rawText)
@@ -169,11 +170,11 @@ private[scalatest] class HtmlReporter(
             case Some(tn) => suiteName + ": " + tn
             case None => suiteName
           }
-        val unformattedText = Resources(resourceName, arg)
+        val unformattedText = messageFun(arg)
         duration match {
           case Some(milliseconds) =>
             if (presentAllDurations)
-              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
+              Some(Resources.withDuration(unformattedText, makeDurationString(milliseconds)))
             else
               Some(unformattedText)
           case None => Some(unformattedText)
@@ -272,7 +273,7 @@ private[scalatest] class HtmlReporter(
             e match {
               case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
                 val testNameInfo = nameInfo.testName
-                val stringToPrint = stringToPrintWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName)
+                val stringToPrint = stringToPrintWhenNoError(Resources.scopeOpened _, formatter, nameInfo.suiteName, nameInfo.testName)
                 stringToPrint match {
                   case Some(string) => 
                     val elementId = generateElementId
@@ -288,7 +289,7 @@ private[scalatest] class HtmlReporter(
                 
               case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
                 val testNameInfo = nameInfo.testName
-                val stringToPrint = stringToPrintWhenNoError("scopePending", formatter, nameInfo.suiteName, nameInfo.testName)
+                val stringToPrint = stringToPrintWhenNoError(Resources.scopePending _, formatter, nameInfo.suiteName, nameInfo.testName)
                 stringToPrint match {
                   case Some(string) => 
                     val elementId = generateElementId
@@ -299,7 +300,7 @@ private[scalatest] class HtmlReporter(
           
               case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
             
-                val stringToPrint = stringToPrintWhenNoError("testSucceeded", formatter, suiteName, Some(testName), duration)
+                val stringToPrint = stringToPrintWhenNoError(Resources.testSucceeded _, formatter, suiteName, Some(testName), duration)
 
                 val nodeSeq = 
                   stringToPrint match {
@@ -314,7 +315,7 @@ private[scalatest] class HtmlReporter(
             
               case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
-                val stringToPrint = stringsToPrintOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration)
+                val stringToPrint = stringsToPrintOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration)
                 val elementId = generateElementId
                 val nodeSeq = testWithDetails(elementId, List(stringToPrint), message, throwable, getIndentLevel(formatter) + 1, "test_failed")            
             
@@ -324,9 +325,9 @@ private[scalatest] class HtmlReporter(
 
                 val stringToPrint =
                   formatter match {
-                    case Some(IndentedText(_, rawText, _)) => Some(Resources("specTextAndNote", rawText, Resources("ignoredNote")))
+                    case Some(IndentedText(_, rawText, _)) => Some(Resources.specTextAndNote(rawText, Resources.ignoredNote))
                     case Some(MotionToSuppress) => None
-                    case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
+                    case _ => Some(Resources.testIgnored(suiteName + ": " + testName))
                   }
  
                 stringToPrint match {
@@ -341,9 +342,9 @@ private[scalatest] class HtmlReporter(
 
                 val stringToPrint =
                   formatter match {
-                    case Some(IndentedText(_, rawText, _)) => Some(Resources("specTextAndNote", rawText, Resources("pendingNote")))
+                    case Some(IndentedText(_, rawText, _)) => Some(Resources.specTextAndNote(rawText, Resources.pendingNote))
                     case Some(MotionToSuppress) => None
-                    case _ => Some(Resources("testPending", suiteName + ": " + testName))
+                    case _ => Some(Resources.testPending(suiteName + ": " + testName))
                   }
 
                 val nodeSeq = 
@@ -359,7 +360,7 @@ private[scalatest] class HtmlReporter(
             
               case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
-                val stringToPrint = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration)
+                val stringToPrint = stringsToPrintOnError(Resources.canceledNote, Resources.testCanceled _, message, throwable, formatter, Some(suiteName), Some(testName), duration)
                 val elementId = generateElementId
                 val nodeSeq = testWithDetails(elementId, List(stringToPrint), message, throwable, getIndentLevel(formatter) + 1, "test_canceled")
             
@@ -413,7 +414,7 @@ private[scalatest] class HtmlReporter(
             case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
             case None => (None, None)
           }
-        val infoContent = stringsToPrintOnError("infoProvidedNote", "infoProvided", message, throwable, formatter, suiteName, testName, None)
+        val infoContent = stringsToPrintOnError(Resources.infoProvidedNote, Resources.infoProvided _, message, throwable, formatter, suiteName, testName, None)
             
         val elementId = generateElementId
         test(elementId, List(infoContent), getIndentLevel(formatter) + 1, theClass)
@@ -432,7 +433,7 @@ private[scalatest] class HtmlReporter(
     }
   }
   
-  private def makeIndexFile(resourceName: String, duration: Option[Long]) {
+  private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) {
     val pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize))
     try {
       pw.println {
@@ -440,7 +441,7 @@ private[scalatest] class HtmlReporter(
         "<!DOCTYPE html\n" + 
         "PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" +
         "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" + 
-        getIndexHtml(resourceName, duration) 
+        getIndexHtml(completeMessageFun, completeInMessageFun, duration)
       }
     }
     finally {
@@ -498,7 +499,7 @@ private[scalatest] class HtmlReporter(
     "    .attr(\"d\", arc);\n"
   }
   
-  private def getIndexHtml(resourceName: String, duration: Option[Long]) = {
+  private def getIndexHtml(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) = {
     val summary = results.summary
     import summary._
 
@@ -566,7 +567,7 @@ private[scalatest] class HtmlReporter(
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
-          { header(resourceName, duration, summary) }
+          { header(completeMessageFun, completeInMessageFun, duration, summary) }
           <table id="summary_view">
             <tr id="summary_view_row_1">
               <td id="summary_view_row_1_chart">
@@ -637,14 +638,14 @@ private[scalatest] class HtmlReporter(
       <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="applyFilter()" /> <label id="pending_checkbox_label" for="pending_checkbox">Pending</label>
     </div>
   
-  private def header(resourceName: String, duration: Option[Long], summary: Summary) = 
+  private def header(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long], summary: Summary) =
     <div id="scalatest-header" class={ getHeaderStatusColor(summary) }>
       <div id="title">
         ScalaTest Results
       </div>
 
       <div id="summary">
-        <p id="duration">{ getDuration(resourceName, duration) }</p>    
+        <p id="duration">{ getDuration(completeMessageFun, completeInMessageFun, duration) }</p>
         <p id="totalTests">{ getTotalTests(summary) }</p>
         <p id="suiteSummary">{ getSuiteSummary(summary) }</p>
         <p id="testSummary">{ getTestSummary(summary) }</p>
@@ -789,17 +790,17 @@ private[scalatest] class HtmlReporter(
       if (cause != null) {
         <table>
           <tr valign="top">
-            <td align="right"><span class="label">{ Resources("DetailsCause") + ":" }</span></td>
+            <td align="right"><span class="label">{ Resources.DetailsCause + ":" }</span></td>
             <td align="left">{ cause.getClass.getName }</td>
           </tr>
           <tr valign="top">
-            <td align="right"><span class="label">{ Resources("DetailsMessage") + ":" }</span></td>
+            <td align="right"><span class="label">{ Resources.DetailsMessage + ":" }</span></td>
             <td align="left">
               { 
                 if (cause.getMessage != null) 
                   displayErrorMessage(cause.getMessage)
                 else 
-                  <span>{ Resources("None") }</span> 
+                  <span>{ Resources.None }</span>
               }
             </td>
           </tr>
@@ -859,21 +860,21 @@ private[scalatest] class HtmlReporter(
         <table>
           {
             <tr valign="top">
-              <td align="left"><span class="label">{ Resources("DetailsMessage") + ":" }</span></td>
+              <td align="left"><span class="label">{ Resources.DetailsMessage + ":" }</span></td>
               <td align="left">{ displayErrorMessage(message) }</td>
             </tr>
           }
           {
             fileAndLineOption match {
               case Some(fileAndLine) =>
-                <tr valign="top"><td align="left"><span class="label">{ Resources("LineNumber") + ":" }</span></td><td align="left"><span>{ "(" + fileAndLine + ")" }</span></td></tr>
+                <tr valign="top"><td align="left"><span class="label">{ Resources.LineNumber + ":" }</span></td><td align="left"><span>{ "(" + fileAndLine + ")" }</span></td></tr>
               case None =>
             }
           }
           {
             throwableTitle match {
               case Some(title) =>
-                <tr valign="top"><td align="right"><span class="label">{ Resources("DetailsThrowable") + ":" }</span></td><td align="left">{ title }</td></tr>
+                <tr valign="top"><td align="right"><span class="label">{ Resources.DetailsThrowable + ":" }</span></td><td align="left">{ title }</td></tr>
               case None => new scala.xml.NodeBuffer
             }
           }
@@ -1045,44 +1046,44 @@ private[scalatest] class HtmlReporter(
       case Some(event) => 
         event match {
           case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-            makeIndexFile("runCompleted", duration)
+            makeIndexFile(Resources.runCompleted, Resources.runCompletedIn _, duration)
 
           case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
-            makeIndexFile("runStopped", duration)
+            makeIndexFile(Resources.runStopped, Resources.runStoppedIn _, duration)
 
           case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-            makeIndexFile("runAborted", duration)
+            makeIndexFile(Resources.runAborted, Resources.runAbortedIn _, duration)
             
           case other =>
             throw new IllegalStateException("Expected run ending event only, but got: " + other.getClass.getName)
         }
       case None => // If no run end event (e.g. when run in sbt), just use runCompleted with sum of suites' duration.
-        makeIndexFile("runCompleted", Some(results.totalDuration))
+        makeIndexFile(Resources.runCompleted, Resources.runCompletedIn _, Some(results.totalDuration))
     }
   }
   
-  private def getDuration(resourceName: String, duration: Option[Long]) = {
+  private def getDuration(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) = {
     duration match {
       case Some(msSinceEpoch) =>
-        Resources(resourceName + "In", makeDurationString(msSinceEpoch))
+        completeInMessageFun(makeDurationString(msSinceEpoch))
       case None =>
-        Resources(resourceName)
+        completeMessageFun
     }
   }
   
   private def getTotalTests(summary: Summary) = 
-    Resources("totalNumberOfTestsRun", summary.testsCompletedCount.toString)    
+    Resources.totalNumberOfTestsRun(summary.testsCompletedCount.toString)
     
   // Suites: completed {0}, aborted {1}
   private def getSuiteSummary(summary: Summary) = 
     if (summary.scopesPendingCount > 0)       
-      Resources("suiteScopeSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString, summary.scopesPendingCount.toString)
+      Resources.suiteScopeSummary(summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString, summary.scopesPendingCount.toString)
     else
-      Resources("suiteSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString)
+      Resources.suiteSummary(summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString)
 
   // Tests: succeeded {0}, failed {1}, canceled {4}, ignored {2}, pending {3}
   private def getTestSummary(summary: Summary) = 
-    Resources("testSummary", summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString,
+    Resources.testSummary(summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString,
       summary.testsPendingCount.toString)
 
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
@@ -1091,7 +1092,7 @@ private[scalatest] class HtmlReporter(
   // Stupid properties file won't let me put spaces at the beginning of a property
   // "  {0}" comes out as "{0}", so I can't do indenting in a localizable way. For now
   // just indent two space to the left.  //  if (times <= 0) s 
-  //  else Resources("indentOnce", indent(s, times - 1)) 
+  //  else Resources.indentOnce(indent(s, times - 1)) 
 }
 
 private[tools] object HtmlReporter {  

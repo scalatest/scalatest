@@ -37,7 +37,7 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
     }
     catch {
       case e: Exception => 
-        val stringToPrint = Resources("reporterThrew", event)
+        val stringToPrint = Resources.reporterThrew(event)
         out.println(stringToPrint)
         e.printStackTrace(out)
     }
@@ -49,7 +49,7 @@ private[scalatest] trait CatchReporter extends ResourcefulReporter {
     }
     catch {
       case e: Exception =>
-        val stringToPrint = Resources("reporterDisposeThrew")
+        val stringToPrint = Resources.reporterDisposeThrew
         out.println(stringToPrint)
         e.printStackTrace(out)
     }

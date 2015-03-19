@@ -49,7 +49,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
         )
       )
     if (!wasRemoved) {
-      val stringToPrint = Resources("slowpokeDetectorEventNotFound", suiteName, suiteId, testName)
+      val stringToPrint = Resources.slowpokeDetectorEventNotFound(suiteName, suiteId, testName)
       out.println(stringToPrint)
     }
   }

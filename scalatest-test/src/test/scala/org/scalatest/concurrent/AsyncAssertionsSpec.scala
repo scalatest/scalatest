@@ -74,7 +74,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
           intercept[NotAllowedException] {
   	        w.await()
           }
-        caught.message.value should be (Resources("awaitMustBeCalledOnCreatingThread"))
+        caught.message.value should be (Resources.awaitMustBeCalledOnCreatingThread)
         if (caught.failedCodeLineNumber.value != thisLineNumber - 3)
           fail("stack depth was " + caught.failedCodeLineNumber.value + " but expected " + (thisLineNumber - 4), caught)
         //caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
@@ -169,7 +169,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFi
         intercept[TestFailedException] {
           w.await(timeout(Span(10, Millis)))
         }
-      caught.message.value should be (Resources("awaitTimedOut"))
+      caught.message.value should be (Resources.awaitTimedOut)
       if (caught.failedCodeLineNumber.value != thisLineNumber - 3)
         fail("stack depth was " + caught.failedCodeLineNumber.value + " but expected " + (thisLineNumber - 4), caught)
     }

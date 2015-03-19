@@ -155,8 +155,8 @@ final class NotWord {
             val existence = implicitly[Existence[T]]
             MatchResult(
               !existence.exists(left), 
-              Resources("exists"), 
-              Resources("doesNotExist"), 
+              Resources.rawExists,
+              Resources.rawDoesNotExist,
               Vector(left)
             )
           } 
@@ -187,8 +187,8 @@ final class NotWord {
       def apply(left: U): MatchResult = {
         MatchResult(
           !(spread.isWithin(left)),
-          Resources("equaledPlusOrMinus"),
-          Resources("didNotEqualPlusOrMinus"), 
+          Resources.rawEqualedPlusOrMinus,
+          Resources.rawDidNotEqualPlusOrMinus,
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
@@ -209,10 +209,10 @@ final class NotWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left != null,
-          Resources("equaledNull"),
-          Resources("didNotEqualNull"),
-          Resources("midSentenceEqualedNull"),
-          Resources("didNotEqualNull"), 
+          Resources.rawEqualedNull,
+          Resources.rawDidNotEqualNull,
+          Resources.rawMidSentenceEqualedNull,
+          Resources.rawDidNotEqualNull,
           Vector.empty, 
           Vector(left), 
           Vector.empty, 
@@ -310,10 +310,10 @@ final class NotWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left != null,
-          Resources("wasNull"),
-          Resources("wasNotNull"),
-          Resources("midSentenceWasNull"),
-          Resources("wasNotNull"), 
+          Resources.rawWasNull,
+          Resources.rawWasNotNull,
+          Resources.rawMidSentenceWasNull,
+          Resources.rawWasNotNull,
           Vector.empty, 
           Vector(left), 
           Vector.empty, 
@@ -337,8 +337,8 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfLessThanComparison(left),
-          Resources("wasLessThan"),
-          Resources("wasNotLessThan"), 
+          Resources.rawWasLessThan,
+          Resources.rawWasNotLessThan,
           Vector(left, resultOfLessThanComparison.right)
         )
       override def toString: String = "not be " + Prettifier.default(resultOfLessThanComparison)
@@ -358,8 +358,8 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfGreaterThanComparison(left),
-          Resources("wasGreaterThan"),
-          Resources("wasNotGreaterThan"), 
+          Resources.rawWasGreaterThan,
+          Resources.rawWasNotGreaterThan,
           Vector(left, resultOfGreaterThanComparison.right)
         )
       override def toString: String = "not be " + Prettifier.default(resultOfGreaterThanComparison)
@@ -379,8 +379,8 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfLessThanOrEqualToComparison(left),
-          Resources("wasLessThanOrEqualTo"),
-          Resources("wasNotLessThanOrEqualTo"), 
+          Resources.rawWasLessThanOrEqualTo,
+          Resources.rawWasNotLessThanOrEqualTo,
           Vector(left, resultOfLessThanOrEqualToComparison.right)
         )
       override def toString: String = "not be " + Prettifier.default(resultOfLessThanOrEqualToComparison)
@@ -400,8 +400,8 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfGreaterThanOrEqualToComparison(left),
-          FailureMessages("wasGreaterThanOrEqualTo"),
-          FailureMessages("wasNotGreaterThanOrEqualTo"), 
+          Resources.rawWasGreaterThanOrEqualTo,
+          Resources.rawWasNotGreaterThanOrEqualTo,
           Vector(left, resultOfGreaterThanOrEqualToComparison.right)
         )
       override def toString: String = "not be " + Prettifier.default(resultOfGreaterThanOrEqualToComparison)
@@ -422,7 +422,7 @@ final class NotWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun("NotWord.scala", "be")) 
   }
 
@@ -465,8 +465,8 @@ final class NotWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          Resources("was"),
-          Resources("wasNot"), 
+          Resources.rawWas,
+          Resources.rawWasNot,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -513,8 +513,8 @@ final class NotWord {
         val result = resultOfAWordApplication.bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          Resources("wasA"),
-          Resources("wasNotA"), 
+          Resources.rawWasA,
+          Resources.rawWasNotA,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -584,8 +584,8 @@ final class NotWord {
         val result = resultOfAnWordApplication.bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          Resources("wasAn"),
-          Resources("wasNotAn"), 
+          Resources.rawWasAn,
+          Resources.rawWasNotAn,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -630,8 +630,8 @@ final class NotWord {
       def apply(left: T): MatchResult = {
         MatchResult(
           resultOfTheSameInstanceAsApplication.right ne left,
-          Resources("wasSameInstanceAs"),
-          Resources("wasNotSameInstanceAs"), 
+          Resources.rawWasSameInstanceAs,
+          Resources.rawWasNotSameInstanceAs,
           Vector(left, resultOfTheSameInstanceAsApplication.right)
         )
       }
@@ -652,8 +652,8 @@ final class NotWord {
       def apply(left: U): MatchResult = {
         MatchResult(
           !(spread.isWithin(left)),
-          Resources("wasPlusOrMinus"),
-          Resources("wasNotPlusOrMinus"), 
+          Resources.rawWasPlusOrMinus,
+          Resources.rawWasNotPlusOrMinus,
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
@@ -674,8 +674,8 @@ final class NotWord {
       def apply(left: U): MatchResult =
         MatchResult(
           !(left.isDefinedAt(resultOfDefinedAt.right)),
-          Resources("wasDefinedAt"),
-          Resources("wasNotDefinedAt"), 
+          Resources.rawWasDefinedAt,
+          Resources.rawWasNotDefinedAt,
           Vector(left, resultOfDefinedAt.right)
         )
       override def toString: String = "not be " + Prettifier.default(resultOfDefinedAt)
@@ -705,10 +705,10 @@ final class NotWord {
           case null =>
             MatchResult(
               right != null, 
-              Resources("wasNull"),
-              Resources("wasNotNull"),
-              Resources("midSentenceWasNull"),
-              Resources("wasNotNull"), 
+              Resources.rawWasNull,
+              Resources.rawWasNotNull,
+              Resources.rawMidSentenceWasNull,
+              Resources.rawWasNotNull,
               Vector.empty, 
               Vector(right)
             )
@@ -716,8 +716,8 @@ final class NotWord {
             val (leftee, rightee) = getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
             MatchResult(
               !areEqualComparingArraysStructurally(left, right),
-              Resources("wasEqualTo"),
-              Resources("wasNotEqualTo"), 
+              Resources.rawWasEqualTo,
+              Resources.rawWasNotEqualTo,
               Vector(left, right), 
               Vector(leftee, rightee)
             )
@@ -864,8 +864,8 @@ final class NotWord {
       def apply(left: String): MatchResult =
         MatchResult(
           !(left.indexOf(expectedSubstring) >= 0), 
-          Resources("includedSubstring"),
-          Resources("didNotIncludeSubstring"), 
+          Resources.rawIncludedSubstring,
+          Resources.rawDidNotIncludeSubstring,
           Vector(left, expectedSubstring)
         )
       override def toString: String = "not include " + Prettifier.default(expectedSubstring)
@@ -910,8 +910,8 @@ final class NotWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left.indexOf(expectedSubstring) != 0,
-          Resources("startedWith"),
-          Resources("didNotStartWith"), 
+          Resources.rawStartedWith,
+          Resources.rawDidNotStartWith,
           Vector(left, expectedSubstring)
         )
       override def toString: String = "not startWith " + Prettifier.default(expectedSubstring)
@@ -956,8 +956,8 @@ final class NotWord {
       def apply(left: String): MatchResult = {
         MatchResult(
           !(left endsWith expectedSubstring),
-          Resources("endedWith"),
-          Resources("didNotEndWith"), 
+          Resources.rawEndedWith,
+          Resources.rawDidNotEndWith,
           Vector(left, expectedSubstring)
         )
       }
@@ -981,8 +981,8 @@ final class NotWord {
             val containing = implicitly[Containing[U]]
             MatchResult(
               !containing.contains(left, expectedElement),
-              Resources("containedExpectedElement"),
-              Resources("didNotContainExpectedElement"), 
+              Resources.rawContainedExpectedElement,
+              Resources.rawDidNotContainExpectedElement,
               Vector(left, expectedElement)
             )
           }
@@ -1010,8 +1010,8 @@ final class NotWord {
 
             MatchResult(
               !containing.containsOneOf(left, right),
-              Resources("containedOneOfElements"),
-              Resources("didNotContainOneOfElements"), 
+              Resources.rawContainedOneOfElements,
+              Resources.rawDidNotContainOneOfElements,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1040,8 +1040,8 @@ final class NotWord {
 
             MatchResult(
               !aggregating.containsAtLeastOneOf(left, right),
-              Resources("containedAtLeastOneOf"),
-              Resources("didNotContainAtLeastOneOf"), 
+              Resources.rawContainedAtLeastOneOf,
+              Resources.rawDidNotContainAtLeastOneOf,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1070,8 +1070,8 @@ final class NotWord {
 
             MatchResult(
               !containing.containsNoneOf(left, right),
-              Resources("didNotContainAtLeastOneOf"),
-              Resources("containedAtLeastOneOf"),
+              Resources.rawDidNotContainAtLeastOneOf,
+              Resources.rawContainedAtLeastOneOf,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1100,8 +1100,8 @@ final class NotWord {
 
             MatchResult(
               !aggregating.containsTheSameElementsAs(left, right),
-              Resources("containedSameElements"),
-              Resources("didNotContainSameElements"), 
+              Resources.rawContainedSameElements,
+              Resources.rawDidNotContainSameElements,
               Vector(left, right)
             )
           }
@@ -1130,8 +1130,8 @@ final class NotWord {
 
             MatchResult(
               !sequencing.containsTheSameElementsInOrderAs(left, right),
-              Resources("containedSameElementsInOrder"),
-              Resources("didNotContainSameElementsInOrder"), 
+              Resources.rawContainedSameElementsInOrder,
+              Resources.rawDidNotContainSameElementsInOrder,
               Vector(left, right)
             )
           }
@@ -1158,16 +1158,12 @@ final class NotWord {
         
             val right = only.right
 
-            val postfix =
-              if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
-                "WithFriendlyReminder"
-              else
-                ""
+            val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
 
             MatchResult(
               !aggregating.containsOnly(left, right),
-              Resources("containedOnlyElements" + postfix),
-              Resources("didNotContainOnlyElements" + postfix),
+              if (withFriendlyReminder) Resources.rawContainedOnlyElementsWithFriendlyReminder else Resources.rawContainedOnlyElements,
+              if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1196,8 +1192,8 @@ final class NotWord {
 
             MatchResult(
               !sequencing.containsInOrderOnly(left, right),
-              Resources("containedInOrderOnlyElements"),
-              Resources("didNotContainInOrderOnlyElements"), 
+              Resources.rawContainedInOrderOnlyElements,
+              Resources.rawDidNotContainInOrderOnlyElements,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1226,8 +1222,8 @@ final class NotWord {
 
             MatchResult(
               !aggregating.containsAllOf(left, right),
-              Resources("containedAllOfElements"),
-              Resources("didNotContainAllOfElements"), 
+              Resources.rawContainedAllOfElements,
+              Resources.rawDidNotContainAllOfElements,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1256,8 +1252,8 @@ final class NotWord {
 
             MatchResult(
               !sequencing.containsInOrder(left, right),
-              Resources("containedAllOfElementsInOrder"),
-              Resources("didNotContainAllOfElementsInOrder"), 
+              Resources.rawContainedAllOfElementsInOrder,
+              Resources.rawDidNotContainAllOfElementsInOrder,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1286,8 +1282,8 @@ final class NotWord {
 
             MatchResult(
               !aggregating.containsAtMostOneOf(left, right),
-              Resources("containedAtMostOneOf"),
-              Resources("didNotContainAtMostOneOf"), 
+              Resources.rawContainedAtMostOneOf,
+              Resources.rawDidNotContainAtMostOneOf,
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
@@ -1314,8 +1310,8 @@ final class NotWord {
             val expectedKey = resultOfKeyWordApplication.expectedKey
             MatchResult(
               !keyMapping.containsKey(left, expectedKey),
-              Resources("containedKey"),
-              Resources("didNotContainKey"), 
+              Resources.rawContainedKey,
+              Resources.rawDidNotContainKey,
               Vector(left, expectedKey)
             )
           }
@@ -1342,8 +1338,8 @@ final class NotWord {
             val expectedValue = resultOfValueWordApplication.expectedValue
             MatchResult(
               !valueMapping.containsValue(left, expectedValue),
-              Resources("containedValue"),
-              Resources("didNotContainValue"), 
+              Resources.rawContainedValue,
+              Resources.rawDidNotContainValue,
               Vector(left, expectedValue)
             )
           }
@@ -1369,8 +1365,8 @@ final class NotWord {
         val matched = left.find(aMatcher(_).matches)
         MatchResult(
           !matched.isDefined, 
-          Resources("containedA"), 
-          Resources("didNotContainA"), 
+          Resources.rawContainedA,
+          Resources.rawDidNotContainA,
           Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-")), 
           Vector(left, UnquotedString(aMatcher.nounName))
         )
@@ -1394,8 +1390,8 @@ final class NotWord {
         val matched = left.find(anMatcher(_).matches)
         MatchResult(
           !matched.isDefined, 
-          Resources("containedAn"), 
-          Resources("didNotContainAn"), 
+          Resources.rawContainedAn,
+          Resources.rawDidNotContainAn,
           Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-")), 
           Vector(left, UnquotedString(anMatcher.nounName))
         )

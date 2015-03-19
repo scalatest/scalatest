@@ -42,26 +42,26 @@ class ShouldExistLogicalOrImplicitSpec extends Spec {
   val fileName = "ShouldExistLogicalOrImplicitSpec.scala"
   
   def doesNotExist(left: Any): String = 
-    FailureMessages("doesNotExist", left)
+    FailureMessages.doesNotExist(left)
     
   def exists(left: Any): String = 
-    FailureMessages("exists", left)
+    FailureMessages.exists(left)
     
   def wasEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotEqualTo", left, right)
+    FailureMessages.wasNotEqualTo(left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
   
   def didNotEqual(left: Any, right: Any): String = 
-    FailureMessages("didNotEqual", left, right)
+    FailureMessages.didNotEqual(left, right)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
     
   object `The exist syntax when used with File` {
