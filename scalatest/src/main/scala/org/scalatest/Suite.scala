@@ -1750,6 +1750,7 @@ private[scalatest] object Suite {
 
   def anExceptionThatShouldCauseAnAbort(throwable: Throwable): Boolean =
     throwable match {
+      // SKIP-SCALATESTJS-START
       case _: AnnotationFormatError | 
 /*
            _: org.scalatest.TestRegistrationClosedException |
@@ -1764,6 +1765,7 @@ private[scalatest] object Suite {
       // Don't use AWTError directly because it doesn't exist on Android, and a user
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true
+      // SKIP-SCALATESTJS-END
       case _ => false
     }
 

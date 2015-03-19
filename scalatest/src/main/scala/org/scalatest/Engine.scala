@@ -759,11 +759,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
+    // SKIP-SCALATESTJS-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val suiteTags = Set.empty[String]
     val testTagSet = atomic.get.tagsMap.getOrElse(testName, Set.empty)
     Set.empty ++ suiteTags ++ testTagSet
   }

@@ -48,3 +48,9 @@ private[scalatest] class CountDownLatch(count: Int) {
     else
       throw new UnsupportedOperationException("Scala.js is single-threaded!")
 }
+
+private[scalatest] object NameTransformer {
+
+  def decode(encoded: String): String = encoded
+
+}
