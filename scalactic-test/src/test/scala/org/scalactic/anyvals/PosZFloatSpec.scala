@@ -15,14 +15,22 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality
 
-class PosZFloatSpec extends Spec with Matchers with StrictCheckedEquality {
+class PosZFloatSpec extends Spec with Matchers {
 
-  object `An PosZFloat` {
+  val posZFloatGen: Gen[PosZFloat] =
+    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
+
+  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
+
+  object `A PosZFloat` {
     object `should offer a from factory method that` {
       def `returns Some[PosZFloat] if the passed Float is greater than or equal to 0`
       {
@@ -170,6 +178,319 @@ class PosZFloatSpec extends Spec with Matchers with StrictCheckedEquality {
         "takesPosZFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPosZFloat(c)" shouldNot compile
+      }
+    }
+
+    def `should offer a unary + method that is consistent with Float` {
+      forAll { (pzfloat: PosZFloat) =>
+        (+pzfloat).toFloat shouldEqual (+(pzfloat.toFloat))
+      }
+    }
+
+    def `should offer a unary - method that is consistent with Float` {
+      forAll { (pzfloat: PosZFloat) =>
+        (-pzfloat) shouldEqual (-(pzfloat.toFloat))
+      }
+    }
+
+    def `should offer '<' comparison that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat < byte) shouldEqual (pzfloat.toFloat < byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat < short) shouldEqual (pzfloat.toFloat < short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat < char) shouldEqual (pzfloat.toFloat < char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat < int) shouldEqual (pzfloat.toFloat < int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat < long) shouldEqual (pzfloat.toFloat < long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat < float) shouldEqual (pzfloat.toFloat < float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat < double) shouldEqual (pzfloat.toFloat < double)
+      }
+    }
+
+    def `should offer '<=' comparison that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat <= byte) shouldEqual (pzfloat.toFloat <= byte)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat <= char) shouldEqual (pzfloat.toFloat <= char)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat <= short) shouldEqual (pzfloat.toFloat <= short)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat <= int) shouldEqual (pzfloat.toFloat <= int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat <= long) shouldEqual (pzfloat.toFloat <= long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat <= float) shouldEqual (pzfloat.toFloat <= float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat <= double) shouldEqual (pzfloat.toFloat <= double)
+      }
+    }
+
+    def `should offer '>' comparison that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat > byte) shouldEqual (pzfloat.toFloat > byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat > short) shouldEqual (pzfloat.toFloat > short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat > char) shouldEqual (pzfloat.toFloat > char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat > int) shouldEqual (pzfloat.toFloat > int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat > long) shouldEqual (pzfloat.toFloat > long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat > float) shouldEqual (pzfloat.toFloat > float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat > double) shouldEqual (pzfloat.toFloat > double)
+      }
+    }
+
+    def `should offer '>=' comparison that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat >= byte) shouldEqual (pzfloat.toFloat >= byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat >= short) shouldEqual (pzfloat.toFloat >= short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat >= char) shouldEqual (pzfloat.toFloat >= char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat >= int) shouldEqual (pzfloat.toFloat >= int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat >= long) shouldEqual (pzfloat.toFloat >= long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat >= float) shouldEqual (pzfloat.toFloat >= float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat >= double) shouldEqual (pzfloat.toFloat >= double)
+      }
+    }
+
+    def `should offer a '+' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat + byte) shouldEqual (pzfloat.toFloat + byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat + short) shouldEqual (pzfloat.toFloat + short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat + char) shouldEqual (pzfloat.toFloat + char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat + int) shouldEqual (pzfloat.toFloat + int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat + long) shouldEqual (pzfloat.toFloat + long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat + float) shouldEqual (pzfloat.toFloat + float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat + double) shouldEqual (pzfloat.toFloat + double)
+      }
+    }
+
+    def `should offer a '-' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat - byte) shouldEqual (pzfloat.toFloat - byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat - short) shouldEqual (pzfloat.toFloat - short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat - char) shouldEqual (pzfloat.toFloat - char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat - int) shouldEqual (pzfloat.toFloat - int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat - long) shouldEqual (pzfloat.toFloat - long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat - float) shouldEqual (pzfloat.toFloat - float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat - double) shouldEqual (pzfloat.toFloat - double)
+      }
+    }
+
+    def `should offer a '*' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        (pzfloat * byte) shouldEqual (pzfloat.toFloat * byte)
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        (pzfloat * short) shouldEqual (pzfloat.toFloat * short)
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        (pzfloat * char) shouldEqual (pzfloat.toFloat * char)
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        (pzfloat * int) shouldEqual (pzfloat.toFloat * int)
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        (pzfloat * long) shouldEqual (pzfloat.toFloat * long)
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        (pzfloat * float) shouldEqual (pzfloat.toFloat * float)
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        (pzfloat * double) shouldEqual (pzfloat.toFloat * double)
+      }
+    }
+
+    def `should offer a '/' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        pzfloat / byte shouldEqual pzfloat.toFloat / byte
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        pzfloat / short shouldEqual pzfloat.toFloat / short
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        pzfloat / char shouldEqual pzfloat.toFloat / char
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        pzfloat / int shouldEqual pzfloat.toFloat / int
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        pzfloat / long shouldEqual pzfloat.toFloat / long
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        pzfloat / float shouldEqual pzfloat.toFloat / float
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        pzfloat / double shouldEqual pzfloat.toFloat / double
+      }
+    }
+
+    // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
+    // extra logic is needed to convert to a comparable type (boolean, in this case)
+    def `should offer a '%' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat, byte: Byte) =>
+        val res = pzfloat % byte
+        if (res.isNaN)
+          (pzfloat.toFloat % byte).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % byte
+      }
+      forAll { (pzfloat: PosZFloat, short: Short) =>
+        val res = pzfloat % short
+        if (res.isNaN)
+          (pzfloat.toFloat % short).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % short
+      }
+      forAll { (pzfloat: PosZFloat, char: Char) =>
+        val res = pzfloat % char
+        if (res.isNaN)
+          (pzfloat.toFloat % char).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % char
+      }
+      forAll { (pzfloat: PosZFloat, int: Int) =>
+        val res = pzfloat % int
+        if (res.isNaN)
+          (pzfloat.toFloat % int).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % int
+      }
+      forAll { (pzfloat: PosZFloat, long: Long) =>
+        val res = pzfloat % long
+        if (res.isNaN)
+          (pzfloat.toFloat % long).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % long
+      }
+      forAll { (pzfloat: PosZFloat, float: Float) =>
+        val res = pzfloat % float
+        if (res.isNaN)
+          (pzfloat.toFloat % float).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % float
+      }
+      forAll { (pzfloat: PosZFloat, double: Double) =>
+        val res = pzfloat % double
+        if (res.isNaN)
+          (pzfloat.toFloat % double).isNaN shouldBe true
+        else
+          res shouldEqual pzfloat.toFloat % double
+      }
+    }
+
+    def `should offer 'min' and 'max' methods that are consistent with Float`: Unit = {
+      forAll { (pfloat1: PosZFloat, pfloat2: PosZFloat) =>
+        pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
+        pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
+      }
+    }
+
+    def `should offer an 'isWhole' method that is consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat) =>
+        pzfloat.isWhole shouldEqual pzfloat.toFloat.isWhole
+      }
+    }
+
+    def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat) =>
+        pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
+        pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
+        pzfloat.floor.toFloat shouldEqual pzfloat.toFloat.floor
+      }
+    }
+
+    def `should offer 'toRadians' and 'toDegrees' methods that are consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat) =>
+        pzfloat.toRadians.toFloat shouldEqual pzfloat.toFloat.toRadians
+        pzfloat.toDegrees.toFloat shouldEqual pzfloat.toFloat.toDegrees
+      }
+    }
+
+    def `should offer 'to' and 'until' method that is consistent with Float`: Unit = {
+      def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+        a.start == b.start && a.end == b.end && a.step == b.step
+
+      forAll { (pzfloat: PosZFloat, end: Float, step: Float) =>
+        rangeEqual(pzfloat.until(end).by(1f), pzfloat.toFloat.until(end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.until(end, step), pzfloat.toFloat.until(end, step)) shouldBe true
+        rangeEqual(pzfloat.to(end).by(1f), pzfloat.toFloat.to(end).by(1f)) shouldBe true
+        rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
+      }
+    }
+
+    def `should offer widening methods for basic types that are consistent with Float`: Unit = {
+      forAll { (pzfloat: PosZFloat) =>
+        def widen(value: Float): Float = value
+        widen(pzfloat) shouldEqual widen(pzfloat.toFloat)
+      }
+      forAll { (pzfloat: PosZFloat) =>
+        def widen(value: Double): Double = value
+        widen(pzfloat) shouldEqual widen(pzfloat.toFloat)
+      }
+      forAll { (pzfloat: PosZFloat) =>
+        def widen(value: PosZDouble): PosZDouble = value
+        widen(pzfloat) shouldEqual widen(PosZDouble.from(pzfloat.toFloat).get)
       }
     }
   }

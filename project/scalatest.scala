@@ -124,13 +124,7 @@ object ScalatestBuild extends Build {
   )
 
   lazy val sharedDocSettings = Seq(
-    dependencyClasspath in (Compile, doc) := {
-      val deps = (dependencyClasspath in (Compile, doc)).value
-      val macroClassDir = (classDirectory in (scalacticMacro, Compile)).value
-      deps.filterNot(_.data == macroClassDir)
-    },
     docsrcDirSetting,
-    docSourcesSetting,
     docScalacOptionsSetting
   )
 
@@ -221,6 +215,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
+    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
@@ -234,6 +229,7 @@ object ScalatestBuild extends Build {
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
+      scalacticDocSourcesSetting,
       docTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -293,6 +289,7 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
+     scalatestDocSourcesSetting,
      docTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -836,9 +833,17 @@ object ScalatestBuild extends Build {
   val docsrcDirSetting =
      docsrcDir := target.value / "docsrc"
 
-  val docSourcesSetting =
+  val scalacticDocSourcesSetting =
+    sources in (Compile, doc) :=
+      genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value,
+        Seq((sourceManaged in Compile).value,
+          baseDirectory.value,
+          file(".").getCanonicalFile),
+        docsrcDir.value)
+
+  val scalatestDocSourcesSetting =
      sources in (Compile, doc) :=
-       genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value, 
+       genDocSources((sources in Compile).value,
                      Seq((sourceManaged in Compile).value, 
                          baseDirectory.value,
                          file(".").getCanonicalFile),

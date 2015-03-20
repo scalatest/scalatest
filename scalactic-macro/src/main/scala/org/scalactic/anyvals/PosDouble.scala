@@ -22,14 +22,51 @@ import scala.collection.immutable.NumericRange
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Double</code> value underlying this <code>PosDouble</code>.
+ */ 
 final class PosDouble private (val value: Double) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosDouble</code>.
+   */
   override def toString: String = s"PosDouble($value)"
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosDouble</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosDouble</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
@@ -37,6 +74,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Double = -value
 
+  /**
+   * Converts this <code>PosDouble</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /** Returns `true` if this value is less than x, `false` otherwise. */

@@ -15,12 +15,34 @@
  */
 package org.scalactic.anyvals
 
+import org.scalactic.Equality
 import org.scalatest._
-import scala.collection.mutable.WrappedArray
+import prop.GeneratorDrivenPropertyChecks._
 import OptionValues._
 import org.scalactic.StrictCheckedEquality
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen.choose
+
+import scala.collection.immutable.NumericRange
+import scala.util.{Failure, Success, Try}
 
 class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
+
+  val posLongGen: Gen[PosLong] =
+    for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
+
+  implicit val arbPosLong: Arbitrary[PosLong] = Arbitrary(posLongGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
 
   object `A PosLong` {
     object `should offer a from factory method that` {
@@ -152,6 +174,393 @@ class PosLongSpec extends Spec with Matchers with StrictCheckedEquality {
         "takesPosLong(x)" shouldNot compile
         val b: Long = -8L
         "takesPosLong(b)" shouldNot compile
+      }
+
+      def `should offer a unary ~ method that is consistent with Long` {
+        forAll { (plong: PosLong) =>
+          (~plong) shouldEqual (~(plong.toLong))
+        }
+      }
+
+      def `should offer a unary + method that is consistent with Long` {
+        forAll { (plong: PosLong) =>
+          (+plong).toLong shouldEqual (+(plong.toLong))
+        }
+      }
+
+      def `should offer a unary - method that is consistent with Long` {
+        forAll { (plong: PosLong) =>
+          (-plong) shouldEqual (-(plong.toLong))
+        }
+      }
+
+      def `should offer << methods that are consistent with Long` {
+        forAll { (plong: PosLong, shift: Int) =>
+          plong << shift shouldEqual plong.toLong << shift
+        }
+        forAll { (plong: PosLong, shift: Long) =>
+          plong << shift shouldEqual plong.toLong << shift
+        }
+      }
+
+      def `should offer >>> methods that are consistent with Long` {
+        forAll { (plong: PosLong, shift: Int) =>
+          plong >>> shift shouldEqual plong.toLong >>> shift
+        }
+        forAll { (plong: PosLong, shift: Long) =>
+          plong >>> shift shouldEqual plong.toLong >>> shift
+        }
+      }
+
+      def `should offer >> methods that are consistent with Long` {
+        forAll { (plong: PosLong, shift: Int) =>
+          plong >> shift shouldEqual plong.toLong >> shift
+        }
+        forAll { (plong: PosLong, shift: Long) =>
+          plong >> shift shouldEqual plong.toLong >> shift
+        }
+      }
+
+      def `should offer '<' comparison that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong < byte) shouldEqual (plong.toLong < byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong < short) shouldEqual (plong.toLong < short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong < char) shouldEqual (plong.toLong < char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong < int) shouldEqual (plong.toLong < int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong < long) shouldEqual (plong.toLong < long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong < float) shouldEqual (plong.toLong < float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong < double) shouldEqual (plong.toLong < double)
+        }
+      }
+
+      def `should offer '<=' comparison that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong <= byte) shouldEqual (plong.toLong <= byte)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong <= char) shouldEqual (plong.toLong <= char)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong <= short) shouldEqual (plong.toLong <= short)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong <= int) shouldEqual (plong.toLong <= int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong <= long) shouldEqual (plong.toLong <= long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong <= float) shouldEqual (plong.toLong <= float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong <= double) shouldEqual (plong.toLong <= double)
+        }
+      }
+
+      def `should offer '>' comparison that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong > byte) shouldEqual (plong.toLong > byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong > short) shouldEqual (plong.toLong > short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong > char) shouldEqual (plong.toLong > char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong > int) shouldEqual (plong.toLong > int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong > long) shouldEqual (plong.toLong > long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong > float) shouldEqual (plong.toLong > float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong > double) shouldEqual (plong.toLong > double)
+        }
+      }
+
+      def `should offer '>=' comparison that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong >= byte) shouldEqual (plong.toLong >= byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong >= short) shouldEqual (plong.toLong >= short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong >= char) shouldEqual (plong.toLong >= char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong >= int) shouldEqual (plong.toLong >= int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong >= long) shouldEqual (plong.toLong >= long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong >= float) shouldEqual (plong.toLong >= float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong >= double) shouldEqual (plong.toLong >= double)
+        }
+      }
+
+      def `should offer a '|' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong | byte) shouldEqual (plong.toLong | byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong | short) shouldEqual (plong.toLong | short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong | char) shouldEqual (plong.toLong | char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong | int) shouldEqual (plong.toLong | int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong | long) shouldEqual (plong.toLong | long)
+        }
+      }
+
+      def `should offer an '&' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong & byte) shouldEqual (plong.toLong & byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong & short) shouldEqual (plong.toLong & short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong & char) shouldEqual (plong.toLong & char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong & int) shouldEqual (plong.toLong & int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong & long) shouldEqual (plong.toLong & long)
+        }
+      }
+
+      def `should offer an '^' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong ^ byte) shouldEqual (plong.toLong ^ byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong ^ short) shouldEqual (plong.toLong ^ short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong ^ char) shouldEqual (plong.toLong ^ char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong ^ int) shouldEqual (plong.toLong ^ int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong ^ long) shouldEqual (plong.toLong ^ long)
+        }
+      }
+
+      def `should offer a '+' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong + byte) shouldEqual (plong.toLong + byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong + short) shouldEqual (plong.toLong + short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong + char) shouldEqual (plong.toLong + char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong + int) shouldEqual (plong.toLong + int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong + long) shouldEqual (plong.toLong + long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong + float) shouldEqual (plong.toLong + float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong + double) shouldEqual (plong.toLong + double)
+        }
+      }
+
+      def `should offer a '-' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong - byte) shouldEqual (plong.toLong - byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong - short) shouldEqual (plong.toLong - short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong - char) shouldEqual (plong.toLong - char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong - int) shouldEqual (plong.toLong - int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong - long) shouldEqual (plong.toLong - long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong - float) shouldEqual (plong.toLong - float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong - double) shouldEqual (plong.toLong - double)
+        }
+      }
+
+      def `should offer a '*' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          (plong * byte) shouldEqual (plong.toLong * byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          (plong * short) shouldEqual (plong.toLong * short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          (plong * char) shouldEqual (plong.toLong * char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          (plong * int) shouldEqual (plong.toLong * int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          (plong * long) shouldEqual (plong.toLong * long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          (plong * float) shouldEqual (plong.toLong * float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          (plong * double) shouldEqual (plong.toLong * double)
+        }
+      }
+
+      def `should offer a '/' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          Try(plong / byte) shouldEqual Try(plong.toLong / byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          Try(plong / short) shouldEqual Try(plong.toLong / short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          Try(plong / char) shouldEqual Try(plong.toLong / char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          Try(plong / int) shouldEqual Try(plong.toLong / int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          Try(plong / long) shouldEqual Try(plong.toLong / long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          Try(plong / float) shouldEqual Try(plong.toLong / float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          Try(plong / double) shouldEqual Try(plong.toLong / double)
+        }
+      }
+
+      def `should offer a '%' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong, byte: Byte) =>
+          Try(plong % byte) shouldEqual Try(plong.toLong % byte)
+        }
+        forAll { (plong: PosLong, short: Short) =>
+          Try(plong % short) shouldEqual Try(plong.toLong % short)
+        }
+        forAll { (plong: PosLong, char: Char) =>
+          Try(plong % char) shouldEqual Try(plong.toLong % char)
+        }
+        forAll { (plong: PosLong, int: Int) =>
+          Try(plong % int) shouldEqual Try(plong.toLong % int)
+        }
+        forAll { (plong: PosLong, long: Long) =>
+          Try(plong % long) shouldEqual Try(plong.toLong % long)
+        }
+        forAll { (plong: PosLong, float: Float) =>
+          Try(plong % float) shouldEqual Try(plong.toLong % float)
+        }
+        forAll { (plong: PosLong, double: Double) =>
+          Try(plong % double) shouldEqual Try(plong.toLong % double)
+        }
+      }
+
+      def `should offer 'min' and 'max' methods that are consistent with Long`: Unit = {
+        forAll { (plong1: PosLong, plong2: PosLong) =>
+          plong1.max(plong2).toLong shouldEqual plong1.toLong.max(plong2.toLong)
+          plong1.min(plong2).toLong shouldEqual plong1.toLong.min(plong2.toLong)
+        }
+      }
+
+      def `should offer a 'toBinaryString' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong) =>
+          plong.toBinaryString shouldEqual plong.toLong.toBinaryString
+        }
+      }
+
+      def `should offer a 'toHexString' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong) =>
+          plong.toHexString shouldEqual plong.toLong.toHexString
+        }
+      }
+
+      def `should offer a 'toOctalString' method that is consistent with Long`: Unit = {
+        forAll { (plong: PosLong) =>
+          plong.toOctalString shouldEqual plong.toLong.toOctalString
+        }
+      }
+
+      def `should offer 'to' and 'until' method that is consistent with Long`: Unit = {
+        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+          a.start == b.start && a.end == b.end && a.step == b.step
+
+        forAll { (plong: PosLong, end: Long, step: Long) =>
+          rangeEqual(plong.until(end), plong.toLong.until(end)) shouldBe true
+          rangeEqual(plong.until(end, step), plong.toLong.until(end, step)) shouldBe true
+          rangeEqual(plong.to(end), plong.toLong.to(end)) shouldBe true
+          rangeEqual(plong.to(end, step), plong.toLong.to(end, step)) shouldBe true
+        }
+      }
+
+      def `should offer widening methods for basic types that are consistent with Long`: Unit = {
+        forAll { (plong: PosLong) =>
+          def widen(value: Long): Long = value
+          widen(plong) shouldEqual widen(plong.toLong)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: Float): Float = value
+          widen(plong) shouldEqual widen(plong.toLong)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: Double): Double = value
+          widen(plong) shouldEqual widen(plong.toLong)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: PosFloat): PosFloat = value
+          widen(plong) shouldEqual widen(PosFloat.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: PosDouble): PosDouble = value
+          widen(plong) shouldEqual widen(PosDouble.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: PosZLong): PosZLong = value
+          widen(plong) shouldEqual widen(PosZLong.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: PosZFloat): PosZFloat = value
+          widen(plong) shouldEqual widen(PosZFloat.from(plong.toLong).get)
+        }
+        forAll { (plong: PosLong) =>
+          def widen(value: PosZDouble): PosZDouble = value
+          widen(plong) shouldEqual widen(PosZDouble.from(plong.toLong).get)
+        }
       }
     }
   }

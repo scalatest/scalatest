@@ -15,12 +15,34 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
+import org.scalactic.Equality
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import scala.collection.immutable.NumericRange
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-import org.scalactic.StrictCheckedEquality
+import scala.util.{Failure, Success, Try}
 
-class PosDoubleSpec extends Spec with Matchers with StrictCheckedEquality {
+class PosDoubleSpec extends Spec with Matchers {
+
+  val posDoubleGen: Gen[PosDouble] =
+    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
+
+  implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
+
+  implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
+    override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case _: Success[_] => a == b
+      case Failure(ex) => b match {
+        case _: Success[_] => false
+        case Failure(otherEx) => ex.getClass == otherEx.getClass && ex.getMessage == otherEx.getMessage
+        case _ => false
+      }
+    }
+  }
+
 
   object `A PosDouble` {
     object `should offer a from factory method that` {
@@ -176,6 +198,314 @@ class PosDoubleSpec extends Spec with Matchers with StrictCheckedEquality {
         "takesPosDouble(c)" shouldNot compile
         val d: Double = -8.0
         "takesPosDouble(d)" shouldNot compile
+      }
+
+      def `should offer a unary + method that is consistent with Double` {
+        forAll { (pdouble: PosDouble) =>
+          (+pdouble).toDouble shouldEqual (+(pdouble.toDouble))
+        }
+      }
+
+      def `should offer a unary - method that is consistent with Double` {
+        forAll { (pdouble: PosDouble) =>
+          (-pdouble) shouldEqual (-(pdouble.toDouble))
+        }
+      }
+
+      def `should offer '<' comparison that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble < byte) shouldEqual (pdouble.toDouble < byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble < short) shouldEqual (pdouble.toDouble < short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble < char) shouldEqual (pdouble.toDouble < char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble < int) shouldEqual (pdouble.toDouble < int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble < long) shouldEqual (pdouble.toDouble < long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble < float) shouldEqual (pdouble.toDouble < float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble < double) shouldEqual (pdouble.toDouble < double)
+        }
+      }
+
+      def `should offer '<=' comparison that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble <= byte) shouldEqual (pdouble.toDouble <= byte)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble <= char) shouldEqual (pdouble.toDouble <= char)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble <= short) shouldEqual (pdouble.toDouble <= short)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble <= int) shouldEqual (pdouble.toDouble <= int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble <= long) shouldEqual (pdouble.toDouble <= long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble <= float) shouldEqual (pdouble.toDouble <= float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble <= double) shouldEqual (pdouble.toDouble <= double)
+        }
+      }
+
+      def `should offer '>' comparison that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble > byte) shouldEqual (pdouble.toDouble > byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble > short) shouldEqual (pdouble.toDouble > short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble > char) shouldEqual (pdouble.toDouble > char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble > int) shouldEqual (pdouble.toDouble > int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble > long) shouldEqual (pdouble.toDouble > long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble > float) shouldEqual (pdouble.toDouble > float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble > double) shouldEqual (pdouble.toDouble > double)
+        }
+      }
+
+      def `should offer '>=' comparison that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble >= byte) shouldEqual (pdouble.toDouble >= byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble >= short) shouldEqual (pdouble.toDouble >= short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble >= char) shouldEqual (pdouble.toDouble >= char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble >= int) shouldEqual (pdouble.toDouble >= int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble >= long) shouldEqual (pdouble.toDouble >= long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble >= float) shouldEqual (pdouble.toDouble >= float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble >= double) shouldEqual (pdouble.toDouble >= double)
+        }
+      }
+
+      def `should offer a '+' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble + byte) shouldEqual (pdouble.toDouble + byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble + short) shouldEqual (pdouble.toDouble + short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble + char) shouldEqual (pdouble.toDouble + char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble + int) shouldEqual (pdouble.toDouble + int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble + long) shouldEqual (pdouble.toDouble + long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble + float) shouldEqual (pdouble.toDouble + float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble + double) shouldEqual (pdouble.toDouble + double)
+        }
+      }
+
+      def `should offer a '-' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble - byte) shouldEqual (pdouble.toDouble - byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble - short) shouldEqual (pdouble.toDouble - short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble - char) shouldEqual (pdouble.toDouble - char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble - int) shouldEqual (pdouble.toDouble - int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble - long) shouldEqual (pdouble.toDouble - long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble - float) shouldEqual (pdouble.toDouble - float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble - double) shouldEqual (pdouble.toDouble - double)
+        }
+      }
+
+      def `should offer a '*' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          (pdouble * byte) shouldEqual (pdouble.toDouble * byte)
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          (pdouble * short) shouldEqual (pdouble.toDouble * short)
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          (pdouble * char) shouldEqual (pdouble.toDouble * char)
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          (pdouble * int) shouldEqual (pdouble.toDouble * int)
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          (pdouble * long) shouldEqual (pdouble.toDouble * long)
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          (pdouble * float) shouldEqual (pdouble.toDouble * float)
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          (pdouble * double) shouldEqual (pdouble.toDouble * double)
+        }
+      }
+
+      def `should offer a '/' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          pdouble / byte shouldEqual pdouble.toDouble / byte
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          pdouble / short shouldEqual pdouble.toDouble / short
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          pdouble / char shouldEqual pdouble.toDouble / char
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          pdouble / int shouldEqual pdouble.toDouble / int
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          pdouble / long shouldEqual pdouble.toDouble / long
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          pdouble / float shouldEqual pdouble.toDouble / float
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          pdouble / double shouldEqual pdouble.toDouble / double
+        }
+      }
+
+      // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
+      // extra logic is needed to convert to a comparable type (boolean, in this case)
+      def `should offer a '%' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble, byte: Byte) =>
+          val res = pdouble % byte
+          if (res.isNaN)
+            (pdouble.toDouble % byte).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % byte
+        }
+        forAll { (pdouble: PosDouble, short: Short) =>
+          val res = pdouble % short
+          if (res.isNaN)
+            (pdouble.toDouble % short).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % short
+        }
+        forAll { (pdouble: PosDouble, char: Char) =>
+          val res = pdouble % char
+          if (res.isNaN)
+            (pdouble.toDouble % char).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % char
+        }
+        forAll { (pdouble: PosDouble, int: Int) =>
+          val res = pdouble % int
+          if (res.isNaN)
+            (pdouble.toDouble % int).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % int
+        }
+        forAll { (pdouble: PosDouble, long: Long) =>
+          val res = pdouble % long
+          if (res.isNaN)
+            (pdouble.toDouble % long).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % long
+        }
+        forAll { (pdouble: PosDouble, float: Float) =>
+          val res = pdouble % float
+          if (res.isNaN)
+            (pdouble.toDouble % float).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % float
+        }
+        forAll { (pdouble: PosDouble, double: Double) =>
+          val res = pdouble % double
+          if (res.isNaN)
+            (pdouble.toDouble % double).isNaN shouldBe true
+          else
+            res shouldEqual pdouble.toDouble % double
+        }
+      }
+
+      def `should offer 'min' and 'max' methods that are consistent with Double`: Unit = {
+        forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
+          pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)
+          pdouble1.min(pdouble2).toDouble shouldEqual pdouble1.toDouble.min(pdouble2.toDouble)
+        }
+      }
+
+      def `should offer an 'isWhole' method that is consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble) =>
+          pdouble.isWhole shouldEqual pdouble.toDouble.isWhole
+        }
+      }
+
+      def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble) =>
+          pdouble.round.toDouble shouldEqual pdouble.toDouble.round
+          pdouble.ceil.toDouble shouldEqual pdouble.toDouble.ceil
+          pdouble.floor.toDouble shouldEqual pdouble.toDouble.floor
+        }
+      }
+
+      def `should offer 'toRadians' and 'toDegrees' methods that are consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble) =>
+          pdouble.toRadians shouldEqual pdouble.toDouble.toRadians
+        }
+      }
+
+      def `should offer 'to' and 'until' method that is consistent with Double`: Unit = {
+        def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
+          a.start == b.start && a.end == b.end && a.step == b.step
+
+        forAll { (pdouble: PosDouble, end: Double, step: Double) =>
+          rangeEqual(pdouble.until(end).by(1f), pdouble.toDouble.until(end).by(1f)) shouldBe true
+          rangeEqual(pdouble.until(end, step), pdouble.toDouble.until(end, step)) shouldBe true
+          rangeEqual(pdouble.to(end).by(1f), pdouble.toDouble.to(end).by(1f)) shouldBe true
+          rangeEqual(pdouble.to(end, step), pdouble.toDouble.to(end, step)) shouldBe true
+        }
+      }
+
+      def `should offer widening methods for basic types that are consistent with Double`: Unit = {
+        forAll { (pdouble: PosDouble) =>
+          def widen(value: Double): Double = value
+          widen(pdouble) shouldEqual widen(pdouble.toDouble)
+        }
+        forAll { (pdouble: PosDouble) =>
+          def widen(value: PosZDouble): PosZDouble = value
+          widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.toDouble).get)
+        }
       }
     }
   }

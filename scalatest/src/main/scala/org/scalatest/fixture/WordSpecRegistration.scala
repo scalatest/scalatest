@@ -25,6 +25,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 /**
  * Implementation trait for class <code>fixture.WordSpec</code>, which is
@@ -163,7 +164,23 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
-    registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
+    def getStackDepth: Int =
+      verb match {
+        case "should" | "must" | "can" => 5
+        case other => 4
+      }
+
+    try {
+      registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
+    }
+    catch {
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
+      case nae: exceptions.NotAllowedException => throw nae
+      case trce: TestRegistrationClosedException => throw trce
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownIn" + verb.capitalize + "Clause", UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
+      case other: Throwable => throw other
+    }
   }
 
   private def registerShorthandBranch(childPrefix: Option[String], notAllowResourceName: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {

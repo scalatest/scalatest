@@ -355,7 +355,15 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * </p>
    */
   protected def describe(description: String)(fun: => Unit) {
-    handleNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", "FunSpecLike.scala", "describe", 4, -2, None)
+    try {
+      handleNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", "FunSpecLike.scala", "describe", 4, -2, None)
+    }
+    catch {
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotDescribeClause"), Some(e), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDescribeClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case other: Throwable => throw other
+    }
   }
   
   /**

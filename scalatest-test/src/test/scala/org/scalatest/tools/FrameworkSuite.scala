@@ -1851,4 +1851,26 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
+
+  test("Framework.runner should fire SuiteStarting and SuiteAborted when error raised during construction") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.AbortedSuite2", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      intercept[VirtualMachineError] {
+        task.execute(testEventHandler, Array(new TestLogger))
+      }
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.suiteStartingEventsReceived.size == 1)
+          assert(recordingRep.suiteAbortedEventsReceived.size == 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
 }

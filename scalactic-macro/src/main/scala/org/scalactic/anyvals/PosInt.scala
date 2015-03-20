@@ -22,14 +22,51 @@ import scala.collection.immutable.Range
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Int</code> value underlying this <code>PosInt</code>.
+ */ 
 final class PosInt private (val value: Int) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosInt</code>.
+   */
   override def toString: String = s"PosInt($value)"
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosInt</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosInt</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
   /**
   * Returns the bitwise negation of this value.
@@ -44,6 +81,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def unary_+ : PosInt = this
   /** Returns the negation of this value. */
   def unary_- : Int = -value
+  /**
+   * Converts this <code>PosInt</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
   /**
   * Returns this value bit-shifted left by the specified number of bits,
@@ -393,9 +433,88 @@ final class PosInt private (val value: Int) extends AnyVal {
   /** Returns the remainder of the division of this value by `x`. */
   def %(x: Double): Double = value % x
 
-  // Stuff from Richint:
+  // Stuff from RichInt:
+  /**
+   * Returns a string representation of this <code>PosInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;2.
+   *
+   * <p>
+   * The unsigned integer value is the argument plus 2<sup>32</sup>
+   * if this <code>PosInt</code>'s underlying <code>Int</code> is negative; otherwise it is equal to the
+   * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+   * in binary (base&nbsp;2) with no extra leading <code>0</code>s.
+   * If the unsigned magnitude is zero, it is represented by a
+   * single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The characters <code>'0'</code>
+   * (<code>'&#92;u0030'</code>) and <code>'1'</code>
+   * (<code>'&#92;u0031'</code>) are used as binary digits.
+   * </p>
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosInt</code>'s underlying <code>Int</code> in binary (base&nbsp;2).
+   */
   def toBinaryString: String = java.lang.Integer.toBinaryString(value)
+
+  /**
+   * Returns a string representation of this <code>PosInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;16.
+   *
+   * <p>
+   * The unsigned integer value is the argument plus 2<sup>32</sup>
+   * if this <code>PosInt</code>'s underlying <code>Int</code> is negative; otherwise, it is equal to the
+   * this <code>PosInt</code>'s underlying <code>Int</code>  This value is converted to a string of ASCII digits
+   * in hexadecimal (base&nbsp;16) with no extra leading
+   * <code>0</code>s. If the unsigned magnitude is zero, it is
+   * represented by a single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as
+   * hexadecimal digits:
+   * </p>
+   *
+   * <blockquote>
+   *  <code>0123456789abcdef</code>
+   * </blockquote>
+   *
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0039'</code> and <code>'&#92;u0061'</code> through
+   * <code>'&#92;u0066'</code>. If uppercase letters are
+   * desired, the <code>toUpperCase</code> method may
+   * be called on the result.
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosInt</code>'s underlying <code>Int</code> in hexadecimal (base&nbsp;16).
+   */
   def toHexString: String = java.lang.Integer.toHexString(value)
+
+  /**
+   * Returns a string representation of this <code>PosInt</code>'s underlying <code>Int</code> as an
+   * unsigned integer in base&nbsp;8.
+   *
+   * <p>The unsigned integer value is this <code>PosInt</code>'s underlying <code>Int</code> plus 2<sup>32</sup>
+   * if the underlying <code>Int</code> is negative; otherwise, it is equal to the
+   * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+   * in octal (base&nbsp;8) with no extra leading <code>0</code>s.
+   *
+   * <p>If the unsigned magnitude is zero, it is represented by a
+   * single zero character <code>'0'</code>
+   * (<code>'&#92;u0030'</code>); otherwise, the first character of
+   * the representation of the unsigned magnitude will not be the
+   * zero character. The following characters are used as octal
+   * digits:
+   *
+   * <blockquote>
+   * <code>01234567</code>
+   * </blockquote>
+   *
+   * These are the characters <code>'&#92;u0030'</code> through
+   * <code>'&#92;u0037'</code>.
+   *
+   * @return  the string representation of the unsigned integer value
+   *          represented by this <code>PosInt</code>'s underlying <code>Int</code> in octal (base&nbsp;8).
+   */
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**

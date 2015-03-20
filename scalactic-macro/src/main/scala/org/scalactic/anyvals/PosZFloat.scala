@@ -23,14 +23,51 @@ import scala.collection.immutable.NumericRange
 // (Pronounced like "posey".)
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Float</code> value underlying this <code>PosZFloat</code>.
+ */ 
 final class PosZFloat private (val value: Float) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosZFloat</code>.
+   */
   override def toString: String = s"PosZFloat($value)"
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosZFloat</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosZFloat</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
@@ -38,6 +75,9 @@ final class PosZFloat private (val value: Float) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Float = -value
 
+  /**
+   * Converts this <code>PosZFloat</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /** Returns `true` if this value is less than x, `false` otherwise. */

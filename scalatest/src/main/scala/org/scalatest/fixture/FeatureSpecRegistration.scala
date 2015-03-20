@@ -164,7 +164,16 @@ trait FeatureSpecRegistration extends Suite with TestRegistration with Informing
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources("cantNestFeatureClauses"), getStackDepthFun(sourceFileName, "feature"))
 
-    registerNestedBranch(Resources("feature", description.trim), None, fun, "featureCannotAppearInsideAScenario", sourceFileName, "feature", 4, -2, None)
+    try {
+      registerNestedBranch(Resources("feature", description.trim), None, fun, "featureCannotAppearInsideAScenario", sourceFileName, "feature", 4, -2, None)
+    }
+    catch {
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause"), Some(e), e => 4)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause"), Some(e), e => 4)
+      case nae: exceptions.NotAllowedException => throw nae
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInFeatureClause", UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case other: Throwable => throw other
+    }
   }
 
   /**

@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReferenc
 import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 import scala.collection.mutable.ListBuffer
+import scala.util.control.NonFatal
 
 /**
  * <p>
@@ -486,11 +487,14 @@ class Framework extends SbtFramework {
         val duration = System.currentTimeMillis - suiteStartTime
         // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
         report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
-        
+
         statefulStatus match {
           case Some(s) => s.setFailed()
           case None => // Do nothing
         }
+
+        if (!NonFatal(e))
+          throw e
       }
     }
     finally {
@@ -641,18 +645,22 @@ class Framework extends SbtFramework {
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
       if (accessible || runnable) {
-        val suite = 
-          if (accessible)
-            suiteClass.newInstance.asInstanceOf[Suite]
-          else {
-            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
-            val suiteClazz = wrapWithAnnotation.value
-            val constructorList = suiteClazz.getDeclaredConstructors()
-            val constructor = constructorList.find { c => 
-              val types = c.getParameterTypes
-              types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+        val suite =
+          try {
+            if (accessible)
+              suiteClass.newInstance.asInstanceOf[Suite]
+            else {
+              val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+              val suiteClazz = wrapWithAnnotation.value
+              val constructorList = suiteClazz.getDeclaredConstructors()
+              val constructor = constructorList.find { c =>
+                val types = c.getParameterTypes
+                types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+              }
+              constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
-            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+          } catch {
+            case t: Throwable => new DeferredAbortedSuite(t)
           }
         
         val taskReporter =

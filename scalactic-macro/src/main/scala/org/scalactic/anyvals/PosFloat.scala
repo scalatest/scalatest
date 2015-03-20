@@ -22,14 +22,51 @@ import scala.collection.immutable.NumericRange
 // Numbers greater than zero.
 //
 
+/**
+ * TODO
+ *
+ * @param value The <code>Float</code> value underlying this <code>PosFloat</code>.
+ */ 
 final class PosFloat private (val value: Float) extends AnyVal {
+
+  /**
+   * A string representation of this <code>PosFloat</code>.
+   */
   override def toString: String = s"PosFloat($value)"
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Byte</code>.
+   */
   def toByte: Byte = value.toByte
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Short</code>.
+   */
   def toShort: Short = value.toShort
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Char</code>.
+   */
   def toChar: Char = value.toChar
+
+  /**
+   * Converts this <code>PosFloat</code> to an <code>Int</code>.
+   */
   def toInt: Int = value.toInt
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Long</code>.
+   */
   def toLong: Long = value.toLong
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Float</code>.
+   */
   def toFloat: Float = value.toFloat
+
+  /**
+   * Converts this <code>PosFloat</code> to a <code>Double</code>.
+   */
   def toDouble: Double = value.toDouble
 
   /** Returns this value, unmodified. */
@@ -37,6 +74,9 @@ final class PosFloat private (val value: Float) extends AnyVal {
   /** Returns the negation of this value. */
   def unary_- : Float = -value
 
+  /**
+   * Converts this <code>PosFloat</code>'s value to a string then concatenates the given string.
+   */
   def +(x: String): String = value + x
 
   /** Returns `true` if this value is less than x, `false` otherwise. */
