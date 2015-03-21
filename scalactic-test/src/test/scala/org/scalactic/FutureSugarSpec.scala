@@ -35,14 +35,16 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with S
   "FutureSugar" should "offer a validating method that takes a T => Validation" in {
     Future.successful(12).validating(isRound).failed.futureValue shouldBe ValidationFailedException("12 was not a round number")
     Future.successful(10).validating(isRound).futureValue shouldBe 10
-    Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    // Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
   }
 
   it should "allow multiple validation functions to be passed to validating" in {
     Future.successful(12).validating(isRound, isDivBy3).failed.futureValue shouldBe ValidationFailedException("12 was not a round number")
     Future.successful(10).validating(isRound, isDivBy3).failed.futureValue shouldBe ValidationFailedException("10 was not divisible by 3")
     Future.successful(30).validating(isRound, isDivBy3).futureValue shouldBe 30
-    Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    // Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
   }
 
   it should "require at least one parameter to be passed to validating" in {
