@@ -25,7 +25,6 @@ import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
-import FunSuite.IgnoreTagName 
 import org.scalatest.exceptions.TestRegistrationClosedException
 
 /**

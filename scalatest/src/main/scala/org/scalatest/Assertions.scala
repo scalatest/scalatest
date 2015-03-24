@@ -808,7 +808,7 @@ trait Assertions extends TripleEquals {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(messagePrefix + s), Some(u), 4)
         }
         else {
@@ -818,7 +818,7 @@ trait Assertions extends TripleEquals {
     }
     caught match {
       case None =>
-        val message = messagePrefix + Resources("exceptionExpected", clazz.getName)
+        val message = messagePrefix + Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
@@ -860,7 +860,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
         else {
@@ -870,7 +870,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     }
     caught match {
       case None =>
-        val message = Resources("exceptionExpected", clazz.getName)
+        val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
@@ -1026,7 +1026,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   def assertResult(expected: Any, clue: Any)(actual: Any) {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
+      val s = FailureMessages.expectedButGot(exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
       throw newAssertionFailedException(Some(fullMsg), None, 4)
     }
@@ -1046,7 +1046,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   def assertResult(expected: Any)(actual: Any) {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages("expectedButGot", exp, act)
+      val s = FailureMessages.expectedButGot(exp, act)
       throw newAssertionFailedException(Some(s), None, 4)
     }
   }
@@ -1326,7 +1326,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
 object Assertions extends Assertions {
 
   case class NormalResult(result: Any) extends Throwable {
-    override def toString = if (result == ()) Resources("noExceptionWasThrown") else Resources("resultWas", Prettifier.default(result))
+    override def toString = if (result == ()) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
   }
 
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
@@ -1348,7 +1348,7 @@ object Assertions extends Assertions {
       }
     }
   }
-  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int): T = {
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, stackDepth: Int): T = {
     val caught = try {
       f
       None
@@ -1356,7 +1356,7 @@ object Assertions extends Assertions {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources(wrongExceptionResourceName, clazz.getName, u.getClass.getName)
+          val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), stackDepth)
         }
         else {
@@ -1366,7 +1366,7 @@ object Assertions extends Assertions {
     }
     caught match {
       case None =>
-        val message = Resources(exceptionExpectedResourceName, clazz.getName)
+        val message = exceptionExpectedMessageFun(clazz.getName)
         throw newAssertionFailedException(Some(message), None, stackDepth)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
@@ -1377,12 +1377,12 @@ object Assertions extends Assertions {
     }
     catch {
       case u: Throwable => {
-        val message = Resources("exceptionNotExpected", u.getClass.getName)
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
         throw newAssertionFailedException(Some(message), Some(u), 4)
       }
     }
   }
-  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedResourceName: String)(implicit manifest: Manifest[T]) {
+  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit manifest: Manifest[T]) {
     val clazz = manifest.erasure.asInstanceOf[Class[T]]
     try {
       f
@@ -1390,7 +1390,7 @@ object Assertions extends Assertions {
     catch {
       case u: Throwable => {
         if (clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources(exceptionNotExpectedResourceName, u.getClass.getName)
+          val s = exceptionNotExpectedMessageFun(u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
       }

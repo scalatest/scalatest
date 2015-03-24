@@ -43,14 +43,16 @@ class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
   it should "offer a validating method that takes a T => Validation" in {
     Success(12).validating(isRound) shouldBe Failure(ValidationFailedException("12 was not a round number"))
     Success(10).validating(isRound) shouldBe Success(10)
-    Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
+    // Failure(SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
+    Failure[Int](SomeException("oops")).validating(isRound) shouldBe Failure(SomeException("oops"))
   }
 
   it should "allow multiple validation functions to be passed to validating" in {
     Success(12).validating(isRound, isDivBy3) shouldBe Failure(ValidationFailedException("12 was not a round number"))
     Success(10).validating(isRound, isDivBy3) shouldBe Failure(ValidationFailedException("10 was not divisible by 3"))
     Success(30).validating(isRound, isDivBy3) shouldBe Success(30)
-    Failure(SomeException("oops")).validating(isRound, isDivBy3) shouldBe Failure(SomeException("oops"))
+    // Failure(SomeException("oops")).validating(isRound, isDivBy3) shouldBe Failure(SomeException("oops"))
+    Failure[Int](SomeException("oops")).validating(isRound, isDivBy3) shouldBe Failure(SomeException("oops"))
   }
 
   it should "require at least one parameter to be passed to validating" in {

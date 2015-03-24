@@ -52,7 +52,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
           Thread.sleep(200)
         }
       }
-      caught.message.value should be (Resources("timeoutFailedAfter", "100 milliseconds"))
+      caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("TimeoutsSpec.scala")
     }
@@ -233,7 +233,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
           Thread.sleep(2000)
         }
       }
-      caught.message.value should be (Resources("timeoutCanceledAfter", "1000 milliseconds"))
+      caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("TimeoutsSpec.scala")
     }

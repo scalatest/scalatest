@@ -5,8 +5,6 @@ import scala.concurrent.duration.Duration.Infinite
 import scala.util.{Success, Try, Failure}
 import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._
-import java.util.concurrent.ConcurrentLinkedQueue
-import collection.JavaConverters._
 
 private[scalatest] trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
@@ -34,12 +32,12 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
   private final val status = new ScalaTestStatefulStatus
   future.onComplete {
     case Success(result) =>
-      for (f <- queue.iterator.asScala)
+      for (f <- queue.iterator)
         f(Success(result))
       status.setCompleted()
 
     case Failure(ex) =>
-      for (f <- queue.iterator.asScala)
+      for (f <- queue.iterator)
         f(Failure(ex))
       status.setFailed()
       status.setCompleted()

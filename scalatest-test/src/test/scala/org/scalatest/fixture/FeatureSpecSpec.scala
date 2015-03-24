@@ -1560,7 +1560,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1568,7 +1568,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -1585,7 +1585,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages("assertionShouldBePutInsideScenarioClauseNotFeatureClause")))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1593,7 +1593,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages("didNotEqual", 1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -1611,7 +1611,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages("exceptionWasThrownInFeatureClause", UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

@@ -43,7 +43,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 trait PropSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixturePropSpecMod", "FixturePropSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 
   protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
 
@@ -94,11 +94,11 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -116,7 +116,7 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def property(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testName, transformToOutcome(testFun), "propertyCannotAppearInsideAnotherProperty", sourceFileName, "property", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "property", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -135,7 +135,7 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), "ignoreCannotAppearInsideAProperty", sourceFileName, "ignore", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "ignore", 4, -3, None, testTags: _*)
   }
 
   /**

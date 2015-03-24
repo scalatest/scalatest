@@ -53,8 +53,8 @@ final class BeEqualEqualWord {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
         MatchResult(
           areEqualComparingArraysStructurally(left, right),
-          Resources("wasNotEqualTo"),
-          Resources("wasEqualTo"),
+          Resources.rawWasNotEqualTo,
+          Resources.rawWasEqualTo,
           Vector(leftee, rightee),
           Vector(left, right)
         )
@@ -76,10 +76,10 @@ final class BeEqualEqualWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          Resources("wasNotNull"),
-          Resources("wasNull"),
-          Resources("wasNotNull"),
-          Resources("midSentenceWasNull"),
+          Resources.rawWasNotNull,
+          Resources.rawWasNull,
+          Resources.rawWasNotNull,
+          Resources.rawMidSentenceWasNull,
           Vector(left),
           Vector.empty
         )

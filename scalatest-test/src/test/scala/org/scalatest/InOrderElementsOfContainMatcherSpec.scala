@@ -88,17 +88,17 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages("inOrderElementsOfDuplicate"))
+      e1.getMessage() should be (FailureMessages.inOrderElementsOfDuplicate)
 
       val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages("inOrderElementsOfDuplicate"))
+      e2.getMessage() should be (FailureMessages.inOrderElementsOfDuplicate)
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages("inOrderElementsOfDuplicate"))
+      e3.getMessage() should be (FailureMessages.inOrderElementsOfDuplicate)
     }
 
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {

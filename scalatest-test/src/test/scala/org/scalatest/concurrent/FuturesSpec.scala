@@ -64,7 +64,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         val caught = the [TestFailedException] thrownBy {
           canceledFuture.isReadyWithin(Span(1, Second))
         }
-        caught.message.value should be (Resources("futureWasCanceled", "1", "10 milliseconds"))
+        caught.message.value should be (Resources.futureWasCanceled)
         withClue(caught.getStackTraceString) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         }
@@ -82,7 +82,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         val caught = the [TestFailedException] thrownBy {
           expiredFuture.isReadyWithin(Span(1, Second))
         }
-        caught.message.value should be (Resources("futureExpired", "1", "15 milliseconds"))
+        caught.message.value should be (Resources.futureExpired("1", "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 3)
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
@@ -173,7 +173,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         val caught = the [TestFailedException] thrownBy {
           canceledFuture.futureValue
         }
-        caught.message.value should be (Resources("futureWasCanceled", "1", "10 milliseconds"))
+        caught.message.value should be (Resources.futureWasCanceled)
         withClue(caught.getStackTraceString) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         }
@@ -191,7 +191,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         val caught = the [TestFailedException] thrownBy {
           expiredFuture.futureValue
         }
-        caught.message.value should be (Resources("futureExpired", "1", "15 milliseconds"))
+        caught.message.value should be (Resources.futureExpired("1", "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 3)
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
@@ -210,7 +210,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           neverReadyCountingFuture.futureValue
         }
 
-        caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
@@ -428,7 +428,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             s should equal ("hi")
           }
         }
-        caught.message.value should be (Resources("futureWasCanceled", "1", "10 milliseconds"))
+        caught.message.value should be (Resources.futureWasCanceled)
         withClue(caught.getStackTraceString) {
           caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
         }
@@ -448,7 +448,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             s should equal (99)
           }
         }
-        caught.message.value should be (Resources("futureExpired", "1", "15 milliseconds"))
+        caught.message.value should be (Resources.futureExpired("1", "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }
@@ -469,7 +469,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           }
         }
 
-        caught.message.value should be (Resources("wasNeverReady", count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
         caught.failedCodeFileName.value should be ("FuturesSpec.scala")
       }

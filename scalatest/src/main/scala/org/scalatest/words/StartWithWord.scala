@@ -43,8 +43,8 @@ final class StartWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left startsWith right,
-          Resources("didNotStartWith"),
-          Resources("startedWith"), 
+          Resources.rawDidNotStartWith,
+          Resources.rawStartedWith,
           Vector(left, right)
         )
       override def toString: String = "startWith (" + Prettifier.default(right) + ")"
@@ -90,8 +90,8 @@ final class StartWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           rightRegex.pattern.matcher(left).lookingAt,
-          Resources("didNotStartWithRegex"),
-          Resources("startedWithRegex"), 
+          Resources.rawDidNotStartWithRegex,
+          Resources.rawStartedWithRegex,
           Vector(left, UnquotedString(rightRegex.toString))
         )
       override def toString: String = "startWith regex " + Prettifier.default(rightRegex)

@@ -16,7 +16,7 @@
 package org.scalatest
 
 import SharedHelpers._
-import tools.Runner.CHOSEN_STYLES
+import Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.NotAllowedException
 
 class SuitesSpec extends FunSpec {

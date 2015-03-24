@@ -27,7 +27,7 @@ import scala.collection.mutable.ListBuffer
 
 private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying with Alerting { thisSuite =>
 
-  private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
+  private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
   import engine._
   
   /**

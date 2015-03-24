@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentSpecMod", "Spec")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
 
   protected[scalatest] def getEngine: Engine = engine
 
@@ -99,11 +99,11 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistration.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FlatSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -127,12 +127,22 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Registration) {
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingNothing) {
     //def transformPendingToOutcomeParam: PendingNothing = testFun()
-    engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherInOrIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    def testRegistrationClosedMessageFun: String =
+      methodName match {
+        case "in" => Resources.inCannotAppearInsideAnotherInOrIs
+        case "is" => Resources.isCannotAppearInsideAnotherInOrIs
+      }
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, "FlatSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -174,7 +184,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * </p>
      */
     def of(description: String) {
-      registerFlatBranch(description, "behaviorOfCannotAppearInsideAnIn", "FlatSpecRegistration.scala", "of", 3, 0)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecRegistration.scala", "of", 3, 0)
     }
   }
 
@@ -1540,7 +1550,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    */
   protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
     (subject, verb, rest) => {
-      registerFlatBranch(subject, "shouldCannotAppearInsideAnIn", "FlatSpecRegistration.scala", "apply", 6, 0)
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistration.scala", "apply", 6, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
 
         def is(testFun: => PendingNothing) {
@@ -1584,7 +1594,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    */
   protected implicit val shorthandSharedTestRegistrationFunction: (String) => BehaveWord = {
     (left) => {
-      registerFlatBranch(left, "shouldCannotAppearInsideAnIn", "FlatSpecRegistration.scala", "apply", 5, 0)
+      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistration.scala", "apply", 5, 0)
       new BehaveWord
     }
   }
@@ -1615,11 +1625,11 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnInOrAnIs", "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**

@@ -90,8 +90,8 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.lt(left, right), // left < right
-          Resources("wasNotLessThan"),
-          Resources("wasLessThan"),
+          Resources.rawWasNotLessThan,
+          Resources.rawWasLessThan,
           Vector(left, right)
         )
       }
@@ -129,8 +129,8 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.gt(left, right), // left > right
-          Resources("wasNotGreaterThan"),
-          Resources("wasGreaterThan"),
+          Resources.rawWasNotGreaterThan,
+          Resources.rawWasGreaterThan,
           Vector(left, right)
         )
       }
@@ -168,8 +168,8 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.lteq(left, right), // left <= right
-          Resources("wasNotLessThanOrEqualTo"),
-          Resources("wasLessThanOrEqualTo"), 
+          Resources.rawWasNotLessThanOrEqualTo,
+          Resources.rawWasLessThanOrEqualTo,
           Vector(left, right)
         )
       }
@@ -207,8 +207,8 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.gteq(left, right), // left >= right
-          Resources("wasNotGreaterThanOrEqualTo"),
-          Resources("wasGreaterThanOrEqualTo"), 
+          Resources.rawWasNotGreaterThanOrEqualTo,
+          Resources.rawWasGreaterThanOrEqualTo,
           Vector(left, right)
         )
       }
@@ -229,7 +229,7 @@ final class BeWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun("BeWord.scala", "==="))  // TODO: Change that to encoded name.
   }
 
@@ -262,8 +262,8 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          FailureMessages("wasNotA"), 
-          FailureMessages("wasA"), 
+          Resources.rawWasNotA,
+          Resources.rawWasA,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -313,8 +313,8 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          Resources("wasNotAn"),
-          Resources("wasAn"), 
+          Resources.rawWasNotAn,
+          Resources.rawWasAn,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -348,8 +348,8 @@ final class BeWord {
       def apply(left: U): MatchResult = {
         MatchResult(
           spread.isWithin(left),
-          Resources("wasNotPlusOrMinus"),
-          Resources("wasPlusOrMinus"), 
+          Resources.rawWasNotPlusOrMinus,
+          Resources.rawWasPlusOrMinus,
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
@@ -369,11 +369,31 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult =
         MatchResult(
           left eq right,
-          Resources("wasNotSameInstanceAs"),
-          Resources("wasSameInstanceAs"), 
+          Resources.rawWasNotSameInstanceAs,
+          Resources.rawWasSameInstanceAs,
           Vector(left, right)
         )
       override def toString: String = "be theSameInstanceAs " + Prettifier.default(right)
+    }
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * result should be (true)
+   *                  ^
+   * </pre>
+   */
+  def apply(right: Boolean): Matcher[Boolean] = 
+    new Matcher[Boolean] {
+      def apply(left: Boolean): MatchResult =
+        MatchResult(
+          left == right,
+          Resources.rawWasNot,
+          Resources.rawWas,
+          Vector(left, right)
+        )
+      override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -389,10 +409,10 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          Resources("wasNotNull"),
-          Resources("wasNull"),
-          Resources("wasNotNull"),
-          Resources("midSentenceWasNull"), 
+          Resources.rawWasNotNull,
+          Resources.rawWasNull,
+          Resources.rawWasNotNull,
+          Resources.rawMidSentenceWasNull,
           Vector(left), 
           Vector.empty
         )
@@ -412,10 +432,10 @@ final class BeWord {
       def apply(left: Any): MatchResult = 
         MatchResult(
           right.isAssignableFromClassOf(left),
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
-          FailureMessages("wasAnInstanceOf"), // TODO, missing the left, right.className here. Write a test and fix it.
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
-          FailureMessages("wasAnInstanceOf")
+          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasAnInstanceOf, // TODO, missing the left, right.className here. Write a test and fix it.
+          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasAnInstanceOf
         )
     }
    */
@@ -463,8 +483,8 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          Resources("wasNot"), 
-          Resources("was"), 
+          Resources.rawWasNot,
+          Resources.rawWas,
           Vector(left, UnquotedString(result.propertyName))
         )
       }
@@ -497,8 +517,8 @@ final class BeWord {
             val rightIsBoolean = right.isInstanceOf[Boolean]
             MatchResult(
               equality.areEqual(left, right),
-              Resources(if (rightIsBoolean) "wasNot" else "wasNotEqualTo"),
-              Resources(if (rightIsBoolean) "was" else "wasEqualTo"),
+              if (rightIsBoolean) Resources.rawWasNot else Resources.rawWasNotEqualTo,
+              if (rightIsBoolean) Resources.rawWas else Resources.rawWasEqualTo,
               Vector(leftee, rightee),
               Vector(left, right)
             )
@@ -525,8 +545,8 @@ final class BeWord {
             val sortable = implicitly[Sortable[T]]
             MatchResult(
               sortable.isSorted(left), 
-              Resources("wasNotSorted"), 
-              Resources("wasSorted"), 
+              Resources.rawWasNotSorted,
+              Resources.rawWasSorted,
               Vector(left)
             )
           }
@@ -548,8 +568,8 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(right),
-          Resources("wasNotDefinedAt"),
-          Resources("wasDefinedAt"), 
+          Resources.rawWasNotDefinedAt,
+          Resources.rawWasDefinedAt,
           Vector(left, right)
         )
       override def toString: String = "be definedAt " + Prettifier.default(right)
@@ -568,8 +588,8 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(resultOfDefinedAt.right),
-          Resources("wasNotDefinedAt"),
-          Resources("wasDefinedAt"), 
+          Resources.rawWasNotDefinedAt,
+          Resources.rawWasDefinedAt,
           Vector(left, resultOfDefinedAt.right)
         )
       override def toString: String = "be definedAt " + Prettifier.default(resultOfDefinedAt.right)
@@ -613,8 +633,8 @@ final class BeWord {
             val readability = implicitly[Readability[T]]
             MatchResult(
               readability.isReadable(left), 
-              Resources("wasNotReadable"), 
-              Resources("wasReadable"), 
+              Resources.rawWasNotReadable,
+              Resources.rawWasReadable,
               Vector(left)
             )
           }
@@ -639,8 +659,8 @@ final class BeWord {
             val writability = implicitly[Writability[T]]
             MatchResult(
               writability.isWritable(left), 
-              Resources("wasNotWritable"), 
-              Resources("wasWritable"), 
+              Resources.rawWasNotWritable,
+              Resources.rawWasWritable,
               Vector(left)
             )
           }
@@ -665,8 +685,8 @@ final class BeWord {
             val emptiness = implicitly[Emptiness[T]]
             MatchResult(
               emptiness.isEmpty(left), 
-              Resources("wasNotEmpty"), 
-              Resources("wasEmpty"), 
+              Resources.rawWasNotEmpty,
+              Resources.rawWasEmpty,
               Vector(left)
             )
           }
@@ -691,8 +711,8 @@ final class BeWord {
             val definition = implicitly[Definition[T]]
             MatchResult(
               definition.isDefined(left), 
-              Resources("wasNotDefined"), 
-              Resources("wasDefined"), 
+              Resources.rawWasNotDefined,
+              Resources.rawWasDefined,
               Vector(left)
             )
           }

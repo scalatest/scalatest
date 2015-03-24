@@ -238,14 +238,14 @@ class OneElementOfContainMatcherDeciderSpec extends Spec with Explicitly {
   object `oneOf ` {
 
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages("didNotContainOneElementOf", left, right)))
+      e.message should be (Some(FailureMessages.didNotContainOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages("containedOneElementOf", left, right)))
+      e.message should be (Some(FailureMessages.containedOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

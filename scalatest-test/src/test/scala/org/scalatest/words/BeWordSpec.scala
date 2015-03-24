@@ -233,7 +233,7 @@ class BeWordSpec extends Spec with FileMocks {
     def `=== method fails` {
       val fileName = "BeWordSpec.scala"
       val e = intercept[NotAllowedException] { val mt = be === "cheese" }
-      assert(e.message === Some(Resources("beTripleEqualsNotAllowed")))
+      assert(e.message === Some(Resources.beTripleEqualsNotAllowed))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
     }

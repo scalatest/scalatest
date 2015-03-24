@@ -309,7 +309,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
         case None => new TestSuite(this.getClass).run(testResult)
         case Some(tn) =>
           if (!testNames.contains(tn))
-            throw new IllegalArgumentException(Resources("testNotFound", testName))
+            throw new IllegalArgumentException(Resources.testNotFound(testName))
           setName(tn)
           run(testResult)
       }

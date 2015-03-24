@@ -24,8 +24,8 @@ import Suite.formatterForSuiteAborted
 import org.scalatest.events._
 import Runner.parsePropertiesArgsIntoMap
 import Runner.parseCompoundArgIntoSet
-import Runner.SELECTED_TAG
-import Runner.mergeMap
+import Suite.SELECTED_TAG
+import Suite.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
 import Runner.parseChosenStylesIntoChosenStyleSet
 import Runner.parseArgs
@@ -1103,13 +1103,13 @@ class Framework extends SbtFramework {
     
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
-    if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
-      throw new IllegalArgumentException("Property name '" + Runner.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
+    if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
+      throw new IllegalArgumentException("Property name '" + Suite.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
     val configMap: ConfigMap = 
       if (chosenStyleSet.isEmpty)
         propertiesMap
       else
-        propertiesMap + (Runner.CHOSEN_STYLES -> chosenStyleSet)
+        propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)
       
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")

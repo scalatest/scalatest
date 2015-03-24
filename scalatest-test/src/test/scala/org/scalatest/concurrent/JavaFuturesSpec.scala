@@ -71,7 +71,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
           val caught = the [TestFailedException] thrownBy {
             canceledFuture.isReadyWithin(Span(1, Millisecond))
           }
-          caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
+          caught.message.value should be(Resources.futureWasCanceled)
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           }
@@ -150,7 +150,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
           val caught = the [TestFailedException] thrownBy {
             canceledFuture.futureValue
           }
-          caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
+          caught.message.value should be(Resources.futureWasCanceled)
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           }
@@ -171,7 +171,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             neverReadyFuture.futureValue
           }
 
-          caught.message.value should be(Resources("wasNeverReady"))
+          caught.message.value should be(Resources.wasNeverReady(1, UnquotedString("15 milliseconds")))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 4)
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }
@@ -284,7 +284,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
               s should equal ("hi")
             }
           }
-          caught.message.value should be(Resources("futureWasCanceled", "1", "10 milliseconds"))
+          caught.message.value should be(Resources.futureWasCanceled)
           withClue(caught.getStackTraceString) {
             caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
           }
@@ -307,7 +307,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
             }
           }
 
-          caught.message.value should be(Resources("wasNeverReady"))
+          caught.message.value should be(Resources.wasNeverReady(1, UnquotedString("15 milliseconds")))
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
           caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
         }

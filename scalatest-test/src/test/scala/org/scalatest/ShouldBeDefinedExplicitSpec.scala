@@ -42,14 +42,14 @@ class ShouldBeDefinedExplicitSpec extends Spec {
   val fileName: String = "ShouldBeDefinedExplicitSpec.scala"
     
   def wasNotDefined(left: Any): String = 
-    FailureMessages("wasNotDefined", left)
+    FailureMessages.wasNotDefined(left)
     
   def wasDefined(left: Any): String = 
-    FailureMessages("wasDefined", left)
+    FailureMessages.wasDefined(left)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `Readable matcher` {

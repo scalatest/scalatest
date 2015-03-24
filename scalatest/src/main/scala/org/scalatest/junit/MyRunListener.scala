@@ -53,7 +53,7 @@ import exceptions._
         if (throwableOrNull != null)
           throwableOrNull.toString
         else
-          Resources("jUnitTestFailed")
+          Resources.jUnitTestFailed
 
       val formatter = getIndentedTextForTest(testName, 1, true)
       val payload: Option[Any] =

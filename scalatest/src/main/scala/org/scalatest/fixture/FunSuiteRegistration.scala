@@ -43,7 +43,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 trait FunSuiteRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureFunSuiteMod", "FixtureFunSuite")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFunSuiteMod, "FixtureFunSuite")
 
   protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
 
@@ -94,11 +94,11 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, -4, None, testTags: _*)
   }
 
   /**
@@ -116,7 +116,7 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testName, transformToOutcome(testFun), "testCannotAppearInsideAnotherTest", sourceFileName, "test", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -135,7 +135,7 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), "ignoreCannotAppearInsideATest", sourceFileName, "ignore", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", 4, -3, None, testTags: _*)
   }
 
   /**

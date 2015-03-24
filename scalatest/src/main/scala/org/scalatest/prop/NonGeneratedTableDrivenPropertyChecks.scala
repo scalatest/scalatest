@@ -400,7 +400,7 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
                           failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
 
 
-  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
+  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
     import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
     def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
@@ -418,28 +418,28 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
                 result.failedElements :+ (index,
                   head,
                   new exceptions.TableDrivenPropertyCheckFailedException(
-                    (sde => FailureMessages("propertyException", UnquotedString(ex.getClass.getSimpleName)) +
+                    (sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
                       (sde.failedCodeFileNameAndLineNumberString match {
                         case Some(s) => " (" + s + ")";
-                        case None => ""
+                        case scala.None => ""
                       }) + "\n" +
-                      "  " + FailureMessages("thrownExceptionsMessage", if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                      "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
                       (
                         ex match {
                           case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                            "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                            "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                           case _ => ""
                         }
                         ) +
-                      "  " + FailureMessages("occurredAtRow", index) + "\n" +
+                      "  " + FailureMessages.occurredAtRow(index) + "\n" +
                       indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
                         name + " = " + value
                       }.toIndexedSeq).mkString("\n") +
                       "  )"),
                     Some(ex),
                     getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
-                    None,
-                    FailureMessages("undecoratedPropertyCheckFailureMessage"),
+                    scala.None,
+                    FailureMessages.undecoratedPropertyCheckFailureMessage,
                     head.productIterator.toList,
                     namesOfArgs,
                     index
@@ -456,25 +456,25 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
     innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
   }
 
-  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
     import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     val messageList = result.failedElements.map(_._3)
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
-        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
         messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
 
-  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
+  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Unit = {
     import InspectorsHelper.indentErrorMessages
-    val result = runAndCollectResult(namesOfArgs, rows, resourceName, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+    val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     if (result.passedCount == 0) {
       val messageList = result.failedElements.map(_._3)
       throw new exceptions.TestFailedException(
-        sde => Some(FailureMessages(resourceName, UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
+        sde => Some(messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n")))),
         messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -482,19 +482,19 @@ private[prop] trait NonGeneratedTableDrivenPropertyChecks extends Whenever with 
   }
 
   def exists[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenExistsFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
   def exists[A, B](table: TableFor2[A, B])(fun: (A, B) => Unit): Unit = {
-    doExists[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenExistsFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3)(fun.tupled)
+    doExists[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "NonGeneratedTableDrivenPropertyChecks.scala", "exists", 3)(fun.tupled)
   }
 
   def forEvery[A](table: TableFor1[A])(fun: (A) => Unit): Unit = {
-    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){a => fun(a._1)}
+    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3){a => fun(a._1)}
   }
 
   def forEvery[A, B](table: TableFor2[A, B])(fun: (A, B) => Unit): Unit = {
-    doForEvery[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, "tableDrivenForEveryFailed", "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3)(fun.tupled)
+    doForEvery[(A, B)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "NonGeneratedTableDrivenPropertyChecks.scala", "forEvery", 3)(fun.tupled)
   }
 
   /**

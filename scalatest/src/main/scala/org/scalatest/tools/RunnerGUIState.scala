@@ -64,7 +64,7 @@ private[scalatest] object ReadyState extends RunnerGUIState {
     catch {
       case e: IllegalArgumentException => {
         runnerGUI.prepUIForReady()
-        runnerGUI.showErrorDialog(Resources("couldntRun"), e.getMessage())
+        runnerGUI.showErrorDialog(Resources.couldntRun, e.getMessage())
         this
       }
     }
@@ -86,7 +86,7 @@ private[scalatest] object ReadyState extends RunnerGUIState {
         catch {
           case e: IllegalArgumentException => {
             runnerGUI.prepUIForReady()
-            runnerGUI.showErrorDialog(Resources("couldntRerun"), e.getMessage())
+            runnerGUI.showErrorDialog(Resources.couldntRerun, e.getMessage())
             this
           }
         }

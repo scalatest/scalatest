@@ -24,10 +24,10 @@ class ShouldBeEmptyStructuralSpec extends FunSpec {
   val fileName: String = "ShouldBeEmptyStructuralSpec.scala"
     
   def wasNotEmpty(left: Any): String = 
-    FailureMessages("wasNotEmpty", left)
+    FailureMessages.wasNotEmpty(left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages("wasEmpty", left)
+    FailureMessages.wasEmpty(left)
   
   describe("empty matcher") {
     

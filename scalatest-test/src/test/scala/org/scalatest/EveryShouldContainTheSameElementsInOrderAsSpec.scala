@@ -60,7 +60,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))))
+        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -91,7 +91,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))))
+        e1.message.get should be (Resources.didNotContainSameElementsInOrder(decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -121,7 +121,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElementsInOrder", decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -151,7 +151,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElementsInOrder", decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -181,7 +181,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElementsInOrder", decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -211,7 +211,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsInOrderAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElementsInOrder", decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedSameElementsInOrder(decorateToStringValue(toList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality

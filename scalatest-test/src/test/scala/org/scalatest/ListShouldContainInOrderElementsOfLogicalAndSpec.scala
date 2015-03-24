@@ -71,11 +71,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum") and contain inOrderElementsOf Seq("fum", "foe", "fie", "fee"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("fum", "foe", "fie", "fee") and contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -84,11 +84,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM") and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE") and (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -96,11 +96,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM") and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE") and contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         (fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ") and contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -110,14 +110,14 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           fumList should (contain inOrderElementsOf Seq("fum", "foe", "fie", "fee") and contain inOrderElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e2.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -128,11 +128,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain inOrderElementsOf Seq("fum", "foe", "fie", "fee"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, fumList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -141,11 +141,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FAM")))
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, fumList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FAM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FAM")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -153,11 +153,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (toList) and contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, toList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, toList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (equal (fumList) and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
@@ -167,7 +167,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -178,11 +178,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (be_== (toList) and contain inOrderElementsOf Seq("fum", "foe", "fie", "fee"))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be_== (fumList) and contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -191,11 +191,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (be_== (toList) and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be_== (fumList) and (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -203,11 +203,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (be_== (fumList) and contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (be_== (toList) and contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (be_== (fumList) and contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
 
@@ -217,7 +217,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -228,11 +228,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("fum", "foe", "fie", "fee") and be_== (toList))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")) + ", but " + FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum") and be_== (fumList))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -241,11 +241,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM") and be_== (toList))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU") and (be_== (fumList)))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -253,11 +253,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain inOrderElementsOf Seq("FEE", "FIE", "FOE", "FUM") and be_== (fumList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE") and be_== (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ") and be_== (fumList))) (after being lowerCased and trimmed)
       }
 
@@ -267,7 +267,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -278,11 +278,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain inOrderElementsOf (Seq("fum", "foe", "fie", "fee")) and not contain inOrderElementsOf (Seq("happy", "birthday", "to", "you")))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not contain inOrderElementsOf (Seq("fee", "fie", "foe", "fum")) and not contain inOrderElementsOf (Seq("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -291,11 +291,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE")) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")) and (not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -303,11 +303,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAllElementsOfInOrder", fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAllElementsOfInOrder(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE")) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -316,14 +316,14 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain inOrderElementsOf (Seq("fee", "fie", "foe", "fum")) and not contain inOrderElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e2.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -334,11 +334,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain inOrderElementsOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and not contain inOrderElementsOf (Seq("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, toList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -347,11 +347,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and (not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, toList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -359,11 +359,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, fumList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, fumList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not equal (toList) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, toList), fileName, thisLineNumber - 2)
       }
 
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -372,7 +372,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -383,11 +383,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be_== (fumList) and not contain inOrderElementsOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be_== (toList) and not contain inOrderElementsOf (Seq("fum", "foe", "fie", "fee")))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("fum", "foe", "fie", "fee")), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -396,11 +396,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be_== (fumList) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be_== (toList) and (not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
       }
 
       def `should use an explicitly provided Equality` {
@@ -408,11 +408,11 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not be_== (toList) and not contain inOrderElementsOf (Seq("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAllElementsOfInOrder", fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAllElementsOfInOrder(fumList, Seq("FUM", "FOE", "FIE", "FEE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not be_== (fumList) and not contain inOrderElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (not contain inOrderElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain inOrderElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -422,7 +422,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
   }
@@ -506,14 +506,14 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain inOrderElementsOf Seq(1, 2, 3) and contain inOrderElementsOf Seq(1, 2, 2, 3))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e2.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -593,7 +593,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -661,14 +661,14 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not contain inOrderElementsOf (Seq(1, 2, 2, 3)) and not contain inOrderElementsOf (Seq(8, 3, 4)))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e2.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
 
@@ -736,7 +736,7 @@ class ListShouldContainInOrderElementsOfLogicalAndSpec extends Spec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("inOrderElementsOfDuplicate")))
+        e1.message should be (Some(FailureMessages.inOrderElementsOfDuplicate))
       }
     }
   }

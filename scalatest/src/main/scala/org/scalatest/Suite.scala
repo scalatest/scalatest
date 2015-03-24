@@ -16,20 +16,12 @@
 package org.scalatest
 
 import java.lang.annotation._
-import java.io.Serializable
-import java.lang.reflect.Constructor
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
+import java.lang.reflect.{InvocationTargetException, Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import Suite.simpleNameForTest
-import Suite.parseSimpleName
-import Suite.stripDollars
 import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
-import Suite.checkForPublicNoArgConstructor
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.anExceptionThatShouldCauseAnAbort
@@ -38,8 +30,8 @@ import Suite.takesInformer
 import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
 import Suite.testMethodTakesAnInformer
+import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
-import Suite.getIndentedTextForTest
 import Suite.getEscapedIndentedTextForTest
 import Suite.getTopOfClass
 import Suite.getTopOfMethod
@@ -47,32 +39,30 @@ import Suite.getTopOfMethod
 import Suite.getSuiteRunTestGoodies
 import Suite.autoTagClassAnnotations
 import org.scalatest.events._
-import org.scalatest.tools.StandardOutReporter
 import Suite.getMessageForException
 import Suite.reportTestStarting
 import Suite.reportTestIgnored
 import Suite.reportTestSucceeded
 import Suite.reportTestPending
 import Suite.reportTestCanceled
-import Suite.reportInfoProvided
 import Suite.createInfoProvided
 import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
 import Suite.getMethodForTestName
 import scala.reflect.NameTransformer
 import tools.SuiteDiscoveryHelper
-import tools.Runner
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
-import exceptions._
 import exceptions._
 import collection.mutable.ListBuffer
 import collection.GenTraversable
 import annotation.tailrec
-import collection.immutable
 import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
-
 import scala.util.control.NonFatal
+
+// SKIP-SCALATESTJS-START
+import org.scalatest.tools.StandardOutReporter
+// SKIP-SCALATESTJS-END
 
 /*
  * <h2>Using <code>info</code> and <code>markup</code></h2>
@@ -593,6 +583,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   */
   def nestedSuites: collection.immutable.IndexedSeq[Suite] = Vector.empty
 
+  // SKIP-SCALATESTJS-START
   /**
    * Executes one or more tests in this <code>Suite</code>, printing results to the standard output.
    *
@@ -797,7 +788,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
         }
       }
     if (testName != null && desiredTests.isEmpty)
-      throw new IllegalArgumentException(Resources("testNotFound", testName))
+      throw new IllegalArgumentException(Resources.testNotFound(testName))
 
     val dispatch = new DispatchReporter(List(new StandardOutReporter(durations, color, shortstacks, fullstacks, false, false, false, false, false)))
     val tracker = new Tracker
@@ -820,9 +811,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val eMessage = e.getMessage
       val rawString = 
         if (eMessage != null && eMessage.length > 0)
-          Resources("runOnSuiteException")
+          Resources.runOnSuiteException
         else
-          Resources("runOnSuiteExceptionWithMessage", eMessage)
+          Resources.runOnSuiteExceptionWithMessage(eMessage)
       val formatter = formatterForSuiteAborted(thisSuite, rawString)
       val duration = System.currentTimeMillis - suiteStartTime
       dispatch(SuiteAborted(tracker.nextOrdinal(), rawString, thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
@@ -858,13 +849,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     catch {
       case e: InstantiationException =>
         dispatchSuiteAborted(e)
-        dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
       case e: IllegalAccessException =>
         dispatchSuiteAborted(e)
-        dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
       case e: NoClassDefFoundError =>
         dispatchSuiteAborted(e)
-        dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadClass", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+        dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadClass(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
       case e: Throwable =>
         dispatchSuiteAborted(e)
         dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
@@ -903,6 +894,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </pre>
    */
   final def execute { execute() }
+
+  // SKIP-SCALATESTJS-END
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tests that are tagged and
@@ -955,6 +948,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def testNames: Set[String] = Set.empty
 
+  // SKIP-SCALATESTJS-START
   // Leave this around for a while so can print out a warning if we find testXXX methods.
   private[scalatest] def yeOldeTestNames: Set[String] = {
 
@@ -976,6 +970,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     }
     result
   }
+  // SKIP-SCALATESTJS-END
 
   /*
   Old style method names will have (Informer) at the end still, but new ones will
@@ -996,7 +991,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
         }
         catch {
           case e: NoSuchMethodException =>
-            throw new IllegalArgumentException(Resources("testNotFound", testName))
+            throw new IllegalArgumentException(Resources.testNotFound(testName))
         }
       case e: Throwable =>
         throw e
@@ -1204,11 +1199,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       throw new NullPointerException("testName was null")
     if (args == null)
       throw new NullPointerException("args was null")
-    
+
+    // SKIP-SCALATESTJS-START
     if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
       if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
       else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
     }
+    // SKIP-SCALATESTJS-END
 
     import args._
 
@@ -1325,7 +1322,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val testsStatus = runTests(testName, newArgs)
 
       if (stopper.stopRequested) {
-        val rawString = Resources("executeStopping")
+        val rawString = Resources.executeStopping
         report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
       }
       new CompositeStatus(Set(nestedSuitesStatus, testsStatus))
@@ -1380,7 +1377,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
         // Create a Rerunner if the Suite has a no-arg constructor 
         val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
 
-        val rawString = Resources("suiteExecutionStarting")
+        val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
 
         val suiteStartTime = System.currentTimeMillis
@@ -1391,7 +1388,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           // Same thread, so OK to send same tracker
           val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
-          val rawString = Resources("suiteCompletedNormally")
+          val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
 
           val duration = System.currentTimeMillis - suiteStartTime
@@ -1403,9 +1400,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
             val eMessage = e.getMessage
             val rawString = 
               if (eMessage != null && eMessage.length > 0)
-                Resources("executeExceptionWithMessage", eMessage)
+                Resources.executeExceptionWithMessage(eMessage)
               else
-                Resources("executeException")
+                Resources.executeException
             val formatter = formatterForSuiteAborted(nestedSuite, rawString)
 
             val duration = System.currentTimeMillis - suiteStartTime
@@ -1564,7 +1561,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       if (isPending)
         throw new TestPendingException
       else
-        throw new TestFailedException(Resources("pendingUntilFixed"), 2)
+        throw new TestFailedException(Resources.pendingUntilFixed, 2)
   }
 
   /**
@@ -1607,12 +1604,15 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def rerunner: Option[String] = {
     val suiteClass = getClass
+    // SKIP-SCALATESTJS-START
     val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
     val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
     if (isAccessible || hasWrapWithAnnotation)
       Some(suiteClass.getName)
     else
       None
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY Some(suiteClass.getName)
   }
   
   /**
@@ -1754,6 +1754,7 @@ private[scalatest] object Suite {
 
   def anExceptionThatShouldCauseAnAbort(throwable: Throwable): Boolean =
     throwable match {
+      // SKIP-SCALATESTJS-START
       case _: AnnotationFormatError | 
 /*
            _: org.scalatest.TestRegistrationClosedException |
@@ -1768,6 +1769,7 @@ private[scalatest] object Suite {
       // Don't use AWTError directly because it doesn't exist on Android, and a user
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true
+      // SKIP-SCALATESTJS-END
       case _ => false
     }
 
@@ -1870,8 +1872,8 @@ used for test events like succeeded/failed, etc.
     val decodedTestText = NameTransformer.decode(testText)
     val formattedText =
       if (includeIcon) {
-        val testSucceededIcon = Resources("testSucceededIconChar")
-        ("  " * (if (level == 0) 0 else (level - 1))) + Resources("iconPlusShortName", testSucceededIcon, decodedTestText)
+        val testSucceededIcon = Resources.testSucceededIconChar
+        ("  " * (if (level == 0) 0 else (level - 1))) + Resources.iconPlusShortName(testSucceededIcon, decodedTestText)
       }
       else {
         ("  " * level) + decodedTestText
@@ -1888,8 +1890,8 @@ used for test events like succeeded/failed, etc.
         decodedTestText
     val formattedText =
       if (includeIcon) {
-        val testSucceededIcon = Resources("testSucceededIconChar")
-        ("  " * (if (level == 0) 0 else (level - 1))) + Resources("iconPlusShortName", testSucceededIcon, escapedTestText)
+        val testSucceededIcon = Resources.testSucceededIconChar
+        ("  " * (if (level == 0) 0 else (level - 1))) + Resources.iconPlusShortName(testSucceededIcon, escapedTestText)
       }
       else {
         ("  " * level) + escapedTestText
@@ -1902,7 +1904,7 @@ used for test events like succeeded/failed, etc.
   def getIndentedTextForInfo(message: String, level: Int, includeIcon: Boolean, infoIsInsideATest: Boolean) = {
     val formattedText =
       if (includeIcon) {
-        val infoProvidedIcon = Resources("infoProvidedIconChar")
+        val infoProvidedIcon = Resources.infoProvidedIconChar
         //
         // Inside a test, you want level 1 to stay 1
         // [scalatest] - outermost test (5 milliseconds)
@@ -1918,8 +1920,8 @@ used for test events like succeeded/failed, etc.
             case 1 if infoIsInsideATest => 1
             case _ => level - 1
           }
-        ("  " * indentationLevel) + Resources("iconPlusShortName", infoProvidedIcon, message)
-        // ("  " * (if (level <= 1) level else (level - 1))) + Resources("iconPlusShortName", infoProvidedIcon, message)
+        ("  " * indentationLevel) + Resources.iconPlusShortName(infoProvidedIcon, message)
+        // ("  " * (if (level <= 1) level else (level - 1))) + Resources.iconPlusShortName(infoProvidedIcon, message)
       }
       else {
         ("  " * level) + message
@@ -1931,7 +1933,7 @@ used for test events like succeeded/failed, etc.
     if (e.getMessage != null)
       e.getMessage
     else
-      Resources("exceptionThrown", e.getClass.getName) // Say something like, "java.lang.Exception was thrown."
+      Resources.exceptionThrown(e.getClass.getName) // Say something like, "java.lang.Exception was thrown."
 
   def indentation(level: Int) = "  " * level
   
@@ -2000,7 +2002,7 @@ used for test events like succeeded/failed, etc.
   }
 
   def reportTestIgnored(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, formatter: Formatter, location: Option[Location]) {
-    val testSucceededIcon = Resources("testSucceededIconChar")
+    val testSucceededIcon = Resources.testSucceededIconChar
     report(TestIgnored(tracker.nextOrdinal(), theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, Some(formatter),
       location))
   }
@@ -2297,16 +2299,16 @@ used for test events like succeeded/failed, etc.
 
   def checkChosenStyles(configMap: ConfigMap, styleName: String) {
     val chosenStyleSet = 
-        if (configMap.isDefinedAt(Runner.CHOSEN_STYLES))
-          configMap(Runner.CHOSEN_STYLES).asInstanceOf[Set[String]]
+        if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
+          configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
         else
           Set.empty[String]
     if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
       val e =
         if (chosenStyleSet.size == 1)
-          new NotAllowedException(Resources("notTheChosenStyle", styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
+          new NotAllowedException(Resources.notTheChosenStyle(styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
         else
-          new NotAllowedException(Resources("notOneOfTheChosenStyles", styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet.iterator)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
+          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet.iterator)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
       throw e
     }
   }
@@ -2322,14 +2324,15 @@ used for test events like succeeded/failed, etc.
       case 0 => "<empty list>"
       //case 1 if quotedWords(0).isEmpty => "\"\""
       case 1 => quotedWords(0)
-      case 2 => Resources("leftAndRight", quotedWords(0), quotedWords(1))
+      case 2 => Resources.leftAndRight(quotedWords(0), quotedWords(1))
       case _ =>
         val (leading, trailing) = quotedWords.splitAt(quotedWords.length - 2)
-        leading.mkString(", ") + ", " + Resources("leftCommaAndRight", trailing(0), trailing(1))
+        leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
     }
   }
   
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
+    // SKIP-SCALATESTJS-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
@@ -2342,7 +2345,9 @@ used for test events like succeeded/failed, etc.
       else
         Map.empty[String, Set[String]]
     
-    Runner.mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
+    mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY Map.empty[String, Set[String]]
   }
 
   def handleFailedTest(
@@ -2442,7 +2447,7 @@ used for test events like succeeded/failed, etc.
      found match {
        case Some(method) => method
        case None =>
-         throw new IllegalArgumentException(Resources("testNotFound", testName))
+         throw new IllegalArgumentException(Resources.testNotFound(testName))
      }
   }
 
@@ -2458,6 +2463,18 @@ used for test events like succeeded/failed, etc.
    if (theSuite.nestedSuites.isEmpty) simpleName
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
+
+  val IgnoreTagName = "org.scalatest.Ignore"
+
+  private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
+    (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
+      a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
+    }
+
+  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
+
+  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 }
 
 

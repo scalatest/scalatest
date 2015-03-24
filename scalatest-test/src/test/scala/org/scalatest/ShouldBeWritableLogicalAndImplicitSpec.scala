@@ -25,26 +25,26 @@ class ShouldBeWritableLogicalAndImplicitSpec extends Spec {
   val fileName: String = "ShouldBeWritableLogicalAndImplicitSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages("wasEqualTo", left, right)
+    FailureMessages.wasEqualTo(left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    FailureMessages("wasNotEqualTo", left, right)
+    FailureMessages.wasNotEqualTo(left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages("equaled", left, right)
+    FailureMessages.equaled(left, right)
     
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages("didNotEqual", left, right)
+    FailureMessages.didNotEqual(left, right)
   
   def wasNotWritable(left: Any): String = 
-    FailureMessages("wasNotWritable", left)
+    FailureMessages.wasNotWritable(left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages("wasWritable", left)
+    FailureMessages.wasWritable(left)
     
   def allError(message: String, lineNumber: Int, left: Any): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
     
   trait Thing {

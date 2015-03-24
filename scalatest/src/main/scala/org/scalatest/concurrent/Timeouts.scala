@@ -247,7 +247,7 @@ trait Timeouts {
       fun,
       interruptor,
       t => new TestFailedDueToTimeoutException(
-        sde => Some(Resources("timeoutFailedAfter", timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "failAfter"), None, timeout
+        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "failAfter"), None, timeout
       )
     )
   }
@@ -288,7 +288,7 @@ trait Timeouts {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor): T = {
-    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources("timeoutCanceledAfter", timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter"), None))
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter"), None))
   }
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {

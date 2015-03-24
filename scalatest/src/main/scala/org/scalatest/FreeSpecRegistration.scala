@@ -50,7 +50,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait FreeSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
+  private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
 
   protected[scalatest] def getEngine: Engine = engine
 
@@ -99,11 +99,11 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FreeSpecRegistration.scala", "registerTest", 5, -2, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistration.scala", "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", "FreeSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistration.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
   /**
@@ -127,11 +127,11 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), "inCannotAppearInsideAnotherIn", "FreeSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", "FreeSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -155,11 +155,11 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), "ignoreCannotAppearInsideAnIn", "FreeSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", "FreeSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**
@@ -252,13 +252,13 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
      */
     def - (fun: => Unit) {
       try {
-        registerNestedBranch(string, None, fun, "dashCannotAppearInsideAnIn", "FreeSpecLike.scala", "-", 3, -2, None)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecRegistration.scala", "-", 3, -2, None)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideInClauseNotDashClause"), Some(e), e => 3)
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => 3)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => 3)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInDashClause", UnquotedString(other.getClass.getName), string), Some(other), e => 3)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string), Some(other), e => 3)
         case other: Throwable => throw other
       }
     }

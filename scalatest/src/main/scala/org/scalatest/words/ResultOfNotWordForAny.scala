@@ -68,11 +68,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def equal[R](right: R)(implicit evidence: EqualityConstraint[T, R]) {
     if (evidence.areEqual(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-         if (shouldBeTrue) "didNotEqual" else "equaled",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotEqual(left, right)
+        else
+          FailureMessages.equaled(left, right)
       )
   }
 
@@ -90,11 +89,16 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       val wasNotEqualTo = if (rightIsBoolean) "wasNot" else "wasNotEqualTo"
       val wasEqualTo = if (rightIsBoolean) "was" else "wasEqualTo"
       throw newTestFailedException(
-        FailureMessages(
-         if (shouldBeTrue) wasNotEqualTo else wasEqualTo,
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          if (rightIsBoolean)
+            FailureMessages.wasNot(left, right)
+          else
+            FailureMessages.wasNotEqualTo(left, right)
+        else
+          if (rightIsBoolean)
+            FailureMessages.was(left, right)
+          else
+            FailureMessages.wasEqualTo(left, right)
       )
     }
   }
@@ -110,11 +114,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be_==(right: Any) {
     if ((left == right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-         if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotEqualTo(left, right)
+        else
+          FailureMessages.wasEqualTo(left, right)
       )
   }
 
@@ -130,9 +133,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if ((left == null) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("wasNotNull", left) 
+          FailureMessages.wasNotNull(left) 
         else
-          FailureMessages("wasNull")
+          FailureMessages.wasNull
       )
     }
   }
@@ -148,11 +151,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(comparison: ResultOfLessThanOrEqualToComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotLessThanOrEqualTo" else "wasLessThanOrEqualTo",
-          left,
-          comparison.right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotLessThanOrEqualTo(left, comparison.right)
+        else
+          FailureMessages.wasLessThanOrEqualTo(left, comparison.right)
       )
     }
   }
@@ -168,11 +170,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotGreaterThanOrEqualTo" else "wasGreaterThanOrEqualTo",
-          left,
-          comparison.right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotGreaterThanOrEqualTo(left, comparison.right)
+        else
+          FailureMessages.wasGreaterThanOrEqualTo(left, comparison.right)
       )
     }
   }
@@ -188,11 +189,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(comparison: ResultOfLessThanComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotLessThan" else "wasLessThan",
-          left,
-          comparison.right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotLessThan(left, comparison.right)
+        else
+          FailureMessages.wasLessThan(left, comparison.right)
       )
     }
   }
@@ -208,11 +208,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(comparison: ResultOfGreaterThanComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotGreaterThan" else "wasGreaterThan",
-          left,
-          comparison.right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotGreaterThan(left, comparison.right)
+        else
+          FailureMessages.wasGreaterThan(left, comparison.right)
       )
     }
   }
@@ -231,7 +230,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun("ResultOfNotWordForAny.scala", "be")) 
   }
 
@@ -333,12 +332,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(spread: Spread[T]) {
     if (spread.isWithin(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotPlusOrMinus" else "wasPlusOrMinus",
-          left,
-          spread.pivot,
-          spread.tolerance
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotPlusOrMinus(left, spread.pivot, spread.tolerance)
+        else
+          FailureMessages.wasPlusOrMinus(left, spread.pivot, spread.tolerance)
       )
     }
   }
@@ -354,11 +351,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]) {
     if (left.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
-          left, 
-          resultOfDefinedAt.right
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotDefinedAt(left, resultOfDefinedAt.right)
+        else
+          FailureMessages.wasDefinedAt(left, resultOfDefinedAt.right)
       )
   }
 
@@ -373,12 +369,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def equal(spread: Spread[T]) {
     if (spread.isWithin(left) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-          left,
-          spread.pivot,
-          spread.tolerance
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotEqualPlusOrMinus(left, spread.pivot, spread.tolerance)
+        else
+          FailureMessages.equaledPlusOrMinus(left, spread.pivot, spread.tolerance)
       )
     }
   }
@@ -394,10 +388,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def equal(right: Null) {
     if ((left == null) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotEqualNull" else "equaledNull",
-          left
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotEqualNull(left)
+        else
+          FailureMessages.equaledNull
       )
     }
   }
@@ -411,12 +405,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val leftLength = len.lengthOf(left)
     if ((leftLength == right) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-          else
-            FailureMessages("hadLength", left, right)
-        )
+        if (shouldBeTrue)
+          FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, right)
+        else
+          FailureMessages.hadLength(left, right)
       )
     }
   }
@@ -430,12 +422,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val leftSize = sz.sizeOf(left)
     if ((leftSize == right) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
-          else
-            FailureMessages("hadSize", left, right)
-        )
+        if (shouldBeTrue)
+          FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, right)
+        else
+          FailureMessages.hadSize(left, right)
       )
     }
   }
@@ -487,8 +477,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           // 0 1 | 0 | 1
           // 1 0 | 0 | 1
           throw newTestFailedException(
-            FailureMessages(
-              "propertyDidNotHaveExpectedValue",
+            FailureMessages.propertyDidNotHaveExpectedValue(
                UnquotedString(firstFailure.propertyName),
                firstFailure.expectedValue,
                firstFailure.actualValue,
@@ -501,14 +490,13 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           val failureMessage =
             if (justOneProperty) {
               val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-              FailureMessages(
-                "propertyHadExpectedValue",
+              FailureMessages.propertyHadExpectedValue(
                 UnquotedString(firstPropertyResult.propertyName),
                 firstPropertyResult.expectedValue,
                 left
               )
             }
-            else FailureMessages("allPropertiesHadExpectedValues", left)
+            else FailureMessages.allPropertiesHadExpectedValues(left)
 
           throw newTestFailedException(failureMessage)
       } 
@@ -521,9 +509,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if ((actualMessage == right) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, right)
+          FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, right)
         else
-          FailureMessages("hadExpectedMessage", left, right)
+          FailureMessages.hadExpectedMessage(left, right)
       )
     }
   }
@@ -540,12 +528,11 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = expectedElement
     if (evidence.contains(left, right) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-            left,
-            right
-          )
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainExpectedElement(left, right)
+        else
+          FailureMessages.containedExpectedElement(left, right)
+      )
     }
   }
 
@@ -561,9 +548,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if ((left == null) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("wasNotNull", left) 
+          FailureMessages.wasNotNull(left)
         else
-          FailureMessages("wasNull")
+          FailureMessages.wasNull
       )
     }
   }
@@ -599,9 +586,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("wasNot", left, UnquotedString(result.propertyName))
+          FailureMessages.wasNot(left, UnquotedString(result.propertyName))
         else
-          FailureMessages("was", left, UnquotedString(result.propertyName))
+          FailureMessages.was(left, UnquotedString(result.propertyName))
       )
     }
   }
@@ -637,9 +624,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("wasNotA", left, UnquotedString(result.propertyName))
+          FailureMessages.wasNotA(left, UnquotedString(result.propertyName))
         else
-          FailureMessages("wasA", left, UnquotedString(result.propertyName))
+          FailureMessages.wasA(left, UnquotedString(result.propertyName))
       )
     }
   }
@@ -675,9 +662,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("wasNotAn", left, UnquotedString(result.propertyName))
+          FailureMessages.wasNotAn(left, UnquotedString(result.propertyName))
         else
-          FailureMessages("wasAn", left, UnquotedString(result.propertyName))
+          FailureMessages.wasAn(left, UnquotedString(result.propertyName))
       )
     }
   }
@@ -693,11 +680,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
     if ((resultOfSameInstanceAsApplication.right eq toAnyRef(left)) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
-          left,
-          resultOfSameInstanceAsApplication.right
-        )
+        if (shouldBeTrue)
+          FailureMessages.wasNotSameInstanceAs(left, resultOfSameInstanceAsApplication.right)
+        else
+          FailureMessages.wasSameInstanceAs(left, resultOfSameInstanceAsApplication.right)
       )
     }
   }
@@ -713,10 +699,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
     if (sortable.isSorted(left) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotSorted" else "wasSorted", 
-          left
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotSorted(left)
+        else
+          FailureMessages.wasSorted(left)
       )
   }
   
@@ -731,10 +717,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]) {
     if (readability.isReadable(left) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotReadable" else "wasReadable", 
-          left
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotReadable(left)
+        else
+          FailureMessages.wasReadable(left)
       )
   }
   
@@ -749,10 +735,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](writableWord: WritableWord)(implicit writability: Writability[T]) {
     if (writability.isWritable(left) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotWritable" else "wasWritable", 
-          left
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotWritable(left)
+        else
+          FailureMessages.wasWritable(left)
       )
   }
   
@@ -767,10 +753,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
     if (emptiness.isEmpty(left) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotEmpty" else "wasEmpty", 
-          left
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotEmpty(left)
+        else
+          FailureMessages.wasEmpty(left)
       )
   }
   
@@ -785,10 +771,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U](definedWord: DefinedWord)(implicit definition: Definition[T]) {
     if (definition.isDefined(left) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "wasNotDefined" else "wasDefined", 
-          left
-        )    
+        if (shouldBeTrue)
+          FailureMessages.wasNotDefined(left)
+        else
+          FailureMessages.wasDefined(left)
       )
   }
 
@@ -798,11 +784,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (evidence.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -812,11 +797,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (evidence.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneElementOf(left, right) 
+        else 
+          FailureMessages.containedOneElementOf(left, right)
       )
   }
 
@@ -826,11 +810,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -840,11 +823,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right) 
+        else 
+          FailureMessages.containedAtLeastOneElementOf(left, right)
       )
   }
 
@@ -854,11 +836,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -868,11 +849,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.containedAtLeastOneOf(left, right) 
+        else 
+          FailureMessages.didNotContainAtLeastOneOf(left, right)
       )
   }
   
@@ -882,11 +862,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainSameElements(left, right)
+        else
+          FailureMessages.containedSameElements(left, right)
       )
   }
 
@@ -896,11 +875,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainSameElementsInOrder(left, right)
+        else
+          FailureMessages.containedSameElementsInOrder(left, right)
       )
   }
   
@@ -908,17 +886,18 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     val right = only.right
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
-      val postfix =
-        if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
-          "WithFriendlyReminder"
-        else
-          ""
+      val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
       throw newTestFailedException(
-        FailureMessages(
-          (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          if (withFriendlyReminder)
+            FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          else
+            FailureMessages.didNotContainOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          if (withFriendlyReminder)
+            FailureMessages.containedOnlyElementsWithFriendlyReminder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          else
+            FailureMessages.containedOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     }
   }
@@ -927,11 +906,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
   
@@ -940,11 +918,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -953,11 +930,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllElementsOf(left, right) 
+        else 
+          FailureMessages.containedAllElementsOf(left, right)
       )
   }
 
@@ -966,11 +942,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -979,11 +954,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAllElementsOfInOrder" else "containedAllElementsOfInOrder",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllElementsOfInOrder(left, right) 
+        else 
+          FailureMessages.containedAllElementsOfInOrder(left, right)
       )
   }
   
@@ -993,11 +967,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
-          left,
-          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
 
@@ -1007,11 +980,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainAtMostOneElementOf" else "containedAtMostOneElementOf",
-          left,
-          right
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtMostOneElementOf(left, right) 
+        else 
+          FailureMessages.containedAtMostOneElementOf(left, right)
       )
   }
 
@@ -1019,24 +991,22 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right: Any = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainKey" else "containedKey",
-            left,
-            right
-          )
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainKey(left, right)
+        else
+          FailureMessages.containedKey(left, right)
+      )
     }
   }
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
     val right: Any = resultOfValueWordApplication.expectedValue
     if (valueMapping.containsValue(left, right) != shouldBeTrue) {
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainValue" else "containedValue",
-            left,
-            right
-          )
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotContainValue(left, right)
+        else
+          FailureMessages.containedValue(left, right)
+      )
     }
   }
   
@@ -1093,11 +1063,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def include(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotIncludeSubstring" else "includedSubstring",
-          left,
-          expectedSubstring
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotIncludeSubstring(left, expectedSubstring)
+        else
+          FailureMessages.includedSubstring(left, expectedSubstring)
       )
   }
 
@@ -1133,11 +1102,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def startWith(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left.indexOf(expectedSubstring) == 0) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotStartWith" else "startedWith",
-          left,
-          expectedSubstring
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotStartWith(left, expectedSubstring)
+        else
+          FailureMessages.startedWith(left, expectedSubstring)
       )
   }
 
@@ -1168,11 +1136,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def endWith(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left endsWith expectedSubstring) != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotEndWith" else "endedWith",
-          left,
-          expectedSubstring
-        )
+        if (shouldBeTrue)
+          FailureMessages.didNotEndWith(left, expectedSubstring)
+        else
+          FailureMessages.endedWith(left, expectedSubstring)
       )
   }
 

@@ -1899,7 +1899,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
               // methodNameToInvokeWithGet would be "getTitle"
               val methodNameToInvokeWithGet = "get"+ mangledPropertyName(0).toUpper + mangledPropertyName.substring(1)
 
-              throw newTestFailedException(Resources("propertyNotFound", methodNameToInvoke, expectedValue.toString, methodNameToInvokeWithGet))
+              throw newTestFailedException(Resources.propertyNotFound(methodNameToInvoke, expectedValue.toString, methodNameToInvokeWithGet))
 
             case Some(result) =>
 
@@ -1978,11 +1978,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
       if ((toAnyRef(left) eq right) != willBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (willBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
-            left,
-            right
-          )
+          if (willBeTrue)
+            FailureMessages.wasNotSameInstanceAs(left, right)
+          else 
+            FailureMessages.wasSameInstanceAs(left, right)
         )
     }
 
@@ -1998,9 +1997,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if (clazz.isAssignableFrom(left.getClass)) {
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+            FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
           else
-            FailureMessages("wasAnInstanceOf")
+            FailureMessages.wasAnInstanceOf
         )
       }
     }
@@ -2039,9 +2038,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if (result.matches != willBeTrue) {
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("wasNotA", left, UnquotedString(result.propertyName))
+            FailureMessages.wasNotA(left, UnquotedString(result.propertyName))
           else
-            FailureMessages("wasA", left, UnquotedString(result.propertyName))
+            FailureMessages.wasA(left, UnquotedString(result.propertyName))
         )
       }
     }
@@ -2078,9 +2077,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if (beTrueMatchResult.matches != willBeTrue) {
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("wasNotAn", left, UnquotedString(beTrueMatchResult.propertyName))
+            FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName))
           else
-            FailureMessages("wasAn", left, UnquotedString(beTrueMatchResult.propertyName))
+            FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName))
         )
       }
     }
@@ -2097,9 +2096,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if (left.isDefinedAt(right) != willBeTrue)
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("wasNotDefinedAt", left, right)
+            FailureMessages.wasNotDefinedAt(left, right)
           else
-            FailureMessages("wasDefinedAt", left, right)
+            FailureMessages.wasDefinedAt(left, right)
         )
     }
 
@@ -2201,11 +2200,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def regex(rightRegex: Regex) {
       if (rightRegex.findFirstIn(left).isDefined != willBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (willBeTrue) "didNotIncludeRegex" else "includedRegex",
-            left,
-            rightRegex
-          )
+          if (willBeTrue)
+            FailureMessages.didNotIncludeRegex(left, rightRegex) 
+         else 
+            FailureMessages.includedRegex(left, rightRegex)
         )
     }
 
@@ -2262,11 +2260,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def regex(rightRegex: Regex) {
       if (rightRegex.pattern.matcher(left).lookingAt != willBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (willBeTrue) "didNotStartWithRegex" else "startedWithRegex",
-            left,
-            rightRegex
-          )
+          if (willBeTrue)
+            FailureMessages.didNotStartWithRegex(left, rightRegex)
+          else
+            FailureMessages.startedWithRegex(left, rightRegex)
         )
     }
 
@@ -2324,11 +2321,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != willBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (willBeTrue) "didNotEndWithRegex" else "endedWithRegex",
-            left,
-            rightRegex
-          )
+          if (willBeTrue)
+            FailureMessages.didNotEndWithRegex(left, rightRegex) 
+          else 
+            FailureMessages.endedWithRegex(left, rightRegex)
         )
     }
 
@@ -2385,11 +2381,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def regex(rightRegex: Regex) {
       if (rightRegex.pattern.matcher(left).matches != willBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (willBeTrue) "didNotFullyMatchRegex" else "fullyMatchedRegex",
-            left,
-            rightRegex
-          )
+          if (willBeTrue)
+            FailureMessages.didNotFullyMatchRegex(left, rightRegex) 
+          else 
+            FailureMessages.fullyMatchedRegex(left, rightRegex)
         )
     }
 
@@ -2409,8 +2404,8 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
           val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
           MatchResult(
             areEqualComparingArraysStructurally(left, right),
-            FailureMessages("didNotEqual", leftee, rightee),
-            FailureMessages("equaled", left, right)
+            FailureMessages.didNotEqual(leftee, rightee),
+            FailureMessages.equaled(left, right)
           )
         }
       }
@@ -2429,8 +2424,8 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       def apply(left: T): MatchResult = {
         MatchResult(
           spread.isWithin(left),
-          Resources("didNotEqualPlusOrMinus"),
-          Resources("equaledPlusOrMinus"), 
+          Resources.rawDidNotEqualPlusOrMinus,
+          Resources.rawEqualedPlusOrMinus, 
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
@@ -2451,10 +2446,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          Resources("didNotEqualNull"),
-          Resources("equaledNull"),
-          Resources("didNotEqualNull"),
-          Resources("midSentenceEqualedNull"), 
+          Resources.rawDidNotEqualNull,
+          Resources.rawEqualedNull,
+          Resources.rawDidNotEqualNull,
+          Resources.rawMidSentenceEqualedNull, 
           Vector(left), 
           Vector.empty
         )
@@ -2722,16 +2717,16 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if ((leftLength == expectedLength) != willBeTrue) { // No
         if (willBeTrue) {
           No(
-            Resources("hadLengthInsteadOfExpectedLength"),
-            Resources("hadLength"),
+            Resources.rawHadLengthInsteadOfExpectedLength,
+            Resources.rawHadLength,
             Vector(left, leftLength, expectedLength),
             Vector(left, expectedLength)
           )
         }
         else {
           No(
-            Resources("hadLength"),
-            Resources("hadLengthInsteadOfExpectedLength"),
+            Resources.rawHadLength,
+            Resources.rawHadLengthInsteadOfExpectedLength,
             Vector(left, expectedLength),
             Vector(left, leftLength, expectedLength)
           )
@@ -2740,16 +2735,16 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       else { // Yes
         if (willBeTrue) {
           Yes(
-            Resources("hadLengthInsteadOfExpectedLength"),
-            Resources("hadLength"),
+            Resources.rawHadLengthInsteadOfExpectedLength,
+            Resources.rawHadLength,
             Vector(left, leftLength, expectedLength),
             Vector(left, expectedLength)
           )
         }
         else {
           Yes(
-            Resources("hadLength"),
-            Resources("hadLengthInsteadOfExpectedLength"),
+            Resources.rawHadLength,
+            Resources.rawHadLengthInsteadOfExpectedLength,
             Vector(left, expectedLength),
             Vector(left, leftLength, expectedLength)
           )
@@ -2758,25 +2753,25 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
 /*
         No(
           if (willBeTrue) 
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+            FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
           else
-            FailureMessages("hadLength", left, expectedLength),
+            FailureMessages.hadLength(left, expectedLength),
 
           if (!willBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+            FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
           else
-            FailureMessages("hadLength", left, expectedLength)
+            FailureMessages.hadLength(left, expectedLength)
         )
       else Yes(
         if (willBeTrue)
-          FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
         else
-          FailureMessages("hadLength", left, expectedLength),
+          FailureMessages.hadLength(left, expectedLength),
 
         if (!willBeTrue)
-          FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
         else
-          FailureMessages("hadLength", left, expectedLength)
+          FailureMessages.hadLength(left, expectedLength)
       )
 */
     }
@@ -2801,9 +2796,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if ((leftSize == expectedSize) != willBeTrue)
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+            FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, expectedSize)
           else
-            FailureMessages("hadSize", left, expectedSize)
+            FailureMessages.hadSize(left, expectedSize)
         )
     }
 
@@ -2820,9 +2815,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if ((actualMessage== expectedMessage) != willBeTrue)
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, expectedMessage)
+            FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage)
           else
-            FailureMessages("hadExpectedMessage", left, expectedMessage)
+            FailureMessages.hadExpectedMessage(left, expectedMessage)
         )
     }
 
@@ -2914,7 +2909,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
        catch {
          case u: Throwable => {
            if (!clazz.isAssignableFrom(u.getClass)) {
-             val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+             val s = Resources.wrongException(clazz.getName, u.getClass.getName)
              throw newTestFailedException(s, Some(u))
              // throw new TestFailedException(s, u, 3) 
            }
@@ -2925,7 +2920,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
        }
        caught match {
          case None =>
-           val message = Resources("exceptionExpected", clazz.getName)
+           val message = Resources.exceptionExpected(clazz.getName)
            throw newTestFailedException(message)
            // throw new TestFailedException(message, 3)
          case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
@@ -2993,7 +2988,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
+      throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("Matchers.scala", "oneOf"))
     new ResultOfOneOfApplication[R](xs)
   }
 
@@ -3008,7 +3003,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def oneElementOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "oneElementOf"))
+      throw new NotAllowedException(FailureMessages.oneElementOfDuplicate, getStackDepthFun("Matchers.scala", "oneElementOf"))
     new ResultOfOneElementOfApplication[R](xs)
   }
 
@@ -3023,7 +3018,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneOf"))
     new ResultOfAtLeastOneOfApplication(xs)
   }
 
@@ -3038,7 +3033,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def atLeastOneElementOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
+      throw new NotAllowedException(FailureMessages.atLeastOneElementOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
     new ResultOfAtLeastOneElementOfApplication(xs)
   }
 
@@ -3053,7 +3048,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def noElementsOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
+      throw new NotAllowedException(FailureMessages.noElementsOfDuplicate, getStackDepthFun("Matchers.scala", "noElementsOf"))
     new ResultOfNoElementsOfApplication(xs)
   }
 
@@ -3068,7 +3063,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
+      throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("Matchers.scala", "noneOf"))
     new ResultOfNoneOfApplication(xs)
   }
 
@@ -3102,9 +3097,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
    */
   def only[R](xs: R*) = {
     if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
+      throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun("Matchers.scala", "only"))
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("Matchers.scala", "only"))
+      throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("Matchers.scala", "only"))
     new ResultOfOnlyApplication(xs)
   }
   
@@ -3119,7 +3114,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("Matchers.scala", "inOrderOnly"))
     new ResultOfInOrderOnlyApplication(xs)
   }
   
@@ -3134,7 +3129,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def allOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
+      throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
     new ResultOfAllOfApplication(xs)
   }
 
@@ -3149,7 +3144,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def allElementsOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "allElementsOf"))
+      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
     new ResultOfAllElementsOfApplication(xs)
   }
   
@@ -3164,7 +3159,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
+      throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("Matchers.scala", "inOrder"))
     new ResultOfInOrderApplication(xs)
   }
 
@@ -3179,7 +3174,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def inOrderElementsOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
+      throw new NotAllowedException(FailureMessages.inOrderElementsOfDuplicate, getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
     new ResultOfInOrderElementsOfApplication(xs)
   }
   
@@ -3194,7 +3189,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneOf"))
     new ResultOfAtMostOneOfApplication(xs)
   }
 
@@ -3209,7 +3204,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   def atMostOneElementOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
+      throw new NotAllowedException(FailureMessages.atMostOneElementOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
     new ResultOfAtMostOneElementOfApplication(xs)
   }
   
@@ -3285,31 +3280,31 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Unit) {
     collected match {
       case AllCollected =>
-        doForAll(xs, original, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
+        doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e => 
           fun(e)
         }
       case AtLeastCollected(num) => 
-        doForAtLeast(num, xs, original, "atLeastShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case EveryCollected => 
-        doForEvery(xs, original, "everyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case ExactlyCollected(num) => 
-        doForExactly(num, xs, original, "exactlyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case NoCollected =>
-        doForNo(xs, original, "noShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case BetweenCollected(from, to) =>
-        doForBetween(from, to, xs, original, "betweenShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case AtMostCollected(num) =>
-        doForAtMost(num, xs, original, "atMostShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
     }
@@ -3338,11 +3333,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "equal", 1) { e =>
         if ((evidence.areEqual(e, right)) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotEqual" else "equaled",
-              e,
-              right
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotEqual(e, right) 
+            else 
+              FailureMessages.equaled(e, right), 
             None, 
             6
           )
@@ -3361,11 +3355,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e =>
         if ((e == right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotEqualTo" else "wasEqualTo",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.wasNotEqualTo(e, right) 
+            else 
+              FailureMessages.wasEqualTo(e, right),
             None,
             6
           )
@@ -3384,11 +3377,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e =>
         if ((evidence.areEqual(e, right)) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotEqualTo" else "wasEqualTo",
-              e,
-              right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotEqualTo(e, right) 
+            else 
+              FailureMessages.wasEqualTo(e, right), 
             None, 
             6
           )
@@ -3407,11 +3399,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (comparison(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotLessThanOrEqualTo" else "wasLessThanOrEqualTo",
-              e,
-              comparison.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotLessThanOrEqualTo(e, comparison.right) 
+            else 
+              FailureMessages.wasLessThanOrEqualTo(e,comparison.right), 
             None, 
             6
           )
@@ -3431,11 +3422,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (comparison(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotGreaterThanOrEqualTo" else "wasGreaterThanOrEqualTo",
-              e,
-              comparison.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotGreaterThanOrEqualTo(e, comparison.right) 
+            else 
+              FailureMessages.wasGreaterThanOrEqualTo(e, comparison.right), 
             None, 
             6
           )
@@ -3455,11 +3445,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (comparison(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotLessThan" else "wasLessThan",
-              e,
-              comparison.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotLessThan(e, comparison.right) 
+            else 
+              FailureMessages.wasLessThan(e, comparison.right), 
             None, 
             6
           ) 
@@ -3479,11 +3468,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (comparison(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotGreaterThan" else "wasGreaterThan",
-              e,
-              comparison.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotGreaterThan(e, comparison.right) 
+            else 
+              FailureMessages.wasGreaterThan(e, comparison.right), 
             None, 
             6
           )
@@ -3508,16 +3496,15 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
      */
     @deprecated("The will be === syntax has been deprecated. Please use will equal, will ===, willEqual, will be, or willBe instead.")
     def be(comparison: TripleEqualsInvocation[_]) {
-      throw new NotAllowedException(FailureMessages("beTripleEqualsNotAllowed"),
+      throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                     getStackDepthFun("Matchers.scala", "be ===")) 
       doCollected(collected, xs, original, "be", 1) { e => 
         if ((e == comparison.right) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotEqualTo" else "wasEqualTo",
-              e,
-              comparison.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotEqualTo(e, comparison.right) 
+            else 
+              FailureMessages.wasEqualTo(e,comparison.right), 
             None, 
             6
           )
@@ -3565,9 +3552,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if (result.matches != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNot", e, UnquotedString(result.propertyName))
+              FailureMessages.wasNot(e, UnquotedString(result.propertyName))
             else
-              FailureMessages("was", e, UnquotedString(result.propertyName)), 
+              FailureMessages.was(e, UnquotedString(result.propertyName)), 
             None, 
             6
           )
@@ -3590,9 +3577,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if (result.matches != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNotA", e, UnquotedString(result.propertyName))
+              FailureMessages.wasNotA(e, UnquotedString(result.propertyName))
             else
-              FailureMessages("wasA", e, UnquotedString(result.propertyName)), 
+              FailureMessages.wasA(e, UnquotedString(result.propertyName)), 
             None, 
             6
           )
@@ -3615,9 +3602,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if (result.matches != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNotAn", e, UnquotedString(result.propertyName))
+              FailureMessages.wasNotAn(e, UnquotedString(result.propertyName))
             else
-              FailureMessages("wasAn", e, UnquotedString(result.propertyName)), 
+              FailureMessages.wasAn(e, UnquotedString(result.propertyName)), 
             None, 
             6
           )
@@ -3639,11 +3626,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
           case ref: AnyRef =>
             if ((resultOfSameInstanceAsApplication.right eq ref) != willBeTrue) {
               throw newTestFailedException(
-                FailureMessages(
-                  if (willBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
-                  e,
-                  resultOfSameInstanceAsApplication.right
-                ), 
+                if (willBeTrue)
+                  FailureMessages.wasNotSameInstanceAs(e, resultOfSameInstanceAsApplication.right) 
+                else 
+                  FailureMessages.wasSameInstanceAs(e, resultOfSameInstanceAsApplication.right), 
                 None, 
                 6
               )
@@ -3666,11 +3652,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (e.isDefinedAt(resultOfDefinedAt.right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
-              e, 
-              resultOfDefinedAt.right
-            ), 
+            if (willBeTrue)
+              FailureMessages.wasNotDefinedAt(e, resultOfDefinedAt.right) 
+            else 
+              FailureMessages.wasDefinedAt(e, resultOfDefinedAt.right), 
             None, 
             6  
           )
@@ -3698,9 +3683,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if ((leftLength == right) != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
+              FailureMessages.hadLengthInsteadOfExpectedLength(e, leftLength, right)
             else
-              FailureMessages("hadLength", e, right), 
+              FailureMessages.hadLength(e, right), 
             None, 
             6
           )
@@ -3724,9 +3709,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if ((leftSize == right) != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
+              FailureMessages.hadSizeInsteadOfExpectedSize(e, leftSize, right)
             else
-              FailureMessages("hadSize", e, right),
+              FailureMessages.hadSize(e, right),
             None, 
             6
           )
@@ -3764,8 +3749,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
               // 0 1 | 0 | 1
               // 1 0 | 0 | 1
               throw newTestFailedException(
-                FailureMessages(
-                  "propertyDidNotHaveExpectedValue",
+                FailureMessages.propertyDidNotHaveExpectedValue(
                   UnquotedString(firstFailure.propertyName),
                   firstFailure.expectedValue,
                   firstFailure.actualValue,
@@ -3780,14 +3764,13 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
               val failureMessage =
                 if (justOneProperty) {
                   val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                  FailureMessages(
-                    "propertyHadExpectedValue",
+                  FailureMessages.propertyHadExpectedValue(
                     UnquotedString(firstPropertyResult.propertyName),
                     firstPropertyResult.expectedValue,
                     e
                   )
                 }
-                else FailureMessages("allPropertiesHadExpectedValues", e)
+                else FailureMessages.allPropertiesHadExpectedValues(e)
 
               throw newTestFailedException(failureMessage, None, 6)
           } 
@@ -3808,9 +3791,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if ((e == null) != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNotNull", e) 
+              FailureMessages.wasNotNull(e) 
             else
-              FailureMessages("wasNull"), 
+              FailureMessages.wasNull, 
             None, 
             6
           )
@@ -3893,7 +3876,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (sortable.isSorted(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(if (willBeTrue) "wasNotSorted" else "wasSorted", e), 
+            if (willBeTrue) FailureMessages.wasNotSorted(e) else FailureMessages.wasSorted(e), 
             None, 
             6
           )
@@ -3913,7 +3896,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (readability.isReadable(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(if (willBeTrue) "wasNotReadable" else "wasReadable", e), 
+            if (willBeTrue) FailureMessages.wasNotReadable(e) else FailureMessages.wasReadable(e), 
             None, 
             6
           )
@@ -3933,7 +3916,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (writability.isWritable(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(if (willBeTrue) "wasNotWritable" else "wasWritable", e), 
+            if (willBeTrue) FailureMessages.wasNotWritable(e) else FailureMessages.wasWritable(e), 
             None, 
             6
           )
@@ -3953,7 +3936,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (emptiness.isEmpty(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(if (willBeTrue) "wasNotEmpty" else "wasEmpty", e), 
+            if (willBeTrue) FailureMessages.wasNotEmpty(e) else FailureMessages.wasEmpty(e), 
             None, 
             6
           )
@@ -3973,7 +3956,7 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "be", 1) { e => 
         if (definition.isDefined(e) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(if (willBeTrue) "wasNotDefined" else "wasDefined", e), 
+            if (willBeTrue) FailureMessages.wasNotDefined(e) else FailureMessages.wasDefined(e), 
             None, 
             6
           )
@@ -3994,11 +3977,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         val right = expectedElement
         if ((evidence.contains(e, right)) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-              e,
-              right
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotContainExpectedElement(e, right) 
+            else 
+              FailureMessages.containedExpectedElement(e, right), 
             None, 
             6
           )
@@ -4021,11 +4003,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4047,11 +4028,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right) 
+            else 
+              FailureMessages.containedOneElementOf(e, right),
             None,
             6
           )
@@ -4073,11 +4053,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAtLeastOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAtLeastOneOf(e,UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4099,11 +4078,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAtLeastOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right) 
+            else 
+              FailureMessages.containedAtLeastOneElementOf(e, right),
             None,
             6
           )
@@ -4125,11 +4103,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsNoneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4151,11 +4128,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsNoneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, right) 
+            else 
+              FailureMessages.didNotContainAtLeastOneOf(e, right),
             None,
             6
           )
@@ -4177,11 +4153,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsTheSameElementsAs(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainSameElements" else "containedSameElements",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainSameElements(e, right) 
+            else 
+              FailureMessages.containedSameElements(e, right),
             None,
             6
           )
@@ -4203,11 +4178,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsTheSameElementsInOrderAs(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainSameElementsInOrder(e, right) 
+            else 
+              FailureMessages.containedSameElementsInOrder(e, right),
             None,
             6
           )
@@ -4228,17 +4202,18 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
 
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsOnly(e, right) != willBeTrue) {
-          val postfix =
-            if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
-              "WithFriendlyReminder"
-            else
-              ""
+          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
           throw newTestFailedException(
-            FailureMessages(
-              (if (willBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              if (withFriendlyReminder)
+                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else
+                FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              if (withFriendlyReminder)
+                FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else
+                FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))), 
             None,
             6
           )
@@ -4261,11 +4236,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsInOrderOnly(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4287,11 +4261,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAllOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4313,11 +4286,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAllOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right) 
+            else 
+              FailureMessages.containedAllElementsOf(e, right),
             None,
             6
           )
@@ -4339,11 +4311,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsInOrder(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4365,11 +4336,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsInOrder(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllElementsOfInOrder" else "containedAllElementsOfInOrder",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(e, right) 
+            else 
+              FailureMessages.containedAllElementsOfInOrder(e, right),
             None,
             6
           )
@@ -4391,11 +4361,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAtMostOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4417,11 +4386,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "contain", 1) { e =>
         if (evidence.containsAtMostOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtMostOneElementOf" else "containedAtMostOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(e, right) 
+            else 
+              FailureMessages.containedAtMostOneElementOf(e,right),
             None,
             6
           )
@@ -4441,11 +4409,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         val expectedKey: Any = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainKey" else "containedKey",
-              map,
-              expectedKey
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotContainKey(map, expectedKey) 
+            else 
+              FailureMessages.containedKey(map,expectedKey), 
             None, 
             6
           )
@@ -4466,11 +4433,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         val expectedValue: Any = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != willBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainValue" else "containedValue",
-              map,
-              expectedValue
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotContainValue(map, expectedValue) 
+            else 
+              FailureMessages.containedValue(map, expectedValue), 
             None, 
             6
           )
@@ -4490,11 +4456,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "startWith", 1) { e =>
         if ((e.indexOf(right) == 0) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotStartWith" else "startedWith",
-              e,
-              right
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotStartWith(e, right) 
+            else 
+              FailureMessages.startedWith(e, right), 
             None, 
             6
           )
@@ -4538,11 +4503,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "endWith", 1) { e =>
         if ((e endsWith expectedSubstring) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotEndWith" else "endedWith",
-              e,
-              expectedSubstring
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotEndWith(e, expectedSubstring) 
+            else 
+              FailureMessages.endedWith(e, expectedSubstring), 
             None, 
             6
           )
@@ -4606,11 +4570,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "include", 1) { e =>
         if ((e.indexOf(expectedSubstring) >= 0) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotIncludeSubstring" else "includedSubstring",
-              e,
-              expectedSubstring
-            ), 
+            if (willBeTrue)
+              FailureMessages.didNotIncludeSubstring(e, expectedSubstring) 
+            else 
+              FailureMessages.includedSubstring(e,expectedSubstring), 
             None, 
             6
           )
@@ -4670,15 +4633,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def oneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
+        throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("Matchers.scala", "oneOf"))
       doCollected(collected, xs, original, "oneOf", 1) { e =>
         if (evidence.containsOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -4696,15 +4658,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def oneElementOf[R](elements: GenTraversable[R])(implicit evidence: EvidenceThat[R]#CanBeContainedIn[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("oneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "oneElementOf"))
+        throw new NotAllowedException(FailureMessages.oneElementOfDuplicate, getStackDepthFun("Matchers.scala", "oneElementOf"))
       doCollected(collected, xs, original, "oneElementOf", 1) { e =>
         if (evidence.containsOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainOneElementOf" else "containedOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right) 
+            else 
+              FailureMessages.containedOneElementOf(e,right),
             None,
             6
           )
@@ -4722,15 +4683,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def noElementsOf[R](elements: GenTraversable[R])(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("noElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "noElementsOf"))
+        throw new NotAllowedException(FailureMessages.noElementsOfDuplicate, getStackDepthFun("Matchers.scala", "noElementsOf"))
       doCollected(collected, xs, original, "noElementsOf", 1) { e =>
         if (containing.containsNoneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, right) 
+            else 
+              FailureMessages.didNotContainAtLeastOneOf(e, right),
             None,
             6
           )
@@ -4748,15 +4708,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def atLeastOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+        throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneOf"))
       doCollected(collected, xs, original, "atLeastOneOf", 1) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAtLeastOneOf(e,UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -4774,15 +4733,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def atLeastOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("atLeastOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
+        throw new NotAllowedException(FailureMessages.atLeastOneElementOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneElementOf"))
       doCollected(collected, xs, original, "atLeastOneElementOf", 1) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtLeastOneElementOf" else "containedAtLeastOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right) 
+            else 
+              FailureMessages.containedAtLeastOneElementOf(e,right),
             None,
             6
           )
@@ -4800,15 +4758,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def noneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit containing: EvidenceThat[R]#CanBeContainedIn[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
+        throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("Matchers.scala", "noneOf"))
       doCollected(collected, xs, original, "noneOf", 1) { e =>
         if (containing.containsNoneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "containedAtLeastOneOf" else "didNotContainAtLeastOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.didNotContainAtLeastOneOf(e,UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -4827,11 +4784,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "theSameElementsAs", 1) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainSameElements" else "containedSameElements",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainSameElements(e, right) 
+            else 
+              FailureMessages.containedSameElements(e,right),
             None,
             6
         )
@@ -4850,11 +4806,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "theSameElementsInOrderAs", 1) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainSameElementsInOrder(e, right) 
+            else 
+              FailureMessages.containedSameElementsInOrder(e,right),
             None,
             6
         )
@@ -4871,22 +4826,23 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
      */
     def only[R](right: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
+        throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun("Matchers.scala", "only"))
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("Matchers.scala", "only"))
+        throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("Matchers.scala", "only"))
       doCollected(collected, xs, original, "only", 1) { e =>
         if (aggregating.containsOnly(e, right) != willBeTrue) {
-          val postfix =
-            if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
-              "WithFriendlyReminder"
-            else
-              ""
+          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
           throw newTestFailedException(
-            FailureMessages(
-              (if (willBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              if (withFriendlyReminder)
+                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else
+                FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              if (withFriendlyReminder)
+                FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else 
+                FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
           )
@@ -4905,15 +4861,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def inOrderOnly[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+        throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("Matchers.scala", "inOrderOnly"))
       doCollected(collected, xs, original, "inOrderOnly", 1) { e =>
         if (sequencing.containsInOrderOnly(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -4931,15 +4886,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def allOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
+        throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
       doCollected(collected, xs, original, "allOf", 1) { e =>
         if (aggregating.containsAllOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -4957,15 +4911,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("allElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "allElementsOf"))
+        throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
       doCollected(collected, xs, original, "allElementsOf", 1) { e =>
         if (aggregating.containsAllOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllElementsOf" else "containedAllElementsOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right) 
+            else 
+              FailureMessages.containedAllElementsOf(e, right),
             None,
             6
           )
@@ -4983,15 +4936,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def inOrder[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
+        throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("Matchers.scala", "inOrder"))
       doCollected(collected, xs, original, "inOrder", 1) { e =>
         if (sequencing.containsInOrder(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -5009,15 +4961,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: EvidenceThat[R]#CanBeContainedInSequence[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("inOrderElementsOfDuplicate"), getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
+        throw new NotAllowedException(FailureMessages.inOrderElementsOfDuplicate, getStackDepthFun("Matchers.scala", "inOrderElementsOf"))
       doCollected(collected, xs, original, "inOrderElementsOf", 1) { e =>
         if (sequencing.containsInOrder(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAllElementsOfInOrder" else "containedAllElementsOfInOrder",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(e, right) 
+            else 
+              FailureMessages.containedAllElementsOfInOrder(e, right),
             None,
             6
           )
@@ -5035,15 +4986,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def atMostOneOf[R](firstEle: R, secondEle: R, remainingEles: R*)(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+        throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneOf"))
       doCollected(collected, xs, original, "atMostOneOf", 1) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
-              e,
-              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))) 
+            else 
+              FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
             6
         )
@@ -5061,15 +5011,14 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
     def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: EvidenceThat[R]#CanBeContainedInAggregation[T]) {
       val right = elements.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages("atMostOneElementOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
+        throw new NotAllowedException(FailureMessages.atMostOneElementOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneElementOf"))
       doCollected(collected, xs, original, "atMostOneElementOf", 1) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainAtMostOneElementOf" else "containedAtMostOneElementOf",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(e, right) 
+            else 
+              FailureMessages.containedAtMostOneElementOf(e,right),
             None,
             6
           )
@@ -5088,10 +5037,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "key", 1) { map =>
         if (keyMapping.containsKey(map, expectedKey) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainKey" else "containedKey",
-              map,
-              expectedKey),
+            if (willBeTrue)
+              FailureMessages.didNotContainKey(map, expectedKey) 
+            else 
+              FailureMessages.containedKey(map, expectedKey),
               None,
               6
           )
@@ -5110,12 +5059,12 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "value", 1) { map =>
         if (valueMapping.containsValue(map, expectedValue) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "didNotContainValue" else "containedValue",
-              map,
-              expectedValue),
-              None,
-              6
+            if (willBeTrue)
+              FailureMessages.didNotContainValue(map, expectedValue) 
+            else 
+              FailureMessages.containedValue(map, expectedValue),
+            None,
+            6
           )
       }
     }
@@ -5151,11 +5100,10 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       doCollected(collected, xs, original, "theSameInstanceAs", 1) { e =>
         if ((toAnyRef(e) eq right) != willBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (willBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
-              e,
-              right
-            ),
+            if (willBeTrue)
+              FailureMessages.wasNotSameInstanceAs(e, right) 
+            else 
+              FailureMessages.wasSameInstanceAs(e, right),
             None, 
             6
           )
@@ -5219,9 +5167,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if (result.matches != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNotA", e, UnquotedString(result.propertyName))
+              FailureMessages.wasNotA(e, UnquotedString(result.propertyName))
             else
-              FailureMessages("wasA", e, UnquotedString(result.propertyName)), 
+              FailureMessages.wasA(e, UnquotedString(result.propertyName)), 
             None, 
             6
           )
@@ -5244,9 +5192,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
         if (beTrueMatchResult.matches != willBeTrue) {
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("wasNotAn", e, UnquotedString(beTrueMatchResult.propertyName))
+              FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName))
             else
-              FailureMessages("wasAn", e, UnquotedString(beTrueMatchResult.propertyName)), 
+              FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)), 
             None, 
             6
           )
@@ -5267,9 +5215,9 @@ private[scalatest] trait PureMatchers extends Assertions with Tolerance with Mat
       if (e.isDefinedAt(right) != willBeTrue)
         throw newTestFailedException(
           if (willBeTrue)
-            FailureMessages("wasNotDefinedAt", e, right)
+            FailureMessages.wasNotDefinedAt(e, right)
           else
-            FailureMessages("wasDefinedAt", e, right), 
+            FailureMessages.wasDefinedAt(e, right), 
           None, 
           6
         )
@@ -5376,7 +5324,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willEqual", 1) { e =>
         if (!evidence.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          throw newTestFailedException(FailureMessages("didNotEqual", eee, rightee), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqual(eee, rightee), None, 6)
         }
       }
     }
@@ -5392,7 +5340,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willEqual(spread: Spread[T]) {
       doCollected(collected, xs, original, "willEqual", 1) { e =>
         if (!spread.isWithin(e)) {
-          throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", e, spread.pivot, spread.tolerance), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(e, spread.pivot, spread.tolerance), None, 6)
         }
       }
     }
@@ -5408,7 +5356,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!sortable.isSorted(e))
-          throw newTestFailedException(FailureMessages("wasNotSorted", e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotSorted(e), None, 6)
       }
     }
     
@@ -5423,7 +5371,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(readableWord: ReadableWord)(implicit readability: Readability[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!readability.isReadable(e))
-          throw newTestFailedException(FailureMessages("wasNotReadable", e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotReadable(e), None, 6)
       }
     }
     
@@ -5438,7 +5386,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(writableWord: WritableWord)(implicit writability: Writability[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!writability.isWritable(e))
-          throw newTestFailedException(FailureMessages("wasNotWritable", e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotWritable(e), None, 6)
       }
     }
     
@@ -5453,7 +5401,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!emptiness.isEmpty(e))
-          throw newTestFailedException(FailureMessages("wasNotEmpty", e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotEmpty(e), None, 6)
       }
     }
     
@@ -5468,7 +5416,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(definedWord: DefinedWord)(implicit definition: Definition[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!definition.isDefined(e))
-          throw newTestFailedException(FailureMessages("wasNotDefined", e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotDefined(e), None, 6)
       }
     }
 
@@ -5483,7 +5431,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(aType: ResultOfATypeInvocation[_]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
       }
     }
 
@@ -5498,7 +5446,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(anType: ResultOfAnTypeInvocation[_]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
       }
     }
 
@@ -5513,7 +5461,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willEqual(right: Null)(implicit ev: T <:< AnyRef) { 
       doCollected(collected, xs, original, "willEqual", 1) { e =>
         if (e != null) {
-          throw newTestFailedException(FailureMessages("didNotEqualNull", e), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqualNull(e), None, 6)
         }
       }
     }
@@ -5738,7 +5686,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (!evidence.areEqual(e, right)) {
           val rightIsBoolean = right.isInstanceOf[Boolean]
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          throw newTestFailedException(FailureMessages(if (rightIsBoolean) "wasNot" else "wasNotEqualTo", eee, rightee), None, 6)
+          throw newTestFailedException(if (rightIsBoolean) FailureMessages.wasNot(eee, rightee) else FailureMessages.wasNotEqualTo(eee, rightee), None, 6)
         }
       }
     }
@@ -5755,11 +5703,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
-            FailureMessages(
-              "wasNotLessThan",
-              e,
-              comparison.right
-            ), 
+            FailureMessages.wasNotLessThan(e,comparison.right), 
             None, 
             6
           ) 
@@ -5779,11 +5723,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
-            FailureMessages(
-              "wasNotLessThanOrEqualTo",
-              e,
-              comparison.right
-            ), 
+            FailureMessages.wasNotLessThanOrEqualTo(e,comparison.right), 
             None, 
             6
           ) 
@@ -5803,11 +5743,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
-            FailureMessages(
-              "wasNotGreaterThan",
-              e,
-              comparison.right
-            ), 
+            FailureMessages.wasNotGreaterThan(e, comparison.right), 
             None, 
             6
           ) 
@@ -5827,11 +5763,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
-            FailureMessages(
-              "wasNotGreaterThanOrEqualTo",
-              e,
-              comparison.right
-            ), 
+            FailureMessages.wasNotGreaterThanOrEqualTo(e, comparison.right), 
             None, 
             6
           ) 
@@ -5866,7 +5798,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(spread: Spread[T]) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (!spread.isWithin(e))
-          throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", e, spread.pivot, spread.tolerance), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(e, spread.pivot, spread.tolerance), None, 6)
       }
     }
 
@@ -5882,11 +5814,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (toAnyRef(e) ne resultOfSameInstanceAsApplication.right)
           throw newTestFailedException(
-            FailureMessages(
-              "wasNotSameInstanceAs",
-              e,
-              resultOfSameInstanceAsApplication.right
-            ),
+            FailureMessages.wasNotSameInstanceAs(e, resultOfSameInstanceAsApplication.right),
             None, 
             6
           )
@@ -5954,7 +5882,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(o: Null)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, original, "willBe", 1) { e =>
         if (e != null)
-         throw newTestFailedException(FailureMessages("wasNotNull", e), None, 6) 
+         throw newTestFailedException(FailureMessages.wasNotNull(e), None, 6) 
       }
     }
 
@@ -5970,7 +5898,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches) 
-          throw newTestFailedException(FailureMessages("wasNot", e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNot(e, UnquotedString(result.propertyName)), None, 6)
       }
     }
 
@@ -5986,7 +5914,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          throw newTestFailedException(FailureMessages("wasNotA", e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotA(e, UnquotedString(result.propertyName)), None, 6)
       }
     }
 
@@ -6002,7 +5930,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willBe", 1) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          throw newTestFailedException(FailureMessages("wasNotAn", e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)), None, 6)
       }
     }
 
@@ -6212,11 +6140,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "will", 1) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
-            FailureMessages(
-             if (inv.expectingEqual) "didNotEqual" else "equaled",
-              e,
-              inv.right
-            ),
+            if (inv.expectingEqual)
+              FailureMessages.didNotEqual(e, inv.right) 
+            else 
+              FailureMessages.equaled(e,inv.right),
             None,
             6
           )
@@ -6235,12 +6162,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "will", 1) { e =>
         if ((inv.spread.isWithin(e)) != inv.expectingEqual)
           throw newTestFailedException(
-            FailureMessages(
-              if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-              e,
-              inv.spread.pivot,
-              inv.spread.tolerance
-            ),
+            if (inv.expectingEqual)
+              FailureMessages.didNotEqualPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance) 
+            else 
+              FailureMessages.equaledPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance),
             None,
             6
           )
@@ -6294,7 +6219,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "will", 1) { e =>
         if (!existence.exists(e))
           throw newTestFailedException(
-            FailureMessages("doesNotExist", e), 
+            FailureMessages.doesNotExist(e), 
             None, 
             6
           )
@@ -6313,7 +6238,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "will", 1) { e =>
         if (existence.exists(e))
           throw newTestFailedException(
-            FailureMessages("exists", e), 
+            FailureMessages.exists(e), 
             None, 
             6
           )
@@ -6332,7 +6257,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "willNot", 1) { e =>
         if (existence.exists(e))
           throw newTestFailedException(
-            FailureMessages("exists", e), 
+            FailureMessages.exists(e), 
             None, 
             6
           )
@@ -6457,9 +6382,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if ((eLength == expectedLength) != willBeTrue)
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+              FailureMessages.hadLengthInsteadOfExpectedLength(e, eLength, expectedLength)
             else
-              FailureMessages("hadLength", e, expectedLength), 
+              FailureMessages.hadLength(e, expectedLength), 
             None, 
             6
           )
@@ -6480,9 +6405,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if ((eSize == expectedSize) != willBeTrue)
           throw newTestFailedException(
             if (willBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+              FailureMessages.hadSizeInsteadOfExpectedSize(e, eSize, expectedSize)
             else
-              FailureMessages("hadSize", e, expectedSize), 
+              FailureMessages.hadSize(e, expectedSize), 
             None, 
             6
           )
@@ -7215,7 +7140,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willEqual[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) {
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
+        throw newTestFailedException(FailureMessages.didNotEqual(leftee, rightee))
       }
     }
 
@@ -7229,7 +7154,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willEqual(spread: Spread[T]) {
       if (!spread.isWithin(leftSideValue)) {
-        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", leftSideValue, spread.pivot, spread.tolerance))
+        throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
       }
     }
 
@@ -7243,7 +7168,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willEqual(right: Null)(implicit ev: T <:< AnyRef) { 
       if (leftSideValue != null) {
-        throw newTestFailedException(FailureMessages("didNotEqualNull", leftSideValue))
+        throw newTestFailedException(FailureMessages.didNotEqualNull(leftSideValue))
       }
     }
 
@@ -7269,11 +7194,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def will[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
       if ((constraint.areEqual(leftSideValue, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            leftSideValue,
-            inv.right
-          )
+          if (inv.expectingEqual)
+            FailureMessages.didNotEqual(leftSideValue, inv.right) 
+          else 
+            FailureMessages.equaled(leftSideValue, inv.right)
         )
     }
 
@@ -7288,12 +7212,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def will(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
       if ((inv.spread.isWithin(leftSideValue)) != inv.expectingEqual)
         throw newTestFailedException(
-          FailureMessages(
-            if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-            leftSideValue,
-            inv.spread.pivot,
-            inv.spread.tolerance
-          )
+          if (inv.expectingEqual)
+            FailureMessages.didNotEqualPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance) 
+          else 
+            FailureMessages.equaledPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance)
         )
     }
 
@@ -7320,7 +7242,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe[R](right: R)(implicit evidence: EvidenceThat[R]#CanEqual[T]) { // TODO: Tests and behavior for special Boolean err msg
       if (!evidence.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
+        throw newTestFailedException(FailureMessages.wasNotEqualTo(leftee, rightee))
       }
     }
 
@@ -7335,7 +7257,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe_==(right: Any) {
       if (leftSideValue != right) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
+        throw newTestFailedException(FailureMessages.wasNotEqualTo(leftee, rightee))
       }
     }
     // TODO: add willBe_== to all()...
@@ -7351,9 +7273,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(comparison: ResultOfLessThanComparison[T]) {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
-          FailureMessages(
-            "wasNotLessThan",
-            leftSideValue,
+          FailureMessages.wasNotLessThan(leftSideValue,
             comparison.right
           )
         ) 
@@ -7371,11 +7291,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(comparison: ResultOfGreaterThanComparison[T]) {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
-          FailureMessages(
-            "wasNotGreaterThan",
-            leftSideValue,
-            comparison.right
-          )
+          FailureMessages.wasNotGreaterThan(leftSideValue, comparison.right)
         ) 
       }
     }
@@ -7391,11 +7307,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(comparison: ResultOfLessThanOrEqualToComparison[T]) {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
-          FailureMessages(
-            "wasNotLessThanOrEqualTo",
-            leftSideValue,
-            comparison.right
-          )
+          FailureMessages.wasNotLessThanOrEqualTo(leftSideValue, comparison.right)
         ) 
       }
     }
@@ -7411,11 +7323,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
-          FailureMessages(
-            "wasNotGreaterThanOrEqualTo",
-            leftSideValue,
-            comparison.right
-          )
+          FailureMessages.wasNotGreaterThanOrEqualTo(leftSideValue, comparison.right)
         ) 
       }
     }
@@ -7444,7 +7352,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(spread: Spread[T]) {
       if (!spread.isWithin(leftSideValue)) {
-        throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", leftSideValue, spread.pivot, spread.tolerance))
+        throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
       }
     }
 
@@ -7458,7 +7366,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: SortedWord)(implicit sortable: Sortable[T]) {
       if (!sortable.isSorted(leftSideValue))
-        throw newTestFailedException(FailureMessages("wasNotSorted", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotSorted(leftSideValue))
     }
     
     /**
@@ -7491,7 +7399,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: ReadableWord)(implicit readability: Readability[T]) {
       if (!readability.isReadable(leftSideValue))
-        throw newTestFailedException(FailureMessages("wasNotReadable", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotReadable(leftSideValue))
     }
     
     /**
@@ -7504,7 +7412,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: WritableWord)(implicit writability: Writability[T]) {
       if (!writability.isWritable(leftSideValue))
-        throw newTestFailedException(FailureMessages("wasNotWritable", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotWritable(leftSideValue))
     }
     
     /**
@@ -7517,7 +7425,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: EmptyWord)(implicit emptiness: Emptiness[T]) {
       if (!emptiness.isEmpty(leftSideValue))
-        throw newTestFailedException(FailureMessages("wasNotEmpty", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotEmpty(leftSideValue))
     }
     
     /**
@@ -7530,7 +7438,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: DefinedWord)(implicit definition: Definition[T]) {
       if (!definition.isDefined(leftSideValue))
-        throw newTestFailedException(FailureMessages("wasNotDefined", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotDefined(leftSideValue))
     }
 
     /**
@@ -7703,7 +7611,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willBe(right: Null)(implicit ev: T <:< AnyRef) {
       if (leftSideValue != null) {
-        throw newTestFailedException(FailureMessages("wasNotNull", leftSideValue))
+        throw newTestFailedException(FailureMessages.wasNotNull(leftSideValue))
       }
     }
 
@@ -7718,11 +7626,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
       if (resultOfSameInstanceAsApplication.right ne toAnyRef(leftSideValue)) {
         throw newTestFailedException(
-          FailureMessages(
-            "wasNotSameInstanceAs",
-            leftSideValue,
-            resultOfSameInstanceAsApplication.right
-          )
+          FailureMessages.wasNotSameInstanceAs(leftSideValue, resultOfSameInstanceAsApplication.right)
         )
       }
     }
@@ -7787,7 +7691,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVal
       val result = bePropertyMatcher(leftSideValue)
       if (!result.matches) 
-        throw newTestFailedException(FailureMessages("wasNot", leftSideValue, UnquotedString(result.propertyName)))
+        throw newTestFailedException(FailureMessages.wasNot(leftSideValue, UnquotedString(result.propertyName)))
     }
     
     /**
@@ -7801,7 +7705,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAWordApplication.bePropertyMatcher(leftSideValue)
         if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotA", leftSideValue, UnquotedString(result.propertyName)))
+          throw newTestFailedException(FailureMessages.wasNotA(leftSideValue, UnquotedString(result.propertyName)))
         }
     }
     
@@ -7816,14 +7720,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def willBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAnWordApplication.bePropertyMatcher(leftSideValue)
         if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotAn", leftSideValue, UnquotedString(result.propertyName)))
+          throw newTestFailedException(FailureMessages.wasNotAn(leftSideValue, UnquotedString(result.propertyName)))
         }
     }
 
 /*
     def willBe[U](right: AType[U]) {
       if (!right.isAssignableFromClassOf(leftSideValue)) {
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(right.className), UnquotedString(leftSideValue.getClass.getName)))
+        throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(leftSideValue, UnquotedString(right.className), UnquotedString(leftSideValue.getClass.getName)))
       }
     }
 */
@@ -7861,7 +7765,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def will(existWord: ExistWord)(implicit existence: Existence[T]) {
       if (!existence.exists(leftSideValue))
-        throw newTestFailedException(FailureMessages("doesNotExist", leftSideValue))
+        throw newTestFailedException(FailureMessages.doesNotExist(leftSideValue))
     }
     
     /**
@@ -7874,7 +7778,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def will(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
       if (existence.exists(leftSideValue))
-        throw newTestFailedException(FailureMessages("exists", leftSideValue))
+        throw newTestFailedException(FailureMessages.exists(leftSideValue))
     }
     
     /**
@@ -7887,7 +7791,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def willNot(existWord: ExistWord)(implicit existence: Existence[T]) {
       if (existence.exists(leftSideValue))
-        throw newTestFailedException(FailureMessages("exists", leftSideValue))
+        throw newTestFailedException(FailureMessages.exists(leftSideValue))
     }
 
     // From StringWillWrapper

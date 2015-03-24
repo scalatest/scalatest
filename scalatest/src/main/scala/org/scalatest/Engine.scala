@@ -19,7 +19,7 @@ import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import FunSuite.IgnoreTagName
+import Suite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
 import org.scalatest.events.SeeStackDepthException
@@ -36,7 +36,7 @@ import scala.util.Success
 import scala.util.Failure
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
-private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResourceName: String, simpleClassName: String)  {
+private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String)  {
 
   sealed abstract class Node(val parentOption: Option[Branch]) {
     def indentationLevel: Int = {
@@ -118,7 +118,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   def updateAtomic(oldBundle: Bundle, newBundle: Bundle) {
     val shouldBeOldBundle = atomic.getAndSet(newBundle)
     if (!(shouldBeOldBundle eq oldBundle))
-      throw new ConcurrentModificationException(Resources(concurrentBundleModResourceName))
+      throw new ConcurrentModificationException(concurrentBundleModMessageFun)
   }
 
   class RegistrationInformer extends Informer {
@@ -192,9 +192,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
           throw new NullPointerException
         if (payload == null)
           throw new NullPointerException
-        println(Resources("infoProvided", message))
+        println(Resources.infoProvided(message))
         payload match {
-          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
       }
@@ -207,9 +207,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
           throw new NullPointerException
         if (payload == null)
           throw new NullPointerException
-        println(Resources("noteProvided", message))
+        println(Resources.noteProvided(message))
         payload match {
-          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
       }
@@ -222,9 +222,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
           throw new NullPointerException
         if (payload == null)
           throw new NullPointerException
-        println(Resources("alertProvided", message))
+        println(Resources.alertProvided(message))
         payload match {
-          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
       }
@@ -235,7 +235,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       def apply(message: String) {
         if (message == null)
           throw new NullPointerException
-        println(Resources("markupProvided", message))
+        println(Resources.markupProvided(message))
       }
     }
 
@@ -318,19 +318,19 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
         case ex: Throwable =>
           val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
           if (shouldBeInformerForThisTest ne informerForThisTest)
-            throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+            throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
           val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
           if (shouldBeNotifierForThisTest ne updaterForThisTest)
-            throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
+            throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
 
           val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
           if (shouldBeAlerterForThisTest ne alerterForThisTest)
-            throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+            throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
 
           val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
           if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-            throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+            throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
 
           throw ex
 
@@ -340,19 +340,19 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
       if (shouldBeInformerForThisTest ne informerForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
       val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
       if (shouldBeNotifierForThisTest ne updaterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
 
       val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
       if (shouldBeAlerterForThisTest ne alerterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
 
       val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
       if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
 
       trial match {
         case Success(outcome) => 
@@ -475,7 +475,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
   def prependChildPrefix(branch: Branch, testText: String): String =
     branch match {
-      case DescriptionBranch(_, _, Some(cp), _) => Resources("prefixSuffix", cp, testText)
+      case DescriptionBranch(_, _, Some(cp), _) => Resources.prefixSuffix(cp, testText)
       case _ => testText
     }
 
@@ -582,19 +582,19 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     status.whenCompleted { r =>
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
       val shouldBeNotifierForThisSuite = atomicNotifier.getAndSet(zombieNotifier)
       if (shouldBeNotifierForThisSuite ne updaterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
 
       val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
       if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
 
       val shouldBeDocumenterForThisSuite = atomicDocumenter.getAndSet(zombieDocumenter)
       if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
     }
 
     status
@@ -625,13 +625,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     }
   } */
 
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedResource: String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(Resources(registrationClosedResource), getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
 
     val branchLocation = 
       location match {
@@ -662,13 +662,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   }
 
   // Used by FlatSpec, which doesn't nest. So this one just makes a new one off of the trunk
-  def registerFlatBranch(description: String, registrationClosedResource: String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
+  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
 
     val oldBundle = atomic.get
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(Resources(registrationClosedResource), getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
@@ -687,13 +687,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  def registerTest(testText: String, testFun: T, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
+  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
-//    throw new TestRegistrationClosedException(Resources("testCannotAppearInsideAnotherTest"), getStackDepth(sourceFileName, "test"))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+//    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -723,15 +723,15 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     testName
   }
 
-  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
 // If this works delete this. I think we can rely on registerTest's check
 //    if (atomic.get.registrationClosed)
-//      throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideATest"), getStackDepth(sourceFileName, "ignore"))
+//      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideATest, getStackDepth(sourceFileName, "ignore"))
 
-    val testName = registerTest(testText, f, testRegistrationClosedResourceName, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, None) // Call test without passing the tags
+    val testName = registerTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, None) // Call test without passing the tags
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -750,14 +750,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       case DescriptionBranch(parent, descriptionText, childPrefix, lineInFile) =>
         val optionalChildPrefixAndDescriptionText =
           childPrefix match {
-            case Some(cp) => Resources("prefixSuffix", descriptionText, cp)
+            case Some(cp) => Resources.prefixSuffix(descriptionText, cp)
             case _ => descriptionText
           }
-        Resources("prefixSuffix", getTestNamePrefix(parent), optionalChildPrefixAndDescriptionText.trim).trim
+        Resources.prefixSuffix(getTestNamePrefix(parent), optionalChildPrefixAndDescriptionText.trim).trim
     }
 
   private[scalatest] def getTestName(testText: String, parent: Branch): String =
-    Resources("prefixSuffix", getTestNamePrefix(parent), testText.trim).trim
+    Resources.prefixSuffix(getTestNamePrefix(parent), testText.trim).trim
 
   private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*) {
     if (testText == null)
@@ -797,11 +797,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
+    // SKIP-SCALATESTJS-START
     val suiteTags = for { 
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val suiteTags = Set.empty[String]
     val testTagSet = atomic.get.tagsMap.getOrElse(testName, Set.empty)
     Set.empty ++ suiteTags ++ testTagSet
   }
@@ -814,7 +817,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
         case DescriptionBranch(parent, descriptionText, childPrefix, lineInFile) =>
           val optionalChildPrefixAndDescriptionText =
           childPrefix match {
-            case Some(cp) => Resources("prefixSuffix", descriptionText.trim, cp.trim)
+            case Some(cp) => Resources.prefixSuffix(descriptionText.trim, cp.trim)
             case _ => descriptionText
           }
           testScopesAcc(parent, acc :+ optionalChildPrefixAndDescriptionText.trim)
@@ -840,16 +843,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   }
 }
 
-private[scalatest] class Engine(concurrentBundleModResourceName: String, simpleClassName: String)
-    extends SuperEngine[() => AsyncOutcome](concurrentBundleModResourceName, simpleClassName)
+private[scalatest] class Engine(concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends SuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 
-private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModResourceName: String, simpleClassName: String)
-    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModResourceName, simpleClassName)
+private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 
-
-
-private[scalatest] class PathEngine(concurrentBundleModResourceName: String, simpleClassName: String)
-    extends Engine(concurrentBundleModResourceName, simpleClassName) { thisEngine =>
+private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends Engine(concurrentBundleModMessageFun, simpleClassName) { thisEngine =>
  
   /*
   Anything that the initial instance sets will need to be made volatile or atomic.
@@ -923,10 +924,10 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
  * 
  * 
  */
-  def handleTest(handlingSuite: Suite, testText: String, testFun: () => AsyncOutcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def handleTest(handlingSuite: Suite, testText: String, testFun: () => AsyncOutcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
     
     insideAPathTest = true
     
@@ -981,19 +982,19 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
             durationOfRunningTest = System.currentTimeMillis - startTime
             val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
             if (shouldBeInformerForThisTest ne informerForThisTest)
-              throw new ConcurrentModificationException(Resources("concurrentInformerMod", handlingSuite.getClass.getName))
+              throw new ConcurrentModificationException(Resources.concurrentInformerMod(handlingSuite.getClass.getName))
 
             val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
             if (shouldBeNotifierForThisTest ne updaterForThisTest)
-              throw new ConcurrentModificationException(Resources("concurrentNotifierMod", handlingSuite.getClass.getName))
+              throw new ConcurrentModificationException(Resources.concurrentNotifierMod(handlingSuite.getClass.getName))
 
             val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
             if (shouldBeAlerterForThisTest ne alerterForThisTest)
-              throw new ConcurrentModificationException(Resources("concurrentAlerterMod", handlingSuite.getClass.getName))
+              throw new ConcurrentModificationException(Resources.concurrentAlerterMod(handlingSuite.getClass.getName))
 
             val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
             if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-              throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", handlingSuite.getClass.getName))
+              throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(handlingSuite.getClass.getName))
           }
 
         // Here in the test function, replay those info calls. But I can't do this from different threads is the issue. Unless
@@ -1003,7 +1004,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
         val newTestFun = { () => outcome }
         // register with         informerForThisTest.fireRecordedMessages(testWasPending)
 
-        registerTest(testText, newTestFun, testRegistrationClosedResourceName, sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, Some(informerForThisTest), testTags: _*)
+        registerTest(testText, newTestFun, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, Some(informerForThisTest), testTags: _*)
         targetLeafHasBeenReached = true
       }
       else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {
@@ -1015,10 +1016,10 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
     }
   }
 
-  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedResource: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
 
     if (insideAPathTest)
-      throw new TestRegistrationClosedException(Resources(registrationClosedResource), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
 
     val nextPath = getNextPath()
     // val nextPathZero = if (nextPath.length > 0) nextPath(0) else -1
@@ -1040,25 +1041,25 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
         // Set this to true before executing the describe. If it has a test, then handleTest will be invoked
         // and it will set previousDescribeWasEmpty back to false
         describeRegisteredNoTests = true
-        registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, methodName, stackDepth + 1, adjustment, location)
+        registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, location)
         registeredPathSet += nextPath
         if (describeRegisteredNoTests)
           targetLeafHasBeenReached = true
       }
       else {
-        navigateToNestedBranch(nextPath, fun, "describeCannotAppearInsideAnIt", sourceFileName, methodName, stackDepth + 1, adjustment)
+        navigateToNestedBranch(nextPath, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment)
       }
       currentPath = oldCurrentPath
     }
   }
 
- def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedResource: String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
+ def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(Resources(registrationClosedResource), getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
 
     // First look in current branch's subnodes for another branch
     def getBranch(b: Branch, path: List[Int]): Branch = {
@@ -1147,31 +1148,31 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
     finally {
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
       val shouldBeNotifierForThisSuite = atomicNotifier.getAndSet(zombieNotifier)
       if (shouldBeNotifierForThisSuite ne updaterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
 
       val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
       if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
 
       val shouldBeDocumenterForThisSuite = atomicDocumenter.getAndSet(zombieDocumenter)
       if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
+        throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
     }
   }
-   
-  def handleIgnoredTest(testText: String, f: () => AsyncOutcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  
+  def handleIgnoredTest(testText: String, f: () => AsyncOutcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
     
     describeRegisteredNoTests = false
     val nextPath = getNextPath()
     if (isInTargetPath(nextPath, targetPath)) {
-      super.registerIgnoredTest(testText, f, testRegistrationClosedResourceName, sourceFileName, methodName, stackDepth + 1, adjustment, location, testTags: _*)
+      super.registerIgnoredTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, location, testTags: _*)
       targetLeafHasBeenReached = true
     }
     else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {
@@ -1193,7 +1194,7 @@ private[scalatest] object PathEngine {
    def getEngine(): PathEngine = {
      val en = engine.get
      engine.set(null)
-     if (en == null) (new PathEngine("concurrentSpecMod", "Spec")) else en
+     if (en == null) (new PathEngine(Resources.concurrentSpecMod, "Spec")) else en
    }
    
   /*

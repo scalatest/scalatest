@@ -27,10 +27,8 @@ import java.io.IOException
 import javax.swing.SwingUtilities
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.regex.Pattern
-import org.scalatest.testng.TestNGWrapperSuite
 import java.util.concurrent.Semaphore
 import org.scalatest.events._
-import org.scalatest.junit.JUnitWrapperSuite
 import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadFactory
@@ -40,6 +38,9 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
+import org.scalatest.junit.JUnitWrapperSuite
+import org.scalatest.testng.TestNGWrapperSuite
+import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 
 /*
 Command line args:
@@ -126,35 +127,8 @@ Z
 */
 
 private[tools] case class SuiteConfig(suite: Suite, dynaTags: DynaTags, requireSelectedTag: Boolean, excludeNestedSuites: Boolean)
-private[tools] case class TestSpec(spec: String, isSubstring: Boolean)
-private[tools] case class NestedSuiteParam(suiteId: String, testNames: Array[String], wildcardTestNames: Array[String])
 private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSortingReporter: Boolean)
 private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Long)
-
-private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
-{
-  private lazy val globRegex =
-    className.
-      replaceAll("""\.""", """\\.""").
-      replaceAll("""\?""", ".").
-      replaceAll("""\*""", ".*")
-
-  //
-  // A glob is a name that contains one of the following wildcard specs:
-  // - '*', which matches zero or more characters
-  // - '?', which matches exactly one character
-  // - square brackets, which specify a set of characters to match
-  //
-  def isGlob: Boolean = className.matches(""".*(\[|\*|\?).*""")
-
-  //
-  // Checks className against name to see if they match.
-  //
-  def matches(name: String) = {
-    if (!isGlob) name == className
-    else         name.matches(globRegex)
-  }
-}
 
 /**
  * Application that runs a suite of tests.
@@ -768,15 +742,10 @@ object Runner {
 
   private val RUNNER_JFRAME_START_X: Int = 150
   private val RUNNER_JFRAME_START_Y: Int = 100
-
-  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
   
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
   private final val DefaultNumFilesToArchive = 2
-
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
   
   //                     TO
   // We always include a PassFailReporter on runs in order to determine
@@ -851,7 +820,7 @@ object Runner {
     Thread.currentThread.setName("ScalaTest-main")
     val result = 
       if (args.contains("-v") || args.contains("--version")) {
-        val version = org.scalatest.ScalaTestVersion
+        val version = org.scalatest.ScalaTestVersions.ScalaTestVersion
         val scalaVersion = org.scalatest.ScalaTestVersions.BuiltForScalaVersion
         println("ScalaTest " + version + " (Built for Scala " + scalaVersion + ")")
         runOptionallyWithPassFailReporter(args.filter(arg => arg != "-v" && arg != "--version"), true)
@@ -1487,8 +1456,8 @@ object Runner {
         case c: Char => { 
 
           // this should be moved to the checker, and just throw an exception here with a debug message. Or allow a MatchError.
-          val msg1 = Resources("invalidConfigOption", String.valueOf(c)) + '\n'
-          val msg2 =  Resources("probarg", reporterArg) + '\n'
+          val msg1 = Resources.invalidConfigOption(String.valueOf(c)) + '\n'
+          val msg2 =  Resources.probarg(reporterArg) + '\n'
 
           throw new IllegalArgumentException(msg1 + msg2)
         }
@@ -2268,11 +2237,6 @@ object Runner {
       println("PresentRunAborted")
   }
 */
-
-  private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
-    (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
-    a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
-  }
   
   // We number our named threads so that people can keep track
   // of it as it goes through different suites. But in case the
@@ -2435,7 +2399,7 @@ object Runner {
           }
           if (!unrunnableList.isEmpty) {
             val names = for (suiteParam <- unrunnableList) yield " " + suiteParam.className
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("nonSuite") + names.mkString(", "), None))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.nonSuite + names.mkString(", "), None))
             true
           }
           else {
@@ -2444,7 +2408,7 @@ object Runner {
         }
         catch {
           case e: ClassNotFoundException => {
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadSuite", e.getMessage), Some(e)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadSuite(e.getMessage), Some(e)))
             true
           }
         }
@@ -2569,11 +2533,11 @@ object Runner {
         }
         catch {
           case e: InstantiationException =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: IllegalAccessException =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotInstantiateSuite", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotInstantiateSuite(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: NoClassDefFoundError =>
-            dispatch(RunAborted(tracker.nextOrdinal(), Resources("cannotLoadClass", e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
+            dispatch(RunAborted(tracker.nextOrdinal(), Resources.cannotLoadClass(e.getMessage), Some(e), Some(System.currentTimeMillis - runStartTime)))
           case e: Throwable =>
             dispatch(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e), Some(System.currentTimeMillis - runStartTime)))
         }
@@ -2623,7 +2587,7 @@ object Runner {
       reporter.apply(
         AlertProvided(
           tracker.nextOrdinal,
-          Resources("cannotRerun", memento.eventName, memento.suiteId,
+          Resources.cannotRerun(memento.eventName, memento.suiteId,
                     memento.testName),
           None))
 
@@ -2724,7 +2688,7 @@ object Runner {
         // getDispatchReporter may complete abruptly with an exception, if there is an problem trying to load
         // or instantiate a custom reporter class.
         case ex: Throwable => {
-          System.err.println(Resources("bigProblemsMaybeCustomReporter"))
+          System.err.println(Resources.bigProblemsMaybeCustomReporter)
           ex.printStackTrace(System.err)
         }
       }

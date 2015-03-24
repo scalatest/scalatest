@@ -42,16 +42,12 @@ private[tools] class EventHolder(val event: Event, val message: Option[String], 
       case Some(IndentedText(_, rawText, indentationLevel)) =>
         event match {
           case _: SuiteStarting => rawText + ":"
-          case _: TestPending => Resources("specTextAndNote", rawText, Resources("pendingNote"))
-          case _: ScopePending => Resources("specTextAndNote", rawText, Resources("pendingNote"))
+          case _: TestPending => Resources.specTextAndNote(rawText, Resources.pendingNote)
+          case _: ScopePending => Resources.specTextAndNote(rawText, Resources.pendingNote)
           case _ => rawText
         }
       case _ =>
-        val firstString: String =
-          if (isRerun)
-            Resources("RERUN_" + RunnerJFrame.getUpperCaseName(event))
-          else
-            Resources(RunnerJFrame.getUpperCaseName(event))
+        val firstString: String = RunnerJFrame.getEventToPresentDisplayMessage(event, isRerun)
 
         def firstAndSecondString(first: String, second: String) = first + " - " + second
 

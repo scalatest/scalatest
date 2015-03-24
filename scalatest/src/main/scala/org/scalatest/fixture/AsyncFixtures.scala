@@ -23,11 +23,11 @@ import scala.concurrent.{ExecutionContext, Future}
 trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
 
   final override def withFixture(test: NoArgTest): Outcome = {
-    throw new exceptions.NotAllowedException(FailureMessages("withFixtureNotAllowedInAsyncFixtures"), getStackDepthFun("AsyncFixtures.scala", "withFixture"))
+    throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }
 
   final override def withFixture(test: OneArgTest): Outcome = {
-    throw new exceptions.NotAllowedException(FailureMessages("withFixtureNotAllowedInAsyncFixtures"), getStackDepthFun("AsyncFixtures.scala", "withFixture"))
+    throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }
 
   /**

@@ -26,7 +26,7 @@ class OneElementOfContainMatcherSpec extends Spec {
   object `oneElementOf ` {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages("didNotContainOneElementOf", left, right)))
+      e.message should be (Some(FailureMessages.didNotContainOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -59,17 +59,17 @@ class OneElementOfContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain oneElementOf Seq(6, 7, 6)
       }
-      e1.getMessage() should be (FailureMessages("oneElementOfDuplicate"))
+      e1.getMessage() should be (FailureMessages.oneElementOfDuplicate)
 
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain oneElementOf Seq(6, 7, 6)
       }
-      e2.getMessage() should be (FailureMessages("oneElementOfDuplicate"))
+      e2.getMessage() should be (FailureMessages.oneElementOfDuplicate)
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain oneElementOf Seq(6, 7, 6)
       }
-      e3.getMessage() should be (FailureMessages("oneElementOfDuplicate"))
+      e3.getMessage() should be (FailureMessages.oneElementOfDuplicate)
     }
 
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element` {
@@ -269,7 +269,7 @@ class OneElementOfContainMatcherSpec extends Spec {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages("containedOneElementOf", left, right)))
+      e.message should be (Some(FailureMessages.containedOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

@@ -27,44 +27,41 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Prettifier.getObjectsForFailureMessage(left, right)
-    FailureMessages("didNotEqual", leftee, rightee)
+    FailureMessages.didNotEqual(leftee, rightee)
   }
 
   def equaled(left: Any, right: Any): String =
-    FailureMessages("equaled", left, right)
-
-  def expressionFailed(left: String): String =
-    FailureMessages("expressionFailed", UnquotedString(left))
+    FailureMessages.equaled(left, right)
 
   def wasNotGreaterThan(left: Any, right: Any): String =
-    FailureMessages("wasNotGreaterThan", left, right)
+    FailureMessages.wasNotGreaterThan(left, right)
 
   def wasGreaterThan(left: Any, right: Any): String =
-    FailureMessages("wasGreaterThan", left, right)
+    FailureMessages.wasGreaterThan(left, right)
 
   def wasNotGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotGreaterThanOrEqualTo", left, right)
+    FailureMessages.wasNotGreaterThanOrEqualTo(left, right)
 
   def wasGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasGreaterThanOrEqualTo", left, right)
+    FailureMessages.wasGreaterThanOrEqualTo(left, right)
 
   def wasNotLessThan(left: Any, right: Any): String =
-    FailureMessages("wasNotLessThan", left, right)
+    FailureMessages.wasNotLessThan(left, right)
 
   def wasLessThan(left: Any, right: Any): String =
-    FailureMessages("wasLessThan", left, right)
+    FailureMessages.wasLessThan(left, right)
 
   def wasNotLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasNotLessThanOrEqualTo", left, right)
+    FailureMessages.wasNotLessThanOrEqualTo(left, right)
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages("wasLessThanOrEqualTo", left, right)
+    FailureMessages.wasLessThanOrEqualTo(left, right)
 
   def commaAnd(left: String, right: String): String =
-    FailureMessages("commaAnd", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
 
   def commaBut(left: String, right: String): String =
-    FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -73,58 +70,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     left + " was true"
 
   def didNotStartWith(left: Any, right: Any): String =
-    FailureMessages("didNotStartWith", left, right)
+    FailureMessages.didNotStartWith(left, right)
 
   def startedWith(left: Any, right: Any): String =
-    FailureMessages("startedWith", left, right)
+    FailureMessages.startedWith(left, right)
 
   def didNotEndWith(left: Any, right: Any): String =
-    FailureMessages("didNotEndWith", left, right)
+    FailureMessages.didNotEndWith(left, right)
 
   def endedWith(left: Any, right: Any): String =
-    FailureMessages("endedWith", left, right)
+    FailureMessages.endedWith(left, right)
 
   def didNotContain(left: Any, right: Any): String =
-    FailureMessages("didNotContain", left, right)
+    FailureMessages.didNotContain(left, right)
 
   def contained(left: Any, right: Any): String =
-    FailureMessages("contained", left, right)
+    FailureMessages.contained(left, right)
 
   def didNotContainKey(left: Any, right: Any): String =
-    FailureMessages("didNotContainKey", left, right)
+    FailureMessages.didNotContainKey(left, right)
 
   def containedKey(left: Any, right: Any): String =
-    FailureMessages("containedKey", left, right)
+    FailureMessages.containedKey(left, right)
 
   def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    FailureMessages("wasNotTheSameInstanceAs", left, right)
+    FailureMessages.wasNotTheSameInstanceAs(left, right)
 
   def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
-    FailureMessages("wasTheSameInstanceAs", left, right)
+    FailureMessages.wasTheSameInstanceAs(left, right)
 
   def wasNotEmpty(left: Any): String =
-    FailureMessages("wasNotEmpty", left)
+    FailureMessages.wasNotEmpty(left)
 
   def wasEmpty(left: Any): String =
-    FailureMessages("wasEmpty", left)
+    FailureMessages.wasEmpty(left)
 
   def wasNotInstanceOf(left: Any, className: String): String =
-    FailureMessages("wasNotInstanceOf", left, UnquotedString(className))
+    FailureMessages.wasNotInstanceOf(left, UnquotedString(className))
 
   def wasInstanceOf(left: Any, className: String): String =
-    FailureMessages("wasInstanceOf", left, UnquotedString(className))
+    FailureMessages.wasInstanceOf(left, UnquotedString(className))
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
-    FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
+    FailureMessages.hadLengthInsteadOfExpectedLength(left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
-    FailureMessages("hadLength", left, actual)
+    FailureMessages.hadLength(left, actual)
 
   def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
-    FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
+    FailureMessages.hadSizeInsteadOfExpectedSize(left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
-    FailureMessages("hadSize", left, actual)
+    FailureMessages.hadSize(left, actual)
 
   class Stateful {
     var state = false

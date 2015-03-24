@@ -66,11 +66,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fum") and contain atMostOneElementOf Seq("fie", "fee", "fam", "foe"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fam") and contain atMostOneElementOf Seq("fie", "fee", "fum", "foe"))
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fam")) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fam")) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -79,11 +79,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") and (contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -91,11 +91,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") and contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -105,14 +105,14 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           fumList should (contain atMostOneElementOf Seq("fie", "fee", "fam", "foe") and contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e2.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -123,11 +123,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain atMostOneElementOf Seq("fee", "fie", "foe", "fam"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and contain atMostOneElementOf Seq("fie", "fee", "fum", "foe"))
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, fumList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -136,11 +136,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and (contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, fumList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -148,11 +148,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (toList) and contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, toList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, toList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (equal (fumList) and contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
@@ -162,7 +162,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -173,11 +173,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be_== (toList) and contain atMostOneElementOf Seq("fee", "fie", "foe", "fam"))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be_== (fumList) and contain atMostOneElementOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -186,11 +186,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be_== (toList) and contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be_== (fumList) and (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -198,11 +198,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (be_== (fumList) and contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList) + ", but " + FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (be_== (toList) and contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (be_== (fumList) and contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
       }
 
@@ -212,7 +212,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -223,11 +223,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fam") and be_== (toList))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fam")) + ", but " + FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fam")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fum") and be_== (fumList))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -236,11 +236,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be_== (fumList))
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") and (be_== (toList)))
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -248,11 +248,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be_== (fumList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") and be_== (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages("wasNotEqualTo", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FAM")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and be_== (fumList))) (after being lowerCased and trimmed)
       }
 
@@ -262,7 +262,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -273,11 +273,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain atMostOneElementOf (Seq("fee", "fie", "foe", "fuu")) and not contain atMostOneElementOf (Seq("fie", "fee", "fum", "foe")))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fuu")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fuu")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not contain atMostOneElementOf (Seq("fee", "fie", "foe", "fum")) and not contain atMostOneElementOf (Seq("fie", "fee", "fam", "foe")))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -286,11 +286,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e1, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUU")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUU")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and (not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -298,11 +298,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotContainAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FAM")) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("containedAtMostOneElementOf", fumList, Seq("FEE", "FIE", "FOE", "FAM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedAtMostOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FAM")), fileName, thisLineNumber - 2)
         (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -312,14 +312,14 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain atMostOneElementOf (Seq("fie", "fee", "fum", "foe")) and not contain atMostOneElementOf (Seq("fee", "fie", "foe", "fie", "fum")))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e2.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -330,11 +330,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain atMostOneElementOf (Seq("fie", "fee", "fum", "foe")))
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and not contain atMostOneElementOf (Seq("fie", "fee", "fam", "foe")))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, toList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -343,11 +343,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e1, FailureMessages("equaled", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and (not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("didNotEqual", fumList, toList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -355,11 +355,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("didNotEqual", fumList, fumList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, fumList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not equal (toList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("equaled", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) and not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -369,7 +369,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -380,11 +380,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be_== (fumList) and not contain atMostOneElementOf (Seq("fie", "fee", "fum", "foe")))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be_== (toList) and not contain atMostOneElementOf (Seq("fie", "fee", "fam", "foe")))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("fie", "fee", "fam", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -393,11 +393,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be_== (fumList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e1, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be_== (toList) and (not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE"))))
         }
-        checkMessageStackDepth(e2, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -405,11 +405,11 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not be_== (toList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FAM", "FOE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages("wasNotEqualTo", fumList, toList) + ", but " + FailureMessages("containedAtMostOneElementOf", fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedAtMostOneElementOf(fumList, Seq("FIE", "FEE", "FAM", "FOE")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not be_== (fumList) and not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) and not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -419,7 +419,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -503,14 +503,14 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain atMostOneElementOf Seq(1, 3, 4) and contain atMostOneElementOf Seq(1, 2, 2, 3))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e2.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -578,7 +578,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -646,14 +646,14 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
 
         val e2 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not contain atMostOneElementOf (Seq(1, 2, 3)) and not contain atMostOneElementOf (Seq(1, 2, 2, 3)))
         }
         e2.failedCodeFileName.get should be (fileName)
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e2.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
 
@@ -721,7 +721,7 @@ class ListShouldContainAtMostOneElementOfLogicalAndSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atMostOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
       }
     }
   }

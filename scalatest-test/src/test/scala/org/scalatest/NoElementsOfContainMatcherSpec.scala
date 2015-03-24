@@ -25,7 +25,7 @@ class NoElementsOfContainMatcherSpec extends Spec {
   object `noElementsOf ` {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages("containedAtLeastOneOf", left, right)))
+      e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -58,17 +58,17 @@ class NoElementsOfContainMatcherSpec extends Spec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain noElementsOf Seq(6, 8, 6)
       }
-      e1.getMessage() should be (FailureMessages("noElementsOfDuplicate"))
+      e1.getMessage() should be (FailureMessages.noElementsOfDuplicate)
 
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain noElementsOf Seq(6, 8, 6)
       }
-      e2.getMessage() should be (FailureMessages("noElementsOfDuplicate"))
+      e2.getMessage() should be (FailureMessages.noElementsOfDuplicate)
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain noElementsOf Seq(6, 8, 6)
       }
-      e3.getMessage() should be (FailureMessages("noElementsOfDuplicate"))
+      e3.getMessage() should be (FailureMessages.noElementsOfDuplicate)
     }
 
     def `should throw TestFailedException with correct stack depth and message when left List contains element in right List` {
@@ -108,7 +108,7 @@ class NoElementsOfContainMatcherSpec extends Spec {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages("didNotContainAtLeastOneOf", left, right)))
+      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

@@ -40,14 +40,14 @@ class ListShouldContainSpec extends Spec {
         val e1 = intercept[TestFailedException] {
           xs should contain ("ho")
         }
-        e1.message.get should be (Resources("didNotContainExpectedElement", decorateToStringValue(xs), "\"ho\""))
+        e1.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(xs), "\"ho\""))
         e1.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e2 = intercept[TestFailedException] {
           nil should contain ("ho")
         }
-        e2.message.get should be (Resources("didNotContainExpectedElement", nil, "\"ho\""))
+        e2.message.get should be (Resources.didNotContainExpectedElement(nil, "\"ho\""))
         e2.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -108,7 +108,7 @@ class ListShouldContainSpec extends Spec {
         val e3 = intercept[TestFailedException] {
           xs should not contain "hi"
         }
-        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -170,7 +170,7 @@ class ListShouldContainSpec extends Spec {
         val e3 = intercept[TestFailedException] {
           xs should not (contain ("hi"))
         }
-        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -234,7 +234,7 @@ class ListShouldContainSpec extends Spec {
         val e3 = intercept[TestFailedException] {
           xs should (not contain "hi")
         }
-        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -298,7 +298,7 @@ class ListShouldContainSpec extends Spec {
         val e3 = intercept[TestFailedException] {
           xs shouldNot contain ("hi")
         }
-        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -360,7 +360,7 @@ class ListShouldContainSpec extends Spec {
         val e3 = intercept[TestFailedException] {
           xs shouldNot (contain ("hi"))
         }
-        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }

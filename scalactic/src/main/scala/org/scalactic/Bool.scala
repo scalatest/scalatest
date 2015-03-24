@@ -301,28 +301,28 @@ private[scalactic] class SimpleBool(expression: Boolean) extends Bool {
    *
    * @return Localized string for "Expression was false"
    */
-  def rawFailureMessage: String = Resources("expressionWasFalse")
+  def rawFailureMessage: String = Resources.rawExpressionWasFalse
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized string for "Expression was true"
    */
-  def rawNegatedFailureMessage: String = Resources("expressionWasTrue")
+  def rawNegatedFailureMessage: String = Resources.rawExpressionWasTrue
 
   /**
    * raw mid sentence message to report a failure
    *
    * @return Localized string for "Expression was false"
    */
-  def rawMidSentenceFailureMessage: String = Resources("expressionWasFalse")
+  def rawMidSentenceFailureMessage: String = Resources.rawExpressionWasFalse
 
   /**
    * raw mid sentence message with a meaning opposite to that of the failure message
    *
    * @return Localized string for "Expression was false"
    */
-  def rawMidSentenceNegatedFailureMessage: String = Resources("expressionWasTrue")
+  def rawMidSentenceNegatedFailureMessage: String = Resources.rawExpressionWasTrue
 
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
@@ -371,28 +371,28 @@ private[scalactic] class AndBool(bool1: Bool, bool2: Bool) extends Bool {
    *
    * @return Localized raw string for "{0}, but {1}"
    */
-  def rawFailureMessage: String = Resources("commaBut")
+  def rawFailureMessage: String = Resources.rawCommaBut
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawNegatedFailureMessage: String = Resources("commaAnd")
+  def rawNegatedFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * raw mid sentence message to report a failure
    *
    * @return Localized raw string for "{0}, but {1}"
    */
-  def rawMidSentenceFailureMessage: String = Resources("commaBut")
+  def rawMidSentenceFailureMessage: String = Resources.rawCommaBut
 
   /**
    * raw mid sentence message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceNegatedFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
@@ -441,28 +441,28 @@ private[scalactic] class OrBool(bool1: Bool, bool2: Bool) extends Bool {
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawFailureMessage: String = Resources("commaAnd")
+  def rawFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawNegatedFailureMessage: String = Resources("commaAnd")
+  def rawNegatedFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * raw mid sentence message to report a failure
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawMidSentenceFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * raw mid sentence message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceNegatedFailureMessage: String = Resources.rawCommaAnd
 
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
@@ -573,28 +573,28 @@ private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText
    *
    * @return Localized raw string of "Expression was false" if passed in <code>expressionText</code> is empty, else "{0} was false"
    */
-  def rawFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
+  def rawFailureMessage: String = if (expressionText.isEmpty) Resources.rawExpressionWasFalse else Resources.rawWasFalse
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string of "Expression was true" if passed in <code>expressionText</code> is empty, else "{0} was true"
    */
-  def rawNegatedFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasTrue") else Resources("wasTrue")
+  def rawNegatedFailureMessage: String = if (expressionText.isEmpty) Resources.rawExpressionWasTrue else Resources.rawWasTrue
 
   /**
    * raw mid sentence message to report a failure
    *
    * @return Localized raw string of "Expression was false" if passed in <code>expressionText</code> is empty, else "{0} was false"
    */
-  def rawMidSentenceFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
+  def rawMidSentenceFailureMessage: String = if (expressionText.isEmpty) Resources.rawExpressionWasFalse else Resources.rawWasFalse
 
   /**
    * raw mid sentence message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string of "Expression was true" if passed in <code>expressionText</code> is empty, else "{0} was true"
    */
-  def rawMidSentenceNegatedFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasTrue") else Resources("wasTrue")
+  def rawMidSentenceNegatedFailureMessage: String = if (expressionText.isEmpty) Resources.rawExpressionWasTrue else Resources.rawWasTrue
 
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
@@ -671,40 +671,40 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    */
   def rawFailureMessage: String = {
     operator match {
-      case "==" => Resources("didNotEqual")
-      case "===" => Resources("didNotEqual")
-      case "!=" => Resources("equaled")
-      case "!==" => Resources("equaled")
-      case ">" => Resources("wasNotGreaterThan")
-      case ">=" => Resources("wasNotGreaterThanOrEqualTo")
-      case "<" => Resources("wasNotLessThan")
-      case "<=" => Resources("wasNotLessThanOrEqualTo")
-      case "startsWith" => Resources("didNotStartWith")
-      case "endsWith" => Resources("didNotEndWith")
+      case "==" => Resources.rawDidNotEqual
+      case "===" => Resources.rawDidNotEqual
+      case "!=" => Resources.rawEqualed
+      case "!==" => Resources.rawEqualed
+      case ">" => Resources.rawWasNotGreaterThan
+      case ">=" => Resources.rawWasNotGreaterThanOrEqualTo
+      case "<" => Resources.rawWasNotLessThan
+      case "<=" => Resources.rawWasNotLessThanOrEqualTo
+      case "startsWith" => Resources.rawDidNotStartWith
+      case "endsWith" => Resources.rawDidNotEndWith
       case "contains" =>
         left match {
-          case leftMap: scala.collection.GenMap[_, _] => Resources("didNotContainKey")
-          case _ => Resources("didNotContain")
+          case leftMap: scala.collection.GenMap[_, _] => Resources.rawDidNotContainKey
+          case _ => Resources.rawDidNotContain
         }
-      case "eq" => Resources("wasNotTheSameInstanceAs")
-      case "ne" => Resources("wasTheSameInstanceAs")
+      case "eq" => Resources.rawWasNotTheSameInstanceAs
+      case "ne" => Resources.rawWasTheSameInstanceAs
       case "&&" | "&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             if (leftBool.value)
-              Resources("commaBut")
+              Resources.rawCommaBut
             else
               leftBool.rawFailureMessage
           case (leftBool: Bool, rightAny: Any) =>
             if (leftBool.value)
-              Resources("commaBut")
+              Resources.rawCommaBut
             else
               leftBool.rawFailureMessage
           case _ =>
-            Resources("commaBut")
+            Resources.rawCommaBut
         }
-      case "||" | "|" => Resources("commaAnd")
-      case _ => Resources("expressionWasFalse")
+      case "||" | "|" => Resources.rawCommaAnd
+      case _ => Resources.rawExpressionWasFalse
     }
   }
 
@@ -716,26 +716,26 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    */
   def rawNegatedFailureMessage: String =
     operator match {
-      case "==" => Resources("equaled")
-      case "===" => Resources("equaled")
-      case "!=" => Resources("didNotEqual")
-      case "!==" => Resources("didNotEqual")
-      case ">" => Resources("wasGreaterThan")
-      case ">=" => Resources("wasGreaterThanOrEqualTo")
-      case "<" => Resources("wasLessThan")
-      case "<=" => Resources("wasLessThanOrEqualTo")
-      case "startsWith" => Resources("startedWith")
-      case "endsWith" => Resources("endedWith")
+      case "==" => Resources.rawEqualed
+      case "===" => Resources.rawEqualed
+      case "!=" => Resources.rawDidNotEqual
+      case "!==" => Resources.rawDidNotEqual
+      case ">" => Resources.rawWasGreaterThan
+      case ">=" => Resources.rawWasGreaterThanOrEqualTo
+      case "<" => Resources.rawWasLessThan
+      case "<=" => Resources.rawWasLessThanOrEqualTo
+      case "startsWith" => Resources.rawStartedWith
+      case "endsWith" => Resources.rawEndedWith
       case "contains" =>
         left match {
-          case leftMap: scala.collection.GenMap[_, _] => Resources("containedKey")
-          case _ => Resources("contained")
+          case leftMap: scala.collection.GenMap[_, _] => Resources.rawContainedKey
+          case _ => Resources.rawContained
         }
-      case "eq" => Resources("wasTheSameInstanceAs")
-      case "ne" => Resources("wasNotTheSameInstanceAs")
-      case "&&" | "&" => Resources("commaAnd")
-      case "||" | "|" => Resources("commaAnd")
-      case _ => Resources("expressionWasTrue")
+      case "eq" => Resources.rawWasTheSameInstanceAs
+      case "ne" => Resources.rawWasNotTheSameInstanceAs
+      case "&&" | "&" => Resources.rawCommaAnd
+      case "||" | "|" => Resources.rawCommaAnd
+      case _ => Resources.rawExpressionWasTrue
     }
 
   /**
@@ -881,8 +881,8 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def rawFailureMessage: String = {
     operator match {
-      case "isEmpty" => Resources("wasNotEmpty")
-      case _ => Resources("expressionWasFalse")
+      case "isEmpty" => Resources.rawWasNotEmpty
+      case _ => Resources.rawExpressionWasFalse
     }
   }
 
@@ -894,8 +894,8 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def rawNegatedFailureMessage: String =
     operator match {
-      case "isEmpty" => Resources("wasEmpty")
-      case _ => Resources("expressionWasTrue")
+      case "isEmpty" => Resources.rawWasEmpty
+      case _ => Resources.rawExpressionWasTrue
     }
 
   /**
@@ -979,8 +979,8 @@ private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, clas
    */
   def rawFailureMessage: String = {
     operator match {
-      case "isInstanceOf" => Resources("wasNotInstanceOf")
-      case _ => Resources("expressionWasFalse")
+      case "isInstanceOf" => Resources.rawWasNotInstanceOf
+      case _ => Resources.rawExpressionWasFalse
     }
   }
 
@@ -992,8 +992,8 @@ private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, clas
    */
   def rawNegatedFailureMessage: String =
     operator match {
-      case "isInstanceOf" => Resources("wasInstanceOf")
-      case _ => Resources("expressionWasTrue")
+      case "isInstanceOf" => Resources.rawWasInstanceOf
+      case _ => Resources.rawExpressionWasTrue
     }
 
   /**
@@ -1077,9 +1077,9 @@ private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual
    */
   def rawFailureMessage: String = {
     operator match {
-      case "length" => Resources("hadLengthInsteadOfExpectedLength")
-      case "size" => Resources("hadSizeInsteadOfExpectedSize")
-      case _ => Resources("expressionWasFalse")
+      case "length" => Resources.rawHadLengthInsteadOfExpectedLength
+      case "size" => Resources.rawHadSizeInsteadOfExpectedSize
+      case _ => Resources.rawExpressionWasFalse
     }
   }
 
@@ -1091,9 +1091,9 @@ private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual
    */
   def rawNegatedFailureMessage: String =
     operator match {
-      case "length" => Resources("hadLength")
-      case "size" => Resources("hadSize")
-      case _ => Resources("expressionWasTrue")
+      case "length" => Resources.rawHadLength
+      case "size" => Resources.rawHadSize
+      case _ => Resources.rawExpressionWasTrue
     }
 
   /**
@@ -1174,7 +1174,7 @@ private[scalactic] class ExistsMacroBool(left: Any, right: Any, expression: Bool
    * @return Localized friendly raw message based on the passed in <code>operator</code>
    */
   def rawFailureMessage: String =
-    Resources("didNotContain")
+    Resources.rawDidNotContain
 
   /**
    * raw message with a meaning opposite to that of the failure message, this method implementation will return localized
@@ -1183,7 +1183,7 @@ private[scalactic] class ExistsMacroBool(left: Any, right: Any, expression: Bool
    * @return Localized negated friendly raw message based on the passed in <code>operator</code>
    */
   def rawNegatedFailureMessage: String =
-    Resources("contained")
+    Resources.rawContained
 
   /**
    * raw mid sentence message to report a failure

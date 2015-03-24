@@ -62,7 +62,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         val tf = rep.testFailedEventsReceived
         tf.size should be (1)
         val tfe = tf(0)
-        tfe.message should be (Resources("testTimeLimitExceeded", "100 milliseconds"))
+        tfe.message should be (Resources.testTimeLimitExceeded("100 milliseconds"))
       }
       it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly") {
         val a =
@@ -79,7 +79,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         val tf = rep.testFailedEventsReceived
         tf.size should be (1)
         val tfe = tf(0)
-        tfe.message should be (Resources("testTimeLimitExceeded", "10 milliseconds"))
+        tfe.message should be (Resources.testTimeLimitExceeded("10 milliseconds"))
         import org.scalatest.OptionValues._
         tfe.throwable.value match {
           case tfe: TestFailedDueToTimeoutException =>

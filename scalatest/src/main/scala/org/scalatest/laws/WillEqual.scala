@@ -85,10 +85,10 @@ trait WillEqual { willEqual =>
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
       if (evidence.areEqual(leftSideValue, right)) {
         Yes(
-          Resources("didNotEqual"),
-          Resources("equaled"),
-          Resources("didNotEqual"),
-          Resources("equaled"),
+          Resources.rawDidNotEqual,
+          Resources.rawEqualed,
+          Resources.rawDidNotEqual,
+          Resources.rawEqualed,
           Vector(leftee, rightee),
           Vector(leftee, rightee),
           Vector(leftee, rightee),
@@ -97,10 +97,10 @@ trait WillEqual { willEqual =>
       }
       else {
         No(
-          Resources("didNotEqual"),
-          Resources("equaled"),
-          Resources("didNotEqual"),
-          Resources("equaled"),
+          Resources.rawDidNotEqual,
+          Resources.rawEqualed,
+          Resources.rawDidNotEqual,
+          Resources.rawEqualed,
           Vector(leftee, rightee),
           Vector(leftee, rightee),
           Vector(leftee, rightee),

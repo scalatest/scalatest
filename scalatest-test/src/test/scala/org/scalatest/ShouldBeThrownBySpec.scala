@@ -25,16 +25,16 @@ class ShouldBeThrownBySpec extends Spec {
   val fileName: String = "ShouldBeThrownBySpec.scala"
   
   def exceptionExpected(clz: Class[_]): String = 
-    Resources("exceptionExpected", clz.getName)
+    Resources.exceptionExpected(clz.getName)
     
   def wrongException(expectedClz: Class[_], actualClz: Class[_]): String = 
-    Resources("wrongException", expectedClz.getName, actualClz.getName)
+    Resources.wrongException(expectedClz.getName, actualClz.getName)
     
   def noExceptionExpected(clz: Class[_]): String = 
-    Resources("exceptionNotExpected", clz.getName)
+    Resources.exceptionNotExpected(clz.getName)
     
   def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
-    FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, expectedMessage)
+    FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage)
   
   object `a [Exception] should` {
     

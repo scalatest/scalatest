@@ -46,7 +46,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("didNotContainAtLeastOneElementOf", fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -71,7 +71,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -85,7 +85,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("didNotContainAtLeastOneElementOf", fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -110,7 +110,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -131,7 +131,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedAtLeastOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -156,7 +156,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -178,7 +178,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedAtLeastOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -204,7 +204,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -217,7 +217,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedAtLeastOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -242,7 +242,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -255,7 +255,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedAtLeastOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -281,7 +281,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
   }
@@ -361,7 +361,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -431,7 +431,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -486,7 +486,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -543,7 +543,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -583,7 +583,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
 
@@ -623,7 +623,7 @@ class ListShouldContainAtLeastOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("atLeastOneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.atLeastOneElementOfDuplicate))
       }
     }
   }

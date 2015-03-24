@@ -78,17 +78,17 @@ sealed abstract class Fact {
 
 object Fact {
   def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources("commaAnd")
-    case (false,true) => Resources("rightParensCommaAnd")
-    case (true,false) => Resources("leftParensCommaAnd")
-    case (true,true) => Resources("bothParensCommaAnd")
+    case (false,false) => Resources.rawCommaAnd
+    case (false,true) => Resources.rawRightParensCommaAnd
+    case (true,false) => Resources.rawLeftParensCommaAnd
+    case (true,true) => Resources.rawBothParensCommaAnd
   }
 
   def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources("commaBut")
-    case (false,true) => Resources("rightParensCommaBut")
-    case (true,false) => Resources("leftParensCommaBut")
-    case (true,true) => Resources("bothParensCommaBut")
+    case (false,false) => Resources.rawCommaBut
+    case (false,true) => Resources.rawRightParensCommaBut
+    case (true,false) => Resources.rawLeftParensCommaBut
+    case (true,true) => Resources.rawBothParensCommaBut
   }
 
   // Idea is to override toString each time it is used.

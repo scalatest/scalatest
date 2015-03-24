@@ -29,14 +29,14 @@ class ListShouldBeEmptySpec extends Spec {
   val fileName: String = "ListShouldBeEmptySpec.scala"
     
   def wasNotEmpty(left: Any): String = 
-    FailureMessages("wasNotEmpty", left)
+    FailureMessages.wasNotEmpty(left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages("wasEmpty", left)
+    FailureMessages.wasEmpty(left)
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages("forAssertionsGenTraversableMessageWithStackDepth", 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages("allShorthandFailed", messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
   object `Empty matcher` {

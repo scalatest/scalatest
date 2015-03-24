@@ -61,7 +61,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -80,13 +80,14 @@ class ListShouldContainOnlySpec extends Spec {
         }
         (fumList should contain only (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should contain only ("fee", "fie", "foe", "fie", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -94,7 +95,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.didNotContainOnlyElementsWithFriendlyReminder(decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -108,7 +109,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElements", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -127,13 +128,14 @@ class ListShouldContainOnlySpec extends Spec {
         }
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -141,7 +143,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.didNotContainOnlyElementsWithFriendlyReminder(decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -154,7 +156,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -173,13 +175,14 @@ class ListShouldContainOnlySpec extends Spec {
           (toList should not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList should not contain only ("fee", "fie", "foe", "fie", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -187,7 +190,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedOnlyElementsWithFriendlyReminder(decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -200,7 +203,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -219,13 +222,14 @@ class ListShouldContainOnlySpec extends Spec {
           (toList should (not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList should (not contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -233,7 +237,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedOnlyElementsWithFriendlyReminder(decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
     
@@ -246,7 +250,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -265,13 +269,14 @@ class ListShouldContainOnlySpec extends Spec {
           (toList shouldNot contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
 
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
@@ -280,7 +285,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedOnlyElementsWithFriendlyReminder(decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -293,7 +298,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources.containedOnlyElements(decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -312,13 +317,14 @@ class ListShouldContainOnlySpec extends Spec {
           (toList shouldNot (contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -326,7 +332,7 @@ class ListShouldContainOnlySpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
+        e1.message.get should be (Resources.containedOnlyElementsWithFriendlyReminder(decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
   }
@@ -388,13 +394,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (hiLists) should contain only ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should contain only (1, 2, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -457,13 +464,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (hiLists) should (contain only ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain only (1, 2, 2, 3))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -507,13 +515,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (toLists) should not contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should not contain only ("fee", "fie", "foe", "fie", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -557,13 +566,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (toLists) should (not contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -607,13 +617,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (toLists) shouldNot contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
@@ -657,13 +668,14 @@ class ListShouldContainOnlySpec extends Spec {
           (all (toLists) shouldNot (contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("onlyDuplicate")))
+        e1.message should be (Some(Resources.onlyDuplicate))
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {

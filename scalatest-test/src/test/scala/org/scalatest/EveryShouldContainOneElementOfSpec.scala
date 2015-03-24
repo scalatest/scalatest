@@ -47,19 +47,19 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("didNotContainOneElementOf", fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
         // Here it contains two of, not one of
         val e2 = intercept[TestFailedException] {
           fumfuList should contain oneElementOf Seq("fee", "fum", "foe", "fu")
         }
         e2.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message.get should be (FailureMessages("didNotContainOneElementOf", fumfuList, Seq("fee", "fum", "foe", "fu")))
+        e2.message.get should be (FailureMessages.didNotContainOneElementOf(fumfuList, Seq("fee", "fum", "foe", "fu")))
         // Contains duplicate elements in the right list
         val e3 = intercept[NotAllowedException] {
           fumList should contain oneElementOf Seq("fee", "fum", "foe", "fum")
         }
-        e3.getMessage should be (FailureMessages("oneElementOfDuplicate"))
+        e3.getMessage should be (FailureMessages.oneElementOfDuplicate)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -84,7 +84,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -98,7 +98,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("didNotContainOneElementOf", fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -123,7 +123,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -144,7 +144,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -169,7 +169,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -191,7 +191,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -216,7 +216,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -229,7 +229,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -254,7 +254,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -267,7 +267,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages("containedOneElementOf", toList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -292,7 +292,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
   }
@@ -318,7 +318,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages("didNotContainOneElementOf", lists(2), Seq(1, 3, 4)) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.didNotContainOneElementOf(lists(2), Seq(1, 3, 4)) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -350,7 +350,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -368,7 +368,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages("didNotContainOneElementOf", lists(2), Seq(1, 3, 4)) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.didNotContainOneElementOf(lists(2), Seq(1, 3, 4)) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -400,7 +400,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -429,7 +429,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("containedOneElementOf", toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -455,7 +455,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -486,7 +486,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("containedOneElementOf", toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -512,7 +512,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -526,7 +526,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("containedOneElementOf", toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -552,7 +552,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
 
@@ -566,7 +566,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages("containedOneElementOf", toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (EveryShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -592,7 +592,7 @@ class EveryShouldContainOneElementOfSpec extends Spec {
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages("oneElementOfDuplicate")))
+        e1.message should be (Some(FailureMessages.oneElementOfDuplicate))
       }
     }
   }

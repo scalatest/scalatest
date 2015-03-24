@@ -98,7 +98,7 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
             case None => null // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
           }
         val possiblyEmptyMessage = Reporter.messageOrThrowablesDetailMessage(message, throwable)
-        val description = Description.createSuiteDescription(Resources("runAborted") + " " + possiblyEmptyMessage)
+        val description = Description.createSuiteDescription(Resources.runAborted + " " + possiblyEmptyMessage)
         runNotifier.fireTestFailure(new Failure(description, throwableOrNull)) // Best we can do in JUnit, as far as I know
         runNotifier.fireTestFinished(description)
 

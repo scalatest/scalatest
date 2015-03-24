@@ -35,7 +35,7 @@ class ShouldCompileSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           "val a: String = 2" should compile
         }
-        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -46,7 +46,7 @@ class ShouldCompileSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           "println(\"test)" should compile
         }
-        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -68,7 +68,7 @@ class ShouldCompileSpec extends FunSpec {
             |val a: String = 2
             |""".stripMargin should compile
         }
-        val errMsg = Resources("expectedNoErrorButGotTypeError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
@@ -81,7 +81,7 @@ class ShouldCompileSpec extends FunSpec {
             |println("test)
             |""".stripMargin should compile
         }
-        val errMsg = Resources("expectedNoErrorButGotParseError", "", "")
+        val errMsg = Resources.expectedNoErrorButGotParseError("", "")
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))

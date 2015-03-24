@@ -16,21 +16,8 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.io.OutputStreamWriter
-import java.io.PrintWriter
-import java.util.Iterator
-import java.util.Set
-import java.io.StringWriter
 import org.scalatest.events._
-import PrintReporter._
-import org.scalatest.junit.JUnitTestFailedError
 import org.scalatest.exceptions.PropertyCheckFailedException
-import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import Suite.indentation
 import org.scalatest.exceptions.StackDepth
 import StringReporter._
@@ -186,7 +173,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
   // Stupid properties file won't let me put spaces at the beginning of a property
   // "  {0}" comes out as "{0}", so I can't do indenting in a localizable way. For now
   // just indent two space to the left.  //  if (times <= 0) s 
-  //  else Resources("indentOnce", indent(s, times - 1))
+  //  else Resources.indentOnce(indent(s, times - 1))
 }
  
 private[scalatest] object StringReporter {
@@ -194,7 +181,7 @@ private[scalatest] object StringReporter {
   val shortStackTraceSize = 10
 
   def fragmentsWhenNoError(
-    resourceName: String,
+    messageFun: Any => String,
     formatter: Option[Formatter],
     suiteName: String,
     testName: Option[String],
@@ -204,15 +191,15 @@ private[scalatest] object StringReporter {
     ansiColor: AnsiColor = AnsiGreen,
     duration: Option[Long] = None
   ): Vector[Fragment] = {
-    val lines: Vector[String] = stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, message, presentAllDurations, presentUnformatted,
+    val lines: Vector[String] = stringToPrintWhenNoError(messageFun, formatter, suiteName, testName, message, presentAllDurations, presentUnformatted,
       duration)
 
     lines map (new Fragment(_, ansiColor))
   }
 
   def fragmentsOnError(
-    noteResourceName: String,
-    errorResourceName: String,
+    noteMessageFun: String,
+    errorMessageFun: Any => String,
     message: String,
     throwable: Option[Throwable],
     formatter: Option[Formatter],
@@ -226,7 +213,7 @@ private[scalatest] object StringReporter {
     ansiColor: AnsiColor
   ): Vector[Fragment] = {
 
-    val lines: Vector[String] = stringsToPrintOnError(noteResourceName, errorResourceName, message, throwable, formatter, suiteName, testName, duration,
+    val lines: Vector[String] = stringsToPrintOnError(noteMessageFun, errorMessageFun, message, throwable, formatter, suiteName, testName, duration,
         presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
     lines map (new Fragment(_, ansiColor))
@@ -258,54 +245,54 @@ private[scalatest] object StringReporter {
   
             duration match {
               case Some(msSinceEpoch) =>
-                Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
+                Some(Fragment(if (runCompleted) Resources.runCompletedIn(makeDurationString(msSinceEpoch)) else Resources.runStoppedIn(makeDurationString(msSinceEpoch)), AnsiCyan))
               case None =>
-                Some(Fragment(Resources(resourceName), AnsiCyan))
+                Some(Fragment(if (runCompleted) Resources.runCompleted else Resources.runStopped, AnsiCyan))
             },
   
             // totalNumberOfTestsRun=Total number of tests run was: {0}
-            Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
+            Some(Fragment(Resources.totalNumberOfTestsRun(testsCompletedCount.toString), AnsiCyan)),
   
             if (scopesPendingCount > 0) {
               // Suites: completed {0}, aborted {1}  Scopes: pending {2}
-              Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
+              Some(Fragment(Resources.suiteScopeSummary(suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
             }
             else {
               // Suites: completed {0}, aborted {1}
-              Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
+              Some(Fragment(Resources.suiteSummary(suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
             },
   
             // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
-            Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
+            Some(Fragment(Resources.testSummary(testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
   
             // *** 1 SUITE ABORTED ***
             if (suitesAbortedCount == 1) {
-              Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
+              Some(Fragment(Resources.oneSuiteAborted, AnsiRed))
             }
             // *** {0} SUITES ABORTED ***
             else if (suitesAbortedCount > 1) {
-              Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
+              Some(Fragment(Resources.multipleSuitesAborted(suitesAbortedCount.toString), AnsiRed))
             }
             else None,
   
             // *** 1 TEST FAILED ***
             if (testsFailedCount == 1) {
-              Some(Fragment(Resources("oneTestFailed"), AnsiRed))
+              Some(Fragment(Resources.oneTestFailed, AnsiRed))
             }
             // *** {0} TESTS FAILED ***
             else if (testsFailedCount > 1) {
-              Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
+              Some(Fragment(Resources.multipleTestsFailed(testsFailedCount.toString), AnsiRed))
             }
             else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
               if (testsCompletedCount > 0)
-                Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+                Some(Fragment(Resources.allTestsPassed, AnsiGreen))
               else
-                Some(Fragment(Resources("noTestsWereExecuted"), AnsiYellow))
+                Some(Fragment(Resources.noTestsWereExecuted, AnsiYellow))
             }
             else None
           ).flatten
   
-        case None => Vector(Fragment(Resources(resourceName), AnsiCyan))
+        case None => Vector(Fragment(if (runCompleted) Resources.runCompleted else Resources.runStopped, AnsiCyan))
       }
 
       val filteredSortedEvents =
@@ -343,8 +330,8 @@ private[scalatest] object StringReporter {
       testNameOpt: Option[String],
       testTextOpt: Option[String],
       suiteName: String,
-      noteResourceName: String,
-      errorResourceName: String,
+      noteMessageFun: String,
+      errorMessageFun: Any => String,
       message: String,
       throwable: Option[Throwable],
       duration: Option[Long],
@@ -369,8 +356,8 @@ private[scalatest] object StringReporter {
       }
       val otherFrags: Vector[Fragment] =
         fragmentsOnError(
-          noteResourceName,
-          errorResourceName,
+          noteMessageFun,
+          errorMessageFun,
           message,
           throwable,
           formatter,
@@ -415,8 +402,8 @@ private[scalatest] object StringReporter {
           Some(tf.testName),
           Some(tf.testText),
           tf.suiteName,
-          "failedNote",
-          "testFailed",
+          Resources.failedNote,
+          Resources.testFailed _,
           tf.message,
           tf.throwable,
           tf.duration,
@@ -427,8 +414,8 @@ private[scalatest] object StringReporter {
           Some(tc.testName),
           Some(tc.testText),
           tc.suiteName,
-          "canceledNote",
-          "testCanceled",
+          Resources.canceledNote,
+          Resources.testCanceled _,
           tc.message,
           tc.throwable,
           tc.duration,
@@ -439,8 +426,8 @@ private[scalatest] object StringReporter {
           None,
           None,
           sa.suiteName,
-          "abortedNote",
-          "suiteAborted",
+          Resources.abortedNote,
+          Resources.suiteAborted _,
           sa.message,
           sa.throwable,
           sa.duration,
@@ -454,7 +441,7 @@ private[scalatest] object StringReporter {
       case Some(stackDepth: StackDepth) =>
         stackDepth.failedCodeFileNameAndLineNumberString match {
           case Some(lineNumberString) =>
-            Resources("printedReportPlusLineNumber", stringToPrint, lineNumberString)
+            Resources.printedReportPlusLineNumber(stringToPrint, lineNumberString)
           case None => stringToPrint
         }
       case _ => stringToPrint
@@ -495,8 +482,8 @@ private[scalatest] object StringReporter {
       }
     val lines: Vector[String] =
       stringsToPrintOnError(
-        "infoProvidedNote",
-        "infoProvided",
+        Resources.infoProvidedNote,
+        Resources.infoProvided _,
         event.message,
         event.throwable,
         event.formatter,
@@ -527,8 +514,8 @@ private[scalatest] object StringReporter {
       }
     val lines: Vector[String] =
       stringsToPrintOnError(
-        "alertProvidedNote",
-        "alertProvided",
+        Resources.alertProvidedNote,
+        Resources.alertProvided _,
         event.message,
         event.throwable,
         event.formatter,
@@ -558,8 +545,8 @@ private[scalatest] object StringReporter {
       }
     val lines: Vector[String] =
       stringsToPrintOnError(
-        "noteProvidedNote",
-        "noteProvided",
+        Resources.noteProvidedNote,
+        Resources.noteProvided _,
         event.message,
         event.throwable,
         event.formatter,
@@ -629,7 +616,7 @@ private[scalatest] object StringReporter {
   }
 
   // Will return a Vector that is either empty or contains one string
-  def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String], presentAllDurations: Boolean, presentUnformatted: Boolean, duration: Option[Long] = None): Vector[String] = {
+  def stringToPrintWhenNoError(messageFun: Any => String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String], presentAllDurations: Boolean, presentUnformatted: Boolean, duration: Option[Long] = None): Vector[String] = {
     def genUnformattedText = {
         val arg =
           testName match {
@@ -641,11 +628,11 @@ private[scalatest] object StringReporter {
             case Some(text) => ": " + text
             case None       => ""
           }
-        val unformattedText = Resources(resourceName, arg + messageText)
+        val unformattedText = messageFun(arg + messageText)
         duration match {
           case Some(milliseconds) =>
             if (presentAllDurations)
-              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
+              Some(Resources.withDuration(unformattedText, makeDurationString(milliseconds)))
             else
               Some(unformattedText)
           case None => Some(unformattedText)
@@ -658,7 +645,7 @@ private[scalatest] object StringReporter {
           duration match {
             case Some(milliseconds) =>
               if (presentAllDurations)
-                Some(Resources("withDuration", formattedText, makeDurationString(milliseconds)))
+                Some(Resources.withDuration(formattedText, makeDurationString(milliseconds)))
               else
                 Some(formattedText)
             case None => Some(formattedText)
@@ -693,22 +680,22 @@ private[scalatest] object StringReporter {
       // TODO: I think we should let people elide DiscoveryStarting and DiscoveryCompleted events in reporters
       case _: DiscoveryStarting =>
 
-        fragmentsWhenNoError("discoveryStarting", None, "", None, None, presentUnformatted, presentAllDurations, AnsiCyan)
+        fragmentsWhenNoError(String => Resources.discoveryStarting, None, "", None, None, presentUnformatted, presentAllDurations, AnsiCyan)
 
       case DiscoveryCompleted(_, duration, _, _) => 
         val stringToPrint =
           duration match {
             case Some(milliseconds) => 
-              Resources("discoveryCompletedIn", makeDurationString(milliseconds))
+              Resources.discoveryCompletedIn(makeDurationString(milliseconds))
             case None =>
-              Resources("discoveryCompleted")
+              Resources.discoveryCompleted
           }
 
         Vector(Fragment(stringToPrint, AnsiCyan))
 
       case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
 
-        val string = Resources("runStarting", testCount.toString)
+        val string = Resources.runStarting(testCount.toString)
 
         Vector(Fragment(string, AnsiCyan))
 
@@ -744,32 +731,32 @@ private[scalatest] object StringReporter {
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        fragmentsOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
+        fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted, message, throwable, formatter, None, None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        fragmentsWhenNoError("suiteStarting", formatter, suiteName, None, None, presentUnformatted, presentAllDurations)
+        fragmentsWhenNoError(Resources.suiteStarting _, formatter, suiteName, None, None, presentUnformatted, presentAllDurations)
 
       case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
-        fragmentsWhenNoError("suiteCompleted", formatter, suiteName, None, None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
+        fragmentsWhenNoError(Resources.suiteCompleted _, formatter, suiteName, None, None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
 
       case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
-        val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
+        val lines = stringsToPrintOnError(Resources.abortedNote, Resources.suiteAborted _, message, throwable, formatter, Some(suiteName), None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
         for (line <- lines) yield new Fragment(line, AnsiRed)
 
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        fragmentsWhenNoError("testStarting", formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations)
+        fragmentsWhenNoError(Resources.testStarting, formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations)
 
       case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tsf: Vector[Fragment] = 
-          fragmentsWhenNoError("testSucceeded", formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
+          fragmentsWhenNoError(Resources.testSucceeded, formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
 
         val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
@@ -779,19 +766,19 @@ private[scalatest] object StringReporter {
 
         val stringToPrint =
           if (presentUnformatted)
-            Vector(Resources("testIgnored", suiteName + ": " + testName))
+            Vector(Resources.testIgnored(suiteName + ": " + testName))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources.specTextAndNote(formattedText, Resources.ignoredNote))
               case Some(MotionToSuppress) => Vector.empty
-              case _ => Vector(Resources("testIgnored", suiteName + ": " + testName))
+              case _ => Vector(Resources.testIgnored(suiteName + ": " + testName))
             }
  
         stringToPrint map (new Fragment(_, AnsiYellow))
 
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val tff: Vector[Fragment] = fragmentsOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
 
         val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
@@ -800,7 +787,7 @@ private[scalatest] object StringReporter {
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val tcf: Vector[Fragment] = fragmentsOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tcf: Vector[Fragment] = fragmentsOnError(Resources.canceledNote, Resources.testCanceled _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiYellow)
 
         val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
@@ -822,23 +809,23 @@ private[scalatest] object StringReporter {
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
         val testNameInfo = nameInfo.testName
-        fragmentsWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations)
+        fragmentsWhenNoError(Resources.scopeOpened, formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations)
 
       // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
       case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
         
         val testNameInfo = nameInfo.testName
-        fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations) // TODO: I think I want to say Scope Closed - + message
+        fragmentsWhenNoError(Resources.scopeClosed, formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations) // TODO: I think I want to say Scope Closed - + message
 
       case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
         val stringToPrint =
           if (presentUnformatted)
-            Vector(Resources("scopePending", nameInfo.suiteName + ": " + message))
+            Vector(Resources.scopePending(nameInfo.suiteName + ": " + message))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources.specTextAndNote(formattedText, Resources.pendingNote))
               case Some(MotionToSuppress) => Vector.empty
-              case _ => Vector(Resources("scopePending", nameInfo.suiteName + ": " + message))
+              case _ => Vector(Resources.scopePending(nameInfo.suiteName + ": " + message))
             }
         stringToPrint map (new Fragment(_, AnsiYellow))
         
@@ -850,12 +837,12 @@ private[scalatest] object StringReporter {
 
         val stringToPrint =
           if (presentUnformatted)
-            Vector(Resources("testPending", suiteName + ": " + testName))
+            Vector(Resources.testPending(suiteName + ": " + testName))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources.specTextAndNote(formattedText, Resources.pendingNote))
               case Some(MotionToSuppress) => Vector.empty
-              case _ => Vector(Resources("testPending", suiteName + ": " + testName))
+              case _ => Vector(Resources.testPending(suiteName + ": " + testName))
             }
 
         val tpf = stringToPrint map (new Fragment(_, AnsiYellow))
@@ -870,8 +857,8 @@ private[scalatest] object StringReporter {
 
   // Called for TestFailed, InfoProvided (because it can have a throwable in it), SuiteAborted, and RunAborted
   def stringsToPrintOnError(
-    noteResourceName: String,
-    errorResourceName: String,
+    noteMessageFun: String,
+    errorMessageFun: Any => String,
     message: String,
     throwable: Option[Throwable],
     formatter: Option[Formatter],
@@ -887,7 +874,7 @@ private[scalatest] object StringReporter {
     def genFormattedText = {
       formatter match {
         case Some(IndentedText(formattedText, _, _)) =>
-          Resources("specTextAndNote", formattedText, Resources(noteResourceName))
+          Resources.specTextAndNote(formattedText, noteMessageFun)
         case _ =>
           genUnformattedText
       }
@@ -898,11 +885,11 @@ private[scalatest] object StringReporter {
       suiteName match {
         case Some(sn) =>
           testName match {
-            case Some(tn) => Resources(errorResourceName, sn + ": " + tn + ": " + message)
-            case None => Resources(errorResourceName, sn + ": " + message)
+            case Some(tn) => errorMessageFun(sn + ": " + tn + ": " + message)
+            case None => errorMessageFun(sn + ": " + message)
           }
         // Can get here for slowpoke notices sent by DispatchReporter, and custom stuff could get here also.
-        case None => Resources(errorResourceName, Resources("noNameSpecified") + ": " + message)
+        case None => errorMessageFun(Resources.noNameSpecified + ": " + message)
       }
     }
 
@@ -914,7 +901,7 @@ private[scalatest] object StringReporter {
       duration match {
         case Some(milliseconds) =>
           if (presentAllDurations)
-            Resources("withDuration", stringToPrint, makeDurationString(milliseconds))
+            Resources.withDuration(stringToPrint, makeDurationString(milliseconds))
           else
             stringToPrint
         case None => stringToPrint
@@ -949,7 +936,7 @@ private[scalatest] object StringReporter {
           def stackTrace(throwable: Throwable, isCause: Boolean): List[String] = {
 
             val className = throwable.getClass.getName 
-            val labeledClassName = if (isCause) Resources("DetailsCause") + ": " + className else className
+            val labeledClassName = if (isCause) Resources.DetailsCause + ": " + className else className
             // Only show the : message if a cause, because first one will have its message printed out 
             // Or if it is a non-StackDepth exception, because if they throw Exception with no message, the
             // message was coming out as "java.lang.Exception" then on the next line it repeated it. In the
@@ -1009,6 +996,106 @@ private[scalatest] object StringReporter {
       else
         stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
     Vector.empty ++ resultAsList
+  }
+
+  final val ansiReset = "\033[0m"
+  final val ansiGreen = "\033[32m"
+  final val ansiCyan = "\033[36m"
+  final val ansiYellow = "\033[33m"
+  final val ansiRed = "\033[31m"
+
+  def makeDurationString(duration: Long) = {
+
+    val milliseconds = duration % 1000
+    val seconds = ((duration - milliseconds) / 1000) % 60
+    val minutes = ((duration - milliseconds) / 60000) % 60
+    val hours = (duration - milliseconds) / 3600000
+    val hoursInSeconds = hours * 3600
+    val hoursInMinutes = hours * 60
+
+    val durationInSeconds = duration / 1000
+    val durationInMinutes = durationInSeconds / 60
+
+    if (duration == 1)
+      Resources.oneMillisecond
+    else if (duration < 1000)
+      Resources.milliseconds(duration.toString)
+    else if (duration == 1000)
+      Resources.oneSecond
+    else if (duration == 1001)
+      Resources.oneSecondOneMillisecond
+    else if (duration % 1000 == 0 && duration < 60000) // 2 seconds, 10 seconds, etc.
+      Resources.seconds(seconds.toString)
+    else if (duration > 1001 && duration < 2000)// 1 second, 45 milliseconds, etc.
+      Resources.oneSecondMilliseconds(milliseconds.toString)
+    else if (durationInSeconds < 60)// 3 seconds, 45 milliseconds, etc.
+      Resources.secondsMilliseconds(seconds.toString, milliseconds.toString)
+    else if (durationInSeconds < 61)
+      Resources.oneMinute
+    else if (durationInSeconds < 62)
+      Resources.oneMinuteOneSecond
+    else if (durationInSeconds < 120)
+      Resources.oneMinuteSeconds(seconds.toString)
+    else if (durationInSeconds < 121)
+      Resources.minutes(minutes.toString) //
+    else if (durationInSeconds < 3600 && (durationInSeconds % 60) == 1)
+      Resources.minutesOneSecond(minutes.toString)
+    else if (durationInSeconds < 3600)
+      Resources.minutesSeconds(minutes.toString, seconds.toString)
+    else if (durationInSeconds < hoursInSeconds + 1) {
+      if (hours == 1)
+        Resources.oneHour
+      else
+        Resources.hours(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 2) {
+      if (hours == 1)
+        Resources.oneHourOneSecond
+      else
+        Resources.hoursOneSecond(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 60) {
+      if (hours == 1)
+        Resources.oneHourSeconds(seconds.toString)
+      else
+        Resources.hoursSeconds(hours.toString, seconds.toString)
+    }
+    else if (durationInSeconds == hoursInSeconds + 60) {
+      if (hours == 1)
+        Resources.oneHourOneMinute
+      else
+        Resources.hoursOneMinute(hours.toString)
+    }
+    else if (durationInSeconds == hoursInSeconds + 61) {
+      if (hours == 1)
+        Resources.oneHourOneMinuteOneSecond
+      else
+        Resources.hoursOneMinuteOneSecond(hours.toString)
+    }
+    else if (durationInSeconds < hoursInSeconds + 120) {
+      if (hours == 1)
+        Resources.oneHourOneMinuteSeconds(seconds.toString)
+      else
+        Resources.hoursOneMinuteSeconds(hours.toString, seconds.toString)
+    }
+    else if (durationInSeconds % 60 == 0) {
+      if (hours == 1)
+        Resources.oneHourMinutes(minutes.toString)
+      else
+        Resources.hoursMinutes(hours.toString, minutes.toString)
+    }
+    else if (durationInMinutes % 60 != 1 && durationInSeconds % 60 == 1) {
+      if (hours == 1)
+        Resources.oneHourMinutesOneSecond(minutes.toString)
+      else
+        Resources.hoursMinutesOneSecond(hours.toString, minutes.toString)
+    }
+    else {
+      if (hours == 1)
+        Resources.oneHourMinutesSeconds(minutes.toString, seconds.toString)
+      else
+        Resources.hoursMinutesSeconds(hours.toString, minutes.toString, seconds.toString)
+    }
   }
 }
 

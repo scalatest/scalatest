@@ -35,11 +35,11 @@ class TypeCheckedAssertionsSpec extends FunSpec {
 
     def didNotEqual(left: Any, right: Any): String = {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-      FailureMessages("didNotEqual", leftee, rightee)
+      FailureMessages.didNotEqual(leftee, rightee)
     }
 
     def equaled(left: Any, right: Any): String =
-      FailureMessages("equaled", left, right)
+      FailureMessages.equaled(left, right)
 
     def thrice(i: Int) = i * 3
 

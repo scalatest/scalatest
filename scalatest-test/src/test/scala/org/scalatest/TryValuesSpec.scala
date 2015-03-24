@@ -42,7 +42,7 @@ class TryValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
-      caught.message.value should be (Resources("tryNotAFailure"))
+      caught.message.value should be (Resources.tryNotAFailure)
     }
 
     it("should return the value inside a Try if it is a Success") {
@@ -59,7 +59,7 @@ class TryValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
-      caught.message.value should be (Resources("tryNotASuccess"))
+      caught.message.value should be (Resources.tryNotASuccess)
     }
   } 
 }

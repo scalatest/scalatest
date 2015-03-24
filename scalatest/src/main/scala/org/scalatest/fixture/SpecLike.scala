@@ -48,7 +48,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentSpecMod", "Spec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
@@ -62,7 +62,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
           val methodName = encode(simpleNameForTest(testName))
           val candidateMethods = o.getClass.getMethods.filter(_.getName == methodName)
           if (candidateMethods.size == 0)
-            throw new IllegalArgumentException(Resources("testNotFound", testName))
+            throw new IllegalArgumentException(Resources.testNotFound(testName))
           candidateMethods(0)
         }
         
@@ -122,13 +122,13 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
               }
               val scopeLocation = TopOfClass(m.getReturnType.getName)
               try {
-                registerNestedBranch(scopeDesc, None, scopeFun, "registrationAlreadyClosed", sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
+                registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideDefNotObject"), Some(e), e => 8)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideDefNotObject"), Some(e), e => 8)
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
                 case dtne: exceptions.DuplicateTestNameException => throw dtne
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownInObject", UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
                 case other: Throwable => throw other
               }
             }
@@ -160,9 +160,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
                 case None => methodTags.contains(IgnoreAnnotation)
               }
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), "registrationAlreadyClosed", sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), "registrationAlreadyClosed", sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
             }
           }
         }

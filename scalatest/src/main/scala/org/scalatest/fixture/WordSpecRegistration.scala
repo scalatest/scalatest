@@ -51,7 +51,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureWordSpecMod", "FixtureWordSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 
   protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
 
@@ -102,11 +102,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -129,11 +129,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
-    engine.registerTest(specText, transformToOutcome(testFun), "inCannotAppearInsideAnotherIn", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
-    engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -156,11 +156,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
-    engine.registerIgnoredTest(specText, transformToOutcome(testFun), "ignoreCannotAppearInsideAnIn", sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
@@ -170,20 +170,40 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
         case other => 4
       }
 
+    def registrationClosedMessageFun: String =
+      verb match {
+        case "should" => Resources.shouldCannotAppearInsideAnIn
+        case "when" => Resources.whenCannotAppearInsideAnIn
+        case "which" => Resources.whichCannotAppearInsideAnIn
+        case "that" => Resources.thatCannotAppearInsideAnIn
+        case "must" => Resources.mustCannotAppearInsideAnIn
+        case "can" => Resources.canCannotAppearInsideAnIn
+      }
+
+    def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String): String =
+      verb match {
+        case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description)
+        case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description)
+        case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description)
+        case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description)
+        case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description)
+        case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description)
+      }
+
     try {
-      registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, sourceFileName, methodName, stackDepth, adjustment, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages("assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause"), Some(e), e => getStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages("exceptionWasThrownIn" + verb.capitalize + "Clause", UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
       case other: Throwable => throw other
     }
   }
 
-  private def registerShorthandBranch(childPrefix: Option[String], notAllowResourceName: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessageFun: => String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
     if (engine.currentBranchIsTrunk) {
       val currentBranch = engine.atomic.get.currentBranch
@@ -192,16 +212,25 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
         case Some(last) =>
           last match {
             case DescriptionBranch(_, descriptionText, _, _) =>
-              registerNestedBranch(descriptionText, childPrefix, fun(), methodName + "CannotAppearInsideAnIn", "WordSpecRegistration.scala", methodName, stackDepth, adjustment, None)
+              def registrationClosedMessageFun: String =
+                methodName match {
+                  case "when" => Resources.whenCannotAppearInsideAnIn
+                  case "which" => Resources.whichCannotAppearInsideAnIn
+                  case "that" => Resources.thatCannotAppearInsideAnIn
+                  case "should" => Resources.shouldCannotAppearInsideAnIn
+                  case "must" => Resources.mustCannotAppearInsideAnIn
+                  case "can" => Resources.canCannotAppearInsideAnIn
+                }
+              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistration.scala", methodName, stackDepth, adjustment, None)
             case _ =>
-              throw new exceptions.NotAllowedException(Resources(notAllowResourceName), 2)
+              throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
           }
         case None =>
-          throw new exceptions.NotAllowedException(Resources(notAllowResourceName), 2)
+          throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
       }
     }
     else
-      throw new exceptions.NotAllowedException(Resources(notAllowResourceName), 2)
+      throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
   }
 
   /**
@@ -785,7 +814,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def should(right: => Unit) {
-      registerShorthandBranch(Some("should"), "itMustAppearAfterTopLevelSubject", "should", 3, -2, right _)
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", 3, -2, right _)
     }
     
     /**
@@ -810,7 +839,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def must(right: => Unit) {
-      registerShorthandBranch(Some("must"), "itMustAppearAfterTopLevelSubject", "must", 3, -2, right _)
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", 3, -2, right _)
     }
     
     /**
@@ -835,7 +864,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def can(right: => Unit) {
-      registerShorthandBranch(Some("can"), "itMustAppearAfterTopLevelSubject", "can", 3, -2, right _)
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", 3, -2, right _)
     }
     
     /**
@@ -860,7 +889,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def when(right: => Unit) {
-      registerShorthandBranch(Some("when"), "itMustAppearAfterTopLevelSubject", "when", 3, -2, right _)
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", 3, -2, right _)
     }
   }
   
@@ -928,7 +957,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def should(right: => Unit) {
-      registerShorthandBranch(Some("should"), "theyMustAppearAfterTopLevelSubject", "should", 3, -2, right _)
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", 3, -2, right _)
     }
     
     /**
@@ -953,7 +982,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def must(right: => Unit) {
-      registerShorthandBranch(Some("must"), "theyMustAppearAfterTopLevelSubject", "must", 3, -2, right _)
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", 3, -2, right _)
     }
     
     /**
@@ -978,7 +1007,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def can(right: => Unit) {
-      registerShorthandBranch(Some("can"), "theyMustAppearAfterTopLevelSubject", "can", 3, -2, right _)
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", 3, -2, right _)
     }
     
     /**
@@ -1003,7 +1032,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      * @param right the body function
      */
     def when(right: => Unit) {
-      registerShorthandBranch(Some("when"), "theyMustAppearAfterTopLevelSubject", "when", 3, -2, right _)
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", 3, -2, right _)
     }
   }
   
