@@ -925,7 +925,8 @@ object TableDrivenPropertyChecks extends TableDrivenPropertyChecks
 
 val tableSuitePreamble = """
 
-import matchers.ShouldMatchers
+import org.scalatest.Matchers
+import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 
 class TableSuite extends Spec with TableDrivenPropertyChecks {
 """
