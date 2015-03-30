@@ -272,7 +272,7 @@ final class Ordinal private (val runStamp: Int, private val stamps: Array[Int]) 
     other match {
       case that: Ordinal =>
         runStamp == that.runStamp &&
-        (stamps.deep equals that.stamps.deep)
+        (stamps.deep == that.stamps.deep)
       case _ => false
     }
 
