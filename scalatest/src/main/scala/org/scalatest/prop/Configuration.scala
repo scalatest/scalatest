@@ -18,7 +18,7 @@ package org.scalatest.prop
 import org.scalacheck.Test.Parameters
 import org.scalacheck.Test.TestCallback
 import org.scalacheck.Gen
-import org.scalactic.anyvals.{PozInt, PozDouble, PosInt}
+import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -120,9 +120,9 @@ trait Configuration {
     val maxDiscardedFactor = PropertyCheckConfiguration.calculateMaxDiscardedFactor(p.minSuccessful, p.maxDiscarded)
     new PropertyCheckConfiguration(
       minSuccessful = PosInt.from(p.minSuccessful).get,
-      maxDiscardedFactor = PozDouble.from(maxDiscardedFactor).get,
-      minSize = PozInt.from(p.minSize).get,
-      sizeRange = PozInt.from(p.maxSize - p.minSize).get,
+      maxDiscardedFactor = PosZDouble.from(maxDiscardedFactor).get,
+      minSize = PosZInt.from(p.minSize).get,
+      sizeRange = PosZInt.from(p.maxSize - p.minSize).get,
       workers = PosInt.from(p.workers).get) {
       override private [scalatest]  val legacyMaxDiscarded = Some(p.maxDiscarded)
       override private [scalatest]  val legacyMaxSize      = Some(p.maxSize)
@@ -130,9 +130,9 @@ trait Configuration {
   }
 
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(100),
-                                        maxDiscardedFactor: PozDouble = PozDouble(5.0),
-                                        minSize: PozInt = PozInt(0),
-                                        sizeRange: PozInt = PozInt(100),
+                                        maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
+                                        minSize: PosZInt = PosZInt(0),
+                                        sizeRange: PosZInt = PosZInt(100),
                                         workers: PosInt = PosInt(1)) extends PropertyCheckConfigurable {
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSuccessful parameters.  Remove with PropertyCheckConfig class")
     private [scalatest] val legacyMaxDiscarded: Option[Int] = None
@@ -232,7 +232,7 @@ trait Configuration {
     require(value >= 0)
   }
 
-  case class MaxDiscardedFactor(value: PozDouble) extends PropertyCheckConfigParam
+  case class MaxDiscardedFactor(value: PosZDouble) extends PropertyCheckConfigParam
 
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum size parameter to
@@ -241,7 +241,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class MinSize(value: PozInt) extends PropertyCheckConfigParam
+  case class MinSize(value: PosZInt) extends PropertyCheckConfigParam
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the maximum size parameter to
@@ -276,7 +276,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  case class SizeRange(value: PozInt) extends PropertyCheckConfigParam
+  case class SizeRange(value: PosZInt) extends PropertyCheckConfigParam
 
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the number of worker threads
@@ -310,7 +310,7 @@ trait Configuration {
    * property evaluations allowed during property evaluation.
    *
    */
-  def maxDiscardedFactor(value: PozDouble): MaxDiscardedFactor = MaxDiscardedFactor(value)
+  def maxDiscardedFactor(value: PosZDouble): MaxDiscardedFactor = MaxDiscardedFactor(value)
 
   /**
    * Returns a <code>MinSize</code> property check configuration parameter containing the passed value, which specifies the minimum size parameter to
@@ -319,7 +319,7 @@ trait Configuration {
    *
    * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
    */
-  def minSize(value: PozInt): MinSize = new MinSize(value)
+  def minSize(value: PosZInt): MinSize = new MinSize(value)
 
   /**
    * Returns a <code>MaxSize</code> property check configuration parameter containing the passed value, which specifies the maximum size parameter to
@@ -349,7 +349,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  def sizeRange(value: PozInt): SizeRange = SizeRange(value)
+  def sizeRange(value: PosZInt): SizeRange = SizeRange(value)
 
   /**
    * Returns a <code>Workers</code> property check configuration parameter containing the passed value, which specifies the number of worker threads

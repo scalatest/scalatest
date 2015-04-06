@@ -25,17 +25,17 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   val DefaultMinSuccessful: PosInt = 9
   val PassedMinSuccessful: PosInt = 3
 
-  val DefaultMinSize: PozInt = 99
-  val PassedMinSize: PozInt = 33
+  val DefaultMinSize: PosZInt = 99
+  val PassedMinSize: PosZInt = 33
 
   val DefaultWorkers: PosInt = 99
   val PassedWorkers: PosInt = 33
 
-  val DefaultSizeRange: PozInt = 0
-  val PassedSizeRange: PozInt = 10
+  val DefaultSizeRange: PosZInt = 0
+  val PassedSizeRange: PosZInt = 10
 
-  val DefaultMaxDiscardedFactor: PozDouble = 1.0
-  val PassedMaxDiscardedFactor: PozDouble = 0.5
+  val DefaultMaxDiscardedFactor: PosZDouble = 1.0
+  val PassedMaxDiscardedFactor: PosZDouble = 0.5
 
   val defaultConfig =
     PropertyCheckConfiguration(
