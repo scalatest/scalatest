@@ -318,7 +318,7 @@ object Prettifier {
       case _ => (a, b)
     }
 	
-  private[org] val lineSeparator: String = System.getProperty("line.separator")
+  private[org] val lineSeparator: String = scala.compat.Platform.EOL
 }
 
 private[scalactic] class BasicPrettifier extends Prettifier {
