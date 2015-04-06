@@ -22,13 +22,13 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
       loggers,
       true,
       true,
-      true,
-      true, // If they say both S and F, F overrules
-      true,
-      true,
-      true,
-      true,
-      true,
+      false,
+      false, // If they say both S and F, F overrules
+      false,
+      false,
+      false,
+      false,
+      false,
       summaryCounter
     )
     suite.run(None, Args(reporter))
