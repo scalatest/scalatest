@@ -252,7 +252,7 @@ object ScalatestBuild extends Build {
       // Disable publishing macros directly, included in scalactic main jar
       publish := {},
       publishLocal := {}
-    )
+    ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)

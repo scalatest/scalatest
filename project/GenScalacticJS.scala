@@ -23,9 +23,16 @@ object GenScalacticJS {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
       val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
       for (line <- lines) {
-        destWriter.write(line)
-        destWriter.newLine()
+        if (line.trim == "// SKIP-SCALATESTJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS-END")
+          skipMode = false
+        else if (!skipMode) {
+          destWriter.write(line)
+          destWriter.newLine()
+        }
       }
     }
     finally {

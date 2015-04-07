@@ -208,7 +208,7 @@ trait GenResourcesJSVM extends GenResources {
         |
         |private[$packageName] object Resources {
         |
-        |def formatString(rawString: String, args: IndexedSeq[Any]): String = {
+        |def formatString(rawString: String, args: Array[Any]): String = {
         |  args.zipWithIndex.foldLeft(rawString) { case (result, (arg, idx)) =>
         |    result.replaceAllLiterally("{" + idx + "}", arg + "")
         |  }
