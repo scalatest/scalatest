@@ -125,7 +125,8 @@ object GenScalaTestJS {
               "Alerting.scala",
               "Documenting.scala",
               "Transformer.scala",
-              "DeferredAbortedSuite.scala"
+              "DeferredAbortedSuite.scala",
+              "Suites.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
