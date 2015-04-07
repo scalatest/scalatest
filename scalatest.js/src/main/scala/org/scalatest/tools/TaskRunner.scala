@@ -22,8 +22,8 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader) extends Task {
       loggers,
       true,
       true,
-      false,
-      false, // If they say both S and F, F overrules
+      true,
+      true, // If they say both S and F, F overrules
       false,
       false,
       false,

@@ -15,8 +15,6 @@
  */
 package org.scalactic
 
-import java.text.MessageFormat
-
 /**
  * A trait that represent a rich-featured boolean value, which includes the following members:
  *
@@ -31,38 +29,36 @@ import java.text.MessageFormat
  */
 trait Bool {
 
-  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
-    val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.map(Prettifier.default).toArray)
-  }
+  private def makeString(raw: String, args: Array[Any]): String =
+    Resources.formatString(raw, args.map(Prettifier.default))
 
   /**
    * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to
    * raw message returned from <code>rawFailureMessage</code>
    */
   def failureMessage: String =
-    if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
+    if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs.toArray)
 
   /**
    * Construct and return negated failure message, by applying arguments returned from <code>negatedFailureMessageArgs</code> to
    * raw message returned from <code>rawNegatedFailureMessage</code>
    */
   def negatedFailureMessage: String =
-    if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
+    if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs.toArray)
 
   /**
    * Construct and return mid sentence failure message, by applying arguments returned from <code>midSentenceFailureMessageArgs</code> to
    * raw message returned from <code>rawMidSentenceFailureMessage</code>
    */
   def midSentenceFailureMessage: String =
-    if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
+    if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs.toArray)
 
   /**
    * Construct and return mid sentence negated failure message, by applying arguments returned from <code>midSentenceNegatedFailureMessageArgs</code> to
    * raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>
    */
   def midSentenceNegatedFailureMessage: String =
-    if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
+    if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs.toArray)
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>

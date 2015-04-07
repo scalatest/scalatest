@@ -122,7 +122,11 @@ trait GenResourcesJVM extends GenResources {
        |
        |private def makeString(resourceName: String, args: Array[Any]): String = {
        |  val raw = resourceBundle.getString(resourceName)
-       |  val msgFmt = new MessageFormat(raw)
+       |  formatString(raw, args)
+       |}
+       |
+       |def formatString(rawString: String, args: Array[Any]): String = {
+       |  val msgFmt = new MessageFormat(rawString)
        |  msgFmt.format(args.toArray)
        |}
        |
@@ -138,11 +142,9 @@ trait GenResourcesJVM extends GenResources {
        |
        |def decorateToStringValue(o: Any): String = org.scalactic.Prettifier.default(o)
        |
-       |
-       |
        |$methods
-        |
-        |}
+       |
+       |}
     """.stripMargin
 
   def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
@@ -179,9 +181,13 @@ object ScalaTestGenResourcesJVM extends GenResourcesJVM {
         |
         |lazy val resourceBundle = ResourceBundle.getBundle("org.scalatest.ScalaTestBundle")
         |
-        |private def makeString(resourceName: String, args: Array[Any]): String = {
+        |def makeString(resourceName: String, args: Array[Any]): String = {
         |  val raw = resourceBundle.getString(resourceName)
-        |  val msgFmt = new MessageFormat(raw)
+        |  formatString(raw, args)
+        |}
+        |
+        |def formatString(rawString: String, args: Array[Any]): String = {
+        |  val msgFmt = new MessageFormat(rawString)
         |  msgFmt.format(args.toArray)
         |}
         |
@@ -200,7 +206,15 @@ trait GenResourcesJSVM extends GenResources {
   def resourcesTemplate(methods: String): String =
     s"""package org.$packageName
         |
+        |import org.scalactic.Prettifier
+        |
         |private[$packageName] object Resources {
+        |
+        |def formatString(rawString: String, args: IndexedSeq[Any]): String = {
+        |  args.zipWithIndex.foldLeft(rawString) { case (result, (arg, idx)) =>
+        |    result.replaceAllLiterally("{" + idx + "}", arg + "")
+        |  }
+        |}
         |
         |$methods
         |
