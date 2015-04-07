@@ -1,5 +1,6 @@
 package org.scalatest.tools
 
+import org.scalatest.Tracker
 import sbt.testing.{Framework => BaseFramework, _}
 
 class Framework extends BaseFramework {
@@ -23,6 +24,9 @@ class Framework extends BaseFramework {
     val theseRemoteArgs = remoteArgs
 
     new Runner {
+
+      val tracker = new Tracker
+
       def done(): String = ""
 
       def remoteArgs(): Array[String] = {
@@ -34,7 +38,7 @@ class Framework extends BaseFramework {
       }
 
       def tasks(list: Array[TaskDef]): Array[Task] = {
-        list.map(t => new TaskRunner(t, testClassLoader))
+        list.map(t => new TaskRunner(t, testClassLoader, tracker))
       }
 
       def receiveMessage(msg: String): Option[String] = {
@@ -45,7 +49,7 @@ class Framework extends BaseFramework {
         serializer(task.taskDef())
 
       def deserializeTask(task: String, deserializer: (String) => TaskDef): Task =
-        new TaskRunner(deserializer(task), testClassLoader)
+        new TaskRunner(deserializer(task), testClassLoader, tracker)
     }
   }
 }
