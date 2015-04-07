@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 
 private[tools] class SummaryCounter {
   // scala.js is thread-safe
-  var testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = 0L
+  var testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = 0
   val reminderEventsQueue = new ListBuffer[ExceptionalEvent]
 
   def incrementTestsSucceededCount() {

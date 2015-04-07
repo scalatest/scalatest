@@ -16,7 +16,19 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.compat.Platform
 
-final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker, summaryCounter: SummaryCounter) extends Task {
+final class TaskRunner(task: TaskDef,
+                       cl: ClassLoader,
+                       tracker: Tracker,
+                       summaryCounter: SummaryCounter,
+                       presentAllDurations: Boolean,
+                       presentInColor: Boolean,
+                       presentShortStackTraces: Boolean,
+                       presentFullStackTraces: Boolean,
+                       presentUnformatted: Boolean,
+                       presentReminder: Boolean,
+                       presentReminderWithShortStackTraces: Boolean,
+                       presentReminderWithFullStackTraces: Boolean,
+                       presentReminderWithoutCanceledTests: Boolean) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
 
@@ -30,15 +42,15 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker, summary
     val summaryCounter = new SummaryCounter
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
-      true,
-      true,
-      true,
-      true, // If they say both S and F, F overrules
-      false,
-      false,
-      false,
-      false,
-      false,
+      presentAllDurations,
+      presentInColor,
+      presentShortStackTraces,
+      presentFullStackTraces,
+      presentUnformatted,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests,
       summaryCounter
     )
 
