@@ -206,8 +206,6 @@ trait GenResourcesJSVM extends GenResources {
   def resourcesTemplate(methods: String): String =
     s"""package org.$packageName
         |
-        |import org.scalactic.Prettifier
-        |
         |private[$packageName] object Resources {
         |
         |def formatString(rawString: String, args: IndexedSeq[Any]): String = {

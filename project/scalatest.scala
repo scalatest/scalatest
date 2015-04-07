@@ -238,6 +238,22 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     )
 
+  lazy val scalacticMacroJS = Project("scalacticMacroJS", file("scalactic-macro.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Macro.js",
+      organization := "org.scalactic",
+      sourceGenerators in Compile += {
+        Def.task{
+          GenScalacticJS.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      // Disable publishing macros directly, included in scalactic main jar
+      publish := {},
+      publishLocal := {}
+    )
+
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
     .settings(sharedDocSettings: _*)
@@ -287,7 +303,7 @@ object ScalatestBuild extends Build {
           GenScalacticJS.genResource((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
@@ -468,7 +484,7 @@ object ScalatestBuild extends Build {
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestAll = Project("scalatest-all", file("."))
     .settings(sharedSettings: _*)

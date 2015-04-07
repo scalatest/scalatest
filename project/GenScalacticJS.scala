@@ -48,6 +48,22 @@ object GenScalacticJS {
     GenVersions.genScalacticVersions(scalacticPackageDir, version, scalaVersion)
   }
 
+  def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+
+    val scalacticPackageDir = new File(targetDir, "org/scalactic")
+    scalacticPackageDir.mkdirs()
+    val scalacticSourceDir = new File("scalactic-macro/src/main/scala/org/scalactic")
+    scalacticSourceDir.listFiles.flatMap { sourceFile =>
+      if (sourceFile.isFile) {
+        val destFile = new File(scalacticPackageDir, sourceFile.getName)
+        copyFile(sourceFile, destFile)
+        List(destFile)
+      }
+      else
+        List.empty[File]
+    }
+  }
+
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val sourceResourceFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
     val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
