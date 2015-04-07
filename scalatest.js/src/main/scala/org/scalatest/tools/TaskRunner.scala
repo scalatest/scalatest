@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.compat.Platform
 
-final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker) extends Task {
+final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker, summaryCounter: SummaryCounter) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
 
@@ -28,7 +28,7 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker) extends
     val suiteStartTime = Platform.currentTime
     val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
     val summaryCounter = new SummaryCounter
-    val reporter = new SbtLogInfoReporter(
+    val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       true,
       true,
@@ -44,6 +44,8 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker) extends
 
     val formatter = Suite.formatterForSuiteStarting(suite)
     val suiteClass = suite.getClass
+
+    val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName, task.fingerprint, eventHandler, sbtLogInfoReporter, summaryCounter)
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
@@ -66,49 +68,6 @@ final class TaskRunner(task: TaskDef, cl: ClassLoader, tracker: Tracker) extends
 
 
     Array.empty
-  }
-
-  private[tools] class SummaryCounter {
-    val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
-    val reminderEventsQueue = new scala.collection.mutable.ListBuffer[ExceptionalEvent]
-
-    def incrementTestsSucceededCount() {
-      testsSucceededCount.incrementAndGet()
-    }
-
-    def incrementTestsFailedCount() {
-      testsFailedCount.incrementAndGet()
-    }
-
-    def incrementTestsIgnoredCount() {
-      testsIgnoredCount.incrementAndGet()
-    }
-
-    def incrementTestsPendingCount() {
-      testsPendingCount.incrementAndGet()
-    }
-
-    def incrementTestsCanceledCount() {
-      testsCanceledCount.incrementAndGet()
-    }
-
-    def incrementSuitesCompletedCount() {
-      suitesCompletedCount.incrementAndGet()
-    }
-
-    def incrementSuitesAbortedCount() {
-      suitesAbortedCount.incrementAndGet()
-    }
-
-    def incrementScopesPendingCount() {
-      scopesPendingCount.incrementAndGet()
-    }
-
-    def recordReminderEvents(events: ExceptionalEvent) {
-      synchronized {
-        reminderEventsQueue += events
-      }
-    }
   }
 
   private class SbtLogInfoReporter(

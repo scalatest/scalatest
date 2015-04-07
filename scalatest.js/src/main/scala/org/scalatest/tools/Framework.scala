@@ -1,7 +1,10 @@
 package org.scalatest.tools
 
-import org.scalatest.Tracker
-import sbt.testing.{Framework => BaseFramework, _}
+import org.scalatest.{Tracker, Reporter}
+import org.scalatest.events.ExceptionalEvent
+import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
+
+import scala.collection.mutable.ListBuffer
 
 class Framework extends BaseFramework {
   
@@ -26,6 +29,7 @@ class Framework extends BaseFramework {
     new Runner {
 
       val tracker = new Tracker
+      val summaryCounter = new SummaryCounter
 
       def done(): String = ""
 
@@ -38,7 +42,7 @@ class Framework extends BaseFramework {
       }
 
       def tasks(list: Array[TaskDef]): Array[Task] = {
-        list.map(t => new TaskRunner(t, testClassLoader, tracker))
+        list.map(t => new TaskRunner(t, testClassLoader, tracker, summaryCounter))
       }
 
       def receiveMessage(msg: String): Option[String] = {
@@ -49,7 +53,7 @@ class Framework extends BaseFramework {
         serializer(task.taskDef())
 
       def deserializeTask(task: String, deserializer: (String) => TaskDef): Task =
-        new TaskRunner(deserializer(task), testClassLoader, tracker)
+        new TaskRunner(deserializer(task), testClassLoader, tracker, summaryCounter)
     }
   }
 }
