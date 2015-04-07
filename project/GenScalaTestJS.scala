@@ -126,7 +126,10 @@ object GenScalaTestJS {
               "Documenting.scala",
               "Transformer.scala",
               "DeferredAbortedSuite.scala",
-              "Suites.scala"
+              "Suites.scala",
+              "FunSpecLike.scala",
+              "FunSpec.scala",
+              "UnquotedString.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -139,9 +142,7 @@ object GenScalaTestJS {
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
-        //"StandardOutReporter.scala",
         "SuiteDiscoveryHelper.scala",
-        //"PrintReporter.scala",
         "StringReporter.scala",
         "SuiteRunner.scala",
         "Fragment.scala",
@@ -193,7 +194,8 @@ object GenScalaTestJS {
       List(
         "TypeCheckWord.scala",
         "CompileWord.scala",
-        "ArrayWrapper.scala"
+        "ArrayWrapper.scala",
+        "BehaveWord.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(

@@ -1369,7 +1369,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
       if (!stopper.stopRequested) {
-        
+
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
 
