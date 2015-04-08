@@ -223,6 +223,13 @@ object ScalatestBuild extends Build {
       libraryDependencies += scalacheckDependency("optional")
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
+  lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Common test classes used by scalactic.js and scalatest.js",
+      libraryDependencies += scalacheckDependency("optional")
+    ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
+
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
@@ -419,6 +426,7 @@ object ScalatestBuild extends Build {
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       jsDependencies += RuntimeDOM % "test",
@@ -485,6 +493,21 @@ object ScalatestBuild extends Build {
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(sharedDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      organization := "org.scalatest",
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalatestJSLibraryDependencies,
+      jsDependencies += RuntimeDOM % "test",
+      testOptions in Test := scalatestTestOptions,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestAll = Project("scalatest-all", file("."))
     .settings(sharedSettings: _*)
