@@ -129,7 +129,9 @@ object GenScalaTestJS {
               "Suites.scala",
               "FunSpecLike.scala",
               "FunSpec.scala",
-              "UnquotedString.scala"
+              "UnquotedString.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -195,7 +197,14 @@ object GenScalaTestJS {
         "TypeCheckWord.scala",
         "CompileWord.scala",
         "ArrayWrapper.scala",
-        "BehaveWord.scala"
+        "BehaveWord.scala",
+        "ResultOfTaggedAsInvocation.scala",
+        "ResultOfStringPassedToVerb.scala",
+        "ShouldVerb.scala",
+        "MustVerb.scala",
+        "CanVerb.scala",
+        "StringVerbBlockRegistration.scala",
+        "ResultOfAfterWordApplication.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
