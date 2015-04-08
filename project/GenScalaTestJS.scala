@@ -150,8 +150,11 @@ object GenScalaTestJS {
               "UnitFixture.scala",
               "NoArg.scala",
               "NoArgTestWrapper.scala",
+              "FixtureNodeFamily.scala",
               "FunSuiteLike.scala",
-              "FunSuite.scala"
+              "FunSuite.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
