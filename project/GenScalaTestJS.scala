@@ -131,7 +131,9 @@ object GenScalaTestJS {
               "FunSpec.scala",
               "UnquotedString.scala",
               "FlatSpecLike.scala",
-              "FlatSpec.scala"
+              "FlatSpec.scala",
+              "WordSpecLike.scala",
+              "WordSpec.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
