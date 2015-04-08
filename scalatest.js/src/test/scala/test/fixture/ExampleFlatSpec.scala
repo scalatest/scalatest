@@ -2,7 +2,7 @@ package test.fixture
 
 import org.scalatest._
 
-class SetSpec extends fixture.FlatSpec {
+class ExampleFlatSpec extends fixture.FlatSpec {
 
   type FixtureParam = String
   def withFixture(test: OneArgTest): Outcome = {
