@@ -20,9 +20,7 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenScalaTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.startsWith("//@scala.scalajs.js.annotation.JSExport"))
-      line.substring(2)
-    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line

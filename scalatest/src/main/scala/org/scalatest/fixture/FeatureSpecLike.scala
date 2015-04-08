@@ -47,7 +47,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-//@scala.scalajs.js.annotation.JSExportDescendentClasses
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
 trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
