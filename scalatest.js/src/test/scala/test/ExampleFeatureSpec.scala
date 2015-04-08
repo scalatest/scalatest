@@ -2,15 +2,15 @@ package test
 
 import org.scalatest._
 
-class TVSet {
-  private var on: Boolean = false
-  def isOn: Boolean = on
-  def pressPowerButton() {
-    on = !on
-  }
-}
+class ExampleFeatureSpec extends FeatureSpec {
 
-class TVSetSpec extends FeatureSpec {
+  class TVSet {
+    private var on: Boolean = false
+    def isOn: Boolean = on
+    def pressPowerButton() {
+      on = !on
+    }
+  }
 
   info("As a TV set owner")
   info("I want to be able to turn the TV on and off")
