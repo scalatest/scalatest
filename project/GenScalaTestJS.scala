@@ -141,6 +141,18 @@ object GenScalaTestJS {
               "FeatureSpecLike.scala",
               "FeatureSpec.scala"
             ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
+            List(
+              "Suite.scala",
+              "TestDataFixture.scala",
+              "TestRegistration.scala",
+              "Transformer.scala",
+              "UnitFixture.scala",
+              "NoArg.scala",
+              "NoArgTestWrapper.scala",
+              "FunSuiteLike.scala",
+              "FunSuite.scala"
+            ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
               "Event.scala",

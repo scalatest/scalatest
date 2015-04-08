@@ -41,6 +41,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
+//@scala.scalajs.js.annotation.JSExportDescendentClasses
 trait FunSuiteLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFunSuiteMod, "FixtureFunSuite")
