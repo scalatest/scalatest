@@ -142,7 +142,8 @@ object GenScalaTestJS {
               "Matchers.scala",
               "Entry.scala",
               "Inspectors.scala",
-              "OptionValues.scala"
+              "OptionValues.scala",
+              "Inside.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(

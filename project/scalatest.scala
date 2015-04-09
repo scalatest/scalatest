@@ -328,6 +328,23 @@ object ScalatestBuild extends Build {
       publishLocal := {}
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
+  lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test.js",
+      organization := "org.scalactic",
+      libraryDependencies += scalacheckDependency("test"),
+      jsDependencies += RuntimeDOM % "test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalacticJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
    .settings(sharedDocSettings: _*)
