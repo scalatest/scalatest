@@ -227,7 +227,12 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
-      libraryDependencies += scalacheckDependency("optional")
+      libraryDependencies += scalacheckDependency("optional"),
+      sourceGenerators in Compile += {
+        Def.task{
+          GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
@@ -506,7 +511,12 @@ object ScalatestBuild extends Build {
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},
-      publishLocal := {}
+      publishLocal := {},
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestAll = Project("scalatest-all", file("."))

@@ -74,13 +74,7 @@ trait StackDepth { this: Throwable =>
    *
    * @return a string containing the filename that caused the failed test
    */
-  def failedCodeFileName: Option[String] = {
-    val fileName = stackTraceElement.getFileName
-    if (fileName != null) {
-      Some(fileName)
-    }
-    else None
-  }
+  def failedCodeFileName: Option[String] = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement)
 
   /**
    * A string that provides the line number of the line of code that failed, suitable

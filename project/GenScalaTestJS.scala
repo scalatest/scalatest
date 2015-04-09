@@ -141,7 +141,8 @@ object GenScalaTestJS {
               "MatchersHelper.scala",
               "Matchers.scala",
               "Entry.scala",
-              "Inspectors.scala"
+              "Inspectors.scala",
+              "OptionValues.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -339,6 +340,13 @@ object GenScalaTestJS {
         "Size.scala",
         "Messaging.scala",
         "Collecting.scala"
+      ), targetDir)
+  }
+
+  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
+      List(
+        "AssertionsSpec.scala"
       ), targetDir)
   }
 
