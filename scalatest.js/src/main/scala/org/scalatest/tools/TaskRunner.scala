@@ -19,7 +19,6 @@ import scala.compat.Platform
 final class TaskRunner(task: TaskDef,
                        cl: ClassLoader,
                        tracker: Tracker,
-                       summaryCounter: SummaryCounter,
                        presentAllDurations: Boolean,
                        presentInColor: Boolean,
                        presentShortStackTraces: Boolean,
@@ -28,7 +27,8 @@ final class TaskRunner(task: TaskDef,
                        presentReminder: Boolean,
                        presentReminderWithShortStackTraces: Boolean,
                        presentReminderWithFullStackTraces: Boolean,
-                       presentReminderWithoutCanceledTests: Boolean) extends Task {
+                       presentReminderWithoutCanceledTests: Boolean,
+                       notifyServer: Option[String => Unit]) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
 
@@ -39,7 +39,6 @@ final class TaskRunner(task: TaskDef,
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     val suiteStartTime = Platform.currentTime
     val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
-    val summaryCounter = new SummaryCounter
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,
@@ -51,13 +50,13 @@ final class TaskRunner(task: TaskDef,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      summaryCounter
+      notifyServer
     )
 
     val formatter = Suite.formatterForSuiteStarting(suite)
     val suiteClass = suite.getClass
 
-    val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName, task.fingerprint, eventHandler, sbtLogInfoReporter, summaryCounter)
+    val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName, task.fingerprint, eventHandler, sbtLogInfoReporter)
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
@@ -93,7 +92,7 @@ final class TaskRunner(task: TaskDef,
                                     presentReminderWithShortStackTraces: Boolean,
                                     presentReminderWithFullStackTraces: Boolean,
                                     presentReminderWithoutCanceledTests: Boolean,
-                                    summaryCounter: SummaryCounter
+                                    notifyServer: Option[String => Unit]
                                     ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -113,13 +112,15 @@ final class TaskRunner(task: TaskDef,
     }
 
     override def apply(event: Event) {
-      event match {
+      /*event match {
         case ee: ExceptionalEvent if presentReminder =>
           if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {
             summaryCounter.recordReminderEvents(ee)
           }
         case _ =>
-      }
+      }*/
+      notifyServer.foreach(send => send(event.getClass.getName))
+
       fragmentsForEvent(
         event,
         presentUnformatted,
