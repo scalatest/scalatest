@@ -335,6 +335,9 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       libraryDependencies += scalacheckDependency("test"),
       jsDependencies += RuntimeDOM % "test",
+      //scalaJSStage in Global := FastOptStage,
+      //postLinkJSEnv := PhantomJSEnv().value,
+      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -525,6 +528,9 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       jsDependencies += RuntimeDOM % "test",
+      //scalaJSStage in Global := FastOptStage,
+      //postLinkJSEnv := PhantomJSEnv().value,
+      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},
