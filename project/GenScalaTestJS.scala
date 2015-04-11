@@ -20,9 +20,7 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenScalaTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.startsWith("//@scala.scalajs.js.annotation.JSExport"))
-      line.substring(2)
-    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
@@ -129,7 +127,48 @@ object GenScalaTestJS {
               "Suites.scala",
               "FunSpecLike.scala",
               "FunSpec.scala",
-              "UnquotedString.scala"
+              "UnquotedString.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala",
+              "WordSpecLike.scala",
+              "WordSpec.scala",
+              "FreeSpecLike.scala",
+              "FreeSpec.scala",
+              "PropSpecLike.scala",
+              "PropSpec.scala",
+              "FeatureSpecLike.scala",
+              "FeatureSpec.scala",
+              "MatchersHelper.scala",
+              "Matchers.scala",
+              "Entry.scala",
+              "Inspectors.scala",
+              "OptionValues.scala",
+              "Inside.scala"
+            ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
+            List(
+              "Suite.scala",
+              "TestDataFixture.scala",
+              "TestRegistration.scala",
+              "Transformer.scala",
+              "UnitFixture.scala",
+              "NoArg.scala",
+              "NoArgTestWrapper.scala",
+              "FixtureNodeFamily.scala",
+              "FunSuiteLike.scala",
+              "FunSuite.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala",
+              "FunSpecLike.scala",
+              "FunSpec.scala",
+              "WordSpecLike.scala",
+              "WordSpec.scala",
+              "FreeSpecLike.scala",
+              "FreeSpec.scala",
+              "PropSpecLike.scala",
+              "PropSpec.scala",
+              "FeatureSpecLike.scala",
+              "FeatureSpec.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -139,6 +178,27 @@ object GenScalaTestJS {
               "Location.scala",
               "Summary.scala",
               "NameInfo.scala"
+            ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers",
+            List(
+              "MatchResult.scala",
+              "AMatcher.scala",
+              "AnMatcher.scala",
+              "BeMatcher.scala",
+              "BePropertyMatchResult.scala",
+              "BePropertyMatcher.scala",
+              "HavePropertyMatchResult.scala",
+              "HavePropertyMatcher.scala",
+              "LazyArg.scala",
+              "LazyMessage.scala",
+              "Matcher.scala",
+              "TypeMatcherMacro.scala",
+              "MatchPatternMacro.scala",
+              "MatcherProducers.scala",
+              "MatchFailed.scala",
+              "MatchPatternHelper.scala",
+              "MatchSucceeded.scala",
+              "TypeMatcherHelper.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
@@ -195,14 +255,99 @@ object GenScalaTestJS {
         "TypeCheckWord.scala",
         "CompileWord.scala",
         "ArrayWrapper.scala",
-        "BehaveWord.scala"
+        "BehaveWord.scala",
+        "ResultOfTaggedAsInvocation.scala",
+        "ResultOfStringPassedToVerb.scala",
+        "ShouldVerb.scala",
+        "MustVerb.scala",
+        "CanVerb.scala",
+        "StringVerbBlockRegistration.scala",
+        "ResultOfAfterWordApplication.scala",
+        "RegexWithGroups.scala",
+        "DefinedWord.scala",
+        "ResultOfOnlyApplication.scala",
+        "ResultOfTheSameInstanceAsApplication.scala",
+        "EmptyWord.scala",
+        "ReadableWord.scala",
+        "WritableWord.scala",
+        "ResultOfNotExist.scala",
+        "ExistWord.scala",
+        "ResultOfATypeInvocation.scala",
+        "ResultOfAnTypeInvocation.scala",
+        "SortedWord.scala",
+        "ResultOfAtMostOneOfApplication.scala",
+        "ResultOfValueWordApplication.scala",
+        "ResultOfKeyWordApplication.scala",
+        "ResultOfInOrderApplication.scala",
+        "ResultOfInOrderOnlyApplication.scala",
+        "ResultOfAllOfApplication.scala",
+        "ResultOfTheSameElementsInOrderAsApplication.scala",
+        "ResultOfTheSameElementsAsApplication.scala",
+        "ResultOfNoneOfApplication.scala",
+        "ResultOfAtLeastOneOfApplication.scala",
+        "ResultOfOneOfApplication.scala",
+        "ResultOfDefinedAt.scala",
+        "ResultOfRegexWordApplication.scala",
+        "ResultOfAnWordToAnMatcherApplication.scala",
+        "ResultOfAnWordToBePropertyMatcherApplication.scala",
+        "ResultOfAWordToAMatcherApplication.scala",
+        "ResultOfAnWordToSymbolApplication.scala",
+        "ResultOfAWordToBePropertyMatcherApplication.scala",
+        "ResultOfAWordToSymbolApplication.scala",
+        "ResultOfGreaterThanOrEqualToComparison.scala",
+        "ResultOfLessThanOrEqualToComparison.scala",
+        "ResultOfGreaterThanComparison.scala",
+        "ResultOfLessThanComparison.scala",
+        "ResultOfMessageWordApplication.scala",
+        "ResultOfSizeWordApplication.scala",
+        "ResultOfLengthWordApplication.scala",
+        "ContainWord.scala",
+        "NotWord.scala",
+        "BeWord.scala",
+        "HaveWord.scala",
+        "IncludeWord.scala",
+        "EndWithWord.scala",
+        "StartWithWord.scala",
+        "FullyMatchWord.scala",
+        "MatcherWords.scala",
+        "PleaseUseNoExceptionShouldSyntaxInstead.scala",
+        "ResultOfOfTypeInvocation.scala",
+        "ResultOfThrownByApplication.scala",
+        "ResultOfBeWordForAnType.scala",
+        "ResultOfBeWordForAType.scala",
+        "MatchPatternWord.scala",
+        "NoExceptionWord.scala",
+        "SizeWord.scala",
+        "LengthWord.scala",
+        "ResultOfBeWordForNoException.scala",
+        "ResultOfContainWord.scala",
+        "ResultOfNotWordForAny.scala",
+        "ResultOfTheTypeInvocation.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
         "Containing.scala",
         "Aggregating.scala",
         "KeyMapping.scala",
-        "ValueMapping.scala"
+        "ValueMapping.scala",
+        "Sequencing.scala",
+        "Sortable.scala",
+        "Readability.scala",
+        "Writability.scala",
+        "Emptiness.scala",
+        "Definition.scala",
+        "Length.scala",
+        "Existence.scala",
+        "Size.scala",
+        "Messaging.scala",
+        "Collecting.scala"
+      ), targetDir)
+  }
+
+  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
+      List(
+        "AssertionsSpec.scala"
       ), targetDir)
   }
 

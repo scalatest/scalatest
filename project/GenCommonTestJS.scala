@@ -17,7 +17,7 @@
 import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
-object GenScalacticJS {
+object GenCommonTestJS {
 
   private def uncommentJsExport(line: String): String =
     if (line.trim.startsWith("//SCALATESTJS-ONLY "))
@@ -27,6 +27,7 @@ object GenScalacticJS {
 
   private def transformLine(line: String): String =
     uncommentJsExport(line)
+
 
   private def copyFile(sourceFile: File, destFile: File): File = {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
@@ -63,49 +64,11 @@ object GenScalacticJS {
     }
   }
 
-  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    scalacticPackageDir.mkdirs()
-    val scalacticSourceDir = new File("scalactic/src/main/scala/org/scalactic")
-    scalacticSourceDir.listFiles.map { sourceFile =>
-      val destFile = new File(scalacticPackageDir, sourceFile.getName)
-      copyFile(sourceFile, destFile)
-      destFile
-    } ++
-    GenVersions.genScalacticVersions(scalacticPackageDir, version, scalaVersion)
-  }
-
-  def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    scalacticPackageDir.mkdirs()
-    val scalacticSourceDir = new File("scalactic-macro/src/main/scala/org/scalactic")
-    scalacticSourceDir.listFiles.flatMap { sourceFile =>
-      if (sourceFile.isFile) {
-        val destFile = new File(scalacticPackageDir, sourceFile.getName)
-        copyFile(sourceFile, destFile)
-        List(destFile)
-      }
-      else
-        List.empty[File]
-    }
-  }
-
-  def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    val sourceResourceFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
-    val destResourceDir = new File(targetDir.getParentFile, "resources/org/scalactic")
-    destResourceDir.mkdirs()
-    val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
-    copyFile(sourceResourceFile, destResourceFile)
-    List(destResourceFile)
-  }
-
-  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic",
+  def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDir("common-test/src/main/scala/org/scalatest", "org/scalatest",
       List(
-        "UnitSpec.scala",
-        "ChainSpec.scala"
+        "SharedHelpers.scala",
+        "mytags.scala"
       ), targetDir)
   }
 

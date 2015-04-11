@@ -26,7 +26,7 @@ import scala.collection.SortedMap
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
 
-object SharedHelpers extends Assertions {
+object SharedHelpers extends Assertions with LineNumberHelper {
 
   object SilentReporter extends Reporter {
     def apply(event: Event) = ()
@@ -361,15 +361,6 @@ object SharedHelpers extends Assertions {
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName == testName)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].message == expectedMessage)
-  }
-
-  def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNumber"))
-      st(2).getLineNumber
-    else
-      st(3).getLineNumber
   }
 
   class TestIgnoredTrackingReporter extends Reporter {
