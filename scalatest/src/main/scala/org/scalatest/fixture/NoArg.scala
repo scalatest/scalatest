@@ -96,10 +96,10 @@ import org.scalatest._
  * 
  *   "My Actor" should {
  *     "throw when made with the wrong name" in new ActorSys {
- *       evaluating {
+ *       an [Exception] should be thrownBy {
  *         // use a generated name
  *         val a = system.actorOf(Props[MyActor])
- *       } should produce [Exception]
+ *       }
  *     }
  *     "construct without exception" in new ActorSys {
  *       val a = makeActor()
@@ -188,10 +188,10 @@ import org.scalatest._
  *   "My Actor" should {
  *     "throw when made with the wrong name" in new ActorSys {
  *       def body() = 
- *         evaluating {
+ *         an [Exception] should be thrownBy {
  *           // use a generated name
  *           val a = system.actorOf(Props[MyActor])
- *         } should produce [Exception]
+ *         }
  *     }
  *     "construct without exception" in new ActorSys {
  *       def body() = {
