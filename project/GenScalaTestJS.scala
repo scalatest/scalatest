@@ -241,7 +241,9 @@ object GenScalaTestJS {
         "PropertyCheckFailedException.scala",
         "TableDrivenPropertyCheckFailedException.scala",
         "DuplicateTestNameException.scala",
-        "TestRegistrationClosedException.scala"
+        "TestRegistrationClosedException.scala",
+        "GeneratorDrivenPropertyCheckFailedException.scala",
+        "DiscardedEvaluationException.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
@@ -341,6 +343,13 @@ object GenScalaTestJS {
         "Size.scala",
         "Messaging.scala",
         "Collecting.scala"
+      ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
+      List(
+        "Configuration.scala",
+        "Checkers.scala",
+        "PropertyChecks.scala",
+        "Whenever.scala"
       ), targetDir)
   }
 
