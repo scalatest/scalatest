@@ -37,150 +37,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
         equality.compare(a.value, b.value)
     }
 
-  class SortedEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaPath.SortedEquaSet =
-      thisEquaPath.SortedEquaSet.empty ++ (from collect pf)
-    override def map(f: S => T): thisEquaPath.SortedEquaSet =
-      thisEquaPath.SortedEquaSet.empty ++ (from map f)
-    override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.SortedEquaSet =
-      thisEquaPath.SortedEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    override def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.SortedEquaSet =
-      flatMap((s: S) => cvt(s))
-    override def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.SortedEquaSet =
-      thisEquaPath.SortedEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    override def scanRight(z: T)(op: (S, T) => T): thisEquaPath.SortedEquaSet =
-      thisEquaPath.SortedEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    override def filter(pred: S => Boolean): thisEquaPath.SortedEquaBridge[S] =
-      new thisEquaPath.SortedEquaBridge(from.filter(pred))
-    override def withFilter(pred: S => Boolean): SortedWithFilter = new SortedWithFilter(pred)
-
-    /**
-     * A class supporting filtered operations. Instances of this class are
-     * returned by method `withFilter`.
-     */
-    class SortedWithFilter(p: S => Boolean) extends WithFilter(p) {
-
-      /**
-       * Builds a new `SortedEquaSet` by applying a function to all elements of the
-       * outer `SortedEquaBridge` containing this `SortedWithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `SortedEquaSet` resulting from applying
-       * the given function `f` to each element of the outer `SortedEquaBridge`
-       * that satisfies predicate `p` and collecting the results.
-       *
-       * @return a new `SortedEquaSet` resulting from applying the given function
-       * `f` to each element of the outer `SortedEquaBridge` that satisfies
-       * predicate `p` and collecting the results.
-       */
-      override def map(f: S => T): thisEquaPath.SortedEquaSet =
-        filter(p).map(f)
-
-      /**
-       * Builds a new `SortedEquaSet` by applying a function to all elements of the
-       * outer `SortedEquaBridge` containing this `SortedWithFilter` instance that satisfy
-       * predicate `p` and concatenating the results.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `SortedEquaSet` resulting from applying
-       * the given `EquaSet`-valued function `f` to each element
-       * of the outer `SortedEquaBridge` that satisfies predicate `p` and
-       * concatenating the results.
-       *
-       * @return a new `SortedEquaSet` resulting from applying the given
-       * `EquaSet`-valued function `f` to each element of the
-       * outer `SortedEquaBridge` that satisfies predicate `p` and concatenating
-       * the results.
-       */
-      override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.SortedEquaSet =
-        filter(p).flatMap(f)
-
-      /**
-       * Further refines the filter for this `SortedEquaBridge`.
-       *
-       * @param q the predicate used to test elements.
-       * @return an object of class `WithFilter`, which supports
-       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
-       * All these operations apply to those elements of this `SortedEquaBridge` which
-       * satisfy the predicate `q` in addition to the predicate `p`.
-       */
-      override def withFilter(q: S => Boolean): SortedWithFilter =
-        new SortedWithFilter(x => p(x) && q(x))
-    }
-  }
-
-  class TreeEquaBridge[S](from: List[S]) extends SortedEquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaPath.TreeEquaSet =
-      thisEquaPath.TreeEquaSet.empty ++ (from collect pf)
-    override def map(f: S => T): thisEquaPath.TreeEquaSet =
-      thisEquaPath.TreeEquaSet.empty ++ (from map f)
-    override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet =
-      thisEquaPath.TreeEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    override def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet =
-      flatMap((s: S) => cvt(s))
-    override def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.TreeEquaSet =
-      thisEquaPath.TreeEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    override def scanRight(z: T)(op: (S, T) => T): thisEquaPath.TreeEquaSet =
-      thisEquaPath.TreeEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    override def filter(pred: S => Boolean): thisEquaPath.TreeEquaBridge[S] =
-      new thisEquaPath.TreeEquaBridge(from.filter(pred))
-    override def withFilter(pred: S => Boolean): TreeWithFilter = new TreeWithFilter(pred)
-
-    /**
-     * A class supporting filtered operations. Instances of this class are
-     * returned by method `withFilter`.
-     */
-    class TreeWithFilter(p: S => Boolean) extends SortedWithFilter(p) {
-
-      /**
-       * Builds a new `TreeEquaSet` by applying a function to all elements of the
-       * outer `TreeEquaBridge` containing this `TreeWithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `TreeEquaSet` resulting from applying
-       * the given function `f` to each element of the outer `TreeEquaBridge`
-       * that satisfies predicate `p` and collecting the results.
-       *
-       * @return a new `TreeEquaSet` resulting from applying the given function
-       * `f` to each element of the outer `TreeEquaBridge` that satisfies
-       * predicate `p` and collecting the results.
-       */
-      override def map(f: S => T): thisEquaPath.TreeEquaSet =
-        filter(p).map(f)
-
-      /**
-       * Builds a new `TreeEquaSet` by applying a function to all elements of the
-       * outer `TreeEquaBridge` containing this `TreeWithFilter` instance that satisfy
-       * predicate `p` and concatenating the results.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `TreeEquaSet` resulting from applying
-       * the given `EquaSet`-valued function `f` to each element
-       * of the outer `TreeEquaBridge` that satisfies predicate `p` and
-       * concatenating the results.
-       *
-       * @return a new `TreeEquaSet` resulting from applying the given
-       * `EquaSet`-valued function `f` to each element of the
-       * outer `TreeEquaBridge` that satisfies predicate `p` and concatenating
-       * the results.
-       */
-      override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet =
-        filter(p).flatMap(f)
-
-      /**
-       * Further refines the filter for this `TreeEquaBridge`.
-       *
-       * @param q the predicate used to test elements.
-       * @return an object of class `TreeWithFilter`, which supports
-       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
-       * All these operations apply to those elements of this `TreeEquaBridge` which
-       * satisfy the predicate `q` in addition to the predicate `p`.
-       */
-      override def withFilter(q: S => Boolean): TreeWithFilter =
-        new TreeWithFilter(x => p(x) && q(x))
-    }
-  }
-
   trait SortedEquaSet extends EquaSet {
 
     /**
@@ -444,25 +300,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def filterNot(pred: T => Boolean): thisEquaPath.SortedEquaSet
 
     /**
-     * Builds a new `SortedEquaSet` by applying a function to all elements of this `SortedEquaSet`
-     * and using the elements of the resulting `EquaSet`.
-     *
-     * @param f the function to apply to each element.
-     * @return a new `SortedEquaSet` resulting from applying the given `EquaSet`-valued function
-     * `f` to each element of this `SortedEquaSet` and concatenating the results.
-     *
-     * For example:
-     *
-     * {{{
-     * def getWords(lines: EquaSet[String]): EquaSet[String] = lines flatMap (line => equaSets.SortedEquaSet(line.split("\\W+"): _*))
-     * }}}
-     *
-     * @return a new `SortedEquaSet` resulting from applying the given `EquaSet`-valued function
-     * `f` to each element of this `SortedEquaSet` and concatenating the results.
-     */
-    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.SortedEquaSet
-
-    /**
      * Partitions this `SortedEquaSet` into a map of `SortedEquaSet`s according to some discriminator function.
      *
      * Note: this method is not re-implemented by views. This means
@@ -520,28 +357,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def intersect(that: thisEquaPath.EquaSet): thisEquaPath.SortedEquaSet
 
     /**
-     * Make an `EquaBridge` between this `SortedEquaSet` and the given `thatEquaPath`.
-     * `EquaBridge` enables this `SortedEquaSet` to transform into `thatEquaPath`.`EquaSet`
-     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
-     *
-     * @param thatEquaPath that `EquaPath` to bridge to
-     * @tparam U the type of `thatEquaPath`
-     * @return an instance of `thatEquaPath`.`EquaBridge`
-     */
-    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.EquaBridge[T]
-
-    /**
-     * Make a `SortedEquaBridge` between this `SortedEquaSet` and the given `thatEquaPath`.
-     * `SortedEquaBridge` enables this `SortedEquaSet` to transform into `thatEquaPath`.`SortedEquaSet`
-     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
-     *
-     * @param thatEquaPath that `SortedEquaPath` to bridge to
-     * @tparam U the type of `thatEquaPath`
-     * @return an instance of `thatEquaPath`.`SortedEquaBridge`
-     */
-    def into[U](thatEquaPath: SortedEquaPath[U]): thatEquaPath.SortedEquaBridge[T]
-
-    /**
      * Tests if this `SortedEquaSet` is empty.
      *
      * @return `true` if there is no element in the set, `false` otherwise.
@@ -554,18 +369,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
      * @return an instance of `Iterator` for elements of this `SortedEquaSet`
      */
     def iterator: Iterator[T]
-
-    /**
-     * Builds a new `SortedEquaSet` by applying a function to all elements of this `SortedEquaSet`.
-     *
-     * @param f the function to apply to each element.
-     * @return a new `SortedEquaSet` resulting from applying the given function
-     * `f` to each element of this `SortedEquaSet` and collecting the results.
-     *
-     * @return a new `SortedEquaSet` resulting from applying the given function
-     * `f` to each element of this `SortedEquaSet` and collecting the results.
-     */
-    def map(f: T => T): thisEquaPath.SortedEquaSet
 
     /**
      * Partitions this `SortedEquaSet` in two `SortedEquaSet`s according to a predicate.
@@ -796,9 +599,11 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
 
     override val path: thisEquaPath.type
 
+/*
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
 
     def copyInto(thatEquaPath: SortedEquaPath[T]): thatEquaPath.SortedEquaSet
+*/
   }
 
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet { thisTreeEquaSet =>
@@ -869,10 +674,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def filter(pred: T => Boolean): thisEquaPath.TreeEquaSet = new TreeEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaPath.SortedEquaSet = new TreeEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
-    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet = {
-      val set = underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList)
-      new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
-    }
     def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
     def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
     def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
@@ -892,8 +693,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def inits: Iterator[thisEquaPath.TreeEquaSet] = underlying.inits.map(new TreeEquaSet(_))
     def intersect(that: thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet =
       new TreeEquaSet(underlying intersect that.toEquaBoxSet)
-    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.EquaBridge[T] = new thatEquaPath.EquaBridge[T](underlying.toList.map(_.value))
-    def into[U](thatEquaPath: SortedEquaPath[U]): thatEquaPath.TreeEquaBridge[T] = new thatEquaPath.TreeEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value
@@ -902,7 +701,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
         case Some(last) => Some(last.value)
         case None => None
       }
-    def map(f: T => T): thisEquaPath.TreeEquaSet = TreeEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
@@ -1013,12 +811,14 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
     val path: thisEquaPath.type = thisEquaPath
+/*
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet = thisTreeEquaSet.into(thatEquaPath).map(t => t)
     def copyInto(thatEquaPath: SortedEquaPath[T]): thatEquaPath.TreeEquaSet =
       if (thatEquaPath eq thisEquaPath)
         thisTreeEquaSet.asInstanceOf[thatEquaPath.TreeEquaSet]
       else
         thisTreeEquaSet.into(thatEquaPath).map(t => t)
+*/
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty
