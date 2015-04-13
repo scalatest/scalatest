@@ -105,7 +105,8 @@ object GenScalacticJS {
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic",
       List(
         "UnitSpec.scala",
-        "ChainSpec.scala"
+        "ChainSpec.scala",
+        "CatcherSpec.scala"
       ), targetDir)
   }
 

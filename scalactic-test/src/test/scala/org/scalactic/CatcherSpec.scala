@@ -18,59 +18,60 @@ package org.scalactic
 import org.scalatest._
 
 class CatcherSpec extends UnitSpec {
-  object `A Catcher` {
-    class DBAccessException(message: String) extends RuntimeException(message)
-    class OtherException extends RuntimeException
-    val msg500 = "500: Internal Server Error"
-    val msg404 = "404: Page Not Found"
-    def `should throw NPE if the given partial function is null` {
-      a [NullPointerException] should be thrownBy {
-        Catcher { null }
-      }
-      a [NullPointerException] should be thrownBy {
-        new Catcher(null)
-      }
+  class DBAccessException(message: String) extends RuntimeException(message)
+  class OtherException extends RuntimeException
+  val msg500 = "500: Internal Server Error"
+  val msg404 = "404: Page Not Found"
+
+  "A Catcher" should "throw NPE if the given partial function is null" in {
+    a [NullPointerException] should be thrownBy {
+      Catcher { null }
     }
-    def `should be usable as an extractor for catching exceptions` {
-      val InternalServerError = Catcher { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
-      try throw new DBAccessException(msg500) 
-      catch {
-        case InternalServerError(e) =>
-        case _: Throwable => fail()
-      }
-      try throw new DBAccessException(msg404) 
-      catch {
-        case InternalServerError(e) => fail()
-        case _: Throwable =>
-      }
-      try throw new OtherException
-      catch {
-        case InternalServerError(e) => fail()
-        case _: Throwable =>
-      }
+    a [NullPointerException] should be thrownBy {
+      new Catcher(null)
     }
-    def `should be usable as an extractor for detecting exceptions in Failed outcomes in withFixtures` {
-      val InternalServerError = Catcher { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
-      val outcome1: Outcome = Failed(new DBAccessException(msg500))
-      outcome1 match {
-        case Failed(InternalServerError(e)) =>
-        case _ => fail()
-      }
-      val outcome2: Outcome = Failed(new DBAccessException(msg404))
-      outcome2 match {
-        case Failed(InternalServerError(e)) => fail()
-        case _ =>
-      }
-      val outcome3: Outcome = Failed(new OtherException)
-      outcome3 match {
-        case Failed(InternalServerError(e)) => fail()
-        case _ =>
-      }
-      val outcome4: Outcome = Succeeded
-      outcome4 match {
-        case Failed(InternalServerError(e)) => fail()
-        case _ =>
-      }
+  }
+
+  it should "be usable as an extractor for catching exceptions" in {
+    val InternalServerError = Catcher { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
+    try throw new DBAccessException(msg500)
+    catch {
+      case InternalServerError(e) =>
+      case _: Throwable => fail()
+    }
+    try throw new DBAccessException(msg404)
+    catch {
+      case InternalServerError(e) => fail()
+      case _: Throwable =>
+    }
+    try throw new OtherException
+    catch {
+      case InternalServerError(e) => fail()
+      case _: Throwable =>
+    }
+  }
+
+  it should "be usable as an extractor for detecting exceptions in Failed outcomes in withFixtures" in {
+    val InternalServerError = Catcher { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
+    val outcome1: Outcome = Failed(new DBAccessException(msg500))
+    outcome1 match {
+      case Failed(InternalServerError(e)) =>
+      case _ => fail()
+    }
+    val outcome2: Outcome = Failed(new DBAccessException(msg404))
+    outcome2 match {
+      case Failed(InternalServerError(e)) => fail()
+      case _ =>
+    }
+    val outcome3: Outcome = Failed(new OtherException)
+    outcome3 match {
+      case Failed(InternalServerError(e)) => fail()
+      case _ =>
+    }
+    val outcome4: Outcome = Succeeded
+    outcome4 match {
+      case Failed(InternalServerError(e)) => fail()
+      case _ =>
     }
   }
 }
