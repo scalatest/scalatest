@@ -2060,6 +2060,10 @@ class EquaSetSpec extends UnitSpec {
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending
 
+  it should "return the same set if toStrict is called after toLazy" in {
+    val actual = number.EquaSet(1, 2, 3).toLazy.toStrict(number)
+    actual should equal (number.EquaSet(1, 2, 3))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
