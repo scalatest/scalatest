@@ -16,7 +16,7 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
 import org.scalactic.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -844,15 +844,15 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * </p>
    *
    * @param f the function value that should throw the expected exception
-   * @param manifest an implicit <code>Manifest</code> representing the type of the specified
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
    * type parameter.
    * @return the intercepted exception, if it is of the expected type
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type
    *     passed <code>expected</code> value.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit manifest: Manifest[T]): T = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
+    val clazz = classTag.runtimeClass
     val caught = try {
       f
       None
@@ -1382,8 +1382,8 @@ object Assertions extends Assertions {
       }
     }
   }
-  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit manifest: Manifest[T]) {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit classTag: ClassTag[T]) {
+    val clazz = classTag.runtimeClass
     try {
       f
     }

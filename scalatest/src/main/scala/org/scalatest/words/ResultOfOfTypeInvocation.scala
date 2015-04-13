@@ -15,6 +15,8 @@
  */
 package org.scalatest.words
 
-final class ResultOfOfTypeInvocation[T](implicit ev: Manifest[T]) {
-  override def toString: String = "of [" + ev.erasure.getName + "]"
+import scala.reflect.ClassTag
+
+final class ResultOfOfTypeInvocation[T](implicit ev: ClassTag[T]) {
+  override def toString: String = "of [" + ev.runtimeClass.getName + "]"
 }

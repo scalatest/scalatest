@@ -20,7 +20,6 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import scala.reflect.Manifest
 import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.TestFailedException

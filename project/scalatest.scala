@@ -467,15 +467,15 @@ object ScalatestBuild extends Build {
       genFactoriesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
       genCodeTask,
       genCompatibleClassesTask,
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
       sourceGenerators in Compile <+=

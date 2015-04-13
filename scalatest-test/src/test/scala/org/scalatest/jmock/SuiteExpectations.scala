@@ -16,7 +16,6 @@
 package org.scalatest.jmock
 
 import org.scalatest._
-import scala.reflect.Manifest
 import org.jmock.Expectations
 import org.hamcrest.core.IsAnything
 import org.scalatest.events._
