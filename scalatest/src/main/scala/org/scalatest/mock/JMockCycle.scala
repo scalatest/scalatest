@@ -19,7 +19,7 @@ import org.scalatest._
 import org.jmock.api.ExpectationError
 import org.jmock.{Expectations, Mockery}
 import org.jmock.lib.legacy.ClassImposteriser
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 
 /**
  * Class that wraps and manages the lifecycle of a single <code>org.jmock.Mockery</code> context object,
@@ -211,8 +211,8 @@ final class JMockCycle {
    * val mockCollaborator = mock[Collaborator]
    * </pre>
    */
-  def mock[T <: AnyRef](implicit manifest: Manifest[T]): T = {
-    context.mock(manifest.erasure.asInstanceOf[Class[T]])
+  def mock[T <: AnyRef](implicit classTag: ClassTag[T]): T = {
+    context.mock(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
 
   /**

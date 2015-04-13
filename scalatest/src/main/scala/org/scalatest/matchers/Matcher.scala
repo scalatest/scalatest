@@ -20,6 +20,7 @@ import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
+import scala.reflect.ClassTag
 import scala.util.matching.Regex
 import org.scalactic.Equality
 import org.scalactic.TripleEqualsSupport.Spread
@@ -2990,10 +2991,10 @@ object Matcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): Matcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: ClassTag[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T) = fun(left)
-      override def toString: String = "Matcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
+      override def toString: String = "Matcher[" + ev.runtimeClass.getName + "](" + ev.runtimeClass.getName + " => MatchResult)"
     }
 }
 

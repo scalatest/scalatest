@@ -19,7 +19,7 @@ import org.scalatest._
 import org.easymock.IExpectationSetters
 import org.easymock.EasyMock
 import org.easymock.EasyMock.{expect => easyMockExpect, expectLastCall}
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 
 /**
  * Trait that provides some basic syntax sugar for <a href="http://easymock.org/" target="_blank">EasyMock</a>.
@@ -263,8 +263,8 @@ trait EasyMockSugar {
    * val mockCollaborator = mock[Collaborator]
    * </pre>
    */
-  def mock[T <: AnyRef](implicit manifest: Manifest[T]): T = {
-    EasyMock.createMock(manifest.erasure.asInstanceOf[Class[T]])
+  def mock[T <: AnyRef](implicit classTag: ClassTag[T]): T = {
+    EasyMock.createMock(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
 
   /**
@@ -287,8 +287,8 @@ trait EasyMockSugar {
    * val mockCollaborator = strictMock[Collaborator]
    * </pre>
    */
-  def strictMock[T <: AnyRef](implicit manifest: Manifest[T]): T = {
-    EasyMock.createStrictMock(manifest.erasure.asInstanceOf[Class[T]])
+  def strictMock[T <: AnyRef](implicit classTag: ClassTag[T]): T = {
+    EasyMock.createStrictMock(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
 
   /**
@@ -311,8 +311,8 @@ trait EasyMockSugar {
    * val mockCollaborator = niceMock[Collaborator]
    * </pre>
    */
-  def niceMock[T <: AnyRef](implicit manifest: Manifest[T]): T = {
-    EasyMock.createNiceMock(manifest.erasure.asInstanceOf[Class[T]])
+  def niceMock[T <: AnyRef](implicit classTag: ClassTag[T]): T = {
+    EasyMock.createNiceMock(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
 
   /**

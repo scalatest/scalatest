@@ -14,6 +14,8 @@
  */
 package org.scalatest.matchers
 
+import scala.reflect.ClassTag
+
 // T is the type of the object that has a property to verify with an instance of this trait, P is the type of that particular property
 // Since I should be able to pass 
 /**
@@ -195,9 +197,9 @@ object HavePropertyMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T, P](fun: T => HavePropertyMatchResult[P])(implicit evT: Manifest[T], evP: Manifest[P]): HavePropertyMatcher[T, P] =
+  def apply[T, P](fun: T => HavePropertyMatchResult[P])(implicit evT: ClassTag[T], evP: ClassTag[P]): HavePropertyMatcher[T, P] =
     new HavePropertyMatcher[T, P] {
       def apply(left: T) = fun(left)
-      override def toString: String = "HavePropertyMatcher[" + evT.erasure.getName + ", " + evP.erasure.getName + "](" + evT.erasure.getName + " => HavePropertyMatchResult[" + evP.erasure.getName + "])"
+      override def toString: String = "HavePropertyMatcher[" + evT.runtimeClass.getName + ", " + evP.runtimeClass.getName + "](" + evT.runtimeClass.getName + " => HavePropertyMatchResult[" + evP.runtimeClass.getName + "])"
     }
 }

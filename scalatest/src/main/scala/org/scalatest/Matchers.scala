@@ -17,17 +17,11 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
 import scala.util.matching.Regex
-import java.lang.reflect.Field
-import scala.reflect.Manifest
+import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
-import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
 import org.scalactic.Tolerance
 import org.scalactic.Explicitly
 import org.scalactic.TripleEqualsSupport.Spread
@@ -37,8 +31,6 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalactic.Constraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
-import MatchersHelper.andMatchersAndApply
-import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
 import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
@@ -47,9 +39,6 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
-import org.scalactic.NormalizingEquality
-import Assertions.checkExpectedException
-import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.NotAllowedException
 import scala.language.experimental.macros
@@ -2791,8 +2780,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                                       ^
    * </pre>
    */
-  def produce[T : Manifest]: ResultOfProduceInvocation[T] =
-    new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def produce[T : ClassTag]: ResultOfProduceInvocation[T] =
+    new ResultOfProduceInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6008,8 +5997,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T : Manifest]: ResultOfATypeInvocation[T] = 
-    new ResultOfATypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
+    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6019,8 +6008,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : Manifest]: ResultOfAnTypeInvocation[T] = 
-    new ResultOfAnTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
+    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6030,8 +6019,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T : Manifest]: ResultOfTheTypeInvocation[T] = 
-    new ResultOfTheTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def the[T : ClassTag]: ResultOfTheTypeInvocation[T] =
+    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   // This is where ShouldMatchers.scala started 
 
@@ -7013,7 +7002,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *                                                     ^
    * </pre>
    */
-  def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
+  def of[T](implicit ev: ClassTag[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
 /**

@@ -15,6 +15,8 @@
  */
 package org.scalatest.matchers
 
+import scala.reflect.ClassTag
+
 // T is the type of the object that has a Boolean property to verify with an instance of this trait
 // This is not a subtype of BeMatcher, because BeMatcher only works after "be", but 
 // BePropertyMatcher will work after "be", "be a", or "be an"
@@ -162,9 +164,9 @@ object BePropertyMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => BePropertyMatchResult)(implicit ev: Manifest[T]): BePropertyMatcher[T] =
+  def apply[T](fun: T => BePropertyMatchResult)(implicit ev: ClassTag[T]): BePropertyMatcher[T] =
     new BePropertyMatcher[T] {
       def apply(left: T) = fun(left)
-      override def toString: String = "BePropertyMatcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => BePropertyMatchResult)"
+      override def toString: String = "BePropertyMatcher[" + ev.runtimeClass.getName + "](" + ev.runtimeClass.getName + " => BePropertyMatchResult)"
     }
 }

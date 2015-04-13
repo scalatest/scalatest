@@ -528,7 +528,7 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       jsDependencies += RuntimeDOM % "test",
-      //scalaJSStage in Global := FastOptStage,
+      scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       testOptions in Test := scalatestTestOptions,
