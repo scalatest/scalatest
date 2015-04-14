@@ -119,7 +119,8 @@ object GenScalacticJS {
         "DefaultEqualitySpec.scala",
         "EitherSugarSpec.scala",
         "EqualitySpec.scala",
-        "EverySpec.scala"
+        "EverySpec.scala",
+        "NormalizationSpec.scala"
       ), targetDir)
   }
 
