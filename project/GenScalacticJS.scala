@@ -123,8 +123,9 @@ object GenScalacticJS {
         //"FutureSugarSpec.scala",
         "NormalizationSpec.scala",
         "NormalizingEqualitySpec.scala",
-        "NormMethodsSpec.scala"
+        "NormMethodsSpec.scala",
         //"NumericEqualityConstraintsSpec.scala",
+        "OptionSugarSpec.scala"
       ), targetDir)
   }
 
