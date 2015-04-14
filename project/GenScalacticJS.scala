@@ -116,7 +116,8 @@ object GenScalacticJS {
         "ConversionCheckedTripleEqualsSpec.scala",
         "ExplicitlySpecHelpers.scala",
         "DecidersSpec.scala",
-        "DefaultEqualitySpec.scala"
+        "DefaultEqualitySpec.scala",
+        "EitherSugarSpec.scala"
       ), targetDir)
   }
 
