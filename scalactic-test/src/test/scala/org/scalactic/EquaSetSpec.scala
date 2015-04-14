@@ -2064,6 +2064,12 @@ class EquaSetSpec extends UnitSpec {
     val actual = number.EquaSet(1, 2, 3).toLazy.toStrict(number)
     actual should equal (number.EquaSet(1, 2, 3))
   }
+
+  "LazyEquaSet" should "offer a map method" in {
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val strictSet = lazySet.map(_.toInt).map(_ + 1).toStrict(number)
+    strictSet should equal (number.EquaSet(2, 3, 4))
+  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 

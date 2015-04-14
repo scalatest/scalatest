@@ -51,9 +51,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       Vector(equaBox.value)
   }
 
-  class LazyEquaSet(equaSet: thisEquaPath.EquaSet) {
-    def toStrict[U](toPath: EquaPath[U]): toPath.EquaSet = equaSet.asInstanceOf[toPath.EquaSet]
-  }
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
     // method here that works if S is a GenTraversable[T]. That means that they have
     // say a val xss = x.EquaSet(List(1), List(2, 3)). Since the element type is Int, then they
@@ -1536,7 +1533,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
 
     // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
 
-    def toLazy: thisEquaPath.LazyEquaSet
+    def toLazy: LazyEquaSet[T]
   }
 
   trait EquaMap[V]/* extends Function[T, V] with Equals*/ {
@@ -1908,7 +1905,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       else
         thisFastEquaSet.into(thatEquaPath).map(t => t)
 */
-    def toLazy: thisEquaPath.LazyEquaSet = new thisEquaPath.LazyEquaSet(thisFastEquaSet)
+    def toLazy: LazyEquaSet[T] = new ConcreteLazyFastEquaSet[T](thisFastEquaSet)
   }
 
   object FastEquaSet {
