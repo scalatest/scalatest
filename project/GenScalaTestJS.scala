@@ -143,7 +143,8 @@ object GenScalaTestJS {
               "Entry.scala",
               "Inspectors.scala",
               "OptionValues.scala",
-              "Inside.scala"
+              "Inside.scala",
+              "NonImplicitAssertions.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(

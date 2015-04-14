@@ -107,7 +107,14 @@ object GenScalacticJS {
         "UnitSpec.scala",
         "AccumulationSpec.scala",
         "ChainSpec.scala",
-        "CatcherSpec.scala"
+        "CatcherSpec.scala",
+        "ConversionCheckedMapEqualityConstraintsSpec.scala",
+        "ConversionCheckedSeqEqualityConstraintsSpec.scala",
+        "ConversionCheckedSetEqualityConstraintsSpec.scala",
+        "ConversionCheckedTraversableEqualityConstraintsSpec.scala",
+        "ConversionCheckedTripleEqualsExplicitlySpec.scala",
+        "ConversionCheckedTripleEqualsSpec.scala",
+        "ExplicitlySpecHelpers.scala"
       ), targetDir)
   }
 
