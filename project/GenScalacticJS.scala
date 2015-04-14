@@ -117,7 +117,8 @@ object GenScalacticJS {
         "ExplicitlySpecHelpers.scala",
         "DecidersSpec.scala",
         "DefaultEqualitySpec.scala",
-        "EitherSugarSpec.scala"
+        "EitherSugarSpec.scala",
+        "EqualitySpec.scala"
       ), targetDir)
   }
 
