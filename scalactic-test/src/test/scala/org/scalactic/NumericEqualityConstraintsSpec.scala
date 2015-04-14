@@ -23,10 +23,10 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class NumericEqualityConstraintsSpec extends Spec with TypeCheckedTripleEquals with NumericEqualityConstraints {
+class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEquals with NumericEqualityConstraints {
 
-  object `The NumericEqualityConstraints trait` {
-    def `should allow equality comparisons between types that co-operate in Scala` {
+  describe("The NumericEqualityConstraints trait") {
+    it("should allow equality comparisons between types that co-operate in Scala") {
 
       val aChar: Char = 'c'
       val aByte: Byte = 99
