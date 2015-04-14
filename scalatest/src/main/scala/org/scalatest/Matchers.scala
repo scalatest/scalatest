@@ -32,8 +32,10 @@ import org.scalactic.Constraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
 import org.scalatest.words._
+// SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
+// SKIP-SCALATESTJS-END
 import MatchersHelper.newTestFailedException
 import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
@@ -1714,6 +1716,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   import scala.language.implicitConversions
 
+  // SKIP-SCALATESTJS-START
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))
@@ -1850,6 +1853,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
+  // SKIP-SCALATESTJS-END
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -1930,8 +1934,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
     */
-     
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1948,6 +1952,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     // TODO: Check the shouldBeTrues, are they sometimes always false or true?
     /**
@@ -1970,7 +1975,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
@@ -1988,6 +1994,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -3479,7 +3486,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -3542,6 +3550,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax:
@@ -4485,7 +4494,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -4527,6 +4537,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -4607,7 +4618,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
-  
+
+  // SKIP-SCALATESTJS-START
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -4638,6 +4650,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedArray(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
+  // SKIP-SCALATESTJS-END
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5076,6 +5089,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -5125,6 +5139,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax:
@@ -6488,7 +6503,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
 // TODO: Remember to write tests for inspector shorthands uncovering the bug below, always a empty because always true true passed to matchSym
     /**
      * This method enables the following syntax:
@@ -6537,6 +6553,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:

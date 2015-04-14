@@ -466,7 +466,7 @@ object ScalatestBuild extends Build {
       },
       genFactoriesTask,
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
       sourceGenerators in Compile <+=
