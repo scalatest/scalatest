@@ -121,7 +121,8 @@ object GenScalacticJS {
         "EqualitySpec.scala",
         "EverySpec.scala",
         "NormalizationSpec.scala",
-        "NormalizingEqualitySpec.scala"
+        "NormalizingEqualitySpec.scala",
+        "NormMethodsSpec.scala"
       ), targetDir)
   }
 

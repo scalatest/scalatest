@@ -17,10 +17,10 @@ package org.scalactic
 
 import org.scalatest._
 
-class NormMethodsSpec extends Spec with StringNormalizations with NormMethods {
+class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods {
 
-  object `trait NormMethods` {
-    def `should provide a .norm method for any type T for which an implicit Normalization[T] is available` { 
+  describe("trait NormMethods") {
+    it("should provide a .norm method for any type T for which an implicit Normalization[T] is available") {
  
       { // Try with lowerCased
         implicit val strNorm = lowerCased
