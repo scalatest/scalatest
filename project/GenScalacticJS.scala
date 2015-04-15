@@ -130,7 +130,8 @@ object GenScalacticJS {
         "PrettifierSpec.scala",
         "PrettyMethodsSpec.scala",
         "RequirementsSpec.scala",
-        "SnapshotsSpec.scala"
+        "SnapshotsSpec.scala",
+        "SpreadSpec.scala"
       ), targetDir)
   }
 

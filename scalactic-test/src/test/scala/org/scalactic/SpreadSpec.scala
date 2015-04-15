@@ -18,17 +18,17 @@ package org.scalactic
 import org.scalatest._
 import TripleEqualsSupport.Spread
 
-class SpreadSpec extends Spec {
+class SpreadSpec extends FunSpec {
 
-  object `A Spread` {
-    def `should throw IllegalArgumentException if a negative tolerance is passed` {
+  describe("A Spread") {
+    it("should throw IllegalArgumentException if a negative tolerance is passed") {
       val caught =
         intercept[IllegalArgumentException] {
           new Spread(3, -1)
         }
       assert(caught.getMessage.endsWith("tolerance must be zero or greater, but was -1"))
     }
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val spread = new Spread(8, 2)
       assert(spread.toString == "8 +- 2")
     }
