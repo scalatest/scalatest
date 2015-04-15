@@ -41,8 +41,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
   */
   describe("The === syntax") {
 
-    it("should be true if the number is within the given interval") {
-
+    it("should be true if the Double is within the given interval") {
       // Double +- Double
       assert(sevenDotOh === (7.1 +- 0.2))
       assert(sevenDotOh === (6.9 +- 0.2))
@@ -114,7 +113,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenDotOh === (-7.0 +- 2.toByte))
       assert(minusSevenDotOh === (-7.2 +- 2.toByte))
       assert(minusSevenDotOh === (-6.8 +- 2.toByte))
+    }
 
+    it("should be true if the Float is within the given interval") {
       // Float +- Float
       assert(sevenDotOhFloat === (7.1f +- 0.2f))
       assert(sevenDotOhFloat === (6.9f +- 0.2f))
@@ -174,7 +175,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenDotOhFloat === (-7.0f +- 2.toByte))
       assert(minusSevenDotOhFloat === (-7.2f +- 2.toByte))
       assert(minusSevenDotOhFloat === (-6.8f +- 2.toByte))
+    }
 
+    it("should be true if the Long is within the given interval") {
       // Long +- Long
       assert(sevenLong === (9L +- 2L))
       assert(sevenLong === (8L +- 2L))
@@ -222,7 +225,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenLong === (-7L +- 2.toByte))
       assert(minusSevenLong === (-6L +- 2.toByte))
       assert(minusSevenLong === (-5L +- 2.toByte))
+    }
 
+    it("should be true if the Int is within the given interval") {
       // Int +- Int
       assert(sevenInt === (9 +- 2))
       assert(sevenInt === (8 +- 2))
@@ -258,7 +263,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenInt === (-7 +- 2.toByte))
       assert(minusSevenInt === (-6 +- 2.toByte))
       assert(minusSevenInt === (-5 +- 2.toByte))
+    }
 
+    it("should be true if the Short is within the given interval") {
       // Short +- Short
       assert(sevenShort === (9.toShort +- 2.toShort))
       assert(sevenShort === (8.toShort +- 2.toShort))
@@ -282,7 +289,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenShort === ((-7).toShort +- 2.toByte))
       assert(minusSevenShort === ((-6).toShort +- 2.toByte))
       assert(minusSevenShort === ((-5).toShort +- 2.toByte))
+    }
 
+    it("should be true if the Byte is within the given interval") {
       // Byte +- Byte
       assert(sevenByte === (9.toByte +- 2.toByte))
       assert(sevenByte === (8.toByte +- 2.toByte))
@@ -296,8 +305,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenByte === ((-5).toByte +- 2.toByte))
     }
 
-    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side") {
-
+    it("should, for symmetry, be true if the Double is within the given interval when the interval is placed on the left hand side") {
       // Double +- Double
       assert((7.1 +- 0.2) === sevenDotOh)
       assert((6.9 +- 0.2) === sevenDotOh)
@@ -369,7 +377,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((-7.0 +- 2.toByte) === minusSevenDotOh)
       assert((-7.2 +- 2.toByte) === minusSevenDotOh)
       assert((-6.8 +- 2.toByte) === minusSevenDotOh)
+    }
 
+    it("should, for symmetry, be true if the Float is within the given interval when the interval is placed on the left hand side") {
       // Float +- Float
       assert((7.1f +- 0.2f) === sevenDotOhFloat)
       assert((6.9f +- 0.2f) === sevenDotOhFloat)
@@ -429,7 +439,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((-7.0f +- 2.toByte) === minusSevenDotOhFloat)
       assert((-7.2f +- 2.toByte) === minusSevenDotOhFloat)
       assert((-6.8f +- 2.toByte) === minusSevenDotOhFloat)
+    }
 
+    it("should, for symmetry, be true if the Long is within the given interval when the interval is placed on the left hand side") {
       // Long +- Long
       assert((9L +- 2L) === sevenLong)
       assert((8L +- 2L) === sevenLong)
@@ -477,7 +489,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((-7L +- 2.toByte) === minusSevenLong)
       assert((-6L +- 2.toByte) === minusSevenLong)
       assert((-5L +- 2.toByte) === minusSevenLong)
+    }
 
+    it("should, for symmetry, be true if the Int is within the given interval when the interval is placed on the left hand side") {
       // Int +- Int
       assert((9 +- 2) === sevenInt)
       assert((8 +- 2) === sevenInt)
@@ -513,7 +527,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((-7 +- 2.toByte) === minusSevenInt)
       assert((-6 +- 2.toByte) === minusSevenInt)
       assert((-5 +- 2.toByte) === minusSevenInt)
+    }
 
+    it("should, for symmetry, be true if the Short is within the given interval when the interval is placed on the left hand side") {
       // Short +- Short
       assert((9.toShort +- 2.toShort) === sevenShort)
       assert((8.toShort +- 2.toShort) === sevenShort)
@@ -537,7 +553,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(((-7).toShort +- 2.toByte) === minusSevenShort)
       assert(((-6).toShort +- 2.toByte) === minusSevenShort)
       assert(((-5).toShort +- 2.toByte) === minusSevenShort)
+    }
 
+    it("should, for symmetry, be true if the Byte is within the given interval when the interval is placed on the left hand side") {
       // Byte +- Byte
       assert((9.toByte +- 2.toByte) === sevenByte)
       assert((8.toByte +- 2.toByte) === sevenByte)
@@ -551,8 +569,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(((-5).toByte +- 2.toByte) === minusSevenByte)
     }
 
-    it("should be false if the number is outside the given interval") {
-
+    it("should be false if the Double is outside the given interval") {
       // Double +- Double
       assert(!(sevenDotOh === (7.5 +- 0.2)))
       assert(!(sevenDotOh === (6.5 +- 0.2)))
@@ -588,7 +605,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(sevenDotOh === (9.1 +- 2.toByte)))
       assert(!(minusSevenDotOh === (-4.0 +- 2.toByte)))
       assert(!(minusSevenDotOh === (-9.1 +- 2.toByte)))
+    }
 
+    it("should be false if the Float is outside the given interval") {
       // Float +- Float
       assert(!(sevenDotOhFloat === (7.5f +- 0.2f)))
       assert(!(sevenDotOhFloat === (6.5f +- 0.2f)))
@@ -618,7 +637,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(sevenDotOhFloat === (9.1f +- 2.toByte)))
       assert(!(minusSevenDotOhFloat === (-4.0f +- 2.toByte)))
       assert(!(minusSevenDotOhFloat === (-9.1f +- 2.toByte)))
+    }
 
+    it("should be false if the Long is outside the given interval") {
       // Long +- Long
       assert(!(sevenLong === (4L +- 2L)))
       assert(!(sevenLong === (10L +- 2L)))
@@ -642,7 +663,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(sevenLong === (10L +- 2.toByte)))
       assert(!(minusSevenLong === (-4L +- 2.toByte)))
       assert(!(minusSevenLong === (-10L +- 2.toByte)))
+    }
 
+    it("should be false if the Int is outside the given interval") {
       // Int +- Int
       assert(!(sevenInt === (4 +- 2)))
       assert(!(sevenInt === (10 +- 2)))
@@ -660,7 +683,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(sevenInt === (10 +- 2.toByte)))
       assert(!(minusSevenInt === (-4 +- 2.toByte)))
       assert(!(minusSevenInt === (-10 +- 2.toByte)))
+    }
 
+    it("should be false if the Short is outside the given interval") {
       // Short +- Short
       assert(!(sevenShort === (4.toShort +- 2.toShort)))
       assert(!(sevenShort === (10.toShort +- 2.toShort)))
@@ -672,7 +697,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(sevenShort === (10.toShort +- 2.toByte)))
       assert(!(minusSevenShort === ((-4).toShort +- 2.toByte)))
       assert(!(minusSevenShort === ((-10).toShort +- 2.toByte)))
+    }
 
+    it("should be false if the Byte is outside the given interval") {
       // Byte +- Byte
       assert(!(sevenByte === (4.toByte +- 2.toByte)))
       assert(!(sevenByte === (10.toByte +- 2.toByte)))
@@ -680,8 +707,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenByte === ((-10).toByte +- 2.toByte)))
     }
 
-    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side") {
-
+    it("should, for symmetry, be false if the Double is outside the given interval, when the interval is on the left hand side") {
       // Double +- Double
       assert(!((7.5 +- 0.2) === sevenDotOh))
       assert(!((6.5 +- 0.2) === sevenDotOh))
@@ -717,7 +743,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((9.1 +- 2.toByte) === sevenDotOh))
       assert(!((-4.0 +- 2.toByte) === minusSevenDotOh))
       assert(!((-9.1 +- 2.toByte) === minusSevenDotOh))
+    }
 
+    it("should, for symmetry, be false if the Float is outside the given interval, when the interval is on the left hand side") {
       // Float +- Float
       assert(!((7.5f +- 0.2f) === sevenDotOhFloat))
       assert(!((6.5f +- 0.2f) === sevenDotOhFloat))
@@ -747,7 +775,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((9.1f +- 2.toByte) === sevenDotOhFloat))
       assert(!((-4.0f +- 2.toByte) === minusSevenDotOhFloat))
       assert(!((-9.1f +- 2.toByte) === minusSevenDotOhFloat))
+    }
 
+    it("should, for symmetry, be false if the Long is outside the given interval, when the interval is on the left hand side") {
       // Long +- Long
       assert(!((4L +- 2L) === sevenLong))
       assert(!((10L +- 2L) === sevenLong))
@@ -771,7 +801,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((10L +- 2.toByte) === sevenLong))
       assert(!((-4L +- 2.toByte) === minusSevenLong))
       assert(!((-10L +- 2.toByte) === minusSevenLong))
+    }
 
+    it("should, for symmetry, be false if the Int is outside the given interval, when the interval is on the left hand side") {
       // Int +- Int
       assert(!((4 +- 2) === sevenInt))
       assert(!((10 +- 2) === sevenInt))
@@ -789,7 +821,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((10 +- 2.toByte) === sevenInt))
       assert(!((-4 +- 2.toByte) === minusSevenInt))
       assert(!((-10 +- 2.toByte) === minusSevenInt))
+    }
 
+    it("should, for symmetry, be false if the Short is outside the given interval, when the interval is on the left hand side") {
       // Short +- Short
       assert(!((4.toShort +- 2.toShort) === sevenShort))
       assert(!((10.toShort +- 2.toShort) === sevenShort))
@@ -801,7 +835,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((10.toShort +- 2.toByte) === sevenShort))
       assert(!(((-4).toShort +- 2.toByte) === minusSevenShort))
       assert(!(((-10).toShort +- 2.toByte) === minusSevenShort))
+    }
 
+    it("should, for symmetry, be false if the Byte is outside the given interval, when the interval is on the left hand side") {
       // Byte +- Byte
       assert(!((4.toByte +- 2.toByte) === sevenByte))
       assert(!((10.toByte +- 2.toByte) === sevenByte))
@@ -812,8 +848,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
 
   describe("The !== syntax") {
 
-    it("should be true if the number is outside the given interval") {
-
+    it("should be true if the Double is outside the given interval") {
       // Double +- Double
       assert(sevenDotOh !== (7.5 +- 0.2))
       assert(sevenDotOh !== (6.5 +- 0.2))
@@ -849,7 +884,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(sevenDotOh !== (9.1 +- 2.toByte))
       assert(minusSevenDotOh !== (-4.0 +- 2.toByte))
       assert(minusSevenDotOh !== (-9.1 +- 2.toByte))
+    }
 
+    it("should be true if the Float is outside the given interval") {
       // Float +- Float
       assert(sevenDotOhFloat !== (7.5f +- 0.2f))
       assert(sevenDotOhFloat !== (6.5f +- 0.2f))
@@ -879,7 +916,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(sevenDotOhFloat !== (9.1f +- 2.toByte))
       assert(minusSevenDotOhFloat !== (-4.0f +- 2.toByte))
       assert(minusSevenDotOhFloat !== (-9.1f +- 2.toByte))
+    }
 
+    it("should be true if the Long is outside the given interval") {
       // Long +- Long
       assert(sevenLong !== (4L +- 2L))
       assert(sevenLong !== (10L +- 2L))
@@ -903,7 +942,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(sevenLong !== (10L +- 2.toByte))
       assert(minusSevenLong !== (-4L +- 2.toByte))
       assert(minusSevenLong !== (-10L +- 2.toByte))
+    }
 
+    it("should be true if the Int is outside the given interval") {
       // Int +- Int
       assert(sevenInt !== (4 +- 2))
       assert(sevenInt !== (10 +- 2))
@@ -921,7 +962,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(sevenInt !== (10 +- 2.toByte))
       assert(minusSevenInt !== (-4 +- 2.toByte))
       assert(minusSevenInt !== (-10 +- 2.toByte))
+    }
 
+    it("should be true if the Short is outside the given interval") {
       // Short +- Short
       assert(sevenShort !== (4.toShort +- 2.toShort))
       assert(sevenShort !== (10.toShort +- 2.toShort))
@@ -933,7 +976,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(sevenShort !== (10.toShort +- 2.toByte))
       assert(minusSevenShort !== ((-4).toShort +- 2.toByte))
       assert(minusSevenShort !== ((-10).toShort +- 2.toByte))
+    }
 
+    it("should be true if the Byte is outside the given interval") {
       // Byte +- Byte
       assert(sevenByte !== (4.toByte +- 2.toByte))
       assert(sevenByte !== (10.toByte +- 2.toByte))
@@ -941,8 +986,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(minusSevenByte !== ((-10).toByte +- 2.toByte))
     }
 
-    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side") {
-
+    it("should, for symmetry, be true if the Double is outside the given interval when the interval is placed on the left hand side") {
       // Double +- Double
       assert((7.5 +- 0.2) !== sevenDotOh)
       assert((6.5 +- 0.2) !== sevenDotOh)
@@ -978,7 +1022,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((9.1 +- 2.toByte) !== sevenDotOh)
       assert((-4.0 +- 2.toByte) !== minusSevenDotOh)
       assert((-9.1 +- 2.toByte) !== minusSevenDotOh)
+    }
 
+    it("should, for symmetry, be true if the Float is outside the given interval when the interval is placed on the left hand side") {
       // Float +- Float
       assert((7.5f +- 0.2f) !== sevenDotOhFloat)
       assert((6.5f +- 0.2f) !== sevenDotOhFloat)
@@ -1008,7 +1054,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((9.1f +- 2.toByte) !== sevenDotOhFloat)
       assert((-4.0f +- 2.toByte) !== minusSevenDotOhFloat)
       assert((-9.1f +- 2.toByte) !== minusSevenDotOhFloat)
+    }
 
+    it("should, for symmetry, be true if the Long is outside the given interval when the interval is placed on the left hand side") {
       // Long +- Long
       assert((4L +- 2L) !== sevenLong)
       assert((10L +- 2L) !== sevenLong)
@@ -1032,7 +1080,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((10L +- 2.toByte) !== sevenLong)
       assert((-4L +- 2.toByte) !== minusSevenLong)
       assert((-10L +- 2.toByte) !== minusSevenLong)
+    }
 
+    it("should, for symmetry, be true if the Int is outside the given interval when the interval is placed on the left hand side") {
       // Int +- Int
       assert((4 +- 2) !== sevenInt)
       assert((10 +- 2) !== sevenInt)
@@ -1050,7 +1100,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((10 +- 2.toByte) !== sevenInt)
       assert((-4 +- 2.toByte) !== minusSevenInt)
       assert((-10 +- 2.toByte) !== minusSevenInt)
+    }
 
+    it("should, for symmetry, be true if the Short is outside the given interval when the interval is placed on the left hand side") {
       // Short +- Short
       assert((4.toShort +- 2.toShort) !== sevenShort)
       assert((10.toShort +- 2.toShort) !== sevenShort)
@@ -1062,7 +1114,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert((10.toShort +- 2.toByte) !== sevenShort)
       assert(((-4).toShort +- 2.toByte) !== minusSevenShort)
       assert(((-10).toShort +- 2.toByte) !== minusSevenShort)
+    }
 
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side") {
       // Byte +- Byte
       assert((4.toByte +- 2.toByte) !== sevenByte)
       assert((10.toByte +- 2.toByte) !== sevenByte)
@@ -1070,8 +1124,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(((-10).toByte +- 2.toByte) !== minusSevenByte)
     }
 
-    it("should be false if the number is within the given interval") {
-
+    it("should be false if the Double is within the given interval") {
       // Double +- Double
       assert(!(sevenDotOh !== (7.1 +- 0.2)))
       assert(!(sevenDotOh !== (6.9 +- 0.2)))
@@ -1143,7 +1196,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenDotOh !== (-7.0 +- 2.toByte)))
       assert(!(minusSevenDotOh !== (-7.2 +- 2.toByte)))
       assert(!(minusSevenDotOh !== (-6.8 +- 2.toByte)))
+    }
 
+    it("should be false if the Float is within the given interval") {
       // Float +- Float
       assert(!(sevenDotOhFloat !== (7.1f +- 0.2f)))
       assert(!(sevenDotOhFloat !== (6.9f +- 0.2f)))
@@ -1203,7 +1258,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenDotOhFloat !== (-7.0f +- 2.toByte)))
       assert(!(minusSevenDotOhFloat !== (-7.2f +- 2.toByte)))
       assert(!(minusSevenDotOhFloat !== (-6.8f +- 2.toByte)))
+    }
 
+    it("should be false if the Long is within the given interval") {
       // Long +- Long
       assert(!(sevenLong !== (9L +- 2L)))
       assert(!(sevenLong !== (8L +- 2L)))
@@ -1251,7 +1308,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenLong !== (-7L +- 2.toByte)))
       assert(!(minusSevenLong !== (-6L +- 2.toByte)))
       assert(!(minusSevenLong !== (-5L +- 2.toByte)))
+    }
 
+    it("should be false if the Int is within the given interval") {
       // Int +- Int
       assert(!(sevenInt !== (9 +- 2)))
       assert(!(sevenInt !== (8 +- 2)))
@@ -1287,7 +1346,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenInt !== (-7 +- 2.toByte)))
       assert(!(minusSevenInt !== (-6 +- 2.toByte)))
       assert(!(minusSevenInt !== (-5 +- 2.toByte)))
+    }
 
+    it("should be false if the Short is within the given interval") {
       // Short +- Short
       assert(!(sevenShort !== (9.toShort +- 2.toShort)))
       assert(!(sevenShort !== (8.toShort +- 2.toShort)))
@@ -1311,7 +1372,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenShort !== ((-7).toShort +- 2.toByte)))
       assert(!(minusSevenShort !== ((-6).toShort +- 2.toByte)))
       assert(!(minusSevenShort !== ((-5).toShort +- 2.toByte)))
+    }
 
+    it("should be false if the Byte is within the given interval") {
       // Byte +- Byte
       assert(!(sevenByte !== (9.toByte +- 2.toByte)))
       assert(!(sevenByte !== (8.toByte +- 2.toByte)))
@@ -1325,8 +1388,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(minusSevenByte !== ((-5).toByte +- 2.toByte)))
     }
 
-    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side") {
-
+    it("should, for symmetry, be false if the Double is within the given interval, when the interval is placed on the left hand side") {
       // Double +- Double
       assert(!((7.1 +- 0.2) !== sevenDotOh))
       assert(!((6.9 +- 0.2) !== sevenDotOh))
@@ -1398,7 +1460,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((-7.0 +- 2.toByte) !== minusSevenDotOh))
       assert(!((-7.2 +- 2.toByte) !== minusSevenDotOh))
       assert(!((-6.8 +- 2.toByte) !== minusSevenDotOh))
+    }
 
+    it("should, for symmetry, be false if the Float is within the given interval, when the interval is placed on the left hand side") {
       // Float +- Float
       assert(!((7.1f +- 0.2f) !== sevenDotOhFloat))
       assert(!((6.9f +- 0.2f) !== sevenDotOhFloat))
@@ -1458,7 +1522,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((-7.0f +- 2.toByte) !== minusSevenDotOhFloat))
       assert(!((-7.2f +- 2.toByte) !== minusSevenDotOhFloat))
       assert(!((-6.8f +- 2.toByte) !== minusSevenDotOhFloat))
+    }
 
+    it("should, for symmetry, be false if the Long is within the given interval, when the interval is placed on the left hand side") {
       // Long +- Long
       assert(!((9L +- 2L) !== sevenLong))
       assert(!((8L +- 2L) !== sevenLong))
@@ -1506,7 +1572,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((-7L +- 2.toByte) !== minusSevenLong))
       assert(!((-6L +- 2.toByte) !== minusSevenLong))
       assert(!((-5L +- 2.toByte) !== minusSevenLong))
+    }
 
+    it("should, for symmetry, be false if the Int is within the given interval, when the interval is placed on the left hand side") {
       // Int +- Int
       assert(!((9 +- 2) !== sevenInt))
       assert(!((8 +- 2) !== sevenInt))
@@ -1542,7 +1610,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!((-7 +- 2.toByte) !== minusSevenInt))
       assert(!((-6 +- 2.toByte) !== minusSevenInt))
       assert(!((-5 +- 2.toByte) !== minusSevenInt))
+    }
 
+    it("should, for symmetry, be false if the Short is within the given interval, when the interval is placed on the left hand side") {
       // Short +- Short
       assert(!((9.toShort +- 2.toShort) !== sevenShort))
       assert(!((8.toShort +- 2.toShort) !== sevenShort))
@@ -1567,6 +1637,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(!(((-6).toShort +- 2.toByte) !== minusSevenShort))
       assert(!(((-5).toShort +- 2.toByte) !== minusSevenShort))
 
+    }
+
+    it("should, for symmetry, be false if the Byte is within the given interval, when the interval is placed on the left hand side") {
       // Byte +- Byte
       assert(!((9.toByte +- 2.toByte) !== sevenByte))
       assert(!((8.toByte +- 2.toByte) !== sevenByte))
@@ -1583,8 +1656,7 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
 
   describe("The X +- Y syntax") {
 
-    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative") {
-
+    it("should throw IllegalArgumentException if left is Double and the number passed to the right is 0 or negative") {
       // Double +- Double
       val caught1 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- -0.2))
@@ -1632,7 +1704,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(caught6.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY assert(caught6.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
+    }
 
+    it("should throw IllegalArgumentException if the left is Float and the number passed to the right is 0 or negative") {
       // Float +- Float
       val caught7 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- -0.2f))
@@ -1677,7 +1751,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       assert(caught11.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY assert(caught11.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
+    }
 
+    it("should throw IllegalArgumentException if the left is Long and the number passed to the right is 0 or negative") {
       // Long +- Long
       val caught12 = intercept[IllegalArgumentException] {
         assert(sevenLong === (9L +- -2L))
@@ -1701,7 +1777,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
         assert(sevenLong === (9L +- (-2).toByte))
       }
       assert(caught15.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
+    }
 
+    it("should throw IllegalArgumentException if the left is Int and the number passed to the right is 0 or negative") {
       // Int +- Int
       val caught16 = intercept[IllegalArgumentException] {
         assert(sevenInt === (9 +- -2))
@@ -1719,7 +1797,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
         assert(sevenInt === (9 +- (-2).toByte))
       }
       assert(caught18.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
+    }
 
+    it("should throw IllegalArgumentException if the left is Short and the number passed to the right is 0 or negative") {
       // Short +- Short
       val caught19 = intercept[IllegalArgumentException] {
         assert(sevenShort === (9.toShort +- (-2).toShort))
@@ -1731,7 +1811,9 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
         assert(sevenShort === (9.toShort +- (-2).toByte))
       }
       assert(caught20.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
+    }
 
+    it("should throw IllegalArgumentException if the left is Byte and the number passed to the right is 0 or negative") {
       // Byte +- Byte
       val caught21 = intercept[IllegalArgumentException] {
         assert(sevenByte === (9.toByte +- (-2).toByte))
