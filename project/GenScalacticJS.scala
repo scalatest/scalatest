@@ -139,7 +139,12 @@ object GenScalacticJS {
         "TolerantEquivalenceSpec.scala",
         "TraversableConstraintsSpec.scala",
         "TripleEqualsSpec.scala",
-        "TrySugarSpec.scala"
+        "TrySugarSpec.scala",
+        "TypeCheckedMapEqualityConstraintsSpec.scala",
+        "TypeCheckedSeqEqualityConstraintsSpec.scala",
+        "TypeCheckedSetEqualityConstraintsSpec.scala",
+        "TypeCheckedTraversableEqualityConstraintsSpec.scala",
+        "TypeCheckedTripleEqualsExplicitlySpec.scala"
       ), targetDir)
   }
 

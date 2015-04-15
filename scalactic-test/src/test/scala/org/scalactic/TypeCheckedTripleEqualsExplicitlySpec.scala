@@ -17,11 +17,11 @@ package org.scalactic
 
 import org.scalatest._
 
-class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with TypeCheckedTripleEquals with ExplicitlySpecHelpers {
+class TypeCheckedTripleEqualsExplicitlySpec extends FunSpec with Matchers with TypeCheckedTripleEquals with ExplicitlySpecHelpers {
 
-  object `The Explicitly DSL` {
-    object `when used with === on identical types` {
-      def `should allow an Equality to be specified explicitly` {
+  describe("The Explicitly DSL") {
+    describe("when used with === on identical types") {
+      it("should allow an Equality to be specified explicitly") {
         assert(1 !== 2)
         assert((1 === 2)(decided by intInequality))
         assert(1 === 1)
@@ -32,16 +32,16 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
         assert { (" Hi" !== "hI ") (decided by defaultEquality[String]) }
       }
     }
-    object `when used with supertype === subtype` {
-      def `should allow an Equality to be specified explicitly` {
+    describe("when used with supertype === subtype") {
+      it("should allow an Equality to be specified explicitly") {
         assert(new Fruit("orange") !== new Apple)
         assert((new Fruit("orange") === new Apple)(decided by fruitInequality))
         assert(new Fruit("apple") === new Apple)
         assert((new Fruit("apple") !== new Apple)(decided by fruitInequality))
       }
     }
-    object `when used with subtype === supertype` {
-      def `should allow an Equality to be specified explicitly` {
+    describe("when used with subtype === supertype") {
+      it("should allow an Equality to be specified explicitly") {
         assert(new Apple !== new Fruit("orange"))
         assert((new Apple === new Fruit("orange"))(decided by fruitInequality))
         assert(new Apple === new Fruit("apple"))
@@ -49,8 +49,8 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
       }
     }
   }
-  object `The determined by syntax` {
-    def `should produce an Equivalence if used with an Equivalence (that is not an Equality)` {
+  describe("The determined by syntax") {
+    it("should produce an Equivalence if used with an Equivalence (that is not an Equality)") {
       assert(1 !== 2)
       1 should !== (2)
 
@@ -63,15 +63,15 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
       assert((1 !== 1)(determined by intInequivalence))
       (1 should !== (1)) (determined by intInequivalence)
     }
-    def `should produce an Equivalence from "after being" syntax` {
+    it("should produce an Equivalence from \"after being\" syntax") {
       assert(("Hi" !== "hI"))
       assert(("Hi" === "hI")(after being downCased))
     }
-    def `should produce an Equivalence from "after being X and Y" syntax` {
+    it("should produce an Equivalence from \"after being X and Y\" syntax") {
       assert((" Hi" !== "hI "))
       assert((" Hi" === "hI ")(after being downCased and chopped))
     }
-    def `should produce an Equivalence from "determined by <equivalence> afterBeing" syntax` {
+    it("should produce an Equivalence from \"determined by <equivalence> afterBeing\" syntax") {
       implicit val stringIneq = stringInequivalence
       assert(("Hi" === "hI"))
       assert { ("Hi" !== "hI") (after being downCased) }
