@@ -144,7 +144,9 @@ object GenScalacticJS {
         "TypeCheckedSeqEqualityConstraintsSpec.scala",
         "TypeCheckedSetEqualityConstraintsSpec.scala",
         "TypeCheckedTraversableEqualityConstraintsSpec.scala",
-        "TypeCheckedTripleEqualsExplicitlySpec.scala"
+        "TypeCheckedTripleEqualsExplicitlySpec.scala",
+        "ValidationFailedExceptionSpec.scala",
+        "ValidationSpec.scala"
       ), targetDir)
   }
 
