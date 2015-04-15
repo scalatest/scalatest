@@ -133,7 +133,8 @@ object GenScalacticJS {
         "SnapshotsSpec.scala",
         "SpreadSpec.scala",
         "StringNormalizationsSpec.scala",
-        "TimesOnIntSpec.scala"
+        "TimesOnIntSpec.scala",
+        "ToleranceSpec.scala"
       ), targetDir)
   }
 
