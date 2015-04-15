@@ -137,7 +137,8 @@ object GenScalacticJS {
         "ToleranceSpec.scala",
         "TolerantEqualitySpec.scala",
         "TolerantEquivalenceSpec.scala",
-        "TraversableConstraintsSpec.scala"
+        "TraversableConstraintsSpec.scala",
+        "TripleEqualsSpec.scala"
       ), targetDir)
   }
 
