@@ -131,7 +131,8 @@ object GenScalacticJS {
         "PrettyMethodsSpec.scala",
         "RequirementsSpec.scala",
         "SnapshotsSpec.scala",
-        "SpreadSpec.scala"
+        "SpreadSpec.scala",
+        "StringNormalizationsSpec.scala"
       ), targetDir)
   }
 
