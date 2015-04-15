@@ -135,7 +135,8 @@ object GenScalacticJS {
         "StringNormalizationsSpec.scala",
         "TimesOnIntSpec.scala",
         "ToleranceSpec.scala",
-        "TolerantEqualitySpec.scala"
+        "TolerantEqualitySpec.scala",
+        "TolerantEquivalenceSpec.scala"
       ), targetDir)
   }
 
