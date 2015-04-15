@@ -18,31 +18,31 @@ package org.scalactic
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 
-class PrettyMethodsSpec extends Spec with Matchers {
-  object `Trait PrettyMethods` {
-    object `should by default allow you to call pretty on anything and get default Prettifier output,` {
+class PrettyMethodsSpec extends FunSpec with Matchers {
+  describe("Trait PrettyMethods") {
+    describe("should by default allow you to call pretty on anything and get default Prettifier output,") {
       import PrettyMethods._
-      def `putting double quotes around strings` {
+      it("putting double quotes around strings") {
         "hi".pretty should be ("\"hi\"")
       }
-      def `putting single quotes around chars` {
+      it("putting single quotes around chars") {
         'h'.pretty should be ("'h'")
       }
-      def `putting print arrays` {
+      it("putting print arrays") {
         Array(1, 2, 3).pretty should be ("Array(1, 2, 3)")
       }
-      def `putting print wrapped arrays` {
+      it("putting print wrapped arrays") {
         WrappedArray.make(Array(1, 2, 3)).pretty should be ("Array(1, 2, 3)")
       }
-      def `putting the Unit value` {
+      it("putting the Unit value") {
         ().pretty should be ("<(), the Unit value>")
       }
-      def `putting call toString on anything not specially treated` {
+      it("putting call toString on anything not specially treated") {
         List("1", "2", "3").pretty should be ("List(\"1\", \"2\", \"3\")")
       }
     }
 /* This proved that I got rid of the Any => String conversion, but by not compiling. 
-    def `should not simply convert Any to String` {
+    it("should not simply convert Any to String") {
       new ConversionCheckedTripleEquals {
         import PrettyMethods._
         "2" should === (2)
