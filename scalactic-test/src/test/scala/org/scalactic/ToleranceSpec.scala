@@ -1601,55 +1601,82 @@ class ToleranceSpec extends FunSpec with TripleEquals with Tolerance {
       val caught3 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- -2L))
       }
-      assert(caught3.getMessage === (-2L).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught3.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught3.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Int
       val caught4 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- -2))
       }
-      assert(caught4.getMessage === (-2).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught4.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught4.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Short
       val caught5 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- (-2).toShort))
       }
-      assert(caught5.getMessage === (-2.0).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught5.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught5.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Byte
       val caught6 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- (-2).toByte))
       }
-      assert(caught6.getMessage === ((-2).toByte) + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught6.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught6.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Float
       val caught7 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- -0.2f))
       }
-      assert(caught7.getMessage === (-0.2f).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught7.getMessage === "-0.2 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught7.getMessage === "-0.20000000298023224 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Long
       val caught8 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- -2L))
       }
-      assert(caught8.getMessage === (-2L).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught8.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught8.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Int
       val caught9 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- -2))
       }
-      assert(caught9.getMessage === (-2).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught9.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught9.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Short
       val caught10 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- (-2).toShort))
       }
-      assert(caught10.getMessage === ((-2).toShort).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught10.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught10.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Byte
       val caught11 = intercept[IllegalArgumentException] {
         assert(sevenDotOhFloat === (7.1f +- (-2).toByte))
       }
-      assert(caught11.getMessage === ((-2).toByte).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-START
+      assert(caught11.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught11.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Long +- Long
       val caught12 = intercept[IllegalArgumentException] {

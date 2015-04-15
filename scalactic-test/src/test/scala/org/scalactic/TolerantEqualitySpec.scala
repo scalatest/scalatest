@@ -723,11 +723,22 @@ class TolerantEqualitySpec extends FunSpec with TripleEquals with TolerantNumeri
   describe("TolerantNumeric's methods") {
     it("should return Equalitys with a pretty toString") {
 
-      assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(" + (1.0).toString + ")")
+      // SKIP-SCALATESTJS-START
+      assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1.0)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1)")
+
       assert(tolerantDoubleEquality(2.2).toString === "TolerantDoubleEquality(2.2)")
 
-      assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(" + (1.0f).toString + ")")
-      assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(" + (2.2f).toString + ")")
+      // SKIP-SCALATESTJS-START
+      assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1.0)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1)")
+
+      // SKIP-SCALATESTJS-START
+      assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.2)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.200000047683716)")
 
       assert(tolerantLongEquality(1L).toString === "TolerantLongEquality(1)")
       assert(tolerantLongEquality(2L).toString === "TolerantLongEquality(2)")
