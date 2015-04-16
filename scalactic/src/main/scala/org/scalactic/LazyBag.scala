@@ -23,7 +23,7 @@ trait LazyBag[T] {
 }
 
 object LazyBag {
-  def apply[T](args: T*): LazyBag[T] = new BagLazyBag(args.toList)
+  def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)
 }
 
 trait LazyFastEquaSet[T] extends LazyBag[T] {
@@ -41,9 +41,8 @@ class ConcreteLazyFastEquaSet[T](elements: List[T]) extends LazyBag[T] { thisLaz
   def toList: List[T] = elements
 }
 
-// This is not lazy?
-class BagLazyBag[T](private val args: List[T]) extends LazyBag[T] {
-  def map[U](f: T => U): BagLazyBag[U] = new BagLazyBag[U](args.map(f))
+class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] {
+  def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f))
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = ???
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
   def toList: List[T] = args
