@@ -47,12 +47,24 @@ class LazyBagSpec extends UnitSpec {
       elemStrArr.size should equal (lazyBag.size)
 
       elemStrArr should contain theSameElementsAs lazyBag.toList.map(_.toString)
-   }
-   assertPretty(LazyBag(1, 2, 3))
-   assertPretty(LazyBag(1, 2, 3, 4))
-   assertPretty(LazyBag(1))
-   assertPretty(LazyBag())
-   assertPretty(LazyBag("one", "two", "three", "four", "five"))
+    }
+
+    // Test BasicLazyBag
+    assertPretty(LazyBag(1, 2, 3))
+    assertPretty(LazyBag(1, 2, 3, 4))
+    assertPretty(LazyBag(1))
+    assertPretty(LazyBag())
+    assertPretty(LazyBag("one", "two", "three", "four", "five"))
+
+    // Test FlatMappedLazyBag
+    val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      LazyBag(digit.toInt)
+    }
+    assertPretty(flatMapped)
+    val mapped = flatMapped.map(_ + 1)
+    assertPretty(mapped)
   }
 }
 

@@ -20,6 +20,7 @@ trait LazyBag[T] {
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U]
   def toEquaSet(toPath: EquaPath[T]): toPath.EquaSet
   def toList: List[T]
+  def size: Int
 }
 
 object LazyBag {
@@ -31,6 +32,8 @@ class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBa
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
   def toList: List[T] = args
+  def size: Int = args.size
+  override def toString = args.mkString("LazyBag(", ",", ")")
 }
 
 class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
@@ -40,6 +43,8 @@ class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { t
     toPath.FastEquaSet(toList: _*)
   }
   def toList: List[U] = lazyBag.toList.map(f)
+  def size: Int = toList.size
+  override def toString: String = toList.mkString("LazyBag(", ",", ")")
 }
 
 class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
@@ -49,5 +54,7 @@ class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends L
     toPath.FastEquaSet(toList: _*)
   }
   def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
+  def size: Int = toList.size
+  override def toString: String = toList.mkString("LazyBag(", ",", ")")
 }
 
