@@ -2065,11 +2065,6 @@ class EquaSetSpec extends UnitSpec {
     actual should equal (number.EquaSet(1, 2, 3))
   }
 
-  "LazyEquaSet" should "offer a map method" in {
-    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val strictSet = lazySet.map(_.toInt).map(_ + 1).toStrict(number)
-    strictSet should equal (number.EquaSet(2, 3, 4))
-  }
 /*
 abstract def contains(elem: A): Boolean
 abstract def iterator: Iterator[A] 
@@ -2196,5 +2191,38 @@ def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
 */
+  "LazyEquaSet" should "offer a map method" in {
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val strictSet = lazySet.map(_.toInt).map(_ + 1).toStrict(number)
+    strictSet should equal (number.EquaSet(2, 3, 4))
+  }
+
+  ignore should "offer an equals method that looks at processed elements" in {
+    val trimmedSet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lowerSet = trimmed.EquaSet("2", "3", "02", "4").toLazy
+    val modifiedTrimmedSet = trimmedSet.map(_.toInt).map(_ + 1)
+    val modifiedLowerSet = lowerSet.map(_.toInt)
+    modifiedTrimmedSet should equal (modifiedLowerSet)
+    val thirdModifiedSet = lowerSet.map(_.toInt).map(_ + 2)
+    modifiedTrimmedSet should not equal thirdModifiedSet
+  }
+
+  it should "offer a flatMap method" in {
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      LazyEquaSet(digit.toInt)
+    }
+    val strictSet = flatMapped.toStrict(number)
+    strictSet should equal (number.EquaSet(1, 2, 3))
+  }
+  it should "allow chaining of maps and flatMaps" in {
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      LazyEquaSet(digit.toInt)
+    }
+    val mapped = flatMapped.map(_ + 1)
+    val strictSet = mapped.toStrict(number)
+    strictSet should equal (number.EquaSet(2, 3, 4))
+  }
 }
 

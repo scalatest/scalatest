@@ -17,22 +17,53 @@ package org.scalactic
 
 trait LazyEquaSet[T] {
   def map[U](f: T => U): LazyEquaSet[U]
+  def flatMap[U](f: T => LazyEquaSet[U]): LazyEquaSet[U]
   def toStrict(toPath: EquaPath[T]): toPath.EquaSet
+  def toList: List[T]
+}
+
+object LazyEquaSet {
+  def apply[T](args: T*): LazyEquaSet[T] = new BagLazyEquaSet(args.toList)
 }
 
 trait LazyFastEquaSet[T] extends LazyEquaSet[T] {
   def map[U](f: T => U): LazyFastEquaSet[U]
+  def flatMap[U](f: T => LazyEquaSet[U]): LazyEquaSet[U]
   def toStrict(toPath: EquaPath[T]): toPath.FastEquaSet
 }
-class ConcreteLazyFastEquaSet[T](equaSet: EquaPath[T]#EquaSet) extends LazyEquaSet[T] {
-  def map[U](f: T => U): LazyFastEquaSet[U] = new MappedLazyFastEquaSet[T, U](equaSet, f)
-  def toStrict(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(equaSet.toList: _*)
+
+class ConcreteLazyFastEquaSet[T](elements: List[T]) extends LazyEquaSet[T] { thisLazyEquaSet =>
+  def map[U](f: T => U): LazyFastEquaSet[U] = new MappedLazyFastEquaSet[T, U](thisLazyEquaSet, f)
+
+  def flatMap[U](f: T => LazyEquaSet[U]): LazyEquaSet[U] = new FlatMappedLazyFastEquaSet(thisLazyEquaSet, f)
+
+  def toStrict(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(elements: _*)
+  def toList: List[T] = elements
 }
-class MappedLazyFastEquaSet[T, U](equaSet: EquaPath[T]#EquaSet, f: T => U) extends LazyFastEquaSet[U] {
-  def map[V](g: U => V): LazyFastEquaSet[V] = new MappedLazyFastEquaSet[T, V](equaSet, f andThen g)
+
+// This is not lazy?
+class BagLazyEquaSet[T](private val args: List[T]) extends LazyEquaSet[T] {
+  def map[U](f: T => U): BagLazyEquaSet[U] = new BagLazyEquaSet[U](args.map(f))
+  def flatMap[U](f: T => LazyEquaSet[U]): LazyEquaSet[U] = ???
+  def toStrict(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
+  def toList: List[T] = args
+}
+
+class MappedLazyFastEquaSet[T, U](lazyEquaSet: LazyEquaSet[T], f: T => U) extends LazyFastEquaSet[U] { thisLazyEquaSet => 
+  def map[V](g: U => V): LazyFastEquaSet[V] = new MappedLazyFastEquaSet[T, V](lazyEquaSet, f andThen g)
+  def flatMap[V](f: U => LazyEquaSet[V]): LazyEquaSet[V] = ???
   def toStrict(toPath: EquaPath[U]): toPath.FastEquaSet = {
-    val eles = equaSet.toList.map(f)
-    toPath.FastEquaSet(eles: _*)
+    toPath.FastEquaSet(toList: _*)
   }
+  def toList: List[U] = lazyEquaSet.toList.map(f)
+}
+
+class FlatMappedLazyFastEquaSet[T, U](lazyEquaSet: LazyEquaSet[T], f: T => LazyEquaSet[U]) extends LazyFastEquaSet[U] { thisLazyEquaSet => 
+  def map[V](g: U => V): LazyFastEquaSet[V] = new MappedLazyFastEquaSet[U, V](thisLazyEquaSet, g)
+  def flatMap[V](f: U => LazyEquaSet[V]): LazyEquaSet[V] = ???
+  def toStrict(toPath: EquaPath[U]): toPath.FastEquaSet = {
+    toPath.FastEquaSet(toList: _*)
+  }
+  def toList: List[U] = lazyEquaSet.toList.flatMap(f.andThen(_.toList))
 }
 
