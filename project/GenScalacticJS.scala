@@ -124,7 +124,7 @@ object GenScalacticJS {
         "NormalizationSpec.scala",
         "NormalizingEqualitySpec.scala",
         "NormMethodsSpec.scala",
-        //"NumericEqualityConstraintsSpec.scala",
+        "NumericEqualityConstraintsSpec.scala",
         "OptionSugarSpec.scala",
         "OrSpec.scala",
         "PrettifierSpec.scala",

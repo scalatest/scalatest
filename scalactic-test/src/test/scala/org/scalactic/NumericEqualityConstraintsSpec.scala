@@ -35,8 +35,11 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       val aLong: Long = 99L
       val aFloat: Float = 99.0F
       val aDouble: Double = 99.0
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       val aBigInt: BigInt = BigInt(99)
       val aBigDecimal: BigDecimal = BigDecimal(99.0)
+      // SKIP-SCALATESTJS-END
       // val aJavaBigInteger: java.math.BigInteger = new java.math.BigInteger("99")
       // val aJavaBigDecimal: java.math.BigDecimal = new java.math.BigDecimal(99.0)
 
@@ -46,50 +49,80 @@ class NumericEqualityConstraintsSpec extends FunSpec with TypeCheckedTripleEqual
       assert(aChar === aLong)
       assert(aChar === aFloat)
       assert(aChar === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aChar === aBigInt)
       assert(aChar === aBigDecimal)
       // assert(aChar == aJavaBigInteger)
       // assert(aChar == aJavaBigDecimal)
+
       assert(aByte === aShort)
       assert(aByte === anInt)
       assert(aByte === aLong)
       assert(aByte === aFloat)
       assert(aByte === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aByte === aBigInt)
       assert(aByte === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aByte == aJavaBigInteger)
       // assert(aByte == aJavaBigDecimal)
+
       assert(aShort === anInt)
       assert(aShort === aLong)
       assert(aShort === aFloat)
       assert(aShort === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aShort === aBigInt)
       assert(aShort === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aShort == aJavaBigInteger)
       // assert(aShort == aJavaBigDecimal)
+
       assert(anInt === aLong)
       assert(anInt === aFloat)
       assert(anInt === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(anInt === aBigInt)
       assert(anInt === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(anInt == aJavaBigInteger)
       // assert(anInt == aJavaBigDecimal)
+
       assert(aLong === aFloat)
       assert(aLong === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aLong === aBigInt)
       assert(aLong === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aLong == aJavaBigInteger)
       // assert(aLong == aJavaBigDecimal)
+
       assert(aFloat === aDouble)
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aFloat === aBigInt)
       assert(aFloat === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aFloat == aJavaBigInteger)
       // assert(aFloat == aJavaBigDecimal)
+
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aDouble === aBigInt)
       assert(aDouble === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aDouble == aJavaBigInteger)
       // assert(aDouble == aJavaBigDecimal)
+
+      // TODO: To re-enable this once scala.js support big numbers
+      // SKIP-SCALATESTJS-START
       assert(aBigInt === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       // assert(aBigInt == aJavaBigInteger)
       // assert(aBigInt == aJavaBigDecimal)
       // assert(aBigDecimal == aJavaBigInteger)
