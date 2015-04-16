@@ -32,6 +32,7 @@ trait LazyFastEquaSet[T] extends LazyBag[T] {
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet
 }
 
+/*
 class ConcreteLazyFastEquaSet[T](elements: List[T]) extends LazyBag[T] { thisLazyBag =>
   def map[U](f: T => U): LazyFastEquaSet[U] = new MappedLazyFastEquaSet[T, U](thisLazyBag, f)
 
@@ -40,10 +41,11 @@ class ConcreteLazyFastEquaSet[T](elements: List[T]) extends LazyBag[T] { thisLaz
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(elements: _*)
   def toList: List[T] = elements
 }
+*/
 
-class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] {
+class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
   def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f))
-  def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = ???
+  def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyFastEquaSet(thisLazyBag, f)
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
   def toList: List[T] = args
 }
