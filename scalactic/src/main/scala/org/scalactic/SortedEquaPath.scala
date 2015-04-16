@@ -604,7 +604,7 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
 
     def copyInto(thatEquaPath: SortedEquaPath[T]): thatEquaPath.SortedEquaSet
 */
-    def toLazy: LazyEquaSet[T]
+    def toLazy: LazyBag[T]
   }
 
   class TreeEquaSet private[scalactic] (private val underlying: TreeSet[EquaBox]) extends SortedEquaSet { thisTreeEquaSet =>
@@ -821,7 +821,7 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
         thisTreeEquaSet.into(thatEquaPath).map(t => t)
 */
 
-    def toLazy: LazyEquaSet[T] = ???
+    def toLazy: LazyBag[T] = ???
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

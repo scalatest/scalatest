@@ -2060,8 +2060,8 @@ class EquaSetSpec extends UnitSpec {
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending
 
-  it should "return the same set if toStrict is called after toLazy" in {
-    val actual = number.EquaSet(1, 2, 3).toLazy.toStrict(number)
+  it should "return an equal set if toEquaSet is called after toLazy" in {
+    val actual = number.EquaSet(1, 2, 3).toLazy.toEquaSet(number)
     actual should equal (number.EquaSet(1, 2, 3))
   }
 
@@ -2191,9 +2191,9 @@ def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
 */
-  "LazyEquaSet" should "offer a map method" in {
+  "LazyBag" should "offer a map method" in {
     val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val strictSet = lazySet.map(_.toInt).map(_ + 1).toStrict(number)
+    val strictSet = lazySet.map(_.toInt).map(_ + 1).toEquaSet(number)
     strictSet should equal (number.EquaSet(2, 3, 4))
   }
 
@@ -2210,18 +2210,18 @@ def zipWithIndex: Set[(A, Int)]
   it should "offer a flatMap method" in {
     val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyEquaSet(digit.toInt)
+      LazyBag(digit.toInt)
     }
-    val strictSet = flatMapped.toStrict(number)
+    val strictSet = flatMapped.toEquaSet(number)
     strictSet should equal (number.EquaSet(1, 2, 3))
   }
   it should "allow chaining of maps and flatMaps" in {
     val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyEquaSet(digit.toInt)
+      LazyBag(digit.toInt)
     }
     val mapped = flatMapped.map(_ + 1)
-    val strictSet = mapped.toStrict(number)
+    val strictSet = mapped.toEquaSet(number)
     strictSet should equal (number.EquaSet(2, 3, 4))
   }
 }
