@@ -26,23 +26,6 @@ object LazyBag {
   def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)
 }
 
-trait LazyFastEquaSet[T] extends LazyBag[T] {
-  def map[U](f: T => U): LazyFastEquaSet[U]
-  def flatMap[U](f: T => LazyBag[U]): LazyBag[U]
-  def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet
-}
-
-/*
-class ConcreteLazyFastEquaSet[T](elements: List[T]) extends LazyBag[T] { thisLazyBag =>
-  def map[U](f: T => U): LazyFastEquaSet[U] = new MappedLazyBag[T, U](thisLazyBag, f)
-
-  def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
-
-  def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(elements: _*)
-  def toList: List[T] = elements
-}
-*/
-
 class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
   def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f))
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
@@ -50,21 +33,21 @@ class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBa
   def toList: List[T] = args
 }
 
-class MappedLazyBag[T, U](lazyEquaSet: LazyBag[T], f: T => U) extends LazyFastEquaSet[U] { thisLazyBag => 
-  def map[V](g: U => V): LazyFastEquaSet[V] = new MappedLazyBag[T, V](lazyEquaSet, f andThen g)
+class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
+  def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[T, V](lazyBag, f andThen g)
   def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
   def toEquaSet(toPath: EquaPath[U]): toPath.FastEquaSet = {
     toPath.FastEquaSet(toList: _*)
   }
-  def toList: List[U] = lazyEquaSet.toList.map(f)
+  def toList: List[U] = lazyBag.toList.map(f)
 }
 
-class FlatMappedLazyBag[T, U](lazyEquaSet: LazyBag[T], f: T => LazyBag[U]) extends LazyFastEquaSet[U] { thisLazyBag => 
-  def map[V](g: U => V): LazyFastEquaSet[V] = new MappedLazyBag[U, V](thisLazyBag, g)
+class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
+  def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[U, V](thisLazyBag, g)
   def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
   def toEquaSet(toPath: EquaPath[U]): toPath.FastEquaSet = {
     toPath.FastEquaSet(toList: _*)
   }
-  def toList: List[U] = lazyEquaSet.toList.flatMap(f.andThen(_.toList))
+  def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
 }
 
