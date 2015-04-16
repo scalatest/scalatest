@@ -244,7 +244,8 @@ object GenScalaTestJS {
         "DuplicateTestNameException.scala",
         "TestRegistrationClosedException.scala",
         "GeneratorDrivenPropertyCheckFailedException.scala",
-        "DiscardedEvaluationException.scala"
+        "DiscardedEvaluationException.scala",
+        "TimeoutField.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
@@ -351,6 +352,14 @@ object GenScalaTestJS {
         "Checkers.scala",
         "PropertyChecks.scala",
         "Whenever.scala"
+      ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
+      List(
+        "ScalaFutures.scala",
+        "Futures.scala",
+        "PatienceConfiguration.scala",
+        "AbstractPatienceConfiguration.scala",
+        "ScaledTimeSpans.scala"
       ), targetDir)
   }
 
