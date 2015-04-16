@@ -27,7 +27,7 @@ object LazyBag {
 }
 
 class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
-  def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f))
+  def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f)) // Bug, should be lazy
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
   def toEquaSet(toPath: EquaPath[T]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
   def toList: List[T] = args
