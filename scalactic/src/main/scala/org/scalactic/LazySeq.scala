@@ -26,8 +26,8 @@ trait LazySeq[+T] extends LazyBag[T] {
 
 object LazySeq {
   private class BasicLazySeq[T](private val args: List[T]) extends LazySeq[T] { thisLazySeq =>
-    def map[U](f: T => U): LazySeq[U] = new MappedLazySeq(thisLazySeq, f)
-    def flatMap[U](f: T => LazyBag[U]): LazySeq[U] = new FlatMappedLazySeq(thisLazySeq, f)
+    def map[U](f: T => U): LazySeq[U] = new MapLazySeq(thisLazySeq, f)
+    def flatMap[U](f: T => LazyBag[U]): LazySeq[U] = new FlatMapLazySeq(thisLazySeq, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = toPath.TreeEquaSet(args: _*)
     def toList: List[T] = args
@@ -37,8 +37,8 @@ object LazySeq {
     override def hashCode: Int = ???
   }
 
-  private class MappedLazySeq[T, U](lazySeq: LazySeq[T], f: T => U) extends LazySeq[U] { thisLazySeq => 
-    def map[V](g: U => V): LazySeq[V] = new MappedLazySeq[T, V](lazySeq, f andThen g)
+  private class MapLazySeq[T, U](lazySeq: LazySeq[T], f: T => U) extends LazySeq[U] { thisLazySeq => 
+    def map[V](g: U => V): LazySeq[V] = new MapLazySeq[T, V](lazySeq, f andThen g)
     def flatMap[V](f: U => LazyBag[V]): LazySeq[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)
@@ -58,8 +58,8 @@ object LazySeq {
     override def hashCode: Int = thisLazySeq.toList.hashCode
   }
 
-  private class FlatMappedLazySeq[T, U](lazySeq: LazySeq[T], f: T => LazyBag[U]) extends LazySeq[U] { thisLazySeq => 
-    def map[V](g: U => V): LazySeq[V] = new MappedLazySeq[U, V](thisLazySeq, g)
+  private class FlatMapLazySeq[T, U](lazySeq: LazySeq[T], f: T => LazyBag[U]) extends LazySeq[U] { thisLazySeq => 
+    def map[V](g: U => V): LazySeq[V] = new MapLazySeq[U, V](thisLazySeq, g)
     def flatMap[V](f: U => LazyBag[V]): LazySeq[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)

@@ -26,8 +26,8 @@ trait LazyBag[+T] {
 
 object LazyBag {
   private class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
-    def map[U](f: T => U): LazyBag[U] = new MappedLazyBag(thisLazyBag, f)
-    def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
+    def map[U](f: T => U): LazyBag[U] = new MapLazyBag(thisLazyBag, f)
+    def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMapLazyBag(thisLazyBag, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
     def toList: List[T] = args
@@ -44,8 +44,8 @@ object LazyBag {
 */
   }
 
-  private class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[T, V](lazyBag, f andThen g)
+  private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
+    def map[V](g: U => V): LazyBag[V] = new MapLazyBag[T, V](lazyBag, f andThen g)
     def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)
@@ -63,8 +63,8 @@ object LazyBag {
     override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
   }
 
-  private class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[U, V](thisLazyBag, g)
+  private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
+    def map[V](g: U => V): LazyBag[V] = new MapLazyBag[U, V](thisLazyBag, g)
     def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)
