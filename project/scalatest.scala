@@ -345,9 +345,9 @@ object ScalatestBuild extends Build {
       libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
       libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       jsDependencies += RuntimeDOM % "test",
-      scalaJSStage in Global := FastOptStage,
+      //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
-      postLinkJSEnv := NodeJSEnv(executable = "node").value,
+      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
