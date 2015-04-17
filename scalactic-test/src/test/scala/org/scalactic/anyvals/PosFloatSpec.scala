@@ -25,33 +25,35 @@ import org.scalacheck.Gen.choose
 import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 
-class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
+class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
   val posFloatGen: Gen[PosFloat] =
     for {i <- choose(1, Float.MaxValue)} yield PosFloat.from(i).get
 
   implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
 
-  object `A PosFloat` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosFloat] if the passed Float is greater than 0`
-      {
+  describe("A PosFloat") {
+    describe("should offer a from factory method that") {
+      it("returns Some[PosFloat] if the passed Float is greater than 0") {
         PosFloat.from(50.23F).value.value shouldBe 50.23F
         PosFloat.from(100.0F).value.value shouldBe 100.0F
       }
-      def `returns None if the passed Float is NOT greater than 0` {
+      it("returns None if the passed Float is NOT greater than 0") {
         PosFloat.from(0.0F) shouldBe None
         PosFloat.from(-0.00001F) shouldBe None
         PosFloat.from(-99.9F) shouldBe None
       }
     } 
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
+      // SKIP-SCALATESTJS-START
       PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42)"
     }
-    def `should return the same type from its unary_+ method` {
+    it("should return the same type from its unary_+ method") {
       +PosFloat(3.0F) shouldEqual PosFloat(3.0F)
     } 
-    def `should be automatically widened to compatible AnyVal targets` {
+    it("should be automatically widened to compatible AnyVal targets") {
       "PosFloat(3.0F): Int" shouldNot typeCheck
       "PosFloat(3.0F): Long" shouldNot typeCheck
       (PosFloat(3.0F): Float) shouldEqual 3.0F
@@ -67,8 +69,8 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       (PosFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
     }
-    object `when a compatible AnyVal is passed to a + method invoked on it` {
-      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+    describe("when a compatible AnyVal is passed to a + method invoked on it") {
+      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"
         val opInt = PosFloat(3.0F) + 3
         opInt shouldEqual 6.0F
@@ -110,9 +112,9 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
     }
 
-    object `when created with apply method` {
+    describe("when created with apply method") {
   
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "PosFloat(8)" should compile
         PosFloat(8).value shouldEqual 8.0F
         "PosFloat(8L)" should compile
@@ -121,18 +123,18 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         PosFloat(8.0F).value shouldEqual 8.0F
       }
   
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "PosFloat(0)" shouldNot compile
         "PosFloat(0L)" shouldNot compile
         "PosFloat(0.0F)" shouldNot compile
       }
   
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "PosFloat(-8)" shouldNot compile
         "PosFloat(-8L)" shouldNot compile
         "PosFloat(-8.0F)" shouldNot compile
       }
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val a: Int = -8
         "PosFloat(a)" shouldNot compile
         val b: Long = -8L
@@ -141,11 +143,11 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         "PosFloat(c)" shouldNot compile
       }
     }
-    object `when specified as a plain-old Float` {
+    describe("when specified as a plain-old Float") {
 
       def takesPosFloat(pos: PosFloat): Float = pos.value
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "takesPosFloat(8)" should compile
         takesPosFloat(8) shouldEqual 8.0F
         "takesPosFloat(8L)" should compile
@@ -154,19 +156,19 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         takesPosFloat(8.0F) shouldEqual 8.0F
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "takesPosFloat(0)" shouldNot compile
         "takesPosFloat(0L)" shouldNot compile
         "takesPosFloat(0.0F)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "takesPosFloat(-8)" shouldNot compile
         "takesPosFloat(-8L)" shouldNot compile
         "takesPosFloat(-8.0F)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "takesPosFloat(x)" shouldNot compile
         val b: Long = -8L
@@ -175,19 +177,19 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         "takesPosFloat(c)" shouldNot compile
       }
 
-      def `should offer a unary + method that is consistent with Float` {
+      it("should offer a unary + method that is consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           (+pfloat).toFloat shouldEqual (+(pfloat.toFloat))
         }
       }
 
-      def `should offer a unary - method that is consistent with Float` {
+      it("should offer a unary - method that is consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           (-pfloat) shouldEqual (-(pfloat.toFloat))
         }
       }
 
-      def `should offer '<' comparison that is consistent with Float`: Unit = {
+      it("should offer '<' comparison that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat < byte) shouldEqual (pfloat.toFloat < byte)
         }
@@ -211,7 +213,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '<=' comparison that is consistent with Float`: Unit = {
+      it("should offer '<=' comparison that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat <= byte) shouldEqual (pfloat.toFloat <= byte)
         }
@@ -235,7 +237,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>' comparison that is consistent with Float`: Unit = {
+      it("should offer '>' comparison that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat > byte) shouldEqual (pfloat.toFloat > byte)
         }
@@ -259,7 +261,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>=' comparison that is consistent with Float`: Unit = {
+      it("should offer '>=' comparison that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat >= byte) shouldEqual (pfloat.toFloat >= byte)
         }
@@ -283,7 +285,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '+' method that is consistent with Float`: Unit = {
+      it("should offer a '+' method that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat + byte) shouldEqual (pfloat.toFloat + byte)
         }
@@ -307,7 +309,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '-' method that is consistent with Float`: Unit = {
+      it("should offer a '-' method that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat - byte) shouldEqual (pfloat.toFloat - byte)
         }
@@ -331,7 +333,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '*' method that is consistent with Float`: Unit = {
+      it("should offer a '*' method that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           (pfloat * byte) shouldEqual (pfloat.toFloat * byte)
         }
@@ -355,7 +357,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '/' method that is consistent with Float`: Unit = {
+      it("should offer a '/' method that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           pfloat / byte shouldEqual pfloat.toFloat / byte
         }
@@ -381,7 +383,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
       // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
       // extra logic is needed to convert to a comparable type (boolean, in this case)
-      def `should offer a '%' method that is consistent with Float`: Unit = {
+      it("should offer a '%' method that is consistent with Float") {
         forAll { (pfloat: PosFloat, byte: Byte) =>
           val res = pfloat % byte
           if (res.isNaN)
@@ -433,20 +435,20 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer 'min' and 'max' methods that are consistent with Float`: Unit = {
+      it("should offer 'min' and 'max' methods that are consistent with Float") {
         forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
           pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
           pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
         }
       }
 
-      def `should offer an 'isWhole' method that is consistent with Float`: Unit = {
+      it("should offer an 'isWhole' method that is consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
         }
       }
 
-      def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Float`: Unit = {
+      it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           pfloat.round.toFloat shouldEqual pfloat.toFloat.round
           pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
@@ -454,13 +456,13 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer 'toRadians' and 'toDegrees' methods that are consistent with Float`: Unit = {
+      it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
         }
       }
 
-      def `should offer 'to' and 'until' method that is consistent with Float`: Unit = {
+      it("should offer 'to' and 'until' method that is consistent with Float") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
 
@@ -472,7 +474,7 @@ class PosFloatSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer widening methods for basic types that are consistent with Float`: Unit = {
+      it("should offer widening methods for basic types that are consistent with Float") {
         forAll { (pfloat: PosFloat) =>
           def widen(value: Float): Float = value
           widen(pfloat) shouldEqual widen(pfloat.toFloat)
