@@ -26,15 +26,24 @@ trait LazyBag[+T] {
 
 object LazyBag {
   private class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
-    def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f)) // TODO: Bug, should be lazy
+    def map[U](f: T => U): LazyBag[U] = new MappedLazyBag(thisLazyBag, f)
     def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
     def toList: List[T] = args
     def size: Int = args.size
     override def toString = args.mkString("LazyBag(", ",", ")")
+/*  // Don't uncomment unless have a failing test
+    override def equals(other: Any): Boolean =
+      other match {
+        case otherLazyBag: LazyBag[_] => 
+          thisLazyBag.toList.groupBy(o => o) == otherLazyBag.toList.groupBy(o => o)
+        case _ => false
+      }
+    override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
+*/
   }
-  
+
   private class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
     def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[T, V](lazyBag, f andThen g)
     def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
@@ -45,6 +54,13 @@ object LazyBag {
     def toList: List[U] = lazyBag.toList.map(f)
     def size: Int = toList.size
     override def toString: String = toList.mkString("LazyBag(", ",", ")")
+    override def equals(other: Any): Boolean =
+      other match {
+        case otherLazyBag: LazyBag[_] => 
+          thisLazyBag.toList.groupBy(o => o) == otherLazyBag.toList.groupBy(o => o)
+        case _ => false
+      }
+    override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
   }
 
   private class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
@@ -57,6 +73,8 @@ object LazyBag {
     def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
     def size: Int = toList.size
     override def toString: String = toList.mkString("LazyBag(", ",", ")")
+    override def equals(other: Any): Boolean = ???
+    override def hashCode: Int = ???
   }
   
   def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)

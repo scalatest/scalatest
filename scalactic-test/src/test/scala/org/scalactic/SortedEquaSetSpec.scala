@@ -1927,5 +1927,40 @@ class SortedEquaSetSpec extends UnitSpec {
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending
 
+  it should "return an equal set if toSortedEquaSet is called after toLazy" in {
+    val actual = number.SortedEquaSet(1, 2, 3).toLazy.toSortedEquaSet(number)
+    actual should equal (number.EquaSet(1, 2, 3))
+  }
+
+  "LazySeq" should "offer a lazy map method" in {
+    val lazySeq = trimmed.SortedEquaSet("1", "2", "01", "3").toLazy
+    var performed = false
+    val toIntFun = (s: String) => { performed = true; s.toInt }
+    val mappedLazySeq = lazySeq.map(toIntFun).map(_ + 1)
+    performed shouldBe false
+    val strictSet = mappedLazySeq.toSortedEquaSet(number)
+    performed shouldBe true
+    strictSet should equal (number.SortedEquaSet(2, 3, 4))
+  }
+
+  it should "offer an equals method that looks at processed elements" in {
+    val trimmedSeq = trimmed.SortedEquaSet("1", "2", "01", "3").toLazy
+    val lowerSeq = trimmed.SortedEquaSet("2", "3", "02", "4").toLazy
+    val modifiedTrimmedSeq = trimmedSeq.map(_.toInt).map(_ + 1)
+    val modifiedLowerSeq = lowerSeq.map(_.toInt)
+    modifiedTrimmedSeq should equal (modifiedLowerSeq)
+    val thirdModifiedSeq = lowerSeq.map(_.toInt).map(_ + 2)
+    modifiedTrimmedSeq should not equal thirdModifiedSeq
+  }
+
+  it should "offer a hashCode method that looks at processed elements" in {
+    val trimmedSeq = trimmed.SortedEquaSet("1", "2", "01", "3").toLazy
+    val lowerSeq = trimmed.SortedEquaSet("2", "3", "02", "4").toLazy
+    val modifiedTrimmedSeq = trimmedSeq.map(_.toInt).map(_ + 1)
+    val modifiedLowerSeq = lowerSeq.map(_.toInt)
+    modifiedTrimmedSeq.hashCode should equal (modifiedLowerSeq.hashCode)
+    val thirdModifiedSeq = lowerSeq.map(_.toInt).map(_ + 2)
+    modifiedTrimmedSeq.hashCode should not equal thirdModifiedSeq.hashCode // Overspecified
+  }
 }
 

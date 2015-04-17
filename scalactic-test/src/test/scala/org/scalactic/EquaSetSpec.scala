@@ -2191,20 +2191,35 @@ def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
 */
-  "LazyBag" should "offer a map method" in {
-    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val strictSet = lazySet.map(_.toInt).map(_ + 1).toEquaSet(number)
+  "LazyBag" should "offer a lazy map method" in {
+    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    var performed = false
+    val toIntFun = (s: String) => { performed = true; s.toInt }
+    val mappedLazyBag = lazyBag.map(toIntFun).map(_ + 1)
+    performed shouldBe false
+    val strictSet = mappedLazyBag.toEquaSet(number)
+    performed shouldBe true
     strictSet should equal (number.EquaSet(2, 3, 4))
   }
 
-  ignore should "offer an equals method that looks at processed elements" in {
-    val trimmedSet = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val lowerSet = trimmed.EquaSet("2", "3", "02", "4").toLazy
-    val modifiedTrimmedSet = trimmedSet.map(_.toInt).map(_ + 1)
-    val modifiedLowerSet = lowerSet.map(_.toInt)
-    modifiedTrimmedSet should equal (modifiedLowerSet)
-    val thirdModifiedSet = lowerSet.map(_.toInt).map(_ + 2)
-    modifiedTrimmedSet should not equal thirdModifiedSet
+  it should "offer an equals method that looks at processed elements" in {
+    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").toLazy
+    val modifiedTrimmedBag = trimmedBag.map(_.toInt).map(_ + 1)
+    val modifiedLowerBag = lowerBag.map(_.toInt)
+    modifiedTrimmedBag should equal (modifiedLowerBag)
+    val thirdModifiedBag = lowerBag.map(_.toInt).map(_ + 2)
+    modifiedTrimmedBag should not equal thirdModifiedBag
+  }
+
+  it should "offer a hashCode method that looks at processed elements" in {
+    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").toLazy
+    val modifiedTrimmedBag = trimmedBag.map(_.toInt).map(_ + 1)
+    val modifiedLowerBag = lowerBag.map(_.toInt)
+    modifiedTrimmedBag.hashCode should equal (modifiedLowerBag.hashCode)
+    val thirdModifiedBag = lowerBag.map(_.toInt).map(_ + 2)
+    modifiedTrimmedBag.hashCode should not equal thirdModifiedBag.hashCode // Overspecified
   }
 
   it should "offer a flatMap method" in {
