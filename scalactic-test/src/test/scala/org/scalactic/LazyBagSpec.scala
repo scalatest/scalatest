@@ -58,8 +58,8 @@ class LazyBagSpec extends UnitSpec {
 
     // Test FlatMappedLazyBag
     val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val flatMapped = lazySet.flatMap { (digit: String) =>
+    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val flatMapped = lazyBag.flatMap { (digit: String) =>
       LazyBag(digit.toInt)
     }
     assertPretty(flatMapped)
