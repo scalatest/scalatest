@@ -1905,7 +1905,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       else
         thisFastEquaSet.into(thatEquaPath).map(t => t)
 */
-    def toLazy: LazyBag[T] = new BasicLazyBag[T](thisFastEquaSet.toList)
+    def toLazy: LazyBag[T] = LazyBag(thisFastEquaSet.toList: _*)
   }
 
   object FastEquaSet {

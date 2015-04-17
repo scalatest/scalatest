@@ -821,7 +821,7 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
         thisTreeEquaSet.into(thatEquaPath).map(t => t)
 */
 
-    def toLazy: LazyBag[T] = ???
+    def toLazy: LazySeq[T] = LazySeq(thisTreeEquaSet.toList: _*)
   }
   object SortedEquaSet {
     def empty: SortedEquaSet = TreeEquaSet.empty

@@ -15,50 +15,50 @@
  */
 package org.scalactic
 
-trait LazyBag[+T] {
-  def map[U](f: T => U): LazyBag[U]
-  def flatMap[U](f: T => LazyBag[U]): LazyBag[U]
+trait LazySeq[+T] extends LazyBag[T] {
+  def map[U](f: T => U): LazySeq[U]
+  def flatMap[U](f: T => LazyBag[U]): LazySeq[U]
   def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
 }
 
-object LazyBag {
-  private class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
-    def map[U](f: T => U): BasicLazyBag[U] = new BasicLazyBag[U](args.map(f)) // TODO: Bug, should be lazy
-    def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMappedLazyBag(thisLazyBag, f)
+object LazySeq {
+  private class BasicLazySeq[T](private val args: List[T]) extends LazySeq[T] { thisLazySeq =>
+    def map[U](f: T => U): BasicLazySeq[U] = new BasicLazySeq[U](args.map(f)) // TODO: Bug, should be lazy
+    def flatMap[U](f: T => LazyBag[U]): LazySeq[U] = new FlatMappedLazySeq(thisLazySeq, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
-    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
+    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = toPath.TreeEquaSet(args: _*)
     def toList: List[T] = args
     def size: Int = args.size
-    override def toString = args.mkString("LazyBag(", ",", ")")
-  }
-  
-  private class MappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[T, V](lazyBag, f andThen g)
-    def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
-    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
-      toPath.FastEquaSet(toList: _*)
-    }
-    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
-    def toList: List[U] = lazyBag.toList.map(f)
-    def size: Int = toList.size
-    override def toString: String = toList.mkString("LazyBag(", ",", ")")
+    override def toString = args.mkString("LazySeq(", ",", ")")
   }
 
-  private class FlatMappedLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MappedLazyBag[U, V](thisLazyBag, g)
-    def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
+  private class MappedLazySeq[T, U](lazySeq: LazySeq[T], f: T => U) extends LazySeq[U] { thisLazySeq => 
+    def map[V](g: U => V): LazySeq[V] = new MappedLazySeq[T, V](lazySeq, f andThen g)
+    def flatMap[V](f: U => LazyBag[V]): LazySeq[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)
     }
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
-    def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
+    def toList: List[U] = lazySeq.toList.map(f)
     def size: Int = toList.size
-    override def toString: String = toList.mkString("LazyBag(", ",", ")")
+    override def toString: String = toList.mkString("LazySeq(", ",", ")")
+  }
+
+  private class FlatMappedLazySeq[T, U](lazySeq: LazySeq[T], f: T => LazyBag[U]) extends LazySeq[U] { thisLazySeq => 
+    def map[V](g: U => V): LazySeq[V] = new MappedLazySeq[U, V](thisLazySeq, g)
+    def flatMap[V](f: U => LazyBag[V]): LazySeq[V] = ???
+    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
+      toPath.FastEquaSet(toList: _*)
+    }
+    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
+    def toList: List[U] = lazySeq.toList.flatMap(f.andThen(_.toList))
+    def size: Int = toList.size
+    override def toString: String = toList.mkString("LazySeq(", ",", ")")
   }
   
-  def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)
+  def apply[T](args: T*): LazySeq[T] = new BasicLazySeq(args.toList)
 }
 
