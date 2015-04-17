@@ -806,8 +806,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
       (t1EquaPath.EquaSet(t1: _*), t2EquaPath.EquaSet(t2: _*), t3EquaPath.EquaSet(t3: _*))
     }
-    def view = underlying.toList.toSet.view
-    def view(from: Int, until: Int) = underlying.toList.toSet.view(from, until)
     def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet

@@ -1410,29 +1410,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet, t3EquaPath.EquaSet)
 
     /**
-     * Creates a non-strict view of this `EquaSet`.
-     *
-     * @return a non-strict view of this `EquaSet`.
-     */
-    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
-
-    /**
-     * Creates a non-strict view of a slice of this `EquaSet`.
-     *
-     * Note: the difference between `view` and `slice` is that `view` produces
-     * a view of the current `EquaSet`, whereas `slice` produces a new `EquaSet`.
-     *
-     * Note: `view(from, to)` is equivalent to `view.slice(from, to)`
-     * $orderDependent
-     *
-     * @param from the index of the first element of the view
-     * @param until the index of the element following the view
-     * @return a non-strict view of a slice of this `EquaSet`, starting at index `from`
-     * and extending up to (but not including) index `until`.
-     */
-    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
-
-    /**
      * Creates a non-strict filter of this `EquaSet`.
      *
      * Note: the difference between `c filter p` and `c withFilter p` is that
@@ -1891,8 +1868,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
       (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*), t3EquaPath.FastEquaSet(t3: _*))
     }
-    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view
-    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet

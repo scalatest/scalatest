@@ -2000,12 +2000,6 @@ class EquaSetSpec extends UnitSpec {
     result6 shouldBe (number.FastEquaSet(1, 4, 7), lower.FastEquaSet("2", "5", "8"), trimmed.FastEquaSet("3", "6", "9"))
     result6.shouldHaveExactType[(number.FastEquaSet, lower.FastEquaSet, trimmed.FastEquaSet)]
   }
-  it should "have 2 views method" in {
-    number.EquaSet(3).view(0, 0).toList shouldBe List()
-    number.EquaSet(1, 2, 3).view(2, 1).toList shouldBe List()
-    number.EquaSet(1, 2, 3).view(1, 3).toList shouldBe List(number.EquaBox(2), number.EquaBox(3))
-    number.EquaSet(1, 2, 3).view.toList shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-  }
   it should "have a withFilter method" in {
     var a = 0
     var b = 0
