@@ -17,20 +17,24 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-import prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks
+import japgolly.nyaya.test.Gen
 import OptionValues._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 
 import scala.util.{Failure, Success, Try}
 
-class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PosIntSpec extends FunSpec with Matchers with NyayaGeneratorDrivenPropertyChecks {
 
-  val posIntGen: Gen[PosInt] =
-    for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
+  implicit val posIntGen: Gen[PosInt] =
+    for {i <- Gen.chooseint(1, Int.MaxValue)} yield PosInt.from(i).get
 
-  implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

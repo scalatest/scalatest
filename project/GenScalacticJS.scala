@@ -90,12 +90,12 @@ object GenScalacticJS {
     List(destResourceFile)
   }
 
-  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "TripleEqualsSpec.for210"
       )) ++
     copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
-  }
+    List.empty
 
 }

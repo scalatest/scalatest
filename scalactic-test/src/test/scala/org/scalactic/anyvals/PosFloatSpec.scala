@@ -17,20 +17,26 @@ package org.scalactic.anyvals
 
 import org.scalactic._
 import org.scalatest._
-import prop.GeneratorDrivenPropertyChecks._
+import prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
 import OptionValues._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
-
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
 class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posFloatGen: Gen[PosFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield PosFloat.from(i).get
+  implicit val posFloatGen: Gen[PosFloat] =
+    for {i <- Gen.choosefloat(1, Float.MaxValue)} yield PosFloat.from(i).get
 
-  implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   describe("A PosFloat") {
     describe("should offer a from factory method that") {
@@ -462,6 +468,7 @@ class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         }
       }
 
+      // SKIP-SCALATESTJS-START
       it("should offer 'to' and 'until' method that is consistent with Float") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
@@ -473,6 +480,7 @@ class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
           rangeEqual(pfloat.to(end, step), pfloat.toFloat.to(end, step)) shouldBe true
         }
       }
+      // SKIP-SCALATESTJS-END
 
       it("should offer widening methods for basic types that are consistent with Float") {
         forAll { (pfloat: PosFloat) =>

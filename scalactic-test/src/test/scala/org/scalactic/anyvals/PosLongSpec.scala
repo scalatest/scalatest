@@ -17,21 +17,28 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import prop.GeneratorDrivenPropertyChecks._
+import prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
 import OptionValues._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
 
 class PosLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posLongGen: Gen[PosLong] =
-    for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
+  implicit val posLongGen: Gen[PosLong] =
+    for {i <- Gen.chooselong(1, Long.MaxValue)} yield PosLong.from(i).get
 
-  implicit val arbPosLong: Arbitrary[PosLong] = Arbitrary(posLongGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -515,6 +522,7 @@ class PosLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
+      // SKIP-SCALATESTJS-START
       it("should offer 'to' and 'until' method that is consistent with Long") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
@@ -526,6 +534,7 @@ class PosLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
           rangeEqual(plong.to(end, step), plong.toLong.to(end, step)) shouldBe true
         }
       }
+      // SKIP-SCALATESTJS-END
 
       it("should offer widening methods for basic types that are consistent with Long") {
         forAll { (plong: PosLong) =>

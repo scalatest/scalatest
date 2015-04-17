@@ -15,21 +15,28 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.StrictCheckedEquality
 
 class PosZFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posZFloatGen: Gen[PosZFloat] =
-    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
+  implicit val posZFloatGen: Gen[PosZFloat] =
+    for {i <- Gen.choosefloat(1, Float.MaxValue)} yield PosZFloat.from(i).get
 
-  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   describe("A PosZFloat") {
     describe("should offer a from factory method that") {
@@ -470,6 +477,7 @@ class PosZFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/
       }
     }
 
+    // SKIP-SCALATESTJS-START
     it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -481,6 +489,7 @@ class PosZFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/
         rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
       }
     }
+    // SKIP-SCALATESTJS-END
 
     it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>

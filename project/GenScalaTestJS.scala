@@ -348,9 +348,9 @@ object GenScalaTestJS {
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
       List(
-        "Configuration.scala",
-        "Checkers.scala",
-        "PropertyChecks.scala",
+        //"Configuration.scala",
+        //"Checkers.scala",
+        //"PropertyChecks.scala",
         "Whenever.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",

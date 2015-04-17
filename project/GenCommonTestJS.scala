@@ -68,7 +68,8 @@ object GenCommonTestJS {
     copyDir("common-test/src/main/scala/org/scalatest", "org/scalatest",
       List(
         "SharedHelpers.scala",
-        "mytags.scala"
+        "mytags.scala",
+        "NyayaGeneratorDrivenPropertyChecks.scala"
       ), targetDir)
   }
 

@@ -220,7 +220,9 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional")
+      libraryDependencies += scalacheckDependency("optional"),
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10"
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -228,6 +230,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
+      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-core" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-test" % "0.5.10",
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -304,6 +308,9 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
+      scalaJSStage in Global := FastOptStage,
+      postLinkJSEnv := PhantomJSEnv().value,
+      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
       sourceGenerators in Compile += {
         Def.task {
           GenScalacticJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
@@ -322,7 +329,9 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
-      libraryDependencies += scalacheckDependency("test"), 
+      libraryDependencies += scalacheckDependency("test"),
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -333,11 +342,12 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.2" % "test",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       jsDependencies += RuntimeDOM % "test",
-      //scalaJSStage in Global := FastOptStage,
+      scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
-      //postLinkJSEnv := NodeJSEnv(executable = "node").value,
+      postLinkJSEnv := NodeJSEnv(executable = "node").value,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -452,7 +462,7 @@ object ScalatestBuild extends Build {
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      //libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.2",
       libraryDependencies ++= scalatestJSLibraryDependencies,
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
@@ -467,8 +477,8 @@ object ScalatestBuild extends Build {
       genFactoriesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
+      /*sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),*/
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
       /*genMustMatchersTask,

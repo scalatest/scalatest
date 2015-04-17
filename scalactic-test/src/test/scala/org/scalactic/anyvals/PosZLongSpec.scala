@@ -15,12 +15,13 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -30,10 +31,16 @@ import scala.util.{Failure, Success, Try}
 
 class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posZLongGen: Gen[PosZLong] =
-    for {i <- choose(0, Long.MaxValue)} yield PosZLong.from(i).get
+  implicit val posZLongGen: Gen[PosZLong] =
+    for {i <- Gen.chooselong(1, Long.MaxValue)} yield PosZLong.from(i).get
 
-  implicit val arbPosZLong: Arbitrary[PosZLong] = Arbitrary(posZLongGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -522,6 +529,7 @@ class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
       }
     }
 
+    // SKIP-SCALATESTJS-START
     it("should offer 'to' and 'until' method that is consistent with Long") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
@@ -533,6 +541,7 @@ class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         rangeEqual(pzlong.to(end, step), pzlong.toLong.to(end, step)) shouldBe true
       }
     }
+    // SKIP-SCALATESTJS-END
 
     it("should offer widening methods for basic types that are consistent with Long") {
       forAll { (pzlong: PosZLong) =>
