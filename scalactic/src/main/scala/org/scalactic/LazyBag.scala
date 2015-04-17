@@ -44,14 +44,14 @@ object LazyBag {
 */
   }
 
-  private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MapLazyBag[T, V](lazyBag, f andThen g)
+  private abstract class TransformLazyBag[T, U] extends LazyBag[U] { thisLazyBag =>
+    def map[V](g: U => V): LazyBag[V] = new MapLazyBag[U, V](thisLazyBag, g)
     def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
       toPath.FastEquaSet(toList: _*)
     }
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
-    def toList: List[U] = lazyBag.toList.map(f)
+    def toList: List[U] // This is the lone abstract method
     def size: Int = toList.size
     override def toString: String = toList.mkString("LazyBag(", ",", ")")
     override def equals(other: Any): Boolean =
@@ -63,18 +63,12 @@ object LazyBag {
     override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
   }
 
-  private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends LazyBag[U] { thisLazyBag => 
-    def map[V](g: U => V): LazyBag[V] = new MapLazyBag[U, V](thisLazyBag, g)
-    def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
-    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
-      toPath.FastEquaSet(toList: _*)
-    }
-    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
+  private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.map(f)
+  }
+
+  private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends TransformLazyBag[T, U] {
     def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
-    def size: Int = toList.size
-    override def toString: String = toList.mkString("LazyBag(", ",", ")")
-    override def equals(other: Any): Boolean = ???
-    override def hashCode: Int = ???
   }
   
   def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)
