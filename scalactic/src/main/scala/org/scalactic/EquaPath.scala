@@ -1460,52 +1460,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
         new WithFilter(x => p(x) && q(x))
     }
 
-    /**
-     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
-     * by combining corresponding elements in pairs.
-     * If one of the two collections is longer than the other, its remaining elements are ignored.
-     *
-     * @param that The iterable providing the second half of each result pair
-     * @tparam U the type of the second half of the returned pairs
-     * @return a `Set` containing pairs consisting of
-     * corresponding elements of this `EquaSet` and that`. The length
-     * of the returned collection is the minimum of the lengths of this `EquaSet` and `that`.
-     *
-     */
-    def zip[U](that: GenIterable[U]): Set[(T, U)]
-
-    /**
-     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
-     * by combining corresponding elements in pairs.
-     * If one of the two collections is shorter than the other,
-     * placeholder elements are used to extend the shorter collection to the length of the longer.
-     *
-     * @param that the iterable providing the second half of each result pair
-     * @param thisElem the element to be used to fill up the result if this `EquaSet` is shorter than `that`.
-     * @param thatElem the element to be used to fill up the result if `that` is shorter than this `EquaSet`.
-     * @return a new collection of type `That` containing pairs consisting of
-     * corresponding elements of this `EquaSet` and `that`. The length
-     * of the returned collection is the maximum of the lengths of this `EquaSet` and `that`.
-     * If this `EquaSet` is shorter than `that`, `thisElem` values are used to pad the result.
-     * If `that` is shorter than this `EquaSet`, `thatElem` values are used to pad the result.
-     *
-     */
-    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)]
-
-    /**
-     * Zips this `EquaSet` with its indices.
-     *
-     * @return A `Set` containing pairs consisting of all elements of this
-     * `EquaSet` paired with their index. Indices start at `0`.
-     *
-     * @return A new `EquaSet` containing pairs consisting of all elements of this
-     * `EquaSet` paired with their index. Indices start at `0`.
-     * @example
-     * `List("a", "b", "c").zipWithIndex = List(("a", 0), ("b", 1), ("c", 2))`
-     *
-     */
-    def zipWithIndex: Set[(T, Int)]
-
     val path: thisEquaPath.type
 
     // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet

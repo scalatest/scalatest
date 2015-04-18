@@ -22,6 +22,10 @@ trait LazyBag[+T] {
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
+  def zip[U](that: LazyBag[U]): LazyBag[(T, U)]
+//  def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)]
+//  def zipWithIndex: LazyBag[(T, Int)]
+
 }
 
 object LazyBag {
@@ -33,6 +37,11 @@ object LazyBag {
     def toList: List[T] = args
     def size: Int = args.size
     override def toString = args.mkString("LazyBag(", ",", ")")
+
+    def zip[U](thatLazyBag: LazyBag[U]): LazyBag[(T, U)] = new ZipLazyBag(thisLazyBag, thatLazyBag)
+//    def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] = ???
+//    def zipWithIndex: LazyBag[(T, Int)] = ???
+
 /*  // Don't uncomment unless have a failing test
     override def equals(other: Any): Boolean =
       other match {
@@ -61,6 +70,11 @@ object LazyBag {
         case _ => false
       }
     override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
+
+    override def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = new ZipLazyBag[U, V](thisLazyBag, that)
+//    override def zipAll[V >: U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] = ???
+//    override def zipWithIndex: LazyBag[(T, Int)] = ???
+
   }
 
   private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends TransformLazyBag[T, U] {
@@ -70,7 +84,11 @@ object LazyBag {
   private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends TransformLazyBag[T, U] {
     def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
   }
-  
+
+  private class ZipLazyBag[T, U](lazyBag: LazyBag[T], that: LazyBag[U]) extends TransformLazyBag[T, (T, U)] {
+    def toList: List[(T, U)] = lazyBag.toList.zip(that.toList)
+  }
+
   def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)
 }
 

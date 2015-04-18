@@ -22,6 +22,7 @@ trait LazySeq[+T] extends LazyBag[T] {
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
+  def zip[U](that: LazyBag[U]): LazyBag[(T, U)]
 }
 
 object LazySeq {
@@ -32,6 +33,7 @@ object LazySeq {
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = toPath.TreeEquaSet(args: _*)
     def toList: List[T] = args
     def size: Int = args.size
+    def zip[U](that: LazyBag[U]): LazyBag[(T, U)] = ???
     override def toString = args.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean = ???
     override def hashCode: Int = ???
@@ -48,6 +50,7 @@ object LazySeq {
     }
     def toList: List[U] = lazySeq.toList.map(f)
     def size: Int = toList.size
+    def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = ???
     override def toString: String = toList.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean =
       other match {
@@ -67,6 +70,7 @@ object LazySeq {
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
     def toList: List[U] = lazySeq.toList.flatMap(f.andThen(_.toList))
     def size: Int = toList.size
+    def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = ???
     override def toString: String = toList.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean = ???
     override def hashCode: Int = ???

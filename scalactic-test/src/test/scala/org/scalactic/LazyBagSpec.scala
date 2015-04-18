@@ -66,5 +66,14 @@ class LazyBagSpec extends UnitSpec {
     val mapped = flatMapped.map(_ + 1)
     assertPretty(mapped)
   }
+
+  it should "have a zip method" in {
+    val bag1 = LazyBag(1,2,3)
+    val bag2 = LazyBag("a", "b", "c")
+    val zipped = bag1.zip(bag2)
+    val (b1, b2) = zipped.toList.unzip
+    b1 should contain theSameElementsAs bag1.toList
+    b2 should contain theSameElementsAs bag2.toList
+  }
 }
 
