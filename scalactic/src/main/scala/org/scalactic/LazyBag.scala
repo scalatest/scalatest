@@ -23,9 +23,8 @@ trait LazyBag[+T] {
   def toList: List[T]
   def size: Int
   def zip[U](that: LazyBag[U]): LazyBag[(T, U)]
-//  def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)]
-//  def zipWithIndex: LazyBag[(T, Int)]
-
+  def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)]
+  def zipWithIndex: LazyBag[(T, Int)]
 }
 
 object LazyBag {
@@ -36,12 +35,11 @@ object LazyBag {
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
     def toList: List[T] = args
     def size: Int = args.size
-    override def toString = args.mkString("LazyBag(", ",", ")")
-
     def zip[U](thatLazyBag: LazyBag[U]): LazyBag[(T, U)] = new ZipLazyBag(thisLazyBag, thatLazyBag)
-//    def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] = ???
-//    def zipWithIndex: LazyBag[(T, Int)] = ???
-
+    def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] =
+      new ZipAllLazyBag(thisLazyBag, that, thisElem, thatElem)
+    def zipWithIndex: LazyBag[(T, Int)] = new ZipWithIndex(thisLazyBag)
+    override def toString = args.mkString("LazyBag(", ",", ")")
 /*  // Don't uncomment unless have a failing test
     override def equals(other: Any): Boolean =
       other match {
@@ -62,6 +60,10 @@ object LazyBag {
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
     def toList: List[U] // This is the lone abstract method
     def size: Int = toList.size
+    def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = new ZipLazyBag[U, V](thisLazyBag, that)
+    def zipAll[V, U1 >: U](that: LazyBag[V], thisElem: U1, thatElem: V): LazyBag[(U1, V)] =
+      new ZipAllLazyBag(thisLazyBag, that, thisElem, thatElem)
+    def zipWithIndex: LazyBag[(U, Int)] = new ZipWithIndex(thisLazyBag)
     override def toString: String = toList.mkString("LazyBag(", ",", ")")
     override def equals(other: Any): Boolean =
       other match {
@@ -70,11 +72,6 @@ object LazyBag {
         case _ => false
       }
     override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
-
-    override def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = new ZipLazyBag[U, V](thisLazyBag, that)
-//    override def zipAll[V >: U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] = ???
-//    override def zipWithIndex: LazyBag[(T, Int)] = ???
-
   }
 
   private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends TransformLazyBag[T, U] {
@@ -87,6 +84,14 @@ object LazyBag {
 
   private class ZipLazyBag[T, U](lazyBag: LazyBag[T], that: LazyBag[U]) extends TransformLazyBag[T, (T, U)] {
     def toList: List[(T, U)] = lazyBag.toList.zip(that.toList)
+  }
+
+  private class ZipAllLazyBag[T, U](thisBag: LazyBag[T], thatBag: LazyBag[U], thisElem: T, thatElem: U) extends TransformLazyBag[T, (T, U)] {
+    def toList: List[(T, U)] = thisBag.toList.zipAll(thatBag.toList, thisElem, thatElem)
+  }
+
+  private class ZipWithIndex[T, U](thisBag: LazyBag[T]) extends TransformLazyBag[T, (T, Int)] {
+    def toList: List[(T, Int)] = thisBag.toList.zipWithIndex
   }
 
   def apply[T](args: T*): LazyBag[T] = new BasicLazyBag(args.toList)

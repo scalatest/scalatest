@@ -23,6 +23,8 @@ trait LazySeq[+T] extends LazyBag[T] {
   def toList: List[T]
   def size: Int
   def zip[U](that: LazyBag[U]): LazyBag[(T, U)]
+  def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)]
+  def zipWithIndex: LazyBag[(T, Int)]
 }
 
 object LazySeq {
@@ -34,6 +36,9 @@ object LazySeq {
     def toList: List[T] = args
     def size: Int = args.size
     def zip[U](that: LazyBag[U]): LazyBag[(T, U)] = ???
+    def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] = ???
+    def zipWithIndex: LazyBag[(T, Int)] = ???
+
     override def toString = args.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean = ???
     override def hashCode: Int = ???
@@ -51,6 +56,9 @@ object LazySeq {
     def toList: List[U] = lazySeq.toList.map(f)
     def size: Int = toList.size
     def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = ???
+    def zipAll[V, U1 >: U](that: LazyBag[V], thisElem: U1, thatElem: V): LazyBag[(U1, V)] = ???
+    def zipWithIndex: LazyBag[(U, Int)] = ???
+
     override def toString: String = toList.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean =
       other match {
@@ -71,6 +79,8 @@ object LazySeq {
     def toList: List[U] = lazySeq.toList.flatMap(f.andThen(_.toList))
     def size: Int = toList.size
     def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = ???
+    def zipAll[V, U1 >: U](that: LazyBag[V], thisElem: U1, thatElem: V): LazyBag[(U1, V)] = ???
+    def zipWithIndex: LazyBag[(U, Int)] = ???
     override def toString: String = toList.mkString("LazySeq(", ",", ")")
     override def equals(other: Any): Boolean = ???
     override def hashCode: Int = ???

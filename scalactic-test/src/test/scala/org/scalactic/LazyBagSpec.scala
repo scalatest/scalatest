@@ -75,5 +75,30 @@ class LazyBagSpec extends UnitSpec {
     b1 should contain theSameElementsAs bag1.toList
     b2 should contain theSameElementsAs bag2.toList
   }
+
+  it should "have a zipAll method" in {
+    val shortBag1 = LazyBag(1,2,3)
+    val longBag1 = LazyBag(1,2,3,4)
+    val shortBag2 = LazyBag("a", "b", "c")
+    val longBag2 = LazyBag("a", "b", "c", "d")
+
+    def assertSameElements(thisBag: LazyBag[_], thatBag: LazyBag[_]): Unit = {
+      val zipped = thisBag.zipAll(thatBag, 4, "d")
+      val (unzip1, unzip2) = zipped.toList.unzip
+      unzip1 should contain theSameElementsAs longBag1.toList
+      unzip2 should contain theSameElementsAs longBag2.toList
+    }
+    assertSameElements(shortBag1, longBag2)
+    assertSameElements(longBag1, shortBag2)
+    assertSameElements(longBag1, longBag2)
+  }
+
+  it should "have a zipWithIndex method" in {
+    val bag = LazyBag("a", "b", "c")
+    val zipped = bag.zipWithIndex
+    val (b1, b2) = zipped.toList.unzip
+    b1 should contain theSameElementsAs bag.toList
+    b2 should contain theSameElementsAs List(0, 1, 2)
+  }
 }
 
