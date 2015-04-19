@@ -69,5 +69,39 @@ class LazySeqSpec extends UnitSpec {
     val mapped = flatMapped.map(_ + 1)
     assertPretty(mapped)
   }
+
+  it should "have a zip method" in {
+    val seq1 = LazySeq(1,2,3)
+    val seq2 = LazySeq("a", "b", "c")
+    val zipped = seq1.zip(seq2)
+    val (b1, b2) = zipped.toList.unzip
+    b1 shouldBe seq1.toList
+    b2 shouldBe seq2.toList
+  }
+
+  it should "have a zipAll method" in {
+    val shortSeq1 = LazySeq(1,2,3)
+    val longSeq1 = LazySeq(1,2,3,4)
+    val shortSeq2 = LazySeq("a", "b", "c")
+    val longSeq2 = LazySeq("a", "b", "c", "d")
+
+    def assertSameElements(thisSeq: LazySeq[_], thatSeq: LazySeq[_]): Unit = {
+      val zipped = thisSeq.zipAll(thatSeq, 4, "d")
+      val (unzip1, unzip2) = zipped.toList.unzip
+      unzip1 shouldBe longSeq1.toList
+      unzip2 shouldBe longSeq2.toList
+    }
+    assertSameElements(shortSeq1, longSeq2)
+    assertSameElements(longSeq1, shortSeq2)
+    assertSameElements(longSeq1, longSeq2)
+  }
+
+  it should "have a zipWithIndex method" in {
+    val bag = LazySeq("a", "b", "c")
+    val zipped = bag.zipWithIndex
+    val (b1, b2) = zipped.toList.unzip
+    b1 shouldBe bag.toList
+    b2 shouldBe List(0, 1, 2)
+  }
 }
 
