@@ -51,95 +51,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       Vector(equaBox.value)
   }
 
-  class EquaBridge[S](from: List[S]) {
-    def collect(pf: PartialFunction[S, T]): thisEquaPath.EquaSet =
-      thisEquaPath.EquaSet.empty ++ (from collect pf)
-    def map(f: S => T): thisEquaPath.EquaSet =
-      thisEquaPath.EquaSet.empty ++ (from map f)
-    def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
-      thisEquaPath.EquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.EquaSet =
-      flatMap((s: S) => cvt(s))
-    def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.EquaSet =
-      thisEquaPath.EquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    def scanRight(z: T)(op: (S, T) => T): thisEquaPath.EquaSet =
-      thisEquaPath.EquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    val path: thisEquaPath.type = thisEquaPath
-    def foreach[U](f: S => U): Unit = from.foreach(f)
-    def filter(pred: S => Boolean): thisEquaPath.EquaBridge[S] =
-      new thisEquaPath.EquaBridge(from.filter(pred))
-    def withFilter(pred: S => Boolean): WithFilter = new WithFilter(pred)
-
-    /**
-     * A class supporting filtered operations. Instances of this class are
-     * returned by method `withFilter`.
-     */
-    class WithFilter(p: S => Boolean) {
-
-      /**
-       * Applies a function `f` to all elements of the outer `EquaBridge` containing
-       * this `WithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function that is applied for its side-effect to every element.
-       * The result of function `f` is discarded.
-       *
-       * @tparam U the type parameter describing the result of function `f`.
-       * This result will always be ignored. Typically `U` is `Unit`,
-       * but this is not necessary.
-       *
-       */
-      def foreach[U](f: S => U): Unit =
-        filter(p).foreach(f)
-
-      /**
-       * Builds a new `EquaSet` by applying a function to all elements of the
-       * outer `EquaBridge` containing this `WithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `EquaSet` resulting from applying
-       * the given function `f` to each element of the outer `EquaBridge`
-       * that satisfies predicate `p` and collecting the results.
-       *
-       * @return a new `EquaSet` resulting from applying the given function
-       * `f` to each element of the outer `EquaBridge` that satisfies
-       * predicate `p` and collecting the results.
-       */
-      def map(f: S => T): thisEquaPath.EquaSet =
-        filter(p).map(f)
-
-      /**
-       * Builds a new `EquaSet` by applying a function to all elements of the
-       * outer `EquaBridge` containing this `WithFilter` instance that satisfy
-       * predicate `p` and concatenating the results.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `EquaSet` resulting from applying
-       * the given `EquaSet`-valued function `f` to each element
-       * of the outer `EquaBridge` that satisfies predicate `p` and
-       * concatenating the results.
-       *
-       * @return a new `EquaSet` resulting from applying the given
-       * `EquaSet`-valued function `f` to each element of the
-       * outer `EquaBridge` that satisfies predicate `p` and concatenating
-       * the results.
-       */
-      def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
-        filter(p).flatMap(f)
-
-      /**
-       * Further refines the filter for this `EquaBridge`.
-       *
-       * @param q the predicate used to test elements.
-       * @return an object of class `WithFilter`, which supports
-       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
-       * All these operations apply to those elements of this `EquaBridge` which
-       * satisfy the predicate `q` in addition to the predicate `p`.
-       */
-      def withFilter(q: S => Boolean): WithFilter =
-        new WithFilter(x => p(x) && q(x))
-    }
-  }
-
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
     // method here that works if S is a GenTraversable[T]. That means that they have
     // say a val xss = x.EquaSet(List(1), List(2, 3)). Since the element type is Int, then they
@@ -622,25 +533,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def find(pred: T => Boolean): Option[T]
 
     /**
-     * Builds a new `EquaSet` by applying a function to all elements of this `EquaSet`
-     * and using the elements of the resulting `EquaSet`.
-     *
-     * @param f the function to apply to each element.
-     * @return a new `EquaSet` resulting from applying the given `EquaSet`-valued function
-     * `f` to each element of this `EquaSet` and concatenating the results.
-     *
-     * For example:
-     *
-     * {{{
-     * def getWords(lines: EquaSet[String]): EquaSet[String] = lines flatMap (line => equaSets.EquaSet(line.split("\\W+"): _*))
-     * }}}
-     *
-     * @return a new `EquaSet` resulting from applying the given `EquaSet`-valued function
-     * `f` to each element of this `EquaSet` and concatenating the results.
-     */
-    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.EquaSet
-
-    /**
      * Converts this `EquaSet` of `EquaSet` into
      * an `EquaSet` formed by the elements of these `EquaSet`.
      *
@@ -801,17 +693,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def intersect(that: thisEquaPath.EquaSet): thisEquaPath.EquaSet
 
     /**
-     * Make an `EquaBridge` between this `EquaSet` and the given `thatEquaPath`.
-     * `EquaBridge` enables this `EquaSet` to transform into `thatEquaPath`.`EquaSet`
-     * through `collect`, `map`, `flatMap`, `flatten`, `scanLeft`, `scanRight`.
-     *
-     * @param thatEquaPath that `EquaPath` to bridge to
-     * @tparam U the type of `thatEquaPath`
-     * @return an instance of `thatEquaPath`.`EquaBridge`
-     */
-    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.EquaBridge[T]
-
-    /**
      * Tests if this `EquaSet` is empty.
      *
      * @return `true` if there is no element in the set, `false` otherwise.
@@ -848,18 +729,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      * `None` if it is empty.
      */
     def lastOption: Option[T]
-
-    /**
-     * Builds a new `EquaSet` by applying a function to all elements of this `EquaSet`.
-     *
-     * @param f the function to apply to each element.
-     * @return a new `EquaSet` resulting from applying the given function
-     * `f` to each element of this `EquaSet` and collecting the results.
-     *
-     * @return a new `EquaSet` resulting from applying the given function
-     * `f` to each element of this `EquaSet` and collecting the results.
-     */
-    def map(f: T => T): thisEquaPath.EquaSet
 
     /**
      * Finds the largest element.
@@ -1541,29 +1410,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet, t3EquaPath.EquaSet)
 
     /**
-     * Creates a non-strict view of this `EquaSet`.
-     *
-     * @return a non-strict view of this `EquaSet`.
-     */
-    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
-
-    /**
-     * Creates a non-strict view of a slice of this `EquaSet`.
-     *
-     * Note: the difference between `view` and `slice` is that `view` produces
-     * a view of the current `EquaSet`, whereas `slice` produces a new `EquaSet`.
-     *
-     * Note: `view(from, to)` is equivalent to `view.slice(from, to)`
-     * $orderDependent
-     *
-     * @param from the index of the first element of the view
-     * @param until the index of the element following the view
-     * @return a non-strict view of a slice of this `EquaSet`, starting at index `from`
-     * and extending up to (but not including) index `until`.
-     */
-    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]]
-
-    /**
      * Creates a non-strict filter of this `EquaSet`.
      *
      * Note: the difference between `c filter p` and `c withFilter p` is that
@@ -1599,41 +1445,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
        */
       def foreach[U](f: T => U): Unit =
         filter(p).foreach(f)
-
-      /**
-       * Builds a new `EquaSet` by applying a function to all elements of the
-       * outer `EquaSet` containing this `WithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `EquaSet` resulting from applying
-       * the given function `f` to each element of the outer `EquaSet`
-       * that satisfies predicate `p` and collecting the results.
-       *
-       * @return a new `EquaSet` resulting from applying the given function
-       * `f` to each element of the outer `EquaSet` that satisfies
-       * predicate `p` and collecting the results.
-       */
-      def map(f: T => T): thisEquaPath.EquaSet =
-        filter(p).map(f)
-
-      /**
-       * Builds a new `EquaSet` by applying a function to all elements of the
-       * outer `EquaSet` containing this `WithFilter` instance that satisfy
-       * predicate `p` and concatenating the results.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `EquaSet` resulting from applying
-       * the given `EquaSet`-valued function `f` to each element
-       * of the outer `EquaSet` that satisfies predicate `p` and
-       * concatenating the results.
-       *
-       * @return a new `EquaSet` resulting from applying the given
-       * `EquaSet`-valued function `f` to each element of the
-       * outer `EquaSet` that satisfies predicate `p` and concatenating
-       * the results.
-       */
-      def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.EquaSet =
-        filter(p).flatMap(f)
+      // TODO: Why is there a U here? Shouldn't it be Unit?
 
       /**
        * Further refines the filter for this `EquaSet`.
@@ -1648,55 +1460,11 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
         new WithFilter(x => p(x) && q(x))
     }
 
-    /**
-     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
-     * by combining corresponding elements in pairs.
-     * If one of the two collections is longer than the other, its remaining elements are ignored.
-     *
-     * @param that The iterable providing the second half of each result pair
-     * @tparam U the type of the second half of the returned pairs
-     * @return a `Set` containing pairs consisting of
-     * corresponding elements of this `EquaSet` and that`. The length
-     * of the returned collection is the minimum of the lengths of this `EquaSet` and `that`.
-     *
-     */
-    def zip[U](that: GenIterable[U]): Set[(T, U)]
-
-    /**
-     * Returns an `EquaSet` formed from this `EquaSet` and another iterable collection
-     * by combining corresponding elements in pairs.
-     * If one of the two collections is shorter than the other,
-     * placeholder elements are used to extend the shorter collection to the length of the longer.
-     *
-     * @param that the iterable providing the second half of each result pair
-     * @param thisElem the element to be used to fill up the result if this `EquaSet` is shorter than `that`.
-     * @param thatElem the element to be used to fill up the result if `that` is shorter than this `EquaSet`.
-     * @return a new collection of type `That` containing pairs consisting of
-     * corresponding elements of this `EquaSet` and `that`. The length
-     * of the returned collection is the maximum of the lengths of this `EquaSet` and `that`.
-     * If this `EquaSet` is shorter than `that`, `thisElem` values are used to pad the result.
-     * If `that` is shorter than this `EquaSet`, `thatElem` values are used to pad the result.
-     *
-     */
-    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)]
-
-    /**
-     * Zips this `EquaSet` with its indices.
-     *
-     * @return A `Set` containing pairs consisting of all elements of this
-     * `EquaSet` paired with their index. Indices start at `0`.
-     *
-     * @return A new `EquaSet` containing pairs consisting of all elements of this
-     * `EquaSet` paired with their index. Indices start at `0`.
-     * @example
-     * `List("a", "b", "c").zipWithIndex = List(("a", 0), ("b", 1), ("c", 2))`
-     *
-     */
-    def zipWithIndex: Set[(T, Int)]
-
     val path: thisEquaPath.type
 
-    def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
+    // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
+
+    def toLazy: LazyBag[T]
   }
 
   trait EquaMap[V]/* extends Function[T, V] with Equals*/ {
@@ -1859,78 +1627,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     val path: thisEquaPath.type
   }
 
-  class FastEquaBridge[S](from: List[S]) extends EquaBridge[S](from) {
-    override def collect(pf: PartialFunction[S, T]): thisEquaPath.FastEquaSet =
-      thisEquaPath.FastEquaSet.empty ++ (from collect pf)
-    override def map(f: S => T): thisEquaPath.FastEquaSet =
-      thisEquaPath.FastEquaSet.empty ++ (from map f)
-    override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
-      thisEquaPath.FastEquaSet((from flatMap ((s: S) => f(s).toList)): _*)
-    override def flatten(implicit cvt: S <:< thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
-      flatMap((s: S) => cvt(s))
-    override def scanLeft(z: T)(op: (T, S) => T): thisEquaPath.FastEquaSet =
-      thisEquaPath.FastEquaSet(from.scanLeft(z)((t: T, s: S) => op(t, s)).toSeq: _*)
-    override def scanRight(z: T)(op: (S, T) => T): thisEquaPath.FastEquaSet =
-      thisEquaPath.FastEquaSet(from.scanRight(z)((s: S, t: T) => op(s, t)).toSeq: _*)
-    override def filter(pred: S => Boolean): thisEquaPath.FastEquaBridge[S] =
-      new thisEquaPath.FastEquaBridge(from.filter(pred))
-    override def withFilter(pred: S => Boolean): FastWithFilter = new FastWithFilter(pred)
-
-    /**
-     * A class supporting filtered operations. Instances of this class are
-     * returned by method `withFilter`.
-     */
-    class FastWithFilter(p: S => Boolean) extends WithFilter(p) {
-
-      /**
-       * Builds a new `FastEquaSet` by applying a function to all elements of the
-       * outer `EquaBridge` containing this `FastWithFilter` instance that satisfy predicate `p`.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `FastEquaSet` resulting from applying
-       * the given function `f` to each element of the outer `EquaBridge`
-       * that satisfies predicate `p` and collecting the results.
-       *
-       * @return a new `FastEquaSet` resulting from applying the given function
-       * `f` to each element of the outer `EquaBridge` that satisfies
-       * predicate `p` and collecting the results.
-       */
-      override def map(f: S => T): thisEquaPath.FastEquaSet =
-        filter(p).map(f)
-
-      /**
-       * Builds a new `FastEquaSet` by applying a function to all elements of the
-       * outer `EquaBridge` containing this `FastWithFilter` instance that satisfy
-       * predicate `p` and concatenating the results.
-       *
-       * @param f the function to apply to each element.
-       * @return a new `FastEquaSet` resulting from applying
-       * the given `EquaSet`-valued function `f` to each element
-       * of the outer `EquaBridge` that satisfies predicate `p` and
-       * concatenating the results.
-       *
-       * @return a new `FastEquaSet` resulting from applying the given
-       * `EquaSet`-valued function `f` to each element of the
-       * outer `EquaBridge` that satisfies predicate `p` and concatenating
-       * the results.
-       */
-      override def flatMap(f: S => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
-        filter(p).flatMap(f)
-
-      /**
-       * Further refines the filter for this `EquaSet`.
-       *
-       * @param q the predicate used to test elements.
-       * @return an object of class `FastWithFilter`, which supports
-       * `map`, `flatMap`, `foreach`, and `withFilter` operations.
-       * All these operations apply to those elements of this `EquaBridge` which
-       * satisfy the predicate `q` in addition to the predicate `p`.
-       */
-      override def withFilter(q: S => Boolean): FastWithFilter =
-        new FastWithFilter(x => p(x) && q(x))
-    }
-  }
-
   class FastEquaSet private[scalactic] (private val underlying: Set[EquaBox]) extends EquaSet { thisFastEquaSet =>
     def + (elem: T): thisEquaPath.FastEquaSet = new FastEquaSet(underlying + EquaBox(elem))
     def + (elem1: T, elem2: T, elem3: T*): thisEquaPath.FastEquaSet =
@@ -1987,7 +1683,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def filter(pred: T => Boolean): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.filter((box: EquaBox) => pred(box.value)))
     def filterNot(pred: T => Boolean): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.filterNot((box: EquaBox) => pred(box.value)))
     def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox) => pred(box.value)).map(_.value)
-    def flatMap(f: T => thisEquaPath.EquaSet): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.flatMap((box: EquaBox) => f(box.value).toEquaBoxList))
     /*
     // This is the problem with using an implicit EquaSet. We need the path defined before we can use
     // it in the function. So into is the only way to get for expressions.
@@ -2021,7 +1716,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def inits: Iterator[thisEquaPath.FastEquaSet] = underlying.inits.map(new FastEquaSet(_))
     def intersect(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying intersect that.toEquaBoxSet)
-    def into[U](thatEquaPath: EquaPath[U]): thatEquaPath.FastEquaBridge[T] = new thatEquaPath.FastEquaBridge[T](underlying.toList.map(_.value))
     def isEmpty: Boolean = underlying.isEmpty
     def iterator: Iterator[T] = underlying.iterator.map(_.value)
     def last: T = underlying.last.value
@@ -2030,7 +1724,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
         case Some(last) => Some(last.value)
         case None => None
       }
-    def map(f: T => T): thisEquaPath.FastEquaSet = FastEquaSet(underlying.map((box: EquaBox) => f(box.value)).toList: _*)
     def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
     def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
     def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
@@ -2129,19 +1822,21 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
       (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*), t3EquaPath.FastEquaSet(t3: _*))
     }
-    def view: TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view
-    def view(from: Int, until: Int): TraversableView[thisEquaPath.EquaBox, Set[thisEquaPath.EquaBox]] = underlying.toList.toSet.view(from, until)
     def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
     def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
     def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
 
     val path: thisEquaPath.type = thisEquaPath
+/*
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.FastEquaSet =
       if (thatEquaPath eq thisEquaPath)
         thisFastEquaSet.asInstanceOf[thatEquaPath.FastEquaSet]
       else
         thisFastEquaSet.into(thatEquaPath).map(t => t)
+*/
+    def toLazy: LazyBag[T] = LazyBag(thisFastEquaSet.toList: _*)
   }
+
   object FastEquaSet {
     def empty: FastEquaSet = new FastEquaSet(Set.empty)
     def apply(elems: T*): FastEquaSet = 
