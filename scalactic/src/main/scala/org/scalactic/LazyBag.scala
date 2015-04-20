@@ -22,8 +22,98 @@ trait LazyBag[+T] {
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
+  /**
+   * Converts this `LazyBag` of pairs into two collections of the first and second
+   * half of each pair.
+   *
+   * {{{
+   * val xs = `LazyBag`(
+   * (1, "one"),
+   * (2, "two"),
+   * (3, "three")).unzip
+   * // xs == (`LazyBag`(1, 2, 3),
+   * // `LazyBag`(one, two, three))
+   * }}}
+   *
+   * @tparam T1 the type of the first half of the element pairs
+   * @tparam T2 the type of the second half of the element pairs
+   * @param asPair an implicit conversion which asserts that the element type
+   * of this `LazyBag` is a pair.
+   * @return a pair of `LazyBag`s, containing the first, respectively second
+   * half of each element pair of this `LazyBag`.
+   */
+  def unzip[T1, T2](implicit asPair: T => (T1, T2)): (LazyBag[T1], LazyBag[T2])
+
+  /**
+   * Converts this `LazyBag` of triples into three collections of the first, second,
+   * and third element of each triple.
+   *
+   * {{{
+   * val xs = `LazyBag`(
+   * (1, "one", '1'),
+   * (2, "two", '2'),
+   * (3, "three", '3')).unzip3
+   * // xs == (`LazyBag`(1, 2, 3),
+   * // `LazyBag`(one, two, three),
+   * // `LazyBag`(1, 2, 3))
+   * }}}
+   *
+   * @tparam T1 the type of the first member of the element triples
+   * @tparam T2 the type of the second member of the element triples
+   * @tparam T3 the type of the third member of the element triples
+   * @param asTriple an implicit conversion which asserts that the element type
+   * of this `LazyBag` is a triple.
+   * @return a triple of `LazyBag`s, containing the first, second, respectively
+   * third member of each element triple of this `LazyBag`.
+   */
+  def unzip3[T1, T2, T3](implicit asTriple: T => (T1, T2, T3)): (LazyBag[T1], LazyBag[T2], LazyBag[T3])
+
+
+  /**
+   * Returns an `LazyBag` formed from this `LazyBag` and another iterable collection
+   * by combining corresponding elements in pairs.
+   * If one of the two collections is longer than the other, its remaining elements are ignored.
+   *
+   * @param that The iterable providing the second half of each result pair
+   * @tparam U the type of the second half of the returned pairs
+   * @return a `Set` containing pairs consisting of
+   * corresponding elements of this `LazyBag` and that`. The length
+   * of the returned collection is the minimum of the lengths of this `LazyBag` and `that`.
+   *
+   */
   def zip[U](that: LazyBag[U]): LazyBag[(T, U)]
+
+  /**
+   * Returns an `LazyBag` formed from this `LazyBag` and another iterable collection
+   * by combining corresponding elements in pairs.
+   * If one of the two collections is shorter than the other,
+   * placeholder elements are used to extend the shorter collection to the length of the longer.
+   *
+   * @param that the iterable providing the second half of each result pair
+   * @param thisElem the element to be used to fill up the result if this `LazyBag` is shorter than `that`.
+   * @param thatElem the element to be used to fill up the result if `that` is shorter than this `LazyBag`.
+   * @return a new collection of type `That` containing pairs consisting of
+   * corresponding elements of this `LazyBag` and `that`. The length
+   * of the returned collection is the maximum of the lengths of this `LazyBag` and `that`.
+   * If this `LazyBag` is shorter than `that`, `thisElem` values are used to pad the result.
+   * If `that` is shorter than this `LazyBag`, `thatElem` values are used to pad the result.
+   *
+   */
   def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)]
+
+  /**
+   * Zips this `LazyBag` with its indices.
+   *
+   * @return A `Set` containing pairs consisting of all elements of this
+   * `EquaSet` paired with their index. Indices start at `0`.
+   *
+   * @return A new `EquaSet` containing pairs consisting of all elements of this
+   * `EquaSet` paired with their index. Indices start at `0`.
+   * @example
+   * `List("a", "b", "c").zipWithIndex = List(("a", 0), ("b", 1), ("c", 2))`
+   *
+   */
+
   def zipWithIndex: LazyBag[(T, Int)]
 }
 
@@ -35,6 +125,13 @@ object LazyBag {
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
     def toList: List[T] = args
     def size: Int = args.size
+
+    def unzip[T1, T2](implicit asPair: T => (T1, T2)): (LazyBag[T1], LazyBag[T2]) =
+      (new UnzipLeftLazyBag(thisLazyBag), new UnzipRightLazyBag(thisLazyBag))
+
+    def unzip3[T1, T2, T3](implicit asTriple: T => (T1, T2, T3)): (LazyBag[T1], LazyBag[T2], LazyBag[T3]) =
+      (new Unzip3LeftLazyBag(thisLazyBag), new Unzip3MiddleLazyBag(thisLazyBag), new Unzip3RightLazyBag(thisLazyBag))
+
     def zip[U](thatLazyBag: LazyBag[U]): LazyBag[(T, U)] = new ZipLazyBag(thisLazyBag, thatLazyBag)
     def zipAll[U, T1 >: T](that: LazyBag[U], thisElem: T1, thatElem: U): LazyBag[(T1, U)] =
       new ZipAllLazyBag(thisLazyBag, that, thisElem, thatElem)
@@ -60,6 +157,13 @@ object LazyBag {
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
     def toList: List[U] // This is the lone abstract method
     def size: Int = toList.size
+
+    def unzip[U1, U2](implicit asPair: U => (U1, U2)): (LazyBag[U1], LazyBag[U2]) =
+      (new UnzipLeftLazyBag(thisLazyBag), new UnzipRightLazyBag(thisLazyBag))
+
+    def unzip3[U1, U2, U3](implicit asTriple: U => (U1, U2, U3)): (LazyBag[U1], LazyBag[U2], LazyBag[U3]) =
+      (new Unzip3LeftLazyBag(thisLazyBag), new Unzip3MiddleLazyBag(thisLazyBag), new Unzip3RightLazyBag(thisLazyBag))
+
     def zip[V](that: LazyBag[V]): LazyBag[(U, V)] = new ZipLazyBag[U, V](thisLazyBag, that)
     def zipAll[V, U1 >: U](that: LazyBag[V], thisElem: U1, thatElem: V): LazyBag[(U1, V)] =
       new ZipAllLazyBag(thisLazyBag, that, thisElem, thatElem)
@@ -80,6 +184,26 @@ object LazyBag {
 
   private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends TransformLazyBag[T, U] {
     def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
+  }
+
+  private class UnzipLeftLazyBag[T, U, U1, U2](lazyBag: LazyBag[T])(implicit asPair: U => (U1, U2) ) extends TransformLazyBag[T, U] {
+    def toList: List[U1] = lazyBag.toList.unzip._1.toList
+  }
+
+  private class UnzipRightLazyBag[T, U, U1, U2](lazyBag: LazyBag[T])(implicit asPair: U => (U1, U2)) extends TransformLazyBag[T, U] {
+    def toList: List[U2] = lazyBag.toList.unzip._2.toList
+  }
+
+  private class Unzip3LeftLazyBag[T, U, U1, U2, U3](lazyBag: LazyBag[T])(implicit asTriple: U => (U1, U2, U3)) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.unzip3._1.toList
+  }
+
+  private class Unzip3MiddleLazyBag[T, U, U1, U2, U3](lazyBag: LazyBag[T])(implicit asTriple: U => (U1, U2, U3)) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.unzip3._2.toList
+  }
+
+  private class Unzip3RightLazyBag[T, U, U1, U2, U3](lazyBag: LazyBag[T])(implicit asTriple: U => (U1, U2, U3)) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.unzip3._3.toList
   }
 
   private class ZipLazyBag[T, U](lazyBag: LazyBag[T], that: LazyBag[U]) extends TransformLazyBag[T, (T, U)] {
