@@ -17,7 +17,7 @@ package org.scalatest.mock
 
 import org.scalatest._
 import org.mockito.Mockito.{mock => mockitoMock}
-import reflect.Manifest
+import reflect.ClassTag
 import org.mockito.stubbing.Answer
 import org.mockito.MockSettings
 
@@ -70,8 +70,8 @@ trait MockitoSugar {
    * val mockCollaborator = mock[Collaborator]
    * </pre>
    */
-  def mock[T <: AnyRef](implicit manifest: Manifest[T]): T = {
-    mockitoMock(manifest.erasure.asInstanceOf[Class[T]])
+  def mock[T <: AnyRef](implicit classTag: ClassTag[T]): T = {
+    mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]])
   }
   
   /**
@@ -94,8 +94,8 @@ trait MockitoSugar {
    * val mockCollaborator = mock[Collaborator](defaultAnswer)
    * </pre>
    */
-  def mock[T <: AnyRef](defaultAnswer: Answer[_])(implicit manifest: Manifest[T]): T = {
-    mockitoMock(manifest.erasure.asInstanceOf[Class[T]], defaultAnswer)
+  def mock[T <: AnyRef](defaultAnswer: Answer[_])(implicit classTag: ClassTag[T]): T = {
+    mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]], defaultAnswer)
   }
   
   /**
@@ -118,8 +118,8 @@ trait MockitoSugar {
    * val mockCollaborator = mock[Collaborator](mockSettings)
    * </pre>
    */
-  def mock[T <: AnyRef](mockSettings: MockSettings)(implicit manifest: Manifest[T]): T = {
-    mockitoMock(manifest.erasure.asInstanceOf[Class[T]], mockSettings)
+  def mock[T <: AnyRef](mockSettings: MockSettings)(implicit classTag: ClassTag[T]): T = {
+    mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]], mockSettings)
   }
   
   /**
@@ -142,8 +142,8 @@ trait MockitoSugar {
    * val mockCollaborator = mock[Collaborator](name)
    * </pre>
    */
-  def mock[T <: AnyRef](name: String)(implicit manifest: Manifest[T]): T = {
-    mockitoMock(manifest.erasure.asInstanceOf[Class[T]], name)
+  def mock[T <: AnyRef](name: String)(implicit classTag: ClassTag[T]): T = {
+    mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]], name)
   }
 }
 

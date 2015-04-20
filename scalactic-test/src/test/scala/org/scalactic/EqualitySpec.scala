@@ -23,10 +23,10 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class EqualitySpec extends Spec with NonImplicitAssertions {
+class EqualitySpec extends FunSpec with NonImplicitAssertions {
 
-  object `The Equality companion object` {
-    def `should offer a factory method for NormalizingEqualities` {
+  describe("The Equality companion object") {
+    it("should offer a factory method for NormalizingEqualities") {
       import StringNormalizations._
       assert(Equality(lowerCased).areEqual("howdy", "HOWDY"))
       assert(Equality(lowerCased and trimmed).areEqual(" howdy", "HOWDY "))

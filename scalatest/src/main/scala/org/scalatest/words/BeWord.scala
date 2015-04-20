@@ -23,7 +23,9 @@ import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 import org.scalatest.enablers._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -233,6 +235,7 @@ final class BeWord {
                                   getStackDepthFun("BeWord.scala", "==="))  // TODO: Change that to encoded name.
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -246,6 +249,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
       override def toString: String = "be a " + Prettifier.default(right)
     }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>fileMock</code> is, for example, of type <code>File</code> and
@@ -284,6 +288,7 @@ final class BeWord {
       override def toString: String = "be a " + Prettifier.default(aMatcher)
     }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -297,6 +302,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
       override def toString: String = "be an " + Prettifier.default(right)
     }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>keyEvent</code> is, for example, of type <code>KeyEvent</code> and
@@ -440,6 +446,7 @@ final class BeWord {
     }
    */
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -453,6 +460,7 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and

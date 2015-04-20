@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import java.text._
+import java.util.Date
 import org.scalatest._
 import scala.util.Try
 import scala.util.Success
@@ -28,16 +28,21 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
   case class Person(name: String, birthday: Date, address: List[String])
 
   def parseDate(in: String): Date Or One[ErrorMessage] = {
-    val sdf = new SimpleDateFormat("yyyy-MM-dd")
-    sdf.parse(in, new ParsePosition(0)) match {
-      case null => Bad(One(s"Can't parse [$in] as a date"))
-      case date => Good(date)
+    val regex = "\\d\\d\\d\\d-\\d\\d?-\\d\\d?".r
+    if (regex.pattern.matcher(in).matches()) {
+      val tokens = in.split("-")
+      val year = tokens(0).toInt
+      val month = tokens(1).toInt
+      val dateInMonth = tokens(2).toInt
+      Good(new Date(year, month, dateInMonth))
     }
+    else
+      Bad(One(s"Can't parse [$in] as a date"))
   }
 
   "Ny parseDate helper method" can "parse dates with the greatest of ease" in {
-    parseDate("1992-02-10") shouldBe 'good
-    parseDate("1992-xx-10") shouldBe 'bad
+    parseDate("1992-02-10").isGood shouldBe true
+    parseDate("1992-xx-10").isBad shouldBe true
   }
 
   def parseAddress(in: String): List[String] Or One[ErrorMessage] = {
@@ -47,8 +52,8 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
   }
 
   "Ny parseAddress helper method" can "parse addresses with the greatest of ease" in {
-    parseAddress("Some Street 123, Some Town") shouldBe 'good
-    parseAddress("Rotterdam") shouldBe 'bad
+    parseAddress("Some Street 123, Some Town").isGood shouldBe true
+    parseAddress("Rotterdam").isBad shouldBe true
   }
 
   def parseOptionalName(in: Option[String]): String Or One[ErrorMessage] =

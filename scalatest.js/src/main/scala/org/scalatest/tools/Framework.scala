@@ -1,6 +1,10 @@
 package org.scalatest.tools
 
-import sbt.testing.{Framework => BaseFramework, _}
+import org.scalatest.{Tracker, Reporter}
+import org.scalatest.events.{ExceptionalEvent, Summary}
+import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
+import scala.collection.mutable.ListBuffer
+import scala.compat.Platform
 
 class Framework extends BaseFramework {
   
@@ -16,36 +20,8 @@ class Framework extends BaseFramework {
 
 
   def slaveRunner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader, send: (String) => Unit): Runner =
-    runner(args, remoteArgs, testClassLoader)
+    new SlaveRunner(args, remoteArgs, testClassLoader, send)
 
-  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): Runner = {
-    val theseArgs = args
-    val theseRemoteArgs = remoteArgs
-
-    new Runner {
-      def done(): String = ""
-
-      def remoteArgs(): Array[String] = {
-        theseRemoteArgs
-      }
-
-      def args: Array[String] = {
-        theseArgs
-      }
-
-      def tasks(list: Array[TaskDef]): Array[Task] = {
-        list.map(t => new TaskRunner(t, testClassLoader))
-      }
-
-      def receiveMessage(msg: String): Option[String] = {
-        None
-      }
-
-      def serializeTask(task: Task, serializer: (TaskDef) => String): String =
-        serializer(task.taskDef())
-
-      def deserializeTask(task: String, deserializer: (String) => TaskDef): Task =
-        new TaskRunner(deserializer(task), testClassLoader)
-    }
-  }
+  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): Runner =
+    new MasterRunner(args, remoteArgs, testClassLoader)
 }

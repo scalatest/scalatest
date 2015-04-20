@@ -44,9 +44,11 @@ class EverySpec extends UnitSpec {
     Every.from(List.empty[String]) shouldBe None
     Every.from(List("1")) shouldBe Some(One("1"))
     Every.from(List(1, 2, 3)) shouldBe Some(Many(1, 2, 3))
+    // SKIP-SCALATESTJS-START
     Every.from(List.empty[String].par) shouldBe None
     Every.from(List("1").par) shouldBe Some(One("1"))
     Every.from(List(1, 2, 3).par) shouldBe Some(Many(1, 2, 3))
+    // SKIP-SCALATESTJS-END
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy Every("hi", null, "ho")
@@ -405,7 +407,9 @@ class EverySpec extends UnitSpec {
     Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     List(Every(1, 2, 3), Every(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    // SKIP-SCALATESTJS-START
     List(Every(1, 2, 3), Every(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
+    // SKIP-SCALATESTJS-END
   }
   it should "have a fold method" in {
     One(1).fold(0)(_ + _) shouldBe 1

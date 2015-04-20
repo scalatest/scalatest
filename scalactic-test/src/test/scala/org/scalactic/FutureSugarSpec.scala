@@ -19,7 +19,10 @@ import java.text._
 import org.scalatest._
 import scala.concurrent.Future
 import prop.TableDrivenPropertyChecks._
+// SKIP-SCALATESTJS-START
 import scala.concurrent.ExecutionContext.Implicits.global
+// SKIP-SCALATESTJS-END
+//SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalatest.concurrent.ScalaFutures
 
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with ScalaFutures {

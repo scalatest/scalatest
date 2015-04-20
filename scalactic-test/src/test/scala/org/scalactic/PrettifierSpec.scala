@@ -19,11 +19,13 @@ import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}
+// SKIP-SCALATESTJS-START
 import scala.xml.NodeSeq
+// SKIP-SCALATESTJS-END
 
-class PrettifierSpec extends Spec with Matchers {
-  object `A Prettifier` {
-    def `should convert an Any to a String` {
+class PrettifierSpec extends FunSpec with Matchers {
+  describe("A Prettifier") {
+    it("should convert an Any to a String") {
       val f =
         new Prettifier {
           def apply(o: Any) = o.toString
@@ -32,7 +34,7 @@ class PrettifierSpec extends Spec with Matchers {
       f("hi") should be ("hi")
       f(List("hi")) should be ("List(hi)")
     }
-    def `can be composed with another Prettifier` {
+    it("can be composed with another Prettifier") {
       case class Yell(secret: String)
       val myLittlePretty =
         new Prettifier {
@@ -70,136 +72,138 @@ class PrettifierSpec extends Spec with Matchers {
   val lowerEquaSet = EquaPath[String](StringNormalizations.lowerCased.toHashingEquality)
   val lowerSortedEquaSet = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
 
-  object `the basic Prettifier` {
-    def `should put double quotes around strings` {
+  describe("the basic Prettifier") {
+    it("should put double quotes around strings") {
       Prettifier.basic("hi") should be ("\"hi\"")
     }
-    def `should put single quotes around chars` {
+    it("should put single quotes around chars") {
       Prettifier.basic('h') should be ("'h'")
     }
-    def `should pretty print arrays` {
+    it("should pretty print arrays") {
       Prettifier.basic(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
     }
-    def `should pretty print wrapped arrays` {
+    it("should pretty print wrapped arrays") {
       Prettifier.basic(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
-    def `should pretty print string arrays` {
+    it("should pretty print string arrays") {
       Prettifier.basic(Array("1", "2", "3")) should be ("Array(1, 2, 3)")
     }
-    def `should pretty print nested string arrays` {
+    it("should pretty print nested string arrays") {
       Prettifier.basic(Array(Array("1", "2", "3"))) should be ("Array(Array(1, 2, 3))")
     }
-    def `should pretty print wrapped string arrays` {
+    it("should pretty print wrapped string arrays") {
       Prettifier.basic(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(1, 2, 3)")
     }
-    def `should show null as "null"` {
+    it("should show null as \"null\"") {
       Prettifier.basic(null) should be ("null")
     }
-    def `should clarify the Unit value` {
+    it("should clarify the Unit value") {
       Prettifier.basic(()) should be ("<(), the Unit value>")
     }
-    def `should just call toString on anything not specially treated` {
+    it("should just call toString on anything not specially treated") {
       Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
-    def `should pretty print GenTraversable` {
+    it("should pretty print GenTraversable") {
       Prettifier.basic(List(1, 2, 3)) should be ("List(1, 2, 3)")
     }
-    def `should pretty print string GenTraversable` {
+    it("should pretty print string GenTraversable") {
       Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
-    def `should pretty print nested string GenTraversable` {
+    it("should pretty print nested string GenTraversable") {
       Prettifier.basic(List(List("1", "2", "3"))) should be ("List(List(1, 2, 3))")
     }
-    def `should pretty print Some(Int)` {
+    it("should pretty print Some(Int)") {
       Prettifier.basic(Some(8)) should be ("Some(8)")
     }
-    def `should pretty print Some(String)` {
+    it("should pretty print Some(String)") {
       Prettifier.basic(Some("8")) should be ("Some(8)")
     }
-    def `should pretty print nested Some(String)` {
+    it("should pretty print nested Some(String)") {
       Prettifier.basic(Some(Some("8"))) should be ("Some(Some(8))")
     }
-    def `should pretty print Success(Int)` {
+    it("should pretty print Success(Int)") {
       Prettifier.basic(Success(8)) should be ("Success(8)")
     }
-    def `should pretty print Success(String)` {
+    it("should pretty print Success(String)") {
       Prettifier.basic(Success("8")) should be ("Success(8)")
     }
-    def `should pretty print nested Success(String)` {
+    it("should pretty print nested Success(String)") {
       Prettifier.basic(Success(Success("8"))) should be ("Success(Success(8))")
     }
-    def `should pretty print Left(Int)` {
+    it("should pretty print Left(Int)") {
       Prettifier.basic(Left(8)) should be ("Left(8)")
     }
-    def `should pretty print Left(String)` {
+    it("should pretty print Left(String)") {
       Prettifier.basic(Left("8")) should be ("Left(8)")
     }
-    def `should pretty print nested Left(String)` {
+    it("should pretty print nested Left(String)") {
       Prettifier.basic(Left(Left("8"))) should be ("Left(Left(8))")
     }
-    def `should pretty print Right(Int)` {
+    it("should pretty print Right(Int)") {
       Prettifier.basic(Right(8)) should be ("Right(8)")
     }
-    def `should pretty print Right(String)` {
+    it("should pretty print Right(String)") {
       Prettifier.basic(Right("8")) should be ("Right(8)")
     }
-    def `should pretty print nested Right(String)` {
+    it("should pretty print nested Right(String)") {
       Prettifier.basic(Right(Right("8"))) should be ("Right(Right(8))")
     }
-    def `should pretty print Good(Int)` {
+    it("should pretty print Good(Int)") {
       Prettifier.basic(Good(8)) should be ("Good(8)")
     }
-    def `should pretty print Good(String)` {
+    it("should pretty print Good(String)") {
       Prettifier.basic(Good("8")) should be ("Good(8)")
     }
-    def `should pretty print nested Good(String)` {
+    it("should pretty print nested Good(String)") {
       Prettifier.basic(Good(Good("8"))) should be ("Good(Good(8))")
     }
-    def `should pretty print Bad(Int)` {
+    it("should pretty print Bad(Int)") {
       Prettifier.basic(Bad(8)) should be ("Bad(8)")
     }
-    def `should pretty print Bad(String)` {
+    it("should pretty print Bad(String)") {
       Prettifier.basic(Bad("8")) should be ("Bad(8)")
     }
-    def `should pretty print nested Bad(String)` {
+    it("should pretty print nested Bad(String)") {
       Prettifier.basic(Bad(Bad("8"))) should be ("Bad(Bad(8))")
     }
-    def `should pretty print One(Int)` {
+    it("should pretty print One(Int)") {
       Prettifier.basic(One(8)) should be ("One(8)")
     }
-    def `should pretty print One(String)` {
+    it("should pretty print One(String)") {
       Prettifier.basic(One("8")) should be ("One(8)")
     }
-    def `should pretty print nested One(String)` {
+    it("should pretty print nested One(String)") {
       Prettifier.basic(One(One("8"))) should be ("One(One(8))")
     }
-    def `should pretty print Many(Int)` {
+    it("should pretty print Many(Int)") {
       Prettifier.basic(Many(1, 2, 3)) should be ("Many(1, 2, 3)")
     }
-    def `should pretty print Many(String)` {
+    it("should pretty print Many(String)") {
       Prettifier.basic(Many("1", "2", "3")) should be ("Many(1, 2, 3)")
     }
-    def `should pretty print nested Many(String)` {
+    it("should pretty print nested Many(String)") {
       Prettifier.basic(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(1, 2, 3), Many(7, 8, 9))")
     }
-    def `should pretty print Java List` {
+    // SKIP-SCALATESTJS-START
+    it("should pretty print Java List") {
       Prettifier.basic(javaList(1, 2, 3)) should be ("[1, 2, 3]")
     }
-    def `should pretty print string Java List` {
+    it("should pretty print string Java List") {
       Prettifier.basic(javaList("1", "2", "3")) should be ("[1, 2, 3]")
     }
-    def `should pretty print nested string Java List` {
+    it("should pretty print nested string Java List") {
       Prettifier.basic(javaList(javaList("1", "2", "3"))) should be ("[[1, 2, 3]]")
     }
-    def `should pretty print Java Map` {
+    it("should pretty print Java Map") {
       Prettifier.basic(javaSortedMap(Entry(1, 2), Entry(2, 3), Entry(3, 8))) should be ("{1=2, 2=3, 3=8}")
     }
-    def `should pretty print string Java Map` {
+    it("should pretty print string Java Map") {
       Prettifier.basic(javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) should be ("{1=one, 2=two, 3=three}")
     }
-    def `should pretty print nested string Java Map` {
+    it("should pretty print nested string Java Map") {
       Prettifier.basic(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{akey={1=one, 2=two, 3=three}}")
     }
+    // SKIP-SCALATESTJS-END
     def `should pretty print EquaSet(Int)`: Unit = {
       Prettifier.basic(numberEquaSet.EquaSet(1, 2, 3)) should be ("EquaSet(1, 2, 3)")
       Prettifier.basic(numberEquaSet.FastEquaSet(1, 2, 3)) should be ("EquaSet(1, 2, 3)")
@@ -218,156 +222,158 @@ class PrettifierSpec extends Spec with Matchers {
     }
   }
 
-  object `the default Prettifier` {
-    def `should put double quotes around strings` {
+  describe("the default Prettifier") {
+    it("should put double quotes around strings") {
       Prettifier.default("hi") should be ("\"hi\"")
     }
-    def `should put double quotes around scala.collection.immutable.StringOps` {
+    it("should put double quotes around scala.collection.immutable.StringOps") {
       Prettifier.default(new scala.collection.immutable.StringOps("hi")) should be ("\"hi\"")
     }
-    def `should put single quotes around chars` {
+    it("should put single quotes around chars") {
       Prettifier.default('h') should be ("'h'")
     }
-    def `should pretty print arrays` {
+    it("should pretty print arrays") {
       Prettifier.default(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
     }
-    def `should pretty print wrapped arrays` {
+    it("should pretty print wrapped arrays") {
       Prettifier.default(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
-    def `should pretty print string arrays` {
+    it("should pretty print string arrays") {
       Prettifier.default(Array("1", "2", "3")) should be ("Array(\"1\", \"2\", \"3\")")
     }
-    def `should pretty print nested string arrays` {
+    it("should pretty print nested string arrays") {
       Prettifier.default(Array(Array("1", "2", "3"))) should be ("Array(Array(\"1\", \"2\", \"3\"))")
     }
-    def `should pretty print wrapped string arrays` {
+    it("should pretty print wrapped string arrays") {
       Prettifier.default(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(\"1\", \"2\", \"3\")")
     }
-    def `should show null as "null"` {
+    it("should show null as \"null\"") {
       Prettifier.default(null) should be ("null")
     }
-    def `should clarify the Unit value` {
+    it("should clarify the Unit value") {
       Prettifier.default(()) should be ("<(), the Unit value>")
     }
-    def `should just call toString on anything not specially treated` {
+    it("should just call toString on anything not specially treated") {
       Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
-    def `should pretty print GenTraversable` {
+    it("should pretty print GenTraversable") {
       Prettifier.default(List(1, 2, 3)) should be ("List(1, 2, 3)")
     }
-    def `should pretty print string GenTraversable` {
+    it("should pretty print string GenTraversable") {
       Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
-    def `should pretty print nested string GenTraversable` {
+    it("should pretty print nested string GenTraversable") {
       Prettifier.default(List(List("1", "2", "3"))) should be ("List(List(\"1\", \"2\", \"3\"))")
     }
-    def `should pretty print Some(Int)` {
+    it("should pretty print Some(Int)") {
       Prettifier.default(Some(8)) should be ("Some(8)")
     }
-    def `should pretty print Some(String)` {
+    it("should pretty print Some(String)") {
       Prettifier.default(Some("8")) should be ("Some(\"8\")")
     }
-    def `should pretty print nested Some(String)` {
+    it("should pretty print nested Some(String)") {
       Prettifier.default(Some(Some("8"))) should be ("Some(Some(\"8\"))")
     }
-    def `should pretty print Success(Int)` {
+    it("should pretty print Success(Int)") {
       Prettifier.default(Success(8)) should be ("Success(8)")
     }
-    def `should pretty print Success(String)` {
+    it("should pretty print Success(String)") {
       Prettifier.default(Success("8")) should be ("Success(\"8\")")
     }
-    def `should pretty print nested Success(String)` {
+    it("should pretty print nested Success(String)") {
       Prettifier.default(Success(Success("8"))) should be ("Success(Success(\"8\"))")
     }
-    def `should pretty print Left(Int)` {
+    it("should pretty print Left(Int)") {
       Prettifier.default(Left(8)) should be ("Left(8)")
     }
-    def `should pretty print Left(String)` {
+    it("should pretty print Left(String)") {
       Prettifier.default(Left("8")) should be ("Left(\"8\")")
     }
-    def `should pretty print nested Left(String)` {
+    it("should pretty print nested Left(String)") {
       Prettifier.default(Left(Left("8"))) should be ("Left(Left(\"8\"))")
     }
-    def `should pretty print Right(Int)` {
+    it("should pretty print Right(Int)") {
       Prettifier.default(Right(8)) should be ("Right(8)")
     }
-    def `should pretty print Right(String)` {
+    it("should pretty print Right(String)") {
       Prettifier.default(Right("8")) should be ("Right(\"8\")")
     }
-    def `should pretty print nested Right(String)` {
+    it("should pretty print nested Right(String)") {
       Prettifier.default(Right(Right("8"))) should be ("Right(Right(\"8\"))")
     }
-    def `should pretty print Good(Int)` {
+    it("should pretty print Good(Int)") {
       Prettifier.default(Good(8)) should be ("Good(8)")
     }
-    def `should pretty print Good(String)` {
+    it("should pretty print Good(String)") {
       Prettifier.default(Good("8")) should be ("Good(\"8\")")
     }
-    def `should pretty print nested Good(String)` {
+    it("should pretty print nested Good(String)") {
       Prettifier.default(Good(Good("8"))) should be ("Good(Good(\"8\"))")
     }
-    def `should pretty print Bad(Int)` {
+    it("should pretty print Bad(Int)") {
       Prettifier.default(Bad(8)) should be ("Bad(8)")
     }
-    def `should pretty print Bad(String)` {
+    it("should pretty print Bad(String)") {
       Prettifier.default(Bad("8")) should be ("Bad(\"8\")")
     }
-    def `should pretty print nested Bad(String)` {
+    it("should pretty print nested Bad(String)") {
       Prettifier.default(Bad(Bad("8"))) should be ("Bad(Bad(\"8\"))")
     }
-    def `should pretty print One(Int)` {
+    it("should pretty print One(Int)") {
       Prettifier.default(One(8)) should be ("One(8)")
     }
-    def `should pretty print One(String)` {
+    it("should pretty print One(String)") {
       Prettifier.default(One("8")) should be ("One(\"8\")")
     }
-    def `should pretty print nested One(String)` {
+    it("should pretty print nested One(String)") {
       Prettifier.default(One(One("8"))) should be ("One(One(\"8\"))")
     }
-    def `should pretty print Many(Int)` {
+    it("should pretty print Many(Int)") {
       Prettifier.default(Many(1, 2, 3)) should be ("Many(1, 2, 3)")
     }
-    def `should pretty print Many(String)` {
+    it("should pretty print Many(String)") {
       Prettifier.default(Many("1", "2", "3")) should be ("Many(\"1\", \"2\", \"3\")")
     }
-    def `should pretty print nested Many(String)` {
+    it("should pretty print nested Many(String)") {
       Prettifier.default(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(\"1\", \"2\", \"3\"), Many(\"7\", \"8\", \"9\"))")
     }
-    def `should pretty print Java List` {
+    // SKIP-SCALATESTJS-START
+    it("should pretty print Java List") {
       Prettifier.default(javaList(1, 2, 3)) should be ("[1, 2, 3]")
     }
-    def `should pretty print string Java List` {
+    it("should pretty print string Java List") {
       Prettifier.default(javaList("1", "2", "3")) should be ("[\"1\", \"2\", \"3\"]")
     }
-    def `should pretty print nested string Java List` {
+    it("should pretty print nested string Java List") {
       Prettifier.default(javaList(javaList("1", "2", "3"))) should be ("[[\"1\", \"2\", \"3\"]]")
     }
-    def `should pretty print Java Map` {
+    it("should pretty print Java Map") {
       Prettifier.default(javaSortedMap(Entry(1, 2), Entry(2, 3), Entry(3, 8))) should be ("{1=2, 2=3, 3=8}")
     }
-    def `should pretty print string Java Map` {
+    it("should pretty print string Java Map") {
       Prettifier.default(javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) should be ("{1=\"one\", 2=\"two\", 3=\"three\"}")
     }
-    def `should pretty print nested string Java Map` {
+    it("should pretty print nested string Java Map") {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
-    def `should pretty print xml <a></a>` {
+    it("should pretty print xml <a></a>") {
       Prettifier.default(<a></a>) should be ("<a></a>")
     }
-    def `should pretty print xml <a/>` {
+    it("should pretty print xml <a/>") {
       Prettifier.default(<a/>) should be ("<a/>")
     }
-    def `should pretty print xml <a><b/></a>` {
+    it("should pretty print xml <a><b/></a>") {
       Prettifier.default(<a><b/></a>) should be ("<a><b/></a>")
     }
-    def `should pretty print xml <a/><b/>` {
+    it("should pretty print xml <a/><b/>") {
       Prettifier.default(<a/><b/>) should be ("<a/><b/>")
     }
-    def `should pretty print xml.NodeSeq <a/><b/>` {
+    it("should pretty print xml.NodeSeq <a/><b/>") {
       val ab: NodeSeq = <a/><b/>;
       Prettifier.default(ab) should be ("<a/><b/>")
     }
-    def `should handle runaway recursion gracefully, if not necessarily quickly` {
+    // SKIP-SCALATESTJS-END
+    it("should handle runaway recursion gracefully, if not necessarily quickly") {
       /*
         You'd think no one would do this, but:
 

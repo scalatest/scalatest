@@ -541,7 +541,7 @@ trait Futures extends PatienceConfiguration {
           case None =>
             val duration = System.nanoTime - startNanos
             if (duration < timeout.totalNanos)
-              Thread.sleep(interval.millisPart, interval.nanosPart)
+              SleepHelper.sleep(interval.millisPart, interval.nanosPart)
             else {
               throw new TestFailedException(
                 sde => Some(Resources.wasNeverReady(attempt.toString, interval.prettyString)),

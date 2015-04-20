@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with SeqEqualityConstraints {
+class TypeCheckedSeqEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals with SeqEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -38,9 +38,9 @@ class TypeCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  object `the SeqEqualityConstraints trait` {
+  describe("the SeqEqualityConstraints trait") {
 
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
+    it("should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship") {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assertTypeError("Vector(1, 2, 3) === List(1L, 2L, 3L)")
       assert(Vector(new Apple, new Apple) === List(new Fruit("apple"), new Fruit("apple")))

@@ -24,7 +24,9 @@ import EqualityPolicy.TripleEqualsInvocation
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 import scala.annotation.tailrec
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
@@ -482,6 +484,7 @@ final class NotWord {
                                   getStackDepthFun("NotWord.scala", "be")) 
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -505,6 +508,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(symbol)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>tempFile</code>, for example, refers to a <code>java.io.File</code>
@@ -530,6 +534,7 @@ final class NotWord {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -553,6 +558,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>notSoSecretFile</code>, for example, refers to a <code>java.io.File</code>
@@ -602,6 +608,7 @@ final class NotWord {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -625,6 +632,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAnWordApplication)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax: 

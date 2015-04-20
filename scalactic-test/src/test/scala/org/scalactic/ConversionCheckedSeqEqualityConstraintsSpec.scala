@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals with SeqEqualityConstraints {
+class ConversionCheckedSeqEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with ConversionCheckedTripleEquals with SeqEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -38,10 +38,10 @@ class ConversionCheckedSeqEqualityConstraintsSpec extends Spec with NonImplicitA
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  object `the SeqEqualityConstraints trait` {
+  describe("the SeqEqualityConstraints trait") {
 
     // Actually, I wonder if we shouldn't use something put into scopye by either TypeChecked or ConversionChecked
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
+    it("should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship") {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       assert(Vector(1, 2, 3) === List(1L, 2L, 3L))
       assert(Vector(new Apple, new Apple) === List(new Fruit("apple"), new Fruit("apple")))

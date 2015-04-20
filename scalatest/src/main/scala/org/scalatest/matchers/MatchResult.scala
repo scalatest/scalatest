@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.scalatest.matchers
- 
-import java.text.MessageFormat
+
 import org.scalactic.Prettifier
+import org.scalatest.Resources
 
 /**
  * The result of a match operation, such as one performed by a <a href="Matcher.html"><code>Matcher</code></a> or
@@ -268,10 +268,8 @@ final case class MatchResult(
    */
   def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs, midSentenceNegatedFailureMessageArgs, midSentenceFailureMessageArgs)
 
-  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
-    val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.map(prettifier).toArray)
-  }
+  private def makeString(rawString: String, args: IndexedSeq[Any]): String =
+    Resources.formatString(rawString, args.map(prettifier).toArray)
 }
 
 /**

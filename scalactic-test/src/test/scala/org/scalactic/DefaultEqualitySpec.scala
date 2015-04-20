@@ -23,11 +23,11 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
+class DefaultEqualitySpec extends FunSpec with NonImplicitAssertions {
 
-  object `the default Equality class` {
+  describe("the default Equality class") {
 
-    def `should call .equals on the left hand object (and not on the right hand object)` {
+    it("should call .equals on the left hand object (and not on the right hand object)") {
 
       class MyObject extends Object {
         var equalsWasCalled = false
@@ -46,7 +46,7 @@ class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
       assert(!b.equalsWasCalled)
     }
 
-    def `should call .deep first if left side, right side, or both are Arrays` {
+    it("should call .deep first if left side, right side, or both are Arrays") {
       val a = Array(1, 2, 3)
       val b = Array(1, 2, 3)
       val v = Vector(1, 2, 3)
@@ -55,7 +55,7 @@ class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
       assert((new DefaultEquality[Array[Int]]).areEqual(a, b))
     }
 
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
       assert((new DefaultEquality).toString == "Equality.default")
     }
   }

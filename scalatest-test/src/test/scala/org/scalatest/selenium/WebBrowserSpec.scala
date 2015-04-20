@@ -39,6 +39,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebElement
 
+import scala.reflect.ClassTag
+
 
 trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
   def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int) = {
@@ -73,23 +75,23 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def findField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit m: Manifest[T]) = {
+  def findField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]) = {
     it("should return a defined Option[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
       go to (host + file)
       find("secret1") match {
-        case Some(x) if (m.runtimeClass.isAssignableFrom(x.getClass)) => x.asInstanceOf[T].value should be (value)
+        case Some(x) if (classTag.runtimeClass.isAssignableFrom(x.getClass)) => x.asInstanceOf[T].value should be (value)
         case other => fail("Expected Some(" + typeDescription + "), but got: " + other)
       }
     }
   }
 
-  def iteratorField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit m: Manifest[T]) = {
+  def iteratorField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]) = {
     it("should return a defined Iterator[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
       go to (host + file)
       val secret1 = findAll("secret1")
       secret1.hasNext should be (true)
       val v = secret1.next
-      if (m.runtimeClass.isAssignableFrom(v.getClass)) {
+      if (classTag.runtimeClass.isAssignableFrom(v.getClass)) {
         v.asInstanceOf[T].value should be (value)
       } else {
         fail("Expected " + typeDescription + ", but got: " + v)

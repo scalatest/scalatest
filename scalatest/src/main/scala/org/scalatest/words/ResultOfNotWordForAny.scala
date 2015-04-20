@@ -36,7 +36,9 @@ import scala.annotation.tailrec
 import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
@@ -555,6 +557,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -571,6 +574,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>stack</code> is, for example, of type <code>Stack</code> and
@@ -593,6 +597,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -609,6 +614,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>notFileMock</code> is, for example, of type <code>File</code> and
@@ -631,6 +637,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -647,6 +654,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>keyEvent</code> is, for example, of type <code>KeyEvent</code> and

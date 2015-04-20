@@ -17,17 +17,11 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
 import scala.util.matching.Regex
-import java.lang.reflect.Field
-import scala.reflect.Manifest
+import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
-import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
 import org.scalactic.Tolerance
 import org.scalactic.Explicitly
 import org.scalactic.EqualityPolicy.Spread
@@ -40,19 +34,16 @@ import org.scalactic.enablers.AggregatingConstraint
 import org.scalactic.enablers.SequencingConstraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
-import MatchersHelper.andMatchersAndApply
-import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
+// SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
+// SKIP-SCALATESTJS-END
 import MatchersHelper.newTestFailedException
 import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
-import org.scalactic.NormalizingEquality
-import Assertions.checkExpectedException
-import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.NotAllowedException
 import scala.language.experimental.macros
@@ -1728,6 +1719,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   import scala.language.implicitConversions
 
+  // SKIP-SCALATESTJS-START
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))
@@ -1864,6 +1856,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
+  // SKIP-SCALATESTJS-END
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -1944,8 +1937,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
     */
-     
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1962,6 +1955,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     // TODO: Check the shouldBeTrues, are they sometimes always false or true?
     /**
@@ -1984,7 +1978,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
@@ -2002,6 +1997,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -2794,8 +2790,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                                       ^
    * </pre>
    */
-  def produce[T : Manifest]: ResultOfProduceInvocation[T] =
-    new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def produce[T : ClassTag]: ResultOfProduceInvocation[T] =
+    new ResultOfProduceInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -3605,7 +3601,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -3668,6 +3665,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax:
@@ -4911,7 +4909,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -4953,6 +4952,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -5033,7 +5033,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
-  
+
+  // SKIP-SCALATESTJS-START
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -5064,6 +5065,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedArray(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
+  // SKIP-SCALATESTJS-END
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5685,6 +5687,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -5875,6 +5878,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
 /*
     /**
@@ -6760,8 +6764,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T : Manifest]: ResultOfATypeInvocation[T] = 
-    new ResultOfATypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
+    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6771,8 +6775,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : Manifest]: ResultOfAnTypeInvocation[T] = 
-    new ResultOfAnTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
+    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6782,8 +6786,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T : Manifest]: ResultOfTheTypeInvocation[T] = 
-    new ResultOfTheTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def the[T : ClassTag]: ResultOfTheTypeInvocation[T] =
+    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   // This is where ShouldMatchers.scala started 
 
@@ -7470,7 +7474,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
 // TODO: Remember to write tests for inspector shorthands uncovering the bug below, always a empty because always true true passed to matchSym
     /**
      * This method enables the following syntax:
@@ -7519,6 +7524,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
@@ -7984,7 +7990,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *                                                     ^
    * </pre>
    */
-  def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
+  def of[T](implicit ev: ClassTag[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
 /**

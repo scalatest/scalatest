@@ -132,7 +132,7 @@ package org.scalatest
  *
  * @author Bill Venners
  */
-trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
+trait BeforeAndAfterAll extends SuiteMixin { this: Suite =>
 
   /**
    * Flag to indicate whether to invoke beforeAll and afterAll even when there are no tests expected.

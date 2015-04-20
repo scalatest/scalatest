@@ -15,6 +15,8 @@
  */
 package org.scalatest.matchers
 
+import scala.reflect.ClassTag
+
 /**
  * Trait extended by matcher objects, which may appear after the word <code>be</code>, that can match a value of the specified type.
  * The value to match is passed to the <code>BeMatcher</code>'s <code>apply</code> method. The result is a <code>MatchResult</code>.
@@ -208,10 +210,10 @@ object BeMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): BeMatcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: ClassTag[T]): BeMatcher[T] =
     new BeMatcher[T] {
       def apply(left: T) = fun(left)
-      override def toString: String = "BeMatcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
+      override def toString: String = "BeMatcher[" + ev.runtimeClass.getName + "](" + ev.runtimeClass.getName + " => MatchResult)"
     }
 }
 

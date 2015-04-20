@@ -15,41 +15,50 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
-class PosZFloatSpec extends Spec with Matchers {
+class PosZFloatSpec extends FunSpec with Matchers {
 
-  val posZFloatGen: Gen[PosZFloat] =
-    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
+  implicit val posZFloatGen: Gen[PosZFloat] =
+    for {i <- Gen.choosefloat(1, Float.MaxValue)} yield PosZFloat.from(i).get
 
-  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
-  object `A PosZFloat` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosZFloat] if the passed Float is greater than or equal to 0`
-      {
+  describe("A PosZFloat") {
+    describe("should offer a from factory method that") {
+      it("returns Some[PosZFloat] if the passed Float is greater than or equal to 0") {
         PosZFloat.from(0.0f).value.value shouldBe 0.0f
         PosZFloat.from(50.23f).value.value shouldBe 50.23f
         PosZFloat.from(100.0f).value.value shouldBe 100.0f
       }
-      def `returns None if the passed Float is NOT greater than or equal to 0` {
+      it("returns None if the passed Float is NOT greater than or equal to 0") {
         PosZFloat.from(-0.00001f) shouldBe None
         PosZFloat.from(-99.9f) shouldBe None
       }
     } 
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
+      // SKIP-SCALATESTJS-START
       PosZFloat.from(42.0f).value.toString shouldBe "PosZFloat(42.0)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY PosZFloat.from(42.0f).value.toString shouldBe "PosZFloat(42)"
     }
-    def `should return the same type from its unary_+ method` {
+    it("should return the same type from its unary_+ method") {
       +PosZFloat(3.0F) shouldEqual PosZFloat(3.0F)
     } 
-    def `should be automatically widened to compatible AnyVal targets` {
+    it("should be automatically widened to compatible AnyVal targets") {
       "PosZFloat(3.0F): Int" shouldNot typeCheck
       "PosZFloat(3.0F): Long" shouldNot typeCheck
       (PosZFloat(3.0F): Float) shouldEqual 3.0F
@@ -65,8 +74,8 @@ class PosZFloatSpec extends Spec with Matchers {
       (PosZFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosZFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
     }
-    object `when a compatible AnyVal is passed to a + method invoked on it` {
-      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+    describe("when a compatible AnyVal is passed to a + method invoked on it") {
+      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"
         val opInt = PosZFloat(3.0F) + 3
         opInt shouldEqual 6.0F
@@ -108,9 +117,9 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    object `when created with apply method` {
+    describe("when created with apply method") {
   
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "PosZFloat(8)" should compile
         PosZFloat(8).value shouldEqual 8.0F
         "PosZFloat(8L)" should compile
@@ -119,7 +128,7 @@ class PosZFloatSpec extends Spec with Matchers {
         PosZFloat(8.0F).value shouldEqual 8.0F
       }
   
-      def `should compile when 0 is passed in`: Unit = {
+      it("should compile when 0 is passed in") {
         "PosZFloat(0)" should compile
         PosZFloat(0).value shouldEqual 0.0F
         "PosZFloat(0L)" should compile
@@ -128,13 +137,13 @@ class PosZFloatSpec extends Spec with Matchers {
         PosZFloat(0.0F).value shouldEqual 0.0F
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "PosZFloat(-8)" shouldNot compile
         "PosZFloat(-8L)" shouldNot compile
         "PosZFloat(-8.0F)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val a: Int = -8
         "PosZFloat(a)" shouldNot compile
         val b: Long = -8L
@@ -143,11 +152,11 @@ class PosZFloatSpec extends Spec with Matchers {
         "PosZFloat(c)" shouldNot compile
       }
     }
-    object `when specified as a plain-old Float` {
+    describe("when specified as a plain-old Float") {
 
       def takesPosZFloat(pos: PosZFloat): Float = pos.value
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "takesPosZFloat(8)" should compile
         takesPosZFloat(8) shouldEqual 8.0F
         "takesPosZFloat(8L)" should compile
@@ -156,7 +165,7 @@ class PosZFloatSpec extends Spec with Matchers {
         takesPosZFloat(8.0F) shouldEqual 8.0F
       }
 
-      def `should compile when 0 is passed in`: Unit = {
+      it("should compile when 0 is passed in") {
         "takesPosZFloat(0)" should compile
         takesPosZFloat(0) shouldEqual 0.0F
         "takesPosZFloat(0L)" should compile
@@ -165,13 +174,13 @@ class PosZFloatSpec extends Spec with Matchers {
         takesPosZFloat(0.0F) shouldEqual 0.0F
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "takesPosZFloat(-8)" shouldNot compile
         "takesPosZFloat(-8L)" shouldNot compile
         "takesPosZFloat(-8.0F)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "takesPosZFloat(x)" shouldNot compile
         val b: Long = -8L
@@ -181,19 +190,19 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer a unary + method that is consistent with Float` {
+    it("should offer a unary + method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         (+pzfloat).toFloat shouldEqual (+(pzfloat.toFloat))
       }
     }
 
-    def `should offer a unary - method that is consistent with Float` {
+    it("should offer a unary - method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         (-pzfloat) shouldEqual (-(pzfloat.toFloat))
       }
     }
 
-    def `should offer '<' comparison that is consistent with Float`: Unit = {
+    it("should offer '<' comparison that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat < byte) shouldEqual (pzfloat.toFloat < byte)
       }
@@ -217,7 +226,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer '<=' comparison that is consistent with Float`: Unit = {
+    it("should offer '<=' comparison that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat <= byte) shouldEqual (pzfloat.toFloat <= byte)
       }
@@ -241,7 +250,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer '>' comparison that is consistent with Float`: Unit = {
+    it("should offer '>' comparison that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat > byte) shouldEqual (pzfloat.toFloat > byte)
       }
@@ -265,7 +274,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer '>=' comparison that is consistent with Float`: Unit = {
+    it("should offer '>=' comparison that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat >= byte) shouldEqual (pzfloat.toFloat >= byte)
       }
@@ -289,7 +298,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer a '+' method that is consistent with Float`: Unit = {
+    it("should offer a '+' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat + byte) shouldEqual (pzfloat.toFloat + byte)
       }
@@ -313,7 +322,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer a '-' method that is consistent with Float`: Unit = {
+    it("should offer a '-' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat - byte) shouldEqual (pzfloat.toFloat - byte)
       }
@@ -337,7 +346,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer a '*' method that is consistent with Float`: Unit = {
+    it("should offer a '*' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         (pzfloat * byte) shouldEqual (pzfloat.toFloat * byte)
       }
@@ -361,7 +370,7 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer a '/' method that is consistent with Float`: Unit = {
+    it("should offer a '/' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         pzfloat / byte shouldEqual pzfloat.toFloat / byte
       }
@@ -387,7 +396,7 @@ class PosZFloatSpec extends Spec with Matchers {
 
     // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
     // extra logic is needed to convert to a comparable type (boolean, in this case)
-    def `should offer a '%' method that is consistent with Float`: Unit = {
+    it("should offer a '%' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat, byte: Byte) =>
         val res = pzfloat % byte
         if (res.isNaN)
@@ -439,20 +448,20 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer 'min' and 'max' methods that are consistent with Float`: Unit = {
+    it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosZFloat, pfloat2: PosZFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
       }
     }
 
-    def `should offer an 'isWhole' method that is consistent with Float`: Unit = {
+    it("should offer an 'isWhole' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.isWhole shouldEqual pzfloat.toFloat.isWhole
       }
     }
 
-    def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Float`: Unit = {
+    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
         pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
@@ -460,14 +469,15 @@ class PosZFloatSpec extends Spec with Matchers {
       }
     }
 
-    def `should offer 'toRadians' and 'toDegrees' methods that are consistent with Float`: Unit = {
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.toRadians.toFloat shouldEqual pzfloat.toFloat.toRadians
         pzfloat.toDegrees.toFloat shouldEqual pzfloat.toFloat.toDegrees
       }
     }
 
-    def `should offer 'to' and 'until' method that is consistent with Float`: Unit = {
+    // SKIP-SCALATESTJS-START
+    it("should offer 'to' and 'until' method that is consistent with Float") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
@@ -478,8 +488,9 @@ class PosZFloatSpec extends Spec with Matchers {
         rangeEqual(pzfloat.to(end, step), pzfloat.toFloat.to(end, step)) shouldBe true
       }
     }
+    // SKIP-SCALATESTJS-END
 
-    def `should offer widening methods for basic types that are consistent with Float`: Unit = {
+    it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         def widen(value: Float): Float = value
         widen(pzfloat) shouldEqual widen(pzfloat.toFloat)

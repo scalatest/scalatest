@@ -20,6 +20,7 @@ import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words._
 import scala.collection.GenTraversable
+import scala.reflect.ClassTag
 import scala.util.matching.Regex
 import org.scalactic.Equality
 import org.scalactic.EqualityPolicy.Spread
@@ -882,6 +883,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class AndBeWord {
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -891,6 +893,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.a(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -911,7 +914,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = and(MatcherWords.be.a(aMatcher))
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -921,6 +925,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.an(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2181,6 +2186,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class OrBeWord {
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2190,6 +2196,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.a(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2211,6 +2218,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = or(MatcherWords.be.a(aMatcher))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2220,6 +2228,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.an(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>orange</code> and <code>apple</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -3250,10 +3259,10 @@ object Matcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): Matcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: ClassTag[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T) = fun(left)
-      override def toString: String = "Matcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
+      override def toString: String = "Matcher[" + ev.runtimeClass.getName + "](" + ev.runtimeClass.getName + " => MatchResult)"
     }
 }
 

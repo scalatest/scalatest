@@ -33,10 +33,6 @@ import Suite.testMethodTakesAnInformer
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import Suite.getEscapedIndentedTextForTest
-import Suite.getTopOfClass
-import Suite.getTopOfMethod
-import Suite.getTopOfMethod
-import Suite.getSuiteRunTestGoodies
 import Suite.autoTagClassAnnotations
 import org.scalatest.events._
 import Suite.getMessageForException
@@ -48,7 +44,6 @@ import Suite.reportTestCanceled
 import Suite.createInfoProvided
 import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
-import Suite.getMethodForTestName
 import scala.reflect.NameTransformer
 import tools.SuiteDiscoveryHelper
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -59,9 +54,13 @@ import annotation.tailrec
 import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
+import Suite.getTopOfMethod
 
 // SKIP-SCALATESTJS-START
 import org.scalatest.tools.StandardOutReporter
+import Suite.getTopOfClass
+import Suite.getSuiteRunTestGoodies
+import Suite.getMethodForTestName
 // SKIP-SCALATESTJS-END
 
 /*
@@ -923,6 +922,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def tags: Map[String, Set[String]] = Map.empty
 
+  // SKIP-SCALATESTJS-START
   private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
     val testNameSet = testNames
       
@@ -932,13 +932,14 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
     autoTagClassAnnotations(testTags, this)
   }
-  
+
   private def getTags(testName: String) =
     for {
       a <- getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
+  // SKIP-SCALATESTJS-END
 
   /**
    * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
@@ -1043,6 +1044,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   protected def runTest(testName: String, args: Args): Status = SucceededStatus
 
+  // SKIP-SCALATESTJS-START
   private[scalatest] def yeOldeRunTest(testName: String, args: Args): Status = {
 
     if (testName == null)
@@ -1125,6 +1127,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       case e: Throwable => throw e  
     }
   }
+  // SKIP-SCALATESTJS-END
   
   /**
    * Run zero to many of this <code>Suite</code>'s tests.
@@ -1373,9 +1376,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
       if (!stopper.stopRequested) {
-
-        // Create a Rerunner if the Suite has a no-arg constructor 
-        val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
 
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
@@ -1642,6 +1642,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val tags = Set.empty[String]
     }
   }
+  // SKIP-SCALATESTJS-START
   private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     val suiteTags = for { 
       a <- this.getClass.getAnnotations
@@ -1663,6 +1664,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val tags = Set.empty ++ suiteTags ++ testTags
     }
   }
+  // SKIP-SCALATESTJS-END
 }
 
 private[scalatest] object Suite {
@@ -2372,6 +2374,7 @@ used for test events like succeeded/failed, etc.
     report(TestFailed(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testName, recordedEvents, Some(throwable), Some(duration), Some(formatter), Some(SeeStackDepthException), theSuite.rerunner, payload))
   }
 
+  // SKIP-SCALATESTJS-START
   def getTopOfClass(theSuite: Suite) = TopOfClass(theSuite.getClass.getName)
   def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(theSuite.getClass.getName, method.toGenericString())
   def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, getMethodForTestName(theSuite, testName).toGenericString())
@@ -2382,6 +2385,9 @@ used for test events like succeeded/failed, etc.
     val method = getMethodForTestName(theSuite, testName)
     (theStopper, report, method, testStartTime)
   }
+  // SKIP-SCALATESTJS-END
+
+  //SCALATESTJS-ONLY def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, "test" + testName.capitalize)
 
   // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
@@ -2417,6 +2423,7 @@ used for test events like succeeded/failed, etc.
     else
       testName
 
+  // SKIP-SCALATESTJS-START
   def getMethodForTestName(theSuite: org.scalatest.Suite, testName: String): Method = {
     val candidateMethods = theSuite.getClass.getMethods.filter(_.getName == Suite.simpleNameForTest(testName))
     val found =
@@ -2450,6 +2457,7 @@ used for test events like succeeded/failed, etc.
          throw new IllegalArgumentException(Resources.testNotFound(testName))
      }
   }
+  // SKIP-SCALATESTJS-END
 
   // The substitution, if defined, indicates that the _1 string should be replace
   // by _2. This may transform "FunSpec" into "path.FunSpec", for example.
