@@ -85,9 +85,9 @@ class LazySeqSpec extends UnitSpec {
       ("z", -2.2, 0)
     )
     val (stringSeq, doubleSeq, intSeq) = LazySeq(tuples: _*).unzip3
-    stringSeq.toList should contain theSameElementsAs LazySeq("a", "b", "c", "z").toList
-    doubleSeq.toList should contain theSameElementsAs LazySeq(0.0, 1.1, 2.2, -2.2).toList
-    intSeq.toList should contain theSameElementsAs LazySeq(3, -3, 0, 0).toList
+    stringSeq.toList shouldBe LazySeq("a", "b", "c", "z").toList
+    doubleSeq.toList shouldBe LazySeq(0.0, 1.1, 2.2, -2.2).toList
+    intSeq.toList shouldBe LazySeq(3, -3, 0, 0).toList
   }
 
   it should "have a zip method" in {
