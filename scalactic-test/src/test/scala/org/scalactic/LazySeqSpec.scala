@@ -70,6 +70,26 @@ class LazySeqSpec extends UnitSpec {
     assertPretty(mapped)
   }
 
+  it should "have an unzip method" in {
+    val zipped = LazySeq(3, 1, 2, -3, 3).zip(LazySeq("z", "a", "b", "c", "z"))
+    val (intSeq, stringSeq) = zipped.unzip
+    intSeq.toList shouldBe LazySeq(3, 1, 2, -3, 3).toList
+    stringSeq.toList shouldBe LazySeq("z", "a", "b", "c", "z").toList
+  }
+
+  it should "have an unzip3 method" in {
+    val tuples = List(
+      ("a", 0.0, 3),
+      ("b", 1.1, -3),
+      ("c", 2.2, 0),
+      ("z", -2.2, 0)
+    )
+    val (stringSeq, doubleSeq, intSeq) = LazySeq(tuples: _*).unzip3
+    stringSeq.toList should contain theSameElementsAs LazySeq("a", "b", "c", "z").toList
+    doubleSeq.toList should contain theSameElementsAs LazySeq(0.0, 1.1, 2.2, -2.2).toList
+    intSeq.toList should contain theSameElementsAs LazySeq(3, -3, 0, 0).toList
+  }
+
   it should "have a zip method" in {
     val seq1 = LazySeq(1,2,3)
     val seq2 = LazySeq("a", "b", "c")

@@ -67,6 +67,26 @@ class LazyBagSpec extends UnitSpec {
     assertPretty(mapped)
   }
 
+  it should "have an unzip method" in {
+    val zipped = LazyBag(3, 1, 2, -3, 3).zip(LazyBag("z", "a", "b", "c", "z"))
+    val (intBag, stringBag) = zipped.unzip
+    intBag.toList should contain theSameElementsAs LazyBag(3, -3, 3, 2, 1).toList
+    stringBag.toList should contain theSameElementsAs LazyBag("z", "z", "a", "b", "c").toList
+  }
+
+  it should "have an unzip3 method" in {
+    val tuples = List(
+      ("a", 0.0, 3),
+      ("b", 1.1, -3),
+      ("c", 2.2, 0),
+      ("z", -2.2, 0)
+    )
+    val (stringBag, doubleBag, intBag) = LazyBag(tuples: _*).unzip3
+    stringBag.toList should contain theSameElementsAs LazyBag("z", "a", "b", "c").toList
+    doubleBag.toList should contain theSameElementsAs LazyBag(-2.2, 0.0, 1.1, 2.2).toList
+    intBag.toList should contain theSameElementsAs LazyBag(0, 3, -3, 0).toList
+  }
+
   it should "have a zip method" in {
     val bag1 = LazyBag(1,2,3)
     val bag2 = LazyBag("a", "b", "c")

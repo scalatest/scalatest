@@ -1888,16 +1888,6 @@ class SortedEquaSetSpec extends UnitSpec {
     result8 shouldBe numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
     result8.shouldHaveExactType[numberList.TreeEquaSet]
   }
-  it should "have an unzip method" in {
-    numberLower.SortedEquaSet((1, "2")).unzip(number, lower) shouldBe ((number.EquaSet(1), lower.EquaSet("2")))
-    numberLower.SortedEquaSet((1, "2"), (3, "4")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3), lower.EquaSet("2", "4")))
-    numberLower.SortedEquaSet((1, "2"), (3, "4"), (5, "6")).unzip(number, lower) shouldBe ((number.EquaSet(1, 3, 5), lower.EquaSet("2", "4", "6")))
-  }
-  it should "have an unzip3 method" in {
-    numberLowerTrimmed.SortedEquaSet((1, "2", "3")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1), lower.EquaSet("2"), trimmed.EquaSet("3"))
-    numberLowerTrimmed.SortedEquaSet((1, "2", "3"), (4, "5", "6")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4), lower.EquaSet("2", "5"), trimmed.EquaSet("3", "6"))
-    numberLowerTrimmed.SortedEquaSet((1, "2", "3"), (4, "5", "6"), (7, "8", "9")).unzip3(number, lower, trimmed) shouldBe (number.EquaSet(1, 4, 7), lower.EquaSet("2", "5", "8"), trimmed.EquaSet("3", "6", "9"))
-  }
 
   /*
    * TODO: The zip related tests have been changed to use 'should contain theSameElementsAs'
