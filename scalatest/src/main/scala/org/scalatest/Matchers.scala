@@ -1366,25 +1366,26 @@ import exceptions.TestFailedException
  * <h2>Working with <code>Option</code>s</h2>
  * 
  * <p>
- * ScalaTest matchers has no special support for <code>Option</code>s, but you can 
- * work with them quite easily using syntax shown previously. For example, if you wish to check
- * whether an option is <code>None</code>, you can write any of:
+ * You can work with options using ScalaTest's equality, <code>empty</code>,
+ * <code>defined</code>, and <code>contain</code> syntax.
+ * For example, if you wish to check whether an option is <code>None</code>, you can write any of:
  * </p>
  * 
  * <pre class="stHighlight">
  * option shouldEqual None
  * option shouldBe None
- * option should not be defined
+ * option should === (None)
  * option shouldBe empty
  * </pre>
  * 
  * <p>
- * If you wish to check an option is defined, and holds a specific value, you can write either of:
+ * If you wish to check an option is defined, and holds a specific value, you can write any of:
  * </p>
  * 
  * <pre class="stHighlight">
  * option shouldEqual Some("hi")
  * option shouldBe Some("hi")
+ * option should === (Some("hi"))
  * </pre>
  * 
  * <p>
@@ -1405,6 +1406,18 @@ import exceptions.TestFailedException
  * option.value should be &lt; 7
  * </pre>
  * 
+ * <p>
+ * As mentioned previously, you can use also use ScalaTest's <code>contain</code>, <code>contain oneOf</code>, and
+ * <code>contain noneOf</code> syntax with options:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * Some(2) should contain (2)
+ * Some(7) should contain oneOf (5, 7, 9)
+ * Some(0) should contain noneOf (7, 8, 9)
+ * </pre>
+ * </p>
+ *
  * <a name="checkingArbitraryProperties"></a>
  * <h2>Checking arbitrary properties with <code>have</code></h2>
  * 
