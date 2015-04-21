@@ -1117,6 +1117,8 @@ class GenContainBase {
       "Resources\\.didNotEqual\\(decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources.didNotEqual(decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
       //"Resources\\(\\\"equaled\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"equaled\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
       "Resources\\.wasNotEqualTo\\(decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources.wasNotEqualTo(decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
+      "FailureMessages\\.didNotEqual\\(fumList, toList\\)" -> "FailureMessages\\.didNotEqual\\(\"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
+      "FailureMessages\\.wasNotEqualTo\\(fumList, toList\\)" -> "FailureMessages\\.wasNotEqualTo\\(\"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
       "FailureMessages\\(\\\"didNotEqual\\\", fumList, toList\\)" -> "FailureMessages(\"didNotEqual\", \"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
       "FailureMessages\\(\\\"wasNotEqualTo\\\", fumList, toList\\)" -> "FailureMessages(\"wasNotEqualTo\", \"[\" + fumList + \"]\", \"[\" + toList + \"]\")",
       "decorateToStringValue\\(\\\"1\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"2\\\"\\)" -> "decorateToStringValue(\"[1]\") + \" was not equal to \" + decorateToStringValue(\"[2]\")",
