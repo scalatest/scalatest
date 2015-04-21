@@ -103,6 +103,12 @@ class ListShouldContainOnlySpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainOnlyElementsWithFriendlyReminder(decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
+
+      def `should throw TestFailedException when used to check Vector(2, 3) should contain only (1, 2, 3)` {
+        val e1 = intercept[exceptions.TestFailedException] {
+          Vector(2, 3) should contain only (1, 2, 3)
+        }
+      }
     }
 
     object `when used with (contain only (..))` {
