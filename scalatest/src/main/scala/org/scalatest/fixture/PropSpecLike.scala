@@ -15,4 +15,5 @@
  */
 package org.scalatest.fixture
 
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
 trait PropSpecLike extends PropSpecRegistration with ClassicTests

@@ -15,4 +15,5 @@
  */
 package org.scalatest
 
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
 trait FreeSpecLike extends FreeSpecRegistration with ClassicTests

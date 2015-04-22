@@ -115,6 +115,7 @@ object GenScalaTestJS {
               "SuiteMixin.scala",
               "Engine.scala",
               "Tag.scala",
+              "FunSuiteRegistration.scala",
               "FunSuiteLike.scala",
               "FunSuite.scala",
               "TestRegistration.scala",
@@ -125,26 +126,35 @@ object GenScalaTestJS {
               "Transformer.scala",
               "DeferredAbortedSuite.scala",
               "Suites.scala",
+              "FunSpecRegistration.scala",
               "FunSpecLike.scala",
               "FunSpec.scala",
               "UnquotedString.scala",
+              "FlatSpecRegistration.scala",
               "FlatSpecLike.scala",
               "FlatSpec.scala",
+              "WordSpecRegistration.scala",
               "WordSpecLike.scala",
               "WordSpec.scala",
+              "FreeSpecRegistration.scala",
               "FreeSpecLike.scala",
               "FreeSpec.scala",
+              "PropSpecRegistration.scala",
               "PropSpecLike.scala",
               "PropSpec.scala",
+              "FeatureSpecRegistration.scala",
               "FeatureSpecLike.scala",
               "FeatureSpec.scala",
               "MatchersHelper.scala",
               "Matchers.scala",
-              "Entry.scala",
               "Inspectors.scala",
               "OptionValues.scala",
               "Inside.scala",
-              "NonImplicitAssertions.scala"
+              "NonImplicitAssertions.scala",
+              "AsyncOutcome.scala",
+              "ClassicTests.scala",
+              "package.scala",
+              "LoneElement.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -156,20 +166,28 @@ object GenScalaTestJS {
               "NoArg.scala",
               "NoArgTestWrapper.scala",
               "FixtureNodeFamily.scala",
+              "FunSuiteRegistration.scala",
               "FunSuiteLike.scala",
               "FunSuite.scala",
+              "FlatSpecRegistration.scala",
               "FlatSpecLike.scala",
               "FlatSpec.scala",
+              "FunSpecRegistration.scala",
               "FunSpecLike.scala",
               "FunSpec.scala",
+              "WordSpecRegistration.scala",
               "WordSpecLike.scala",
               "WordSpec.scala",
+              "FreeSpecRegistration.scala",
               "FreeSpecLike.scala",
               "FreeSpec.scala",
+              "PropSpecRegistration.scala",
               "PropSpecLike.scala",
               "PropSpec.scala",
+              "FeatureSpecRegistration.scala",
               "FeatureSpecLike.scala",
-              "FeatureSpec.scala"
+              "FeatureSpec.scala",
+              "ClassicTests.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -258,7 +276,6 @@ object GenScalaTestJS {
       List(
         "TypeCheckWord.scala",
         "CompileWord.scala",
-        "ArrayWrapper.scala",
         "BehaveWord.scala",
         "ResultOfTaggedAsInvocation.scala",
         "ResultOfStringPassedToVerb.scala",
@@ -326,7 +343,18 @@ object GenScalaTestJS {
         "ResultOfBeWordForNoException.scala",
         "ResultOfContainWord.scala",
         "ResultOfNotWordForAny.scala",
-        "ResultOfTheTypeInvocation.scala"
+        "ResultOfTheTypeInvocation.scala",
+        "ResultOfOneElementOfApplication.scala",
+        "ResultOfAtLeastOneElementOfApplication.scala",
+        "ResultOfNoElementsOfApplication.scala",
+        "ResultOfAllElementsOfApplication.scala",
+        "ResultOfInOrderElementsOfApplication.scala",
+        "ResultOfAtMostOneElementOfApplication.scala",
+        "AggregatingExpression.scala",
+        "ContainingExpression.scala",
+        "SequencingExpression.scala",
+        "EqualityExpression.scala",
+        "BeEqualEqualWord.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
@@ -344,7 +372,8 @@ object GenScalaTestJS {
         "Existence.scala",
         "Size.scala",
         "Messaging.scala",
-        "Collecting.scala"
+        "Collecting.scala",
+        "package.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
       List(

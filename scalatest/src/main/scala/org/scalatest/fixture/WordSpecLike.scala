@@ -15,4 +15,5 @@
  */
 package org.scalatest.fixture
 
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
 trait WordSpecLike extends WordSpecRegistration with ClassicTests

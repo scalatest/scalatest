@@ -17,15 +17,15 @@ package org.scalactic
 
 import org.scalatest._
 
-class EnabledEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
-  object `EnabledEquality ` {
-    def `should not allow two function1's to be compared` {
+class EnabledEqualitySpec extends FunSpec with Matchers with NonImplicitAssertions {
+  describe("EnabledEquality ") {
+    it("should not allow two function1's to be compared") {
       val fun = (i: Int) => i + 1
       new UncheckedEquality { fun shouldEqual fun }
       new CheckedEquality { fun shouldEqual fun }
       new EnabledEquality { "fun shouldEqual fun" shouldNot typeCheck }
     }
-    def `should not allow anything to be compared with Any` {
+    it("should not allow anything to be compared with Any") {
 
       new UncheckedEquality { "hi" should not equal 1 }
       new UncheckedEquality { "hi" should not equal (1: Any) }
@@ -39,10 +39,10 @@ class EnabledEqualitySpec extends Spec with Matchers with NonImplicitAssertions 
       new EnabledEquality { """"hi" should not equal (1: Any)""" shouldNot typeCheck }
       new EnabledEquality { """("hi": Any) should not equal 1""" shouldNot typeCheck }
     }
-    def `should allow two Strings to be compared` {
+    it("should allow two Strings to be compared") {
       new EnabledEquality { "hi" shouldEqual "hi" }
     }
-    def `should not allow a DigitString to be compared with an Int, despite the DigitString => Int implicit conversion` {
+    it("should not allow a DigitString to be compared with an Int, despite the DigitString => Int implicit conversion") {
       val agent007 = DigitString("007")
       agent007 should not equal DigitString("07")
       DigitString("007") should equal (agent007)
@@ -57,7 +57,7 @@ class EnabledEqualitySpec extends Spec with Matchers with NonImplicitAssertions 
       new EnabledEquality { "agent007 should not equal 7" shouldNot typeCheck }
       new EnabledEquality { "7 should not equal agent007" shouldNot typeCheck }
     }
-    def `should not allow a Double to be compared with a Complex, despite the Double => Complex implicit conversion` {
+    it("should not allow a Double to be compared with a Complex, despite the Double => Complex implicit conversion") {
       val seven = Complex(7.0, 0.0)
       seven should not equal Complex(7.0, 1.0)
       Complex(7.0, 0.0) should equal (seven)

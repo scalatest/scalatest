@@ -23,10 +23,10 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnabledEquality {
+class StrictEnabledEqualityCooperatingAnyValsSpec extends FunSpec with StrictEnabledEquality {
 
-  object `The StrictEnabledEquality trait` {
-    def `should disallow equality comparisons between types that co-operate in Scala` {
+  describe("The StrictEnabledEquality trait") {
+    it("should disallow equality comparisons between types that co-operate in Scala") {
 
       val aChar: Char = 'c'
       val aByte: Byte = 99
@@ -35,8 +35,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       val aLong: Long = 99L
       val aFloat: Float = 99.0F
       val aDouble: Double = 99.0
+      // SKIP-SCALATESTJS-START
       val aBigInt: BigInt = BigInt(99)
       val aBigDecimal: BigDecimal = BigDecimal(99.0)
+      // SKIP-SCALATESTJS-END
       val aJavaCharacter: java.lang.Character = new java.lang.Character('c')
       val aJavaByte: java.lang.Byte = new java.lang.Byte(99.toByte)
       val aJavaShort: java.lang.Short = new java.lang.Short(99.toShort)
@@ -55,8 +57,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aChar === aLong")
       assertTypeError("aChar === aFloat")
       assertTypeError("aChar === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aChar === aBigInt")
       assertTypeError("aChar === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aChar === aJavaCharacter")
       assertTypeError("aChar === aJavaByte")
       assertTypeError("aChar === aJavaShort")
@@ -72,8 +76,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aByte === aLong")
       assertTypeError("aByte === aFloat")
       assertTypeError("aByte === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aByte === aBigInt")
       assertTypeError("aByte === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aByte === aJavaCharacter")
       assertTypeError("aByte === aJavaByte")
       assertTypeError("aByte === aJavaShort")
@@ -89,8 +95,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aShort === aLong")
       assertTypeError("aShort === aFloat")
       assertTypeError("aShort === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aShort === aBigInt")
       assertTypeError("aShort === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aShort === aJavaCharacter")
       assertTypeError("aShort === aJavaByte")
       assertTypeError("aShort === aJavaShort")
@@ -106,8 +114,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("anInt === aLong")
       assertTypeError("anInt === aFloat")
       assertTypeError("anInt === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("anInt === aBigInt")
       assertTypeError("anInt === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("anInt === aJavaCharacter")
       assertTypeError("anInt === aJavaByte")
       assertTypeError("anInt === aJavaShort")
@@ -123,8 +133,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assert(aLong === aLong)
       assertTypeError("aLong === aFloat")
       assertTypeError("aLong === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aLong === aBigInt")
       assertTypeError("aLong === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aLong === aJavaCharacter")
       assertTypeError("aLong === aJavaByte")
       assertTypeError("aLong === aJavaShort")
@@ -140,8 +152,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aFloat === aLong")
       assert(aFloat === aFloat)
       assertTypeError("aFloat === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aFloat === aBigInt")
       assertTypeError("aFloat === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aFloat === aJavaCharacter")
       assertTypeError("aFloat === aJavaByte")
       assertTypeError("aFloat === aJavaShort")
@@ -157,8 +171,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aDouble === aLong")
       assertTypeError("aDouble === aFloat")
       assert(aDouble === aDouble)
+      // SKIP-SCALATESTJS-START
       assertTypeError("aDouble === aBigInt")
       assertTypeError("aDouble === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aDouble === aJavaCharacter")
       assertTypeError("aDouble === aJavaByte")
       assertTypeError("aDouble === aJavaShort")
@@ -174,8 +190,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aBigInt === aLong")
       assertTypeError("aBigInt === aFloat")
       assertTypeError("aBigInt === aDouble")
+      // SKIP-SCALATESTJS-START
       assert(aBigInt === aBigInt)
       assertTypeError("aBigInt === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aBigInt === aJavaCharacter")
       assertTypeError("aBigInt === aJavaByte")
       assertTypeError("aBigInt === aJavaShort")
@@ -191,8 +209,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aBigDecimal === aLong")
       assertTypeError("aBigDecimal === aFloat")
       assertTypeError("aBigDecimal === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aBigDecimal === aBigInt")
       assert(aBigDecimal === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assertTypeError("aBigDecimal === aJavaCharacter")
       assertTypeError("aBigDecimal === aJavaByte")
       assertTypeError("aBigDecimal === aJavaShort")
@@ -208,8 +228,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaCharacter === aLong")
       assertTypeError("aJavaCharacter === aFloat")
       assertTypeError("aJavaCharacter === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaCharacter === aBigInt")
       assertTypeError("aJavaCharacter === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assert(aJavaCharacter === aJavaCharacter)
       assertTypeError("aJavaCharacter === aJavaByte")
       assertTypeError("aJavaCharacter === aJavaShort")
@@ -225,8 +247,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaByte === aLong")
       assertTypeError("aJavaByte === aFloat")
       assertTypeError("aJavaByte === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaByte === aBigInt")
       assertTypeError("aJavaByte === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaByte === aJavaCharacter")
       assert(aJavaByte === aJavaByte)
       assertTypeError("aJavaByte === aJavaShort")
@@ -242,8 +266,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaShort === aLong")
       assertTypeError("aJavaShort === aFloat")
       assertTypeError("aJavaShort === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaShort === aBigInt")
       assertTypeError("aJavaShort === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaShort === aJavaCharacter")
       assertTypeError("aJavaShort === aJavaByte")
       assert(aJavaShort === aJavaShort)
@@ -259,8 +285,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaInteger === aLong")
       assertTypeError("aJavaInteger === aFloat")
       assertTypeError("aJavaInteger === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaInteger === aBigInt")
       assertTypeError("aJavaInteger === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaInteger === aJavaCharacter")
       assertTypeError("aJavaInteger === aJavaByte")
       assertTypeError("aJavaInteger === aJavaShort")
@@ -276,8 +304,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaLong === aLong")
       assertTypeError("aJavaLong === aFloat")
       assertTypeError("aJavaLong === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaLong === aBigInt")
       assertTypeError("aJavaLong === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaLong === aJavaCharacter")
       assertTypeError("aJavaLong === aJavaByte")
       assertTypeError("aJavaLong === aJavaShort")
@@ -293,8 +323,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaFloat === aLong")
       assertTypeError("aJavaFloat === aFloat")
       assertTypeError("aJavaFloat === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaFloat === aBigInt")
       assertTypeError("aJavaFloat === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaFloat === aJavaCharacter")
       assertTypeError("aJavaFloat === aJavaByte")
       assertTypeError("aJavaFloat === aJavaShort")
@@ -310,8 +342,10 @@ class StrictEnabledEqualityCooperatingAnyValsSpec extends Spec with StrictEnable
       assertTypeError("aJavaDouble === aLong")
       assertTypeError("aJavaDouble === aFloat")
       assertTypeError("aJavaDouble === aDouble")
+      // SKIP-SCALATESTJS-START
       assertTypeError("aJavaDouble === aBigInt")
       assertTypeError("aJavaDouble === aBigDecimal")
+      // SKIP-SCALATESTJS-END
       assertTypeError("aJavaDouble === aJavaCharacter")
       assertTypeError("aJavaDouble === aJavaByte")
       assertTypeError("aJavaDouble === aJavaShort")

@@ -20,10 +20,11 @@ import java.util.{HashMap => JHashMap}
 import org.scalatest._
 import Matchers._
 
-class EntrySpec extends Spec {
+class EntrySpec extends FunSpec {
 
-  object `An org.scalatest.Entry` {
-    def `can be compared against an Entry coming from a java.util.Map` {
+  describe("An org.scalatest.Entry") {
+    // SKIP-SCALATESTJS-START
+    it("can be compared against an Entry coming from a java.util.Map") {
       val jmap: JMap[String, Int] = new JHashMap[String, Int]
       jmap.put("one", 1)
       jmap.put("two", 2)
@@ -33,14 +34,16 @@ class EntrySpec extends Spec {
       jmap.entrySet should not contain (Entry("one", 100))
       jmap.entrySet should contain allOf (Entry("one", 1), Entry("two", 2))
     }
-    def `should have a toString consistent with the ones coming from Java` {
+    it("should have a toString consistent with the ones coming from Java") {
       Entry("one", 1).toString should be ("one=1")
       Entry(1, "one").toString should be ("1=one")
     }
+    // SKIP-SCALATESTJS-END
   }
-  object `the loneElement method` {
-    object `when used with java.util.Map` {
-      def `should return an Entry that has key and value methods` {
+  describe("the loneElement method") {
+    // SKIP-SCALATESTJS-START
+    describe("when used with java.util.Map") {
+      it("should return an Entry that has key and value methods") {
         import LoneElement._
         val jmap: JMap[String, Int] = new JHashMap[String, Int]
         jmap.put("one", 1)
@@ -48,5 +51,6 @@ class EntrySpec extends Spec {
         jmap.loneElement.value should be (1)
       }
     }
+    // SKIP-SCALATESTJS-END
   }
 }

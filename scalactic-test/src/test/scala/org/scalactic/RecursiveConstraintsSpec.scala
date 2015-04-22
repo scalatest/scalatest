@@ -27,10 +27,10 @@ import scala.collection.mutable
 // Nope, not now that it is recursive, but the TODO is to write tests for that.
 //
 
-class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
+class RecursiveConstraintsSpec extends FunSpec with Matchers with CheckedEquality {
 
-  object `Recursive constraints should enable equality comparisons` {
-    def `on Seqs and Arrays` {
+  describe("Recursive constraints should enable equality comparisons") {
+    it("on Seqs and Arrays") {
       List(1, 2, 3) shouldEqual Vector(1L, 2L, 3L)
       List(1, 2, 3) shouldEqual List(1L, 2L, 3L)
       Vector(1, 2, 3) shouldEqual List(1L, 2L, 3L)
@@ -38,32 +38,32 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       Array(1, 2, 3) shouldEqual Array(1L, 2L, 3L)
       Array(1, 2, 3) shouldEqual List(1L, 2L, 3L)
     }
-    def `on nested Seqs` {
+    it("on nested Seqs") {
       Vector(List(1, 2, 3)) shouldEqual List(Vector(1L, 2L, 3L))
       List(List(1, 2, 3)) shouldEqual List(List(1L, 2L, 3L))
       List(Vector(1, 2, 3)) shouldEqual Vector(List(1L, 2L, 3L))
     }
-    def `on Sets` {
+    it("on Sets") {
       Set(1, 2, 3) shouldEqual mutable.HashSet(1L, 2L, 3L)
       Set(1, 2, 3) shouldEqual Set(1L, 2L, 3L)
       mutable.HashSet(1, 2, 3) shouldEqual Set(1L, 2L, 3L)
     }
-    def `on nested Sets` {
+    it("on nested Sets") {
       mutable.HashSet(Set(1, 2, 3)) shouldEqual Set(mutable.HashSet(1L, 2L, 3L))
       Set(Set(1, 2, 3)) shouldEqual Set(Set(1L, 2L, 3L))
       Set(mutable.HashSet(1, 2, 3)) shouldEqual mutable.HashSet(Set(1L, 2L, 3L))
     }
-    def `on Maps` {
+    it("on Maps") {
       Map("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual mutable.HashMap("1" -> 1L, "2" -> 2L, "3" -> 3L)
       Map("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual Map("1" -> 1L, "2" -> 2L, "3" -> 3L)
       mutable.HashMap("1" -> 1, "2" -> 2, "3" -> 3) shouldEqual Map("1" -> 1L, "2" -> 2L, "3" -> 3L)
     }
-    def `on nested Maps` {
+    it("on nested Maps") {
       mutable.HashMap(0 -> Map("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual Map(0 -> mutable.HashMap("1" -> 1L, "2" -> 2L, "3" -> 3L))
       Map(0 -> Map("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual Map(0 -> Map("1" -> 1L, "2" -> 2L, "3" -> 3L))
       Map(0 -> mutable.HashMap("1" -> 1, "2" -> 2, "3" -> 3)) shouldEqual mutable.HashMap(0 -> Map("1" -> 1L, "2" -> 2L, "3" -> 3L))
     }
-    def `on Every` {
+    it("on Every") {
       One(1) shouldEqual One(1L)
       Many(1, 2) shouldEqual Many(1L, 2L)
 
@@ -80,7 +80,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       """One(1) === Many(1, 2)""" shouldNot typeCheck
       """Many(1) === One(1, 2)""" shouldNot typeCheck
     }
-    def `on nested Every` {
+    it("on nested Every") {
       List(One(1)) shouldEqual Vector(One(1L))
       List(Many(1, 2)) shouldEqual Vector(Many(1L, 2L))
 
@@ -97,7 +97,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       """List(One(1)) === Vector(Many(1, 2))""" shouldNot typeCheck
       """List(Many(1)) === Vector(One(1, 2))""" shouldNot typeCheck
     }
-    def `on Or` {
+    it("on Or") {
 
       // Both sides Good
       (Good(1): Good[Int]) shouldEqual (Good(1L): Good[Long])
@@ -230,9 +230,9 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       Bad(1).asOr shouldEqual Bad(1L).asOr
       Bad(1L).asOr shouldEqual Bad(1).asOr
     }
-    object `on Nested Or` {
+    describe("on Nested Or") {
 
-      def `with List (which is covariant)` {
+      it("with List (which is covariant)") {
         // Both sides Good
         (List(Good(1)): List[Good[Int]]) shouldEqual (List(Good(1L)): List[Good[Long]])
         (List(Good(1)): List[Good[Int]]) shouldEqual (List(Good(1)): List[Good[Int]])
@@ -365,7 +365,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
         List(Bad(1L).asOr) shouldEqual List(Bad(1).asOr)
       }
 
-      def `with Set (which is invariant)` {
+      it("with Set (which is invariant)") {
         // Both sides Good
         (Set(Good(1)): Set[Good[Int]]) shouldEqual (Set(Good(1L)): Set[Good[Long]])
         (Set(Good(1)): Set[Good[Int]]) shouldEqual (Set(Good(1)): Set[Good[Int]])
@@ -512,7 +512,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       def asEither: Either[L, Nothing] = either
     }
 
-    def `on Either` {
+    it("on Either") {
 
       // Both sides Left
       (Left(1): Left[Int, Int]) shouldEqual (Left(1L): Left[Long, Int])
@@ -645,9 +645,9 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       Right(1).asEither shouldEqual Right(1L).asEither
       Right(1L).asEither shouldEqual Right(1).asEither
     }
-    def `on Nested Either` {
+    describe("on Nested Either") {
 
-      def `with List (which is covariant)` {
+      it("with List (which is covariant)") {
         // Both sides Left
         (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1L)): List[Left[Long, Int]])
         (List(Left(1)): List[Left[Int, Int]]) shouldEqual (List(Left(1)): List[Left[Int, Long]])
@@ -779,7 +779,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
         List(Right(1).asEither) shouldEqual List(Right(1L).asEither)
         List(Right(1L).asEither) shouldEqual List(Right(1).asEither)
       }
-      def `with Set (which is invariant)` {
+      it("with Set (which is invariant)") {
         // Both sides Left
         (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1L)): Set[Left[Long, Int]])
         (Set(Left(1)): Set[Left[Int, Int]]) shouldEqual (Set(Left(1)): Set[Left[Int, Long]])
@@ -912,7 +912,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
         Set(Right(1L).asEither) shouldEqual Set(Right(1).asEither)
       }
     }
-    def `on Options` {
+    it("on Options") {
       // Both sides Option
       Option(1) shouldEqual Option(1L)
       Option(1L) shouldEqual Option(1L)
@@ -946,7 +946,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       "Some(1) shouldEqual None" shouldNot typeCheck
       "Some(1L) shouldEqual None" shouldNot typeCheck
     }
-    def `on nested Options` {
+    it("on nested Options") {
       // Both sides Option
       Option(Option(1)) shouldEqual Option(Option(1L))
       Option(Option(1L)) shouldEqual Option(Option(1))
@@ -990,7 +990,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
 
     import scala.util.{Try, Success, Failure}
     val ex = new Exception("oops")
-    def `on Try` {
+    it("on Try") {
       // Both sides Try
       Try(1) shouldEqual Try(1L)
       Try(1L) shouldEqual Try(1L)
@@ -1021,7 +1021,7 @@ class RecursiveConstraintsSpec extends Spec with Matchers with CheckedEquality {
       "Success(1) shouldEqual Failure(ex)" shouldNot typeCheck
       "Success(1L) shouldEqual Failure(ex)" shouldNot typeCheck
     }
-    def `on nested Try` {
+    it("on nested Try") {
       // Both sides Try
       Try(Try(1)) shouldEqual Try(Try(1L))
       Try(Try(1L)) shouldEqual Try(Try(1))

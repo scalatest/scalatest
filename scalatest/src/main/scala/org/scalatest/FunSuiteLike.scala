@@ -15,4 +15,5 @@
  */
 package org.scalatest
 
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
 trait FunSuiteLike extends FunSuiteRegistration with ClassicTests

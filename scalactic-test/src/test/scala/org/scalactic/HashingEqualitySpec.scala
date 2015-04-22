@@ -23,9 +23,9 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class HashingEqualitySpec extends Spec with MustMatchers {
-  object `A Normalization` {
-    def `can be converted to a HashingEquality via toHashingEquality` {
+class HashingEqualitySpec extends FunSpec with MustMatchers {
+  describe("A Normalization") {
+    it("can be converted to a HashingEquality via toHashingEquality") {
       val hashEq = StringNormalizations.lowerCased.toHashingEquality
       hashEq.hashCodeFor("HI") mustEqual hashEq.hashCodeFor("hi")
       hashEq.hashCodeFor("happy") mustEqual hashEq.hashCodeFor("happy")

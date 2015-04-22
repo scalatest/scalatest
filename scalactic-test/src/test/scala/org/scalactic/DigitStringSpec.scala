@@ -17,14 +17,14 @@ package org.scalactic
 
 import org.scalatest._
 
-class DigitStringSpec extends Spec with Matchers {
-  object `A DigitString ` {
-    def `should throw IllegalArgumentException if a non-digit or empty string is passed` {
+class DigitStringSpec extends FunSpec with Matchers {
+  describe("A DigitString ") {
+    it("should throw IllegalArgumentException if a non-digit or empty string is passed") {
       an [IllegalArgumentException] should be thrownBy { DigitString("00B") }
       an [IllegalArgumentException] should be thrownBy { DigitString("") }
       an [IllegalArgumentException] should be thrownBy { DigitString("CafeBabe") }
     }
-    def `should throw IllegalArgumentException if digits are passed that represent an number greater than Int.MaxValue or Int.MinValue` {
+    it("should throw IllegalArgumentException if digits are passed that represent an number greater than Int.MaxValue or Int.MinValue") {
       /*
       scala> Int.MaxValue
       res1: Int = 2147483647
@@ -62,20 +62,20 @@ class DigitStringSpec extends Spec with Matchers {
       an [IllegalArgumentException] should be thrownBy { DigitString("-2147483649") }
       an [IllegalArgumentException] should be thrownBy { DigitString("-1-") }
     }
-    def `should equal another DigitString if both the strings are equal` {
+    it("should equal another DigitString if both the strings are equal") {
       DigitString("5") should equal (DigitString("5"))
       DigitString("06") should equal (DigitString("06"))
       DigitString("007") should equal (DigitString("007"))
       DigitString("08") should not equal (DigitString("008"))
     }
-    def `can be used where an Int is needed` {
+    it("can be used where an Int is needed") {
       def iKnowYouAreButWhatAmI(i: Int): Int = i
       iKnowYouAreButWhatAmI(7) should equal (7)
       iKnowYouAreButWhatAmI(DigitString("7")) should equal (7)
       iKnowYouAreButWhatAmI(DigitString("07")) should equal (7)
       iKnowYouAreButWhatAmI(DigitString("007")) should equal (7)
     }
-    def `can give you an Int by invoking toInt directly on it` {
+    it("can give you an Int by invoking toInt directly on it") {
       DigitString("007").toInt should equal (7)
     }
   }

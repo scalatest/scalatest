@@ -54,10 +54,17 @@ object GenMatchers {
     val mustMatchersWriter = new BufferedWriter(new FileWriter(mustMatchersFile))
     try {
       val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
+      var skipMode = false
       for (line <- lines) {
-        val mustLine = translateShouldToMust(line)
-        mustMatchersWriter.write(mustLine)
-        mustMatchersWriter.newLine()
+        if (line.trim == "// SKIP-SCALATESTJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS-END")
+          skipMode = false
+        else if (!skipMode) {
+          val mustLine = translateShouldToMust(line)
+          mustMatchersWriter.write(mustLine)
+          mustMatchersWriter.newLine()
+        }
       }
     }
     finally {

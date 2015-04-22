@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class FreshConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImplicitAssertions with CheckedEquality {
+class FreshConversionCheckedMapEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with CheckedEquality {
 
   // TODO: Need to explicitly enable the implicit conversion equality comparison
 
@@ -50,9 +50,9 @@ class FreshConversionCheckedMapEqualityConstraintsSpec extends Spec with NonImpl
     override def hashCode: Int = value.hashCode
   }
 
-  object `the MapEqualityConstraints trait` {
+  describe("the MapEqualityConstraints trait") {
 
-    def `should allow any Map to be compared with any other Map, so long as the key and value types of the two Maps have respective recursive EqualityConstraints` {
+    it("should allow any Map to be compared with any other Map, so long as the key and value types of the two Maps have respective recursive EqualityConstraints") {
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L))
       assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))

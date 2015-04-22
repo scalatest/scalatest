@@ -17,10 +17,10 @@ package org.scalactic
 
 import org.scalatest._
 
-class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
-  object `Two Options` {
+class CooperativeEqualitySpec extends FunSpec with Matchers with NonImplicitAssertions {
+  describe("Two Options") {
 
-    object `when cooperative Equality instances are defined for both element types` {
+    describe("when cooperative Equality instances are defined for both element types") {
 
       implicit val intEquality =
         new Equality[Int] {
@@ -44,7 +44,7 @@ class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAsserti
 
       // This is a sanity check, a test to make sure the test is testing what
       // I think it is testing
-      def `should be comparable under Checked- and EnabledEquality outside of Options` {
+      it("should be comparable under Checked- and EnabledEquality outside of Options") {
         // New policies
         // Both sides Some
         new UncheckedEquality { 42 shouldEqual Complex(42.0, 0.0) }
@@ -82,7 +82,7 @@ class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAsserti
         new ConversionCheckedTripleEquals { 42 shouldEqual Complex(42.0, 0.0) }
       }
 
-      def `should not by default be comparable under Checked- and EnabledEquality` {
+      it("should not by default be comparable under Checked- and EnabledEquality") {
   
         // New policies
         // Both sides Some
@@ -126,7 +126,7 @@ class CooperativeEqualitySpec extends Spec with Matchers with NonImplicitAsserti
         new ConversionCheckedTripleEquals { Option(42) should not equal Some(Complex(42.0, 0.0)) }
       }
   
-      def `should be comparable under Checked- and EnabledEquality if also under RecursiveOptionEquality` {
+      it("should be comparable under Checked- and EnabledEquality if also under RecursiveOptionEquality") {
   
         import RecursiveOptionEquality._
   

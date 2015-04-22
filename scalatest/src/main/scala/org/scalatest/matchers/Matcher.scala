@@ -1376,6 +1376,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[T] =
       outerInstance.and(MatcherWords.not.be(tripleEqualsInvocation))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1385,6 +1386,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(symbol: Symbol): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
@@ -1406,6 +1408,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = outerInstance.and(MatcherWords.not.be(bePropertyMatcher))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1415,6 +1418,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(resultOfAWordApplication))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
@@ -1436,6 +1440,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(resultOfAWordApplication))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1445,6 +1450,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(resultOfAnWordApplication))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2679,6 +2685,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[T] =
       outerInstance.or(MatcherWords.not.be(tripleEqualsInvocation))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2688,6 +2695,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(symbol: Symbol): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
@@ -2709,6 +2717,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = outerInstance.or(MatcherWords.not.be(bePropertyMatcher))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2718,6 +2727,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(resultOfAWordApplication))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
@@ -2739,6 +2749,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAWordApplication))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2748,6 +2759,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(resultOfAnWordApplication))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:

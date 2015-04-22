@@ -20,6 +20,8 @@ package org
  */
 package object scalatest {
 
+  // SKIP-SCALATESTJS-START
+
   private val defaultShell = ShellImpl()
 
   /**
@@ -66,6 +68,8 @@ package object scalatest {
    * Returns a copy of this <code>Shell</code> with <code>statsPassed</code> configuration parameter set to <code>false</code>.
    */
   lazy val nostats: Shell = defaultShell.nostats
+
+  // SKIP-SCALATESTJS-END
 
   /**
    * <p>

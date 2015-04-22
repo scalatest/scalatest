@@ -75,6 +75,8 @@ object GenScalacticJS {
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
+    copyDir("scalactic/src/main/scala/org/scalactic/enablers", "org/scalactic/enablers", targetDir, List.empty) ++
+    copyDir("scalactic/src/main/scala/org/scalactic/algebra", "org/scalactic/algebra", targetDir, List.empty) ++
     GenVersions.genScalacticVersions(new File(targetDir, "org/scalactic"), version, scalaVersion)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =

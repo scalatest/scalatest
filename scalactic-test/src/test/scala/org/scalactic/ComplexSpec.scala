@@ -17,15 +17,15 @@ package org.scalactic
 
 import org.scalatest._
 
-class ComplexSpec extends Spec with Matchers {
-  object `A Complex ` {
-    def `should equal another Complex if both the real and imaginary parts are equal` {
+class ComplexSpec extends FunSpec with Matchers {
+  describe("A Complex ") {
+    it("should equal another Complex if both the real and imaginary parts are equal") {
       Complex(2.0, 3.0) should equal (Complex(2.0, 3.0))
       Complex(2.0, 3.0) should not equal (Complex(1.0, 3.0))
       Complex(2.0, 3.0) should not equal (Complex(2.0, 1.0))
       Complex(2.0, 3.0) should not equal (Complex(1.0, 1.0))
     }
-    def `should have implicit conversions from DigitString, Int, and Double` {
+    it("should have implicit conversions from DigitString, Int, and Double") {
       def iKnowYouAreButWhatAmI(c: Complex): Complex = c
       iKnowYouAreButWhatAmI(Complex(2.0, 3.0)) should equal (Complex(2.0, 3.0))
       iKnowYouAreButWhatAmI(3.0) should equal (Complex(3.0, 0.0))

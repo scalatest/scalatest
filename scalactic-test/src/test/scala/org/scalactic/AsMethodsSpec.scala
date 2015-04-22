@@ -17,10 +17,10 @@ package org.scalactic
 
 import org.scalatest._
 
-class AsMethodsSpec extends Spec with Matchers with AsMethods {
+class AsMethodsSpec extends FunSpec with Matchers with AsMethods {
 
-  object `trait AsMethods` {
-    def `should provide a .as method that will convert any type A to the given type B when an implicit conversion from A => B exists` { 
+  describe("trait AsMethods") {
+    it("should provide a .as method that will convert any type A to the given type B when an implicit conversion from A => B exists") { 
       Option(3).map(_.as[Complex]) shouldEqual Option(Complex(3, 0))
     }
   }

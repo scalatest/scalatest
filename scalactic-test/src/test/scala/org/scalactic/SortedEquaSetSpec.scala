@@ -984,7 +984,9 @@ class SortedEquaSetSpec extends UnitSpec {
     List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     // TODO: this is not working 2.10, we may want to enable this back when we understand better how flatten is supported by the implicit in 2.10
     //List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    // SKIP-SCALATESTJS-START
     List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
+    // SKIP-SCALATESTJS-END
   }
   it should "have a flatten method that works on nested GenTraversable" in {
     numberList.SortedEquaSet(List(1, 2), List(3)).flatten shouldBe List(1, 2, 3)
@@ -1797,12 +1799,14 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a toMap method" in {
     numberLower.SortedEquaSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
   }
+  // SKIP-SCALATESTJS-START
   it should "have a toParArray method" in {
     number.SortedEquaSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
   }
   it should "have a toEquaBoxParArray method" in {
     number.SortedEquaSet(1, 2, 3).toEquaBoxParArray shouldBe ParArray(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
   }
+  // SKIP-SCALATESTJS-END
   it should "have a toSeq method" in {
     number.SortedEquaSet(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
     lower.SortedEquaSet("a", "b").toSeq shouldBe (Seq("a", "b"))

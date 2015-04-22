@@ -23,10 +23,10 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
+class EnabledEqualityCooperatingAnyValsSpec extends FunSpec with EnabledEquality {
 
-  object `The EnabledEquality trait` {
-    def `should allow equality comparisons between types that co-operate in Scala` {
+  describe("The EnabledEquality trait") {
+    it("should allow equality comparisons between types that co-operate in Scala") {
 
       val aChar: Char = 'c'
       val aByte: Byte = 99
@@ -35,8 +35,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       val aLong: Long = 99L
       val aFloat: Float = 99.0F
       val aDouble: Double = 99.0
+      // SKIP-SCALATESTJS-START
       val aBigInt: BigInt = BigInt(99)
       val aBigDecimal: BigDecimal = BigDecimal(99.0)
+      // SKIP-SCALATESTJS-END
       val aJavaCharacter: java.lang.Character = new java.lang.Character('c')
       val aJavaByte: java.lang.Byte = new java.lang.Byte(99.toByte)
       val aJavaShort: java.lang.Short = new java.lang.Short(99.toShort)
@@ -55,8 +57,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aChar === aLong)
       assert(aChar === aFloat)
       assert(aChar === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aChar === aBigInt)
       assert(aChar === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aChar === aJavaCharacter)
       assert(aChar === aJavaByte)
       assert(aChar === aJavaShort)
@@ -72,8 +76,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aByte === aLong)
       assert(aByte === aFloat)
       assert(aByte === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aByte === aBigInt)
       assert(aByte === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aByte === aJavaCharacter)
       assert(aByte === aJavaByte)
       assert(aByte === aJavaShort)
@@ -89,8 +95,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aShort === aLong)
       assert(aShort === aFloat)
       assert(aShort === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aShort === aBigInt)
       assert(aShort === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aShort === aJavaCharacter)
       assert(aShort === aJavaByte)
       assert(aShort === aJavaShort)
@@ -106,8 +114,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(anInt === aLong)
       assert(anInt === aFloat)
       assert(anInt === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(anInt === aBigInt)
       assert(anInt === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(anInt === aJavaCharacter)
       assert(anInt === aJavaByte)
       assert(anInt === aJavaShort)
@@ -123,8 +133,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aLong === aLong)
       assert(aLong === aFloat)
       assert(aLong === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aLong === aBigInt)
       assert(aLong === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aLong === aJavaCharacter)
       assert(aLong === aJavaByte)
       assert(aLong === aJavaShort)
@@ -140,8 +152,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aFloat === aLong)
       assert(aFloat === aFloat)
       assert(aFloat === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aFloat === aBigInt)
       assert(aFloat === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aFloat === aJavaCharacter)
       assert(aFloat === aJavaByte)
       assert(aFloat === aJavaShort)
@@ -157,8 +171,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aDouble === aLong)
       assert(aDouble === aFloat)
       assert(aDouble === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aDouble === aBigInt)
       assert(aDouble === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aDouble === aJavaCharacter)
       assert(aDouble === aJavaByte)
       assert(aDouble === aJavaShort)
@@ -167,6 +183,7 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aDouble === aJavaFloat)
       assert(aDouble === aJavaDouble)
 
+      // SKIP-SCALATESTJS-START
       assert(aBigInt === aChar)
       assert(aBigInt === aByte)
       assert(aBigInt === aShort)
@@ -200,6 +217,7 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aBigDecimal === aJavaLong)
       assert(aBigDecimal === aJavaFloat)
       assert(aBigDecimal === aJavaDouble)
+      // SKIP-SCALATESTJS-END
 
       assert(aJavaCharacter === aChar)
       assert(aJavaCharacter === aByte)
@@ -208,8 +226,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaCharacter === aLong)
       assert(aJavaCharacter === aFloat)
       assert(aJavaCharacter === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaCharacter === aBigInt)
       assert(aJavaCharacter === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaCharacter === aJavaCharacter)
       assert(aJavaCharacter === aJavaByte)
       assert(aJavaCharacter === aJavaShort)
@@ -225,8 +245,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaByte === aLong)
       assert(aJavaByte === aFloat)
       assert(aJavaByte === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaByte === aBigInt)
       assert(aJavaByte === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaByte === aJavaCharacter)
       assert(aJavaByte === aJavaByte)
       assert(aJavaByte === aJavaShort)
@@ -242,8 +264,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaShort === aLong)
       assert(aJavaShort === aFloat)
       assert(aJavaShort === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaShort === aBigInt)
       assert(aJavaShort === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaShort === aJavaCharacter)
       assert(aJavaShort === aJavaByte)
       assert(aJavaShort === aJavaShort)
@@ -259,8 +283,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaInteger === aLong)
       assert(aJavaInteger === aFloat)
       assert(aJavaInteger === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaInteger === aBigInt)
       assert(aJavaInteger === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaInteger === aJavaCharacter)
       assert(aJavaInteger === aJavaByte)
       assert(aJavaInteger === aJavaShort)
@@ -276,8 +302,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaLong === aLong)
       assert(aJavaLong === aFloat)
       assert(aJavaLong === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaLong === aBigInt)
       assert(aJavaLong === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaLong === aJavaCharacter)
       assert(aJavaLong === aJavaByte)
       assert(aJavaLong === aJavaShort)
@@ -293,8 +321,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaFloat === aLong)
       assert(aJavaFloat === aFloat)
       assert(aJavaFloat === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaFloat === aBigInt)
       assert(aJavaFloat === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaFloat === aJavaCharacter)
       assert(aJavaFloat === aJavaByte)
       assert(aJavaFloat === aJavaShort)
@@ -310,8 +340,10 @@ class EnabledEqualityCooperatingAnyValsSpec extends Spec with EnabledEquality {
       assert(aJavaDouble === aLong)
       assert(aJavaDouble === aFloat)
       assert(aJavaDouble === aDouble)
+      // SKIP-SCALATESTJS-START
       assert(aJavaDouble === aBigInt)
       assert(aJavaDouble === aBigDecimal)
+      // SKIP-SCALATESTJS-END
       assert(aJavaDouble === aJavaCharacter)
       assert(aJavaDouble === aJavaByte)
       assert(aJavaDouble === aJavaShort)

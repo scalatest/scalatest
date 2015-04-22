@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class FreshConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with CheckedEquality {
+class FreshConversionCheckedSetEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with CheckedEquality {
 
   // TODO: Need to explicitly enable the implicit conversion equality 
 
@@ -50,9 +50,9 @@ class FreshConversionCheckedSetEqualityConstraintsSpec extends Spec with NonImpl
     override def hashCode: Int = value.hashCode
   }
 
-  object `the SetEqualityConstraints trait` {
+  describe("the SetEqualityConstraints trait") {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere have a recursive EqualityConstraint` {
+    it("should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere have a recursive EqualityConstraint") {
 
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L))

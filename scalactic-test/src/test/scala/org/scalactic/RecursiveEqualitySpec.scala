@@ -17,12 +17,12 @@ package org.scalactic
 
 import org.scalatest._
 
-class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertions {
-  object `An Option` {
+class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssertions {
+  describe("An Option") {
 
     implicit val strEq = StringNormalizations.lowerCased.toEquality
 
-    def `should NOT do recursive equality under the all policies by default` {
+    it("should NOT do recursive equality under the all policies by default") {
 
       // New policies
       // Both sides Some
@@ -205,7 +205,7 @@ class RecursiveEqualitySpec extends Spec with Matchers with NonImplicitAssertion
       }
     }
 
-    def `should do recursive equality under any policy under RecursiveOptionEquality` {
+    it("should do recursive equality under any policy under RecursiveOptionEquality") {
 
       import RecursiveOptionEquality._
 

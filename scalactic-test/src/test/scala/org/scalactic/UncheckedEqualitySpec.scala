@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
+class UncheckedEqualitySpec extends FunSpec with NonImplicitAssertions {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -34,11 +34,11 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
   val sub2: Sub = new Sub(2)
   val nullSuper: Super = null
 
-  object `the custom equality === operator` {
+  describe("the custom equality === operator") {
 
-    object `with UncheckedEquality` {
+    describe("with UncheckedEquality") {
 
-      def `should compare anything with anything` {
+      it("should compare anything with anything") {
 
         new UncheckedEquality {
 
@@ -74,7 +74,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality imported` {
+      it("should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality imported") {
 
         object O extends UncheckedEquality
         import O._
@@ -120,7 +120,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality mixed in` {
+      it("should be overridable with TypeCheckedTripleEquals locally when UncheckedEquality mixed in") {
 
         object O extends UncheckedEquality {
 
@@ -166,7 +166,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality imported` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality imported") {
 
         object O extends UncheckedEquality
         import O._
@@ -213,7 +213,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality mixed in` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when UncheckedEquality mixed in") {
 
         object O extends UncheckedEquality {
 
@@ -261,9 +261,9 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
       }
     }
 
-    object `with TypeCheckedTripleEquals` {
+    describe("with TypeCheckedTripleEquals") {
 
-      def `should compare supertypes with subtypes on either side` {
+      it("should compare supertypes with subtypes on either side") {
 
         new TypeCheckedTripleEquals {
 
@@ -314,7 +314,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       } // TODO: Do this kind of thing for CheckedEquality
 
-      def `should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals imported` {
+      it("should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
         import O._
@@ -345,7 +345,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals mixed in` {
+      it("should be overridable with UncheckedEquality locally when TypeCheckedTripleEquals mixed in") {
 
         object O extends TypeCheckedTripleEquals {
 
@@ -376,7 +376,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
         import O._
@@ -423,7 +423,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in") {
 
         object O extends TypeCheckedTripleEquals {
 
@@ -471,9 +471,9 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
       }
     }
 
-    object `with ConversionCheckedTripleEquals` {
+    describe("with ConversionCheckedTripleEquals") {
 
-      def `should compare supertypes with subtypes on either side as well as types with implicit conversions in either direction` {
+      it("should compare supertypes with subtypes on either side as well as types with implicit conversions in either direction") {
 
         new ConversionCheckedTripleEquals {
 
@@ -526,7 +526,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals imported` {
+      it("should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
         import O._
@@ -557,7 +557,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals mixed in` {
+      it("should be overridable with UncheckedEquality locally when ConversionCheckedTripleEquals mixed in") {
 
         object O extends ConversionCheckedTripleEquals {
 
@@ -588,7 +588,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported` {
+      it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
         import O._
@@ -634,7 +634,7 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in` {
+      it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in") {
 
         object O extends ConversionCheckedTripleEquals {
 
@@ -682,11 +682,11 @@ class UncheckedEqualitySpec extends Spec with NonImplicitAssertions {
     }
   }
 
-  object `TripleEqualsInvocation ` {
+  describe("TripleEqualsInvocation ") {
     
     import EqualityPolicy.TripleEqualsInvocation
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result1 = new TripleEqualsInvocation("Bob", true)
       assert(result1.toString == "=== \"Bob\"")
       

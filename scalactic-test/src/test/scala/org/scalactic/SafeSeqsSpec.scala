@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
+class SafeSeqsSpec extends FunSpec with Matchers with SafeSeqs {
 
   abstract class Fruit
   case class Apple(name: String) extends Fruit
@@ -25,9 +25,9 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
   val mac = Apple("Mcintosh")
   val navel = Orange("Navel")
 
-  object `The safeContains syntax should` {
-    object `allow type checked containership tests` {
-      def `on Array` {
+  describe("The safeContains syntax should") {
+    describe("allow type checked containership tests") {
+      it("on Array") {
 
         (Array(1, 2, 3) safeContains 1) shouldBe true
         (Array(1, 2, 3) safeContains 5) shouldBe false
@@ -35,7 +35,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         Array(mac, navel) safeContains mac
       }
-      def `on List` {
+      it("on List") {
 
         (List(1, 2, 3) safeContains 1) shouldBe true
         (List(1, 2, 3) safeContains 5) shouldBe false
@@ -43,7 +43,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         List(mac, navel) safeContains mac
       }
-      def `on Vector` {
+      it("on Vector") {
 
         (Vector(1, 2, 3) safeContains 1) shouldBe true
         (Vector(1, 2, 3) safeContains 5) shouldBe false
@@ -51,7 +51,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         Vector(mac, navel) safeContains mac
       }
-      def `on ListBuffer` {
+      it("on ListBuffer") {
 
         import scala.collection.mutable.ListBuffer
 
@@ -62,8 +62,8 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         ListBuffer(mac, navel) safeContains mac
       }
     }
-    object `allow type checked indexOf` {
-      def `on Array` {
+    describe("allow type checked indexOf") {
+      it("on Array") {
 
         Array(1, 2, 3).safeIndexOf(1) shouldBe 0
         Array(1, 2, 3).safeIndexOf(2) shouldBe 1
@@ -78,7 +78,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         Array(mac, navel).safeIndexOf(mac, 1) shouldBe -1
         Array(mac, navel).safeIndexOf(navel, 1) shouldBe 1
       }
-      def `on List` {
+      it("on List") {
 
         List(1, 2, 3).safeIndexOf(1) shouldBe 0
         List(1, 2, 3).safeIndexOf(2) shouldBe 1
@@ -93,7 +93,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         List(mac, navel).safeIndexOf(mac, 1) shouldBe -1
         List(mac, navel).safeIndexOf(navel, 1) shouldBe 1
       }
-      def `on Vector` {
+      it("on Vector") {
 
         Vector(1, 2, 3).safeIndexOf(1) shouldBe 0
         Vector(1, 2, 3).safeIndexOf(2) shouldBe 1
@@ -108,7 +108,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         Vector(mac, navel).safeIndexOf(mac, 1) shouldBe -1
         Vector(mac, navel).safeIndexOf(navel, 1) shouldBe 1
       }
-      def `on ListBuffer` {
+      it("on ListBuffer") {
 
         import scala.collection.mutable.ListBuffer
 
@@ -127,8 +127,8 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
       }
     }
 
-    object `allow type checked lastIndexOf` {
-      def `on Array` {
+    describe("allow type checked lastIndexOf") {
+      it("on Array") {
 
         Array(1, 2, 3).safeLastIndexOf(1) shouldBe 0
         Array(1, 2, 3).safeLastIndexOf(2) shouldBe 1
@@ -143,7 +143,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         Array(mac, navel).safeLastIndexOf(mac, 1) shouldBe 0
         Array(mac, navel).safeLastIndexOf(navel, 0) shouldBe -1
       }
-      def `on List` {
+      it("on List") {
 
         List(1, 2, 3).safeLastIndexOf(1) shouldBe 0
         List(1, 2, 3).safeLastIndexOf(2) shouldBe 1
@@ -158,7 +158,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         List(mac, navel).safeLastIndexOf(mac, 1) shouldBe 0
         List(mac, navel).safeLastIndexOf(navel, 0) shouldBe -1
       }
-      def `on Vector` {
+      it("on Vector") {
 
         Vector(1, 2, 3).safeLastIndexOf(1) shouldBe 0
         Vector(1, 2, 3).safeLastIndexOf(2) shouldBe 1
@@ -173,7 +173,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
         Vector(mac, navel).safeLastIndexOf(mac, 1) shouldBe 0
         Vector(mac, navel).safeLastIndexOf(navel, 0) shouldBe -1
       }
-      def `on ListBuffer` {
+      it("on ListBuffer") {
 
         import scala.collection.mutable.ListBuffer
 
@@ -192,8 +192,8 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
       }
     }
 
-    object `allow type checked indexOfSlice` {
-      def `on Array` {
+    describe("allow type checked indexOfSlice") {
+      it("on Array") {
 
         Array(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3)) shouldBe 1
         Array(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3), 3) shouldBe -1
@@ -219,7 +219,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """Array("1", "2", "3", "4", "5").safeIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on List` {
+      it("on List") {
 
         List(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3)) shouldBe 1
         List(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3), 3) shouldBe -1
@@ -245,7 +245,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """List("1", "2", "3", "4", "5").safeIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on Vector` {
+      it("on Vector") {
 
         Vector(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3)) shouldBe 1
         Vector(1, 2, 3, 4, 5).safeIndexOfSlice(List(2, 3), 3) shouldBe -1
@@ -271,7 +271,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """Vector("1", "2", "3", "4", "5").safeIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on ListBuffer` {
+      it("on ListBuffer") {
 
         import scala.collection.mutable.ListBuffer
 
@@ -301,8 +301,8 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
       }
     }
 
-    object `allow type checked lastIndexOfSlice` {
-      def `on Array` {
+    describe("allow type checked lastIndexOfSlice") {
+      it("on Array") {
 
         Array(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3)) shouldBe 1
         Array(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3), 3) shouldBe 1
@@ -334,7 +334,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """Array("1", "2", "3", "4", "5").safeLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on List` {
+      it("on List") {
 
         List(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3)) shouldBe 1
         List(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3), 3) shouldBe 1
@@ -366,7 +366,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """List("1", "2", "3", "4", "5").safeLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on Vector` {
+      it("on Vector") {
 
         Vector(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3)) shouldBe 1
         Vector(1, 2, 3, 4, 5).safeLastIndexOfSlice(List(2, 3), 3) shouldBe 1
@@ -398,7 +398,7 @@ class SafeSeqsSpec extends Spec with Matchers with SafeSeqs {
 
         """List("1", "2", "3", "4", "5").safeLastIndexOfSlice(List(2, 3)) shouldBe 1""" shouldNot typeCheck
       }
-      def `on ListBuffer` {
+      it("on ListBuffer") {
 
         import scala.collection.mutable.ListBuffer
 

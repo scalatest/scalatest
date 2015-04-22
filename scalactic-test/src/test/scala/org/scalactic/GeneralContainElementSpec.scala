@@ -17,15 +17,17 @@ package org.scalactic
 
 import org.scalatest._
 
-class GeneralContainElementSpec extends Spec with Matchers with CheckedEquality {
+class GeneralContainElementSpec extends FunSpec with Matchers with CheckedEquality {
 
-  object `the contain theSameElementsAs syntax` {
-    def `should work on different types` {
+  describe("the contain theSameElementsAs syntax") {
+    // SKIP-SCALATESTJS-START
+    it("should work on different types") {
       val jul: java.util.List[Int] = new java.util.ArrayList[Int]
       jul.add(3)
       jul.add(2)
       jul.add(1)
       List(1, 2, 3) should (contain theSameElementsAs jul)
     }
+    // SKIP-SCALATESTJS-END
   }
 }

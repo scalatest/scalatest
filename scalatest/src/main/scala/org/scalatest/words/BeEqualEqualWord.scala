@@ -19,7 +19,9 @@ import org.scalactic.Prettifier
 import org.scalatest.{Suite, Resources}
 import org.scalatest.matchers.{MatchResult, Matcher}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of

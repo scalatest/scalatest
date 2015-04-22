@@ -23,9 +23,9 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class OrderingEqualitySpec extends Spec with MustMatchers {
-  object `A Normalization` {
-    def `can be converted to a OrderingEquality via toOrderingEquality` {
+class OrderingEqualitySpec extends FunSpec with MustMatchers {
+  describe("A Normalization") {
+    it("can be converted to a OrderingEquality via toOrderingEquality") {
       /*
         scala> val ord = implicitly[Ordering[String]]
         ord: Ordering[String] = scala.math.Ordering$String$@f634763
