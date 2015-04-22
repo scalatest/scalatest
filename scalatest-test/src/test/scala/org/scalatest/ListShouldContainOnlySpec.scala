@@ -109,6 +109,20 @@ class ListShouldContainOnlySpec extends Spec {
           Vector(2, 3) should contain only (1, 2, 3)
         }
       }
+
+      def `should do nothing when do List(Book("Peace", 1000), Book("War", 1100)) should contain only (BookTitled("Peace"), BookTitled("War")) with custom equality` {
+        case class Book(val title: String, val year: Long)
+        case class BookTitled(title: String)
+        implicit val bookEquality =
+          new Equality[Book] {
+            def areEqual(a: Book, b: Any): Boolean =
+              b match {
+                case BookTitled(title) => a.title == title
+                case _ => a == b
+              }
+          }
+        List(Book("Peace", 1000), Book("War", 1100)) should contain only (BookTitled("Peace"), BookTitled("War"))
+      }
     }
 
     object `when used with (contain only (..))` {

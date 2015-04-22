@@ -182,7 +182,7 @@ object Aggregating {
   
   private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean =
     left.forall(l => right.find(r => tryEquality(l, r, equality)).isDefined) &&
-    right.forall(r => left.find(l => tryEquality(r, l, equality)).isDefined)
+    right.forall(r => left.find(l => tryEquality(l, r, equality)).isDefined)
   
   private[scalatest] def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
