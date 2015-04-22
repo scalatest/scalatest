@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.enablers
+package org.scalatest.enablers
 
 import org.scalactic.Every
 import scala.collection.GenTraversable

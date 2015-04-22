@@ -27,7 +27,7 @@ import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalactic.enablers.Collecting
+import org.scalatest.enablers.Collecting
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.enablers
+package org.scalatest.enablers
 
 /**
  * Supertrait for <code>Messaging</code> typeclasses.
