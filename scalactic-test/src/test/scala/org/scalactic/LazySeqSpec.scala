@@ -123,5 +123,33 @@ class LazySeqSpec extends UnitSpec {
     b1 shouldBe bag.toList
     b2 shouldBe List(0, 1, 2)
   }
+
+  it should "have a collect method" in {
+    val seq = LazySeq(1, 2, 3, 4, 5)
+    val doubledOdds = seq.collect {
+      case n: Int if n % 2 == 1 => n * 2
+    }
+    doubledOdds.toList shouldBe LazySeq(2, 6, 10).toList
+    val noMatch = seq.collect { case n: Int if n < 0 => n }
+    noMatch.toList shouldBe empty
+  }
+
+  it should "have a scan method" in {
+    val seq = LazySeq(1, 2, 3, 4, 5)
+    val scanned = seq.scan(0)(_+_)
+    scanned.toList shouldBe LazySeq(0, 1, 3, 6, 10, 15).toList
+  }
+
+  it should "have a scanLeft method" in {
+    val seq = LazySeq(1, 2, 3, 4, 5)
+    val scanned = seq.scanLeft(0)(_+_)
+    scanned.toList shouldBe LazySeq(0, 1, 3, 6, 10, 15).toList
+  }
+
+  it should "have a scanRight method" in {
+    val seq = LazySeq(1, 2, 3, 4, 5)
+    val scanned = seq.scanRight(0)(_+_)
+    scanned.toList shouldBe LazySeq(15, 14, 12, 9, 5, 0).toList
+  }
 }
 

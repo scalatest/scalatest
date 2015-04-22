@@ -384,21 +384,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      */
     def apply(elem: T): Boolean
 
-    /**
-     * Builds a new collection by applying a partial function to all elements of this `EquaSet`
-     * on which the function is defined.
-     *
-     * @param pf the partial function which filters and maps the `EquaSet`.
-     * @return a new collection of type `That` resulting from applying the partial function
-     * `pf` to each element on which it is defined and collecting the results.
-     * The order of the elements is preserved.
-     *
-     * @return a new `EquaSet` resulting from applying the given partial function
-     * `pf` to each element on which it is defined and collecting the results.
-     * The order of the elements is preserved.
-     */
-    def collect(pf: PartialFunction[T, T]): thisEquaPath.EquaSet
-
     /*
       The reason I don't just do this:
 
@@ -933,31 +918,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      * @return `true`, if both collections contain the same elements in the same order, `false` otherwise.
      */
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean
-
-    /**
-     * Produces a collection containing cumulative results of applying the
-     * operator going left to right.
-     *
-     * @param z the initial value
-     * @param op the binary operator applied to the intermediate result and the element
-     * @return `EquaSet` with intermediate results
-     */
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.EquaSet
-
-    /**
-     * Produces a collection containing cumulative results of applying the operator going right to left.
-     * The head of the collection is the last cumulative result.
-     *
-     * Example:
-     * {{{
-     * `EquaSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `EquaSet`(10, 9, 7, 4, 0)
-     * }}}
-     *
-     * @param z the initial value
-     * @param op the binary operator applied to the intermediate result and the element
-     * @return `EquaSet` with intermediate results
-     */
-    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.EquaSet
 
     /**
      * The size of this `EquaSet`.

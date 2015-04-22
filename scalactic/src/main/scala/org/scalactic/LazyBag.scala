@@ -15,6 +15,8 @@
  */
 package org.scalactic
 
+import scala.collection.generic.CanBuildFrom
+
 trait LazyBag[+T] {
   def map[U](f: T => U): LazyBag[U]
   def flatMap[U](f: T => LazyBag[U]): LazyBag[U]
@@ -22,6 +24,48 @@ trait LazyBag[+T] {
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
   def size: Int
+  /**
+   * Builds a new collection by applying a partial function to all elements of this `LazyBag`
+   * on which the function is defined.
+   *
+   * @param pf the partial function which filters and maps the `LazyBag`.
+   * @return a new collection of type `That` resulting from applying the partial function
+   * `pf` to each element on which it is defined and collecting the results.
+   * The order of the elements is preserved.
+   *
+   * @return a new `LazyBag` resulting from applying the given partial function
+   * `pf` to each element on which it is defined and collecting the results.
+   * The order of the elements is preserved.
+   */
+  def collect[U](pf: PartialFunction[T, U]): LazyBag[U]
+
+  def scan[U >: T](z: U)(op: (U, U) ⇒ U): LazyBag[U]
+
+  /**
+   * Produces a collection containing cumulative results of applying the
+   * operator going left to right.
+   *
+   * @param z the initial value
+   * @param op the binary operator applied to the intermediate result and the element
+   * @return `LazyBag` with intermediate results
+   */
+  def scanLeft[U](z: U)(op: (U, T) => U): LazyBag[U]
+
+  /**
+   * Produces a collection containing cumulative results of applying the operator going right to left.
+   * The head of the collection is the last cumulative result.
+   *
+   * Example:
+   * {{{
+   * `LazyBag`(1, 2, 3, 4).scanRight(0)(_ + _) == `LazyBag`(10, 9, 7, 4, 0)
+   * }}}
+   *
+   * @param z the initial value
+   * @param op the binary operator applied to the intermediate result and the element
+   * @return `LazyBag` with intermediate results
+   */
+  def scanRight[U](z: U)(op: (T, U) => U): LazyBag[U]
+
   /**
    * Converts this `LazyBag` of pairs into two collections of the first and second
    * half of each pair.
@@ -119,11 +163,17 @@ trait LazyBag[+T] {
 
 object LazyBag {
   private class BasicLazyBag[T](private val args: List[T]) extends LazyBag[T] { thisLazyBag =>
+    def collect[U](pf: PartialFunction[T, U]): LazyBag[U] = new CollectLazyBag(thisLazyBag, pf)
     def map[U](f: T => U): LazyBag[U] = new MapLazyBag(thisLazyBag, f)
     def flatMap[U](f: T => LazyBag[U]): LazyBag[U] = new FlatMapLazyBag(thisLazyBag, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
     def toList: List[T] = args
+
+    def scan[U >: T](z: U)(op: (U, U) ⇒ U): LazyBag[U] = new ScanLazyBag(thisLazyBag, z, op)
+    def scanLeft[U](z: U)(op: (U, T) => U): LazyBag[U] = new ScanLeftLazyBag(thisLazyBag, z, op)
+    def scanRight[U](z: U)(op: (T, U) => U): LazyBag[U] = new ScanRightLazyBag(thisLazyBag, z, op)
+
     def size: Int = args.size
 
     def unzip[U1, U2](implicit asPair: T => (U1, U2)): (LazyBag[U1], LazyBag[U2]) = (
@@ -154,6 +204,7 @@ object LazyBag {
   }
 
   private abstract class TransformLazyBag[T, U] extends LazyBag[U] { thisLazyBag =>
+    def collect[V](pf: PartialFunction[U, V]): LazyBag[V] = new CollectLazyBag(thisLazyBag, pf)
     def map[V](g: U => V): LazyBag[V] = new MapLazyBag[U, V](thisLazyBag, g)
     def flatMap[V](f: U => LazyBag[V]): LazyBag[V] = ???
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
@@ -161,6 +212,11 @@ object LazyBag {
     }
     def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
     def toList: List[U] // This is the lone abstract method
+
+    def scan[V >: U](z: V)(op: (V, V) ⇒ V): LazyBag[V] = new ScanLazyBag(thisLazyBag, z, op)
+    def scanLeft[V](z: V)(op: (V, U) => V): LazyBag[V] = new ScanLeftLazyBag(thisLazyBag, z, op)
+    def scanRight[V](z: V)(op: (U, V) => V): LazyBag[V] = new ScanRightLazyBag(thisLazyBag, z, op)
+
     def size: Int = toList.size
 
     def unzip[V1, V2](implicit asPair: U => (V1, V2)): (LazyBag[V1], LazyBag[V2]) =
@@ -183,12 +239,28 @@ object LazyBag {
     override def hashCode: Int = thisLazyBag.toList.groupBy(o => o).hashCode
   }
 
+  private class CollectLazyBag[T, U](lazyBag: LazyBag[T], pf: PartialFunction[T, U]) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.collect(pf)
+  }
+
   private class MapLazyBag[T, U](lazyBag: LazyBag[T], f: T => U) extends TransformLazyBag[T, U] {
     def toList: List[U] = lazyBag.toList.map(f)
   }
 
   private class FlatMapLazyBag[T, U](lazyBag: LazyBag[T], f: T => LazyBag[U]) extends TransformLazyBag[T, U] {
     def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
+  }
+
+  private class ScanLazyBag[T](lazyBag: LazyBag[T], z: T, op: (T, T) ⇒ T) extends TransformLazyBag[T, T] {
+    def toList: List[T] = lazyBag.toList.scan(z)(op)
+  }
+
+  private class ScanLeftLazyBag[T, U](lazyBag: LazyBag[T], z: U, op: (U, T) ⇒ U) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.scanLeft(z)(op)
+  }
+
+  private class ScanRightLazyBag[T, U](lazyBag: LazyBag[T], z: U, op: (T, U) ⇒ U) extends TransformLazyBag[T, U] {
+    def toList: List[U] = lazyBag.toList.scanRight(z)(op)
   }
 
   private class UnzipLeftLazyBag[T, U1, U2](lazyBag: LazyBag[T])(implicit asPair: T => (U1, U2)) extends TransformLazyBag[T, U1] {

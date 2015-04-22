@@ -16,11 +16,18 @@
 package org.scalactic
 
 trait LazySeq[+T] extends LazyBag[T] {
+  def collect[U](pf: PartialFunction[T, U]): LazySeq[U]
+
   def map[U](f: T => U): LazySeq[U]
   def flatMap[U](f: T => LazyBag[U]): LazySeq[U]
   def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet
   def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
   def toList: List[T]
+
+  def scan[U >: T](z: U)(op: (U, U) ⇒ U): LazySeq[U]
+  def scanLeft[U](z: U)(op: (U, T) => U): LazySeq[U]
+  def scanRight[U](z: U)(op: (T, U) => U): LazySeq[U]
+
   def size: Int
   def unzip[U1, U2](implicit asPair: T => (U1, U2)): (LazySeq[U1], LazySeq[U2])
   def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (LazySeq[U1], LazySeq[U2], LazySeq[U3])
@@ -31,11 +38,17 @@ trait LazySeq[+T] extends LazyBag[T] {
 
 object LazySeq {
   private class BasicLazySeq[T](private val args: List[T]) extends LazySeq[T] { thisLazySeq =>
+    def collect[U](pf: PartialFunction[T, U]): LazySeq[U] = new CollectLazySeq(thisLazySeq, pf)
     def map[U](f: T => U): LazySeq[U] = new MapLazySeq(thisLazySeq, f)
     def flatMap[U](f: T => LazyBag[U]): LazySeq[U] = new FlatMapLazySeq(thisLazySeq, f)
     def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
     def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = toPath.TreeEquaSet(args: _*)
     def toList: List[T] = args
+
+    def scan[U >: T](z: U)(op: (U, U) ⇒ U): LazySeq[U] = new ScanLazySeq(thisLazySeq, z, op)
+    def scanLeft[U](z: U)(op: (U, T) => U): LazySeq[U] = new ScanLeftLazySeq(thisLazySeq, z, op)
+    def scanRight[U](z: U)(op: (T, U) => U): LazySeq[U] = new ScanRightLazySeq(thisLazySeq, z, op)
+
     def size: Int = args.size
 
     def unzip[U1, U2](implicit asPair: T => (U1, U2)): (LazySeq[U1], LazySeq[U2]) = (
@@ -60,6 +73,7 @@ object LazySeq {
   }
 
   private abstract class TransformLazySeq[T, U] extends LazySeq[U] { thisLazySeq =>
+    def collect[V](pf: PartialFunction[U, V]): LazySeq[V] = new CollectLazySeq(thisLazySeq, pf)
     def map[V](g: U => V): LazySeq[V] = new MapLazySeq[U, V](thisLazySeq, g)
     def flatMap[V](f: U => LazyBag[V]): LazySeq[V] = new FlatMapLazySeq(thisLazySeq, f)
     def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
@@ -69,6 +83,11 @@ object LazySeq {
       toPath.TreeEquaSet(toList: _*)
     }
     def toList: List[U]
+
+    def scan[V >: U](z: V)(op: (V, V) ⇒ V): LazySeq[V] = new ScanLazySeq(thisLazySeq, z, op)
+    def scanLeft[V](z: V)(op: (V, U) => V): LazySeq[V] = new ScanLeftLazySeq(thisLazySeq, z, op)
+    def scanRight[V](z: V)(op: (U, V) => V): LazySeq[V] = new ScanRightLazySeq(thisLazySeq, z, op)
+
     def size: Int = toList.size
 
     def unzip[V1, V2](implicit asPair: U => (V1, V2)): (LazySeq[V1], LazySeq[V2]) = (
@@ -97,12 +116,28 @@ object LazySeq {
     override def hashCode: Int = thisLazySeq.toList.hashCode
   }
 
+  private class CollectLazySeq[T, U](lazyBag: LazySeq[T], pf: PartialFunction[T, U]) extends TransformLazySeq[T, U] {
+    def toList: List[U] = lazyBag.toList.collect(pf)
+  }
+
   private class MapLazySeq[T, U](lazySeq: LazySeq[T], f: T => U) extends TransformLazySeq[T, U] { thisLazySeq =>
     def toList: List[U] = lazySeq.toList.map(f)
   }
 
   private class FlatMapLazySeq[T, U](lazySeq: LazySeq[T], f: T => LazyBag[U]) extends TransformLazySeq[T, U] { thisLazySeq =>
     def toList: List[U] = lazySeq.toList.flatMap(f.andThen(_.toList))
+  }
+
+  private class ScanLazySeq[T](lazySeq: LazySeq[T], z: T, op: (T, T) ⇒ T) extends TransformLazySeq[T, T] {
+    def toList: List[T] = lazySeq.toList.scan(z)(op)
+  }
+
+  private class ScanLeftLazySeq[T, U](lazySeq: LazySeq[T], z: U, op: (U, T) ⇒ U) extends TransformLazySeq[T, U] {
+    def toList: List[U] = lazySeq.toList.scanLeft(z)(op)
+  }
+
+  private class ScanRightLazySeq[T, U](lazySeq: LazySeq[T], z: U, op: (T, U) ⇒ U) extends TransformLazySeq[T, U] {
+    def toList: List[U] = lazySeq.toList.scanRight(z)(op)
   }
 
   private class ZipLazySeq[T, U](thisSeq: LazySeq[T], that: LazyBag[U]) extends TransformLazySeq[T, (T, U)] {

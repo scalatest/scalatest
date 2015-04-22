@@ -120,5 +120,33 @@ class LazyBagSpec extends UnitSpec {
     b1 should contain theSameElementsAs bag.toList
     b2 should contain theSameElementsAs List(0, 1, 2)
   }
+
+  it should "have a collect method" in {
+    val bag = LazyBag(1, 2, 3, 4, 5)
+    val doubledOdds = bag.collect {
+      case n: Int if n % 2 == 1 => n * 2
+    }
+    doubledOdds.toList should contain theSameElementsAs LazyBag(2, 6, 10).toList
+    val noMatch = bag.collect { case n: Int if n < 0 => n }
+    noMatch.toList shouldBe empty
+  }
+
+  it should "have a scan method" in {
+    val bag = LazyBag(1, 2, 3, 4, 5)
+    val scanned = bag.scan(0)(_+_)
+    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+  }
+
+  it should "have a scanLeft method" in {
+    val bag = LazyBag(1, 2, 3, 4, 5)
+    val scanned = bag.scanLeft(0)(_+_)
+    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+  }
+
+  it should "have a scanRight method" in {
+    val bag = LazyBag(1, 2, 3, 4, 5)
+    val scanned = bag.scanRight(0)(_+_)
+    scanned.toList should contain theSameElementsAs LazyBag(0, 5, 9, 12, 14, 15).toList
+  }
 }
 

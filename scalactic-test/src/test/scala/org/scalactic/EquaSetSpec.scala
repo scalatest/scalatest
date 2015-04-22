@@ -680,22 +680,6 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an into.collect method" is pending
 
-  it should "have a collect method that only accepts functions that result in the path-enclosed type" in {
-    /*
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i % 2 == 0 => i * 2 }
-    res3: List[Int] = List(4, 8, 12, 16, 20)
-
-    scala> List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i * 2 }
-    res4: List[Int] = List()
-    */
-    val result1 = number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
-    result1 shouldBe number.EquaSet(4, 8, 12, 16, 20)
-    result1.shouldHaveExactType[number.EquaSet]
-    number.EquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i > 10 => i * 2 } shouldBe number.EquaSet.empty
-    val result2 = number.FastEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) collect { case i if i % 2 == 0 => i * 2 }
-    result2 shouldBe number.FastEquaSet(4, 8, 12, 16, 20)
-    result2.shouldHaveExactType[number.FastEquaSet]
-  }
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.EquaSet(1, 2, 3).compose(_ + 1)
     fn(0) shouldBe true
@@ -1353,40 +1337,6 @@ class EquaSetSpec extends UnitSpec {
     number.EquaSet(3).sameElements(List(3)) shouldBe true
   }
   it should "have an into.scanLeft method" is pending
-  it should "have a scanLeft method" in {
-    val result1 = number.EquaSet(1).scanLeft(0)(_ + _)
-    result1 shouldBe number.EquaSet(0, 1)
-    result1.shouldHaveExactType[number.EquaSet]
-
-    val result2 = number.EquaSet(1, 2, 3).scanLeft(0)(_ + _)
-    result2 shouldBe number.EquaSet(0, 1, 3, 6)
-    result2.shouldHaveExactType[number.EquaSet]
-
-    val result3 = number.FastEquaSet(1).scanLeft(0)(_ + _)
-    result3 shouldBe number.FastEquaSet(0, 1)
-    result3.shouldHaveExactType[number.FastEquaSet]
-
-    val result4 = number.FastEquaSet(1, 2, 3).scanLeft(0)(_ + _)
-    result4 shouldBe number.FastEquaSet(0, 1, 3, 6)
-    result4.shouldHaveExactType[number.FastEquaSet]
-  }
-  it should "have a scanRight method" in {
-    val result1 = number.EquaSet(1).scanRight(0)(_ + _)
-    result1 shouldBe number.EquaSet(1, 0)
-    result1.shouldHaveExactType[number.EquaSet]
-
-    val result2 = number.EquaSet(1, 2, 3).scanRight(0)(_ + _)
-    result2 shouldBe number.EquaSet(6, 5, 3, 0)
-    result2.shouldHaveExactType[number.EquaSet]
-
-    val result3 = number.FastEquaSet(1).scanRight(0)(_ + _)
-    result3 shouldBe number.FastEquaSet(1, 0)
-    result3.shouldHaveExactType[number.FastEquaSet]
-
-    val result4 = number.FastEquaSet(1, 2, 3).scanRight(0)(_ + _)
-    result4 shouldBe number.FastEquaSet(6, 5, 3, 0)
-    result4.shouldHaveExactType[number.FastEquaSet]
-  }
   it should "have an into.scanRight method" is pending
   it should "have a slice method" in {
     val result1 = number.EquaSet(3).slice(0, 0)
