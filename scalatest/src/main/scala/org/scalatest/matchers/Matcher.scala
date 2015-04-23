@@ -60,6 +60,7 @@ import org.scalatest.words.ResultOfTheSameElementsAsApplication
 import org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication
 import org.scalatest.words.ResultOfOnlyApplication
 import org.scalatest.words.ResultOfAllOfApplication
+import org.scalatest.words.ResultOfAllElementsOfApplication
 import org.scalatest.words.ResultOfInOrderOnlyApplication
 import org.scalatest.words.ResultOfInOrderApplication
 import org.scalatest.words.ResultOfKeyWordApplication
@@ -777,6 +778,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain allElementsOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.contain.allElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -1708,6 +1720,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain allElementsOf (8, 1, 2)
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfAllElementsOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -1916,6 +1939,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain allElementsOf List(1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.contain.allElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -2857,6 +2891,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain allElementsOf List(8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfAllElementsOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**

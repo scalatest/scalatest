@@ -2913,6 +2913,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
     new ResultOfAllOfApplication(xs)
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (allElementsOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def allElementsOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    if (xs.distinct.size != xs.size)
+      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
+    new ResultOfAllElementsOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -3893,6 +3908,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain allElementsOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(only: ResultOfAllElementsOfApplication)(implicit evidence: Aggregating[T]) {
+
+      val right = only.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAllOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right)
+            else
+              FailureMessages.containedAllElementsOf(e, right),
+            None,
+            6
+          )
+      }
+    }
     
     /**
      * This method enables the following syntax:
@@ -4370,6 +4410,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain allElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
+      val right = elements.toList
+      if (right.distinct.size != right.size)
+        throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
+      doCollected(collected, xs, original, "allElementsOf", 1) { e =>
+        if (aggregating.containsAllOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right)
+            else
+              FailureMessages.containedAllElementsOf(e, right),
+            None,
+            6
+          )
       }
     }
     

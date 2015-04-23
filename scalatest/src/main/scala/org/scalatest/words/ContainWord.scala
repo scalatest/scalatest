@@ -372,6 +372,28 @@ final class ContainWord {
       override def toString: String = "contain allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    val right = elements.toList
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("ContainWord.scala", "allElementsOf"))
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAllOf(left, right),
+              Resources.rawDidNotContainAllElementsOf,
+              Resources.rawContainedAllElementsOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain allElementsOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain allElementsOf " + Prettifier.default(right)
+    }
+  }
   
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Sequencing] = {
     val right = firstEle :: secondEle :: remainingEles.toList
