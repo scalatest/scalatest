@@ -47,7 +47,7 @@ package org.scalactic
  *
  * <p>
  * <code>Validation</code>s can also be used to accumulate error using <code>when</code>, a method that's made available by trait <code>Accumulation</code> on
- * accumualting <code>Or</code>s (<code>Or</code>s whose <code>Bad</code> type is an <code>Every[T]</code>). Here are some examples:
+ * accumulating <code>Or</code>s (<code>Or</code>s whose <code>Bad</code> type is an <code>Every[T]</code>). Here are some examples:
  * </p>
  *
  * <pre class="stHighlight">

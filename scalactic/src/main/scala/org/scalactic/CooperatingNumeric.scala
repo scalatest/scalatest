@@ -38,7 +38,7 @@ object CooperatingNumeric {
     override def toString: String = "CooperatingNumeric[Float]"
   }
   private object CooperatingDouble extends CooperatingNumeric[Double] {
-    override def toString: String = "CooperatingNumeric[Doubl]"
+    override def toString: String = "CooperatingNumeric[Double]"
   }
   private object CooperatingBigInt extends CooperatingNumeric[BigInt] {
     override def toString: String = "CooperatingNumeric[BigInt]"

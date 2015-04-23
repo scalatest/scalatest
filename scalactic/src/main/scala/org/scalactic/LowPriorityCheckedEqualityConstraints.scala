@@ -22,7 +22,7 @@ import EqualityPolicy._
  * is not applicable.
  *
  * <p>
- * The purpose of this trait is to make the <code>===</code> operator symetric. In other words, a <code>===</code> invocation
+ * The purpose of this trait is to make the <code>===</code> operator symmetric. In other words, a <code>===</code> invocation
  * will be allowed if subtype relationship exists in either direction. For example, in the following expression, the left hand
  * side is a subtype of the right hand side:
  * </p>

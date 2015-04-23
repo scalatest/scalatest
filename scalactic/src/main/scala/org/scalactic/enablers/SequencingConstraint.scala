@@ -26,7 +26,7 @@ import annotation.implicitNotFound
  * Typeclass that enables for sequencing certain <code>contain</code> syntax in the ScalaTest matchers DSL.
  *
  * <p>
- * An <code>Sequencing[A]</code> provides access to the "sequenching nature" of type <code>A</code> in such
+ * An <code>Sequencing[A]</code> provides access to the "sequencing nature" of type <code>A</code> in such
  * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
  * can be any type of <em>sequencing</em>&#8212;an object that in some way brings together other objects in order.
  * ScalaTest provides implicit implementations for several types out of the box in the
@@ -75,7 +75,7 @@ trait SequencingConstraint[-S, R] {
    * Implements <code>contain</code> <code>inOrderOnly</code> syntax for sequences of type <code>S</code>.
    *
    * @param sequence an sequence about which an assertion is being made
-   * @param eles the only elements that should be contained, in order of appearence in <code>eles</code>, in the passed sequence
+   * @param eles the only elements that should be contained, in order of appearance in <code>eles</code>, in the passed sequence
    * @return true if the passed sequence contains only the passed elements in (iteration) order
    */
   def containsInOrderOnly(sequence: S, eles: Seq[R]): Boolean

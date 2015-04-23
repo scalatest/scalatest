@@ -18,7 +18,7 @@ package org.scalactic
 /**
  * An <code>Equality[T]</code> that offers a <code>hashCodeFor</code> method that
  * can provide an <code>Int</code> hash code for a given <code>T</code> instance, whose
- * contract is constrainted by that of <code>areEqual</code>.
+ * contract is constrained by that of <code>areEqual</code>.
  *
  * <p>
  * The general contract of <code>hashCodeFor</code> is:

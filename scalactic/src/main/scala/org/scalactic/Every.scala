@@ -94,7 +94,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * <p>
  * <code>Every</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
- * an empty <code>Seq</code>. However, an implicit converison from <code>Every</code> to <code>collection.immutable.IndexedSeq</code>
+ * an empty <code>Seq</code>. However, an implicit conversion from <code>Every</code> to <code>collection.immutable.IndexedSeq</code>
  * is defined in the <code>Every</code> companion object that will be applied if you attempt to call one of the missing methods. As a
  * result, you can invoke <code>filter</code> on an <code>Every</code>, even though <code>filter</code> could result
  * in an empty sequence&mdash;but the result type will be <code>collection.immutable.IndexedSeq</code> instead of <code>Every</code>:
@@ -453,7 +453,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>Every</code>.
    * </p>
    *
-   * @tparm B the type of the elements of each nested <code>Every</code>
+   * @tparam B the type of the elements of each nested <code>Every</code>
    * @return a new <code>Every</code> resulting from concatenating all nested <code>Every</code>s.
    */
   final def flatten[B](implicit ev: T <:< Every[B]): Every[B] = flatMap(ev)
@@ -1449,8 +1449,8 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
    * shorter collection to the length of the longer.
    *
-   * @tparm O the type of the second half of the returned pairs
-   * @tparm U the type of the first half of the returned pairs
+   * @tparam O the type of the second half of the returned pairs
+   * @tparam U the type of the first half of the returned pairs
    * @param other the <code>Iterable</code> providing the second half of each result pair
    * @param thisElem the element to be used to fill up the result if this <code>Every</code> is shorter than <code>that</code> <code>Iterable</code>.
    * @param thatElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>Every</code>.

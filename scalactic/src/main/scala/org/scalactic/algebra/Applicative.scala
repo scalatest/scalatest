@@ -25,7 +25,7 @@ import scala.language.higherKinds
  * and <code>applying</code> methods that obey laws of <em>homomorphism</em> and <em>interchange</em>.
  *
  * <p>
- * The <em>homomorhphism law</em> states that given a value, <code>a</code>, of type <code>A</code> and
+ * The <em>homomorphism law</em> states that given a value, <code>a</code>, of type <code>A</code> and
  * a function, <code>f</code>, of type <code>A =&gt; B</code> (and implicit <code>Applicative.adapters</code> imported): 
  * </p>
  *

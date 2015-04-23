@@ -66,7 +66,7 @@ import annotation.implicitNotFound
  * </pre>
  * 
  * <p>
- * The above assertion could never succceed, because an option cannot contain more than
+ * The above assertion could never succeed, because an option cannot contain more than
  * one value. By default the above statement does not compile, because <code>contain</code> <code>allOf</code>
  * is enabled by <code>Aggregating</code>, and ScalaTest provides no implicit <code>Aggregating</code> instance
  * for type <code>scala.Option</code>.
