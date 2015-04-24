@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
 import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
@@ -2819,6 +2820,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (oneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def oneElementOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfOneElementOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -3728,6 +3742,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain oneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit containing: Containing[T]) {
+
+      val right = oneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain atLeastOneOf ("one")
      *                     ^
      * </pre>
@@ -4230,6 +4269,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain oneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "oneElementOf", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
       }
     }
 

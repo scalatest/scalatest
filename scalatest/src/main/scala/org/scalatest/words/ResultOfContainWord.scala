@@ -58,6 +58,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain oneElementOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]) {
+    val right = elements.toList
+    if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneElementOf(left, right)
+        else
+          FailureMessages.containedOneElementOf(left, right)
+      )
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
