@@ -375,14 +375,12 @@ final class ContainWord {
 
   def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
-    if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("ContainWord.scala", "allElementsOf"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsAllOf(left, right),
+              aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
               Vector(left, right)

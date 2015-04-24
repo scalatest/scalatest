@@ -103,20 +103,9 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum") and contain allElementsOf Seq("fie", "fee", "fum", "foe"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
-
-        val e2 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain allElementsOf Seq("fie", "fee", "fum", "foe") and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum") and contain allElementsOf Seq("fie", "fee", "fum", "foe"))
+        fumList should (contain allElementsOf Seq("fie", "fee", "fum", "foe") and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
 
@@ -160,13 +149,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (equal (toList) and contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (equal (fumList) and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (equal (fumList) and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
 
@@ -210,13 +194,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (be (fumList) and contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (be (fumList) and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (be (fumList) and contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
 
@@ -260,13 +239,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum") and be (fumList))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum") and be (fumList))
       }
     }
 
@@ -310,20 +284,9 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fum")) and not contain allElementsOf (Seq("fie", "fee", "fuu", "foe")))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
-
-        val e2 = intercept[exceptions.NotAllowedException] {
-          fumList should (not contain allElementsOf (Seq("fie", "fee", "fuu", "foe")) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fam")) and not contain allElementsOf (Seq("fie", "fee", "fuu", "foe")))
+        fumList should (not contain allElementsOf (Seq("fie", "fee", "fuu", "foe")) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fam")))
       }
     }
 
@@ -367,13 +330,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (not contain allElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain allElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not equal (toList) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (not equal (toList) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fam")))
       }
     }
 
@@ -417,13 +375,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         (fumList should (not contain allElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain allElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not be (toList) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        fumList should (not be (toList) and not contain allElementsOf (Seq("fee", "fie", "foe", "fie", "fam")))
       }
     }
 
@@ -495,20 +448,9 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")) + ", but " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (contain allElementsOf Seq(3, 2, 2, 1) and contain allElementsOf Seq(1, 3, 2))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
-
-        val e2 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (contain allElementsOf Seq(1, 3, 2) and contain allElementsOf Seq(3, 2, 2, 1))
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        all (list1s) should (contain allElementsOf Seq(3, 2, 2, 1) and contain allElementsOf Seq(1, 3, 2))
+        all (list1s) should (contain allElementsOf Seq(1, 3, 2) and contain allElementsOf Seq(3, 2, 2, 1))
       }
     }
 
@@ -582,13 +524,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was equal to " + decorateToStringValue(List("howdy", "hi", "hello")) + ", but " + decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (be (List(3, 2, 1, 0)) and contain allElementsOf Seq(3, 2, 2, 1))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        all (list1s) should (be (List(3, 2, 1, 0)) and contain allElementsOf Seq(3, 2, 2, 1))
       }
     }
 
@@ -650,20 +587,9 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists(0)) + " did not contain all elements of " + decorateToStringValue(Seq("HO", "HE")) + ", but " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not contain allElementsOf (Seq(3, 2, 2, 1)) and not contain allElementsOf (Seq(8, 3, 4)))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
-
-        val e2 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not contain allElementsOf (Seq(8, 3, 4)) and not contain allElementsOf (Seq(3, 2, 2, 1)))
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        all (list1s) should (not contain allElementsOf (Seq(3, 2, 2, 1, 8)) and not contain allElementsOf (Seq(8, 3, 4)))
+        all (list1s) should (not contain allElementsOf (Seq(8, 3, 4)) and not contain allElementsOf (Seq(3, 2, 2, 1, 8)))
       }
     }
 
@@ -725,13 +651,8 @@ class ListShouldContainAllElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(hiLists(0)) + " contained all elements of " + decorateToStringValue(Seq("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not be (List(2)) and not contain allElementsOf (Seq(3, 2, 2, 1)))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.allElementsOfDuplicate))
+      def `should allow RHS to contain duplicated value` {
+        all (list1s) should (not be (List(2)) and not contain allElementsOf (Seq(3, 2, 2, 1, 8)))
       }
     }
   }

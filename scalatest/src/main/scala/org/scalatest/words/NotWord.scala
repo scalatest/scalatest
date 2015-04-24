@@ -1259,7 +1259,7 @@ final class NotWord {
             val right = allElementsOf.right
 
             MatchResult(
-              !aggregating.containsAllOf(left, right),
+              !aggregating.containsAllOf(left, right.distinct),
               Resources.rawContainedAllElementsOf,
               Resources.rawDidNotContainAllElementsOf,
               Vector(left, right)

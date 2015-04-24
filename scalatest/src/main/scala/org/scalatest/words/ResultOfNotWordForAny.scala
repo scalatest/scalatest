@@ -834,9 +834,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(only: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain(allOf: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
-    val right = only.right
+    val right = allOf.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
@@ -846,10 +846,10 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(only: ResultOfAllElementsOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain(allElementsOf: ResultOfAllElementsOfApplication)(implicit aggregating: Aggregating[T]) {
 
-    val right = only.right
-    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+    val right = allElementsOf.right
+    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages.didNotContainAllElementsOf(left, right)

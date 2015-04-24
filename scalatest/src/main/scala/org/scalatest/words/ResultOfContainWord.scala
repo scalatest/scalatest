@@ -217,9 +217,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    */
   def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]) {
     val right = elements.toList
-    if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "allElementsOf"))
-    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages.didNotContainAllElementsOf(left, right)
