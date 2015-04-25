@@ -623,6 +623,7 @@ class EquaSetSpec extends UnitSpec {
     result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
     result4.shouldHaveExactType[lower.FastEquaSet]
   }
+/*
   it should "have an apply method" in {
     val a = number.EquaSet(1, 2, 3)
     a(2) shouldEqual true
@@ -635,6 +636,8 @@ class EquaSetSpec extends UnitSpec {
     b("HI") shouldEqual true
     b("he") shouldEqual false
   }
+*/
+/*
   it should "have an andThen method (inherited from PartialFunction)" in {
     val pf1 = number.EquaSet(1) andThen (!_)
     pf1(1) shouldEqual false
@@ -646,6 +649,7 @@ class EquaSetSpec extends UnitSpec {
     pf2(3) shouldEqual false
     pf2(0) shouldEqual true
   }
+*/
   it should "have a canEqual method" in {
     number.EquaSet(1).canEqual(3) shouldBe false
     number.EquaSet(1).canEqual("hi") shouldBe false
@@ -680,6 +684,7 @@ class EquaSetSpec extends UnitSpec {
   }
   it should "have an into.collect method" is pending
 
+/*
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.EquaSet(1, 2, 3).compose(_ + 1)
     fn(0) shouldBe true
@@ -687,6 +692,7 @@ class EquaSetSpec extends UnitSpec {
     fn(2) shouldBe true
     fn(3) shouldBe false
   }
+*/
   it should "have an contains method that does a type check" in {
     val e = number.EquaSet(1, 2, 3)
     e.contains(-1) shouldBe false

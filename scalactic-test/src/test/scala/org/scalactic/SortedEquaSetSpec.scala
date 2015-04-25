@@ -665,6 +665,7 @@ class SortedEquaSetSpec extends UnitSpec {
     result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
     result4.shouldHaveExactType[lower.TreeEquaSet]
   }
+/*
   it should "have an apply method" in {
     val a = number.SortedEquaSet(1, 2, 3)
     a(2) shouldEqual true
@@ -688,6 +689,7 @@ class SortedEquaSetSpec extends UnitSpec {
     pf2(3) shouldEqual false
     pf2(0) shouldEqual true
   }
+*/
   it should "have a canEqual method" in {
     number.SortedEquaSet(1).canEqual(3) shouldBe false
     number.SortedEquaSet(1).canEqual("hi") shouldBe false
@@ -703,6 +705,7 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have an into.collect method" is pending
   it should "have a collect method that only accepts functions that result in the path-enclosed type" is pending
+/*
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Boolean = number.SortedEquaSet(1, 2, 3).compose(_ + 1)
     fn(0) shouldBe true
@@ -710,6 +713,7 @@ class SortedEquaSetSpec extends UnitSpec {
     fn(2) shouldBe true
     fn(3) shouldBe false
   }
+*/
   it should "have an contains method that does a type check" in {
     val e = number.SortedEquaSet(1, 2, 3)
     e.contains(-1) shouldBe false

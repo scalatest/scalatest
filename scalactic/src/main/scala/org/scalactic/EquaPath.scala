@@ -73,7 +73,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
 
-  trait EquaSet extends Function1[T, Boolean] with Equals {
+  trait EquaSet {
 
     /**
      * Creates a new `EquaSet` with an additional element, unless the element is
@@ -376,10 +376,13 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *  This method is equivalent to `contains`. It allows sets to be interpreted as predicates.
      *  @param elem the element to test for membership.
      *  @return  `true` if `elem` is contained in this set, `false` otherwise.
-     */
     def apply(elem: T): Boolean
+     */
+
+    def canEqual(that: Any): Boolean
 
     /*
+      TODO: Go back.
       The reason I don't just do this:
 
       def contains(elem: T): Boolean
@@ -1561,7 +1564,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
     def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
     def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox) => seqop(b, e.value), combop)
-    def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
+    // def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
     def canEqual(that: Any): Boolean =
       that match {
         case thatEquaSet: EquaPath[_]#EquaSet => thatEquaSet.path.equality eq thisEquaPath.equality
