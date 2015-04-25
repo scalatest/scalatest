@@ -85,6 +85,10 @@ class LazyBagSpec extends UnitSpec {
     stringBag.toList should contain theSameElementsAs LazyBag("z", "a", "b", "c").toList
     doubleBag.toList should contain theSameElementsAs LazyBag(-2.2, 0.0, 1.1, 2.2).toList
     intBag.toList should contain theSameElementsAs LazyBag(0, 3, -3, 0).toList
+    val (stringEmpty, doubleEmpty, intEmpty) = LazyBag[(String,Double,Int)]().unzip3
+    stringEmpty.toList shouldBe empty
+    doubleEmpty.toList shouldBe empty
+    intEmpty.toList shouldBe empty
   }
 
   it should "have a zip method" in {
@@ -119,34 +123,45 @@ class LazyBagSpec extends UnitSpec {
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag.toList
     b2 should contain theSameElementsAs List(0, 1, 2)
+    LazyBag[String]().toList.zipWithIndex shouldBe List.empty[(List[String], List[Int])]
   }
 
   it should "have a collect method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
-    val doubledOdds = bag.collect {
-      case n: Int if n % 2 == 1 => n * 2
-    }
-    doubledOdds.toList should contain theSameElementsAs LazyBag(2, 6, 10).toList
-    val noMatch = bag.collect { case n: Int if n < 0 => n }
-    noMatch.toList shouldBe empty
+    val doubledOdds: PartialFunction[Int, Int] = { case n: Int if n % 2 == 1 => n * 2 }
+    LazyBag[Int]().collect(doubledOdds).toList should contain theSameElementsAs List()
+    LazyBag(1).collect(doubledOdds).toList should contain theSameElementsAs List(2)
+    LazyBag(1, 2).collect(doubledOdds).toList should contain theSameElementsAs List(2)
+    LazyBag(1, 2, 3).collect(doubledOdds).toList should contain theSameElementsAs List(2, 6)
+    LazyBag(1, 2, 3, 4).collect(doubledOdds).toList should contain theSameElementsAs List(2, 6)
+    LazyBag(1, 2, 3, 4, 5).collect(doubledOdds).toList should contain theSameElementsAs List(2, 6, 10)
   }
 
   it should "have a scan method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
-    val scanned = bag.scan(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+    // note: since a bag is unordered, this is the same as scanLeft
+    LazyBag[Int]().scan(0)(_+_).toList should contain theSameElementsAs List(0)
+    LazyBag(1).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1)
+    LazyBag(1, 2).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3)
+    LazyBag(1, 2, 3).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3, 6)
+    LazyBag(1, 2, 3, 4).scan(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10)
+    LazyBag(1, 2, 3, 4, 5).scan(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10, 15)
   }
 
   it should "have a scanLeft method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
-    val scanned = bag.scanLeft(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+    LazyBag[Int]().scanLeft(0)(_+_).toList should contain theSameElementsAs List(0)
+    LazyBag(1).scanLeft(0)(_ + _).toList should contain theSameElementsAs List(0, 1)
+    LazyBag(1, 2).scanLeft(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3)
+    LazyBag(1, 2, 3).scanLeft(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3, 6)
+    LazyBag(1, 2, 3, 4).scanLeft(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10)
+    LazyBag(1, 2, 3, 4, 5).scanLeft(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10, 15)
   }
 
   it should "have a scanRight method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
-    val scanned = bag.scanRight(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 5, 9, 12, 14, 15).toList
+    LazyBag[Int]().scanRight(0)(_+_).toList should contain theSameElementsAs List(0)
+    LazyBag(1).scanRight(0)(_ + _).toList should contain theSameElementsAs List(1, 0)
+    LazyBag(1, 2).scanRight(0)(_ + _).toList should contain theSameElementsAs List(3, 2, 0)
+    LazyBag(1, 2, 3).scanRight(0)(_ + _).toList should contain theSameElementsAs List(6, 5, 3, 0)
+    LazyBag(1, 2, 3, 4).scanRight(0)(_+_).toList should contain theSameElementsAs List(10, 9, 7, 4, 0)
+    LazyBag(1, 2, 3, 4, 5).scanRight(0)(_+_).toList should contain theSameElementsAs List(15, 14, 12, 9, 5, 0)
   }
 }
 

@@ -1280,41 +1280,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(3).sameElements(List(1)) shouldBe false
     number.SortedEquaSet(3).sameElements(List(3)) shouldBe true
   }
-  it should "have a scanLeft method" in {
-    val result1 = number.SortedEquaSet(1).scanLeft(0)(_ + _)
-    result1 shouldBe number.SortedEquaSet(0, 1)
-    result1.shouldHaveExactType[number.SortedEquaSet]
-
-    val result2 = number.SortedEquaSet(1, 2, 3).scanLeft(0)(_ + _)
-    result2 shouldBe number.SortedEquaSet(0, 1, 3, 6)
-    result2.shouldHaveExactType[number.SortedEquaSet]
-
-    val result3 = number.TreeEquaSet(1).scanLeft(0)(_ + _)
-    result3 shouldBe number.TreeEquaSet(0, 1)
-    result3.shouldHaveExactType[number.TreeEquaSet]
-
-    val result4 = number.TreeEquaSet(1, 2, 3).scanLeft(0)(_ + _)
-    result4 shouldBe number.TreeEquaSet(0, 1, 3, 6)
-    result4.shouldHaveExactType[number.TreeEquaSet]
-  }
   it should "have an into.scanLeft method" is pending
-  it should "have a scanRight method" in {
-    val result1 = number.SortedEquaSet(1).scanRight(0)(_ + _)
-    result1 shouldBe number.SortedEquaSet(1, 0)
-    result1.shouldHaveExactType[number.SortedEquaSet]
-
-    val result2 = number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _)
-    result2 shouldBe number.SortedEquaSet(6, 5, 3, 0)
-    result2.shouldHaveExactType[number.SortedEquaSet]
-
-    val result3 = number.TreeEquaSet(1).scanRight(0)(_ + _)
-    result3 shouldBe number.TreeEquaSet(1, 0)
-    result3.shouldHaveExactType[number.TreeEquaSet]
-
-    val result4 = number.TreeEquaSet(1, 2, 3).scanRight(0)(_ + _)
-    result4 shouldBe number.TreeEquaSet(6, 5, 3, 0)
-    result4.shouldHaveExactType[number.TreeEquaSet]
-  }
   it should "have an into.scanRight method" is pending
   it should "have a slice method" in {
     val result1 = number.SortedEquaSet(3).slice(0, 0)
