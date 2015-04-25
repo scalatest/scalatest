@@ -1162,7 +1162,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return an Iterator containing all elements of this  `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIterator: scala.collection.Iterator[thisEquaPath.EquaBox]
+    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a list of `EquaBox`.
