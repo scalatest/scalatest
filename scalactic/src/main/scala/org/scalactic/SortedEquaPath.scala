@@ -735,7 +735,7 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def toIterable: scala.collection.Iterable[T] = underlying.toIterable.map(_.value)
     def toEquaBoxIterable: scala.collection.Iterable[thisEquaPath.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-    def toEquaBoxIterator: scala.collection.Iterator[thisEquaPath.EquaBox] = underlying.toIterator
+    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox] = underlying.toIterator
     def toEquaBoxList: List[thisEquaPath.EquaBox] = underlying.toList
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
