@@ -1756,9 +1756,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def apply(elems: T*): EquaSet = FastEquaSet(elems: _*)
     import scala.language.implicitConversions
     implicit def equaSetToGenTraversableOnce(equaSet: EquaSet): scala.collection.immutable.IndexedSeq[T] = equaSet.toVector
-    // TODO: Study this one...
-    implicit def flattenTraversableOnce[A, CC[_]](travs: TraversableOnce[EquaSet])(implicit ev: EquaSet => TraversableOnce[A]) =
-      new scala.collection.TraversableOnce.FlattenOps[A](travs map ev)
   }
   class FastEquaMap[V] private[scalactic] (private val underlying: Map[EquaBox, V]) extends EquaMap[V] { thisFastEquaMap =>
     def + [V1 >: V](kv: (T, V1)): FastEquaMap[V1] = new FastEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
