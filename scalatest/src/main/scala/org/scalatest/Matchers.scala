@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
 import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
@@ -2819,6 +2820,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (oneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def oneElementOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfOneElementOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -2924,8 +2938,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def allElementsOf[R](elements: GenTraversable[R]) = {
     val xs = elements.toList
-    if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
     new ResultOfAllElementsOfApplication(xs)
   }
   
@@ -3730,6 +3742,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain oneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit containing: Containing[T]) {
+
+      val right = oneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain atLeastOneOf ("one")
      *                     ^
      * </pre>
@@ -3922,7 +3959,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = only.right
 
       doCollected(collected, xs, original, "contain", 1) { e =>
-        if (evidence.containsAllOf(e, right) != shouldBeTrue)
+        if (evidence.containsAllOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
               FailureMessages.didNotContainAllElementsOf(e, right)
@@ -4236,6 +4273,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     }
 
     /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain oneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "oneElementOf", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
@@ -4423,10 +4483,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
       val right = elements.toList
-      if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("Matchers.scala", "allElementsOf"))
       doCollected(collected, xs, original, "allElementsOf", 1) { e =>
-        if (aggregating.containsAllOf(e, right) != shouldBeTrue)
+        if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
               FailureMessages.didNotContainAllElementsOf(e, right)

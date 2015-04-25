@@ -223,6 +223,26 @@ final class ContainWord {
     }
   }
 
+  def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+    val right = elements.toList
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              containing.containsOneOf(left, right.distinct),
+              Resources.rawDidNotContainOneElementOf,
+              Resources.rawContainedOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain oneElementOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain oneElementOf " + Prettifier.default(right)
+    }
+  }
+
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Aggregating] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
@@ -375,14 +395,12 @@ final class ContainWord {
 
   def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
-    if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.allElementsOfDuplicate, getStackDepthFun("ContainWord.scala", "allElementsOf"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsAllOf(left, right),
+              aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
               Vector(left, right)

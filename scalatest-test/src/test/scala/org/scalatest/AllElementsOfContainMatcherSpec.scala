@@ -60,21 +60,10 @@ class AllElementsOfContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
 
-    def `should throw NotAllowedException when allElementsOf contains duplicate element` {
-      val e1 = intercept[exceptions.NotAllowedException] {
-        List(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
-      }
-      e1.getMessage() should be (FailureMessages.allElementsOfDuplicate)
-
-      val e2 = intercept[exceptions.NotAllowedException] {
-        javaList(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
-      }
-      e2.getMessage() should be (FailureMessages.allElementsOfDuplicate)
-
-      val e3 = intercept[exceptions.NotAllowedException] {
-        Array(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
-      }
-      e3.getMessage() should be (FailureMessages.allElementsOfDuplicate)
+    def `should allow duplicate element` {
+      List(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
+      javaList(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
+      Array(1, 2, 3) should contain allElementsOf Seq(1, 2, 1)
     }
 
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
