@@ -88,6 +88,10 @@ class LazySeqSpec extends UnitSpec {
     stringSeq.toList shouldBe LazySeq("a", "b", "c", "z").toList
     doubleSeq.toList shouldBe LazySeq(0.0, 1.1, 2.2, -2.2).toList
     intSeq.toList shouldBe LazySeq(3, -3, 0, 0).toList
+    val (stringEmpty, doubleEmpty, intEmpty) = LazySeq[(String,Double,Int)]().unzip3
+    stringEmpty.toList shouldBe empty
+    doubleEmpty.toList shouldBe empty
+    intEmpty.toList shouldBe empty
   }
 
   it should "have a zip method" in {
@@ -122,34 +126,44 @@ class LazySeqSpec extends UnitSpec {
     val (b1, b2) = zipped.toList.unzip
     b1 shouldBe bag.toList
     b2 shouldBe List(0, 1, 2)
+    LazySeq[String]().toList.zipWithIndex shouldBe List.empty[(List[String], List[Int])]
   }
 
   it should "have a collect method" in {
-    val seq = LazySeq(1, 2, 3, 4, 5)
-    val doubledOdds = seq.collect {
-      case n: Int if n % 2 == 1 => n * 2
-    }
-    doubledOdds.toList shouldBe LazySeq(2, 6, 10).toList
-    val noMatch = seq.collect { case n: Int if n < 0 => n }
-    noMatch.toList shouldBe empty
+    val doubledOdds: PartialFunction[Int, Int] = { case n: Int if n % 2 == 1 => n * 2 }
+    LazySeq[Int]().collect(doubledOdds).toList shouldBe empty
+    LazySeq(1).collect(doubledOdds).toList shouldBe List(2)
+    LazySeq(1, 2).collect(doubledOdds).toList shouldBe List(2)
+    LazySeq(1, 2, 3).collect(doubledOdds).toList shouldBe List(2, 6)
+    LazySeq(1, 2, 3, 4).collect(doubledOdds).toList shouldBe List(2, 6)
+    LazySeq(1, 2, 3, 4, 5).collect(doubledOdds).toList shouldBe List(2, 6, 10)
   }
 
   it should "have a scan method" in {
-    val seq = LazySeq(1, 2, 3, 4, 5)
-    val scanned = seq.scan(0)(_+_)
-    scanned.toList shouldBe LazySeq(0, 1, 3, 6, 10, 15).toList
+    LazySeq[Int]().scan(0)(_+_).toList should contain theSameElementsAs List(0)
+    LazySeq(1).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1)
+    LazySeq(1, 2).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3)
+    LazySeq(1, 2, 3).scan(0)(_ + _).toList should contain theSameElementsAs List(0, 1, 3, 6)
+    LazySeq(1, 2, 3, 4).scan(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10)
+    LazySeq(1, 2, 3, 4, 5).scan(0)(_+_).toList should contain theSameElementsAs List(0, 1, 3, 6, 10, 15)
   }
 
   it should "have a scanLeft method" in {
-    val seq = LazySeq(1, 2, 3, 4, 5)
-    val scanned = seq.scanLeft(0)(_+_)
-    scanned.toList shouldBe LazySeq(0, 1, 3, 6, 10, 15).toList
+    LazySeq[Int]().scanLeft(0)(_+_).toList shouldBe List(0)
+    LazySeq(1).scanLeft(0)(_ + _).toList shouldBe List(0, 1)
+    LazySeq(1, 2).scanLeft(0)(_ + _).toList shouldBe List(0, 1, 3)
+    LazySeq(1, 2, 3).scanLeft(0)(_ + _).toList shouldBe List(0, 1, 3, 6)
+    LazySeq(1, 2, 3, 4).scanLeft(0)(_+_).toList shouldBe List(0, 1, 3, 6, 10)
+    LazySeq(1, 2, 3, 4, 5).scanLeft(0)(_+_).toList shouldBe List(0, 1, 3, 6, 10, 15)
   }
 
   it should "have a scanRight method" in {
-    val seq = LazySeq(1, 2, 3, 4, 5)
-    val scanned = seq.scanRight(0)(_+_)
-    scanned.toList shouldBe LazySeq(15, 14, 12, 9, 5, 0).toList
+    LazySeq[Int]().scanRight(0)(_+_).toList shouldBe List(0)
+    LazySeq(1).scanRight(0)(_ + _).toList shouldBe List(1, 0)
+    LazySeq(1, 2).scanRight(0)(_ + _).toList shouldBe List(3, 2, 0)
+    LazySeq(1, 2, 3).scanRight(0)(_ + _).toList shouldBe List(6, 5, 3, 0)
+    LazySeq(1, 2, 3, 4).scanRight(0)(_+_).toList shouldBe List(10, 9, 7, 4, 0)
+    LazySeq(1, 2, 3, 4, 5).scanRight(0)(_+_).toList shouldBe List(15, 14, 12, 9, 5, 0)
   }
 }
 

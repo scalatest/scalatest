@@ -1137,7 +1137,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return an `Iterable` containing all elements of this `EquaSet`.
      */
-    def toIterable: GenIterable[T]
+    def toIterable: scala.collection.Iterable[T]
 
     /**
      * Converts this `EquaSet` to an iterable collection of `EquaBox`es containing the elements. Note that
@@ -1146,7 +1146,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return an `Iterable` containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIterable: GenIterable[thisEquaPath.EquaBox]
+    def toEquaBoxIterable: scala.collection.Iterable[thisEquaPath.EquaBox]
 
     /**
      * Returns an Iterator over the elements in this `EquaSet`.  Will return
@@ -1162,7 +1162,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return an Iterator containing all elements of this  `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox]
+    def toEquaBoxIterator: scala.collection.Iterator[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a list of `EquaBox`.
@@ -1212,7 +1212,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return a sequence containing all elements of this `EquaSet`.
      */
-    def toSeq: GenSeq[T]
+    def toSeq: scala.collection.Seq[T]
 
     /**
      * Converts this `EquaSet` to a sequence containing `EquaBox`es of elements.
@@ -1221,7 +1221,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return a sequence containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxSeq: GenSeq[thisEquaPath.EquaBox]
+    def toEquaBoxSeq: scala.collection.Seq[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a set.
@@ -1256,14 +1256,14 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
      *
      * @return a Traversable containing all elements of this `EquaSet`.
      */
-    def toTraversable: GenTraversable[T]
+    def toTraversable: scala.collection.Traversable[T]
 
     /**
      * Converts this `EquaSet` to a `Traversable` of `EquaBox`es containing the elements.
      *
      * @return a Traversable containing all elements of this `EquaSet`, boxed in `EquaBox`.
      */
-    def toEquaBoxTraversable: GenTraversable[thisEquaPath.EquaBox]
+    def toEquaBoxTraversable: scala.collection.Traversable[thisEquaPath.EquaBox]
 
     /**
      * Converts this `EquaSet` to a Vector.
@@ -1572,8 +1572,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
         case thatEquaSet: EquaPath[_]#EquaSet => thatEquaSet.path.equality eq thisEquaPath.equality
         case _ => false
       }
-    def collect(pf: PartialFunction[T, T]): thisEquaPath.FastEquaSet =
-      new FastEquaSet(underlying collect { case hb: thisEquaPath.EquaBox if pf.isDefinedAt(hb.value) => EquaBox(pf(hb.value)) })
     def contains[U](elem: U)(implicit ev: U <:< T): Boolean = underlying.contains(EquaBox(elem))
 
     def copyToArray(xs: Array[thisEquaPath.EquaBox]): Unit = underlying.copyToArray(xs)
@@ -1659,14 +1657,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: Set[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.FastEquaSet = {
-      val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
-      new FastEquaSet(set)
-    }
-    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.FastEquaSet = {
-      val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
-      new FastEquaSet(set)
-    }
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaPath.FastEquaSet = new FastEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaPath.FastEquaSet] = underlying.sliding(size).map(new FastEquaSet(_))
@@ -1701,8 +1691,8 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaPath.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaPath.EquaBox] = underlying.toIndexedSeq
-    def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-    def toEquaBoxIterable: GenIterable[thisEquaPath.EquaBox] = underlying.toIterable
+    def toIterable: scala.collection.Iterable[T] = underlying.toIterable.map(_.value)
+    def toEquaBoxIterable: scala.collection.Iterable[thisEquaPath.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
     def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox] = underlying.toIterator
     def toEquaBoxList: List[thisEquaPath.EquaBox] = underlying.toList
@@ -1710,14 +1700,14 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
     def toEquaBoxParArray: ParArray[thisEquaPath.EquaBox] = underlying.toParArray
-    def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-    def toEquaBoxSeq: GenSeq[thisEquaPath.EquaBox] = underlying.toSeq
+    def toSeq: scala.collection.Seq[T] = underlying.toSeq.map(_.value)
+    def toEquaBoxSeq: scala.collection.Seq[thisEquaPath.EquaBox] = underlying.toSeq
     def toSet: Set[T] = underlying.map(_.value)
     def toEquaBoxSet: Set[thisEquaPath.EquaBox] = underlying
     def toStream: Stream[T] = underlying.toStream.map(_.value)
     def toEquaBoxStream: Stream[thisEquaPath.EquaBox] = underlying.toStream
-    def toTraversable: GenTraversable[T] = underlying.map(_.value)
-    def toEquaBoxTraversable: GenTraversable[thisEquaPath.EquaBox] = underlying.toTraversable
+    def toTraversable: scala.collection.Traversable[T] = underlying.map(_.value)
+    def toEquaBoxTraversable: scala.collection.Traversable[thisEquaPath.EquaBox] = underlying.toTraversable
     def toVector: Vector[T] = underlying.toVector.map(_.value)
     def toEquaBoxVector: Vector[thisEquaPath.EquaBox] = underlying.toVector
     // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
@@ -1728,18 +1718,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     }
     def union(that: thisEquaPath.EquaSet): thisEquaPath.FastEquaSet =
       new FastEquaSet(underlying union that.toEquaBoxSet)
-    def unzip[T1, T2](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2])(implicit asPair: T => (T1, T2)): (t1EquaPath.FastEquaSet, t2EquaPath.FastEquaSet) = {
-      val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
-      (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*))
-    }
-    def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.FastEquaSet, t2EquaPath.FastEquaSet, t3EquaPath.FastEquaSet) = {
-      val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
-      (t1EquaPath.FastEquaSet(t1: _*), t2EquaPath.FastEquaSet(t2: _*), t3EquaPath.FastEquaSet(t3: _*))
-    }
-    def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
-    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
-    def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
-
     val path: thisEquaPath.type = thisEquaPath
 /*
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.FastEquaSet =

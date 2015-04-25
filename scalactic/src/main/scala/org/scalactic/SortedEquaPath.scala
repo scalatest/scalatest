@@ -387,31 +387,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def repr: SortedSet[EquaBox]
 
     /**
-     * Produces a collection containing cumulative results of applying the
-     * operator going left to right.
-     *
-     * @param z the initial value
-     * @param op the binary operator applied to the intermediate result and the element
-     * @return `SortedEquaSet` with intermediate results
-     */
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.SortedEquaSet
-
-    /**
-     * Produces a collection containing cumulative results of applying the operator going right to left.
-     * The head of the collection is the last cumulative result.
-     *
-     * Example:
-     * {{{
-     * `SortedEquaSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `SortedEquaSet`(10, 9, 7, 4, 0)
-     * }}}
-     *
-     * @param z the initial value
-     * @param op the binary operator applied to the intermediate result and the element
-     * @return `SortedEquaSet` with intermediate results
-     */
-    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.SortedEquaSet
-
-    /**
      * The size of this `SortedEquaSet`.
      *
      * @return the number of elements in this `SortedEquaSet`.
@@ -723,14 +698,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
     def repr: SortedSet[EquaBox] = underlying
     def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
-    def scanLeft(z: T)(op: (T, T) => T): thisEquaPath.TreeEquaSet = {
-      val set = underlying.scanLeft(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
-      new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
-    }
-    def scanRight(z: T)(op: (T, T) => T): thisEquaPath.TreeEquaSet = {
-      val set = underlying.scanRight(EquaBox(z))((b1: EquaBox, b2: EquaBox) => EquaBox(op(b1.value, b2.value)))
-      new TreeEquaSet(TreeSet(set.toList: _*)(ordering))
-    }
     def size: Int = underlying.size
     def slice(unc_from: Int, unc_until: Int): thisEquaPath.TreeEquaSet = new TreeEquaSet(underlying.slice(unc_from, unc_until))
     def sliding(size: Int): Iterator[thisEquaPath.TreeEquaSet] = underlying.sliding(size).map(new TreeEquaSet(_))
@@ -765,17 +732,17 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisEquaPath.EquaBox] = underlying.toBuffer
     def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
     def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisEquaPath.EquaBox] = underlying.toIndexedSeq
-    def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-    def toEquaBoxIterable: GenIterable[thisEquaPath.EquaBox] = underlying.toIterable
+    def toIterable: scala.collection.Iterable[T] = underlying.toIterable.map(_.value)
+    def toEquaBoxIterable: scala.collection.Iterable[thisEquaPath.EquaBox] = underlying.toIterable
     def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-    def toEquaBoxIterator: Iterator[thisEquaPath.EquaBox] = underlying.toIterator
+    def toEquaBoxIterator: scala.collection.Iterator[thisEquaPath.EquaBox] = underlying.toIterator
     def toEquaBoxList: List[thisEquaPath.EquaBox] = underlying.toList
     def toList: List[T] = underlying.toList.map(_.value)
     def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
     def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
     def toEquaBoxParArray: ParArray[thisEquaPath.EquaBox] = underlying.toParArray
-    def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-    def toEquaBoxSeq: GenSeq[thisEquaPath.EquaBox] = underlying.toSeq
+    def toSeq: scala.collection.Seq[T] = underlying.toSeq.map(_.value)
+    def toEquaBoxSeq: scala.collection.Seq[thisEquaPath.EquaBox] = underlying.toSeq
     def toSet: TreeSet[T] = {
       val valueOrdering: Ordering[T] =
         new Ordering[T] {
@@ -787,8 +754,8 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def toEquaBoxSet: TreeSet[thisEquaPath.EquaBox] = underlying
     def toStream: Stream[T] = underlying.toStream.map(_.value)
     def toEquaBoxStream: Stream[thisEquaPath.EquaBox] = underlying.toStream
-    def toTraversable: GenTraversable[T] = underlying.map(_.value)
-    def toEquaBoxTraversable: GenTraversable[thisEquaPath.EquaBox] = underlying.toTraversable
+    def toTraversable: scala.collection.Traversable[T] = underlying.map(_.value)
+    def toEquaBoxTraversable: scala.collection.Traversable[thisEquaPath.EquaBox] = underlying.toTraversable
     def toVector: Vector[T] = underlying.toVector.map(_.value)
     def toEquaBoxVector: Vector[thisEquaPath.EquaBox] = underlying.toVector
     override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
@@ -798,17 +765,6 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     }
     def union(that: thisEquaPath.EquaSet): thisEquaPath.TreeEquaSet =
       new TreeEquaSet(underlying union that.toEquaBoxSet)
-    def unzip[T1, T2](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2])(implicit asPair: T => (T1, T2)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet) = {
-      val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
-      (t1EquaPath.EquaSet(t1: _*), t2EquaPath.EquaSet(t2: _*))
-    }
-    def unzip3[T1, T2, T3](t1EquaPath: EquaPath[T1], t2EquaPath: EquaPath[T2], t3EquaPath: EquaPath[T3])(implicit asTriple: T => (T1, T2, T3)): (t1EquaPath.EquaSet, t2EquaPath.EquaSet, t3EquaPath.EquaSet) = {
-      val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
-      (t1EquaPath.EquaSet(t1: _*), t2EquaPath.EquaSet(t2: _*), t3EquaPath.EquaSet(t3: _*))
-    }
-    def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
-    def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
-    def zipWithIndex = underlying.toList.map(_.value).zipWithIndex.toSet
     val path: thisEquaPath.type = thisEquaPath
 /*
     def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet = thisTreeEquaSet.into(thatEquaPath).map(t => t)
