@@ -45,11 +45,6 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
     val path: thisEquaPath.type = thisEquaPath
     // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaBox
   }
-  object EquaBox {
-    import scala.language.implicitConversions
-    implicit def equaBoxToGenTraversableOnce(equaBox: EquaBox): scala.collection.immutable.IndexedSeq[T] =
-      Vector(equaBox.value)
-  }
 
     // I think we can just put this flatten on EquaSet itself, and possibly have a flatten
     // method here that works if S is a GenTraversable[T]. That means that they have
