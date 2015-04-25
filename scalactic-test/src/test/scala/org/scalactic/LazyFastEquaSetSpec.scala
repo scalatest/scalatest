@@ -15,16 +15,25 @@
  */
 package org.scalactic
 
-class LazyBagSpec extends UnitSpec {
-  "LazyBag" should "offer a size method" in {
-    LazyBag(1, 2, 3).size shouldBe 3
-    LazyBag(1, 1, 3, 2).size shouldBe 4
-    LazyBag(1, 1, 1, 1).size shouldBe 4
+class LazyFastEquaSetSpec extends UnitSpec {
+
+  def normalHashingEquality[T] =
+    new HashingEquality[T] {
+      def hashCodeFor(a: T): Int = a.hashCode
+      def areEqual(a: T, b: Any): Boolean = a == b
+    }
+  val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
+  val number = EquaPath[Int](normalHashingEquality[Int])
+
+  "LazyFastEquaSet" should "offer a size method" in {
+    LazyFastEquaSet(1, 2, 3).size shouldBe 3
+    LazyFastEquaSet(1, 1, 3, 2).size shouldBe 4
+    LazyFastEquaSet(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](lazyBag: LazyBag[T]) = {
+    def assertPretty[T](lazyBag: LazyEquaSet[T]) = {
       val lbs = lazyBag.toString
-      lbs should startWith ("LazyBag(")
+      lbs should startWith ("LazyFastEquaSet(")
       lbs should endWith (")")
       /*
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
@@ -33,8 +42,8 @@ class LazyBagSpec extends UnitSpec {
       scala> res0.split(',')
       res1: Array[String] = Array(1, 2, 3)
 
-      scala> val lbs = "LazyBag()"
-      lbs: String = LazyBag()
+      scala> val lbs = "LazyFastEquaSet()"
+      lbs: String = LazyFastEquaSet()
 
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
       res2: String = ""
@@ -49,18 +58,18 @@ class LazyBagSpec extends UnitSpec {
       elemStrArr should contain theSameElementsAs lazyBag.toList.map(_.toString)
     }
 
-    // Test BasicLazyBag
-    assertPretty(LazyBag(1, 2, 3))
-    assertPretty(LazyBag(1, 2, 3, 4))
-    assertPretty(LazyBag(1))
-    assertPretty(LazyBag())
-    assertPretty(LazyBag("one", "two", "three", "four", "five"))
+    // Test BasicLazyFastEquaSet
+    assertPretty(LazyFastEquaSet(1, 2, 3))
+    assertPretty(LazyFastEquaSet(1, 2, 3, 4))
+    assertPretty(LazyFastEquaSet(1))
+    assertPretty(LazyFastEquaSet())
+    assertPretty(LazyFastEquaSet("one", "two", "three", "four", "five"))
 
-    // Test FlatMappedLazyBag
+    // Test FlatMappedLazyFastEquaSet
     val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
     val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
     val flatMapped = lazyBag.flatMap { (digit: String) =>
-      LazyBag(digit.toInt)
+      LazyFastEquaSet(digit.toInt)
     }
     assertPretty(flatMapped)
     val mapped = flatMapped.map(_ + 1)
@@ -68,10 +77,10 @@ class LazyBagSpec extends UnitSpec {
   }
 
   it should "have an unzip method" in {
-    val zipped = LazyBag(3, 1, 2, -3, 3).zip(LazyBag("z", "a", "b", "c", "z"))
+    val zipped = LazyFastEquaSet(3, 1, 2, -3, 3).zip(LazyFastEquaSet("z", "a", "b", "c", "z"))
     val (intBag, stringBag) = zipped.unzip
-    intBag.toList should contain theSameElementsAs LazyBag(3, -3, 3, 2, 1).toList
-    stringBag.toList should contain theSameElementsAs LazyBag("z", "z", "a", "b", "c").toList
+    intBag.toList should contain theSameElementsAs LazyFastEquaSet(3, -3, 3, 2, 1).toList
+    stringBag.toList should contain theSameElementsAs LazyFastEquaSet("z", "z", "a", "b", "c").toList
   }
 
   it should "have an unzip3 method" in {
@@ -81,15 +90,15 @@ class LazyBagSpec extends UnitSpec {
       ("c", 2.2, 0),
       ("z", -2.2, 0)
     )
-    val (stringBag, doubleBag, intBag) = LazyBag(tuples: _*).unzip3
-    stringBag.toList should contain theSameElementsAs LazyBag("z", "a", "b", "c").toList
-    doubleBag.toList should contain theSameElementsAs LazyBag(-2.2, 0.0, 1.1, 2.2).toList
-    intBag.toList should contain theSameElementsAs LazyBag(0, 3, -3, 0).toList
+    val (stringBag, doubleBag, intBag) = LazyFastEquaSet(tuples: _*).unzip3
+    stringBag.toList should contain theSameElementsAs LazyFastEquaSet("z", "a", "b", "c").toList
+    doubleBag.toList should contain theSameElementsAs LazyFastEquaSet(-2.2, 0.0, 1.1, 2.2).toList
+    intBag.toList should contain theSameElementsAs LazyFastEquaSet(0, 3, -3, 0).toList
   }
 
   it should "have a zip method" in {
-    val bag1 = LazyBag(1,2,3)
-    val bag2 = LazyBag("a", "b", "c")
+    val bag1 = LazyFastEquaSet(1,2,3)
+    val bag2 = LazyFastEquaSet("a", "b", "c")
     val zipped = bag1.zip(bag2)
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag1.toList
@@ -97,12 +106,12 @@ class LazyBagSpec extends UnitSpec {
   }
 
   it should "have a zipAll method" in {
-    val shortBag1 = LazyBag(1,2,3)
-    val longBag1 = LazyBag(1,2,3,4)
-    val shortBag2 = LazyBag("a", "b", "c")
-    val longBag2 = LazyBag("a", "b", "c", "d")
+    val shortBag1 = LazyFastEquaSet(1,2,3)
+    val longBag1 = LazyFastEquaSet(1,2,3,4)
+    val shortBag2 = LazyFastEquaSet("a", "b", "c")
+    val longBag2 = LazyFastEquaSet("a", "b", "c", "d")
 
-    def assertSameElements(thisBag: LazyBag[_], thatBag: LazyBag[_]): Unit = {
+    def assertSameElements(thisBag: LazyFastEquaSet[_], thatBag: LazyFastEquaSet[_]): Unit = {
       val zipped = thisBag.zipAll(thatBag, 4, "d")
       val (unzip1, unzip2) = zipped.toList.unzip
       unzip1 should contain theSameElementsAs longBag1.toList
@@ -114,7 +123,7 @@ class LazyBagSpec extends UnitSpec {
   }
 
   it should "have a zipWithIndex method" in {
-    val bag = LazyBag("a", "b", "c")
+    val bag = LazyFastEquaSet("a", "b", "c")
     val zipped = bag.zipWithIndex
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag.toList
@@ -122,31 +131,40 @@ class LazyBagSpec extends UnitSpec {
   }
 
   it should "have a collect method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
+    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
     val doubledOdds = bag.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList should contain theSameElementsAs LazyBag(2, 6, 10).toList
+    doubledOdds.toList should contain theSameElementsAs LazyFastEquaSet(2, 6, 10).toList
     val noMatch = bag.collect { case n: Int if n < 0 => n }
     noMatch.toList shouldBe empty
   }
 
   it should "have a scan method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
+    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
     val scanned = bag.scan(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanLeft method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
+    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
     val scanned = bag.scanLeft(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanRight method" in {
-    val bag = LazyBag(1, 2, 3, 4, 5)
+    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
     val scanned = bag.scanRight(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyBag(0, 5, 9, 12, 14, 15).toList
+    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 5, 9, 12, 14, 15).toList
+  }
+
+  it should "offer a toStrict method that returns a FastEquaSet" in {
+    val lazySet = trimmed.FastEquaSet("1", "2", "01", "3").toLazy
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      LazyFastEquaSet(digit.toInt)
+    }
+    val strictSet = flatMapped.toStrict(number)
+    strictSet should equal (number.FastEquaSet(1, 2, 3))
   }
 }
 

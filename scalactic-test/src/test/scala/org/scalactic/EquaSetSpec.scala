@@ -2092,13 +2092,13 @@ def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
 */
-  "LazyBag" should "offer a lazy map method" in {
+  "LazyFastEquaSet" should "offer a lazy map method" in {
     val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
     var performed = false
     val toIntFun = (s: String) => { performed = true; s.toInt }
-    val mappedLazyBag = lazyBag.map(toIntFun).map(_ + 1)
+    val mappedLazyFastEquaSet = lazyBag.map(toIntFun).map(_ + 1)
     performed shouldBe false
-    val strictSet = mappedLazyBag.toEquaSet(number)
+    val strictSet = mappedLazyFastEquaSet.toEquaSet(number)
     performed shouldBe true
     strictSet should equal (number.EquaSet(2, 3, 4))
   }
@@ -2126,7 +2126,7 @@ def zipWithIndex: Set[(A, Int)]
   it should "offer a flatMap method" in {
     val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyBag(digit.toInt)
+      LazyFastEquaSet(digit.toInt)
     }
     val strictSet = flatMapped.toEquaSet(number)
     strictSet should equal (number.EquaSet(1, 2, 3))
@@ -2134,7 +2134,7 @@ def zipWithIndex: Set[(A, Int)]
   it should "allow chaining of maps and flatMaps" in {
     val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyBag(digit.toInt)
+      LazyFastEquaSet(digit.toInt)
     }
     val mapped = flatMapped.map(_ + 1)
     val strictSet = mapped.toEquaSet(number)

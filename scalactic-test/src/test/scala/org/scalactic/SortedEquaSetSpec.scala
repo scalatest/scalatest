@@ -1923,13 +1923,13 @@ class SortedEquaSetSpec extends UnitSpec {
     actual should equal (number.EquaSet(1, 2, 3))
   }
 
-  "LazySeq" should "offer a lazy map method" in {
+  "LazyTreeEquaSet" should "offer a lazy map method" in {
     val lazySeq = trimmed.SortedEquaSet("1", "2", "01", "3").toLazy
     var performed = false
     val toIntFun = (s: String) => { performed = true; s.toInt }
-    val mappedLazySeq = lazySeq.map(toIntFun).map(_ + 1)
+    val mappedLazyTreeEquaSet = lazySeq.map(toIntFun).map(_ + 1)
     performed shouldBe false
-    val strictSet = mappedLazySeq.toSortedEquaSet(number)
+    val strictSet = mappedLazyTreeEquaSet.toSortedEquaSet(number)
     performed shouldBe true
     strictSet should equal (number.SortedEquaSet(2, 3, 4))
   }

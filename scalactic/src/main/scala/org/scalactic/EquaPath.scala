@@ -1378,7 +1378,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
 
     // def copyInto(thatEquaPath: EquaPath[T]): thatEquaPath.EquaSet
 
-    def toLazy: LazyBag[T]
+    def toLazy: LazyEquaSet[T]
   }
 
   trait EquaMap[V]/* extends Function[T, V] with Equals*/ {
@@ -1748,7 +1748,7 @@ class EquaPath[T](val equality: HashingEquality[T]) { thisEquaPath =>
       else
         thisFastEquaSet.into(thatEquaPath).map(t => t)
 */
-    def toLazy: LazyBag[T] = LazyBag(thisFastEquaSet.toList: _*)
+    def toLazy: LazyFastEquaSet[T] = LazyFastEquaSet(thisFastEquaSet.toList: _*)
   }
 
   object FastEquaSet {
