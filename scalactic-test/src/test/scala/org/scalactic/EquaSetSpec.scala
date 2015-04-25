@@ -1011,6 +1011,7 @@ class EquaSetSpec extends UnitSpec {
   it should "have a flatMap method" is pending
 
   it should "have an into.flatten method that works on nested EquaSet" is pending
+/* I don't want these anymore
   it can "be flattened when in a GenTraversableOnce" in {
     // need to keep this commented out until finish implementing all methods
     Vector(number.EquaSet(1, 2, 3), number.EquaSet(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
@@ -1023,6 +1024,7 @@ class EquaSetSpec extends UnitSpec {
     numberList.EquaSet(List(1, 2), List(3)).flatten shouldBe List(1, 2, 3)
     numberList.EquaSet(List(1)).flatten shouldBe List(1)
   }
+*/
   it should "have a fold method" in {
     number.EquaSet(1).fold(0)(_ + _) shouldBe 1
     number.EquaSet(1).fold(1)(_ * _) shouldBe 1
@@ -1933,30 +1935,30 @@ class EquaSetSpec extends UnitSpec {
 */
   }
 
-  /*
-   * TODO: The zip related tests have been changed to use 'should contain theSameElementsAs'
-   * because EquaSet.zip is having CanBuildFrom issues, and is returning a Vector.
-   * This can be changed back to "shouldBe" when the return type for zip is fixed.
-   */
+  it should "not have a zip method" in {
+    """number.EquaSet(1, 2, 3).zip(List("4", "5", "6"))""" shouldNot typeCheck
+    """number.EquaSet(1, 2, 3).zip(List("4", "5"))""" shouldNot typeCheck
 
-  it should "have a zip method" in {
-    number.EquaSet(1, 2, 3).zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.EquaSet(1, 2, 3).zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
+    number.EquaSet(1, 2, 3).toSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.EquaSet(1, 2, 3).toSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
   }
-  it should "have a zipAll method" in {
-    number.EquaSet(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.EquaSet(1, 2, 3).zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
-    number.EquaSet(1, 2).zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
+  it should "not have a zipAll method" in {
+    """number.EquaSet(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
+    """number.EquaSet(1, 2, 3).zipAll(List("4", "5"), 0, "0")""" shouldNot typeCheck
+    """number.EquaSet(1, 2).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
+
+    number.EquaSet(1, 2, 3).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.EquaSet(1, 2, 3).toSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
+    number.EquaSet(1, 2).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
   }
-  it should "have a zipWithIndex method" in {
-    number.EquaSet(99).zipWithIndex should contain theSameElementsAs Set((99,0))
-    number.EquaSet(1, 2, 3).zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
+  it should "not have a zipWithIndex method" in {
+    """number.EquaSet(99).zipWithIndex""" shouldNot typeCheck
+    """number.EquaSet(1, 2, 3).zipWithIndex""" shouldNot typeCheck
+
+    number.EquaSet(99).toSet.zipWithIndex should contain theSameElementsAs Set((99,0))
+    number.EquaSet(1, 2, 3).toSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
   }
-  it should "have an copyInto method" is pending /* {
-    val equaSet = number.EquaSet(1, 2, 3)
-    equaSet.copyInto(sortedNumber) shouldEqual sortedNumber.EquaSet(1, 2, 3)
-    equaSet.copyInto(number) should be theSameInstanceAs equaSet
-  } */
+
   it should "have a filter method after it is converted into EquaBridge with into" is pending
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending

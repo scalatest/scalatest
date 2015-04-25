@@ -978,6 +978,7 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an into.flatMap method" is pending
   it should "have a flatMap method" is pending
   it should "have an into.flatten method that works on nested EquaSet" is pending
+/*
   it can "be flattened when in a GenTraversableOnce" in {
     // need to keep this commented out until finish implementing all methods
     Vector(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
@@ -990,6 +991,7 @@ class SortedEquaSetSpec extends UnitSpec {
     numberList.SortedEquaSet(List(1, 2), List(3)).flatten shouldBe List(1, 2, 3)
     numberList.SortedEquaSet(List(1)).flatten shouldBe List(1)
   }
+*/
   it should "have a fold method" in {
     number.SortedEquaSet(1).fold(0)(_ + _) shouldBe 1
     number.SortedEquaSet(1).fold(1)(_ * _) shouldBe 1
@@ -1889,31 +1891,30 @@ class SortedEquaSetSpec extends UnitSpec {
     result8.shouldHaveExactType[numberList.TreeEquaSet]
   }
 
-  /*
-   * TODO: The zip related tests have been changed to use 'should contain theSameElementsAs'
-   * because EquaSet.zip is having CanBuildFrom issues, and is returning a Vector.
-   * This can be changed back to "shouldBe" when the return type for zip is fixed.
-   */
-
   it should "have a zip method" in {
-    number.SortedEquaSet(1, 2, 3).zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.SortedEquaSet(1, 2, 3).zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
+    """number.SortedEquaSet(1, 2, 3).zip(List("4", "5", "6"))""" shouldNot typeCheck
+    """number.SortedEquaSet(1, 2, 3).zip(List("4", "5"))""" shouldNot typeCheck
+
+    number.SortedEquaSet(1, 2, 3).toSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.SortedEquaSet(1, 2, 3).toSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
   }
   it should "have a zipAll method" in {
-    number.SortedEquaSet(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.SortedEquaSet(1, 2, 3).zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
-    number.SortedEquaSet(1, 2).zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
+    """number.SortedEquaSet(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
+    """number.SortedEquaSet(1, 2, 3).zipAll(List("4", "5"), 0, "0")""" shouldNot typeCheck
+    """number.SortedEquaSet(1, 2).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
+
+    number.SortedEquaSet(1, 2, 3).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.SortedEquaSet(1, 2, 3).toSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
+    number.SortedEquaSet(1, 2).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
   }
   it should "have a zipWithIndex method" in {
-    number.SortedEquaSet(99).zipWithIndex should contain theSameElementsAs Set((99,0))
-    number.SortedEquaSet(1, 2, 3).zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
+    """number.SortedEquaSet(99).zipWithIndex""" shouldNot typeCheck
+    """number.SortedEquaSet(1, 2, 3).zipWithIndex""" shouldNot typeCheck
+
+    number.SortedEquaSet(99).toSet.zipWithIndex should contain theSameElementsAs Set((99,0))
+    number.SortedEquaSet(1, 2, 3).toSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
   }
-  it should "have a two overloaded copyInto method" is pending /* {
-    val equaSet: sortedNumber.SortedEquaSet = sortedNumber.SortedEquaSet(1, 2, 3)
-    equaSet.copyInto(plainNumber) shouldEqual number.EquaSet(1, 2, 3)
-    equaSet.copyInto(number) shouldEqual number.EquaSet(1, 2, 3)
-    equaSet.copyInto(sortedNumber) should be theSameInstanceAs equaSet
-  }*/
+
   it should "have a filter method after it is converted into EquaBridge with into" is pending
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending
