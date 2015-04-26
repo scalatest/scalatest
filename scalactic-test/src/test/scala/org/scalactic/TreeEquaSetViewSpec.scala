@@ -37,8 +37,8 @@ class TreeEquaSetViewSpec extends UnitSpec {
     TreeEquaSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](lazySeq: SortedEquaSetView[T]) = {
-      val lss = lazySeq.toString
+    def assertPretty[T](sortedSetView: SortedEquaSetView[T]) = {
+      val lss = sortedSetView.toString
       lss should startWith ("TreeEquaSetView(")
       lss should endWith (")")
       /*
@@ -62,9 +62,9 @@ class TreeEquaSetViewSpec extends UnitSpec {
       */
       val elemStrings = lss.replaceAll(""".*\((.*)\).*""", "$1")
       val elemStrArr = if (elemStrings.size != 0) elemStrings.split(',') else Array.empty[String]
-      elemStrArr.size should equal (lazySeq.size)
+      elemStrArr.size should equal (sortedSetView.size)
 
-      elemStrArr should contain theSameElementsAs lazySeq.toList.map(_.toString)
+      elemStrArr should contain theSameElementsAs sortedSetView.toList.map(_.toString)
     }
 
     // Test BasicTreeEquaSetView
@@ -76,8 +76,8 @@ class TreeEquaSetViewSpec extends UnitSpec {
 
     // Test FlatMappedTreeEquaSetView
     val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
-    val lazySeq = trimmed.SortedEquaSet("1", "2", "01", "3").view
-    val flatMapped = lazySeq.flatMap { (digit: String) =>
+    val sortedSetView = trimmed.SortedEquaSet("1", "2", "01", "3").view
+    val flatMapped = sortedSetView.flatMap { (digit: String) =>
       TreeEquaSetView(digit.toInt)
     }
     assertPretty(flatMapped)
@@ -168,8 +168,8 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "offer a force method that returns a SortedEquaSet" in {
-    val lazySet = trimmed.TreeEquaSet("1", "2", "01", "3").view
-    val flatMapped = lazySet.flatMap { (digit: String) =>
+    val setView = trimmed.TreeEquaSet("1", "2", "01", "3").view
+    val flatMapped = setView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)

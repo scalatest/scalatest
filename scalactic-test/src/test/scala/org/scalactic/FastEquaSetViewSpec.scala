@@ -31,8 +31,8 @@ class FastEquaSetViewSpec extends UnitSpec {
     FastEquaSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](lazyBag: EquaSetView[T]) = {
-      val lbs = lazyBag.toString
+    def assertPretty[T](equaSetView: EquaSetView[T]) = {
+      val lbs = equaSetView.toString
       lbs should startWith ("FastEquaSetView(")
       lbs should endWith (")")
       /*
@@ -53,9 +53,9 @@ class FastEquaSetViewSpec extends UnitSpec {
       */
       val elemStrings = lbs.replaceAll(""".*\((.*)\).*""", "$1")
       val elemStrArr = if (elemStrings.size != 0) elemStrings.split(',') else Array.empty[String]
-      elemStrArr.size should equal (lazyBag.size)
+      elemStrArr.size should equal (equaSetView.size)
 
-      elemStrArr should contain theSameElementsAs lazyBag.toList.map(_.toString)
+      elemStrArr should contain theSameElementsAs equaSetView.toList.map(_.toString)
     }
 
     // Test BasicFastEquaSetView
@@ -67,8 +67,8 @@ class FastEquaSetViewSpec extends UnitSpec {
 
     // Test FlatMappedFastEquaSetView
     val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").view
-    val flatMapped = lazyBag.flatMap { (digit: String) =>
+    val equaSetView = trimmed.EquaSet("1", "2", "01", "3").view
+    val flatMapped = equaSetView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
     assertPretty(flatMapped)
@@ -159,8 +159,8 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "offer a force method that returns a FastEquaSet" in {
-    val lazySet = trimmed.FastEquaSet("1", "2", "01", "3").view
-    val flatMapped = lazySet.flatMap { (digit: String) =>
+    val setView = trimmed.FastEquaSet("1", "2", "01", "3").view
+    val flatMapped = setView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)
