@@ -1969,8 +1969,8 @@ class EquaSetSpec extends UnitSpec {
 
   it should "have a withFilter method after it is converted into EquaBridge with into" is pending
 
-  it should "return an equal set if toEquaSet is called after toLazy" in {
-    val actual = number.EquaSet(1, 2, 3).toLazy.toEquaSet(number)
+  it should "return an equal set if toEquaSet is called after view" in {
+    val actual = number.EquaSet(1, 2, 3).view.toEquaSet(number)
     actual should equal (number.EquaSet(1, 2, 3))
   }
 
@@ -2100,20 +2100,20 @@ def zip[B](that: GenIterable[B]): Set[(A, B)]
 def zipAll[B](that: Iterable[B], thisElem: A, thatElem: B): Set[(A, B)]
 def zipWithIndex: Set[(A, Int)]
 */
-  "LazyFastEquaSet" should "offer a lazy map method" in {
-    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+  "FastEquaSetView" should "offer a lazy map method" in {
+    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").view
     var performed = false
     val toIntFun = (s: String) => { performed = true; s.toInt }
-    val mappedLazyFastEquaSet = lazyBag.map(toIntFun).map(_ + 1)
+    val mappedFastEquaSetView = lazyBag.map(toIntFun).map(_ + 1)
     performed shouldBe false
-    val strictSet = mappedLazyFastEquaSet.toEquaSet(number)
+    val strictSet = mappedFastEquaSetView.toEquaSet(number)
     performed shouldBe true
     strictSet should equal (number.EquaSet(2, 3, 4))
   }
 
   it should "offer an equals method that looks at processed elements" in {
-    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").toLazy
+    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").view
+    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").view
     val modifiedTrimmedBag = trimmedBag.map(_.toInt).map(_ + 1)
     val modifiedLowerBag = lowerBag.map(_.toInt)
     modifiedTrimmedBag should equal (modifiedLowerBag)
@@ -2122,8 +2122,8 @@ def zipWithIndex: Set[(A, Int)]
   }
 
   it should "offer a hashCode method that looks at processed elements" in {
-    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
-    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").toLazy
+    val trimmedBag = trimmed.EquaSet("1", "2", "01", "3").view
+    val lowerBag = trimmed.EquaSet("2", "3", "02", "4").view
     val modifiedTrimmedBag = trimmedBag.map(_.toInt).map(_ + 1)
     val modifiedLowerBag = lowerBag.map(_.toInt)
     modifiedTrimmedBag.hashCode should equal (modifiedLowerBag.hashCode)
@@ -2132,17 +2132,17 @@ def zipWithIndex: Set[(A, Int)]
   }
 
   it should "offer a flatMap method" in {
-    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyFastEquaSet(digit.toInt)
+      FastEquaSetView(digit.toInt)
     }
     val strictSet = flatMapped.toEquaSet(number)
     strictSet should equal (number.EquaSet(1, 2, 3))
   }
   it should "allow chaining of maps and flatMaps" in {
-    val lazySet = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lazySet = trimmed.EquaSet("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyFastEquaSet(digit.toInt)
+      FastEquaSetView(digit.toInt)
     }
     val mapped = flatMapped.map(_ + 1)
     val strictSet = mapped.toEquaSet(number)

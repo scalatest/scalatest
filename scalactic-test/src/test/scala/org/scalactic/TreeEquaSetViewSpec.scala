@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-class LazyTreeEquaSetSpec extends UnitSpec {
+class TreeEquaSetViewSpec extends UnitSpec {
 
   def normalHashingEquality[T] =
     new HashingEquality[T] {
@@ -31,19 +31,19 @@ class LazyTreeEquaSetSpec extends UnitSpec {
   val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
   val number = SortedEquaPath[Int](intEquality)
 
-  "LazyTreeEquaSet" should "offer a size method" in {
-    LazyTreeEquaSet(1, 2, 3).size shouldBe 3
-    LazyTreeEquaSet(1, 1, 3, 2).size shouldBe 4
-    LazyTreeEquaSet(1, 1, 1, 1).size shouldBe 4
+  "TreeEquaSetView" should "offer a size method" in {
+    TreeEquaSetView(1, 2, 3).size shouldBe 3
+    TreeEquaSetView(1, 1, 3, 2).size shouldBe 4
+    TreeEquaSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](lazySeq: LazySortedEquaSet[T]) = {
+    def assertPretty[T](lazySeq: SortedEquaSetView[T]) = {
       val lss = lazySeq.toString
-      lss should startWith ("LazyTreeEquaSet(")
+      lss should startWith ("TreeEquaSetView(")
       lss should endWith (")")
       /*
-      scala> val lss = "LazyTreeEquaSet(1, 2, 3)"
-      lss: String = LazyTreeEquaSet()
+      scala> val lss = "TreeEquaSetView(1, 2, 3)"
+      lss: String = TreeEquaSetView()
 
       scala> lss.replaceAll(""".*\((.*)\).*""", "$1")
       res0: String = 1,2,3
@@ -51,8 +51,8 @@ class LazyTreeEquaSetSpec extends UnitSpec {
       scala> res0.split(',')
       res1: Array[String] = Array(1, 2, 3)
 
-      scala> val lss = "LazyTreeEquaSet()"
-      lss: String = LazyTreeEquaSet()
+      scala> val lss = "TreeEquaSetView()"
+      lss: String = TreeEquaSetView()
 
       scala> lss.replaceAll(""".*\((.*)\).*""", "$1")
       res2: String = ""
@@ -67,18 +67,18 @@ class LazyTreeEquaSetSpec extends UnitSpec {
       elemStrArr should contain theSameElementsAs lazySeq.toList.map(_.toString)
     }
 
-    // Test BasicLazyTreeEquaSet
-    assertPretty(LazyTreeEquaSet(1, 2, 3))
-    assertPretty(LazyTreeEquaSet(1, 2, 3, 4))
-    assertPretty(LazyTreeEquaSet(1))
-    assertPretty(LazyTreeEquaSet())
-    assertPretty(LazyTreeEquaSet("one", "two", "three", "four", "five"))
+    // Test BasicTreeEquaSetView
+    assertPretty(TreeEquaSetView(1, 2, 3))
+    assertPretty(TreeEquaSetView(1, 2, 3, 4))
+    assertPretty(TreeEquaSetView(1))
+    assertPretty(TreeEquaSetView())
+    assertPretty(TreeEquaSetView("one", "two", "three", "four", "five"))
 
-    // Test FlatMappedLazyTreeEquaSet
+    // Test FlatMappedTreeEquaSetView
     val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
-    val lazySeq = trimmed.SortedEquaSet("1", "2", "01", "3").toLazy
+    val lazySeq = trimmed.SortedEquaSet("1", "2", "01", "3").view
     val flatMapped = lazySeq.flatMap { (digit: String) =>
-      LazyTreeEquaSet(digit.toInt)
+      TreeEquaSetView(digit.toInt)
     }
     assertPretty(flatMapped)
     val mapped = flatMapped.map(_ + 1)
@@ -86,10 +86,10 @@ class LazyTreeEquaSetSpec extends UnitSpec {
   }
 
   it should "have an unzip method" in {
-    val zipped = LazyTreeEquaSet(3, 1, 2, -3, 3).zip(LazyTreeEquaSet("z", "a", "b", "c", "z"))
+    val zipped = TreeEquaSetView(3, 1, 2, -3, 3).zip(TreeEquaSetView("z", "a", "b", "c", "z"))
     val (intSeq, stringSeq) = zipped.unzip
-    intSeq.toList shouldBe LazyTreeEquaSet(3, 1, 2, -3, 3).toList
-    stringSeq.toList shouldBe LazyTreeEquaSet("z", "a", "b", "c", "z").toList
+    intSeq.toList shouldBe TreeEquaSetView(3, 1, 2, -3, 3).toList
+    stringSeq.toList shouldBe TreeEquaSetView("z", "a", "b", "c", "z").toList
   }
 
   it should "have an unzip3 method" in {
@@ -99,15 +99,15 @@ class LazyTreeEquaSetSpec extends UnitSpec {
       ("c", 2.2, 0),
       ("z", -2.2, 0)
     )
-    val (stringSeq, doubleSeq, intSeq) = LazyTreeEquaSet(tuples: _*).unzip3
-    stringSeq.toList shouldBe LazyTreeEquaSet("a", "b", "c", "z").toList
-    doubleSeq.toList shouldBe LazyTreeEquaSet(0.0, 1.1, 2.2, -2.2).toList
-    intSeq.toList shouldBe LazyTreeEquaSet(3, -3, 0, 0).toList
+    val (stringSeq, doubleSeq, intSeq) = TreeEquaSetView(tuples: _*).unzip3
+    stringSeq.toList shouldBe TreeEquaSetView("a", "b", "c", "z").toList
+    doubleSeq.toList shouldBe TreeEquaSetView(0.0, 1.1, 2.2, -2.2).toList
+    intSeq.toList shouldBe TreeEquaSetView(3, -3, 0, 0).toList
   }
 
   it should "have a zip method" in {
-    val seq1 = LazyTreeEquaSet(1,2,3)
-    val seq2 = LazyTreeEquaSet("a", "b", "c")
+    val seq1 = TreeEquaSetView(1,2,3)
+    val seq2 = TreeEquaSetView("a", "b", "c")
     val zipped = seq1.zip(seq2)
     val (b1, b2) = zipped.toList.unzip
     b1 shouldBe seq1.toList
@@ -115,12 +115,12 @@ class LazyTreeEquaSetSpec extends UnitSpec {
   }
 
   it should "have a zipAll method" in {
-    val shortSeq1 = LazyTreeEquaSet(1,2,3)
-    val longSeq1 = LazyTreeEquaSet(1,2,3,4)
-    val shortSeq2 = LazyTreeEquaSet("a", "b", "c")
-    val longSeq2 = LazyTreeEquaSet("a", "b", "c", "d")
+    val shortSeq1 = TreeEquaSetView(1,2,3)
+    val longSeq1 = TreeEquaSetView(1,2,3,4)
+    val shortSeq2 = TreeEquaSetView("a", "b", "c")
+    val longSeq2 = TreeEquaSetView("a", "b", "c", "d")
 
-    def assertSameElements(thisSeq: LazyTreeEquaSet[_], thatSeq: LazyTreeEquaSet[_]): Unit = {
+    def assertSameElements(thisSeq: TreeEquaSetView[_], thatSeq: TreeEquaSetView[_]): Unit = {
       val zipped = thisSeq.zipAll(thatSeq, 4, "d")
       val (unzip1, unzip2) = zipped.toList.unzip
       unzip1 shouldBe longSeq1.toList
@@ -132,7 +132,7 @@ class LazyTreeEquaSetSpec extends UnitSpec {
   }
 
   it should "have a zipWithIndex method" in {
-    val bag = LazyTreeEquaSet("a", "b", "c")
+    val bag = TreeEquaSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
     val (b1, b2) = zipped.toList.unzip
     b1 shouldBe bag.toList
@@ -140,39 +140,39 @@ class LazyTreeEquaSetSpec extends UnitSpec {
   }
 
   it should "have a collect method" in {
-    val seq = LazyTreeEquaSet(1, 2, 3, 4, 5)
+    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
     val doubledOdds = seq.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList shouldBe LazyTreeEquaSet(2, 6, 10).toList
+    doubledOdds.toList shouldBe TreeEquaSetView(2, 6, 10).toList
     val noMatch = seq.collect { case n: Int if n < 0 => n }
     noMatch.toList shouldBe empty
   }
 
   it should "have a scan method" in {
-    val seq = LazyTreeEquaSet(1, 2, 3, 4, 5)
+    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
     val scanned = seq.scan(0)(_+_)
-    scanned.toList shouldBe LazyTreeEquaSet(0, 1, 3, 6, 10, 15).toList
+    scanned.toList shouldBe TreeEquaSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanLeft method" in {
-    val seq = LazyTreeEquaSet(1, 2, 3, 4, 5)
+    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanLeft(0)(_+_)
-    scanned.toList shouldBe LazyTreeEquaSet(0, 1, 3, 6, 10, 15).toList
+    scanned.toList shouldBe TreeEquaSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanRight method" in {
-    val seq = LazyTreeEquaSet(1, 2, 3, 4, 5)
+    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanRight(0)(_+_)
-    scanned.toList shouldBe LazyTreeEquaSet(15, 14, 12, 9, 5, 0).toList
+    scanned.toList shouldBe TreeEquaSetView(15, 14, 12, 9, 5, 0).toList
   }
 
-  it should "offer a toStrict method that returns a SortedEquaSet" in {
-    val lazySet = trimmed.TreeEquaSet("1", "2", "01", "3").toLazy
+  it should "offer a force method that returns a SortedEquaSet" in {
+    val lazySet = trimmed.TreeEquaSet("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyFastEquaSet(digit.toInt)
+      FastEquaSetView(digit.toInt)
     }
-    val strictSet = flatMapped.toStrict(number)
+    val strictSet = flatMapped.force(number)
     strictSet should equal (number.TreeEquaSet(1, 2, 3))
   }
 }

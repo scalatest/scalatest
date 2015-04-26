@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-class LazyFastEquaSetSpec extends UnitSpec {
+class FastEquaSetViewSpec extends UnitSpec {
 
   def normalHashingEquality[T] =
     new HashingEquality[T] {
@@ -25,15 +25,15 @@ class LazyFastEquaSetSpec extends UnitSpec {
   val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
   val number = EquaPath[Int](normalHashingEquality[Int])
 
-  "LazyFastEquaSet" should "offer a size method" in {
-    LazyFastEquaSet(1, 2, 3).size shouldBe 3
-    LazyFastEquaSet(1, 1, 3, 2).size shouldBe 4
-    LazyFastEquaSet(1, 1, 1, 1).size shouldBe 4
+  "FastEquaSetView" should "offer a size method" in {
+    FastEquaSetView(1, 2, 3).size shouldBe 3
+    FastEquaSetView(1, 1, 3, 2).size shouldBe 4
+    FastEquaSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](lazyBag: LazyEquaSet[T]) = {
+    def assertPretty[T](lazyBag: EquaSetView[T]) = {
       val lbs = lazyBag.toString
-      lbs should startWith ("LazyFastEquaSet(")
+      lbs should startWith ("FastEquaSetView(")
       lbs should endWith (")")
       /*
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
@@ -42,8 +42,8 @@ class LazyFastEquaSetSpec extends UnitSpec {
       scala> res0.split(',')
       res1: Array[String] = Array(1, 2, 3)
 
-      scala> val lbs = "LazyFastEquaSet()"
-      lbs: String = LazyFastEquaSet()
+      scala> val lbs = "FastEquaSetView()"
+      lbs: String = FastEquaSetView()
 
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
       res2: String = ""
@@ -58,18 +58,18 @@ class LazyFastEquaSetSpec extends UnitSpec {
       elemStrArr should contain theSameElementsAs lazyBag.toList.map(_.toString)
     }
 
-    // Test BasicLazyFastEquaSet
-    assertPretty(LazyFastEquaSet(1, 2, 3))
-    assertPretty(LazyFastEquaSet(1, 2, 3, 4))
-    assertPretty(LazyFastEquaSet(1))
-    assertPretty(LazyFastEquaSet())
-    assertPretty(LazyFastEquaSet("one", "two", "three", "four", "five"))
+    // Test BasicFastEquaSetView
+    assertPretty(FastEquaSetView(1, 2, 3))
+    assertPretty(FastEquaSetView(1, 2, 3, 4))
+    assertPretty(FastEquaSetView(1))
+    assertPretty(FastEquaSetView())
+    assertPretty(FastEquaSetView("one", "two", "three", "four", "five"))
 
-    // Test FlatMappedLazyFastEquaSet
+    // Test FlatMappedFastEquaSetView
     val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").toLazy
+    val lazyBag = trimmed.EquaSet("1", "2", "01", "3").view
     val flatMapped = lazyBag.flatMap { (digit: String) =>
-      LazyFastEquaSet(digit.toInt)
+      FastEquaSetView(digit.toInt)
     }
     assertPretty(flatMapped)
     val mapped = flatMapped.map(_ + 1)
@@ -77,10 +77,10 @@ class LazyFastEquaSetSpec extends UnitSpec {
   }
 
   it should "have an unzip method" in {
-    val zipped = LazyFastEquaSet(3, 1, 2, -3, 3).zip(LazyFastEquaSet("z", "a", "b", "c", "z"))
+    val zipped = FastEquaSetView(3, 1, 2, -3, 3).zip(FastEquaSetView("z", "a", "b", "c", "z"))
     val (intBag, stringBag) = zipped.unzip
-    intBag.toList should contain theSameElementsAs LazyFastEquaSet(3, -3, 3, 2, 1).toList
-    stringBag.toList should contain theSameElementsAs LazyFastEquaSet("z", "z", "a", "b", "c").toList
+    intBag.toList should contain theSameElementsAs FastEquaSetView(3, -3, 3, 2, 1).toList
+    stringBag.toList should contain theSameElementsAs FastEquaSetView("z", "z", "a", "b", "c").toList
   }
 
   it should "have an unzip3 method" in {
@@ -90,15 +90,15 @@ class LazyFastEquaSetSpec extends UnitSpec {
       ("c", 2.2, 0),
       ("z", -2.2, 0)
     )
-    val (stringBag, doubleBag, intBag) = LazyFastEquaSet(tuples: _*).unzip3
-    stringBag.toList should contain theSameElementsAs LazyFastEquaSet("z", "a", "b", "c").toList
-    doubleBag.toList should contain theSameElementsAs LazyFastEquaSet(-2.2, 0.0, 1.1, 2.2).toList
-    intBag.toList should contain theSameElementsAs LazyFastEquaSet(0, 3, -3, 0).toList
+    val (stringBag, doubleBag, intBag) = FastEquaSetView(tuples: _*).unzip3
+    stringBag.toList should contain theSameElementsAs FastEquaSetView("z", "a", "b", "c").toList
+    doubleBag.toList should contain theSameElementsAs FastEquaSetView(-2.2, 0.0, 1.1, 2.2).toList
+    intBag.toList should contain theSameElementsAs FastEquaSetView(0, 3, -3, 0).toList
   }
 
   it should "have a zip method" in {
-    val bag1 = LazyFastEquaSet(1,2,3)
-    val bag2 = LazyFastEquaSet("a", "b", "c")
+    val bag1 = FastEquaSetView(1,2,3)
+    val bag2 = FastEquaSetView("a", "b", "c")
     val zipped = bag1.zip(bag2)
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag1.toList
@@ -106,12 +106,12 @@ class LazyFastEquaSetSpec extends UnitSpec {
   }
 
   it should "have a zipAll method" in {
-    val shortBag1 = LazyFastEquaSet(1,2,3)
-    val longBag1 = LazyFastEquaSet(1,2,3,4)
-    val shortBag2 = LazyFastEquaSet("a", "b", "c")
-    val longBag2 = LazyFastEquaSet("a", "b", "c", "d")
+    val shortBag1 = FastEquaSetView(1,2,3)
+    val longBag1 = FastEquaSetView(1,2,3,4)
+    val shortBag2 = FastEquaSetView("a", "b", "c")
+    val longBag2 = FastEquaSetView("a", "b", "c", "d")
 
-    def assertSameElements(thisBag: LazyFastEquaSet[_], thatBag: LazyFastEquaSet[_]): Unit = {
+    def assertSameElements(thisBag: FastEquaSetView[_], thatBag: FastEquaSetView[_]): Unit = {
       val zipped = thisBag.zipAll(thatBag, 4, "d")
       val (unzip1, unzip2) = zipped.toList.unzip
       unzip1 should contain theSameElementsAs longBag1.toList
@@ -123,7 +123,7 @@ class LazyFastEquaSetSpec extends UnitSpec {
   }
 
   it should "have a zipWithIndex method" in {
-    val bag = LazyFastEquaSet("a", "b", "c")
+    val bag = FastEquaSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag.toList
@@ -131,39 +131,39 @@ class LazyFastEquaSetSpec extends UnitSpec {
   }
 
   it should "have a collect method" in {
-    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
+    val bag = FastEquaSetView(1, 2, 3, 4, 5)
     val doubledOdds = bag.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList should contain theSameElementsAs LazyFastEquaSet(2, 6, 10).toList
+    doubledOdds.toList should contain theSameElementsAs FastEquaSetView(2, 6, 10).toList
     val noMatch = bag.collect { case n: Int if n < 0 => n }
     noMatch.toList shouldBe empty
   }
 
   it should "have a scan method" in {
-    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
+    val bag = FastEquaSetView(1, 2, 3, 4, 5)
     val scanned = bag.scan(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanLeft method" in {
-    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
+    val bag = FastEquaSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanLeft(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanRight method" in {
-    val bag = LazyFastEquaSet(1, 2, 3, 4, 5)
+    val bag = FastEquaSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanRight(0)(_+_)
-    scanned.toList should contain theSameElementsAs LazyFastEquaSet(0, 5, 9, 12, 14, 15).toList
+    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 5, 9, 12, 14, 15).toList
   }
 
-  it should "offer a toStrict method that returns a FastEquaSet" in {
-    val lazySet = trimmed.FastEquaSet("1", "2", "01", "3").toLazy
+  it should "offer a force method that returns a FastEquaSet" in {
+    val lazySet = trimmed.FastEquaSet("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
-      LazyFastEquaSet(digit.toInt)
+      FastEquaSetView(digit.toInt)
     }
-    val strictSet = flatMapped.toStrict(number)
+    val strictSet = flatMapped.force(number)
     strictSet should equal (number.FastEquaSet(1, 2, 3))
   }
 }
