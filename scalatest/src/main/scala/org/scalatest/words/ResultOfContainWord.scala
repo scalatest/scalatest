@@ -96,6 +96,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain atLeastOneElementOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]) {
+    val right = elements.toList
+    if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
+        else
+          FailureMessages.containedAtLeastOneElementOf(left, right)
+      )
+  }
   
   /**
    * This method enables the following syntax: 

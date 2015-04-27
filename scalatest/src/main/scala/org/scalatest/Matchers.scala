@@ -2848,6 +2848,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atLeastOneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def atLeastOneElementOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfAtLeastOneElementOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -3792,6 +3805,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain atLeastOneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit evidence: Aggregating[T]) {
+
+      val right = atLeastOneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain noneOf ("one")
      *                     ^
      * </pre>
@@ -4317,6 +4355,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain atLeastOneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "atLeastOneElementOf", 1) { e =>
+        if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(e, right),
+            None,
+            6
+          )
       }
     }
 

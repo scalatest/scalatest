@@ -264,6 +264,26 @@ final class ContainWord {
       override def toString: String = "contain atLeastOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    val right = elements.toList
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAtLeastOneOf(left, right),
+              Resources.rawDidNotContainAtLeastOneElementOf,
+              Resources.rawContainedAtLeastOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
+        }
+      }
+      override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
+    }
+  }
   
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Containing] = {
     val right = firstEle :: secondEle :: remainingEles.toList

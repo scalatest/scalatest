@@ -1089,6 +1089,36 @@ final class NotWord {
       override def toString: String = "not contain " + Prettifier.default(atLeastOneOf)
     }
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain atLeastOneElementOf List(1, 2, 3))
+   *                         ^
+   * </pre>
+   */
+  def contain[T](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = atLeastOneElementOf.right
+
+            MatchResult(
+              !aggregating.containsAtLeastOneOf(left, right),
+              Resources.rawContainedAtLeastOneElementOf,
+              Resources.rawDidNotContainAtLeastOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(atLeastOneElementOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(atLeastOneElementOf)
+    }
+  }
   
   /**
    * This method enables the following syntax: 

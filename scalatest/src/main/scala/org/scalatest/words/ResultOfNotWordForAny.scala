@@ -777,6 +777,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = atLeastOneElementOf.right
+
+    if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
+        else
+          FailureMessages.containedAtLeastOneElementOf(left, right)
+      )
+  }
+
   def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]) {
 
     val right = noneOf.right
