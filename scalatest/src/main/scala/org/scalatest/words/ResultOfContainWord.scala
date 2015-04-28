@@ -58,6 +58,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain oneElementOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]) {
+    val right = elements.toList
+    if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneElementOf(left, right)
+        else
+          FailureMessages.containedOneElementOf(left, right)
+      )
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -75,6 +94,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
         else
           FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+      )
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain atLeastOneElementOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]) {
+    val right = elements.toList
+    if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
+        else
+          FailureMessages.containedAtLeastOneElementOf(left, right)
       )
   }
   
@@ -204,6 +242,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
         else
           FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+      )
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain allElementsOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]) {
+    val right = elements.toList
+    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllElementsOf(left, right)
+        else
+          FailureMessages.containedAllElementsOf(left, right)
       )
   }
   

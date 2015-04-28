@@ -20,99 +20,109 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.CheckedEquality._
 
-class GuessANumberSpec extends Spec with Matchers {
-  object `A GuessANumber` {
-    object `should offer a from factory method that` {
-      def `returns Some[GuessANumber] if the passed Int is between 1 and 10` {
+class GuessANumberSpec extends FunSpec with Matchers {
+  describe("A GuessANumber") {
+    describe("should offer a from factory method that") {
+      it("returns Some[GuessANumber] if the passed Int is between 1 and 10") {
         GuessANumber.from(1).value.value shouldBe 1
         GuessANumber.from(5).value.value shouldBe 5
         GuessANumber.from(10).value.value shouldBe 10
       }
-      def `returns None if the passed Int is NOT between 1 and 10` {
+      it("returns None if the passed Int is NOT between 1 and 10") {
         GuessANumber.from(11) shouldBe None
         GuessANumber.from(100) shouldBe None
         GuessANumber.from(-1) shouldBe None
         GuessANumber.from(-99) shouldBe None
       }
     }
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
       GuessANumber.from(4).value.toString shouldBe "GuessANumber(4)"
     }
-    object `when created with apply method` {
+    describe("when created with apply method") {
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "GuessANumber(8)" should compile
         GuessANumber(8).value shouldEqual 8
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "GuessANumber(0)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "GuessANumber(-8)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "GuessANumber(x)" shouldNot compile
       }
     }
   }
-  object `An LGuessANumber` {
-    object `should offer a from factory method that` {
-      def `returns Some[LGuessANumber] if the passed Long is between 1 and 10` {
+  describe("An LGuessANumber") {
+    describe("should offer a from factory method that") {
+      it("returns Some[LGuessANumber] if the passed Long is between 1 and 10") {
         LGuessANumber.from(1L).value.value shouldBe 1L
         LGuessANumber.from(5L).value.value shouldBe 5L
         LGuessANumber.from(10L).value.value shouldBe 10L
       }
-      def `returns None if the passed Long is NOT between 1 and 10` {
+      it("returns None if the passed Long is NOT between 1 and 10") {
         LGuessANumber.from(11L) shouldBe None
         LGuessANumber.from(100L) shouldBe None
         LGuessANumber.from(-1L) shouldBe None
         LGuessANumber.from(-99L) shouldBe None
       }
     }
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
       LGuessANumber.from(4L).value.toString shouldBe "LGuessANumber(4)"
     }
   }
 
-  object `An FGuessANumber` {
-    object `should offer a from factory method that` {
-      def `returns Some[FGuessANumber] if the passed Float is between 1 and 10` {
+  describe("An FGuessANumber") {
+    describe("should offer a from factory method that") {
+      it("returns Some[FGuessANumber] if the passed Float is between 1 and 10") {
         FGuessANumber.from(1.0F).value.value shouldBe 1.0F
         FGuessANumber.from(5.0F).value.value shouldBe 5.0F
         FGuessANumber.from(10.0F).value.value shouldBe 10.0F
       }
-      def `returns None if the passed Float is NOT between 1 and 10` {
+      it("returns None if the passed Float is NOT between 1 and 10") {
         FGuessANumber.from(10.00001F) shouldBe None
         FGuessANumber.from(100.1F) shouldBe None
         FGuessANumber.from(-.000001F) shouldBe None
         FGuessANumber.from(-9.999F) shouldBe None
       }
     }
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
+      // SKIP-SCALATESTJS-START
       FGuessANumber.from(4.0F).value.toString shouldBe "FGuessANumber(4.0)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY FGuessANumber.from(4.0F).value.toString shouldBe "FGuessANumber(4)"
+
+      // SKIP-SCALATESTJS-START
       FGuessANumber.from(4.42F).value.toString shouldBe "FGuessANumber(4.42)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY FGuessANumber.from(4.42F).value.toString shouldBe "FGuessANumber(4.420000076293945)"
     }
   }
-  object `A DGuessANumber` {
-    object `should offer a from factory method that` {
-      def `returns Some[DGuessANumber] if the passed Double is between 1 and 10` {
+  describe("A DGuessANumber") {
+    describe("should offer a from factory method that") {
+      it("returns Some[DGuessANumber] if the passed Double is between 1 and 10") {
         DGuessANumber.from(1.0).value.value shouldBe 1.0
         DGuessANumber.from(5.0).value.value shouldBe 5.0
         DGuessANumber.from(10.0).value.value shouldBe 10.0
       }
-      def `returns None if the passed Double is NOT between 1 and 10` {
+      it("returns None if the passed Double is NOT between 1 and 10") {
         DGuessANumber.from(10.000001) shouldBe None
         DGuessANumber.from(100.1) shouldBe None
         DGuessANumber.from(-.000001) shouldBe None
         DGuessANumber.from(-9.999) shouldBe None
       }
     }
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
+      // SKIP-SCALATESTJS-START
       DGuessANumber.from(4.0).value.toString shouldBe "DGuessANumber(4.0)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY DGuessANumber.from(4.0).value.toString shouldBe "DGuessANumber(4)"
       DGuessANumber.from(4.42).value.toString shouldBe "DGuessANumber(4.42)"
     }
   }

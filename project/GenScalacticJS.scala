@@ -52,7 +52,7 @@ object GenScalacticJS {
     }
   }
 
-  def copyDir(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -63,34 +63,23 @@ object GenScalacticJS {
     }
   }
 
-  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    scalacticPackageDir.mkdirs()
-    val scalacticSourceDir = new File("scalactic/src/main/scala/org/scalactic")
-    scalacticSourceDir.listFiles.map { sourceFile =>
-      val destFile = new File(scalacticPackageDir, sourceFile.getName)
+  def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
       copyFile(sourceFile, destFile)
-      destFile
-    } ++
-    GenVersions.genScalacticVersions(scalacticPackageDir, version, scalaVersion)
-  }
-
-  def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-
-    val scalacticPackageDir = new File(targetDir, "org/scalactic")
-    scalacticPackageDir.mkdirs()
-    val scalacticSourceDir = new File("scalactic-macro/src/main/scala/org/scalactic")
-    scalacticSourceDir.listFiles.flatMap { sourceFile =>
-      if (sourceFile.isFile) {
-        val destFile = new File(scalacticPackageDir, sourceFile.getName)
-        copyFile(sourceFile, destFile)
-        List(destFile)
-      }
-      else
-        List.empty[File]
     }
   }
+
+  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
+    GenVersions.genScalacticVersions(new File(targetDir, "org/scalactic"), version, scalaVersion)
+
+  def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
+    copyDir("scalactic-macro/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val sourceResourceFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
@@ -101,13 +90,12 @@ object GenScalacticJS {
     List(destResourceFile)
   }
 
-  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic",
+  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "UnitSpec.scala",
-        "ChainSpec.scala",
-        "CatcherSpec.scala"
-      ), targetDir)
-  }
+        "TripleEqualsSpec.for210"
+      )) ++
+    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
+    List.empty
 
 }

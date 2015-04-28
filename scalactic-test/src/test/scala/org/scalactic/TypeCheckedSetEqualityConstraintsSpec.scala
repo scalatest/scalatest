@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
+class TypeCheckedSetEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -39,9 +39,9 @@ class TypeCheckedSetEqualityConstraintsSpec extends Spec with NonImplicitAsserti
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  object `the SetEqualityConstraints trait` {
+  describe("the SetEqualityConstraints trait") {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types` {
+    it("should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types") {
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       // assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L)) // does not compile last time I checked
       // assert(mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3)) // does not compile last time I checked

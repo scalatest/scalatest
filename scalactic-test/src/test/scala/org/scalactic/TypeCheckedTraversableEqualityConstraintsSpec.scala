@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedTraversableEqualityConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals with TraversableEqualityConstraints {
+class TypeCheckedTraversableEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals with TraversableEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -39,9 +39,9 @@ class TypeCheckedTraversableEqualityConstraintsSpec extends Spec with NonImplici
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
 
-  object `the TraversableEqualityConstraints trait` {
+  describe("the TraversableEqualityConstraints trait") {
 
-    def `should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types` {
+    it("should allow any Set to be compared with any other Set, so long as the element types of the two Sets adhere to the equality constraint in force for those types") {
       assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1, 2, 3))
       // assert(mutable.HashSet(1, 2, 3) === immutable.HashSet(1L, 2L, 3L)) // does not compile last time I checked
       // assert(mutable.HashSet(1L, 2L, 3L) === immutable.HashSet(1, 2, 3)) // does not compile last time I checked
@@ -55,7 +55,7 @@ class TypeCheckedTraversableEqualityConstraintsSpec extends Spec with NonImplici
       // assert(mutable.HashSet(new Orange, new Orange) === immutable.HashSet(new Apple, new Apple)) // does not compile last time I checked
     }
 
-    def `should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship` {
+    it("should allow any Seq to be compared with any other Seq, so long as the element types of the two Seq's are in a subtype/supertype relationship") {
       assert(Vector(1, 2, 3) === List(1, 2, 3))
       // assert(Vector(1, 2, 3) === List(1L, 2L, 3L)) // does not compile last time I checked
       assert(Vector(new Apple, new Apple) === List(new Fruit("apple"), new Fruit("apple")))
@@ -64,7 +64,7 @@ class TypeCheckedTraversableEqualityConstraintsSpec extends Spec with NonImplici
       // assert(List(new Orange, new Orange) === Vector(new Apple, new Apple)) // does not compile last time I checked
     }
 
-    def `should allow any Map to be compared with any other Map, so long as the element types of the two Maps adhere to the equality constraint in force for those types` {
+    it("should allow any Map to be compared with any other Map, so long as the element types of the two Maps adhere to the equality constraint in force for those types") {
       assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3))
       // assert(mutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3) === immutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L)) // does not compile last time I checked
       // assert(mutable.HashMap('a' -> 1L, 'b' -> 2L, 'c' -> 3L) === immutable.HashMap('a' -> 1, 'b' -> 2, 'c' -> 3)) // does not compile last time I checked

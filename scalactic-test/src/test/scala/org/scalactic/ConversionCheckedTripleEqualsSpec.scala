@@ -25,13 +25,13 @@ import scala.collection.GenTraversableOnce
 
 // TODO: Write a test with both A => B and B => A in scope and make sure it
 // still compiles. Should because should pick the higher priority one in each case.
-class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripleEquals {
+class ConversionCheckedTripleEqualsSpec extends FunSpec with ConversionCheckedTripleEquals {
 
-  object `the ConversionCheckedTripleEquals trait` {
+  describe("the ConversionCheckedTripleEquals trait") {
 
     case class Box[T](value: T)
 
-    def `should automatically unbox an object on the left` {
+    it("should automatically unbox an object on the left") {
       import scala.language.implicitConversions
       implicit def unbox[T](box: Box[T]): T = box.value
 
@@ -39,7 +39,7 @@ class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripl
       assert(Box("s") === "s")
     }
 
-    def `should automatically unbox an object on the right` {
+    it("should automatically unbox an object on the right") {
       import scala.language.implicitConversions
       implicit def unbox[T](box: Box[T]): T = box.value
 
@@ -47,14 +47,15 @@ class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripl
       assert("s" === Box("s"))
     }
 
-    def `should automatically box an object on the left` {
+    it("should automatically box an object on the left") {
       import scala.language.implicitConversions
       implicit def box[T](obj: T): Box[T] = Box(obj)
 
       assert(1 === Box(1))
       assert("s" === Box("s"))
     }
-    def `should automatically box an object on the right` {
+
+    it("should automatically box an object on the right") {
       import scala.language.implicitConversions
       implicit def box[T](obj: T): Box[T] = Box(obj)
 

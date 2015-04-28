@@ -143,7 +143,8 @@ object GenScalaTestJS {
               "Entry.scala",
               "Inspectors.scala",
               "OptionValues.scala",
-              "Inside.scala"
+              "Inside.scala",
+              "NonImplicitAssertions.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -243,7 +244,8 @@ object GenScalaTestJS {
         "DuplicateTestNameException.scala",
         "TestRegistrationClosedException.scala",
         "GeneratorDrivenPropertyCheckFailedException.scala",
-        "DiscardedEvaluationException.scala"
+        "DiscardedEvaluationException.scala",
+        "TimeoutField.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
@@ -324,7 +326,10 @@ object GenScalaTestJS {
         "ResultOfBeWordForNoException.scala",
         "ResultOfContainWord.scala",
         "ResultOfNotWordForAny.scala",
-        "ResultOfTheTypeInvocation.scala"
+        "ResultOfTheTypeInvocation.scala",
+        "ResultOfAllElementsOfApplication.scala",
+        "ResultOfOneElementOfApplication.scala",
+        "ResultOfAtLeastOneElementOfApplication.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
@@ -346,10 +351,18 @@ object GenScalaTestJS {
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
       List(
-        "Configuration.scala",
-        "Checkers.scala",
-        "PropertyChecks.scala",
+        //"Configuration.scala",
+        //"Checkers.scala",
+        //"PropertyChecks.scala",
         "Whenever.scala"
+      ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
+      List(
+        "ScalaFutures.scala",
+        "Futures.scala",
+        "PatienceConfiguration.scala",
+        "AbstractPatienceConfiguration.scala",
+        "ScaledTimeSpans.scala"
       ), targetDir)
   }
 

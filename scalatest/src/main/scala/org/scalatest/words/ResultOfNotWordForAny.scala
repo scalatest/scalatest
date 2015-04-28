@@ -36,7 +36,9 @@ import scala.annotation.tailrec
 import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
@@ -507,6 +509,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -523,6 +526,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>stack</code> is, for example, of type <code>Stack</code> and
@@ -545,6 +549,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -561,6 +566,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>notFileMock</code> is, for example, of type <code>File</code> and
@@ -583,6 +589,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax:
    *
@@ -599,6 +606,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>keyEvent</code> is, for example, of type <code>KeyEvent</code> and
@@ -743,6 +751,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit evidence: Containing[T]) {
+
+    val right = oneElementOf.right
+
+    if (evidence.containsOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneElementOf(left, right)
+        else
+          FailureMessages.containedOneElementOf(left, right)
+      )
+  }
+
   def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = atLeastOneOf.right
@@ -753,6 +774,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
         else
           FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+      )
+  }
+
+  def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = atLeastOneElementOf.right
+
+    if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
+        else
+          FailureMessages.containedAtLeastOneElementOf(left, right)
       )
   }
 
@@ -826,15 +860,27 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(only: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
+  def contain(allOf: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
-    val right = only.right
+    val right = allOf.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
         else
           FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+      )
+  }
+
+  def contain(allElementsOf: ResultOfAllElementsOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = allElementsOf.right
+    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllElementsOf(left, right)
+        else
+          FailureMessages.containedAllElementsOf(left, right)
       )
   }
   

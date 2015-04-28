@@ -15,12 +15,13 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -28,12 +29,18 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
+class PosDoubleSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posDoubleGen: Gen[PosDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
+  implicit val posIntGen: Gen[PosDouble] =
+    for {i <- Gen.choosedouble(1, Double.MaxValue)} yield PosDouble.from(i).get
 
-  implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -47,27 +54,28 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
   }
 
 
-  object `A PosDouble` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosDouble] if the passed Double is greater than 0`
-      {
+  describe("A PosDouble") {
+    describe("should offer a from factory method that") {
+      it("returns Some[PosDouble] if the passed Double is greater than 0") {
         PosDouble.from(50.23).value.value shouldBe 50.23
         PosDouble.from(100.0).value.value shouldBe 100.0
       }
-      def `returns None if the passed Double is NOT greater than 0`
-      {
+      it("returns None if the passed Double is NOT greater than 0") {
         PosDouble.from(0.0) shouldBe None
         PosDouble.from(-0.00001) shouldBe None
         PosDouble.from(-99.9) shouldBe None
       }
     } 
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
+      // SKIP-SCALATESTJS-START
       PosDouble.from(42.0).value.toString shouldBe "PosDouble(42.0)"
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY PosDouble.from(42.0).value.toString shouldBe "PosDouble(42)"
     }
-    def `should return the same type from its unary_+ method` {
+    it("should return the same type from its unary_+ method") {
       +PosDouble(3.0) shouldEqual PosDouble(3.0)
     } 
-    def `should be automatically widened to compatible AnyVal targets` {
+    it("should be automatically widened to compatible AnyVal targets") {
       "PosDouble(3.0): Int" shouldNot typeCheck
       "PosDouble(3.0): Long" shouldNot typeCheck
       "PosDouble(3.0): Float" shouldNot typeCheck
@@ -83,8 +91,8 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       "PosDouble(3.0): PosZFloat" shouldNot typeCheck
       (PosDouble(3.0): PosZDouble) shouldEqual PosZDouble(3.0)
     }
-    object `when a compatible AnyVal is passed to a + method invoked on it` {
-      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+    describe("when a compatible AnyVal is passed to a + method invoked on it") {
+      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"
         val opInt = PosDouble(3.0) + 3
         opInt shouldEqual 6.0
@@ -126,9 +134,9 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
     }
 
-    object `when created with apply method` {
+    describe("when created with apply method") {
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "PosDouble(8)" should compile
         PosDouble(8).value shouldEqual 8.0
         "PosDouble(8L)" should compile
@@ -139,20 +147,20 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         PosDouble(8.0).value shouldEqual 8.0
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "PosDouble(0)" shouldNot compile
         "PosDouble(0L)" shouldNot compile
         "PosDouble(0.0F)" shouldNot compile
         "PosDouble(0.0)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "PosDouble(-8)" shouldNot compile
         "PosDouble(-8L)" shouldNot compile
         "PosDouble(-8.0F)" shouldNot compile
         "PosDouble(-8.0)" shouldNot compile
       }
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val a: Int = -8
         "PosDouble(a)" shouldNot compile
         val b: Long = -8L
@@ -163,11 +171,11 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         "PosDouble(d)" shouldNot compile
       }
     }
-    object `when specified as a plain-old Double` {
+    describe("when specified as a plain-old Double") {
 
       def takesPosDouble(pos: PosDouble): Double = pos.value
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "takesPosDouble(8)" should compile
         takesPosDouble(8) shouldEqual 8.0
         "takesPosDouble(8L)" should compile
@@ -178,21 +186,21 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         takesPosDouble(8.0) shouldEqual 8.0
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "takesPosDouble(0)" shouldNot compile
         "takesPosDouble(0L)" shouldNot compile
         "takesPosDouble(0.0F)" shouldNot compile
         "takesPosDouble(0.0)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "takesPosDouble(-8)" shouldNot compile
         "takesPosDouble(-8L)" shouldNot compile
         "takesPosDouble(-8.0F)" shouldNot compile
         "takesPosDouble(-8.0)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "takesPosDouble(x)" shouldNot compile
         val b: Long = -8L
@@ -203,19 +211,19 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         "takesPosDouble(d)" shouldNot compile
       }
 
-      def `should offer a unary + method that is consistent with Double` {
+      it("should offer a unary + method that is consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           (+pdouble).toDouble shouldEqual (+(pdouble.toDouble))
         }
       }
 
-      def `should offer a unary - method that is consistent with Double` {
+      it("should offer a unary - method that is consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           (-pdouble) shouldEqual (-(pdouble.toDouble))
         }
       }
 
-      def `should offer '<' comparison that is consistent with Double`: Unit = {
+      it("should offer '<' comparison that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble < byte) shouldEqual (pdouble.toDouble < byte)
         }
@@ -239,7 +247,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '<=' comparison that is consistent with Double`: Unit = {
+      it("should offer '<=' comparison that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble <= byte) shouldEqual (pdouble.toDouble <= byte)
         }
@@ -263,7 +271,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>' comparison that is consistent with Double`: Unit = {
+      it("should offer '>' comparison that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble > byte) shouldEqual (pdouble.toDouble > byte)
         }
@@ -287,7 +295,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>=' comparison that is consistent with Double`: Unit = {
+      it("should offer '>=' comparison that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble >= byte) shouldEqual (pdouble.toDouble >= byte)
         }
@@ -311,7 +319,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '+' method that is consistent with Double`: Unit = {
+      it("should offer a '+' method that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble + byte) shouldEqual (pdouble.toDouble + byte)
         }
@@ -335,7 +343,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '-' method that is consistent with Double`: Unit = {
+      it("should offer a '-' method that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble - byte) shouldEqual (pdouble.toDouble - byte)
         }
@@ -359,7 +367,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '*' method that is consistent with Double`: Unit = {
+      it("should offer a '*' method that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           (pdouble * byte) shouldEqual (pdouble.toDouble * byte)
         }
@@ -383,7 +391,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '/' method that is consistent with Double`: Unit = {
+      it("should offer a '/' method that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           pdouble / byte shouldEqual pdouble.toDouble / byte
         }
@@ -409,7 +417,7 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
 
       // note: since a PosInt % 0 is NaN (as opposed to PosInt / 0, which is Infinity)
       // extra logic is needed to convert to a comparable type (boolean, in this case)
-      def `should offer a '%' method that is consistent with Double`: Unit = {
+      it("should offer a '%' method that is consistent with Double") {
         forAll { (pdouble: PosDouble, byte: Byte) =>
           val res = pdouble % byte
           if (res.isNaN)
@@ -461,20 +469,20 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer 'min' and 'max' methods that are consistent with Double`: Unit = {
+      it("should offer 'min' and 'max' methods that are consistent with Double") {
         forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
           pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)
           pdouble1.min(pdouble2).toDouble shouldEqual pdouble1.toDouble.min(pdouble2.toDouble)
         }
       }
 
-      def `should offer an 'isWhole' method that is consistent with Double`: Unit = {
+      it("should offer an 'isWhole' method that is consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           pdouble.isWhole shouldEqual pdouble.toDouble.isWhole
         }
       }
 
-      def `should offer 'round', 'ceil', and 'floor' methods that are consistent with Double`: Unit = {
+      it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           pdouble.round.toDouble shouldEqual pdouble.toDouble.round
           pdouble.ceil.toDouble shouldEqual pdouble.toDouble.ceil
@@ -482,13 +490,14 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer 'toRadians' and 'toDegrees' methods that are consistent with Double`: Unit = {
+      it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           pdouble.toRadians shouldEqual pdouble.toDouble.toRadians
         }
       }
 
-      def `should offer 'to' and 'until' method that is consistent with Double`: Unit = {
+      // SKIP-SCALATESTJS-START
+      it("should offer 'to' and 'until' method that is consistent with Double") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
 
@@ -499,8 +508,9 @@ class PosDoubleSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
           rangeEqual(pdouble.to(end, step), pdouble.toDouble.to(end, step)) shouldBe true
         }
       }
+      // SKIP-SCALATESTJS-END
 
-      def `should offer widening methods for basic types that are consistent with Double`: Unit = {
+      it("should offer widening methods for basic types that are consistent with Double") {
         forAll { (pdouble: PosDouble) =>
           def widen(value: Double): Double = value
           widen(pdouble) shouldEqual widen(pdouble.toDouble)

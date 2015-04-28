@@ -17,16 +17,16 @@ package org.scalactic
 
 import org.scalatest._
 
-class StringNormalizationsSpec extends Spec with StringNormalizations {
+class StringNormalizationsSpec extends FunSpec with StringNormalizations {
 
-  object `StringNormalizations ` {
-    def `should provide a way to normalize a string by making it lower case` { 
+  describe("StringNormalizations ") {
+    it("should provide a way to normalize a string by making it lower case") { 
       assert(lowerCased.normalized("Hello") === "hello")
       assert(lowerCased.normalized("hello") === "hello")
       assert(lowerCased.normalized("") === "")
       assert(lowerCased.normalized("HELLO") === "hello")
     }
-    def `should provide a way to normalize a string by trimming it` { 
+    it("should provide a way to normalize a string by trimming it") { 
       assert(trimmed.normalized("hello") === "hello")
       assert(trimmed.normalized(" hello") === "hello")
       assert(trimmed.normalized("hello ") === "hello")
@@ -36,13 +36,13 @@ class StringNormalizationsSpec extends Spec with StringNormalizations {
       assert(trimmed.normalized("  ") === "")
       assert(trimmed.normalized("") === "")
     }
-    def `should provide a way to normalize a string by making it upper case` { 
+    it("should provide a way to normalize a string by making it upper case") { 
       assert(upperCased.normalized("Hello") === "HELLO")
       assert(upperCased.normalized("hello") === "HELLO")
       assert(upperCased.normalized("") === "")
       assert(upperCased.normalized("HELLO") === "HELLO")
     }
-    def `should provide Uniformity's with pretty toStrings` {
+    it("should provide Uniformity's with pretty toStrings") {
       assert(lowerCased.toString=== "lowerCased")
       assert(trimmed.toString=== "trimmed")
       assert(upperCased.toString=== "upperCased")

@@ -17,21 +17,28 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import prop.GeneratorDrivenPropertyChecks._
+import prop.NyayaGeneratorDrivenPropertyChecks._
+import japgolly.nyaya.test.Gen
 import OptionValues._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 
+// SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
+// SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
 
-class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
+class PosLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
 
-  val posLongGen: Gen[PosLong] =
-    for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
+  implicit val posLongGen: Gen[PosLong] =
+    for {i <- Gen.chooselong(1, Long.MaxValue)} yield PosLong.from(i).get
 
-  implicit val arbPosLong: Arbitrary[PosLong] = Arbitrary(posLongGen)
+  implicit val intGen: Gen[Int] = Gen.int
+  implicit val longGen: Gen[Long] = Gen.long
+  implicit val shortGen: Gen[Short] = Gen.short
+  implicit val charGen: Gen[Char] = Gen.char
+  implicit val floatGen: Gen[Float] = Gen.float
+  implicit val doubleGen: Gen[Double] = Gen.double
+  implicit val byteGen: Gen[Byte] = Gen.byte
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -44,26 +51,25 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
     }
   }
 
-  object `A PosLong` {
-    object `should offer a from factory method that` {
-      def `returns Some[PosLong] if the passed Long is greater than 0`
-      {
+  describe("A PosLong") {
+    describe("should offer a from factory method that") {
+      it("returns Some[PosLong] if the passed Long is greater than 0") {
         PosLong.from(50L).value.value shouldBe 50L
         PosLong.from(100L).value.value shouldBe 100L
       }
-      def `returns None if the passed Long is NOT greater than 0` {
+      it("returns None if the passed Long is NOT greater than 0") {
         PosLong.from(0L) shouldBe None
         PosLong.from(-1L) shouldBe None
         PosLong.from(-99L) shouldBe None
       }
     } 
-    def `should have a pretty toString` {
+    it("should have a pretty toString") {
       PosLong.from(42L).value.toString shouldBe "PosLong(42)"
     }
-    def `should return the same type from its unary_+ method` {
+    it("should return the same type from its unary_+ method") {
       +PosLong(3L) shouldEqual PosLong(3L)
     } 
-    def `should be automatically widened to compatible AnyVal targets` {
+    it("should be automatically widened to compatible AnyVal targets") {
       "PosLong(3L): Int" shouldNot typeCheck
       (PosLong(3L): Long) shouldEqual 3L
       (PosLong(3L): Float) shouldEqual 3.0F
@@ -79,8 +85,8 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       (PosLong(3L): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosLong(3L): PosZDouble) shouldEqual PosZDouble(3.0)
     }
-    object `when a compatible AnyVal is passed to a + method invoked on it` {
-      def `should give the same AnyVal type back at compile time, and correct value at runtime` {
+    describe("when a compatible AnyVal is passed to a + method invoked on it") {
+      it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"
         val opInt = PosLong(3L) + 3
         opInt shouldEqual 6L
@@ -122,79 +128,79 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
       }
     }
 
-    object `when created with apply method` {
+    describe("when created with apply method") {
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "PosLong(8)" should compile
         PosLong(8).value shouldEqual 8L
         "PosLong(8L)" should compile
         PosLong(8L).value shouldEqual 8L
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "PosLong(0)" shouldNot compile
         "PosLong(0L)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "PosLong(-8)" shouldNot compile
         "PosLong(-8L)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val a: Int = -8
         "PosLong(a)" shouldNot compile
         val b: Long = -8L
         "PosLong(b)" shouldNot compile
       }
     }
-    object `when specified as a plain-old Long` {
+    describe("when specified as a plain-old Long") {
 
       def takesPosLong(pos: PosLong): Long = pos.value
 
-      def `should compile when 8 is passed in`: Unit = {
+      it("should compile when 8 is passed in") {
         "takesPosLong(8)" should compile
         takesPosLong(8) shouldEqual 8L
         "takesPosLong(8L)" should compile
         takesPosLong(8L) shouldEqual 8L
       }
 
-      def `should not compile when 0 is passed in`: Unit = {
+      it("should not compile when 0 is passed in") {
         "takesPosLong(0)" shouldNot compile
         "takesPosLong(0L)" shouldNot compile
       }
 
-      def `should not compile when -8 is passed in`: Unit = {
+      it("should not compile when -8 is passed in") {
         "takesPosLong(-8)" shouldNot compile
         "takesPosLong(-8L)" shouldNot compile
       }
 
-      def `should not compile when x is passed in`: Unit = {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "takesPosLong(x)" shouldNot compile
         val b: Long = -8L
         "takesPosLong(b)" shouldNot compile
       }
 
-      def `should offer a unary ~ method that is consistent with Long` {
+      it("should offer a unary ~ method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           (~plong) shouldEqual (~(plong.toLong))
         }
       }
 
-      def `should offer a unary + method that is consistent with Long` {
+      it("should offer a unary + method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           (+plong).toLong shouldEqual (+(plong.toLong))
         }
       }
 
-      def `should offer a unary - method that is consistent with Long` {
+      it("should offer a unary - method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           (-plong) shouldEqual (-(plong.toLong))
         }
       }
 
-      def `should offer << methods that are consistent with Long` {
+      it("should offer << methods that are consistent with Long") {
         forAll { (plong: PosLong, shift: Int) =>
           plong << shift shouldEqual plong.toLong << shift
         }
@@ -203,7 +209,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer >>> methods that are consistent with Long` {
+      it("should offer >>> methods that are consistent with Long") {
         forAll { (plong: PosLong, shift: Int) =>
           plong >>> shift shouldEqual plong.toLong >>> shift
         }
@@ -212,7 +218,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer >> methods that are consistent with Long` {
+      it("should offer >> methods that are consistent with Long") {
         forAll { (plong: PosLong, shift: Int) =>
           plong >> shift shouldEqual plong.toLong >> shift
         }
@@ -221,7 +227,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '<' comparison that is consistent with Long`: Unit = {
+      it("should offer '<' comparison that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong < byte) shouldEqual (plong.toLong < byte)
         }
@@ -245,7 +251,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '<=' comparison that is consistent with Long`: Unit = {
+      it("should offer '<=' comparison that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong <= byte) shouldEqual (plong.toLong <= byte)
         }
@@ -269,7 +275,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>' comparison that is consistent with Long`: Unit = {
+      it("should offer '>' comparison that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong > byte) shouldEqual (plong.toLong > byte)
         }
@@ -293,7 +299,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer '>=' comparison that is consistent with Long`: Unit = {
+      it("should offer '>=' comparison that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong >= byte) shouldEqual (plong.toLong >= byte)
         }
@@ -317,7 +323,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '|' method that is consistent with Long`: Unit = {
+      it("should offer a '|' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong | byte) shouldEqual (plong.toLong | byte)
         }
@@ -335,7 +341,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer an '&' method that is consistent with Long`: Unit = {
+      it("should offer an '&' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong & byte) shouldEqual (plong.toLong & byte)
         }
@@ -353,7 +359,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer an '^' method that is consistent with Long`: Unit = {
+      it("should offer an '^' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong ^ byte) shouldEqual (plong.toLong ^ byte)
         }
@@ -371,7 +377,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '+' method that is consistent with Long`: Unit = {
+      it("should offer a '+' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong + byte) shouldEqual (plong.toLong + byte)
         }
@@ -395,7 +401,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '-' method that is consistent with Long`: Unit = {
+      it("should offer a '-' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong - byte) shouldEqual (plong.toLong - byte)
         }
@@ -419,7 +425,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '*' method that is consistent with Long`: Unit = {
+      it("should offer a '*' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           (plong * byte) shouldEqual (plong.toLong * byte)
         }
@@ -443,7 +449,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '/' method that is consistent with Long`: Unit = {
+      it("should offer a '/' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           Try(plong / byte) shouldEqual Try(plong.toLong / byte)
         }
@@ -467,7 +473,7 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer a '%' method that is consistent with Long`: Unit = {
+      it("should offer a '%' method that is consistent with Long") {
         forAll { (plong: PosLong, byte: Byte) =>
           Try(plong % byte) shouldEqual Try(plong.toLong % byte)
         }
@@ -491,32 +497,33 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
         }
       }
 
-      def `should offer 'min' and 'max' methods that are consistent with Long`: Unit = {
+      it("should offer 'min' and 'max' methods that are consistent with Long") {
         forAll { (plong1: PosLong, plong2: PosLong) =>
           plong1.max(plong2).toLong shouldEqual plong1.toLong.max(plong2.toLong)
           plong1.min(plong2).toLong shouldEqual plong1.toLong.min(plong2.toLong)
         }
       }
 
-      def `should offer a 'toBinaryString' method that is consistent with Long`: Unit = {
+      it("should offer a 'toBinaryString' method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           plong.toBinaryString shouldEqual plong.toLong.toBinaryString
         }
       }
 
-      def `should offer a 'toHexString' method that is consistent with Long`: Unit = {
+      it("should offer a 'toHexString' method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           plong.toHexString shouldEqual plong.toLong.toHexString
         }
       }
 
-      def `should offer a 'toOctalString' method that is consistent with Long`: Unit = {
+      it("should offer a 'toOctalString' method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           plong.toOctalString shouldEqual plong.toLong.toOctalString
         }
       }
 
-      def `should offer 'to' and 'until' method that is consistent with Long`: Unit = {
+      // SKIP-SCALATESTJS-START
+      it("should offer 'to' and 'until' method that is consistent with Long") {
         def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
           a.start == b.start && a.end == b.end && a.step == b.step
 
@@ -527,8 +534,9 @@ class PosLongSpec extends Spec with Matchers/* with StrictCheckedEquality*/ {
           rangeEqual(plong.to(end, step), plong.toLong.to(end, step)) shouldBe true
         }
       }
+      // SKIP-SCALATESTJS-END
 
-      def `should offer widening methods for basic types that are consistent with Long`: Unit = {
+      it("should offer widening methods for basic types that are consistent with Long") {
         forAll { (plong: PosLong) =>
           def widen(value: Long): Long = value
           widen(plong) shouldEqual widen(plong.toLong)

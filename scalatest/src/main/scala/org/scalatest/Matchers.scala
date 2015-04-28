@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
 import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
@@ -32,8 +33,10 @@ import org.scalactic.Constraint
 import org.scalactic.Prettifier
 import org.scalactic.Every
 import org.scalatest.words._
+// SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
+// SKIP-SCALATESTJS-END
 import MatchersHelper.newTestFailedException
 import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
@@ -1361,25 +1364,26 @@ import exceptions.TestFailedException
  * <h2>Working with <code>Option</code>s</h2>
  * 
  * <p>
- * ScalaTest matchers has no special support for <code>Option</code>s, but you can 
- * work with them quite easily using syntax shown previously. For example, if you wish to check
- * whether an option is <code>None</code>, you can write any of:
+ * You can work with options using ScalaTest's equality, <code>empty</code>,
+ * <code>defined</code>, and <code>contain</code> syntax.
+ * For example, if you wish to check whether an option is <code>None</code>, you can write any of:
  * </p>
  * 
  * <pre class="stHighlight">
  * option shouldEqual None
  * option shouldBe None
- * option should not be defined
+ * option should === (None)
  * option shouldBe empty
  * </pre>
  * 
  * <p>
- * If you wish to check an option is defined, and holds a specific value, you can write either of:
+ * If you wish to check an option is defined, and holds a specific value, you can write any of:
  * </p>
  * 
  * <pre class="stHighlight">
  * option shouldEqual Some("hi")
  * option shouldBe Some("hi")
+ * option should === (Some("hi"))
  * </pre>
  * 
  * <p>
@@ -1400,6 +1404,18 @@ import exceptions.TestFailedException
  * option.value should be &lt; 7
  * </pre>
  * 
+ * <p>
+ * As mentioned previously, you can use also use ScalaTest's <code>contain</code>, <code>contain oneOf</code>, and
+ * <code>contain noneOf</code> syntax with options:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * Some(2) should contain (2)
+ * Some(7) should contain oneOf (5, 7, 9)
+ * Some(0) should contain noneOf (7, 8, 9)
+ * </pre>
+ * </p>
+ *
  * <a name="checkingArbitraryProperties"></a>
  * <h2>Checking arbitrary properties with <code>have</code></h2>
  * 
@@ -1714,6 +1730,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   import scala.language.implicitConversions
 
+  // SKIP-SCALATESTJS-START
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))
@@ -1850,6 +1867,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
+  // SKIP-SCALATESTJS-END
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -1930,8 +1948,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
     */
-     
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -1948,6 +1966,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     // TODO: Check the shouldBeTrues, are they sometimes always false or true?
     /**
@@ -1970,7 +1989,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
@@ -1988,6 +2008,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -2799,6 +2820,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (oneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def oneElementOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfOneElementOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -2811,6 +2845,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneOf"))
     new ResultOfAtLeastOneOfApplication(xs)
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atLeastOneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def atLeastOneElementOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfAtLeastOneElementOfApplication(xs)
   }
 
   /**
@@ -2892,6 +2939,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
     new ResultOfAllOfApplication(xs)
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (allElementsOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def allElementsOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    new ResultOfAllElementsOfApplication(xs)
   }
   
   /**
@@ -3479,7 +3539,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -3542,6 +3603,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax:
@@ -3693,6 +3755,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain oneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit containing: Containing[T]) {
+
+      val right = oneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain atLeastOneOf ("one")
      *                     ^
      * </pre>
@@ -3708,6 +3795,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             else
               FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain atLeastOneElementOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit evidence: Aggregating[T]) {
+
+      val right = atLeastOneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(e, right),
             None,
             6
           )
@@ -3866,6 +3978,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             else
               FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain allElementsOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(only: ResultOfAllElementsOfApplication)(implicit evidence: Aggregating[T]) {
+
+      val right = only.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAllOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right)
+            else
+              FailureMessages.containedAllElementsOf(e, right),
             None,
             6
           )
@@ -4174,6 +4311,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     }
 
     /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain oneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "oneElementOf", 1) { e =>
+        if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
@@ -4195,6 +4355,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain atLeastOneElementOf List(1, 2)
+     *                       ^
+     * </pre>
+     */
+    def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "atLeastOneElementOf", 1) { e =>
+        if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(e, right),
+            None,
+            6
+          )
       }
     }
 
@@ -4350,6 +4533,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain allElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "allElementsOf", 1) { e =>
+        if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right)
+            else
+              FailureMessages.containedAllElementsOf(e, right),
+            None,
+            6
+          )
+      }
+    }
     
     /**
      * This method enables the following syntax: 
@@ -4485,7 +4691,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -4527,6 +4734,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
@@ -4607,7 +4815,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
-  
+
+  // SKIP-SCALATESTJS-START
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -4638,6 +4847,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     override def toString: String = "ResultOfBeWordForCollectedArray(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
+  // SKIP-SCALATESTJS-END
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5076,6 +5286,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -5125,6 +5336,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax:
@@ -6488,7 +6700,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
 // TODO: Remember to write tests for inspector shorthands uncovering the bug below, always a empty because always true true passed to matchSym
     /**
      * This method enables the following syntax:
@@ -6537,6 +6750,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         )
       }
     }
+    // SKIP-SCALATESTJS-END
     
     /**
      * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
