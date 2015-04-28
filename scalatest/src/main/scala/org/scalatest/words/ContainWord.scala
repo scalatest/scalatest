@@ -306,6 +306,26 @@ final class ContainWord {
       override def toString: String = "contain noneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+    val right = elements.toList
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              containing.containsNoneOf(left, right.distinct),
+              Resources.rawContainedAtLeastOneOf,
+              Resources.rawDidNotContainAtLeastOneOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
+        }
+      }
+      override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
+    }
+  }
   
   def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {

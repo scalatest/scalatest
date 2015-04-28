@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
 import scala.reflect.{classTag, ClassTag}
@@ -2876,6 +2877,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (noElementsOf List(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def noElementsOf(elements: GenTraversable[Any]) = {
+    val xs = elements.toList
+    new ResultOfNoElementsOfApplication(xs)
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -3855,6 +3869,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain noElementsOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(noElementsOf: ResultOfNoElementsOfApplication)(implicit evidence: Containing[T]) {
+
+      val right = noElementsOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsNoneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, right)
+            else
+              FailureMessages.didNotContainAtLeastOneOf(e, right),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain theSameElementsAs ("one")
      *                     ^
      * </pre>
@@ -4403,6 +4442,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             6
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain noElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "noElementsOf", 1) { e =>
+        if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, right)
+            else
+              FailureMessages.didNotContainAtLeastOneOf(e, right),
+            None,
+            6
+          )
       }
     }
 

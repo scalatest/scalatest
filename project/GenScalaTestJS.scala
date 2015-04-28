@@ -329,7 +329,8 @@ object GenScalaTestJS {
         "ResultOfTheTypeInvocation.scala",
         "ResultOfAllElementsOfApplication.scala",
         "ResultOfOneElementOfApplication.scala",
-        "ResultOfAtLeastOneElementOfApplication.scala"
+        "ResultOfAtLeastOneElementOfApplication.scala",
+        "ResultOfNoElementsOfApplication.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
