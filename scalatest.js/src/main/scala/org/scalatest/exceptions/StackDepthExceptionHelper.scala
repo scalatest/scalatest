@@ -3,7 +3,8 @@ package org.scalatest.exceptions
 private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepth(stackTraces: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0): Int = {
-    stackTraces.takeWhile(_.getFileName.startsWith("https://")).length
+    // the scala-js part is temporary short-cut way to overcome locally built scala-js problem.
+    stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length
   }
 
   def getStackDepthFun(fileName: String, methodName: String, adjustment: Int = 0): (StackDepthException => Int) = { sde =>

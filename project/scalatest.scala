@@ -171,7 +171,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.2",
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.3-SNAPSHOT",
       "org.easymock" % "easymockclassextension" % "3.1" % "optional",
       "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
@@ -221,8 +221,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10"
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.11",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.11"
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -230,8 +230,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-test" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-core" % "0.5.11",
+      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-test" % "0.5.11",
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
