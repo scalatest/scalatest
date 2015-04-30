@@ -221,8 +221,8 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.11",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.11"
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
+      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10"
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))

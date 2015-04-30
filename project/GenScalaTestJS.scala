@@ -69,7 +69,8 @@ object GenScalaTestJS {
               "Finders.java",
               "TagAnnotation.java",
               "WrapWith.java",
-              "DoNotDiscover.java"
+              "DoNotDiscover.java",
+              "Ignore.java"
             ), targetDir)
   }
 
@@ -84,7 +85,7 @@ object GenScalaTestJS {
               "TestData.scala",
               "ConfigMap.scala",
               "Reporter.scala",
-              "DispatchReporter.scala",
+              //"DispatchReporter.scala",
               "CatchReporter.scala",
               "ResourcefulReporter.scala",
               "Tracker.scala",
@@ -144,7 +145,8 @@ object GenScalaTestJS {
               "Inspectors.scala",
               "OptionValues.scala",
               "Inside.scala",
-              "NonImplicitAssertions.scala"
+              "NonImplicitAssertions.scala",
+              "BeforeAndAfterAll.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -214,7 +216,7 @@ object GenScalaTestJS {
         "EventToPresent.scala",
         "DiscoverySuite.scala",
         "SuiteSortingReporter.scala",
-        "ConcurrentDistributor.scala",
+        //"ConcurrentDistributor.scala",
         "FilterReporter.scala",
         "SuiteResult.scala",
         "SuiteParam.scala",
@@ -375,7 +377,8 @@ object GenScalaTestJS {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
       List(
-        "AssertionsSpec.scala"
+        "AssertionsSpec.scala",
+        "BeforeAndAfterAllSpec.scala"
       ), targetDir)
   }
 

@@ -376,12 +376,6 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
   }
 
-  class TestConcurrentDistributor(poolSize: Int) extends tools.ConcurrentDistributor(Args(reporter = SilentReporter), Executors.newFixedThreadPool(poolSize)) {
-     override def apply(suite: Suite, tracker: Tracker) {
-       throw new UnsupportedOperationException("Please use apply with args.")
-     }
-  }
-
   def getIndex[T](xs: GenTraversable[T], value: T): Int = {
     @tailrec
     def getIndexAcc[T](itr: Iterator[T], count: Int): Int = {

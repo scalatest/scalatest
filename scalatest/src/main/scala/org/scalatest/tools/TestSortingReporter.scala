@@ -17,11 +17,9 @@ package org.scalatest.tools
 
 import org.scalatest._
 import org.scalatest.events._
-import DispatchReporter.propagateDispose
+import Reporter.propagateDispose
 import scala.collection.mutable.ListBuffer
 import org.scalatest.time.Span
-import java.util.Timer
-import java.util.TimerTask
 import java.util.UUID
 import scala.annotation.tailrec
 import java.io.PrintStream
