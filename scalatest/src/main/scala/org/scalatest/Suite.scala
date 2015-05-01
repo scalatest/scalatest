@@ -2345,7 +2345,7 @@ used for test events like succeeded/failed, etc.
     
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY Map.empty[String, Set[String]]
+    //SCALATESTJS-ONLY tags
   }
 
   def handleFailedTest(

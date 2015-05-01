@@ -383,7 +383,8 @@ object GenScalaTestJS {
         "AlerterSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
-        "BeforeAndAfterEachTestDataSuite.scala"
+        "BeforeAndAfterEachTestDataSuite.scala",
+        "FunSuiteSpec.scala"
       ), targetDir)
   }
 
