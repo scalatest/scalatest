@@ -380,6 +380,7 @@ object GenScalaTestJS {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
       List(
+        "AlerterSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala"
