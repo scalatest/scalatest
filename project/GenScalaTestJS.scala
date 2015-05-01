@@ -146,7 +146,10 @@ object GenScalaTestJS {
               "OptionValues.scala",
               "Inside.scala",
               "NonImplicitAssertions.scala",
-              "BeforeAndAfterAll.scala"
+              "BeforeAndAfterAll.scala",
+              "BeforeAndAfterEachTestData.scala",
+              "BeforeAndAfterAllConfigMap.scala",
+              "BeforeAndAfterEach.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -378,7 +381,8 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
       List(
         "AssertionsSpec.scala",
-        "BeforeAndAfterAllSpec.scala"
+        "BeforeAndAfterAllSpec.scala",
+        "BeforeAndAfterEachTestDataSuite.scala"
       ), targetDir)
   }
 
