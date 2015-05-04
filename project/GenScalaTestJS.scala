@@ -389,7 +389,8 @@ object GenScalaTestJS {
         "FunSpecSpec.scala",
         "FeatureSpecSpec.scala", 
         "FlatSpecSpec.scala", 
-        "FreeSpecSpec.scala"
+        "FreeSpecSpec.scala", 
+        "PropSpecSpec.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
@@ -397,7 +398,8 @@ object GenScalaTestJS {
         "FunSpecSpec.scala",
         "FeatureSpecSpec.scala", 
         "FlatSpecSpec.scala", 
-        "FreeSpecSpec.scala"
+        "FreeSpecSpec.scala", 
+        "PropSpecSpec.scala"
       ), targetDir)
   }
 
