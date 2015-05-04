@@ -387,13 +387,15 @@ object GenScalaTestJS {
         "BeforeAndAfterEachTestDataSuite.scala",
         "FunSuiteSpec.scala", 
         "FunSpecSpec.scala",
-        "FeatureSpecSpec.scala"
+        "FeatureSpecSpec.scala", 
+        "FlatSpecSpec.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
         "FunSuiteSpec.scala", 
         "FunSpecSpec.scala",
-        "FeatureSpecSpec.scala"
+        "FeatureSpecSpec.scala", 
+        "FlatSpecSpec.scala"
       ), targetDir)
   }
 
