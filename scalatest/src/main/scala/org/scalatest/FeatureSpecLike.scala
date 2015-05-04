@@ -46,7 +46,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FeatureSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
@@ -154,17 +154,22 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    */
   protected def feature(description: String)(fun: => Unit) {
 
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 11
+
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecLike.scala", "feature"))
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", 4, -2, None)
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => stackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => stackDepth)
       case nae: exceptions.NotAllowedException => throw nae
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => stackDepth)
       case other: Throwable => throw other
     }
   }
