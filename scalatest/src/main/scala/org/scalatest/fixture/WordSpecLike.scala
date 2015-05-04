@@ -49,7 +49,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
@@ -156,8 +156,12 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
     def getStackDepth: Int =
       verb match {
+        // SKIP-SCALATESTJS-START
         case "should" | "must" | "can" => 5
         case other => 4
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY case "should" | "must" | "can" => 13
+        //SCALATESTJS-ONLY case other => 11
       }
 
     def registrationClosedMessageFun: String =
@@ -194,6 +198,12 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   }
 
   private def registerShorthandBranch(childPrefix: Option[String], notAllowMessageFun: => String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+
+    // SKIP-SCALATESTJS-START
+    val notAllowStackDepth = 2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val notAllowStackDepth = 11
+
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
     if (engine.currentBranchIsTrunk) {
       val currentBranch = engine.atomic.get.currentBranch
@@ -213,14 +223,14 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
                 }
               registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None)
             case _ =>
-              throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
+              throw new exceptions.NotAllowedException(notAllowMessageFun, notAllowStackDepth)
           }
         case None =>
-          throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
+          throw new exceptions.NotAllowedException(notAllowMessageFun, notAllowStackDepth)
       }
     }
     else
-      throw new exceptions.NotAllowedException(notAllowMessageFun, 2)
+      throw new exceptions.NotAllowedException(notAllowMessageFun, notAllowStackDepth)
   }
 
   /**
@@ -760,6 +770,10 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def afterWord(text: String) = new AfterWord(text)
 
+  // SKIP-SCALATESTJS-START
+  private[scalatest] val stackDepth = 3
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private[scalatest] val stackDepth: Int = 10
   
   /**
    * Class that supports shorthand scope registration via the instance referenced from <code>WordSpecLike</code>'s <code>it</code> field.
@@ -804,7 +818,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def should(right: => Unit) {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", 3, -2, right _)
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, right _)
     }
     
     /**
@@ -829,7 +843,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def must(right: => Unit) {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", 3, -2, right _)
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, right _)
     }
     
     /**
@@ -854,7 +868,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def can(right: => Unit) {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", 3, -2, right _)
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, right _)
     }
     
     /**
@@ -879,7 +893,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def when(right: => Unit) {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", 3, -2, right _)
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, right _)
     }
   }
   
@@ -947,7 +961,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def should(right: => Unit) {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", 3, -2, right _)
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, right _)
     }
     
     /**
@@ -972,7 +986,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def must(right: => Unit) {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", 3, -2, right _)
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, right _)
     }
     
     /**
@@ -997,7 +1011,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def can(right: => Unit) {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", 3, -2, right _)
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, right _)
     }
     
     /**
@@ -1022,7 +1036,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param right the body function
      */
     def when(right: => Unit) {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", 3, -2, right _)
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, right _)
     }
   }
   
