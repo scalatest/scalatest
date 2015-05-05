@@ -387,6 +387,7 @@ object GenScalaTestJS {
         "AllElementsOfContainMatcherSpec.scala",
         "AllOfContainMatcherDeciderSpec.scala",
         "AllOfContainMatcherEqualitySpec.scala",
+        "AllOfContainMatcherSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
