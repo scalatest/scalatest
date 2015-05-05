@@ -210,8 +210,11 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
    * </pre>
    */
   override def newInstance: Suite with ParallelTestExecution = {
+    // SKIP-SCALATESTJS-START
     val instance = getClass.newInstance.asInstanceOf[Suite with ParallelTestExecution]
     instance
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY throw new NotImplementedError("Please override and implement newInstance method.")
   }
 
   /**

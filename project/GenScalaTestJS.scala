@@ -377,6 +377,13 @@ object GenScalaTestJS {
         "PatienceConfiguration.scala",
         "AbstractPatienceConfiguration.scala",
         "ScaledTimeSpans.scala"
+      ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      List(
+        "FreeSpec.scala",
+        "FreeSpecLike.scala",
+        "FunSpec.scala",
+        "FunSpecLike.scala"
       ), targetDir)
   }
 
@@ -390,7 +397,7 @@ object GenScalaTestJS {
         "AllOfContainMatcherDeciderSpec.scala",
         "AllOfContainMatcherEqualitySpec.scala",
         "AllOfContainMatcherSpec.scala",
-        //"AllSuiteProp.scala",
+        "AllSuiteProp.scala",
         "AMatcherSpec.scala",
         "AnMatcherSpec.scala",
         "AnyValMatchersSpec.scala",
@@ -398,13 +405,18 @@ object GenScalaTestJS {
         "ArgsSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllConfigMapSpec.scala",
+        "BeforeAndAfterAllProp.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
-        "FunSuiteSpec.scala", 
+        "FunSuiteSpec.scala",
+        "FunctionSuiteProp.scala",
+        "FunctionSuiteExamples.scala",
         "FunSpecSpec.scala",
         "FeatureSpecSpec.scala", 
         "FlatSpecSpec.scala", 
-        "FreeSpecSpec.scala", 
+        "FreeSpecSpec.scala",
+        "MethodSuiteProp.scala",
+        "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala", 
         "StringFixture.scala"
