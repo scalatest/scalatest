@@ -150,7 +150,8 @@ object GenScalaTestJS {
               "BeforeAndAfterEachTestData.scala",
               "BeforeAndAfterAllConfigMap.scala",
               "BeforeAndAfterEach.scala", 
-              "GivenWhenThen.scala"
+              "GivenWhenThen.scala",
+              "SeveredStackTraces.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -251,7 +252,8 @@ object GenScalaTestJS {
         "TestRegistrationClosedException.scala",
         "GeneratorDrivenPropertyCheckFailedException.scala",
         "DiscardedEvaluationException.scala",
-        "TimeoutField.scala"
+        "TimeoutField.scala",
+        "TestFailedDueToTimeoutException.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
@@ -392,6 +394,7 @@ object GenScalaTestJS {
         "AMatcherSpec.scala",
         "AnMatcherSpec.scala",
         "AnyValMatchersSpec.scala",
+        "AppendedCluesSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
