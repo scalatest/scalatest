@@ -221,7 +221,7 @@ class AllElementsOfContainMatcherSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left2 should not contain allElementsOf (Seq(2, 1, 3))
+        left4 should not contain allElementsOf (Seq(2, 1, 3))
       }
       checkStackDepth(e4, left4, Seq(2, 1, 3), thisLineNumber - 2)
 
