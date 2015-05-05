@@ -523,7 +523,9 @@ private[scalatest] object InspectorsHelper {
   def isMap(xs: Any): Boolean =
     xs match {
       case _: collection.GenMap[_, _] => true
+      // SKIP-SCALATESTJS-START
       case _: java.util.Map[_, _] => true
+      // SKIP-SCALATESTJS-END
       case _ => false
     }
   
