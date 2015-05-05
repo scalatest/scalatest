@@ -8,10 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.11.2"
+  val buildScalaVersion = "2.12.0-M1"
 
-  val releaseVersion = "2.2.4"
-  val githubTag = "release-2.2.4-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.5-M1"
+  val githubTag = "release-2.2.5-M1-for-scala-2.12.0-M1-and-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -62,7 +62,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.4"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.11.6", "2.10.4"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -122,11 +122,11 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.4",
+          "org.scalacheck" %% "scalacheck" % "1.11.6" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.11.6" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
