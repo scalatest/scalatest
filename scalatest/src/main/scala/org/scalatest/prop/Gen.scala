@@ -25,7 +25,7 @@ abstract class Gen[T](seed: Int) {
 
 object Gen {
   private abstract class AbstractGen[T](seed: Int) extends Gen[T](seed) { thisAbstractGen =>
-    protected val rnd = new Random(seed)
+    protected val rnd = new Rnd(seed) // Only usable in this file, so can be sure this doesn't mutate
     def map[U](f: T => U): Gen[U] =
       new AbstractGen[U](seed) {
         def next() = f(thisAbstractGen.next())
