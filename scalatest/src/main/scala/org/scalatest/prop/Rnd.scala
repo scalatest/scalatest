@@ -17,8 +17,17 @@ package org.scalatest.prop
 
 import scala.util.Random
 
-class Rnd(seed: Int) {
-  private val rnd = new Random(seed) // Only usable in this file, so can be sure this doesn't mutate
-  def nextInt(): Int = rnd.nextInt()
-  def nextDouble(): Double = rnd.nextDouble()
+// Wrote this class by looking at the Javadoc of java.util.Random.
+class Rnd(seed: Long) { thisRnd =>
+  def next(bits: Int): (Int, Rnd) = {
+    val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
+    val newInt = (seed >>> (48 - bits)).toInt
+    (newInt, new Rnd(newSeed))
+  }
+  def nextInt: (Int, Rnd) = next(32) 
+  def nextDouble: (Double, Rnd) = {
+    val (ia, ra) = thisRnd.next(26)
+    val (ib, rb) = ra.next(27)
+    (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
+  }
 }

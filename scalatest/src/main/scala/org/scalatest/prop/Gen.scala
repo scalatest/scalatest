@@ -15,33 +15,24 @@
  */
 package org.scalatest.prop
 
-import scala.util.Random
-
-abstract class Gen[T](seed: Int) {
-  def next(): T
-  def map[U](f: T => U): Gen[U]
-  def flatMap[U](f: T => Gen[U]): Gen[U]
+// (size: Int, randomNumGen: Rnd) => (value, new randomNumGen)
+class Gen[T] private (val genFun: (Int, Rnd) => (T, Rnd)) {
+  def next(): T = genFun(100, new Rnd(100))._1
+  def map[U](f: T => U): Gen[U] =
+    new Gen[U]( (size: Int, rnd: Rnd) => {
+      val (value, nextRnd) = genFun(size, rnd)
+      (f(value), nextRnd)
+    }
+  )
+  def flatMap[U](f: T => Gen[U]): Gen[U] = 
+    new Gen[U]((size: Int, rnd: Rnd) => {
+      val (value, nextRnd) = genFun(size, rnd)
+      f(value).genFun(size, nextRnd)
+    }
+  )
 }
 
 object Gen {
-  private abstract class AbstractGen[T](seed: Int) extends Gen[T](seed) { thisAbstractGen =>
-    protected val rnd = new Rnd(seed) // Only usable in this file, so can be sure this doesn't mutate
-    def map[U](f: T => U): Gen[U] =
-      new AbstractGen[U](seed) {
-        def next() = f(thisAbstractGen.next())
-      }
-    def flatMap[U](f: T => Gen[U]): Gen[U] = 
-      new AbstractGen[U](seed) {
-        def next() = f(thisAbstractGen.next()).next()
-      }
-  }
-  private class IntGen(seed: Int) extends AbstractGen[Int](seed: Int) {
-    def next(): Int = rnd.nextInt()
-  }
-  def intGen(seed: Int): Gen[Int] = new IntGen(seed)
-
-  private class DoubleGen(seed: Int) extends AbstractGen[Double](seed: Int) {
-    def next(): Double = rnd.nextDouble()
-  }
-  def doubleGen(seed: Int): Gen[Int] = new IntGen(seed)
+  val intGen: Gen[Int] = new Gen((_, rnd) => rnd.nextInt)
+  val doubleGen: Gen[Double] = new Gen((_, rnd) => rnd.nextDouble)
 }
