@@ -382,6 +382,7 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
       List(
         "AlerterSpec.scala",
+        "AllElementsOfContainMatcherDeciderSpec.scala",
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
