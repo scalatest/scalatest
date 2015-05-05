@@ -395,6 +395,7 @@ object GenScalaTestJS {
         "AnMatcherSpec.scala",
         "AnyValMatchersSpec.scala",
         "AppendedCluesSpec.scala",
+        "ArgsSpec.scala", 
         "AssertionsSpec.scala",
         "BeforeAndAfterAllSpec.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
