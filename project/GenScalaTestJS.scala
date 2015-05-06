@@ -155,6 +155,7 @@ object GenScalaTestJS {
               "BeforeAndAfter.scala",
               "CancelAfterFailure.scala",
               "StopOnFailureReporter.scala",
+              //"ConfigMapWrapperSuite.scala",     // skipped because depends on java reflection
               "Checkpoints.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
@@ -424,6 +425,8 @@ object GenScalaTestJS {
         //"ClassTaggingProp.scala",    // skipped because annotation not supported
         "ClueSpec.scala",
         "ConfigMapSpec.scala",
+        //"ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
+        "ContainMatcherAndOrDeciderSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
@@ -434,7 +437,8 @@ object GenScalaTestJS {
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
-        "WordSpecSpec.scala", 
+        "WordSpecSpec.scala",
+        //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
         "StringFixture.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
