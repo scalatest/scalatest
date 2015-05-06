@@ -421,6 +421,8 @@ object GenScalaTestJS {
         //"CatchReporterProp.scala",   // skipped because heavily depends on java reflection
         "CatchReporterSpec.scala",
         "CheckpointsSpec.scala",
+        //"ClassTaggingProp.scala",    // skipped because annotation not supported
+        "ClueSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
