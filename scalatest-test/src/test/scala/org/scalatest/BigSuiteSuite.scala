@@ -19,27 +19,27 @@ import SharedHelpers._
 
 class BigSuiteSuite extends FunSuite {
   test("a BigSuite(Some(0)) has 100 tests") {
-    val bs = new BigSuite(Some(0))
+    val bs = new BigSuite(Some(0), Map.empty)
     assert(bs.expectedTestCount(Filter()) === 100)
   }
   test("a BigSuite(Some(0)) has no nested suites") {
-    val bs = new BigSuite(Some(0))
+    val bs = new BigSuite(Some(0), Map.empty)
     assert(bs.nestedSuites.size === 0)
   }
   test("a BigSuite(Some(1)) has 1 nested suite") {
-    val bs = new BigSuite(Some(1))
+    val bs = new BigSuite(Some(1), Map.empty)
     assert(bs.nestedSuites.size === 1)
   }
   test("a BigSuite(Some(1))'s 1 nested suite has no nested suites") {
-    val bs = new BigSuite(Some(1))
+    val bs = new BigSuite(Some(1), Map.empty)
     assert(bs.nestedSuites.head.nestedSuites.size === 0)
   }
   test("a BigSuite(Some(2)) has 2 nested suites") {
-    val bs = new BigSuite(Some(2))
+    val bs = new BigSuite(Some(2), Map.empty)
     assert(bs.nestedSuites.size === 2)
   }
   test("a BigSuite(Some(1))'s 2 nested suites have one nested suite each, etc.") {
-    val bs = new BigSuite(Some(2))
+    val bs = new BigSuite(Some(2), Map.empty)
     for (suite <- bs.nestedSuites) {
       assert(suite.nestedSuites.size === 1)
       for (s2 <- suite.nestedSuites)
@@ -47,11 +47,11 @@ class BigSuiteSuite extends FunSuite {
     }
   }
   test("a BigSuite(Some(3)) has 3 nested suites") {
-    val bs = new BigSuite(Some(3))
+    val bs = new BigSuite(Some(3), Map.empty)
     assert(bs.nestedSuites.size === 3)
   }
   test("a BigSuite(Some(2))'s 3 nested suites have two nested suites each, etc.") {
-    val bs = new BigSuite(Some(3))
+    val bs = new BigSuite(Some(3), Map.empty)
     for (suite <- bs.nestedSuites) {
       assert(suite.nestedSuites.size === 2)
       for (s2 <- suite.nestedSuites) {
@@ -70,69 +70,59 @@ class BigSuiteSuite extends FunSuite {
       assert(testFailedEvents(0).testName === "test number 1")
   }
   test("A BigSuite(Some(0)) has one test failure if somefailures property defined") {
-    System.setProperty("org.scalatest.BigSuite.someFailures", "true")
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(0)), 1)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(0), Map("org.scalatest.BigSuite.someFailures" -> "true")), 1)
   }
   test("A BigSuite(Some(n > 0)) has no test failures if somefailures property defined") {
-    System.setProperty("org.scalatest.BigSuite.someFailures", "true")
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(1)), 1)
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(2)), 2)
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(3)), 6)
+    val map = Map("org.scalatest.BigSuite.someFailures" -> "true")
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(1), map), 1)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(2), map), 2)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(3), map), 6)
   }
   test("A BigSuite() has no test failures if somefailures property is not defined") {
-    System.setProperty("org.scalatest.BigSuite.someFailures", "")
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(0)), 0)
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(1)), 0)
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(2)), 0)
-    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(3)), 0)
+    val map = Map("org.scalatest.BigSuite.someFailures" -> "")
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(0), map), 0)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(1), map), 0)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(2), map), 0)
+    ensureTestFailedEventReceivedOrNot(new BigSuite(Some(3), map), 0)
   }
   test("A BigSuite(None) has no nested suites if the config map is empty") {
-    val bs = new BigSuite(Some(0))
+    val bs = new BigSuite(Some(0), Map.empty)
     assert(bs.nestedSuites.size === 0)
   }
   test("A BigSuite() has no nested suites if a system property is empty") {
-    System.clearProperty("org.scalatest.BigSuite.size")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map.empty)
     assert(bs.nestedSuites.size === 0)
   }
   test("A BigSuite(None) has 1 nested suite if a system property says so") {
-    System.setProperty("org.scalatest.BigSuite.size", "1")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "1"))
     assert(bs.nestedSuites.size === 1)
   }
   test("A BigSuite() has 1 nested suite if a system property says so") {
-    System.setProperty("org.scalatest.BigSuite.size", "1")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "1"))
     assert(bs.nestedSuites.size === 1)
   }
   test("A BigSuite(None) has no nested suites if a system property is not parsable as an Int") {
-    System.setProperty("org.scalatest.BigSuite.size", "bob")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "bob"))
     assert(bs.nestedSuites.size === 0)
   }
   test("A BigSuite() has no nested suites if a system property is not parsable as an Int") {
-    System.setProperty("org.scalatest.BigSuite.size", "bob")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "bob"))
     assert(bs.nestedSuites.size === 0)
   }
   test("A BigSuite(None) has 2 nested suites if a system property says 2") {
-    System.setProperty("org.scalatest.BigSuite.size", "2")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "2"))
     assert(bs.nestedSuites.size === 2)
   }
   test("A BigSuite() has 2 nested suites if a system property says 2") {
-    System.setProperty("org.scalatest.BigSuite.size", "2")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "2"))
     assert(bs.nestedSuites.size === 2)
   }
   test("A BigSuite(None) has 4 nested suites if a system property says 4") {
-    System.setProperty("org.scalatest.BigSuite.size", "4")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "4"))
     assert(bs.nestedSuites.size === 4)
   }
   test("A BigSuite() has 4 nested suites if a system property says 4") {
-    System.setProperty("org.scalatest.BigSuite.size", "4")
-    val bs = new BigSuite(None)
+    val bs = new BigSuite(None, Map("org.scalatest.BigSuite.size" -> "4"))
     assert(bs.nestedSuites.size === 4)
   }
 }

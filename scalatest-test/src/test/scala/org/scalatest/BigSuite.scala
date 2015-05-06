@@ -46,18 +46,18 @@ So the knobs we can turn are:
 -s org.scalatest.BigSuite..., repeating this gets you more instances of these trees sized by M
 -Dorg.scalatest.SuiteCompletedStatusReporter.max=X, where X is the number of SuiteCompleted events between duration notes
 */
-protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int]) extends FunSpec { thisSuite =>
+protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int], propMap: Map[String, String]) extends FunSpec { thisSuite =>
 
   override def nestedSuites: collection.immutable.IndexedSeq[Suite] = {
 
     def makeList(remaining: Int, soFar: List[Suite], nestedCount: Int): List[Suite] = {
       if (remaining == 0) soFar
-      else makeList(remaining - 1, (new BigSuite(Some(nestedCount - 1)) :: soFar), nestedCount)
+      else makeList(remaining - 1, (new BigSuite(Some(nestedCount - 1), propMap) :: soFar), nestedCount)
     }
 
     val nsList = nestedSuiteCount match {
       case None =>
-        val sizeString = System.getProperty("org.scalatest.BigSuite.size", "0")
+        val sizeString = propMap.getOrElse("org.scalatest.BigSuite.size", "0")
         val size =
           try {
             sizeString.toInt
@@ -77,7 +77,7 @@ protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int]) extends FunSp
   }
 
   it("test number 1") {
-    val someFailures = System.getProperty("org.scalatest.BigSuite.someFailures", "")
+    val someFailures = propMap.getOrElse("org.scalatest.BigSuite.someFailures", "")
     nestedSuiteCount match {
       case Some(0) if someFailures == "true" => assert(1 + 1 === 3)
       case _ => assert(1 + 1 === 2)
