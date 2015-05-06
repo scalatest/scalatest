@@ -423,6 +423,7 @@ object GenScalaTestJS {
         "CheckpointsSpec.scala",
         //"ClassTaggingProp.scala",    // skipped because annotation not supported
         "ClueSpec.scala",
+        "ConfigMapSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
