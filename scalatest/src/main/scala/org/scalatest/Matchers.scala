@@ -6299,7 +6299,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   // This is where ShouldMatchers.scala started 
 
   private object ShouldMethodHelper {
+    // SKIP-SCALATESTJS-START
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10) {
       rightMatcher(left) match {
         case MatchFailed(failureMessage) => throw newTestFailedException(failureMessage, None, stackDepthAdjustment)
         case _ => ()

@@ -154,7 +154,8 @@ object GenScalaTestJS {
               "SeveredStackTraces.scala",
               "BeforeAndAfter.scala",
               "CancelAfterFailure.scala",
-              "StopOnFailureReporter.scala"
+              "StopOnFailureReporter.scala",
+              "Checkpoints.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -419,6 +420,7 @@ object GenScalaTestJS {
         "CancelAfterFailureSpec.scala",
         //"CatchReporterProp.scala",   // skipped because heavily depends on java reflection
         "CatchReporterSpec.scala",
+        "CheckpointsSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
