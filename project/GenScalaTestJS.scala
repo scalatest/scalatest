@@ -412,6 +412,7 @@ object GenScalaTestJS {
         "BeforeAndAfterEachTestDataSuite.scala",
         "BeforeAndAfterSuite.scala",
         "BeforeNAfterSuite.scala",
+        "BigSuite.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
