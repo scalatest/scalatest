@@ -46,7 +46,7 @@ So the knobs we can turn are:
 -s org.scalatest.BigSuite..., repeating this gets you more instances of these trees sized by M
 -Dorg.scalatest.SuiteCompletedStatusReporter.max=X, where X is the number of SuiteCompleted events between duration notes
 */
-class BigSuite(nestedSuiteCount: Option[Int]) extends FunSpec { thisSuite =>
+protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int]) extends FunSpec { thisSuite =>
 
   override def nestedSuites: collection.immutable.IndexedSeq[Suite] = {
 
