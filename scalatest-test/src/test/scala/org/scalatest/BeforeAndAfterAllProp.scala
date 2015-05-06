@@ -99,7 +99,7 @@ trait BeforeAndAfterAllPropFixtureServices {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
     def `Test 1` { Thread.sleep(10) }
     def `Test 2` { Thread.sleep(10) }
@@ -115,7 +115,7 @@ class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with 
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   object `Scope 1` {
     def `Test 1`(fixture: String) { Thread.sleep(10) }
     def `Test 2`(fixture: String) { Thread.sleep(10) }
@@ -132,19 +132,19 @@ class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAn
 
 // Not supported as JUnit3Suite cannot use ParallelTestExecution
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropJUnit3Suite extends JUnit3Suite with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropJUnit3Suite extends JUnit3Suite with BeforeAndAfterAllPropFixtureServices { }
 
 // Not supported as JUnitSuite cannot use ParallelTestExecution
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropJUnitSuite extends JUnitSuite with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropJUnitSuite extends JUnitSuite with BeforeAndAfterAllPropFixtureServices { }
 
 // Not supported as JUnitSuite cannot use ParallelTestExecution
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropTestNGSuite extends TestNGSuite with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropTestNGSuite extends TestNGSuite with BeforeAndAfterAllPropFixtureServices { }
 // SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   test("Test 1") { SleepHelper.sleep(10) }
   test("Test 2") { SleepHelper.sleep(10) }
   test("Test 3") { SleepHelper.sleep(10) }
@@ -160,7 +160,7 @@ class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterA
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   test("Test 1") { s => SleepHelper.sleep(10) }
   test("Test 2") { s => SleepHelper.sleep(10) }
   test("Test 3") { s => SleepHelper.sleep(10) }
@@ -176,7 +176,7 @@ class ExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with 
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") { SleepHelper.sleep(10) }
     it("Test 2") { SleepHelper.sleep(10) }
@@ -194,7 +194,7 @@ class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") { s => SleepHelper.sleep(10) }
     it("Test 2") { s => SleepHelper.sleep(10) }
@@ -212,7 +212,7 @@ class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with Be
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   feature("Feature 1") {
     scenario("Scenario 1") { SleepHelper.sleep(10) }
     scenario("Scenario 2") { SleepHelper.sleep(10) }
@@ -230,7 +230,7 @@ class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAnd
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   feature("Feature 1") {
     scenario("Scenario 1") { s => SleepHelper.sleep(10) }
     scenario("Scenario 2") { s => SleepHelper.sleep(10) }
@@ -248,7 +248,7 @@ class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" should "do thing 1" in { SleepHelper.sleep(10) }
   it should "do thing 2" in { SleepHelper.sleep(10) }
   it should "do thing 3" in { SleepHelper.sleep(10) }
@@ -264,7 +264,7 @@ class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterA
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should "do thing 1" in { s => SleepHelper.sleep(10) }
   it should "do thing 2" in { s => SleepHelper.sleep(10) }
   it should "do thing 3" in { s => SleepHelper.sleep(10) }
@@ -280,7 +280,7 @@ class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with 
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in { SleepHelper.sleep(10) }
     "Test 2" in { SleepHelper.sleep(10) }
@@ -298,7 +298,7 @@ class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterA
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in { s => SleepHelper.sleep(10) }
     "Test 2" in { s => SleepHelper.sleep(10) }
@@ -316,7 +316,7 @@ class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with 
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   property("Test 1") { SleepHelper.sleep(10) }
   property("Test 2") { SleepHelper.sleep(10) }
   property("Test 3") { SleepHelper.sleep(10) }
@@ -332,7 +332,7 @@ class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterA
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   property("Test 1") { s => SleepHelper.sleep(10) }
   property("Test 2") { s => SleepHelper.sleep(10) }
   property("Test 3") { s => SleepHelper.sleep(10) }
@@ -348,7 +348,7 @@ class ExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with 
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in { SleepHelper.sleep(10) }
     "Test 2" in { SleepHelper.sleep(10) }
@@ -366,7 +366,7 @@ class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterA
 }
 
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in { s => SleepHelper.sleep(10) }
     "Test 2" in { s => SleepHelper.sleep(10) }
@@ -385,8 +385,8 @@ class ExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with 
 
 // Not supported as path.FreeSpec cannot use ParallelTestExecution
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropPathFreeSpec extends path.FreeSpec with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropPathFreeSpec extends path.FreeSpec with BeforeAndAfterAllPropFixtureServices { }
 
 // Not supported as path.FunSpec cannot use ParallelTestExecution
 @DoNotDiscover
-class ExampleBeforeAndAfterAllPropPathFunSpec extends path.FunSpec with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropPathFunSpec extends path.FunSpec with BeforeAndAfterAllPropFixtureServices { }
