@@ -430,6 +430,7 @@ object GenScalaTestJS {
         "ContainMatcherAndOrEqualitySpec.scala",
         "ContainMatcherAndOrExplicitEqualitySpec.scala",
         "ContainMatcherAndOrSpec.scala",
+        "ConversionCheckedAssertionsSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
