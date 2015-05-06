@@ -427,6 +427,7 @@ object GenScalaTestJS {
         "ConfigMapSpec.scala",
         //"ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
         "ContainMatcherAndOrDeciderSpec.scala",
+        "ContainMatcherAndOrEqualitySpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",

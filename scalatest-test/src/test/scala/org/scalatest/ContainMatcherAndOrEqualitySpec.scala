@@ -19,7 +19,7 @@ import org.scalactic.Equality
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 
-class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
+class ContainMatcherAndOrEqualitySpec extends FunSpec with Matchers {
   
   implicit val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -29,11 +29,11 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
       })
   }
 
-  object `ContainMatcher ` {
+  describe("ContainMatcher ") {
     
-    object `when use with 'and'` {
+    describe("when use with 'and'") {
       
-      def `should pass when both contain passes` {
+      it("should pass when both contain passes") {
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 3", " 1", "2 ")
         val right2 = List(" 1", "2 ", " 3")
@@ -107,7 +107,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (contain noneOf (" 7", "8 ", " 9") and (contain theSameElementsAs (right1)))
       }
       
-      def `should failed with correctly stack depth and message when first contain failed but second contain passed` {
+      it("should failed with correctly stack depth and message when first contain failed but second contain passed") {
         val left = List("1 ", " 2", "3 ")
         val right = List(" 3", "2 ", " 1")
         val e1 = intercept[exceptions.TestFailedException] {
@@ -132,7 +132,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should failed with correctly stack depth and message when first contain passed but second contain failed` {
+      it("should failed with correctly stack depth and message when first contain passed but second contain failed") {
         val left = List("1 ", " 2", "3 ")
         val right = List(" 3", "2 ", " 1")
         val e1 = intercept[exceptions.TestFailedException] {
@@ -157,7 +157,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should pass when not contain and contain passes` {
+      it("should pass when not contain and contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List("8 ", " 1", "2 ")
@@ -196,7 +196,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (not { contain inOrderOnly (" 1", "2 ", "8 ") } and contain theSameElementsAs (right2))
       }
       
-      def `should pass when contain and not contain passes` {
+      it("should pass when contain and not contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 8", "1 ", " 2")
@@ -235,7 +235,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (contain theSameElementsAs (right2) and not { contain noneOf ("1 ", " 2", " 8") })
       }
       
-      def `should pass when not contain and not contain passes` {
+      it("should pass when not contain and not contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 8", "1 ", " 2")
@@ -274,7 +274,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (not { contain theSameElementsAs (right2) } and not { contain noneOf ("1 ", " 2", " 8") })
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed but second contain passed` {
+      it("should failed with correctly stack depth and message when first not contain failed but second contain passed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 1", "2 ", " 3")
@@ -302,7 +302,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should failed with correctly stack depth and message when first contain passed but second not contain failed` {
+      it("should failed with correctly stack depth and message when first contain passed but second not contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 3", "2 ", " 1")
@@ -330,7 +330,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second not contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 1", "2 ", " 3")
@@ -360,9 +360,9 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
       
     }
     
-    object `when use with 'or'` {
+    describe("when use with 'or'") {
       
-      def `should pass when one of contain passes` {
+      it("should pass when one of contain passes") {
         val left = List("1 ", " 2", "3 ")
         val right1 = List("5 ", " 1", "2 ")
         val right2 = List(" 1", "2 ", " 3")
@@ -435,7 +435,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (contain noneOf ("7 ", " 8", "9 ") or (contain theSameElementsAs (right1)))
       }
       
-      def `should failed with correctly stack depth and message when both of contain failed` {
+      it("should failed with correctly stack depth and message when both of contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 3", "8 ", " 1")
@@ -463,7 +463,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should pass when not contain and contain passes` {
+      it("should pass when not contain and contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List("8 ", " 1", "2 ")
@@ -502,7 +502,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (not { contain noneOf (" 1", "2 ", "8 ") } or contain theSameElementsAs (right2))
       }
       
-      def `should pass when contain and not contain passes` {
+      it("should pass when contain and not contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List("8 ", " 1", "2 ")
@@ -541,7 +541,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (contain theSameElementsAs (right2) or not { contain noneOf (" 1", "2 ", "8 ") })
       }
       
-      def `should pass when not contain and not contain passes` {
+      it("should pass when not contain and not contain passes") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List("8 ", " 1", "2 ")
@@ -580,7 +580,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         left should (not { contain theSameElementsAs (right2) } or not { contain noneOf (" 1", "2 ", "8 ") })
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 1", "2 ", " 3")
@@ -608,7 +608,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should failed with correctly stack depth and message when first contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first contain failed and second not contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right = List(" 3", "2 ", " 1")
@@ -635,7 +635,7 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second not contain failed") {
         
         val left = List("1 ", " 2", "3 ")
         val right1 = List(" 1", "2 ", " 3")
