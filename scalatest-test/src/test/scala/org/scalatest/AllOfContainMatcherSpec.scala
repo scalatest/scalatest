@@ -104,7 +104,7 @@ class AllOfContainMatcherSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left2 should contain allOf (2, 5, 3)
+        left4 should contain allOf (2, 5, 3)
       }
       checkStackDepth(e4, left4, Array(2, 5, 3).deep, thisLineNumber - 2)
 
