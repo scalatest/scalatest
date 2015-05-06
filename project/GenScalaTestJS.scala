@@ -151,7 +151,8 @@ object GenScalaTestJS {
               "BeforeAndAfterAllConfigMap.scala",
               "BeforeAndAfterEach.scala", 
               "GivenWhenThen.scala",
-              "SeveredStackTraces.scala"
+              "SeveredStackTraces.scala",
+              "BeforeAndAfter.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -407,7 +408,9 @@ object GenScalaTestJS {
         "BeforeAndAfterAllConfigMapSpec.scala",
         "BeforeAndAfterAllProp.scala",
         "BeforeAndAfterAllSpec.scala",
+        "BeforeAndAfterConfigSuite.scala",
         "BeforeAndAfterEachTestDataSuite.scala",
+        "BeforeAndAfterSuite.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
