@@ -69,7 +69,6 @@ class GenSpec extends FunSpec with Matchers {
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
-/*
     it("should be usable in a forAll") {
       import ForAll._
       forAll { (i: Int) => 
@@ -81,7 +80,6 @@ class GenSpec extends FunSpec with Matchers {
         }
       }
     }
-*/
   }
 }
 

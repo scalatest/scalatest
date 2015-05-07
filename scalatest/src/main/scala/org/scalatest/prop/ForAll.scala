@@ -23,15 +23,17 @@ object ForAll extends Configuration {
       config: PropertyCheckConfig,
       genA: org.scalatest.prop.Gen[A]
     ): Unit = {
-      println("in forAll")
+      val (v, _) = genA.next()
+      fun(v)
 /*
      @tailrec
-     def loop(count: Int, nextRnd: Rnd[A]): Unit = {
+     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd[A]): Unit = {
        if (count < config.minSuccessful) {
          Gen.next
          loop(count + 1, ...)
        }
     }
+    loop(config.
 */
   }
 }
