@@ -448,6 +448,7 @@ object GenScalaTestJS {
         //"EntrySpec.scala",    // skipped because Entry extends java.util.Map
         "EventHelpers.scala",
         "EveryLoneElementSpec.scala",
+        "EveryShouldContainAllElementsOfLogicalAndSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",

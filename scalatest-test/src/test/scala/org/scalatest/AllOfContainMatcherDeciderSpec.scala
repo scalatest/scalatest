@@ -39,7 +39,8 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
-  
+
+  // SKIP-SCALATESTJS-START
   val javaMapTrimmed: Uniformity[java.util.Map.Entry[Int, String]] =
     new Uniformity[java.util.Map.Entry[Int, String]] {
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
@@ -62,6 +63,7 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
   
   val incremented: Uniformity[Int] = 
     new Uniformity[Int] {
@@ -100,7 +102,8 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
-  
+
+  // SKIP-SCALATESTJS-START
   val javaMapIncremented: Uniformity[java.util.Map.Entry[Int, String]] = 
     new Uniformity[java.util.Map.Entry[Int, String]] {
       var count = 0
@@ -127,6 +130,7 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
   
   val appended: Uniformity[String] = 
     new Uniformity[String] {
@@ -165,7 +169,8 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
-  
+
+  // SKIP-SCALATESTJS-START
   val javaMapAppended: Uniformity[java.util.Map.Entry[Int, String]] = 
     new Uniformity[java.util.Map.Entry[Int, String]] {
       var count = 0
@@ -192,6 +197,7 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
   
   val lowerCaseEquality = 
     new Equality[String] {
@@ -215,7 +221,8 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case right => left == right
       }
     }
-  
+
+  // SKIP-SCALATESTJS-START
   val javaMapLowerCaseEquality = 
     new Equality[java.util.Map.Entry[Int, String]] {
       def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
@@ -229,6 +236,7 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case right => left == right
       }
     }
+  // SKIP-SCALATESTJS-END
   
   val reverseEquality = 
     new Equality[String] {
@@ -252,7 +260,8 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case right => left == right
       }
     }
-  
+
+  // SKIP-SCALATESTJS-START
   val javaMapReverseEquality = 
     new Equality[java.util.Map.Entry[Int, String]] {
       def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
@@ -266,6 +275,7 @@ class AllOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
           case right => left == right
       }
     }
+  // SKIP-SCALATESTJS-END
   
   describe("allOf ") {
     

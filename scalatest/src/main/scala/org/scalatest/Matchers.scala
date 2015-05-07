@@ -4320,10 +4320,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * the matchers DSL.
    *
    * @author Bill Venners
-   * @author Chee Seng
+   * @author Chee Sengdef allElementsOf
    */
   final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
-  
+
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 13
+
     /**
      * This method enables the following syntax: 
      *
@@ -4344,7 +4349,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4367,7 +4372,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedOneElementOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4392,7 +4397,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4415,7 +4420,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtLeastOneElementOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4440,7 +4445,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4463,7 +4468,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.didNotContainAtLeastOneOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4485,7 +4490,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedSameElements(e, right),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4507,7 +4512,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedSameElementsInOrder(e, right),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4540,7 +4545,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
         }
       }
@@ -4566,7 +4571,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4591,7 +4596,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4614,7 +4619,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllElementsOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4639,7 +4644,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4664,7 +4669,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
         )
       }
     }
@@ -4686,7 +4691,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedKey(map, expectedKey),
               None,
-              6
+              stackDepth
           )
       }
     }
@@ -4708,7 +4713,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedValue(map, expectedValue),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4920,6 +4925,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any) {
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 17
+
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
 /*
 scala> val ys = List(null, null, 1)
@@ -4954,7 +4964,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "should", 1) { e =>
         rightMatcher(e) match {
           case MatchFailed(failureMessage) => 
-            throw newTestFailedException(failureMessage, None, 6)
+            throw newTestFailedException(failureMessage, None, stackDepth)
           case _ => ()
         }
       }
@@ -4972,7 +4982,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
         if (!equality.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          throw newTestFailedException(FailureMessages.didNotEqual(eee, rightee), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqual(eee, rightee), None, stackDepth)
         }
       }
     }
@@ -4988,7 +4998,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldEqual(spread: Spread[T]) {
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
         if (!spread.isWithin(e)) {
-          throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(e, spread.pivot, spread.tolerance), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(e, spread.pivot, spread.tolerance), None, stackDepth)
         }
       }
     }
@@ -5004,7 +5014,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!sortable.isSorted(e))
-          throw newTestFailedException(FailureMessages.wasNotSorted(e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotSorted(e), None, stackDepth)
       }
     }
     
@@ -5019,7 +5029,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!readability.isReadable(e))
-          throw newTestFailedException(FailureMessages.wasNotReadable(e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotReadable(e), None, stackDepth)
       }
     }
     
@@ -5034,7 +5044,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!writability.isWritable(e))
-          throw newTestFailedException(FailureMessages.wasNotWritable(e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotWritable(e), None, stackDepth)
       }
     }
     
@@ -5049,7 +5059,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!emptiness.isEmpty(e))
-          throw newTestFailedException(FailureMessages.wasNotEmpty(e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotEmpty(e), None, stackDepth)
       }
     }
     
@@ -5064,7 +5074,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!definition.isDefined(e))
-          throw newTestFailedException(FailureMessages.wasNotDefined(e), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotDefined(e), None, stackDepth)
       }
     }
 
@@ -5079,7 +5089,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(aType: ResultOfATypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, stackDepth)
       }
     }
 
@@ -5094,7 +5104,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
-          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, stackDepth)
       }
     }
 
@@ -5109,7 +5119,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
       doCollected(collected, xs, original, "shouldEqual", 1) { e =>
         if (e != null) {
-          throw newTestFailedException(FailureMessages.didNotEqualNull(e), None, 6)
+          throw newTestFailedException(FailureMessages.didNotEqualNull(e), None, stackDepth)
         }
       }
     }
@@ -5127,7 +5137,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "should", 1) { e =>
         rightMatcher(e) match {
           case MatchFailed(failureMessage) => 
-            throw newTestFailedException(failureMessage, None, 6)
+            throw newTestFailedException(failureMessage, None, stackDepth)
           case _ => ()
         }
       }
@@ -5146,7 +5156,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "should", 1) { e =>
         rightMatcher(e) match {
           case MatchFailed(failureMessage) => 
-            throw newTestFailedException(failureMessage, None, 6)
+            throw newTestFailedException(failureMessage, None, stackDepth)
           case _ => ()
         }
       }
@@ -5198,7 +5208,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          throw newTestFailedException(FailureMessages.wasNot(eee, rightee), None, 6)
+          throw newTestFailedException(FailureMessages.wasNot(eee, rightee), None, stackDepth)
         }
       }
     }
@@ -5219,8 +5229,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               e,
               comparison.right
             ), 
-            None, 
-            6
+            None,
+            stackDepth
           ) 
         }
       }
@@ -5242,8 +5252,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               e,
               comparison.right
             ), 
-            None, 
-            6
+            None,
+            stackDepth
           ) 
         }
       }
@@ -5265,8 +5275,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               e,
               comparison.right
             ), 
-            None, 
-            6
+            None,
+            stackDepth
           ) 
         }
       }
@@ -5288,8 +5298,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               e,
               comparison.right
             ), 
-            None, 
-            6
+            None,
+            stackDepth
           ) 
         }
       }
@@ -5307,7 +5317,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         val result = beMatcher.apply(e)
         if (!result.matches)
-          throw newTestFailedException(result.failureMessage, None, 6)
+          throw newTestFailedException(result.failureMessage, None, stackDepth)
       }
     }
 
@@ -5322,7 +5332,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(spread: Spread[T]) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (!spread.isWithin(e))
-          throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(e, spread.pivot, spread.tolerance), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(e, spread.pivot, spread.tolerance), None, stackDepth)
       }
     }
 
@@ -5342,8 +5352,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               e,
               resultOfSameInstanceAsApplication.right
             ),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -5361,7 +5371,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
         if (!matcherResult.matches) 
-          throw newTestFailedException(matcherResult.failureMessage, None, 6)
+          throw newTestFailedException(matcherResult.failureMessage, None, stackDepth)
       }
     }
     
@@ -5411,7 +5421,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(o: Null)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         if (e != null)
-         throw newTestFailedException(FailureMessages.wasNotNull(e), None, 6)
+         throw newTestFailedException(FailureMessages.wasNotNull(e), None, stackDepth)
       }
     }
 
@@ -5427,7 +5437,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches) 
-          throw newTestFailedException(FailureMessages.wasNot(e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNot(e, UnquotedString(result.propertyName)), None, stackDepth)
       }
     }
 
@@ -5443,7 +5453,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          throw newTestFailedException(FailureMessages.wasNotA(e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotA(e, UnquotedString(result.propertyName)), None, stackDepth)
       }
     }
 
@@ -5459,7 +5469,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", 1) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          throw newTestFailedException(FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)), None, 6)
+          throw newTestFailedException(FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)), None, stackDepth)
       }
     }
 
@@ -5477,10 +5487,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           try rightMatcherX1.apply(e.asInstanceOf[U])
           catch {
             case tfe: TestFailedException => 
-              throw newTestFailedException(tfe.getMessage, tfe.cause, 6)
+              throw newTestFailedException(tfe.getMessage, tfe.cause, stackDepth)
           }
         if (result.matches)
-          throw newTestFailedException(result.negatedFailureMessage, None, 6)
+          throw newTestFailedException(result.negatedFailureMessage, None, stackDepth)
       }
     }
 
@@ -5497,7 +5507,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldNot", 1) { e =>
         rightMatcher(e) match {
           case MatchSucceeded(negatedFailureMessage) => 
-            throw newTestFailedException(negatedFailureMessage, None, 6)
+            throw newTestFailedException(negatedFailureMessage, None, stackDepth)
           case _ => ()
         }
       }
@@ -5520,7 +5530,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             else
               FailureMessages.equaled(e, inv.right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -5542,7 +5552,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             else
               FailureMessages.equaledPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -5595,8 +5605,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (!existence.exists(e))
           throw newTestFailedException(
             FailureMessages.doesNotExist(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -5614,8 +5624,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (existence.exists(e))
           throw newTestFailedException(
             FailureMessages.exists(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -5633,8 +5643,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (existence.exists(e))
           throw newTestFailedException(
             FailureMessages.exists(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
