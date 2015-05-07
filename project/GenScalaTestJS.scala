@@ -160,7 +160,8 @@ object GenScalaTestJS {
               "DiagrammedAssertions.scala",
               "DiagrammedExpr.scala",
               "DiagrammedAssertionsMacro.scala",
-              "DiagrammedExprMacro.scala"
+              "DiagrammedExprMacro.scala",
+              "EitherValues.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -437,6 +438,10 @@ object GenScalaTestJS {
         "ConversionCheckedAssertionsSpec.scala",
         "CustomMatcherSpec.scala",
         "DiagrammedAssertionsSpec.scala",
+        //"DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
+        //"DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
+        "EasySuite.scala",
+        "EitherValuesSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
