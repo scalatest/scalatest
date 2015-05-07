@@ -168,7 +168,10 @@ trait DiagrammedAssertions extends Assertions {
     private[this] def placeString(line: StringBuilder, str: String, anchor: Int) {
       val diff = anchor - line.length
       for (i <- 1 to diff) line.append(' ')
-      line.replace(anchor, anchor + str.length(), str)
+      if (line.length == anchor)
+        line.append(str)
+      else
+        line.replace(anchor, anchor + str.length(), str)
     }
 
     // this is taken from expecty and modified
