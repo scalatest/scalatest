@@ -442,6 +442,8 @@ object GenScalaTestJS {
         //"DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
         "EasySuite.scala",
         "EitherValuesSpec.scala",
+        //"EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
+        "EngineSpec.scala", 
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
