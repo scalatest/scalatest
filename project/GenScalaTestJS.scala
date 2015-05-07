@@ -156,7 +156,11 @@ object GenScalaTestJS {
               "CancelAfterFailure.scala",
               "StopOnFailureReporter.scala",
               //"ConfigMapWrapperSuite.scala",     // skipped because depends on java reflection
-              "Checkpoints.scala"
+              "Checkpoints.scala",
+              "DiagrammedAssertions.scala",
+              "DiagrammedExpr.scala",
+              "DiagrammedAssertionsMacro.scala",
+              "DiagrammedExprMacro.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -432,6 +436,7 @@ object GenScalaTestJS {
         "ContainMatcherAndOrSpec.scala",
         "ConversionCheckedAssertionsSpec.scala",
         "CustomMatcherSpec.scala",
+        "DiagrammedAssertionsSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
