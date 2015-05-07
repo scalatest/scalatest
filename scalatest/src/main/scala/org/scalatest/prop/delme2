@@ -30,39 +30,32 @@ Edges[T] {
 }
 */
 // (size: Int, randomNumGen: Rnd) => (value, new randomNumGen)
-// def yeOldeNext(size: Int = 10, rnd: Rnd = Rnd.default()): (T, Rnd, Gen[T]) = next(size, rnd)
-trait Gen[T] { thisGenOfT =>
-  def next(size: Int, rnd: Rnd): (T, Rnd, Gen[T])
+class Gen[T] private (val genFun: (Int, Rnd) => (T, Rnd, Gen[T])) {
+  def next(size: Int = 10): (T, Gen[T]) = genFun(size)
   def map[U](f: T => U): Gen[U] =
-    new Gen[U] {
-      def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-        val (nextValue, nextRnd, nextGenOfT) = thisGenOfT.next(size, rnd)
-        (f(nextValue), nextRnd, nextGenOfT.map(f))
-      }
+    new Gen[U]((size: Int, rnd: Rnd) => {
+      val (value, nextRnd, nextGenOfT) = genFun(size)
+/*
+To make a Gen[U], I need a function Int => (U, Gen[U]) and I have a Int => (T, Gen[T]) plus to T => U
+*/
+      (f(value), nextRnd, nextGenOfT.map(f))
     }
+  )
   def flatMap[U](f: T => Gen[U]): Gen[U] = 
-    new Gen[U] {
-      def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-        val (nextValue, nextRnd, nextGenOfT) = thisGenOfT.next(size, rnd)
-        f(nextValue).next(size, nextRnd)
-      }
+    new Gen[U]((size: Int, rnd: Rnd) => {
+      val (value, nextGenOfT) = genFun(size)
+      f(value).genFun(size)
     }
+  )
 }
 
 object Gen {
-  implicit val intGen: Gen[Int] =
-    new Gen[Int] { thisGen =>
-      def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
-        val (nextValue, nextRnd) = rnd.nextInt
-        (nextValue, nextRnd, thisGen)
-      }
-    }
-  implicit val doubleGen: Gen[Double] =
-    new Gen[Double] { thisGen =>
-      def next(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
-        val (nextValue, nextRnd) = rnd.nextDouble
-        (nextValue, nextRnd, thisGen)
-      }
-    }
-}
+/*
+  private val fun = (i: Int) => {
+    kko
+  }
+  implicit def intGen: Gen[Int] = new Gen((_) => rnd.nextInt, Rnd.default)
 
+  implicit def doubleGen: Gen[Double] = new Gen((_) => rnd.nextDouble, Rnd.default)
+*/
+}
