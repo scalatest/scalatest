@@ -161,7 +161,8 @@ object GenScalaTestJS {
               "DiagrammedExpr.scala",
               "DiagrammedAssertionsMacro.scala",
               "DiagrammedExprMacro.scala",
-              "EitherValues.scala"
+              "EitherValues.scala",
+              "LoneElement.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -443,7 +444,10 @@ object GenScalaTestJS {
         "EasySuite.scala",
         "EitherValuesSpec.scala",
         //"EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
-        "EngineSpec.scala", 
+        "EngineSpec.scala",
+        //"EntrySpec.scala",    // skipped because Entry extends java.util.Map
+        "EventHelpers.scala",
+        "EveryLoneElementSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
