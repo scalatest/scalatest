@@ -16,24 +16,35 @@
 package org.scalatest.prop
 
 import scala.annotation.tailrec
+import scala.util.{Try, Failure, Success}
+import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.TestFailedException
 
-object ForAll extends Configuration {
+object ForAll extends Configuration with Whenever {
   def forAll[A](fun: (A) => Unit)
-    (implicit 
-      config: PropertyCheckConfig,
-      genA: org.scalatest.prop.Gen[A]
-    ): Unit = {
-      val (v, _) = genA.next()
-      fun(v)
-     @tailrec
-     def loop(succeededCount: Int, nextRnd: Rnd): Unit = {
-       val (v, r) = genA.next(rnd = nextRnd)
-       fun(v)
-       val nextCount = succeededCount + 1
-       if (nextCount < config.minSuccessful)
-         loop(nextCount, r)
+      (implicit 
+        config: PropertyCheckConfig,
+        genA: org.scalatest.prop.Gen[A]
+      ): Unit = {
+    @tailrec
+    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
+      val (v, r) = genA.next(rnd = nextRnd)
+      val result: Try[Unit] = Try { fun(v) }
+      result match {
+        case Success(()) =>
+          val nextSucceededCount = succeededCount + 1
+          if (nextSucceededCount < config.minSuccessful)
+            loop(nextSucceededCount, discardedCount, r)
+        case Failure(ex: DiscardedEvaluationException) =>
+ println(s"Got here $discardedCount")
+          val nextDiscardedCount = discardedCount + 1
+          if (nextDiscardedCount < config.maxDiscarded)
+            loop(succeededCount, nextDiscardedCount, r)
+          else throw new TestFailedException("too many discarded evaluations", 0)
+        case Failure(ex) => throw ex
+      }
     }
-    loop(1, Rnd.default)
+    loop(0, 0, Rnd.default)
   }
 }
 

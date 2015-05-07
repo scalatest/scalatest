@@ -90,13 +90,40 @@ class GenSpec extends FunSpec with Matchers {
       count shouldEqual generatorDrivenConfig.minSuccessful
 
       {
-      implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 10)
-      count = 0
-      forAll { (i: Int) => 
-        count += 1
-        i + i shouldEqual i * 2
+        implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 10)
+        count = 0
+        forAll { (i: Int) => 
+          count += 1
+          i + i shouldEqual i * 2
+        }
+        count shouldEqual generatorDrivenConfig.minSuccessful
       }
-      count shouldEqual generatorDrivenConfig.minSuccessful
+    }
+    it("should be used at least maxDiscarded times in a forAll") {
+      import ForAll._
+      var count = 0
+      a [TestFailedException] should be thrownBy {
+        forAll { (i: Int) => 
+          count += 1
+          whenever(false) {
+            i + i shouldEqual i * 3
+          }
+        }
+      }
+      count shouldEqual generatorDrivenConfig.maxDiscarded
+
+      {
+        implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 10)
+        count = 0
+        a [TestFailedException] should be thrownBy {
+          forAll { (i: Int) => 
+            count += 1
+            whenever(false) {
+              i + i shouldEqual i * 3
+            }
+          }
+        }
+        count shouldEqual generatorDrivenConfig.maxDiscarded
       }
     }
   }
