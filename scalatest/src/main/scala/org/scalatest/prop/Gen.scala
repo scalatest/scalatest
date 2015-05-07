@@ -15,9 +15,23 @@
  */
 package org.scalatest.prop
 
+/*
+I need to know how many or at least what percentage of edges I should
+produce. When I map and flatmap I want it to combine edges and regulars
+both. What if instead of T, we filled two buckets, and instead of just
+a size, we also pass in how many of each we want?
+Or, how about an Rng for edge conditions, and I just hmm. Yes that might
+work. If I have 7 edges, then I want a random number from 0 to 6 and
+I pick from the edges. Yes, so my edges could be a thing on Gen, which
+also gets mapped and flatMapped? Do I have a number of them? Or do I not
+worry about that. Probably just don't worry about it.
+Edges[T] {
+  can have map and flatmap on it
+}
+*/
 // (size: Int, randomNumGen: Rnd) => (value, new randomNumGen)
 class Gen[T] private (val genFun: (Int, Rnd) => (T, Rnd)) {
-  def next(): T = genFun(100, new Rnd(100))._1
+  def next(size: Int = 10, rnd: Rnd = Rnd.default()): (T, Rnd) = genFun(size, rnd)
   def map[U](f: T => U): Gen[U] =
     new Gen[U]( (size: Int, rnd: Rnd) => {
       val (value, nextRnd) = genFun(size, rnd)
@@ -33,6 +47,6 @@ class Gen[T] private (val genFun: (Int, Rnd) => (T, Rnd)) {
 }
 
 object Gen {
-  val intGen: Gen[Int] = new Gen((_, rnd) => rnd.nextInt)
-  val doubleGen: Gen[Double] = new Gen((_, rnd) => rnd.nextDouble)
+  implicit val intGen: Gen[Int] = new Gen((_, rnd) => rnd.nextInt)
+  implicit val doubleGen: Gen[Double] = new Gen((_, rnd) => rnd.nextDouble)
 }

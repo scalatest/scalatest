@@ -18,10 +18,11 @@ package org.scalatest.prop
 import scala.util.Random
 
 // Wrote this class by looking at the Javadoc of java.util.Random.
-class Rnd(seed: Long) { thisRnd =>
+// And by testing its behavior against that of java.util.Random.
+class Rnd private (seed: Long) { thisRnd =>
   def next(bits: Int): (Int, Rnd) = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
-    val newInt = (seed >>> (48 - bits)).toInt
+    val newInt = (newSeed >>> (48 - bits)).toInt
     (newInt, new Rnd(newSeed))
   }
   def nextInt: (Int, Rnd) = next(32) 
@@ -31,3 +32,9 @@ class Rnd(seed: Long) { thisRnd =>
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
   }
 }
+
+object Rnd {
+  def default(): Rnd = apply(System.currentTimeMillis())
+  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))
+}
+

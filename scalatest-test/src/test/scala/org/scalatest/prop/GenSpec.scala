@@ -17,37 +17,71 @@ package org.scalatest.prop
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
+import org.scalatest.exceptions.TestFailedException
 
 class GenSpec extends FunSpec with Matchers {
 
   describe("A Gen") {
-    it("should do produce the same values in the same order given the same seed") {
+    it("should do produce the same Int values in the same order given the same Rnd") {
       import Gen._
-      val ints1 = intGen
-      val ints2 = intGen
-      ints1.next() shouldEqual ints2.next()
-      ints1.next() shouldEqual ints2.next()
-      ints1.next() shouldEqual ints2.next()
-      val doubles1 = doubleGen
-      val doubles2 = doubleGen
-      doubles1.next() shouldEqual doubles2.next()
-      doubles1.next() shouldEqual doubles2.next()
-      doubles1.next() shouldEqual doubles2.next()
+      val aInts = intGen
+      val bInts = intGen
+      val (a1, ar1) = aInts.next(rnd = Rnd(100))
+      val (a2, ar2) = aInts.next(rnd = ar1)
+      val (a3, _) = aInts.next(rnd = ar2)
+      val (b1, br1) = bInts.next(rnd = Rnd(100))
+      val (b2, br2) = bInts.next(rnd = br1)
+      val (b3, _) = bInts.next(rnd = br2)
+      a1 shouldEqual b1
+      a2 shouldEqual b2
+      a3 shouldEqual b3
     }
-
-    ignore("should offer a map and flatMap method so I can use it in for expressions like a cowboy") {
+    it("should do produce the same Double values in the same order given the same Rnd") {
+      import Gen._
+      val aDoubles = doubleGen
+      val bDoubles = doubleGen
+      val (a1, ar1) = aDoubles.next(rnd = Rnd(100))
+      val (a2, ar2) = aDoubles.next(rnd = ar1)
+      val (a3, _) = aDoubles.next(rnd = ar2)
+      val (b1, br1) = bDoubles.next(rnd = Rnd(100))
+      val (b2, br2) = bDoubles.next(rnd = br1)
+      val (b3, _) = bDoubles.next(rnd = br2)
+      a1 shouldEqual b1
+      a2 shouldEqual b2
+      a3 shouldEqual b3
+    }
+    it("should offer a map and flatMap method so I can use it in for expressions like a cowboy") {
       import Gen._
       def pairGen: Gen[(Int, Double)] =
         for {
           i <- intGen
           d <- doubleGen
         } yield (i, d)
-      val pairs1 = pairGen
-      val pairs2 = pairGen
-      pairs1.next() shouldEqual pairs2.next()
-      pairs1.next() shouldEqual pairs2.next()
-      pairs1.next() shouldEqual pairs2.next()
+      val aPairs = pairGen
+      val bPairs = pairGen
+      val (a1, ar1) = aPairs.next(rnd = Rnd(100))
+      val (a2, ar2) = aPairs.next(rnd = ar1)
+      val (a3, _) = aPairs.next(rnd = ar2)
+      val (b1, br1) = bPairs.next(rnd = Rnd(100))
+      val (b2, br2) = bPairs.next(rnd = br1)
+      val (b3, _) = bPairs.next(rnd = br2)
+      a1 shouldEqual b1
+      a2 shouldEqual b2
+      a3 shouldEqual b3
     }
+/*
+    it("should be usable in a forAll") {
+      import ForAll._
+      forAll { (i: Int) => 
+        i + i shouldEqual i * 2
+      }
+      a [TestFailedException] should be thrownBy {
+        forAll { (i: Int) => 
+          i + i shouldEqual i * 3
+        }
+      }
+    }
+*/
   }
 }
 

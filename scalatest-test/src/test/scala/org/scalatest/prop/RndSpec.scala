@@ -27,7 +27,7 @@ class RndSpec extends FunSpec with Matchers {
       val jb = jr.nextInt()
       val jc = jr.nextInt()
 
-      val sr = new Rnd(100)
+      val sr = Rnd(100)
       val (ia, ra) = sr.nextInt
       val (ib, rb) = ra.nextInt
       val (ic, _) = rb.nextInt
@@ -43,7 +43,7 @@ class RndSpec extends FunSpec with Matchers {
       val jb = jr.nextDouble()
       val jc = jr.nextDouble()
 
-      val sr = new Rnd(100)
+      val sr = Rnd(100)
       val (ia, ra) = sr.nextDouble
       val (ib, rb) = ra.nextDouble
       val (ic, _) = rb.nextDouble
