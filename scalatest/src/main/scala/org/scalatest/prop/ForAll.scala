@@ -25,16 +25,15 @@ object ForAll extends Configuration {
     ): Unit = {
       val (v, _) = genA.next()
       fun(v)
-/*
      @tailrec
-     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd[A]): Unit = {
-       if (count < config.minSuccessful) {
-         Gen.next
-         loop(count + 1, ...)
-       }
+     def loop(succeededCount: Int, nextRnd: Rnd): Unit = {
+       val (v, r) = genA.next(rnd = nextRnd)
+       fun(v)
+       val nextCount = succeededCount + 1
+       if (nextCount < config.minSuccessful)
+         loop(nextCount, r)
     }
-    loop(config.
-*/
+    loop(1, Rnd.default)
   }
 }
 

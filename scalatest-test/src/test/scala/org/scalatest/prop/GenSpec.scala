@@ -80,6 +80,25 @@ class GenSpec extends FunSpec with Matchers {
         }
       }
     }
+    it("should be used at least minSuccessful times in a forAll") {
+      import ForAll._
+      var count = 0
+      forAll { (i: Int) => 
+        count += 1
+        i + i shouldEqual i * 2
+      }
+      count shouldEqual generatorDrivenConfig.minSuccessful
+
+      {
+      implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 10)
+      count = 0
+      forAll { (i: Int) => 
+        count += 1
+        i + i shouldEqual i * 2
+      }
+      count shouldEqual generatorDrivenConfig.minSuccessful
+      }
+    }
   }
 }
 
