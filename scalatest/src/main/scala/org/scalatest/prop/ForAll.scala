@@ -36,7 +36,6 @@ object ForAll extends Configuration with Whenever {
           if (nextSucceededCount < config.minSuccessful)
             loop(nextSucceededCount, discardedCount, r)
         case Failure(ex: DiscardedEvaluationException) =>
- println(s"Got here $discardedCount")
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < config.maxDiscarded)
             loop(succeededCount, nextDiscardedCount, r)
