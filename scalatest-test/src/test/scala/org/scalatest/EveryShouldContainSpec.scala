@@ -22,16 +22,16 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class EveryShouldContainSpec extends Spec {
+class EveryShouldContainSpec extends FunSpec {
 
-  object `a List` {
+  describe("a List") {
 
     val xs: Every[String] = Every("hi", "hi", "hi")
     val caseLists: Every[String] = Every("tell", "them", "Hi")
 
-    object `when used with contain (value) syntax` {
+    describe("when used with contain (value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should contain ("hi")
 
         val e1 = intercept[TestFailedException] {
@@ -42,7 +42,7 @@ class EveryShouldContainSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should contain ("hi")
         intercept[TestFailedException] {
           xs should contain ("ho")
@@ -55,7 +55,7 @@ class EveryShouldContainSpec extends Spec {
           xs should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
@@ -67,7 +67,7 @@ class EveryShouldContainSpec extends Spec {
         }
         (xs should contain ("hi")) (decided by defaultEquality[String])
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
@@ -89,9 +89,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with not contain value syntax` {
+    describe("when used with not contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should not contain "ho"
 
         val e3 = intercept[TestFailedException] {
@@ -102,7 +102,7 @@ class EveryShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should not contain "ho"
         intercept[TestFailedException] {
           xs should not contain "hi"
@@ -115,7 +115,7 @@ class EveryShouldContainSpec extends Spec {
           xs should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should not contain "HI"
         caseLists should not contain "HI "
         (caseLists should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
@@ -127,7 +127,7 @@ class EveryShouldContainSpec extends Spec {
           (caseLists should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -149,9 +149,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         xs should not (contain ("ho"))
 
@@ -163,7 +163,7 @@ class EveryShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should not (contain ("ho"))
         intercept[TestFailedException] {
           xs should not (contain ("hi"))
@@ -176,7 +176,7 @@ class EveryShouldContainSpec extends Spec {
           xs should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should not (contain ("HI"))
         caseLists should not (contain ("HI "))
         (caseLists should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
@@ -191,7 +191,7 @@ class EveryShouldContainSpec extends Spec {
           (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -213,9 +213,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should (not contain "ho")
 
         val e3 = intercept[TestFailedException] {
@@ -226,7 +226,7 @@ class EveryShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should (not contain "ho")
         intercept[TestFailedException] {
           xs should (not contain "hi")
@@ -239,7 +239,7 @@ class EveryShouldContainSpec extends Spec {
           xs should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should (not contain "HI")
         caseLists should (not contain "HI ")
         (caseLists should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
@@ -254,7 +254,7 @@ class EveryShouldContainSpec extends Spec {
           (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -276,9 +276,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain value syntax` {
+    describe("when used with shouldNot contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs shouldNot contain ("ho")
 
         val e3 = intercept[TestFailedException] {
@@ -289,7 +289,7 @@ class EveryShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs shouldNot contain ("ho")
         intercept[TestFailedException] {
           xs shouldNot contain ("hi")
@@ -302,7 +302,7 @@ class EveryShouldContainSpec extends Spec {
           xs shouldNot contain ("ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists shouldNot contain ("HI")
         caseLists shouldNot contain ("HI ")
         (caseLists shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
@@ -314,7 +314,7 @@ class EveryShouldContainSpec extends Spec {
           (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot contain ("HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -336,9 +336,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot (contain (value)) syntax` {
+    describe("when used with shouldNot (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         xs shouldNot (contain ("ho"))
 
@@ -350,7 +350,7 @@ class EveryShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs shouldNot (contain ("ho"))
         intercept[TestFailedException] {
           xs shouldNot (contain ("hi"))
@@ -363,7 +363,7 @@ class EveryShouldContainSpec extends Spec {
           xs shouldNot (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists shouldNot (contain ("HI"))
         caseLists shouldNot (contain ("HI "))
         (caseLists shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
@@ -378,7 +378,7 @@ class EveryShouldContainSpec extends Spec {
           (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -401,15 +401,15 @@ class EveryShouldContainSpec extends Spec {
     }
   }
 
-  object `a collection of Lists` {
+  describe("a collection of Lists") {
 
     val list123s: Every[Every[Int]] = Every(Every(1, 2, 3), Every(1, 2, 3), Every(1, 2, 3))
     val lists: Every[Every[Int]] = Every(Every(1, 2, 3), Every(1, 2, 3), Every(4, 5, 6))
     val hiLists: Every[Every[String]] = Every(Every("hi"), Every("hi"), Every("hi"))
 
-    object `when used with contain (value) syntax` {
+    describe("when used with contain (value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should contain (1)
         atLeast (2, lists) should contain (1)
@@ -420,30 +420,33 @@ class EveryShouldContainSpec extends Spec {
           all (lists) should contain (1)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine1 = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine1)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) did not contain element 1 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) did not contain element 1 (EveryShouldContainSpec.scala:" + offendingLine1 + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
 
         val e2 = intercept[TestFailedException] {
           all (lists) should not contain (4)
         }
         e2.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine2 = thisLineNumber - 3
+        e2.failedCodeLineNumber.get should be (offendingLine2)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 4 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 4 (EveryShouldContainSpec.scala:" + offendingLine2 + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
 
         val e3 = intercept[TestFailedException] {
           all (lists) should contain (1)
         }
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine3 = thisLineNumber - 3
+        e3.failedCodeLineNumber.get should be (offendingLine3)
         e3.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) did not contain element 1 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) did not contain element 1 (EveryShouldContainSpec.scala:" + offendingLine3 + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         intercept[TestFailedException] {
           all (hiLists) should contain ("ho")
         }
@@ -455,7 +458,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           all (hiLists) should contain ("HI")
         }
@@ -465,7 +468,7 @@ class EveryShouldContainSpec extends Spec {
         (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         (all (hiLists) should contain ("HI ")) (after being trimmed and lowerCased)
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
         intercept[TestFailedException] {
           all (hiHeHoLists) should contain ("HO")
@@ -487,9 +490,9 @@ class EveryShouldContainSpec extends Spec {
         normalizedInvokedCount should be (12)
       }
     }
-    object `when used with not contain value syntax` {
+    describe("when used with not contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should not contain 4
         atLeast (2, lists) should not contain 4
@@ -500,12 +503,13 @@ class EveryShouldContainSpec extends Spec {
           all (lists) should not contain 6
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + offendingLine + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should not contain "ho"
         intercept[TestFailedException] {
           all (hiLists) should not contain "hi"
@@ -518,7 +522,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should not contain "HI"
         all (hiLists) should not contain "HI "
         intercept[TestFailedException] {
@@ -529,9 +533,9 @@ class EveryShouldContainSpec extends Spec {
         }
       }
     }
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should not (contain (4))
         atLeast (2, lists) should not (contain (4))
@@ -542,12 +546,13 @@ class EveryShouldContainSpec extends Spec {
           all (lists) should not (contain (6))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + offendingLine + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should not (contain ("ho"))
         intercept[TestFailedException] {
           all (hiLists) should not (contain ("hi"))
@@ -560,7 +565,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should not (contain ("HI"))
         all (hiLists) should not (contain ("HI "))
         intercept[TestFailedException] {
@@ -571,9 +576,9 @@ class EveryShouldContainSpec extends Spec {
         }
       }
     }
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should (not contain 4)
         atLeast (2, lists) should (not contain 4)
@@ -584,12 +589,13 @@ class EveryShouldContainSpec extends Spec {
           all (lists) should (not contain 6)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + offendingLine + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should (not contain "ho")
         intercept[TestFailedException] {
           all (hiLists) should (not contain "hi")
@@ -602,7 +608,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should (not contain "HI")
         all (hiLists) should (not contain "HI ")
         intercept[TestFailedException] {
@@ -614,9 +620,9 @@ class EveryShouldContainSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain value syntax` {
+    describe("when used with shouldNot contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) shouldNot contain (4)
         atLeast (2, lists) shouldNot contain (4)
@@ -627,12 +633,13 @@ class EveryShouldContainSpec extends Spec {
           all (lists) shouldNot contain (6)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + offendingLine + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot contain ("ho")
         intercept[TestFailedException] {
           all (hiLists) shouldNot contain ("hi")
@@ -645,7 +652,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) shouldNot contain ("ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot contain ("HI")
         all (hiLists) shouldNot contain ("HI ")
         intercept[TestFailedException] {
@@ -656,9 +663,9 @@ class EveryShouldContainSpec extends Spec {
         }
       }
     }
-    object `when used with shouldNot (contain (value)) syntax` {
+    describe("when used with shouldNot (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) shouldNot (contain (4))
         atLeast (2, lists) shouldNot (contain (4))
@@ -669,12 +676,13 @@ class EveryShouldContainSpec extends Spec {
           all (lists) shouldNot (contain (6))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, Many(4, 5, 6) contained element 6 (EveryShouldContainSpec.scala:" + offendingLine + ") \n" +
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot (contain ("ho"))
         intercept[TestFailedException] {
           all (hiLists) shouldNot (contain ("hi"))
@@ -687,7 +695,7 @@ class EveryShouldContainSpec extends Spec {
           all (hiLists) shouldNot (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot (contain ("HI"))
         all (hiLists) shouldNot (contain ("HI "))
         intercept[TestFailedException] {
