@@ -27,7 +27,6 @@ class GenSpec extends FunSpec with Matchers {
       val aGen0 = intGen
       val bGen0 = intGen
       val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      aGen1 should be theSameInstanceAs aGen0
       val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
       val (a3, _, _) = aGen2.next(rnd = ar2)
       val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
@@ -42,7 +41,6 @@ class GenSpec extends FunSpec with Matchers {
       val aGen0 = doubleGen
       val bGen0 = doubleGen
       val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      aGen1 should be theSameInstanceAs aGen0
       val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
       val (a3, _, _) = aGen2.next(rnd = ar2)
       val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
@@ -129,15 +127,14 @@ class GenSpec extends FunSpec with Matchers {
         count shouldEqual generatorDrivenConfig.maxDiscarded
       }
     }
-/*
     it("should produce edge values first in random order") {
       import Gen._
-      val aInts = intGen
-      val (a1, ar1) = aInts.next(rnd = Rnd(100))
-      val (a2, ar2) = aInts.next(rnd = ar1)
-      val (a3, ar3) = aInts.next(rnd = ar2)
-      val (a4, ar4) = aInts.next(rnd = ar3)
-      val (a5, _) = aInts.next(rnd = ar4)
+      val ag0 = intGen
+      val (a1, ar1, ag1) = ag0.next(rnd = Rnd(100))
+      val (a2, ar2, ag2) = ag1.next(rnd = ar1)
+      val (a3, ar3, ag3) = ag2.next(rnd = ar2)
+      val (a4, ar4, ag4) = ag3.next(rnd = ar3)
+      val (a5, _, _) = ag4.next(rnd = ar4)
       val edges = List(a1, a2, a3, a4, a5)
       edges should contain (0)
       edges should contain (1)
@@ -145,7 +142,6 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
     }
-*/
   }
 }
 

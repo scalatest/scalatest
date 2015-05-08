@@ -51,13 +51,20 @@ trait Gen[T] { thisGenOfT =>
 }
 
 object Gen {
-  private final class IntGen extends Gen[Int] { thisGen =>
+  private final class IntGen(val edges: List[Int]) extends Gen[Int] { thisGen =>
     def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
       val (nextValue, nextRnd) = rnd.nextInt
-      (nextValue, nextRnd, thisGen)
+      edges match {
+        case Nil => (nextValue, nextRnd, thisGen)
+        case head :: Nil => (head, nextRnd, new IntGen(Nil))
+        case _ => 
+          val idx = nextValue.abs % edges.length
+          (edges(idx), nextRnd, new IntGen(edges.take(idx) ++ edges.drop(idx + 1)))
+      }
     }
   }
-  implicit val intGen: Gen[Int] = new IntGen
+  implicit val intGen: Gen[Int] =
+    new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
 
   private final class DoubleGen extends Gen[Double] { thisGen =>
     def next(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
