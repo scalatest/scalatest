@@ -452,6 +452,7 @@ object GenScalaTestJS {
         "EveryShouldContainAllElementsOfLogicalOrSpec.scala",
         "EveryShouldContainAllElementsOfSpec.scala",
         "EveryShouldContainAllOfLogicalAndSpec.scala",
+        "EveryShouldContainAllOfLogicalOrSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
