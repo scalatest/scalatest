@@ -15,22 +15,6 @@
  */
 package org.scalatest.prop
 
-/*
-I need to know how many or at least what percentage of edges I should
-produce. When I map and flatmap I want it to combine edges and regulars
-both. What if instead of T, we filled two buckets, and instead of just
-a size, we also pass in how many of each we want?
-Or, how about an Rng for edge conditions, and I just hmm. Yes that might
-work. If I have 7 edges, then I want a random number from 0 to 6 and
-I pick from the edges. Yes, so my edges could be a thing on Gen, which
-also gets mapped and flatMapped? Do I have a number of them? Or do I not
-worry about that. Probably just don't worry about it.
-Edges[T] {
-  can have map and flatmap on it
-}
-*/
-// (size: Int, randomNumGen: Rnd) => (value, new randomNumGen)
-// def yeOldeNext(size: Int = 10, rnd: Rnd = Rnd.default()): (T, Rnd, Gen[T]) = next(size, rnd)
 trait Gen[T] { thisGenOfT =>
   def next(size: Int = 100, rnd: Rnd = Rnd.default): (T, Rnd, Gen[T])
   def map[U](f: T => U): Gen[U] =
@@ -79,8 +63,8 @@ object Gen {
         }
       }
   }
-  implicit val intGen: Gen[Int] =
-    new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
+  implicit def intGen: Gen[Int] =
+    new IntGen(scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue)))
 
   private final class DoubleGen(edges: List[Double]) extends Gen[Double] { thisDoubleGen =>
     def next(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
