@@ -3110,6 +3110,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
 
     import org.scalatest.InspectorsHelper._
+
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 17
  
     /**
      * This method enables the following syntax:
@@ -3128,7 +3133,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.equaled(e, right),
             None, 
-            6
+            stackDepth
           )
       }
     }
@@ -3150,7 +3155,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.wasEqualTo(e, right),
             None, 
-            6
+            stackDepth
           )
       }
     }
@@ -3171,8 +3176,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotLessThanOrEqualTo(e, comparison.right)
             else
               FailureMessages.wasLessThanOrEqualTo(e, comparison.right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3194,8 +3199,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotGreaterThanOrEqualTo(e, comparison.right)
             else
               FailureMessages.wasGreaterThanOrEqualTo(e, comparison.right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3217,8 +3222,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotLessThan(e, comparison.right)
             else
               FailureMessages.wasLessThan(e, comparison.right),
-            None, 
-            6
+            None,
+            stackDepth
           ) 
         }
       }
@@ -3240,8 +3245,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotGreaterThan(e, comparison.right)
             else
               FailureMessages.wasGreaterThan(e, comparison.right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3308,8 +3313,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNot(e, UnquotedString(result.propertyName))
             else
               FailureMessages.was(e, UnquotedString(result.propertyName)),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3334,7 +3339,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.wasA(e, UnquotedString(result.propertyName)),
             None, 
-            6
+            stackDepth
           )
         }
       }
@@ -3358,8 +3363,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotAn(e, UnquotedString(result.propertyName))
             else
               FailureMessages.wasAn(e, UnquotedString(result.propertyName)),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3383,8 +3388,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
                   FailureMessages.wasNotSameInstanceAs(e, resultOfSameInstanceAsApplication.right)
                 else
                   FailureMessages.wasSameInstanceAs(e, resultOfSameInstanceAsApplication.right),
-                None, 
-                6
+                None,
+                stackDepth
               )
             }
           case _ => 
@@ -3409,8 +3414,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotDefinedAt(e, resultOfDefinedAt.right)
             else
               FailureMessages.wasDefinedAt(e, resultOfDefinedAt.right),
-            None, 
-            6  
+            None,
+            stackDepth
           )
       }
     }
@@ -3439,8 +3444,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.hadLengthInsteadOfExpectedLength(e, leftLength, right)
             else
               FailureMessages.hadLength(e, right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3465,8 +3470,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.hadSizeInsteadOfExpectedSize(e, leftSize, right)
             else
               FailureMessages.hadSize(e, right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3508,8 +3513,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
                   firstFailure.actualValue,
                   e
                 ), 
-                None, 
-                6
+                None,
+                stackDepth
               )
             case None =>
               // This is this cases, thus will only get here if shouldBeTrue is false
@@ -3525,7 +3530,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
                 }
                 else FailureMessages.allPropertiesHadExpectedValues(e)
 
-              throw newTestFailedException(failureMessage, None, 6)
+              throw newTestFailedException(failureMessage, None, stackDepth)
           } 
         }
       }
@@ -3547,8 +3552,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotNull(e)
             else
               FailureMessages.wasNull,
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3569,8 +3574,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3590,8 +3595,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3611,8 +3616,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-              None, 
-              6
+              None,
+              stackDepth
             )
         }
       }
@@ -3632,8 +3637,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (sortable.isSorted(e) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.wasNotSorted(e) else FailureMessages.wasSorted(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3652,8 +3657,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (readability.isReadable(e) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.wasNotReadable(e) else FailureMessages.wasReadable(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3672,8 +3677,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (writability.isWritable(e) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.wasNotWritable(e) else FailureMessages.wasWritable(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3692,8 +3697,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (emptiness.isEmpty(e) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.wasNotEmpty(e) else FailureMessages.wasEmpty(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3712,8 +3717,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (definition.isDefined(e) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.wasNotDefined(e) else FailureMessages.wasDefined(e),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3733,8 +3738,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if ((containing.contains(e, right)) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) FailureMessages.didNotContainExpectedElement(e, right) else FailureMessages.containedExpectedElement(e, right),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -3760,7 +3765,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3785,7 +3790,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedOneElementOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3810,7 +3815,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3835,7 +3840,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtLeastOneElementOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3860,7 +3865,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3885,7 +3890,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.didNotContainAtLeastOneOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3910,7 +3915,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedSameElements(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3935,7 +3940,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedSameElementsInOrder(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -3967,7 +3972,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               else
                 FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
         }
       }
@@ -3993,7 +3998,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4018,7 +4023,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4043,7 +4048,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllElementsOf(e, right),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4068,7 +4073,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4093,7 +4098,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             else
               FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            6
+            stackDepth
           )
       }
     }
@@ -4115,8 +4120,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotContainKey(map, expectedKey)
             else
               FailureMessages.containedKey(map, expectedKey),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -4139,8 +4144,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotContainValue(map, expectedValue)
             else
               FailureMessages.containedValue(map, expectedValue),
-            None, 
-            6
+            None,
+            stackDepth
           )
         }
       }
@@ -4162,8 +4167,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotStartWith(e, right)
             else
               FailureMessages.startedWith(e, right),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4187,8 +4192,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4209,8 +4214,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotEndWith(e, expectedSubstring)
             else
               FailureMessages.endedWith(e, expectedSubstring),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4229,8 +4234,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4254,8 +4259,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4276,8 +4281,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.didNotIncludeSubstring(e, expectedSubstring)
             else
               FailureMessages.includedSubstring(e, expectedSubstring),
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4301,8 +4306,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            stackDepth
           )
       }
     }
@@ -4327,7 +4332,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     // SKIP-SCALATESTJS-START
     private[scalatest] val stackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 13
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 17
 
     /**
      * This method enables the following syntax: 
@@ -6318,7 +6323,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         case _ => ()
       }
     }
+    // SKIP-SCALATESTJS-START
     def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10) {
       rightMatcher(left) match {
         case MatchSucceeded(negatedFailureMessage) => throw newTestFailedException(negatedFailureMessage, None, stackDepthAdjustment)
         case _ => ()
