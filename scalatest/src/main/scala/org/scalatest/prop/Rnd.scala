@@ -18,6 +18,10 @@ package org.scalatest.prop
 // Wrote this class by looking at the Javadoc of java.util.Random.
 // And by testing its behavior against that of java.util.Random.
 class Rnd private (seed: Long) { thisRnd =>
+  def nextRnd: Rnd = {
+    val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
+    new Rnd(newSeed)
+  }
   def next(bits: Int): (Int, Rnd) = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     val newInt = (newSeed >>> (48 - bits)).toInt

@@ -51,27 +51,65 @@ trait Gen[T] { thisGenOfT =>
 }
 
 object Gen {
-  private final class IntGen(val edges: List[Int]) extends Gen[Int] { thisGen =>
+  private final class IntGen(val edges: List[Int]) extends Gen[Int] { thisIntGen =>
     def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
       val (nextValue, nextRnd) = rnd.nextInt
       edges match {
-        case Nil => (nextValue, nextRnd, thisGen)
-        case head :: Nil => (head, nextRnd, new IntGen(Nil))
-        case _ => 
-          val idx = nextValue.abs % edges.length
-          (edges(idx), nextRnd, new IntGen(edges.take(idx) ++ edges.drop(idx + 1)))
+        case head :: tail => (head, nextRnd, new IntGen(tail))
+        case Nil => (nextValue, nextRnd, thisIntGen)
       }
     }
+    def mappedNext(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
+      val (nextValue, nextRnd) = rnd.nextInt
+      (nextValue, nextRnd, new IntGen(Nil))
+    }
+    override def map[U](f: Int => U): Gen[U] =
+      new Gen[U] {
+        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
+          val (nextT, nextRnd, nextGenOfT) = thisIntGen.mappedNext(size, rnd)
+          (f(nextT), nextRnd, nextGenOfT.map(f))
+        }
+      }
+    override def flatMap[U](f: Int => Gen[U]): Gen[U] = 
+      new Gen[U] { thisInnerGen =>
+        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
+          val (nextT, nextRnd, nextGenOfT) = thisIntGen.mappedNext(size, rnd)
+          val (a, b, c) = f(nextT).next(size, nextRnd)
+          (a, b, thisInnerGen)
+        }
+      }
   }
   implicit val intGen: Gen[Int] =
     new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
 
-  private final class DoubleGen extends Gen[Double] { thisGen =>
+  private final class DoubleGen(edges: List[Double]) extends Gen[Double] { thisDoubleGen =>
     def next(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
       val (nextValue, nextRnd) = rnd.nextDouble
-      (nextValue, nextRnd, thisGen)
+      edges match {
+        case head :: tail => (head, nextRnd, new DoubleGen(tail))
+        case Nil => (nextValue, nextRnd, thisDoubleGen)
+      }
     }
+    def mappedNext(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
+      val (nextValue, nextRnd) = rnd.nextDouble
+      (nextValue, nextRnd, new DoubleGen(Nil))
+    }
+    override def map[U](f: Double => U): Gen[U] =
+      new Gen[U] {
+        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
+          val (nextT, nextRnd, nextGenOfT) = thisDoubleGen.mappedNext(size, rnd)
+          (f(nextT), nextRnd, nextGenOfT.map(f))
+        }
+      }
+    override def flatMap[U](f: Double => Gen[U]): Gen[U] = 
+      new Gen[U] { thisInnerGen =>
+        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
+          val (nextT, nextRnd, nextGenOfT) = thisDoubleGen.mappedNext(size, rnd)
+          val (a, b, c) = f(nextT).next(size, nextRnd)
+          (a, b, thisInnerGen)
+        }
+      }
   }
-  implicit val doubleGen: Gen[Double] = new DoubleGen
+  implicit val doubleGen: Gen[Double] = new DoubleGen(List(0.0))
 }
 
