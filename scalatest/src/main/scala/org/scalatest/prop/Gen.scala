@@ -35,6 +35,13 @@ trait Gen[T] { thisGenOfT =>
 }
 
 object Gen {
+  def chooseInt(from: Int, to: Int): Gen[Int] =
+    new Gen[Int] { thisIntGen =>
+      def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
+        val (nextInt, nextRnd) = rnd.chooseInt(from, to)
+        (nextInt, nextRnd, thisIntGen)
+      }
+    }
   private final class IntGen(val edges: List[Int]) extends Gen[Int] { thisIntGen =>
     def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
       val (nextValue, nextRnd) = rnd.nextInt

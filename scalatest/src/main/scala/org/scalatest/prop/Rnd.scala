@@ -33,6 +33,31 @@ class Rnd private (seed: Long) { thisRnd =>
     val (ib, rb) = ra.next(27)
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
   }
+  def chooseInt(from: Int, to: Int): (Int, Rnd) = {
+    if(from == to) {
+      (from, this.nextInt._2)
+    } else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+      @annotation.tailrec
+      def loop(state: Rnd): (Int, Rnd) = {
+        val next = state.nextInt
+        if (min <= next._1 && next._1 <= max) {
+          next
+        } else if(0 < (max - min)){
+          val x = (next._1 % (max - min + 1)) + min
+          if (min <= x && x <= max) {
+            x -> next._2
+          } else {
+            loop(next._2)
+          }
+        } else {
+          loop(next._2)
+        }
+      }
+      loop(this)
+    }
+  }
 }
 
 object Rnd {

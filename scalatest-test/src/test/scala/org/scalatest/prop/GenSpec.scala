@@ -174,6 +174,37 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
     }
+    it("should offer a chooseInt method") {
+      import Gen._
+      import org.scalactic.anyvals._
+      def posIntGen: Gen[PosInt] =
+        for (i <- Gen.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
+
+      val aGen0 = posIntGen
+      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
+      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
+      val (a3, ar3, aGen3) = aGen2.next(rnd = ar2)
+      val (a4, ar4, aGen4) = aGen3.next(rnd = ar3)
+      val (a5, ar5, aGen5) = aGen4.next(rnd = ar4)
+      val (a6, ar6, aGen6) = aGen5.next(rnd = ar5)
+      val (a7, _, _) = aGen6.next(rnd = ar6)
+
+      val bGen0 = posIntGen
+      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
+      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
+      val (b3, br3, bGen3) = bGen2.next(rnd = br2)
+      val (b4, br4, bGen4) = bGen3.next(rnd = br3)
+      val (b5, br5, bGen5) = bGen4.next(rnd = br4)
+      val (b6, br6, bGen6) = bGen5.next(rnd = br5)
+      val (b7, _, _) = bGen6.next(rnd = br6)
+      a1 shouldEqual b1
+      a2 shouldEqual b2
+      a3 shouldEqual b3
+      a4 shouldEqual b4
+      a5 shouldEqual b5
+      a6 shouldEqual b6
+      a7 shouldEqual b7
+    }
   }
 }
 
