@@ -76,6 +76,8 @@ object Rnd {
     // scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   def default(): Rnd = new Rnd((System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1), scala.util.Random.shuffle(intEdges), List(0.0))
+  // Note, this method where you pass the seed in will produce edges in always the same order, so it 
+  // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
   def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), intEdges, List(0.0))
 }
 
