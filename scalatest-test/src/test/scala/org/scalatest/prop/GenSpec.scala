@@ -20,52 +20,54 @@ import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 
 class GenSpec extends FunSpec with Matchers {
-/*
 
   describe("A Gen") {
     it("should do produce the same Int values in the same order given the same Rnd") {
       import Gen._
-      val aInts = intGen
-      val bInts = intGen
-      val (a1, ar1) = aInts.next(rnd = Rnd(100))
-      val (a2, ar2) = aInts.next(rnd = ar1)
-      val (a3, _) = aInts.next(rnd = ar2)
-      val (b1, br1) = bInts.next(rnd = Rnd(100))
-      val (b2, br2) = bInts.next(rnd = br1)
-      val (b3, _) = bInts.next(rnd = br2)
+      val aGen0 = intGen
+      val bGen0 = intGen
+      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
+      aGen1 should be theSameInstanceAs aGen0
+      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
+      val (a3, _, _) = aGen2.next(rnd = ar2)
+      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
+      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
+      val (b3, _, _) = bGen2.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
     it("should do produce the same Double values in the same order given the same Rnd") {
       import Gen._
-      val aDoubles = doubleGen
-      val bDoubles = doubleGen
-      val (a1, ar1) = aDoubles.next(rnd = Rnd(100))
-      val (a2, ar2) = aDoubles.next(rnd = ar1)
-      val (a3, _) = aDoubles.next(rnd = ar2)
-      val (b1, br1) = bDoubles.next(rnd = Rnd(100))
-      val (b2, br2) = bDoubles.next(rnd = br1)
-      val (b3, _) = bDoubles.next(rnd = br2)
+      val aGen0 = doubleGen
+      val bGen0 = doubleGen
+      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
+      aGen1 should be theSameInstanceAs aGen0
+      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
+      val (a3, _, _) = aGen2.next(rnd = ar2)
+      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
+      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
+      val (b3, _, _) = bGen2.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
     it("should offer a map and flatMap method so I can use it in for expressions like a cowboy") {
       import Gen._
-      def pairGen: Gen[(Int, Double)] =
+      def pairGen(): Gen[(Int, Double)] =
+        // doubleGen().flatMap(d => intGen().map(i => (i, d)))
         for {
-          i <- intGen
           d <- doubleGen
+          i <- intGen
         } yield (i, d)
-      val aPairs = pairGen
-      val bPairs = pairGen
-      val (a1, ar1) = aPairs.next(rnd = Rnd(100))
-      val (a2, ar2) = aPairs.next(rnd = ar1)
-      val (a3, _) = aPairs.next(rnd = ar2)
-      val (b1, br1) = bPairs.next(rnd = Rnd(100))
-      val (b2, br2) = bPairs.next(rnd = br1)
-      val (b3, _) = bPairs.next(rnd = br2)
+      val aGen0 = pairGen()
+      val bGen0 = pairGen()
+      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
+      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
+      val (a3, _, _) = aGen2.next(rnd = ar2)
+      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
+      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
+      val (b3, _, _) = bGen2.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -127,6 +129,7 @@ class GenSpec extends FunSpec with Matchers {
         count shouldEqual generatorDrivenConfig.maxDiscarded
       }
     }
+/*
     it("should produce edge values first in random order") {
       import Gen._
       val aInts = intGen
@@ -142,7 +145,7 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
     }
-  }
 */
+  }
 }
 

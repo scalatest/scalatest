@@ -28,7 +28,7 @@ object ForAll extends Configuration with Whenever {
       ): Unit = {
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd, nextGen: Gen[A]): Unit = {
-      val (v, r, g) = nextGen.next(10, rnd = nextRnd)
+      val (v, r, g) = nextGen.next(10, nextRnd)
       val result: Try[Unit] = Try { fun(v) }
       result match {
         case Success(()) =>

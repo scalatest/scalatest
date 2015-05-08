@@ -15,8 +15,6 @@
  */
 package org.scalatest.prop
 
-import scala.util.Random
-
 // Wrote this class by looking at the Javadoc of java.util.Random.
 // And by testing its behavior against that of java.util.Random.
 class Rnd private (seed: Long) { thisRnd =>
