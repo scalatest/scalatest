@@ -23,7 +23,7 @@ import scala.collection.JavaConverters._
 import Matchers._
 import exceptions.TestFailedException
 
-class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
+class EveryShouldContainNoElementsOfLogicalAndSpec extends FunSpec {
 
   val invertedStringEquality =
     new Equality[String] {
@@ -63,14 +63,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
 
   val fileName: String = "EveryShouldContainNoElementsOfLogicalAndSpec.scala"
 
-  object `an Every` {
+  describe("an Every") {
 
     val fumList: Every[String] = Every("fum")
     val toList: Every[String] = Every("to")
 
-    object `when used with (contain noElementsOf Seq(..) and contain noElementsOf Seq(..))` {
+    describe("when used with (contain noElementsOf Seq(..) and contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fam") and contain noElementsOf Seq("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fum") and contain noElementsOf Seq("fie", "fee", "fam", "foe"))
@@ -82,7 +82,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fam")) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fum") and contain noElementsOf Seq("fee", "fie", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
@@ -95,7 +95,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("FEE", "FIE", "FUM", "FOE")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fum") and contain noElementsOf Seq("fee", "fie", "fum", "foe"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM") and contain noElementsOf Seq("fee", "fie", "fum", "foe"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -108,15 +108,15 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam") and contain noElementsOf Seq("fie", "fee", "fam", "foe"))
         fumList should (contain noElementsOf Seq("fie", "fee", "fam", "foe") and contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam"))
       }
     }
 
-    object `when used with (equal (..) and contain noElementsOf Seq(..))` {
+    describe("when used with (equal (..) and contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (equal (fumList) and contain noElementsOf Seq("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain noElementsOf Seq("fee", "fie", "foe", "fam"))
@@ -128,7 +128,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (equal (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
@@ -141,7 +141,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (equal (toList) and contain noElementsOf Seq("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -154,14 +154,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (equal (toList) and contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (equal (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam"))
       }
     }
 
-    object `when used with (be (..) and contain noElementsOf Seq(..))` {
+    describe("when used with (be (..) and contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (be (fumList) and contain noElementsOf Seq("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) and contain noElementsOf Seq("fee", "fie", "foe", "fam"))
@@ -173,7 +173,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (be (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
@@ -186,7 +186,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.containedAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (be (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (be (fumList) and contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
@@ -199,14 +199,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (be (fumList) and contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (be (fumList) and contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam"))
       }
     }
 
-    object `when used with (contain noElementsOf Seq(..) and be (..))` {
+    describe("when used with (contain noElementsOf Seq(..) and be (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain noElementsOf Seq("fie", "fee", "fam", "foe") and be (fumList))
         val e1 = intercept[TestFailedException] {
           fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fam") and be (toList))
@@ -218,7 +218,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fum") and be (fumList))
         val e1 = intercept[TestFailedException] {
@@ -231,7 +231,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fum") and be (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM") and be (fumList))) (decided by upperCaseStringEquality)
@@ -244,14 +244,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and be (fumList))) (after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam") and be (fumList))
       }
     }
 
-    object `when used with (not contain noElementsOf Seq(..) and not contain noElementsOf Seq(..))` {
+    describe("when used with (not contain noElementsOf Seq(..) and not contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not contain noElementsOf (Seq("fee", "fie", "foe", "fum")) and not contain noElementsOf (Seq("fee", "fie", "fum", "foe")))
         val e1 = intercept[TestFailedException] {
           fumList should (not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain noElementsOf (Seq("fee", "fie", "fum", "foe")))
@@ -263,7 +263,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain noElementsOf (Seq("FEE", "FIE", "FUM", "FOE")))
         val e1 = intercept[TestFailedException] {
@@ -277,7 +277,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("fee", "fie", "fum", "foe")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain noElementsOf (Seq("FEE", "FIE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain noElementsOf (Seq("fee", "fie", "foe", "fum")) and not contain noElementsOf (Seq("FEE", "FIE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -290,15 +290,15 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") and contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (not contain noElementsOf (Seq("fee", "fie", "foe", "fie", "fum")) and not contain noElementsOf (Seq("fee", "fie", "fum", "foe")))
         fumList should (not contain noElementsOf (Seq("fee", "fie", "fum", "foe")) and not contain noElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
       }
     }
 
-    object `when used with (not equal (..) and not contain noElementsOf Seq(..))` {
+    describe("when used with (not equal (..) and not contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not equal (toList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))
@@ -310,7 +310,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not equal (toList) and not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))
         val e1 = intercept[TestFailedException] {
@@ -323,7 +323,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not equal (fumList) and not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -336,14 +336,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) and not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (not equal (toList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
       }
     }
 
-    object `when used with (not be (..) and not contain noElementsOf Seq(..))` {
+    describe("when used with (not be (..) and not contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not be (toList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))
@@ -355,7 +355,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not be (toList) and not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))
         val e1 = intercept[TestFailedException] {
@@ -368,7 +368,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not be (toList) and not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (toList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fum")))) (decided by upperCaseStringEquality)
@@ -381,14 +381,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         (fumList should (not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) and not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (not be (toList) and not contain noElementsOf (Seq("fee", "fie", "foe", "fie", "fum")))
       }
     }
 
   }
 
-  object `every of Everys` {
+  describe("every of Everys") {
 
     val list1s: Every[Every[Int]] = Every(Every(1), Every(1), Every(1))
     val lists: Every[Every[Int]] = Every(Every(1), Every(1), Every(2))
@@ -400,9 +400,9 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
         "in " + decorateToStringValue(left)
 
-    object `when used with (contain noElementsOf Seq(..) and contain noElementsOf Seq(..))` {
+    describe("when used with (contain noElementsOf Seq(..) and contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain noElementsOf Seq(3, 2, 8) and contain noElementsOf Seq(2, 6, 8))
         atLeast (2, lists) should (contain noElementsOf Seq(3, 2, 5) and contain noElementsOf Seq(2, 3, 4))
         atMost (2, lists) should (contain noElementsOf Seq(3, 2, 8) and contain noElementsOf Seq(2, 3, 4))
@@ -429,7 +429,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(2, FailureMessages.didNotContainAtLeastOneOf(lists(2), Seq(3, 6, 9)) + ", but " + FailureMessages.containedAtLeastOneOf(lists(2), Seq(2, 6, 8)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (contain noElementsOf Seq("hi", "he") and contain noElementsOf Seq("ho", "he"))
@@ -445,7 +445,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")) + ", but " + FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain noElementsOf Seq("hi", "he") and contain noElementsOf Seq("ho", "he"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain noElementsOf Seq("HI", "HE") and contain noElementsOf Seq("ho", "he"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -458,15 +458,15 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")) + ", but " + FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should (contain noElementsOf Seq(8, 2, 2, 3) and contain noElementsOf Seq(2, 6, 8))
         all (list1s) should (contain noElementsOf Seq(2, 6, 8) and contain noElementsOf Seq(8, 2, 2, 3))
       }
     }
 
-    object `when used with (be (..) and contain noElementsOf Seq(..))` {
+    describe("when used with (be (..) and contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (be (One(1)) and contain noElementsOf Seq(2, 3, 4))
         atLeast (2, lists) should (be (One(1)) and contain noElementsOf Seq(2, 3, 4))
         atMost (2, lists) should (be (One(1)) and contain noElementsOf Seq(2, 3, 4))
@@ -493,7 +493,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(One(1)) + " was equal to " + decorateToStringValue(One(1)) + ", but " + FailureMessages.containedAtLeastOneOf(list1s(0), Seq(1, 2, 3)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (be (One("hi")) and contain noElementsOf Seq("hi", "he"))
@@ -509,7 +509,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")) + ", but " + FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (be (One("hi")) and contain noElementsOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be (One("ho")) and contain noElementsOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
@@ -522,14 +522,14 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")) + ", but " + FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should (be (One(1)) and contain noElementsOf Seq(8, 2, 2, 3))
       }
     }
 
-    object `when used with (not contain noElementsOf Seq(..) and not contain noElementsOf Seq(..))` {
+    describe("when used with (not contain noElementsOf Seq(..) and not contain noElementsOf Seq(..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not contain noElementsOf (Seq(1, 2, 8)) and not contain noElementsOf (Seq(1, 6, 8)))
         atLeast (2, lists) should (not contain noElementsOf (Seq(1, 6, 8)) and not contain noElementsOf (Seq(1, 3, 8)))
         atMost (2, lists) should (not contain noElementsOf (Seq(1, 3, 8)) and contain noElementsOf (Seq(1, 6, 8)))
@@ -556,7 +556,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("hi", "hey", "howdy")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("ho", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (not contain noElementsOf (Seq("HI", "HE")) and not contain noElementsOf (Seq("HI", "HE")))
@@ -572,7 +572,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not contain noElementsOf (Seq("HI", "HE")) and not contain noElementsOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain noElementsOf (Seq("hi", "he")) and not contain noElementsOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -585,15 +585,15 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedAtLeastOneOf(hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should (not contain noElementsOf (Seq(1, 2, 2, 3)) and not contain noElementsOf (Seq(1, 6, 8)))
         all (list1s) should (not contain noElementsOf (Seq(1, 6, 8)) and not contain noElementsOf (Seq(1, 2, 2, 3)))
       }
     }
 
-    object `when used with (not be (..) and not contain oneOf (..))` {
+    describe("when used with (not be (..) and not contain oneOf (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not be (One(2)) and not contain noElementsOf (Seq(1, 2, 3)))
         atLeast (2, lists) should (not be (One(3)) and not contain noElementsOf (Seq(1, 6, 8)))
         atMost (2, lists) should (not be (One(3)) and contain noElementsOf (Seq(1, 6, 8)))
@@ -620,7 +620,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("ho", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (not be (One("ho")) and not contain noElementsOf (Seq("HI", "HE")))
@@ -636,7 +636,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not be (One("ho")) and not contain noElementsOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be (One("hi")) and not contain noElementsOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
@@ -649,7 +649,7 @@ class EveryShouldContainNoElementsOfLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.didNotContainAtLeastOneOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should (not be (One(2)) and not contain noElementsOf (Seq(1, 2, 2, 3)))
       }
     }
