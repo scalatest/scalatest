@@ -473,6 +473,7 @@ object GenScalaTestJS {
         "EveryShouldContainNoElementsOfLogicalOrSpec.scala",
         "EveryShouldContainNoElementsOfSpec.scala",
         "EveryShouldContainNoneOfLogicalAndSpec.scala",
+        "EveryShouldContainNoneOfLogicalOrSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
