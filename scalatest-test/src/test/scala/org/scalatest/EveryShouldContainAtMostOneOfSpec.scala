@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class EveryShouldContainAtMostOneOfSpec extends Spec {
+class EveryShouldContainAtMostOneOfSpec extends FunSpec {
 
   val upperCaseStringEquality =
     new Equality[String] {
@@ -46,14 +46,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
 
   //ADDITIONAL//
 
-  object `an Every` {
+  describe("an Every") {
 
     val fumList: Every[String] = Every("fum", "foe")
     val toList: Every[String] = Every("to", "you")
 
-    object `when used with contain atMostOneOf (...) syntax` {
+    describe("when used with contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should contain atMostOneOf ("fee", "fie", "foe", "fam")
         val e1 = intercept[TestFailedException] {
           fumList should contain atMostOneOf ("fee", "fie", "foe", "fum")
@@ -62,14 +62,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
         intercept[TestFailedException] {
           fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
@@ -80,7 +80,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
         fumList should contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should contain atMostOneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -90,9 +90,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with (contain atMostOneOf (...)) syntax` {
+    describe("when used with (contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         fumList should (contain atMostOneOf ("fee", "fie", "foe", "fam"))
         val e1 = intercept[TestFailedException] {
@@ -102,14 +102,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
         intercept[TestFailedException] {
           fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
@@ -119,7 +119,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
         fumList should (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain atMostOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -129,9 +129,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with not contain atMostOneOf (...) syntax` {
+    describe("when used with not contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should not contain atMostOneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           fumList should not contain atMostOneOf ("fee", "fie", "foe", "fam")
@@ -140,14 +140,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
           fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
@@ -157,7 +157,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           fumList should not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should not contain atMostOneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -167,9 +167,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with (not contain atMostOneOf (...)) syntax` {
+    describe("when used with (not contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not contain atMostOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           fumList should (not contain atMostOneOf ("fee", "fie", "foe", "fam"))
@@ -178,14 +178,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
           fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
@@ -195,7 +195,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           fumList should (not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain atMostOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -205,9 +205,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain atMostOneOf (...) syntax` {
+    describe("when used with shouldNot contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList shouldNot contain atMostOneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           fumList shouldNot contain atMostOneOf ("fee", "fie", "foe", "fam")
@@ -216,14 +216,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
           fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
@@ -233,7 +233,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           fumList shouldNot contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList shouldNot contain atMostOneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -243,9 +243,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot (contain atMostOneOf (...)) syntax` {
+    describe("when used with shouldNot (contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList shouldNot (contain atMostOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           fumList shouldNot (contain atMostOneOf ("fee", "fie", "foe", "fam"))
@@ -254,14 +254,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedAtMostOneOf(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
           fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
@@ -271,7 +271,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           fumList shouldNot (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList shouldNot (contain atMostOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -282,16 +282,16 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
     }
   }
 
-  object `every of Everys` {
+  describe("every of Everys") {
 
     val list1s: Every[Every[Int]] = Every(Every(1, 2), Every(1, 2), Every(1, 2))
     val lists: Every[Every[Int]] = Every(Every(1, 2), Every(1, 2), Every(2, 3))
     val hiLists: Every[Every[String]] = Every(Every("hi", "he"), Every("hi", "he"), Every("hi", "he"))
     val toLists: Every[Every[String]] = Every(Every("to", "you"), Every("to", "you"), Every("to", "you"))
 
-    object `when used with contain atMostOneOf (...) syntax` {
+    describe("when used with contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should contain atMostOneOf (1, 3, 4)
         atLeast (2, lists) should contain atMostOneOf (2, 3, 4)
         atMost (2, lists) should contain atMostOneOf (2, 3, 4)
@@ -301,13 +301,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           all (lists) should contain atMostOneOf (2, 3, 4)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one of (2, 3, 4) (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one of (2, 3, 4) (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should contain atMostOneOf ("hi", "ho")
         intercept[TestFailedException] {
           all (hiLists) should contain atMostOneOf ("hi", "he")
@@ -319,7 +320,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should contain atMostOneOf ("hi", "ho")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (hiLists) should contain atMostOneOf ("hi", "he")) (decided by upperCaseStringEquality)
@@ -331,7 +332,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should contain atMostOneOf (1, 2, 2, 3)
         }
@@ -341,9 +342,9 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with (contain atMostOneOf (...)) syntax` {
+    describe("when used with (contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain atMostOneOf (1, 3, 4))
         atLeast (2, lists) should (contain atMostOneOf (2, 3, 4))
         atMost (2, lists) should (contain atMostOneOf (2, 3, 4))
@@ -353,13 +354,14 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           all (lists) should (contain atMostOneOf (2, 3, 4))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one of (2, 3, 4) (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one of (2, 3, 4) (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should (contain atMostOneOf ("hi", "ho"))
         intercept[TestFailedException] {
           all (hiLists) should (contain atMostOneOf ("hi", "he"))
@@ -371,7 +373,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain atMostOneOf ("hi", "ho"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (hiLists) should (contain atMostOneOf ("hi", "he"))) (decided by upperCaseStringEquality)
@@ -383,7 +385,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain atMostOneOf (1, 2, 2, 3))
         }
@@ -393,20 +395,21 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with not contain atMostOneOf (...) syntax` {
+    describe("when used with not contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should not contain atMostOneOf ("happy", "birthday", "to", "you")
         val e1 = intercept[TestFailedException] {
           all (toLists) should not contain atMostOneOf ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         intercept[TestFailedException] {
@@ -414,7 +417,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
@@ -425,7 +428,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should not contain atMostOneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -435,27 +438,28 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with (not contain atMostOneOf (...)) syntax` {
+    describe("when used with (not contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should (not contain atMostOneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
           all (toLists) should (not contain atMostOneOf ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         intercept[TestFailedException] {
           all (toLists) should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
@@ -465,7 +469,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           all (toLists) should (not contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain atMostOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -475,20 +479,21 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain atMostOneOf (...) syntax` {
+    describe("when used with shouldNot contain atMostOneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot contain atMostOneOf ("happy", "birthday", "to", "you")
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot contain atMostOneOf ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         intercept[TestFailedException] {
@@ -496,7 +501,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
@@ -507,7 +512,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
         }
       }
 
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot contain atMostOneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -517,27 +522,28 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot (contain atMostOneOf (...)) syntax` {
+    describe("when used with shouldNot (contain atMostOneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot (contain atMostOneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot (contain atMostOneOf ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of (\"fee\", \"fie\", \"foe\", \"fum\") (EveryShouldContainAtMostOneOfSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
@@ -547,7 +553,7 @@ class EveryShouldContainAtMostOneOfSpec extends Spec {
           all (toLists) shouldNot (contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot (contain atMostOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
