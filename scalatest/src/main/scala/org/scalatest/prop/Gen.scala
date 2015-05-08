@@ -15,21 +15,23 @@
  */
 package org.scalatest.prop
 
+import scala.collection.mutable.ListBuffer
+
 trait Gen[T] { thisGenOfT =>
-  def next(size: Int = 100, rnd: Rnd = Rnd.default): (T, Rnd, Gen[T])
+  def next(size: Int = 100, rnd: Rnd = Rnd.default): (T, Rnd)
   def map[U](f: T => U): Gen[U] =
     new Gen[U] {
-      def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-        val (nextT, nextRnd, nextGenOfT) = thisGenOfT.next(size, rnd)
-        (f(nextT), nextRnd, nextGenOfT.map(f))
+      def next(size: Int, rnd: Rnd): (U, Rnd) = {
+        val (nextT, nextRnd) = thisGenOfT.next(size, rnd)
+        (f(nextT), nextRnd)
       }
     }
   def flatMap[U](f: T => Gen[U]): Gen[U] = 
     new Gen[U] { thisInnerGen =>
-      def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-        val (nextT, nextRnd, nextGenOfT) = thisGenOfT.next(size, rnd)
-        val (a, b, c) = f(nextT).next(size, nextRnd)
-        (a, b, thisInnerGen)
+      def next(size: Int, rnd: Rnd): (U, Rnd) = {
+        val (nextT, nextRnd) = thisGenOfT.next(size, rnd)
+        val (a, b) = f(nextT).next(size, nextRnd)
+        (a, b)
       }
     }
 }
@@ -37,70 +39,22 @@ trait Gen[T] { thisGenOfT =>
 object Gen {
   def chooseInt(from: Int, to: Int): Gen[Int] =
     new Gen[Int] { thisIntGen =>
-      def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
+      def next(size: Int, rnd: Rnd): (Int, Rnd) = {
         val (nextInt, nextRnd) = rnd.chooseInt(from, to)
-        (nextInt, nextRnd, thisIntGen)
+        (nextInt, nextRnd)
       }
     }
-  private final class IntGen(val edges: List[Int]) extends Gen[Int] { thisIntGen =>
-    def next(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
-      val (nextValue, nextRnd) = rnd.nextInt
-      edges match {
-        case head :: tail => (head, nextRnd, new IntGen(tail))
-        case Nil => (nextValue, nextRnd, thisIntGen)
-      }
-    }
-    def mappedNext(size: Int, rnd: Rnd): (Int, Rnd, Gen[Int]) = {
-      val (nextValue, nextRnd) = rnd.nextInt
-      (nextValue, nextRnd, new IntGen(Nil))
-    }
-    override def map[U](f: Int => U): Gen[U] =
-      new Gen[U] {
-        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-          val (nextT, nextRnd, nextGenOfT) = thisIntGen.mappedNext(size, rnd)
-          (f(nextT), nextRnd, nextGenOfT.map(f))
-        }
-      }
-    override def flatMap[U](f: Int => Gen[U]): Gen[U] = 
-      new Gen[U] { thisInnerGen =>
-        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-          val (nextT, nextRnd, nextGenOfT) = thisIntGen.mappedNext(size, rnd)
-          val (a, b, c) = f(nextT).next(size, nextRnd)
-          (a, b, thisInnerGen)
-        }
-      }
+  private final class IntGen extends Gen[Int] {
+    def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
   }
-  implicit def intGen: Gen[Int] =
-    new IntGen(scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue)))
 
-  private final class DoubleGen(edges: List[Double]) extends Gen[Double] { thisDoubleGen =>
-    def next(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
-      val (nextValue, nextRnd) = rnd.nextDouble
-      edges match {
-        case head :: tail => (head, nextRnd, new DoubleGen(tail))
-        case Nil => (nextValue, nextRnd, thisDoubleGen)
-      }
-    }
-    def mappedNext(size: Int, rnd: Rnd): (Double, Rnd, Gen[Double]) = {
-      val (nextValue, nextRnd) = rnd.nextDouble
-      (nextValue, nextRnd, new DoubleGen(Nil))
-    }
-    override def map[U](f: Double => U): Gen[U] =
-      new Gen[U] {
-        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-          val (nextT, nextRnd, nextGenOfT) = thisDoubleGen.mappedNext(size, rnd)
-          (f(nextT), nextRnd, nextGenOfT.map(f))
-        }
-      }
-    override def flatMap[U](f: Double => Gen[U]): Gen[U] = 
-      new Gen[U] { thisInnerGen =>
-        def next(size: Int, rnd: Rnd): (U, Rnd, Gen[U]) = {
-          val (nextT, nextRnd, nextGenOfT) = thisDoubleGen.mappedNext(size, rnd)
-          val (a, b, c) = f(nextT).next(size, nextRnd)
-          (a, b, thisInnerGen)
-        }
-      }
+  implicit val intGen: Gen[Int] = new IntGen
+    // new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
+    // new IntGen(scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue)))
+
+  private final class DoubleGen extends Gen[Double] {
+    def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
   }
-  implicit val doubleGen: Gen[Double] = new DoubleGen(List(0.0))
+  implicit val doubleGen: Gen[Double] = new DoubleGen
 }
 

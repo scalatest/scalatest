@@ -20,40 +20,39 @@ import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 
 class GenSpec extends FunSpec with Matchers {
-
   describe("A Gen") {
     it("should produce the same Int values in the same order given the same Rnd") {
       import Gen._
-      val aGen0 = intGen
-      val bGen0 = intGen
-      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
-      val (a3, ar3, aGen3) = aGen2.next(rnd = ar2)
-      val (a4, ar4, aGen4) = aGen3.next(rnd = ar3)
-      val (a5, ar5, aGen5) = aGen4.next(rnd = ar4)
-      val (a6, ar6, aGen6) = aGen5.next(rnd = ar5)
-      val (a7, _, _) = aGen6.next(rnd = ar6)
-      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
-      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
-      val (b3, br3, bGen3) = bGen2.next(rnd = br2)
-      val (b4, br4, bGen4) = bGen3.next(rnd = br3)
-      val (b5, br5, bGen5) = bGen4.next(rnd = br4)
-      val (b6, br6, bGen6) = bGen5.next(rnd = br5)
-      val (b7, _, _) = bGen6.next(rnd = br6)
+      val aGen= intGen
+      val bGen = intGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, ar3) = aGen.next(rnd = ar2)
+      val (a4, ar4) = aGen.next(rnd = ar3)
+      val (a5, ar5) = aGen.next(rnd = ar4)
+      val (a6, ar6) = aGen.next(rnd = ar5)
+      val (a7, _) = aGen.next(rnd = ar6)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, br3) = bGen.next(rnd = br2)
+      val (b4, br4) = bGen.next(rnd = br3)
+      val (b5, br5) = bGen.next(rnd = br4)
+      val (b6, br6) = bGen.next(rnd = br5)
+      val (b7, _) = bGen.next(rnd = br6)
       List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
       a6 shouldEqual b6
       a7 shouldEqual b7
     }
     it("should produce the same Double values in the same order given the same Rnd") {
       import Gen._
-      val aGen0 = doubleGen
-      val bGen0 = doubleGen
-      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
-      val (a3, _, _) = aGen2.next(rnd = ar2)
-      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
-      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
-      val (b3, _, _) = bGen2.next(rnd = br2)
+      val aGen = doubleGen
+      val bGen = doubleGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, _) = aGen.next(rnd = ar2)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -66,16 +65,16 @@ class GenSpec extends FunSpec with Matchers {
           d <- doubleGen
           i <- intGen
         } yield (i, d)
-      val aGen0 = pairGen()
-      val bGen0 = pairGen()
-      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
-      val (a3, _, _) = aGen2.next(rnd = ar2)
+      val aGen = pairGen()
+      val bGen = pairGen()
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, _) = aGen.next(rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
-      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
-      val (b3, _, _) = bGen2.next(rnd = br2)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -88,16 +87,16 @@ class GenSpec extends FunSpec with Matchers {
           i <- intGen
           d <- doubleGen
         } yield (i, d)
-      val aGen0 = pairGen()
-      val bGen0 = pairGen()
-      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
-      val (a3, _, _) = aGen2.next(rnd = ar2)
+      val aGen = pairGen()
+      val bGen = pairGen()
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, _) = aGen.next(rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
-      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
-      val (b3, _, _) = bGen2.next(rnd = br2)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -161,12 +160,12 @@ class GenSpec extends FunSpec with Matchers {
     }
     it("should produce edge values first in random order") {
       import Gen._
-      val ag0 = intGen
-      val (a1, ar1, ag1) = ag0.next(rnd = Rnd(100))
-      val (a2, ar2, ag2) = ag1.next(rnd = ar1)
-      val (a3, ar3, ag3) = ag2.next(rnd = ar2)
-      val (a4, ar4, ag4) = ag3.next(rnd = ar3)
-      val (a5, _, _) = ag4.next(rnd = ar4)
+      val gen = intGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, ar3) = gen.next(rnd = ar2)
+      val (a4, ar4) = gen.next(rnd = ar3)
+      val (a5, _) = gen.next(rnd = ar4)
       val edges = List(a1, a2, a3, a4, a5)
       edges should contain (0)
       edges should contain (1)
@@ -180,23 +179,23 @@ class GenSpec extends FunSpec with Matchers {
       def posIntGen: Gen[PosInt] =
         for (i <- Gen.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 
-      val aGen0 = posIntGen
-      val (a1, ar1, aGen1) = aGen0.next(rnd = Rnd(100))
-      val (a2, ar2, aGen2) = aGen1.next(rnd = ar1)
-      val (a3, ar3, aGen3) = aGen2.next(rnd = ar2)
-      val (a4, ar4, aGen4) = aGen3.next(rnd = ar3)
-      val (a5, ar5, aGen5) = aGen4.next(rnd = ar4)
-      val (a6, ar6, aGen6) = aGen5.next(rnd = ar5)
-      val (a7, _, _) = aGen6.next(rnd = ar6)
+      val aGen = posIntGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, ar3) = aGen.next(rnd = ar2)
+      val (a4, ar4) = aGen.next(rnd = ar3)
+      val (a5, ar5) = aGen.next(rnd = ar4)
+      val (a6, ar6) = aGen.next(rnd = ar5)
+      val (a7, _) = aGen.next(rnd = ar6)
 
-      val bGen0 = posIntGen
-      val (b1, br1, bGen1) = bGen0.next(rnd = Rnd(100))
-      val (b2, br2, bGen2) = bGen1.next(rnd = br1)
-      val (b3, br3, bGen3) = bGen2.next(rnd = br2)
-      val (b4, br4, bGen4) = bGen3.next(rnd = br3)
-      val (b5, br5, bGen5) = bGen4.next(rnd = br4)
-      val (b6, br6, bGen6) = bGen5.next(rnd = br5)
-      val (b7, _, _) = bGen6.next(rnd = br6)
+      val bGen = posIntGen
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, br3) = bGen.next(rnd = br2)
+      val (b4, br4) = bGen.next(rnd = br3)
+      val (b5, br5) = bGen.next(rnd = br4)
+      val (b6, br6) = bGen.next(rnd = br5)
+      val (b7, _) = bGen.next(rnd = br6)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
@@ -204,6 +203,33 @@ class GenSpec extends FunSpec with Matchers {
       a5 shouldEqual b5
       a6 shouldEqual b6
       a7 shouldEqual b7
+    }
+    it("on second thought I really want mapping and flatMapping to use the edges") {
+      // import prop._
+      import Gen._
+      def pairGen(): Gen[(Int, Int)] =
+        // intGen.flatMap(i => intGen.map(j => (i, j)))
+        for {
+          i <- intGen
+          j <- intGen
+        } yield (i, j)
+      val gen = pairGen()
+      val ((i1, j1), r1) = gen.next(rnd = Rnd(100))
+      val ((i2, j2), r2) = gen.next(rnd = r1)
+      val ((i3, j3), r3) = gen.next(rnd = r2)
+      val ((i4, j4), r4) = gen.next(rnd = r3)
+      val ((i5, j5), r5) = gen.next(rnd = r4)
+      val ((i6, j6), r6) = gen.next(rnd = r5)
+      val ((i7, j7), r7) = gen.next(rnd = r6)
+      val ((i8, j8), r8) = gen.next(rnd = r7)
+      val ((i9, j9), r9) = gen.next(rnd = r8)
+      val ((i10, j10), r10) = gen.next(rnd = r9)
+      val values = List(i1, j1, i2, j2, i3, j3)
+      values should contain (0)
+      values should contain (1)
+      values should contain (-1)
+      values should contain (Int.MaxValue)
+      values should contain (Int.MinValue)
     }
   }
 }

@@ -27,23 +27,23 @@ object ForAll extends Configuration with Whenever {
         genA: org.scalatest.prop.Gen[A]
       ): Unit = {
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd, nextGen: Gen[A]): Unit = {
-      val (v, r, g) = nextGen.next(10, nextRnd)
+    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
+      val (v, r) = genA.next(10, nextRnd)
       val result: Try[Unit] = Try { fun(v) }
       result match {
         case Success(()) =>
           val nextSucceededCount = succeededCount + 1
           if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, r, g)
+            loop(nextSucceededCount, discardedCount, r)
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < config.maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, r, g)
+            loop(succeededCount, nextDiscardedCount, r)
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => throw ex
       }
     }
-    loop(0, 0, Rnd.default, genA)
+    loop(0, 0, Rnd.default)
   }
 }
 
