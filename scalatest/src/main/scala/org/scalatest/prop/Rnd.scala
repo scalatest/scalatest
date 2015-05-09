@@ -52,6 +52,18 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     val (i, r) = thisRnd.next(24)
     (i / ((1 << 24).toFloat), r)
   }
+  def nextFloat: (Float, Rnd) = { // Use same algorithm as ScalaCheck for this one
+    val (s, rs) = chooseInt(0, 1)
+    val (e, re) = chooseInt(0, 0xfe)
+    val (m, rm) = chooseInt(0, 0x7fffff)
+    (java.lang.Float.intBitsToFloat((s << 31) | (e << 23) | m), rm)
+  }
+  def nextFloatWithEdges: (Float, Rnd) = {
+    edges.floatEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(floatEdges = tail)))
+      case Nil => nextFloat
+    }
+  }
   def nextDoubleBetween0And1: (Double, Rnd) = {
     val (ia, ra) = thisRnd.next(26)
     val (ib, rb) = ra.next(27)
@@ -131,11 +143,12 @@ object Rnd {
       Edges(
         scala.util.Random.shuffle(intEdges),
         scala.util.Random.shuffle(longEdges),
+        List(0.0f),
         List(0.0)
       )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
   // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
-  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), Edges(intEdges, longEdges, List(0.0)))
+  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), Edges(intEdges, longEdges, List(0.0f), List(0.0)))
 }
 

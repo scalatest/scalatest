@@ -43,6 +43,20 @@ class GenSpec extends FunSpec with Matchers {
       a6 shouldEqual b6
       a7 shouldEqual b7
     }
+    it("should produce the same Float values in the same order given the same Rnd") {
+      import Gen._
+      val aGen = floatGen
+      val bGen = floatGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, _) = aGen.next(rnd = ar2)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, _) = bGen.next(rnd = br2)
+      a1 shouldEqual b1
+      a2 shouldEqual b2
+      a3 shouldEqual b3
+    }
     it("should produce the same Double values in the same order given the same Rnd") {
       import Gen._
       val aGen = doubleGen

@@ -44,23 +44,30 @@ object Gen {
         (nextInt, nextRnd)
       }
     }
-  private final class IntGen extends Gen[Int] {
-    def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
-  }
 
-  implicit val intGen: Gen[Int] = new IntGen
-    // new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
-    // new IntGen(scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue)))
+  implicit val intGen: Gen[Int] =
+    new Gen[Int] {
+      def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
+      override def toString = "Gen[Int]"
+    }
+
   implicit val longGen: Gen[Long] =
     new Gen[Long] {
       def next(size: Int, rnd: Rnd): (Long, Rnd) = rnd.nextLongWithEdges
       override def toString = "Gen[Long]"
     }
 
-  private final class DoubleGen extends Gen[Double] {
-    def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
-  }
-  implicit val doubleGen: Gen[Double] = new DoubleGen
+  implicit val floatGen: Gen[Float] =
+    new Gen[Float] {
+      def next(size: Int, rnd: Rnd): (Float, Rnd) = rnd.nextFloatWithEdges
+      override def toString = "Gen[Float]"
+    }
+
+  implicit val doubleGen: Gen[Double] =
+    new Gen[Double] {
+      def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
+      override def toString = "Gen[Double]"
+    }
 
 /*
   implicit val longGen: Gen[Long] = Gen.long // edges

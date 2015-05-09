@@ -144,7 +144,6 @@ class RndSpec extends FunSpec with Matchers {
         k should be <= max
         k should be >= min
         rnd = nextRnd
- println(s"k was $k")
       }
     }
   }
