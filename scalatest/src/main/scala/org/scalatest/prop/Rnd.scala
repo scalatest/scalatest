@@ -53,7 +53,12 @@ class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: L
     val (ib, rb) = ra.next(27)
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
   }
-  def nextDouble: (Double, Rnd) = nextDoubleBetween0And1
+  def nextDouble: (Double, Rnd) = { // Use same algorithm as ScalaCheck for this one
+    val (s, rs) = thisRnd.chooseLong(0L, 1L)
+    val (e, re) = rs.chooseLong(0L, 0x7feL)
+    val (m, rm) = re.chooseLong(0L, 0xfffffffffffffL)
+    (java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m), rm)
+  }
   def nextDoubleWithEdges: (Double, Rnd) = {
     doubleEdges match {
       case head :: tail => (head, new Rnd(seed, intEdges, longEdges, tail))
