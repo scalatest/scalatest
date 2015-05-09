@@ -374,7 +374,78 @@ class GenSpec extends FunSpec with Matchers {
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (PosInt(1))
-      edges should contain (PosInt.from(Int.MaxValue).get)
+      edges should contain (PosInt.MaxValue)
+    }
+    it("should produce PosZInt edge values first in random order") {
+      import Gen._
+      val gen = posZIntGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, _) = gen.next(rnd = ar2)
+      val edges = List(a1, a2, a3)
+      edges should contain (PosZInt(0))
+      edges should contain (PosZInt(1))
+      edges should contain (PosZInt.MaxValue)
+    }
+    it("should produce PosLong edge values first in random order") {
+      import Gen._
+      val gen = posLongGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, _) = gen.next(rnd = ar1)
+      val edges = List(a1, a2)
+      edges should contain (PosLong(1L))
+      edges should contain (PosLong.MaxValue)
+    }
+    it("should produce PosZLong edge values first in random order") {
+      import Gen._
+      val gen = posZLongGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, _) = gen.next(rnd = ar2)
+      val edges = List(a1, a2, a3)
+      edges should contain (PosZLong(0L))
+      edges should contain (PosZLong(1L))
+      edges should contain (PosZLong.MaxValue)
+    }
+    it("should produce PosFloat edge values first in random order") {
+      import Gen._
+      val gen = posFloatGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, _) = gen.next(rnd = ar1)
+      val edges = List(a1, a2)
+      edges should contain (PosFloat(1.0f))
+      edges should contain (PosFloat.MaxValue)
+    }
+    it("should produce PosZFloat edge values first in random order") {
+      import Gen._
+      val gen = posZFloatGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, _) = gen.next(rnd = ar2)
+      val edges = List(a1, a2, a3)
+      edges should contain (PosZFloat(0.0f))
+      edges should contain (PosZFloat(1.0f))
+      edges should contain (PosZFloat.MaxValue)
+    }
+    it("should produce PosDouble edge values first in random order") {
+      import Gen._
+      val gen = posDoubleGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, _) = gen.next(rnd = ar1)
+      val edges = List(a1, a2)
+      edges should contain (PosDouble(1.0))
+      edges should contain (PosDouble.MaxValue)
+    }
+    it("should produce PosZDouble edge values first in random order") {
+      import Gen._
+      val gen = posZDoubleGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, _) = gen.next(rnd = ar2)
+      val edges = List(a1, a2, a3)
+      edges should contain (PosZDouble(0.0))
+      edges should contain (PosZDouble(1.0))
+      edges should contain (PosZDouble.MaxValue)
     }
     it("should offer a chooseInt method") {
       import Gen._

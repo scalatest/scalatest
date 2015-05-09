@@ -93,5 +93,47 @@ object Gen {
       def next(size: Int, rnd: Rnd): (PosInt, Rnd) = rnd.nextPosIntWithEdges
       override def toString = "Gen[PosInt]"
     }
+
+  implicit val posZIntGen: Gen[PosZInt] =
+    new Gen[PosZInt] {
+      def next(size: Int, rnd: Rnd): (PosZInt, Rnd) = rnd.nextPosZIntWithEdges
+      override def toString = "Gen[PosZInt]"
+    }
+
+  implicit val posLongGen: Gen[PosLong] =
+    new Gen[PosLong] {
+      def next(size: Int, rnd: Rnd): (PosLong, Rnd) = rnd.nextPosLongWithEdges
+      override def toString = "Gen[PosLong]"
+    }
+
+  implicit val posZLongGen: Gen[PosZLong] =
+    new Gen[PosZLong] {
+      def next(size: Int, rnd: Rnd): (PosZLong, Rnd) = rnd.nextPosZLongWithEdges
+      override def toString = "Gen[PosZLong]"
+    }
+
+  implicit val posFloatGen: Gen[PosFloat] =
+    new Gen[PosFloat] {
+      def next(size: Int, rnd: Rnd): (PosFloat, Rnd) = rnd.nextPosFloatWithEdges
+      override def toString = "Gen[PosFloat]"
+    }
+
+  implicit val posZFloatGen: Gen[PosZFloat] =
+    new Gen[PosZFloat] {
+      def next(size: Int, rnd: Rnd): (PosZFloat, Rnd) = rnd.nextPosZFloatWithEdges
+      override def toString = "Gen[PosZFloat]"
+    }
+
+  implicit val posDoubleGen: Gen[PosDouble] =
+    new Gen[PosDouble] {
+      def next(size: Int, rnd: Rnd): (PosDouble, Rnd) = rnd.nextPosDoubleWithEdges
+      override def toString = "Gen[PosDouble]"
+    }
+
+  implicit val posZDoubleGen: Gen[PosZDouble] =
+    new Gen[PosZDouble] {
+      def next(size: Int, rnd: Rnd): (PosZDouble, Rnd) = rnd.nextPosZDoubleWithEdges
+      override def toString = "Gen[PosZDouble]"
+    }
 }
 
