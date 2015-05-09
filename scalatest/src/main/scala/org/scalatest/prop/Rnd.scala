@@ -48,6 +48,10 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
       case Nil => nextLong
     }
   }
+  def nextFloatBetween0And1: (Float, Rnd) = {
+    val (i, r) = thisRnd.next(24)
+    (i / ((1 << 24).toFloat), r)
+  }
   def nextDoubleBetween0And1: (Double, Rnd) = {
     val (ia, ra) = thisRnd.next(26)
     val (ib, rb) = ra.next(27)
