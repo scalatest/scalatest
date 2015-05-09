@@ -45,6 +45,12 @@ object Gen {
       }
     }
 
+  implicit val shortGen: Gen[Short] =
+    new Gen[Short] {
+      def next(size: Int, rnd: Rnd): (Short, Rnd) = rnd.nextShortWithEdges
+      override def toString = "Gen[Short]"
+    }
+
   implicit val intGen: Gen[Int] =
     new Gen[Int] {
       def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges

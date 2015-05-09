@@ -21,10 +21,55 @@ import org.scalatest.exceptions.TestFailedException
 
 class GenSpec extends FunSpec with Matchers {
   describe("A Gen") {
+    it("should produce the same Short values in the same order given the same Rnd") {
+      import Gen._
+      val aGen= shortGen
+      val bGen = shortGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, ar3) = aGen.next(rnd = ar2)
+      val (a4, ar4) = aGen.next(rnd = ar3)
+      val (a5, ar5) = aGen.next(rnd = ar4)
+      val (a6, ar6) = aGen.next(rnd = ar5)
+      val (a7, _) = aGen.next(rnd = ar6)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, br3) = bGen.next(rnd = br2)
+      val (b4, br4) = bGen.next(rnd = br3)
+      val (b5, br5) = bGen.next(rnd = br4)
+      val (b6, br6) = bGen.next(rnd = br5)
+      val (b7, _) = bGen.next(rnd = br6)
+      List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
+      a6 shouldEqual b6
+      a7 shouldEqual b7
+    }
+
     it("should produce the same Int values in the same order given the same Rnd") {
       import Gen._
       val aGen= intGen
       val bGen = intGen
+      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a2, ar2) = aGen.next(rnd = ar1)
+      val (a3, ar3) = aGen.next(rnd = ar2)
+      val (a4, ar4) = aGen.next(rnd = ar3)
+      val (a5, ar5) = aGen.next(rnd = ar4)
+      val (a6, ar6) = aGen.next(rnd = ar5)
+      val (a7, _) = aGen.next(rnd = ar6)
+      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b2, br2) = bGen.next(rnd = br1)
+      val (b3, br3) = bGen.next(rnd = br2)
+      val (b4, br4) = bGen.next(rnd = br3)
+      val (b5, br5) = bGen.next(rnd = br4)
+      val (b6, br6) = bGen.next(rnd = br5)
+      val (b7, _) = bGen.next(rnd = br6)
+      List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
+      a6 shouldEqual b6
+      a7 shouldEqual b7
+    }
+    it("should produce the same Long values in the same order given the same Rnd") {
+      import Gen._
+      val aGen= longGen
+      val bGen = longGen
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -201,6 +246,12 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (-1)
       edges should contain (Long.MaxValue)
       edges should contain (Long.MinValue)
+    }
+    it("should produce the Float edge value first") {
+      import Gen._
+      val gen = floatGen
+      val (a1, _) = gen.next(rnd = Rnd(100))
+      a1 shouldEqual 0.0f
     }
     it("should produce the Double edge value first") {
       import Gen._

@@ -30,11 +30,21 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     val newInt = (newSeed >>> (48 - bits)).toInt
     (newInt, new Rnd(newSeed, edges))
   }
+  def nextShort: (Short, Rnd) = {
+    val (i, r) = next(16) 
+    (i.toShort, r)
+  }
   def nextInt: (Int, Rnd) = next(32) 
   def nextLong: (Long, Rnd) = {
     val (ia, ra) = thisRnd.next(32)
     val (ib, rb) = ra.next(32)
     ((ia.toLong << 32) + ib, rb)
+  }
+  def nextShortWithEdges: (Short, Rnd) = {
+    edges.shortEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(shortEdges = tail)))
+      case Nil => nextShort
+    }
   }
   def nextIntWithEdges: (Int, Rnd) = {
     edges.intEdges match {
@@ -135,12 +145,16 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
 
 object Rnd {
     // scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
+  private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
+  private val standardEdges = 
+    Edges(shortEdges, intEdges, longEdges, List(0.0f), List(0.0))
   def default(): Rnd =
     new Rnd(
       (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
       Edges(
+        scala.util.Random.shuffle(shortEdges),
         scala.util.Random.shuffle(intEdges),
         scala.util.Random.shuffle(longEdges),
         List(0.0f),
@@ -149,6 +163,7 @@ object Rnd {
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
   // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
-  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), Edges(intEdges, longEdges, List(0.0f), List(0.0)))
+  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), standardEdges)
 }
+
 
