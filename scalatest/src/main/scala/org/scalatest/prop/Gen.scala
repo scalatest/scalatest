@@ -16,6 +16,7 @@
 package org.scalatest.prop
 
 import scala.collection.mutable.ListBuffer
+import org.scalactic.anyvals._
 
 trait Gen[T] { thisGenOfT =>
   def next(size: Int = 100, rnd: Rnd = Rnd.default): (T, Rnd)
@@ -85,6 +86,12 @@ object Gen {
     new Gen[Double] {
       def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
       override def toString = "Gen[Double]"
+    }
+
+  implicit val posIntGen: Gen[PosInt] =
+    new Gen[PosInt] {
+      def next(size: Int, rnd: Rnd): (PosInt, Rnd) = rnd.nextPosIntWithEdges
+      override def toString = "Gen[PosInt]"
     }
 }
 

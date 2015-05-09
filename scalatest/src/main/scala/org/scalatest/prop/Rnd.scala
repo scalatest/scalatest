@@ -15,6 +15,8 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.anyvals._
+
 // Wrote this class by looking at the Javadoc of java.util.Random.
 // And by testing its behavior against that of java.util.Random.
 // Maybe this should be a trait, so that people can, hmm. Could 
@@ -111,6 +113,16 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
       case Nil => nextDouble
     }
   }
+  def nextPosInt: (PosInt, Rnd) = {
+    val (i, r) = next(31)
+    (PosInt.from(i).get, r)
+  }
+  def nextPosIntWithEdges: (PosInt, Rnd) = {
+    edges.posIntEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posIntEdges = tail)))
+      case Nil => nextPosInt
+    }
+  }
   def chooseInt(from: Int, to: Int): (Int, Rnd) = {
     if(from == to) {
       (from, this.nextInt._2)
@@ -169,9 +181,19 @@ object Rnd {
   private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
   private val charEdges = List(Char.MinValue, Char.MaxValue)
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
+  private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private val standardEdges = 
-    Edges(byteEdges, shortEdges, charEdges, intEdges, longEdges, List(0.0f), List(0.0))
+    Edges(
+      byteEdges,
+      shortEdges,
+      charEdges,
+      intEdges,
+      longEdges,
+      List(0.0f),
+      List(0.0),
+      posIntEdges
+    )
   def default(): Rnd =
     new Rnd(
       (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
@@ -182,7 +204,8 @@ object Rnd {
         scala.util.Random.shuffle(intEdges),
         scala.util.Random.shuffle(longEdges),
         List(0.0f),
-        List(0.0)
+        List(0.0),
+        scala.util.Random.shuffle(posIntEdges)
       )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 

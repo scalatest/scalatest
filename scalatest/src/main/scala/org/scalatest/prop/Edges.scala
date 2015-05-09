@@ -16,6 +16,8 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.anyvals._
+
 case class Edges(
   byteEdges: List[Byte],
   shortEdges: List[Short],
@@ -23,5 +25,6 @@ case class Edges(
   intEdges: List[Int],
   longEdges: List[Long],
   floatEdges: List[Float],
-  doubleEdges: List[Double]
+  doubleEdges: List[Double],
+  posIntEdges: List[PosInt]
 )

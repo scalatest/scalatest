@@ -25,8 +25,10 @@ import scala.util.{Failure, Success, Try}
 
 class PosIntExperiment extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
+/*
   implicit val posIntGen: Gen[PosInt] =
     for {i <- Gen.chooseInt(1, Int.MaxValue)} yield PosInt.from(i).get
+*/
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -65,6 +67,10 @@ class PosIntExperiment extends FunSpec with Matchers with GenDrivenPropertyCheck
         PosInt.from(-1) shouldBe None
         PosInt.from(-99) shouldBe None
       }
+    }
+
+    it("should offer a MaxValue factor method") {
+      PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
     }
 
     it("should have a pretty toString") {

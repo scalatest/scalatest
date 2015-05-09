@@ -556,6 +556,9 @@ object PosInt {
   def from(value: Int): Option[PosInt] =
     if (value > 0) Some(new PosInt(value)) else None
 
+  // I think we should enhance our Macros to allow Int.MaxValue, etc., in apply
+  final val MaxValue = PosInt.from(Int.MaxValue).get
+
   import language.experimental.macros
   implicit def apply(value: Int): PosInt = macro PosIntMacro.apply
 
