@@ -16,27 +16,37 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
-import japgolly.nyaya.test.Gen
+import org.scalatest.prop.GenDrivenPropertyChecks
+import org.scalatest.prop.Gen
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.StrictCheckedEquality
+import Double.NaN
+import org.scalactic.Equality
 
-class PosZDoubleSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
+class PosZDoubeSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
-  implicit val posZDoubleGen: Gen[PosZDouble] =
-    for {i <- Gen.choosedouble(1, Double.MaxValue)} yield PosZDouble.from(i).get
+  implicit val doubleEquality: Equality[Double] =
+    new Equality[Double] {
+      override def areEqual(a: Double, b: Any): Boolean =
+        (a, b) match {
+          case (a, bDouble: Double) if a.isNaN && bDouble.isNaN  => true
+          case _ => a == b
+        }
+    }
 
-  implicit val intGen: Gen[Int] = Gen.int
-  implicit val longGen: Gen[Long] = Gen.long
-  implicit val shortGen: Gen[Short] = Gen.short
-  implicit val charGen: Gen[Char] = Gen.char
-  implicit val floatGen: Gen[Float] = Gen.float
-  implicit val doubleGen: Gen[Double] = Gen.double
-  implicit val byteGen: Gen[Byte] = Gen.byte
+  implicit val floatEquality: Equality[Float] =
+    new Equality[Float] {
+      override def areEqual(a: Float, b: Any): Boolean =
+        (a, b) match {
+          case (a, bFloat: Float) if a.isNaN && bFloat.isNaN => true
+          case _ => a == b
+        }
+    }
+
 
   describe("A PosZDouble") {
     describe("should offer a from factory method that") {

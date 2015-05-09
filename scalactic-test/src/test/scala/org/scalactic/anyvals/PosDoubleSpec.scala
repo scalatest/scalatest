@@ -17,8 +17,8 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
-import japgolly.nyaya.test.Gen
+import org.scalatest.prop.GenDrivenPropertyChecks
+import org.scalatest.prop.Gen
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -29,18 +29,7 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosDoubleSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
-
-  implicit val posIntGen: Gen[PosDouble] =
-    for {i <- Gen.choosedouble(1, Double.MaxValue)} yield PosDouble.from(i).get
-
-  implicit val intGen: Gen[Int] = Gen.int
-  implicit val longGen: Gen[Long] = Gen.long
-  implicit val shortGen: Gen[Short] = Gen.short
-  implicit val charGen: Gen[Char] = Gen.char
-  implicit val floatGen: Gen[Float] = Gen.float
-  implicit val doubleGen: Gen[Double] = Gen.double
-  implicit val byteGen: Gen[Byte] = Gen.byte
+class PosDoubleSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
