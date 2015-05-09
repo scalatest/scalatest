@@ -124,6 +124,16 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
       case Nil => nextPosInt
     }
   }
+  def nextPosZInt: (PosZInt, Rnd) = {
+    val (i, r) = next(31)
+    (PosZInt.from(i).get, r)
+  }
+  def nextPosZIntWithEdges: (PosZInt, Rnd) = {
+    edges.posZIntEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posZIntEdges = tail)))
+      case Nil => nextPosZInt
+    }
+  }
   def chooseInt(from: Int, to: Int): (Int, Rnd) = {
     if(from == to) {
       (from, this.nextInt._2)
@@ -183,6 +193,7 @@ object Rnd {
   private val charEdges = List(Char.MinValue, Char.MaxValue)
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
+  private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private val standardEdges = 
     Edges(
@@ -193,7 +204,8 @@ object Rnd {
       longEdges,
       List(0.0f),
       List(0.0),
-      posIntEdges
+      posIntEdges,
+      posZIntEdges
     )
   def default(): Rnd =
     new Rnd(
@@ -206,7 +218,8 @@ object Rnd {
         scala.util.Random.shuffle(longEdges),
         List(0.0f),
         List(0.0),
-        scala.util.Random.shuffle(posIntEdges)
+        scala.util.Random.shuffle(posIntEdges),
+        scala.util.Random.shuffle(posZIntEdges)
       )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 

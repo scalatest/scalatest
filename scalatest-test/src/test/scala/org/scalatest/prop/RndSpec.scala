@@ -169,7 +169,17 @@ class RndSpec extends FunSpec with Matchers {
       edges should contain (PosInt(1))
       edges should contain (PosInt.MaxValue)
     }
-
+    it("should offer a nextPosZIntWithEdges method that initially produces PosZInt edge values") {
+      import org.scalactic.anyvals.PosZInt
+      val r0 = Rnd(100)
+      val (a1, r1) = r0.nextPosZIntWithEdges
+      val (a2, r2) = r1.nextPosZIntWithEdges
+      val (a3, _) = r2.nextPosZIntWithEdges
+      val edges = List(a1, a2, a3)
+      edges should contain (PosZInt(0))
+      edges should contain (PosZInt(1))
+      edges should contain (PosZInt.MaxValue)
+    }
     it("should offer a chooseInt method that initially produces Int values between from and to") {
       import GenDrivenPropertyChecks._
       var rnd = Rnd.default
