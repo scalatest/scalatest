@@ -286,6 +286,45 @@ class GenSpec extends FunSpec with Matchers {
         count shouldEqual generatorDrivenConfig.maxDiscarded
       }
     }
+    it("should produce Byte edge values first in random order") {
+      import Gen._
+      val gen = byteGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, ar3) = gen.next(rnd = ar2)
+      val (a4, ar4) = gen.next(rnd = ar3)
+      val (a5, _) = gen.next(rnd = ar4)
+      val edges = List(a1, a2, a3, a4, a5)
+      edges should contain (0)
+      edges should contain (1)
+      edges should contain (-1)
+      edges should contain (Byte.MaxValue)
+      edges should contain (Byte.MinValue)
+    }
+    it("should produce Short edge values first in random order") {
+      import Gen._
+      val gen = shortGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, ar3) = gen.next(rnd = ar2)
+      val (a4, ar4) = gen.next(rnd = ar3)
+      val (a5, _) = gen.next(rnd = ar4)
+      val edges = List(a1, a2, a3, a4, a5)
+      edges should contain (0)
+      edges should contain (1)
+      edges should contain (-1)
+      edges should contain (Short.MaxValue)
+      edges should contain (Short.MinValue)
+    }
+    it("should produce Char edge values first in random order") {
+      import Gen._
+      val gen = charGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, _) = gen.next(rnd = ar1)
+      val edges = List(a1, a2)
+      edges should contain (Char.MinValue)
+      edges should contain (Char.MaxValue)
+    }
     it("should produce Int edge values first in random order") {
       import Gen._
       val gen = intGen
