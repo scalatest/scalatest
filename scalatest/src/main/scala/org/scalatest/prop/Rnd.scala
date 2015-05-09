@@ -114,7 +114,7 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     }
   }
   def nextPosInt: (PosInt, Rnd) = {
-    val (i, r) = next(31)
+    val (i, r) = next(31) // 31 ensures sign bit is 0
     val pos = if (i == 0) 1 else i
     (PosInt.from(pos).get, r)
   }
@@ -125,13 +125,38 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     }
   }
   def nextPosZInt: (PosZInt, Rnd) = {
-    val (i, r) = next(31)
+    val (i, r) = next(31) // 31 ensures sign bit is 0
     (PosZInt.from(i).get, r)
   }
   def nextPosZIntWithEdges: (PosZInt, Rnd) = {
     edges.posZIntEdges match {
       case head :: tail => (head, new Rnd(seed, edges.copy(posZIntEdges = tail)))
       case Nil => nextPosZInt
+    }
+  }
+  def nextPosLong: (PosLong, Rnd) = {
+    val (ia, ra) = thisRnd.next(31) // 31 ensures sign bit is 0
+    val (ib, rb) = ra.next(32)
+    val candidate = (ia.toLong << 32) + ib
+    val pos = if (candidate == 0L) 1L else candidate
+    (PosLong.from(pos).get, rb)
+  }
+  def nextPosLongWithEdges: (PosLong, Rnd) = {
+    edges.posLongEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posLongEdges = tail)))
+      case Nil => nextPosLong
+    }
+  }
+  def nextPosZLong: (PosZLong, Rnd) = {
+    val (ia, ra) = thisRnd.next(31) // 31 ensures sign bit is 0
+    val (ib, rb) = ra.next(32)
+    val pos = (ia.toLong << 32) + ib
+    (PosLong.from(pos).get, rb)
+  }
+  def nextPosZLongWithEdges: (PosZLong, Rnd) = {
+    edges.posZLongEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posZLongEdges = tail)))
+      case Nil => nextPosZLong
     }
   }
   def chooseInt(from: Int, to: Int): (Int, Rnd) = {
@@ -194,6 +219,8 @@ object Rnd {
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private val posIntEdges = List(PosInt(1), PosInt.MaxValue)
   private val posZIntEdges = List(PosZInt(0), PosZInt(1), PosZInt.MaxValue)
+  private val posLongEdges = List(PosLong(1L), PosLong.MaxValue)
+  private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private val standardEdges = 
     Edges(
@@ -205,7 +232,9 @@ object Rnd {
       List(0.0f),
       List(0.0),
       posIntEdges,
-      posZIntEdges
+      posZIntEdges,
+      posLongEdges,
+      posZLongEdges
     )
   def default(): Rnd =
     new Rnd(
@@ -219,7 +248,9 @@ object Rnd {
         List(0.0f),
         List(0.0),
         scala.util.Random.shuffle(posIntEdges),
-        scala.util.Random.shuffle(posZIntEdges)
+        scala.util.Random.shuffle(posZIntEdges),
+        scala.util.Random.shuffle(posLongEdges),
+        scala.util.Random.shuffle(posZLongEdges)
       )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
