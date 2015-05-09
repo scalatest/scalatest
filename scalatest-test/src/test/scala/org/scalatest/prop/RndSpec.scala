@@ -71,16 +71,16 @@ class RndSpec extends FunSpec with Matchers {
     }
 */
 
-    it("should offer a nextDouble method that produces the same values as java.util.Random given the same seed") {
+    it("should offer a nextDouble0to1 method that produces the same values as java.util.Random given the same seed") {
       val jr = new java.util.Random(100)
       val ja = jr.nextDouble()
       val jb = jr.nextDouble()
       val jc = jr.nextDouble()
 
       val sr = Rnd(100)
-      val (ia, ra) = sr.nextDouble
-      val (ib, rb) = ra.nextDouble
-      val (ic, _) = rb.nextDouble
+      val (ia, ra) = sr.nextDoubleBetween0And1
+      val (ib, rb) = ra.nextDoubleBetween0And1
+      val (ic, _) = rb.nextDoubleBetween0And1
 
       ja shouldEqual ia
       jb shouldEqual ib

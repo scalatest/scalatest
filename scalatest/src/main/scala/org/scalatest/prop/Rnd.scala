@@ -48,11 +48,12 @@ class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: L
       case Nil => nextLong
     }
   }
-  def nextDouble: (Double, Rnd) = {
+  def nextDoubleBetween0And1: (Double, Rnd) = {
     val (ia, ra) = thisRnd.next(26)
     val (ib, rb) = ra.next(27)
     (((ia.toLong << 27) + ib) / (1L << 53).toDouble, rb)
   }
+  def nextDouble: (Double, Rnd) = nextDoubleBetween0And1
   def nextDoubleWithEdges: (Double, Rnd) = {
     doubleEdges match {
       case head :: tail => (head, new Rnd(seed, intEdges, longEdges, tail))
