@@ -162,7 +162,7 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
   def nextPosFloat: (PosFloat, Rnd) = {
     val (f, r) = nextFloat
     val candidate = f.abs // 0.0f or greater
-    val pos = if (candidate >= 1.0f) candidate else candidate + 1.0f
+    val pos = if (candidate <= 1.0f) candidate else candidate + 1.0f
     (PosFloat.from(pos).get, r)
   }
   def nextPosFloatWithEdges: (PosFloat, Rnd) = {
@@ -180,6 +180,29 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     edges.posZFloatEdges match {
       case head :: tail => (head, new Rnd(seed, edges.copy(posZFloatEdges = tail)))
       case Nil => nextPosZFloat
+    }
+  }
+  def nextPosDouble: (PosDouble, Rnd) = {
+    val (d, r) = nextDouble
+    val candidate = d.abs // 0.0 or greater
+    val pos = if (candidate <= 1.0) candidate else candidate + 1.0
+    (PosDouble.from(pos).get, r)
+  }
+  def nextPosDoubleWithEdges: (PosDouble, Rnd) = {
+    edges.posDoubleEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posDoubleEdges = tail)))
+      case Nil => nextPosDouble
+    }
+  }
+  def nextPosZDouble: (PosZDouble, Rnd) = {
+    val (d, r) = nextDouble
+    val pos = d.abs // 0.0 or greater
+    (PosZDouble.from(pos).get, r)
+  }
+  def nextPosZDoubleWithEdges: (PosZDouble, Rnd) = {
+    edges.posZDoubleEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(posZDoubleEdges = tail)))
+      case Nil => nextPosZDouble
     }
   }
   def chooseInt(from: Int, to: Int): (Int, Rnd) = {
@@ -235,7 +258,6 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
 }
 
 object Rnd {
-    // scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
   private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
   private val charEdges = List(Char.MinValue, Char.MaxValue)
@@ -246,6 +268,8 @@ object Rnd {
   private val posZLongEdges = List(PosZLong(0L), PosZLong(1L), PosZLong.MaxValue)
   private val posFloatEdges = List(PosFloat(1.0f), PosFloat.MaxValue)
   private val posZFloatEdges = List(PosZFloat(0.0f), PosZFloat(1.0f), PosZFloat.MaxValue)
+  private val posDoubleEdges = List(PosDouble(1.0), PosDouble.MaxValue)
+  private val posZDoubleEdges = List(PosZDouble(0.0), PosZDouble(1.0), PosZDouble.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private val standardEdges = 
     Edges(
@@ -261,7 +285,9 @@ object Rnd {
       posLongEdges,
       posZLongEdges,
       posFloatEdges,
-      posZFloatEdges
+      posZFloatEdges,
+      posDoubleEdges,
+      posZDoubleEdges
     )
   def default(): Rnd =
     new Rnd(
@@ -279,7 +305,9 @@ object Rnd {
         scala.util.Random.shuffle(posLongEdges),
         scala.util.Random.shuffle(posZLongEdges),
         scala.util.Random.shuffle(posFloatEdges),
-        scala.util.Random.shuffle(posZFloatEdges)
+        scala.util.Random.shuffle(posZFloatEdges),
+        scala.util.Random.shuffle(posDoubleEdges),
+        scala.util.Random.shuffle(posZDoubleEdges)
       )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 

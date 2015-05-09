@@ -31,5 +31,7 @@ case class Edges(
   posLongEdges: List[PosLong],
   posZLongEdges: List[PosZLong],
   posFloatEdges: List[PosFloat],
-  posZFloatEdges: List[PosZFloat]
+  posZFloatEdges: List[PosZFloat],
+  posDoubleEdges: List[PosDouble],
+  posZDoubleEdges: List[PosZDouble]
 )
