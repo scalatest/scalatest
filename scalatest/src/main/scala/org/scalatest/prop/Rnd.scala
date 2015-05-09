@@ -17,21 +17,35 @@ package org.scalatest.prop
 
 // Wrote this class by looking at the Javadoc of java.util.Random.
 // And by testing its behavior against that of java.util.Random.
-class Rnd private (seed: Long, intEdges: List[Int], doubleEdges: List[Double]) { thisRnd =>
+// Maybe this should be a trait, so that people can, hmm. Could 
+// make subclasses with extra methods, like nextSmallInt or something,
+// and in a pattern match narrow the type and call that method.
+class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: List[Double]) { thisRnd =>
   def nextRnd: Rnd = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
-    new Rnd(newSeed, intEdges, doubleEdges)
+    new Rnd(newSeed, intEdges, longEdges, doubleEdges)
   }
   def next(bits: Int): (Int, Rnd) = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     val newInt = (newSeed >>> (48 - bits)).toInt
-    (newInt, new Rnd(newSeed, intEdges, doubleEdges))
+    (newInt, new Rnd(newSeed, intEdges, longEdges, doubleEdges))
   }
   def nextInt: (Int, Rnd) = next(32) 
+  def nextLong: (Long, Rnd) = {
+    val (ia, ra) = thisRnd.next(32)
+    val (ib, rb) = ra.next(32)
+    ((ia.toLong << 32) + ib, rb)
+  }
   def nextIntWithEdges: (Int, Rnd) = {
     intEdges match {
-      case head :: tail => (head, new Rnd(seed, tail, doubleEdges))
+      case head :: tail => (head, new Rnd(seed, tail, longEdges, doubleEdges))
       case Nil => nextInt
+    }
+  }
+  def nextLongWithEdges: (Long, Rnd) = {
+    longEdges match {
+      case head :: tail => (head, new Rnd(seed, intEdges, tail, doubleEdges))
+      case Nil => nextLong
     }
   }
   def nextDouble: (Double, Rnd) = {
@@ -41,7 +55,7 @@ class Rnd private (seed: Long, intEdges: List[Int], doubleEdges: List[Double]) {
   }
   def nextDoubleWithEdges: (Double, Rnd) = {
     doubleEdges match {
-      case head :: tail => (head, new Rnd(seed, intEdges, tail))
+      case head :: tail => (head, new Rnd(seed, intEdges, longEdges, tail))
       case Nil => nextDouble
     }
   }
@@ -75,9 +89,16 @@ class Rnd private (seed: Long, intEdges: List[Int], doubleEdges: List[Double]) {
 object Rnd {
     // scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
-  def default(): Rnd = new Rnd((System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1), scala.util.Random.shuffle(intEdges), List(0.0))
+  private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
+  def default(): Rnd =
+    new Rnd(
+      (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
+      scala.util.Random.shuffle(intEdges),
+      scala.util.Random.shuffle(longEdges),
+      List(0.0)
+    )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
   // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
-  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), intEdges, List(0.0))
+  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), intEdges, longEdges, List(0.0))
 }
 

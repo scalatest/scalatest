@@ -51,10 +51,23 @@ object Gen {
   implicit val intGen: Gen[Int] = new IntGen
     // new IntGen(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
     // new IntGen(scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue)))
+  implicit val longGen: Gen[Long] =
+    new Gen[Long] {
+      def next(size: Int, rnd: Rnd): (Long, Rnd) = rnd.nextLongWithEdges
+      override def toString = "Gen[Long]"
+    }
 
   private final class DoubleGen extends Gen[Double] {
     def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
   }
   implicit val doubleGen: Gen[Double] = new DoubleGen
+
+/*
+  implicit val longGen: Gen[Long] = Gen.long // edges
+  implicit val shortGen: Gen[Short] = Gen.short // edges
+  implicit val charGen: Gen[Char] = Gen.char // edges
+  implicit val floatGen: Gen[Float] = Gen.float // 0.0
+  implicit val byteGen: Gen[Byte] = Gen.byte // edges
+*/
 }
 

@@ -102,7 +102,7 @@ class GenSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should be usable in a forAll") {
-      import ForAll._
+      import GenDrivenPropertyChecks._
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
@@ -113,7 +113,7 @@ class GenSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least minSuccessful times in a forAll") {
-      import ForAll._
+      import GenDrivenPropertyChecks._
       var count = 0
       forAll { (i: Int) => 
         count += 1
@@ -132,7 +132,7 @@ class GenSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least maxDiscarded times in a forAll") {
-      import ForAll._
+      import GenDrivenPropertyChecks._
       var count = 0
       a [TestFailedException] should be thrownBy {
         forAll { (i: Int) => 
@@ -158,7 +158,7 @@ class GenSpec extends FunSpec with Matchers {
         count shouldEqual generatorDrivenConfig.maxDiscarded
       }
     }
-    it("should produce edge values first in random order") {
+    it("should produce Int edge values first in random order") {
       import Gen._
       val gen = intGen
       val (a1, ar1) = gen.next(rnd = Rnd(100))
@@ -172,6 +172,21 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (-1)
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
+    }
+    it("should produce Long edge values first in random order") {
+      import Gen._
+      val gen = longGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, ar2) = gen.next(rnd = ar1)
+      val (a3, ar3) = gen.next(rnd = ar2)
+      val (a4, ar4) = gen.next(rnd = ar3)
+      val (a5, _) = gen.next(rnd = ar4)
+      val edges = List(a1, a2, a3, a4, a5)
+      edges should contain (0)
+      edges should contain (1)
+      edges should contain (-1)
+      edges should contain (Long.MaxValue)
+      edges should contain (Long.MinValue)
     }
     it("should offer a chooseInt method") {
       import Gen._

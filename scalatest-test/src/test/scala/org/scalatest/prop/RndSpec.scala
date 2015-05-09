@@ -37,6 +37,22 @@ class RndSpec extends FunSpec with Matchers {
       jc shouldEqual ic
     }
 
+    it("should offer a nextLong method that produces the same values as java.util.Random given the same seed") {
+      val jr = new java.util.Random(100)
+      val ja = jr.nextLong()
+      val jb = jr.nextLong()
+      val jc = jr.nextLong()
+
+      val sr = Rnd(100)
+      val (ia, ra) = sr.nextLong
+      val (ib, rb) = ra.nextLong
+      val (ic, _) = rb.nextLong
+
+      ja shouldEqual ia
+      jb shouldEqual ib
+      jc shouldEqual ic
+    }
+
     it("should offer a nextDouble method that produces the same values as java.util.Random given the same seed") {
       val jr = new java.util.Random(100)
       val ja = jr.nextDouble()
@@ -52,6 +68,7 @@ class RndSpec extends FunSpec with Matchers {
       jb shouldEqual ib
       jc shouldEqual ic
     }
+
     it("should offer a nextIntWithEdges method that initially produces Int edge values") {
       val r0 = Rnd(100)
       val (a1, r1) = r0.nextIntWithEdges
@@ -66,6 +83,22 @@ class RndSpec extends FunSpec with Matchers {
       edges should contain (Int.MaxValue)
       edges should contain (Int.MinValue)
     }
+
+    it("should offer a nextLongWithEdges method that initially produces Long edge values") {
+      val r0 = Rnd(100)
+      val (a1, r1) = r0.nextLongWithEdges
+      val (a2, r2) = r1.nextLongWithEdges
+      val (a3, r3) = r2.nextLongWithEdges
+      val (a4, r4) = r3.nextLongWithEdges
+      val (a5, _) = r4.nextLongWithEdges
+      val edges = List(a1, a2, a3, a4, a5)
+      edges should contain (0)
+      edges should contain (1)
+      edges should contain (-1)
+      edges should contain (Long.MaxValue)
+      edges should contain (Long.MinValue)
+    }
+
     it("should offer a nextDoubleWithEdges method that initially produces Double edge values") {
       val r0 = Rnd(100)
       val (a1, r1) = r0.nextDoubleWithEdges
