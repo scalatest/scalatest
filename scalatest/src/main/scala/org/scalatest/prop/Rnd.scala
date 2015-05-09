@@ -20,15 +20,15 @@ package org.scalatest.prop
 // Maybe this should be a trait, so that people can, hmm. Could 
 // make subclasses with extra methods, like nextSmallInt or something,
 // and in a pattern match narrow the type and call that method.
-class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: List[Double]) { thisRnd =>
+class Rnd(seed: Long, edges: Edges) { thisRnd =>
   def nextRnd: Rnd = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
-    new Rnd(newSeed, intEdges, longEdges, doubleEdges)
+    new Rnd(newSeed, edges)
   }
   def next(bits: Int): (Int, Rnd) = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     val newInt = (newSeed >>> (48 - bits)).toInt
-    (newInt, new Rnd(newSeed, intEdges, longEdges, doubleEdges))
+    (newInt, new Rnd(newSeed, edges))
   }
   def nextInt: (Int, Rnd) = next(32) 
   def nextLong: (Long, Rnd) = {
@@ -37,14 +37,14 @@ class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: L
     ((ia.toLong << 32) + ib, rb)
   }
   def nextIntWithEdges: (Int, Rnd) = {
-    intEdges match {
-      case head :: tail => (head, new Rnd(seed, tail, longEdges, doubleEdges))
+    edges.intEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(intEdges = tail)))
       case Nil => nextInt
     }
   }
   def nextLongWithEdges: (Long, Rnd) = {
-    longEdges match {
-      case head :: tail => (head, new Rnd(seed, intEdges, tail, doubleEdges))
+    edges.longEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(longEdges = tail)))
       case Nil => nextLong
     }
   }
@@ -60,8 +60,8 @@ class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: L
     (java.lang.Double.longBitsToDouble((s << 63) | (e << 52) | m), rm)
   }
   def nextDoubleWithEdges: (Double, Rnd) = {
-    doubleEdges match {
-      case head :: tail => (head, new Rnd(seed, intEdges, longEdges, tail))
+    edges.doubleEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(doubleEdges = tail)))
       case Nil => nextDouble
     }
   }
@@ -124,12 +124,14 @@ object Rnd {
   def default(): Rnd =
     new Rnd(
       (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
-      scala.util.Random.shuffle(intEdges),
-      scala.util.Random.shuffle(longEdges),
-      List(0.0)
+      Edges(
+        scala.util.Random.shuffle(intEdges),
+        scala.util.Random.shuffle(longEdges),
+        List(0.0)
+      )
     )
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
   // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
-  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), intEdges, longEdges, List(0.0))
+  def apply(seed: Long): Rnd = new Rnd((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1), Edges(intEdges, longEdges, List(0.0)))
 }
 
