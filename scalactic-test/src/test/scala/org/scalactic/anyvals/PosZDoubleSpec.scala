@@ -27,7 +27,7 @@ import OptionValues._
 import Double.NaN
 import org.scalactic.Equality
 
-class PosZDoubeSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosZDoubleSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
