@@ -50,6 +50,10 @@ class PosZDoubleSpec extends FunSpec with Matchers/* with StrictCheckedEquality*
         PosZDouble.from(-99.9) shouldBe None
       }
     } 
+    it("should offer MaxValue and MinValue factory methods") {
+      PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
+      PosZDouble.MinValue shouldEqual PosZDouble(0.0)
+    }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
       PosZDouble.from(42.0).value.toString shouldBe "PosZDouble(42.0)"

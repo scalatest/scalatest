@@ -50,6 +50,10 @@ class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         PosFloat.from(-99.9F) shouldBe None
       }
     } 
+    it("should offer MaxValue and MinValue factory methods") {
+      PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
+      PosFloat.MinValue shouldEqual PosFloat(1.0f)
+    }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
       PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"

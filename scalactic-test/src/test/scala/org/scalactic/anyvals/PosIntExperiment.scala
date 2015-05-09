@@ -69,8 +69,9 @@ class PosIntExperiment extends FunSpec with Matchers with GenDrivenPropertyCheck
       }
     }
 
-    it("should offer a MaxValue factor method") {
+    it("should offer MaxValue and MinValue factory methods") {
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
+      PosInt.MinValue shouldEqual PosInt(1)
     }
 
     it("should have a pretty toString") {

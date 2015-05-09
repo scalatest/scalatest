@@ -68,6 +68,12 @@ class PosZIntSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
         PosZInt.from(-99) shouldBe None
       }
     } 
+
+    it("should offer MaxValue and MinValue factory methods") {
+      PosZInt.MaxValue shouldEqual PosZInt.from(Int.MaxValue).get
+      PosZInt.MinValue shouldEqual PosZInt(0)
+    }
+
     it("should have a pretty toString") {
       PosZInt.from(42).value.toString shouldBe "PosZInt(42)"
     }

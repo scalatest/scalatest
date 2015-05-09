@@ -279,6 +279,8 @@ final class PosDouble private (val value: Double) extends AnyVal {
 }
 
 object PosDouble {
+  final val MaxValue: PosDouble = PosDouble.from(Double.MaxValue).get
+  final val MinValue: PosDouble = PosDouble.from(1.0).get // Can't use the macro here
   def from(value: Double): Option[PosDouble] =
     if (value > 0.0) Some(new PosDouble(value)) else None
   import language.experimental.macros

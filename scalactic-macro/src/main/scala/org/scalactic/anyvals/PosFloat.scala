@@ -279,6 +279,8 @@ final class PosFloat private (val value: Float) extends AnyVal {
 }
 
 object PosFloat {
+  final val MaxValue: PosFloat = PosFloat.from(Float.MaxValue).get
+  final val MinValue: PosFloat = PosFloat.from(1.0f).get // Can't use the macro here
   def from(value: Float): Option[PosFloat] =
     if (value > 0.0F) Some(new PosFloat(value)) else None
   import language.experimental.macros

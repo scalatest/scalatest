@@ -553,12 +553,11 @@ final class PosInt private (val value: Int) extends AnyVal {
 }
 
 object PosInt {
+  // I think we should enhance our Macros to allow Int.MaxValue, etc., in apply
+  final val MaxValue: PosInt = PosInt.from(Int.MaxValue).get
+  final val MinValue: PosInt = PosInt.from(1).get // Can't use the macro here
   def from(value: Int): Option[PosInt] =
     if (value > 0) Some(new PosInt(value)) else None
-
-  // I think we should enhance our Macros to allow Int.MaxValue, etc., in apply
-  final val MaxValue = PosInt.from(Int.MaxValue).get
-
   import language.experimental.macros
   implicit def apply(value: Int): PosInt = macro PosIntMacro.apply
 

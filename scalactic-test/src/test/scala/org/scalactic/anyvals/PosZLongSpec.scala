@@ -65,6 +65,10 @@ class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         PosZLong.from(-99L) shouldBe None
       }
     }
+    it("should offer MaxValue and MinValue factory methods") {
+      PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
+      PosZLong.MinValue shouldEqual PosZLong(0L)
+    }
     it("should have a pretty toString") {
       PosZLong.from(42L).value.toString shouldBe "PosZLong(42)"
     }
