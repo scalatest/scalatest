@@ -115,6 +115,15 @@ class RndSpec extends FunSpec with Matchers {
       edges should contain (Short.MinValue)
     }
 
+    it("should offer a nextCharWithEdges method that initially produces Char edge values") {
+      val r0 = Rnd(100)
+      val (a1, r1) = r0.nextCharWithEdges
+      val (a2, _) = r1.nextCharWithEdges
+      val edges = List(a1, a2)
+      edges should contain (Char.MaxValue)
+      edges should contain (Char.MinValue)
+    }
+
     it("should offer a nextIntWithEdges method that initially produces Int edge values") {
       val r0 = Rnd(100)
       val (a1, r1) = r0.nextIntWithEdges

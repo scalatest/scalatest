@@ -19,6 +19,7 @@ package org.scalatest.prop
 case class Edges(
   byteEdges: List[Byte],
   shortEdges: List[Short],
+  charEdges: List[Char],
   intEdges: List[Int],
   longEdges: List[Long],
   floatEdges: List[Float],

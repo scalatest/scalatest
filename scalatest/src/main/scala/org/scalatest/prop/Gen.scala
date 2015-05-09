@@ -57,6 +57,12 @@ object Gen {
       override def toString = "Gen[Short]"
     }
 
+  implicit val charGen: Gen[Char] =
+    new Gen[Char] {
+      def next(size: Int, rnd: Rnd): (Char, Rnd) = rnd.nextCharWithEdges
+      override def toString = "Gen[Char]"
+    }
+
   implicit val intGen: Gen[Int] =
     new Gen[Int] {
       def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
@@ -80,13 +86,5 @@ object Gen {
       def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
       override def toString = "Gen[Double]"
     }
-
-/*
-  implicit val longGen: Gen[Long] = Gen.long // edges
-  implicit val shortGen: Gen[Short] = Gen.short // edges
-  implicit val charGen: Gen[Char] = Gen.char // edges
-  implicit val floatGen: Gen[Float] = Gen.float // 0.0
-  implicit val byteGen: Gen[Byte] = Gen.byte // edges
-*/
 }
 
