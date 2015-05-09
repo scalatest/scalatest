@@ -85,6 +85,21 @@ class RndSpec extends FunSpec with Matchers {
       jc shouldEqual ic
     }
 
+    it("should offer a nextByteWithEdges method that initially produces Byte edge values") {
+      val r0 = Rnd(100)
+      val (a1, r1) = r0.nextByteWithEdges
+      val (a2, r2) = r1.nextByteWithEdges
+      val (a3, r3) = r2.nextByteWithEdges
+      val (a4, r4) = r3.nextByteWithEdges
+      val (a5, _) = r4.nextByteWithEdges
+      val edges = List(a1, a2, a3, a4, a5)
+      edges should contain (0)
+      edges should contain (1)
+      edges should contain (-1)
+      edges should contain (Byte.MaxValue)
+      edges should contain (Byte.MinValue)
+    }
+
     it("should offer a nextShortWithEdges method that initially produces Short edge values") {
       val r0 = Rnd(100)
       val (a1, r1) = r0.nextShortWithEdges

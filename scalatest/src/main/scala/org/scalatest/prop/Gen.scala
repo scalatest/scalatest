@@ -45,6 +45,12 @@ object Gen {
       }
     }
 
+  implicit val byteGen: Gen[Byte] =
+    new Gen[Byte] {
+      def next(size: Int, rnd: Rnd): (Byte, Rnd) = rnd.nextByteWithEdges
+      override def toString = "Gen[Byte]"
+    }
+
   implicit val shortGen: Gen[Short] =
     new Gen[Short] {
       def next(size: Int, rnd: Rnd): (Short, Rnd) = rnd.nextShortWithEdges

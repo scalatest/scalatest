@@ -30,6 +30,10 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     val newInt = (newSeed >>> (48 - bits)).toInt
     (newInt, new Rnd(newSeed, edges))
   }
+  def nextByte: (Byte, Rnd) = {
+    val (i, r) = next(8) 
+    (i.toByte, r)
+  }
   def nextShort: (Short, Rnd) = {
     val (i, r) = next(16) 
     (i.toShort, r)
@@ -39,6 +43,12 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     val (ia, ra) = thisRnd.next(32)
     val (ib, rb) = ra.next(32)
     ((ia.toLong << 32) + ib, rb)
+  }
+  def nextByteWithEdges: (Byte, Rnd) = {
+    edges.byteEdges match {
+      case head :: tail => (head, new Rnd(seed, edges.copy(byteEdges = tail)))
+      case Nil => nextByte
+    }
   }
   def nextShortWithEdges: (Short, Rnd) = {
     edges.shortEdges match {
@@ -145,15 +155,17 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
 
 object Rnd {
     // scala.util.Random.shuffle(List(Int.MinValue, -1, 0, 1, Int.MaxValue))
+  private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
   private val intEdges = List(Int.MinValue, -1, 0, 1, Int.MaxValue)
   private val longEdges = List(Long.MinValue, -1, 0, 1, Long.MaxValue)
   private val standardEdges = 
-    Edges(shortEdges, intEdges, longEdges, List(0.0f), List(0.0))
+    Edges(byteEdges, shortEdges, intEdges, longEdges, List(0.0f), List(0.0))
   def default(): Rnd =
     new Rnd(
       (System.currentTimeMillis() ^ 0x5DEECE66DL) & ((1L << 48) - 1),
       Edges(
+        scala.util.Random.shuffle(byteEdges),
         scala.util.Random.shuffle(shortEdges),
         scala.util.Random.shuffle(intEdges),
         scala.util.Random.shuffle(longEdges),
