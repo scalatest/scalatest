@@ -84,6 +84,31 @@ class Rnd(seed: Long, intEdges: List[Int], longEdges: List[Long], doubleEdges: L
       loop(this)
     }
   }
+  def chooseLong(from: Long, to: Long): (Long, Rnd) = {
+    if(from == to) {
+      (from, this.nextLong._2)
+    } else {
+      val min = math.min(from, to)
+      val max = math.max(from, to)
+      @annotation.tailrec
+      def loop(state: Rnd): (Long, Rnd) = {
+        val next = state.nextLong
+        if (min <= next._1 && next._1 <= max) {
+          next
+        } else if(0 < (max - min)){
+          val x = (next._1 % (max - min + 1)) + min
+          if (min <= x && x <= max) {
+            x -> next._2
+          } else {
+            loop(next._2)
+          }
+        } else {
+          loop(next._2)
+        }
+      }
+      loop(this)
+    }
+  }
 }
 
 object Rnd {

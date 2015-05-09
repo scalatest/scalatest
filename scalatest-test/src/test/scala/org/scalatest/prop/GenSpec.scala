@@ -188,6 +188,12 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Long.MaxValue)
       edges should contain (Long.MinValue)
     }
+    it("should produce the Double edge value first") {
+      import Gen._
+      val gen = doubleGen
+      val (a1, _) = gen.next(rnd = Rnd(100))
+      a1 shouldEqual 0.0
+    }
     it("should offer a chooseInt method") {
       import Gen._
       import org.scalactic.anyvals._

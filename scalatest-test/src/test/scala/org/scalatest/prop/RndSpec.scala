@@ -53,6 +53,24 @@ class RndSpec extends FunSpec with Matchers {
       jc shouldEqual ic
     }
 
+/*
+    it("should offer a nextFloat method that produces the same values as java.util.Random given the same seed") {
+      val jr = new java.util.Random(100)
+      val ja = jr.nextFloat()
+      val jb = jr.nextFloat()
+      val jc = jr.nextFloat()
+
+      val sr = Rnd(100)
+      val (ia, ra) = sr.nextFloat
+      val (ib, rb) = ra.nextFloat
+      val (ic, _) = rb.nextFloat
+
+      ja shouldEqual ia
+      jb shouldEqual ib
+      jc shouldEqual ic
+    }
+*/
+
     it("should offer a nextDouble method that produces the same values as java.util.Random given the same seed") {
       val jr = new java.util.Random(100)
       val ja = jr.nextDouble()
@@ -103,6 +121,33 @@ class RndSpec extends FunSpec with Matchers {
       val r0 = Rnd(100)
       val (a1, r1) = r0.nextDoubleWithEdges
       a1 should be (0.0)
+    }
+
+    it("should offer a chooseInt method that initially produces Int values between from and to") {
+      import GenDrivenPropertyChecks._
+      var rnd = Rnd.default
+      forAll { (i: Int, j: Int) =>
+        val (k, nextRnd) = rnd.chooseInt(i, j)
+        val min = i.min(j)
+        val max = i.max(j)
+        k should be <= max
+        k should be >= min
+        rnd = nextRnd
+      }
+    }
+
+    it("should offer a chooseLong method that initially produces Long values between from and to") {
+      import GenDrivenPropertyChecks._
+      var rnd = Rnd.default
+      forAll { (i: Long, j: Long) =>
+        val (k, nextRnd) = rnd.chooseLong(i, j)
+        val min = i.min(j)
+        val max = i.max(j)
+        k should be <= max
+        k should be >= min
+        rnd = nextRnd
+ println(s"k was $k")
+      }
     }
   }
 }
