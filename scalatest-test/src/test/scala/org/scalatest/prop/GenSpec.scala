@@ -18,6 +18,7 @@ package org.scalatest.prop
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic.anyvals._
 
 class GenSpec extends FunSpec with Matchers {
   describe("A Gen") {
@@ -326,6 +327,15 @@ class GenSpec extends FunSpec with Matchers {
       val gen = doubleGen
       val (a1, _) = gen.next(rnd = Rnd(100))
       a1 shouldEqual 0.0
+    }
+    it("should produce PosInt edge values first in random order") {
+      import Gen._
+      val gen = posIntGen
+      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a2, _) = gen.next(rnd = ar1)
+      val edges = List(a1, a2)
+      edges should contain (PosInt(1))
+      edges should contain (PosInt.from(Int.MaxValue).get)
     }
     it("should offer a chooseInt method") {
       import Gen._

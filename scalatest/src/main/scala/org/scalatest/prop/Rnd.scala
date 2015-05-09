@@ -115,7 +115,8 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
   }
   def nextPosInt: (PosInt, Rnd) = {
     val (i, r) = next(31)
-    (PosInt.from(i).get, r)
+    val pos = if (i == 0) 1 else i
+    (PosInt.from(pos).get, r)
   }
   def nextPosIntWithEdges: (PosInt, Rnd) = {
     edges.posIntEdges match {
