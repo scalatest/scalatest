@@ -16,6 +16,8 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
+import scala.annotation.tailrec
+import org.scalactic.Requirements._
 
 // Wrote this class by looking at the Javadoc of java.util.Random.
 // And by testing its behavior against that of java.util.Random.
@@ -204,6 +206,18 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
       case head :: tail => (head, new Rnd(seed, edges.copy(posZDoubleEdges = tail)))
       case Nil => nextPosZDouble
     }
+  }
+  def nextString(length: Int): (String, Rnd) = {
+    require(length >= 0, "; the length passed to nextString must be >= 0")
+    @tailrec
+    def loop(acc: List[Char], count: Int, nextRnd: Rnd): (String, Rnd) = {
+      if (count == length) (acc.mkString, nextRnd)
+      else {
+        val (c, r) = nextRnd.nextChar
+        loop(c :: acc, count + 1, r)
+      }
+    }
+    loop(List.empty, 0, this)
   }
   def chooseInt(from: Int, to: Int): (Int, Rnd) = {
     if(from == to) {

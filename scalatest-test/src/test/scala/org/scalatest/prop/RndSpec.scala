@@ -251,7 +251,6 @@ class RndSpec extends FunSpec with Matchers {
         rnd = nextRnd
       }
     }
-
     it("should offer a chooseLong method that initially produces Long values between from and to") {
       import GenDrivenPropertyChecks._
       var rnd = Rnd.default
@@ -263,6 +262,29 @@ class RndSpec extends FunSpec with Matchers {
         k should be >= min
         rnd = nextRnd
       }
+    }
+    it("should offer a nextString method that produces a String of the requested 0 or greater size") {
+
+      import GenDrivenPropertyChecks._
+
+      an [IllegalArgumentException] should be thrownBy { Rnd(100).nextString(-1) }
+
+      val (sa, ra) = Rnd(100).nextString(0)
+      sa should have length 0
+
+      val (sb, rb) = ra.nextString(1)
+      sb should have length 1
+
+      val (sc, rc) = rb.nextString(10)
+      sc should have length 10
+
+      val (sd, _) = rc.nextString(100)
+      sd should have length 100
+
+      // Ensure not all chars are the same (because initially it did that, because
+      // I was using calling nextChar on the initial Rnd only)
+      sd.distinct shouldNot have size 1
+      
     }
   }
 }
