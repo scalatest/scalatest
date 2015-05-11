@@ -16,7 +16,7 @@
 package org.scalatest
 
 @DoNotDiscover
-class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
+protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
 
   describe("Thing 1") {
     it ("do thing 1a") {}
@@ -32,7 +32,7 @@ class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
 }
 
 @DoNotDiscover
-class ExampleSuiteTimeoutSpec2 extends FunSpec with ParallelTestExecution {
+protected[scalatest] class ExampleSuiteTimeoutSpec2 extends FunSpec with ParallelTestExecution {
   describe("Subject 1") {
     it ("content 1a") {}
     it ("content 1b") {}

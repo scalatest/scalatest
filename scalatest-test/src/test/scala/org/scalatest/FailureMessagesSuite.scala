@@ -20,9 +20,9 @@ import org.scalatest.events._
 import Matchers._
 
 
-class FailureMessagesSuite extends Suite {
+class FailureMessagesSuite extends FunSuite {
 
-  def `test: prettify arrays should handle null array element values` {
+  test("test: prettify arrays should handle null array element values") {
     assertResult("Array(1, null, 3)") {
       FailureMessages.decorateToStringValue(Array(1, null, 3))
     }
