@@ -494,6 +494,7 @@ object GenScalaTestJS {
         "ExampleBeforeAfterParallelSpec.scala",
         "ExampleParallelSpec.scala",
         "ExamplesSuite.scala",
+        "ExampleStackSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
