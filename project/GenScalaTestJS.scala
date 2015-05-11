@@ -501,6 +501,8 @@ object GenScalaTestJS {
         "FeatureSpecSpec.scala",
         "FilterProp.scala",
         "FilterSpec.scala",
+        "FlatSpecImportedMatchersSpec.scala",
+        "FlatSpecMixedInMatchersSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
