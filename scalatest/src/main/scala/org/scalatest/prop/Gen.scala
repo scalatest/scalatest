@@ -38,6 +38,7 @@ trait Gen[T] { thisGenOfT =>
 }
 
 object Gen {
+
   def chooseInt(from: Int, to: Int): Gen[Int] =
     new Gen[Int] { thisIntGen =>
       def next(size: Int, rnd: Rnd): (Int, Rnd) = {
@@ -134,6 +135,16 @@ object Gen {
     new Gen[PosZDouble] {
       def next(size: Int, rnd: Rnd): (PosZDouble, Rnd) = rnd.nextPosZDoubleWithEdges
       override def toString = "Gen[PosZDouble]"
+    }
+
+  // Should throw IAE on negative size in all generators, even the ones that ignore size.
+  implicit val stringGen: Gen[String] =
+    new Gen[String] {
+      def next(size: Int, rnd: Rnd): (String, Rnd) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        rnd.nextString(size)
+      }
+      override def toString = "Gen[String]"
     }
 }
 
