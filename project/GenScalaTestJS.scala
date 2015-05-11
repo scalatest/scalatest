@@ -511,6 +511,7 @@ object GenScalaTestJS {
         "FunSuiteSpec.scala",
         //"FunSuiteSuite.scala",          // skipped because depends on java reflection
         "GivenWhenThenSpec.scala",
+        "InformerSpec.scala", 
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
