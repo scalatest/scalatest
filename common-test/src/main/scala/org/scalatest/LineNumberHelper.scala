@@ -2,13 +2,8 @@ package org.scalatest
 
 private[scalatest] trait LineNumberHelper {
 
-  def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
+  import scala.language.experimental.macros
 
-    if (!st(2).getMethodName.contains("thisLineNumber"))
-      st(2).getLineNumber
-    else
-      st(3).getLineNumber
-  }
+  def thisLineNumber = macro LineNumberMacro.thisLineNumberImpl
 
 }
