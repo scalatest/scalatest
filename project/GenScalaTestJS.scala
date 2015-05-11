@@ -517,6 +517,7 @@ object GenScalaTestJS {
         "InOrderContainMatcherEqualitySpec.scala",
         "InOrderContainMatcherSpec.scala",
         "InOrderOnlyContainMatcherDeciderSpec.scala",
+        "InOrderOnlyContainMatcherEqualitySpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
