@@ -28,23 +28,46 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         genA: org.scalatest.prop.Gen[A]
       ): Unit = {
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
-      val (v, r) = genA.next(10, nextRnd)
+    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd, initialSizes: List[Int]): Unit = {
+      val (size, nextInitialSizes, nextRnd2) =
+        initialSizes match {
+          case head :: tail => (head, tail, nextRnd)
+          case Nil =>
+            val (sz, r2) = nextRnd.chooseInt(config.minSize, config.maxSize)
+            (sz, Nil, r2)
+        }
+      val (v, r) = genA.next(size, nextRnd2)
       val result: Try[Unit] = Try { fun(v) }
       result match {
         case Success(()) =>
           val nextSucceededCount = succeededCount + 1
           if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, r)
+            loop(nextSucceededCount, discardedCount, r, nextInitialSizes)
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < config.maxDiscarded)
-            loop(succeededCount, nextDiscardedCount, r)
+            loop(succeededCount, nextDiscardedCount, r, nextInitialSizes)
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => throw ex
       }
     }
-    loop(0, 0, Rnd.default)
+    // Make a List of 10 sizes between minSize and maxSize and sort them. Will
+    // do those sizes first, and after that, use a random size between minSize and maxSize
+    // The reason 10 is chosen is it will be the default minSuccessful, and o
+    // When a different minSuccessful is used, we'll just generate random ones so
+    // the max preallocated list will always have size 10.
+    @tailrec
+    def sizesLoop(sizes: List[Int], count: Int, rnd: Rnd): List[Int] = {
+      sizes match {
+        case Nil => sizesLoop(List(config.minSize), 1, rnd)
+        case szs if count < 10 =>
+          val (nextSize, nextRnd) = rnd.chooseInt(config.minSize, config.maxSize)
+          sizesLoop(nextSize :: sizes, count + 1,  nextRnd)
+        case _ => sizes.sorted
+      }
+    }
+    val initialSizes = sizesLoop(Nil, 0, Rnd.default)
+    loop(0, 0, Rnd.default, initialSizes)
   }
   def forAll[A, B](fun: (A, B) => Unit)
       (implicit 

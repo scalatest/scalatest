@@ -18,11 +18,12 @@ package org.scalatest.prop
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
+import scala.collection.mutable.Buffer
 
 class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
   describe("GenDrivenPropertyChecks") {
     import GenDrivenPropertyChecks._
-    it("should provide a forAll that takes one params") {
+    it("should provide a forAll that takes one param") {
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
@@ -31,6 +32,34 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
           i + i shouldEqual i * 3
         }
       }
+    }
+    it("should provide a forAll that takes one param that invokes the generator with increasing size") {
+      val sizesBuf = Buffer.empty[Int]
+      implicit val generatorDrivenConfig =
+        PropertyCheckConfig(minSuccessful = 10, maxDiscarded = 50, minSize = 0, maxSize = 99)
+      implicit val intGen: Gen[Int] =
+        new Gen[Int] {
+          def next(size: Int, rnd: Rnd): (Int, Rnd) = {
+            sizesBuf += size
+            rnd.nextIntWithEdges
+          }
+          override def toString = "Gen[Int] that records size"
+        }
+
+      forAll { (i: Int) =>
+        i + i shouldEqual i * 2
+      }
+      val sizes: List[Int] = sizesBuf.toList
+      sizes should have size 10
+      sizes.head should be (0)
+      /*
+        scala> val xs = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).sliding(2).toList
+        xs: List[List[Int]] = List(List(0, 1), List(1, 2), List(2, 3), List(3, 4), List(4, 5), List(5, 6), List(6, 7), List(7, 8), List(8, 9))
+
+      */
+      val pairs: List[(Int, Int)] = sizes.sliding(2).map(xs => (xs(0), xs(1))).toList
+      import org.scalatest.Inspectors._
+      forAll (pairs) { case (x, y) => x should be <= y }
     }
     it("should provide a forAll that takes two params") {
       import GenDrivenPropertyChecks._
