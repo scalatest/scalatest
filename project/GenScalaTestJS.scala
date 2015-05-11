@@ -515,6 +515,7 @@ object GenScalaTestJS {
         //"InheritedTagProp.scala",         // skipped because depends on java reflection
         "InOrderContainMatcherDeciderSpec.scala",
         "InOrderContainMatcherEqualitySpec.scala",
+        "InOrderContainMatcherSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
