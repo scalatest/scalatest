@@ -16,17 +16,23 @@
 package org.scalatest
 
 import org.scalatest.prop.Tables
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.testng.TestNGSuite
+// SKIP-SCALATESTJS-END
 
 trait SuiteExamples extends Tables {
 
   type FixtureServices
-  
+
+  // SKIP-SCALATESTJS-START
   def junit3Suite: JUnit3Suite with FixtureServices
   def junitSuite: JUnitSuite with FixtureServices
   def testngSuite: TestNGSuite with FixtureServices
+  def spec: Spec with FixtureServices
+  def fixtureSpec: fixture.Spec with FixtureServices
+  // SKIP-SCALATESTJS-END
   def funSuite: FunSuite with FixtureServices
   def fixtureFunSuite: fixture.FunSuite with FixtureServices
   def funSpec: FunSpec with FixtureServices
@@ -41,15 +47,17 @@ trait SuiteExamples extends Tables {
   def fixturePropSpec: fixture.PropSpec with FixtureServices
   def wordSpec: WordSpec with FixtureServices
   def fixtureWordSpec: fixture.WordSpec with FixtureServices
-  def spec: Spec with FixtureServices
-  def fixtureSpec: fixture.Spec with FixtureServices
 
   def examples =
     Table(
       "suite",
+      // SKIP-SCALATESTJS-START
       junit3Suite,
       junitSuite,
       testngSuite,
+      spec,
+      fixtureSpec,
+      // SKIP-SCALATESTJS-END
       funSuite,
       fixtureFunSuite,
       funSpec,
@@ -63,8 +71,6 @@ trait SuiteExamples extends Tables {
       propSpec,
       fixturePropSpec,
       wordSpec,
-      fixtureWordSpec,
-      spec,
-      fixtureSpec
+      fixtureWordSpec
     )
 }

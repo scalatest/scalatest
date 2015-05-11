@@ -498,11 +498,12 @@ object GenScalaTestJS {
         "ExampleSuiteTimeoutSpec.scala",
         "ExampleTimeoutParallelSpec.scala",
         "FailureMessagesSuite.scala",
+        "FeatureSpecSpec.scala",
+        "FilterProp.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
         "FunSpecSpec.scala",
-        "FeatureSpecSpec.scala", 
         "FlatSpecSpec.scala", 
         "FreeSpecSpec.scala",
         "MethodSuiteProp.scala",
@@ -510,7 +511,9 @@ object GenScalaTestJS {
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
-        "StringFixture.scala"
+        "StringFixture.scala",
+        "SuiteExamples.scala",
+        "SuiteProp.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
