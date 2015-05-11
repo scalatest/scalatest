@@ -16,7 +16,7 @@
 package org.scalatest
 
 @DoNotDiscover
-class ExampleBeforeAfterParallelSpec extends FunSpec with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAfterParallelSpec extends FunSpec with BeforeAndAfter with ParallelTestExecution {
 
   before {
    info("In Before")

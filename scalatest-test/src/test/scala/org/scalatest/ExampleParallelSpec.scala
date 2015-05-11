@@ -16,7 +16,7 @@
 package org.scalatest
 
 @DoNotDiscover
-class ExampleParallelSpec extends WordSpec with ParallelTestExecution {
+protected[scalatest] class ExampleParallelSpec extends WordSpec with ParallelTestExecution {
 
   "Subject 1" should {
     "have behavior 1a" in {
