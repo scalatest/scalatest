@@ -42,21 +42,14 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
     val (i, r) = next(16) 
     (i.toShort, r)
   }
-  // A funky way to avoid invalid Unicode chars between 0xD800 and 0xDFFF. Just
-  // retry, but only retry at most 3 times. If hit 3 attempts then on the fourth
-  // attempt just return one near the bottom of the range. Maybe later I'll use
-  // frequencies, though this is probably fine in practice.
+  // When an invalid Unicode char between 0xD800 and 0xDFFF is generated, just
+  // return a character between 0x0000 and 0x00FF. These characters are more
+  // common in practice anyway. So this generator does favor slightly
+  // the first code block.
   def nextChar: (Char, Rnd) = {
-    @tailrec
-    def loop(count: Int, nextRnd: Rnd): (Char, Rnd) = {
-      val (i, r) = nextRnd.next(16) 
-      if (i >= 0xD800 && i <= 0xDFFF) {
-        if (count > 3) ((Char.MinValue.toInt + (i - 0xD800)).toChar, r)
-        else loop(count + 1, r)
-      }
-      else (i.toChar, r)
-    }
-    loop(0, thisRnd)
+    val (i, r) = nextRnd.next(16) 
+    if (i >= 0xD800 && i <= 0xDFFF) (((i - 0xD800) & 0xFF).toChar, r)
+    else (i.toChar, r)
   }
   def nextInt: (Int, Rnd) = next(32) 
   def nextLong: (Long, Rnd) = {

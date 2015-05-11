@@ -447,6 +447,16 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosZDouble(1.0))
       edges should contain (PosZDouble.MaxValue)
     }
+/*
+    it("should offer a String generator that goes from min to max size") { pending
+      import Gen._
+      val gen = stringGen
+      import GenDrivenPropertyChecks._
+      implicit val generatorDrivenConfig =
+        PropertyCheckConfig(minSize = 10, maxSize = 20)
+
+    }
+*/
     it("should offer a chooseInt method") {
       import Gen._
       import org.scalactic.anyvals._

@@ -284,7 +284,6 @@ class RndSpec extends FunSpec with Matchers {
       // Ensure not all chars are the same (because initially it did that, because
       // I was using calling nextChar on the initial Rnd only)
       sd.distinct shouldNot have size 1
-      
     }
   }
 }
