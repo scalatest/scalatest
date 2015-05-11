@@ -500,6 +500,7 @@ object GenScalaTestJS {
         "FailureMessagesSuite.scala",
         "FeatureSpecSpec.scala",
         "FilterProp.scala",
+        "FilterSpec.scala",
         "FunSuiteSpec.scala",
         "FunctionSuiteProp.scala",
         "FunctionSuiteExamples.scala",
