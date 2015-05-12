@@ -520,6 +520,7 @@ object GenScalaTestJS {
         "InOrderOnlyContainMatcherEqualitySpec.scala",
         "InOrderOnlyContainMatcherSpec.scala",
         "InsideMixinSpec.scala",
+        "InsideSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
