@@ -94,11 +94,19 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -344,8 +352,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
-    //engine.
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 4, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

@@ -97,11 +97,19 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

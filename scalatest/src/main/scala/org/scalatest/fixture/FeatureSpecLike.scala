@@ -98,11 +98,19 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -1
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -124,7 +132,11 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -146,7 +158,11 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

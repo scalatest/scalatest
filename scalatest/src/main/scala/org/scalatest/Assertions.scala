@@ -434,6 +434,11 @@ trait Assertions extends TripleEquals {
    */
   class AssertionsHelper {
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepthAdjustment = 2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
+
     private def append(currentMessage: Option[String], clue: Any) = {
       val clueStr = clue.toString
       if (clueStr.isEmpty)
@@ -463,7 +468,7 @@ trait Assertions extends TripleEquals {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
+        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
       }
     }
 
@@ -478,7 +483,7 @@ trait Assertions extends TripleEquals {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", 2)
+        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
       }
     }
   }

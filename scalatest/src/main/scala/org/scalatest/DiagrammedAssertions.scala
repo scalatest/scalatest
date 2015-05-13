@@ -225,6 +225,11 @@ trait DiagrammedAssertions extends Assertions {
       lines.mkString(Prettifier.lineSeparator)
     }
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepthAdjustment = 2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
+
     /**
      * Assert that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>TestFailedException</code>
      * with error message that include a diagram showing expression values.
@@ -238,7 +243,7 @@ trait DiagrammedAssertions extends Assertions {
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
-        throw newAssertionFailedException(failureMessage, None, "Assertions.scala", "macroAssert", 2)
+        throw newAssertionFailedException(failureMessage, None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
       }
     }
 
@@ -255,7 +260,7 @@ trait DiagrammedAssertions extends Assertions {
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
-        throw newTestCanceledException(failureMessage, None, "Assertions.scala", "macroAssume", 2)
+        throw newTestCanceledException(failureMessage, None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
       }
     }
   }

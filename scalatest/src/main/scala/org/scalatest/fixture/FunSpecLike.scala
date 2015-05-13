@@ -99,11 +99,19 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, 0, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 0
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -2
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -149,7 +157,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -3
+      engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
     }
 
     /**
@@ -262,7 +274,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-      engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -3
+      engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
     }
 
     /**

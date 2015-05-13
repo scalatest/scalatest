@@ -92,11 +92,19 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -1
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, -4, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -114,7 +122,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -133,7 +145,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

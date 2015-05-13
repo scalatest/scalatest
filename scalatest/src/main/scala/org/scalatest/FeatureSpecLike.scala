@@ -95,11 +95,19 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -1
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -143,7 +151,11 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", 4, stackDepthAdjustment, None, testTags: _*)
   }
   
   /**
