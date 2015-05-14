@@ -6,7 +6,7 @@ private[scalatest] object StackDepthExceptionHelper {
     // the scala-js part is temporary short-cut way to overcome locally built scala-js problem.
     //stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length + adjustment
     val depth1 = stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length
-    if (depth1 > 0 && stackTraces(depth1 - 1).getFileName == stackTraces(depth1 + 1).getFileName && stackTraces(depth1).getFileName == stackTraces(depth1 + 2).getFileName)
+    if (depth1 > 0 && stackTraces(depth1 - 1).getFileName == stackTraces(depth1 + 1).getFileName && stackTraces(depth1).getFileName == stackTraces(depth1 + 2).getFileName)  // for trait mixin stack trace
       depth1 + 2 + adjustment
     else
       depth1 + adjustment
