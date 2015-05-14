@@ -16,7 +16,7 @@
 package org.scalactic
 
 import scala.annotation.tailrec
-import scala.collection.mutable
+import scala.collection.{GenSeq, mutable}
 import scala.language.higherKinds
 import scala.language.implicitConversions
 
@@ -27,21 +27,21 @@ trait RecursiveSetEquality {
       def areEqual(setA: SET[E], b: Any): Boolean = {
 
         @tailrec
-        def nextElement(bufA: mutable.Buffer[E], bufB: mutable.Buffer[_]): Boolean = (bufA, bufB) match {
-          case (ba, bb) if ba.length == 0 && bb.length == 0 => true
-          case (ba, bb) if ba.length == 0 || bb.length == 0 => false
-          case (ba, bb) =>
-            val index = bb.indexWhere(equalityOfE.areEqual(ba.head, _))
+        def nextElement(seqA: GenSeq[E], bufB: mutable.Buffer[_]): Boolean = (seqA, bufB) match {
+          case (a, b) if a.length == 0 && b.length == 0 => true
+          case (a, b) if a.length == 0 || b.length == 0 => false
+          case (a, b) =>
+            val index = b.indexWhere(equalityOfE.areEqual(a.head, _))
             if (index < 0) {
               false
             } else {
-              bb.remove(index)
-              nextElement(ba.tail, bb)
+              b.remove(index)
+              nextElement(a.tail, b)
             }
         }
 
         b match {
-          case setB: collection.GenSet[_] => nextElement(setA.toBuffer, setB.toBuffer)
+          case setB: collection.GenSet[_] => nextElement(setA.toSeq, setB.toBuffer)
           case _ => false
         }
       }

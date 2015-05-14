@@ -16,7 +16,7 @@
 package org.scalactic
 
 import scala.annotation.tailrec
-import scala.collection.mutable
+import scala.collection.{GenSeq, mutable}
 import scala.language.higherKinds
 import scala.language.implicitConversions
 
@@ -27,22 +27,22 @@ trait RecursiveMapEquality {
       def areEqual(mapA: MAP[K, V], b: Any): Boolean = {
 
         @tailrec
-        def nextElement(mapA: mutable.Buffer[(K,V)], mapB: mutable.Buffer[(_,_)]): Boolean = (mapA, mapB) match {
-          case (ma, mb) if ma.length == 0 && mb.length == 0 => true
-          case (ma, mb) if ma.length == 0 || mb.length == 0 => false
-          case (ma, mb) =>
-            val elemA = ma.head
-            val index = mb.indexWhere(kv => eqK.areEqual(elemA._1, kv._1) && eqV.areEqual(elemA._2, kv._2))
+        def nextElement(seqA: GenSeq[(K,V)], mapB: mutable.Buffer[(_,_)]): Boolean = (seqA, mapB) match {
+          case (a, b) if a.length == 0 && b.length == 0 => true
+          case (a, b) if a.length == 0 || b.length == 0 => false
+          case (a, b) =>
+            val elemA = a.head
+            val index = b.indexWhere(kv => eqK.areEqual(elemA._1, kv._1) && eqV.areEqual(elemA._2, kv._2))
             if (index < 0) {
               false
             } else {
-              mb.remove(index)
-              nextElement(ma.tail, mb)
+              b.remove(index)
+              nextElement(a.tail, b)
             }
         }
 
         b match {
-          case mapB: collection.GenMap[_, _] => nextElement(mapA.toBuffer, mapB.toBuffer)
+          case mapB: collection.GenMap[_, _] => nextElement(mapA.toSeq, mapB.toBuffer)
           case _ => false
         }
       }
