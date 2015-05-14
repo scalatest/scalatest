@@ -212,6 +212,7 @@ class Rnd(seed: Long, edges: Edges) { thisRnd =>
       case Nil => nextPosZDouble
     }
   }
+  // Maybe add in some > 16 bit UTF-16 encodings
   def nextString(length: Int): (String, Rnd) = {
     require(length >= 0, "; the length passed to nextString must be >= 0")
     @tailrec

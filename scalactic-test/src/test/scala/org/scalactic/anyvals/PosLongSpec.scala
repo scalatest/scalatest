@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Gen
+import org.scalatest.prop.Generator
 import OptionValues._
 
 // SKIP-SCALATESTJS-START

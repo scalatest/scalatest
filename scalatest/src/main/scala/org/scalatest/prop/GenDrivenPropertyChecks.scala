@@ -25,7 +25,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   def forAll[A](fun: (A) => Unit)
       (implicit 
         config: PropertyCheckConfig,
-        genA: org.scalatest.prop.Gen[A]
+        genA: org.scalatest.prop.Generator[A]
       ): Unit = {
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd, initialSizes: List[Int]): Unit = {
@@ -72,8 +72,8 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   def forAll[A, B](fun: (A, B) => Unit)
       (implicit 
         config: PropertyCheckConfig,
-        genA: org.scalatest.prop.Gen[A],
-        genB: org.scalatest.prop.Gen[B]
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B]
       ): Unit = {
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
@@ -98,9 +98,9 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   def forAll[A, B, C](fun: (A, B, C) => Unit)
       (implicit 
         config: PropertyCheckConfig,
-        genA: org.scalatest.prop.Gen[A],
-        genB: org.scalatest.prop.Gen[B],
-        genC: org.scalatest.prop.Gen[C]
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C]
       ): Unit = {
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {

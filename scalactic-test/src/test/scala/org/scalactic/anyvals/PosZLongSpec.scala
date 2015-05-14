@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Gen
+import org.scalatest.prop.Generator
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END

@@ -18,133 +18,133 @@ package org.scalatest.prop
 import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
 
-trait Gen[T] { thisGenOfT =>
+trait Generator[T] { thisGeneratorOfT =>
   def next(size: Int = 100, rnd: Rnd = Rnd.default): (T, Rnd)
-  def map[U](f: T => U): Gen[U] =
-    new Gen[U] {
+  def map[U](f: T => U): Generator[U] =
+    new Generator[U] {
       def next(size: Int, rnd: Rnd): (U, Rnd) = {
-        val (nextT, nextRnd) = thisGenOfT.next(size, rnd)
+        val (nextT, nextRnd) = thisGeneratorOfT.next(size, rnd)
         (f(nextT), nextRnd)
       }
     }
-  def flatMap[U](f: T => Gen[U]): Gen[U] = 
-    new Gen[U] { thisInnerGen =>
+  def flatMap[U](f: T => Generator[U]): Generator[U] = 
+    new Generator[U] { thisInnerGenerator =>
       def next(size: Int, rnd: Rnd): (U, Rnd) = {
-        val (nextT, nextRnd) = thisGenOfT.next(size, rnd)
+        val (nextT, nextRnd) = thisGeneratorOfT.next(size, rnd)
         val (a, b) = f(nextT).next(size, nextRnd)
         (a, b)
       }
     }
 }
 
-object Gen {
+object Generator {
 
-  def chooseInt(from: Int, to: Int): Gen[Int] =
-    new Gen[Int] { thisIntGen =>
+  def chooseInt(from: Int, to: Int): Generator[Int] =
+    new Generator[Int] { thisIntGenerator =>
       def next(size: Int, rnd: Rnd): (Int, Rnd) = {
         val (nextInt, nextRnd) = rnd.chooseInt(from, to)
         (nextInt, nextRnd)
       }
     }
 
-  implicit val byteGen: Gen[Byte] =
-    new Gen[Byte] {
+  implicit val byteGenerator: Generator[Byte] =
+    new Generator[Byte] {
       def next(size: Int, rnd: Rnd): (Byte, Rnd) = rnd.nextByteWithEdges
-      override def toString = "Gen[Byte]"
+      override def toString = "Generator[Byte]"
     }
 
-  implicit val shortGen: Gen[Short] =
-    new Gen[Short] {
+  implicit val shortGenerator: Generator[Short] =
+    new Generator[Short] {
       def next(size: Int, rnd: Rnd): (Short, Rnd) = rnd.nextShortWithEdges
-      override def toString = "Gen[Short]"
+      override def toString = "Generator[Short]"
     }
 
-  implicit val charGen: Gen[Char] =
-    new Gen[Char] {
+  implicit val charGenerator: Generator[Char] =
+    new Generator[Char] {
       def next(size: Int, rnd: Rnd): (Char, Rnd) = rnd.nextCharWithEdges
-      override def toString = "Gen[Char]"
+      override def toString = "Generator[Char]"
     }
 
-  implicit val intGen: Gen[Int] =
-    new Gen[Int] {
+  implicit val intGenerator: Generator[Int] =
+    new Generator[Int] {
       def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
-      override def toString = "Gen[Int]"
+      override def toString = "Generator[Int]"
     }
 
-  implicit val longGen: Gen[Long] =
-    new Gen[Long] {
+  implicit val longGenerator: Generator[Long] =
+    new Generator[Long] {
       def next(size: Int, rnd: Rnd): (Long, Rnd) = rnd.nextLongWithEdges
-      override def toString = "Gen[Long]"
+      override def toString = "Generator[Long]"
     }
 
-  implicit val floatGen: Gen[Float] =
-    new Gen[Float] {
+  implicit val floatGenerator: Generator[Float] =
+    new Generator[Float] {
       def next(size: Int, rnd: Rnd): (Float, Rnd) = rnd.nextFloatWithEdges
-      override def toString = "Gen[Float]"
+      override def toString = "Generator[Float]"
     }
 
-  implicit val doubleGen: Gen[Double] =
-    new Gen[Double] {
+  implicit val doubleGenerator: Generator[Double] =
+    new Generator[Double] {
       def next(size: Int, rnd: Rnd): (Double, Rnd) = rnd.nextDoubleWithEdges
-      override def toString = "Gen[Double]"
+      override def toString = "Generator[Double]"
     }
 
-  implicit val posIntGen: Gen[PosInt] =
-    new Gen[PosInt] {
+  implicit val posIntGenerator: Generator[PosInt] =
+    new Generator[PosInt] {
       def next(size: Int, rnd: Rnd): (PosInt, Rnd) = rnd.nextPosIntWithEdges
-      override def toString = "Gen[PosInt]"
+      override def toString = "Generator[PosInt]"
     }
 
-  implicit val posZIntGen: Gen[PosZInt] =
-    new Gen[PosZInt] {
+  implicit val posZIntGenerator: Generator[PosZInt] =
+    new Generator[PosZInt] {
       def next(size: Int, rnd: Rnd): (PosZInt, Rnd) = rnd.nextPosZIntWithEdges
-      override def toString = "Gen[PosZInt]"
+      override def toString = "Generator[PosZInt]"
     }
 
-  implicit val posLongGen: Gen[PosLong] =
-    new Gen[PosLong] {
+  implicit val posLongGenerator: Generator[PosLong] =
+    new Generator[PosLong] {
       def next(size: Int, rnd: Rnd): (PosLong, Rnd) = rnd.nextPosLongWithEdges
-      override def toString = "Gen[PosLong]"
+      override def toString = "Generator[PosLong]"
     }
 
-  implicit val posZLongGen: Gen[PosZLong] =
-    new Gen[PosZLong] {
+  implicit val posZLongGenerator: Generator[PosZLong] =
+    new Generator[PosZLong] {
       def next(size: Int, rnd: Rnd): (PosZLong, Rnd) = rnd.nextPosZLongWithEdges
-      override def toString = "Gen[PosZLong]"
+      override def toString = "Generator[PosZLong]"
     }
 
-  implicit val posFloatGen: Gen[PosFloat] =
-    new Gen[PosFloat] {
+  implicit val posFloatGenerator: Generator[PosFloat] =
+    new Generator[PosFloat] {
       def next(size: Int, rnd: Rnd): (PosFloat, Rnd) = rnd.nextPosFloatWithEdges
-      override def toString = "Gen[PosFloat]"
+      override def toString = "Generator[PosFloat]"
     }
 
-  implicit val posZFloatGen: Gen[PosZFloat] =
-    new Gen[PosZFloat] {
+  implicit val posZFloatGenerator: Generator[PosZFloat] =
+    new Generator[PosZFloat] {
       def next(size: Int, rnd: Rnd): (PosZFloat, Rnd) = rnd.nextPosZFloatWithEdges
-      override def toString = "Gen[PosZFloat]"
+      override def toString = "Generator[PosZFloat]"
     }
 
-  implicit val posDoubleGen: Gen[PosDouble] =
-    new Gen[PosDouble] {
+  implicit val posDoubleGenerator: Generator[PosDouble] =
+    new Generator[PosDouble] {
       def next(size: Int, rnd: Rnd): (PosDouble, Rnd) = rnd.nextPosDoubleWithEdges
-      override def toString = "Gen[PosDouble]"
+      override def toString = "Generator[PosDouble]"
     }
 
-  implicit val posZDoubleGen: Gen[PosZDouble] =
-    new Gen[PosZDouble] {
+  implicit val posZDoubleGenerator: Generator[PosZDouble] =
+    new Generator[PosZDouble] {
       def next(size: Int, rnd: Rnd): (PosZDouble, Rnd) = rnd.nextPosZDoubleWithEdges
-      override def toString = "Gen[PosZDouble]"
+      override def toString = "Generator[PosZDouble]"
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
-  implicit val stringGen: Gen[String] =
-    new Gen[String] {
+  implicit val stringGenerator: Generator[String] =
+    new Generator[String] {
       def next(size: Int, rnd: Rnd): (String, Rnd) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         rnd.nextString(size)
       }
-      override def toString = "Gen[String]"
+      override def toString = "Generator[String]"
     }
 }
 

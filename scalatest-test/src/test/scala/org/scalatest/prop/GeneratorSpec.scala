@@ -20,12 +20,12 @@ import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.anyvals._
 
-class GenSpec extends FunSpec with Matchers {
-  describe("A Gen") {
+class GeneratorSpec extends FunSpec with Matchers {
+  describe("A Generator") {
     it("should produce the same Byte values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= byteGen
-      val bGen = byteGen
+      import Generator._
+      val aGen = byteGenerator
+      val bGen = byteGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -46,9 +46,9 @@ class GenSpec extends FunSpec with Matchers {
     }
 
     it("should produce the same Short values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= shortGen
-      val bGen = shortGen
+      import Generator._
+      val aGen= shortGenerator
+      val bGen = shortGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -69,9 +69,9 @@ class GenSpec extends FunSpec with Matchers {
     }
 
     it("should produce the same Char values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= charGen
-      val bGen = charGen
+      import Generator._
+      val aGen= charGenerator
+      val bGen = charGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -92,9 +92,9 @@ class GenSpec extends FunSpec with Matchers {
     }
 
     it("should produce the same Int values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= intGen
-      val bGen = intGen
+      import Generator._
+      val aGen= intGenerator
+      val bGen = intGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -114,9 +114,9 @@ class GenSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
     it("should produce the same Long values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= longGen
-      val bGen = longGen
+      import Generator._
+      val aGen= longGenerator
+      val bGen = longGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -136,9 +136,9 @@ class GenSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
     it("should produce the same Float values in the same order given the same Rnd") {
-      import Gen._
-      val aGen = floatGen
-      val bGen = floatGen
+      import Generator._
+      val aGen = floatGenerator
+      val bGen = floatGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
@@ -150,9 +150,9 @@ class GenSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should produce the same Double values in the same order given the same Rnd") {
-      import Gen._
-      val aGen = doubleGen
-      val bGen = doubleGen
+      import Generator._
+      val aGen = doubleGenerator
+      val bGen = doubleGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
@@ -164,9 +164,9 @@ class GenSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should produce the same PosInt values in the same order given the same Rnd") {
-      import Gen._
-      val aGen= posIntGen
-      val bGen = posIntGen
+      import Generator._
+      val aGen= posIntGenerator
+      val bGen = posIntGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -186,12 +186,12 @@ class GenSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
     it("should offer a map and flatMap method so I can use it in for expressions like a cowboy") {
-      import Gen._
-      def pairGen(): Gen[(Int, Double)] =
+      import Generator._
+      def pairGen(): Generator[(Int, Double)] =
         // doubleGen().flatMap(d => intGen().map(i => (i, d)))
         for {
-          d <- doubleGen
-          i <- intGen
+          d <- doubleGenerator
+          i <- intGenerator
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
@@ -208,12 +208,12 @@ class GenSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should mix up both i and d when used in a for expression") {
-      import Gen._
-      def pairGen(): Gen[(Int, Double)] =
+      import Generator._
+      def pairGen(): Generator[(Int, Double)] =
         // doubleGen().flatMap(d => intGen().map(i => (i, d)))
         for {
-          i <- intGen
-          d <- doubleGen
+          i <- intGenerator
+          d <- doubleGenerator
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
@@ -287,8 +287,8 @@ class GenSpec extends FunSpec with Matchers {
       }
     }
     it("should produce Byte edge values first in random order") {
-      import Gen._
-      val gen = byteGen
+      import Generator._
+      val gen = byteGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
@@ -302,8 +302,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Byte.MinValue)
     }
     it("should produce Short edge values first in random order") {
-      import Gen._
-      val gen = shortGen
+      import Generator._
+      val gen = shortGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
@@ -317,8 +317,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Short.MinValue)
     }
     it("should produce Char edge values first in random order") {
-      import Gen._
-      val gen = charGen
+      import Generator._
+      val gen = charGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
@@ -326,8 +326,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Char.MaxValue)
     }
     it("should produce Int edge values first in random order") {
-      import Gen._
-      val gen = intGen
+      import Generator._
+      val gen = intGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
@@ -341,8 +341,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Int.MinValue)
     }
     it("should produce Long edge values first in random order") {
-      import Gen._
-      val gen = longGen
+      import Generator._
+      val gen = longGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
@@ -356,20 +356,20 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (Long.MinValue)
     }
     it("should produce the Float edge value first") {
-      import Gen._
-      val gen = floatGen
+      import Generator._
+      val gen = floatGenerator
       val (a1, _) = gen.next(rnd = Rnd(100))
       a1 shouldEqual 0.0f
     }
     it("should produce the Double edge value first") {
-      import Gen._
-      val gen = doubleGen
+      import Generator._
+      val gen = doubleGenerator
       val (a1, _) = gen.next(rnd = Rnd(100))
       a1 shouldEqual 0.0
     }
     it("should produce PosInt edge values first in random order") {
-      import Gen._
-      val gen = posIntGen
+      import Generator._
+      val gen = posIntGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
@@ -377,8 +377,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosInt.MaxValue)
     }
     it("should produce PosZInt edge values first in random order") {
-      import Gen._
-      val gen = posZIntGen
+      import Generator._
+      val gen = posZIntGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
@@ -388,8 +388,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosZInt.MaxValue)
     }
     it("should produce PosLong edge values first in random order") {
-      import Gen._
-      val gen = posLongGen
+      import Generator._
+      val gen = posLongGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
@@ -397,8 +397,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosLong.MaxValue)
     }
     it("should produce PosZLong edge values first in random order") {
-      import Gen._
-      val gen = posZLongGen
+      import Generator._
+      val gen = posZLongGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
@@ -408,8 +408,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosZLong.MaxValue)
     }
     it("should produce PosFloat edge values first in random order") {
-      import Gen._
-      val gen = posFloatGen
+      import Generator._
+      val gen = posFloatGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
@@ -417,8 +417,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosFloat.MaxValue)
     }
     it("should produce PosZFloat edge values first in random order") {
-      import Gen._
-      val gen = posZFloatGen
+      import Generator._
+      val gen = posZFloatGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
@@ -428,8 +428,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosZFloat.MaxValue)
     }
     it("should produce PosDouble edge values first in random order") {
-      import Gen._
-      val gen = posDoubleGen
+      import Generator._
+      val gen = posDoubleGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
@@ -437,8 +437,8 @@ class GenSpec extends FunSpec with Matchers {
       edges should contain (PosDouble.MaxValue)
     }
     it("should produce PosZDouble edge values first in random order") {
-      import Gen._
-      val gen = posZDoubleGen
+      import Generator._
+      val gen = posZDoubleGenerator
       val (a1, ar1) = gen.next(rnd = Rnd(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
@@ -449,8 +449,8 @@ class GenSpec extends FunSpec with Matchers {
     }
     it("should offer a String generator that returns a string whose length equals the passed size") {
 
-      import Gen._
-      val gen = stringGen
+      import Generator._
+      val gen = stringGenerator
 
       val (s1, r1) = gen.next(size = 0, rnd = Rnd(100))
       s1.length shouldBe 0
@@ -472,12 +472,12 @@ class GenSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseInt method") {
-      import Gen._
+      import Generator._
       import org.scalactic.anyvals._
-      def posIntGen: Gen[PosInt] =
-        for (i <- Gen.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
+      def posIntGen: Generator[PosInt] =
+        for (i <- Generator.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 
-      val aGen = posIntGen
+      val aGen = posIntGenerator
       val (a1, ar1) = aGen.next(rnd = Rnd(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
@@ -486,7 +486,7 @@ class GenSpec extends FunSpec with Matchers {
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
 
-      val bGen = posIntGen
+      val bGen = posIntGenerator
       val (b1, br1) = bGen.next(rnd = Rnd(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
@@ -504,12 +504,12 @@ class GenSpec extends FunSpec with Matchers {
     }
     it("on second thought I really want mapping and flatMapping to use the edges") {
       // import prop._
-      import Gen._
-      def pairGen(): Gen[(Int, Int)] =
+      import Generator._
+      def pairGen(): Generator[(Int, Int)] =
         // intGen.flatMap(i => intGen.map(j => (i, j)))
         for {
-          i <- intGen
-          j <- intGen
+          i <- intGenerator
+          j <- intGenerator
         } yield (i, j)
       val gen = pairGen()
       val ((i1, j1), r1) = gen.next(rnd = Rnd(100))

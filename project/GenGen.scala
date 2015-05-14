@@ -178,6 +178,7 @@ import org.scalacheck.Prop
 import org.scalacheck.Gen
 import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
+import Checkers.getParams
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.

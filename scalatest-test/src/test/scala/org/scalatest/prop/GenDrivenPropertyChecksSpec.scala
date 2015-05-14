@@ -37,13 +37,13 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
       val sizesBuf = Buffer.empty[Int]
       implicit val generatorDrivenConfig =
         PropertyCheckConfig(minSuccessful = 10, maxDiscarded = 50, minSize = 0, maxSize = 99)
-      implicit val intGen: Gen[Int] =
-        new Gen[Int] {
+      implicit val intGen: Generator[Int] =
+        new Generator[Int] {
           def next(size: Int, rnd: Rnd): (Int, Rnd) = {
             sizesBuf += size
             rnd.nextIntWithEdges
           }
-          override def toString = "Gen[Int] that records size"
+          override def toString = "Generator[Int] that records size"
         }
 
       forAll { (i: Int) =>
