@@ -355,6 +355,11 @@ object GenScalaTestJS {
         //"Configuration.scala",
         //"Checkers.scala",
         //"PropertyChecks.scala",
+        "GenDrivenPropertyChecks.scala", 
+        "Generator.scala", 
+        "Configuration.scala", 
+        "Rnd.scala", 
+        "Edges.scala", 
         "Whenever.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
