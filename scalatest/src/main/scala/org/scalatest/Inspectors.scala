@@ -619,11 +619,16 @@ private[scalatest] object InspectorsHelper {
         indexes.mkString(", ")
       
     val (xsIsMap, elements) = xs match {
+      // SKIP-SCALATESTJS-START
       case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY case _: collection.GenMap[_, _] =>
         val elements = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
+            // SKIP-SCALATESTJS-START
             case entry: java.util.Map.Entry[_, _] => entry.getKey
+            // SKIP-SCALATESTJS-END
             case _ => index
           }
         }
