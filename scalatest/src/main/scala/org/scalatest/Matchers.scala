@@ -4744,6 +4744,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val outerStackDepth = 1
+    private[scalatest] val innerStackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
+    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 17
+
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
     /**
@@ -4755,15 +4762,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, original, "theSameInstanceAs", 1) { e =>
+      doCollected(collected, xs, original, "theSameInstanceAs", outerStackDepth) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
               FailureMessages.wasNotSameInstanceAs(e, right)
             else
               FailureMessages.wasSameInstanceAs(e, right),
-            None, 
-            6
+            None,
+            innerStackDepth
           )
       }
     }
@@ -4778,13 +4785,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, original, "a", 1) { e =>
+      doCollected(collected, xs, original, "a", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            innerStackDepth
           )
         }
       }
@@ -4799,13 +4806,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, original, "an", 1) { e =>
+      doCollected(collected, xs, original, "an", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            6
+            None,
+            innerStackDepth
           )
         }
       }
@@ -4822,7 +4829,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, original, "a", 1) { e =>
+      doCollected(collected, xs, original, "a", outerStackDepth) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4830,8 +4837,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotA(e, UnquotedString(result.propertyName))
             else
               FailureMessages.wasA(e, UnquotedString(result.propertyName)),
-            None, 
-            6
+            None,
+            innerStackDepth
           )
         }
       }
@@ -4847,7 +4854,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, original, "an", 1) { e =>
+      doCollected(collected, xs, original, "an", outerStackDepth) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4855,8 +4862,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName))
             else
               FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)),
-            None, 
-            6
+            None,
+            innerStackDepth
           )
         }
       }
@@ -4871,15 +4878,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
-      doCollected(collected, xs, xs, "definedAt", 1) { e =>
+      doCollected(collected, xs, xs, "definedAt", outerStackDepth) { e =>
       if (e.isDefinedAt(right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
             FailureMessages.wasNotDefinedAt(e, right)
           else
             FailureMessages.wasDefinedAt(e, right),
-          None, 
-          6
+          None,
+          innerStackDepth
         )
       }
     }
@@ -5764,6 +5771,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean) {
 
+    // SKIP-SCALATESTJS-START
+    private val outerStackDepth = 1
+    private val innerStackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private val outerStackDepth = 0
+    //SCALATESTJS-ONLY private val innerStackDepth = 17
+
     /**
      * This method enables the following syntax: 
      *
@@ -5773,7 +5787,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def length(expectedLength: Long)(implicit len: Length[A]) {
-      doCollected(collected, xs, original, "length", 1) { e =>
+      doCollected(collected, xs, original, "length", outerStackDepth) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
@@ -5781,8 +5795,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               FailureMessages.hadLengthInsteadOfExpectedLength(e, eLength, expectedLength)
             else
               FailureMessages.hadLength(e, expectedLength),
-            None, 
-            6
+            None,
+            innerStackDepth
           )
       }
     }
@@ -5796,7 +5810,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def size(expectedSize: Long)(implicit sz: Size[A]) {
-      doCollected(collected, xs, original, "size", 1) { e =>
+      doCollected(collected, xs, original, "size", outerStackDepth) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
@@ -5804,8 +5818,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               FailureMessages.hadSizeInsteadOfExpectedSize(e, eSize, expectedSize)
             else
               FailureMessages.hadSize(e, expectedSize),
-            None, 
-            6
+            None,
+            innerStackDepth
           )
       }
     }
@@ -5830,7 +5844,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
@@ -5896,7 +5910,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
@@ -5962,7 +5976,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
@@ -6028,7 +6042,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**

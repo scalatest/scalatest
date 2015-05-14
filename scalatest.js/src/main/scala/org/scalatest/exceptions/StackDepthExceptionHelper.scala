@@ -8,6 +8,8 @@ private[scalatest] object StackDepthExceptionHelper {
     val depth1 = stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length
     if (depth1 > 0 && stackTraces(depth1 - 1).getFileName == stackTraces(depth1 + 1).getFileName && stackTraces(depth1).getFileName == stackTraces(depth1 + 2).getFileName)  // for trait mixin stack trace
       depth1 + 2 + adjustment
+    else if (depth1 > 0 && stackTraces(depth1).getFileName == stackTraces(depth1 + 3).getFileName && stackTraces(depth1 + 1).getFileName == stackTraces(depth1 + 2).getFileName && stackTraces(depth1).getFileName != stackTraces(depth1 + 1).getFileName)
+      depth1 + 3 + adjustment
     else
       depth1 + adjustment
   }

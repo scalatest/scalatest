@@ -523,6 +523,7 @@ object GenScalaTestJS {
         "InsideSpec.scala",
         "InspectorsForMapSpec.scala",
         "InspectorShorthandsRegexWithGroupsSpec.scala",
+        "InspectorShorthandsSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
