@@ -5826,6 +5826,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
 
+    // SKIP-SCALATESTJS-START
+    private val outerStackDepth = 2
+    private val innerStackDepth = 7
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val innerStackDepth = 18
+
     /**
      * This method enables the following syntax: 
      *
@@ -5857,13 +5864,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, original, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            7
+            None,
+            innerStackDepth
           )
       }
     }
@@ -5884,6 +5891,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Chee Seng
    */
   final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private val outerStackDepth = 2
+    private val innerStackDepth = 7
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
      * This method enables the following syntax: 
@@ -5916,13 +5930,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, original, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = includeRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            7
+            None,
+            innerStackDepth
           )
       }
     }
@@ -5943,6 +5957,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Chee Seng
    */
   final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private val outerStackDepth = 2
+    private val innerStackDepth = 7
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
      * This method enables the following syntax: 
@@ -5975,13 +5996,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, original, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = endWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            7
+            None,
+            innerStackDepth
           )
       }
     }
@@ -6002,6 +6023,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Chee Seng
    */
   final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private val outerStackDepth = 2
+    private val innerStackDepth = 7
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private val outerStackDepth = 3
+    //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
      * This method enables the following syntax: 
@@ -6034,13 +6062,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, original, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            7
+            None,
+            innerStackDepth
           )
       }
     }

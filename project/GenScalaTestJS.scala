@@ -522,6 +522,7 @@ object GenScalaTestJS {
         "InsideMixinSpec.scala",
         "InsideSpec.scala",
         "InspectorsForMapSpec.scala",
+        "InspectorShorthandsRegexWithGroupsSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
@@ -533,7 +534,7 @@ object GenScalaTestJS {
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
-        "FunSuiteSpec.scala", 
+        "FunSuiteSpec.scala",
         "FunSpecSpec.scala",
         "FeatureSpecSpec.scala", 
         "FlatSpecSpec.scala", 
