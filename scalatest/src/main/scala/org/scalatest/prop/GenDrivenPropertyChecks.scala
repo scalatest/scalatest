@@ -18,10 +18,18 @@ package org.scalatest.prop
 import scala.annotation.tailrec
 import scala.util.{Try, Failure, Success}
 import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.exceptions.StackDepth
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
 trait GenDrivenPropertyChecks extends Configuration with Whenever {
+  import GenDrivenPropertyChecks.stackDepthFileName
+  import GenDrivenPropertyChecks.stackDepthMethodName
+  import GenDrivenPropertyChecks.prettyArgs
   def forAll[A](fun: (A) => Unit)
       (implicit 
         config: PropertyCheckConfig,
@@ -38,6 +46,8 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         }
       val (v, r) = genA.next(size, nextRnd2)
       val result: Try[Unit] = Try { fun(v) }
+      val argsPassed = List(v)
+      val scalaCheckLabels = Set.empty[String]
       result match {
         case Success(()) =>
           val nextSucceededCount = succeededCount + 1
@@ -48,7 +58,30 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
           if (nextDiscardedCount < config.maxDiscarded)
             loop(succeededCount, nextDiscardedCount, r, nextInitialSizes)
           else throw new TestFailedException("too many discarded evaluations", 0)
-        case Failure(ex) => throw ex
+        case Failure(ex) => 
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
+              "  " + FailureMessages.propertyFailed(succeededCount) + "\n" +
+              (
+                sde match {
+                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                  case _ => ""
+                }
+              ) +
+              "  " + FailureMessages.occurredOnValues + "\n" +
+              prettyArgs(argsPassed) + "\n" +
+              "  )" +
+              "", // getLabelDisplay(scalaCheckLabels),
+            Some(ex),
+            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
+            None,
+            FailureMessages.propertyFailed(succeededCount),
+            argsPassed,
+            None,
+            scalaCheckLabels.toList
+          )
       }
     }
     // Make a List of 10 sizes between minSize and maxSize and sort them. Will
@@ -125,5 +158,18 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   }
 }
 
-object GenDrivenPropertyChecks extends GenDrivenPropertyChecks
+object GenDrivenPropertyChecks extends GenDrivenPropertyChecks {
+  private val stackDepthFileName = "GenDrivenPropertyChecks.scala"
+  private val stackDepthMethodName = "apply"
+  import FailureMessages.decorateToStringValue
+  private def prettyArgs(args: List[Any]) = {
+    val strs = for((a, i) <- args.zipWithIndex) yield (
+      "    " +
+      ("arg" + i) +
+      " = " + decorateToStringValue(a) + (if (i < args.length - 1) "," else "") // +
+      // (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
+    )
+    strs.mkString("\n")
+  }
+}
 

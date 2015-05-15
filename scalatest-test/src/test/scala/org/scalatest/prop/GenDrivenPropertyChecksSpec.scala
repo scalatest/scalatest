@@ -19,19 +19,27 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.mutable.Buffer
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
   describe("GenDrivenPropertyChecks") {
     import GenDrivenPropertyChecks._
-    it("should provide a forAll that takes one param") {
+    it("should provide a forAll that takes one param and produces a GeneratorDrivenPropertyCheckFailedException") {
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
-      a [TestFailedException] should be thrownBy {
+      a [GeneratorDrivenPropertyCheckFailedException] should be thrownBy {
+        forAll { (i: Int) => 
+          throw new IllegalArgumentException("oops")
+        }
+      }
+/*
+      a [GeneratorDrivenPropertyCheckFailedException] should be thrownBy {
         forAll { (i: Int) => 
           i + i shouldEqual i * 3
         }
       }
+*/
     }
     it("should provide a forAll that takes one param that invokes the generator with increasing size") {
       val sizesBuf = Buffer.empty[Int]
