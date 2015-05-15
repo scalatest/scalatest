@@ -525,6 +525,7 @@ object GenScalaTestJS {
         "InspectorShorthandsRegexWithGroupsSpec.scala",
         "InspectorShorthandsSpec.scala",
         "InspectorsSpec.scala",
+        "ListLoneElementSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
         "PropSpecSpec.scala", 
