@@ -10,6 +10,8 @@ private[scalatest] object StackDepthExceptionHelper {
       depth1 + 2 + adjustment
     else if (depth1 > 0 && stackTraces(depth1).getFileName == stackTraces(depth1 + 3).getFileName && stackTraces(depth1 + 1).getFileName == stackTraces(depth1 + 2).getFileName && stackTraces(depth1).getFileName != stackTraces(depth1 + 1).getFileName)
       depth1 + 3 + adjustment
+    else if (depth1 > 0 && stackTraces(depth1).getFileName == stackTraces(depth1 + 1).getFileName && stackTraces(depth1 + 2).getFileName.endsWith("scalajs/runtime/AnonFunctions.scala"))
+      depth1 + 1 + adjustment
     else
       depth1 + adjustment
   }
