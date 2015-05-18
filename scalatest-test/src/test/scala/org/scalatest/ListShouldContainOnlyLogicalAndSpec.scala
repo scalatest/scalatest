@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class ListShouldContainOnlyLogicalAndSpec extends Spec {
+class ListShouldContainOnlyLogicalAndSpec extends FunSpec {
   
   val invertedListOfStringEquality = 
     new Equality[List[String]] {
@@ -58,14 +58,14 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
   
   val fileName: String = "ListShouldContainOnlyLogicalAndSpec.scala"
   
-  object `a List` {
+  describe("a List") {
     
     val fumList: List[String] = List("fum", "foe", "fie", "fee")
     val toList: List[String] = List("you", "to", "birthday", "happy")
     
-    object `when used with (contain only (..) and contain only (..))` {
+    describe("when used with (contain only (..) and contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain only ("fee", "fie", "foe", "fum") and contain only ("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (contain only ("happy", "birthday", "to", "you") and contain only ("fee", "fie", "foe", "fum"))
@@ -77,7 +77,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.containedOnlyElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FUM", "FOE"))
         val e1 = intercept[TestFailedException] {
@@ -90,7 +90,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.containedOnlyElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (contain only ("FEE", "FIE", "FOE", "FAM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -103,7 +103,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only () and contain only ("fie", "fee", "fum", "foe"))
         }
@@ -119,7 +119,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and contain only ("fie", "fee", "fum", "foe"))
         }
@@ -135,7 +135,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Vector("happy", "birthday", "to", "you") and contain only ("fee", "fie", "foe", "fum"))
         }
@@ -147,9 +147,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (equal (..) and contain only (..))` {
+    describe("when used with (equal (..) and contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (equal (fumList) and contain only ("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain only ("fee", "fie", "foe", "fum"))
@@ -161,7 +161,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (equal (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
@@ -174,7 +174,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FAM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -187,7 +187,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (equal (toList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (equal (fumList) and contain only ())
         }
@@ -196,7 +196,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (equal (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -205,7 +205,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (fumList) and contain only Vector("happy", "birthday", "to", "you"))
         }
@@ -213,9 +213,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (be (..) and contain only (..))` {
+    describe("when used with (be (..) and contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (be (fumList) and contain only ("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) and contain only ("fee", "fie", "foe", "fum"))
@@ -227,7 +227,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
@@ -240,7 +240,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (be (fumList) and contain only ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
@@ -253,7 +253,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (be (fumList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (be (fumList) and contain only ())
         }
@@ -262,7 +262,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (be (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -271,7 +271,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e2 = intercept[TestFailedException] {
           fumList should (be (fumList) and contain only Vector("happy", "birthday", "to", "you"))
         }
@@ -279,9 +279,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
 
-    object `when used with (contain only (..) and be (..))` {
+    describe("when used with (contain only (..) and be (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain only ("fie", "fee", "fum", "foe") and be (fumList))
         val e1 = intercept[TestFailedException] {
           fumList should (contain only ("fee", "fie", "foe", "fum") and be (toList))
@@ -293,7 +293,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))
         val e1 = intercept[TestFailedException] {
@@ -306,7 +306,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
@@ -319,7 +319,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only () and be (fumList))
         }
@@ -328,7 +328,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and be (fumList))
         }
@@ -337,7 +337,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Vector("happy", "birthday", "to", "you") and be (fumList))
         }
@@ -345,9 +345,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (not contain only xx and not contain only xx)` {
+    describe("when used with (not contain only xx and not contain only xx)") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not contain only ("fee", "fie", "foe", "fuu") and not contain only ("fie", "fee", "fuu", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (not contain only ("fee", "fie", "foe", "fum") and not contain only ("happy", "birthday", "to", "you"))
@@ -359,7 +359,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))
         val e1 = intercept[TestFailedException] {
@@ -372,7 +372,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotContainOnlyElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\"") + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -385,7 +385,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain only () and not contain only ("fie", "fee", "fuu", "foe"))
         }
@@ -401,7 +401,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain only ("fee", "fie", "foe", "fie", "fum") and not contain only ("fie", "fee", "fuu", "foe"))
         }
@@ -417,7 +417,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not contain only (Vector("fee", "fie", "foe", "fum")) and not contain only ("happy", "birthday", "to", "you"))
         }
@@ -429,9 +429,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (not equal (..) and not contain only (..))` {
+    describe("when used with (not equal (..) and not contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not equal (toList) and not contain only ("fie", "fee", "fuu", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain only ("happy", "birthday", "to", "you"))
@@ -443,7 +443,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not equal (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
         val e1 = intercept[TestFailedException] {
@@ -456,7 +456,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -469,7 +469,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not equal (toList) and not contain only ())
         }
@@ -478,7 +478,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not equal (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -487,7 +487,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not equal (toList) and not contain only (Vector("fee", "fie", "foe", "fum")))
         }
@@ -495,9 +495,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (not be (..) and not contain only (..))` {
+    describe("when used with (not be (..) and not contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not be (toList) and not contain only ("fie", "fee", "fuu", "foe"))
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) and not contain only ("happy", "birthday", "to", "you"))
@@ -509,7 +509,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))
         val e1 = intercept[TestFailedException] {
@@ -522,7 +522,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
@@ -535,7 +535,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not be (toList) and not contain only ())
         }
@@ -544,7 +544,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not be (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -553,7 +553,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not be (toList) and not contain only (Vector("fee", "fie", "foe", "fum")))
         }
@@ -563,7 +563,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
     
   }
   
-  object `col of Lists` {
+  describe("col of Lists") {
     
     val list1s: Vector[List[Int]] = Vector(List(3, 2, 1), List(3, 2, 1), List(3, 2, 1))
     val lists: Vector[List[Int]] = Vector(List(3, 2, 1), List(3, 2, 1), List(4, 3, 2))
@@ -576,9 +576,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
       "in " + decorateToStringValue(left)
     
-    object `used with contain only xx and contain only xx` {
+    describe("used with contain only xx and contain only xx") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain only (3, 2, 1) and contain only (1, 3, 2))
         atLeast (2, lists) should (contain only (3, 1, 2) and contain only (2, 3, 1))
         atMost (2, lists) should (contain only (3, 1, 2) and contain only (2, 3, 1))
@@ -600,7 +600,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HI", "HELLO"))
@@ -616,7 +616,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain only ("HO", "HELLO") and contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -629,7 +629,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain only () and contain only (1, 3, 2))
         }
@@ -645,7 +645,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain only (3, 2, 2, 1) and contain only (1, 3, 2))
         }
@@ -661,7 +661,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))) should (contain only Vector(1, 2, 3) and contain only (1, 3, 2))
         }
@@ -679,9 +679,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (be (..) and contain only (..))` {
+    describe("when used with (be (..) and contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (be (List(3, 2, 1)) and contain only (1, 3, 2))
         atLeast (2, lists) should (be (List(3, 2, 1)) and contain only (1, 3, 2))
         atMost (2, lists) should (be (List(3, 2, 1)) and contain only (2, 3, 1))
@@ -720,7 +720,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e6, allErrMsg(0, decorateToStringValue(List(3, 2, 1)) + " was equal to " + decorateToStringValue(List(3, 2, 1)) + ", but " + decorateToStringValue(List(3, 2, 1)) + " did not contain only " + "(2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (be (List("hi", "hello")) and contain only ("HELLO", "HI"))
@@ -736,7 +736,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (be (List("hi", "hello")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be (List("HI", "HELLO")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
@@ -749,7 +749,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (be (List(3, 2, 1)) and contain only ())
         }
@@ -758,7 +758,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (be (List(3, 2, 1)) and contain only (3, 2, 2, 1))
         }
@@ -767,7 +767,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (be (Vector(Vector(3, 2, 1))) and contain only Vector(2, 3, 8))
         }
@@ -785,9 +785,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (not contain only xx and not contain only xx)` {
+    describe("when used with (not contain only xx and not contain only xx)") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not contain only (3, 2, 8) and not contain only (8, 3, 4))
         atLeast (2, lists) should (not contain only (3, 8, 5) and not contain only (8, 3, 4))
         atMost (2, lists) should (not contain only (2, 4, 3) and contain only (4, 3, 2))
@@ -814,7 +814,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"ho\", \"hey\", \"howdy\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (not contain only ("HI") and not contain only ("HO"))
@@ -830,7 +830,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HI\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not contain only ("HI") and not contain only ("HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain only ("HELLO", "HI") and not contain only ("HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -843,7 +843,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HI\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not contain only () and not contain only (8, 3, 4))
         }
@@ -859,7 +859,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not contain only (3, 2, 2, 1) and not contain only (8, 3, 4))
         }
@@ -875,7 +875,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not contain only (Vector(3, 2, 1)) and not contain only (8, 3, 4))
         }
@@ -898,9 +898,9 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when used with (not be (..) and not contain only (..))` {
+    describe("when used with (not be (..) and not contain only (..))") {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not be (List(2)) and not contain only (8, 3, 4))
         atLeast (2, lists) should (not be (List(3)) and not contain only (8, 3, 4))
         atMost (2, lists) should (not be (List(4, 3, 2)) and not contain only (3, 4, 2))
@@ -927,7 +927,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (not be (List("ho")) and not contain only ("HO", "HELLO"))
@@ -943,7 +943,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not be (List("ho")) and not contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be (List("hi", "hello")) and not contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
@@ -956,7 +956,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not be (List(2)) and not contain only ())
         }
@@ -965,7 +965,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyEmpty))
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (not be (List(2)) and not contain only (3, 2, 2, 1))
         }
@@ -974,7 +974,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not be (List(3)) and not contain only (Vector(3, 2, 1)))
         }
