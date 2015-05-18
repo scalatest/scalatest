@@ -35,6 +35,7 @@ trait Generator[T] { thisGeneratorOfT =>
         (a, b)
       }
     }
+  def shrink(init: T): Stream[T] = Stream.empty
 }
 
 object Generator {
@@ -69,6 +70,7 @@ object Generator {
     new Generator[Int] {
       def next(size: Int, rnd: Rnd): (Int, Rnd) = rnd.nextIntWithEdges
       override def toString = "Generator[Int]"
+      override def shrink(init: Int): Stream[Int] = 0 #:: 1 #:: -1 #:: Stream.empty
     }
 
   implicit val longGenerator: Generator[Long] =
