@@ -18,238 +18,234 @@ package org.scalatest
 import org.scalatest._
 import Matchers._
 import FailureMessages.decorateToStringValue
+import org.scalatest.matchers.MatchResult
+import org.scalactic.Prettifier
 
-class MatchersSpec extends Spec {
+class MatchersSpec extends FunSpec {
   
-  object `Matchers ` {
+  describe("Matchers ") {
     
-    object `equal(Spread) method returns Matcher` {
+    describe("equal(Spread) method returns Matcher") {
       
       val mt = equal (8 +- 1)
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mt.toString should be ("equal (8 +- 1)")
       }
       
       val mr = mt(9)
       
-      def `should have correct MatchResult` {
-        mr should have (
-          'matches (true),
-          'failureMessage ("9 did not equal 8 plus or minus 1"),
-          'negatedFailureMessage ("9 equaled 8 plus or minus 1"),
-          'midSentenceFailureMessage ("9 did not equal 8 plus or minus 1"),
-          'midSentenceNegatedFailureMessage ("9 equaled 8 plus or minus 1"),
-          'rawFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(9, 8, 1)),
-          'negatedFailureMessageArgs(Vector(9, 8, 1)),
-          'midSentenceFailureMessageArgs(Vector(9, 8, 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(9, 8, 1))    
-        )
+      it("should have correct MatchResult") {
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "9 did not equal 8 plus or minus 1"
+        mr.negatedFailureMessage shouldBe "9 equaled 8 plus or minus 1"
+        mr.midSentenceFailureMessage shouldBe "9 did not equal 8 plus or minus 1"
+        mr.midSentenceNegatedFailureMessage shouldBe "9 equaled 8 plus or minus 1"
+        mr.rawFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        mr.failureMessageArgs shouldBe Vector(9, 8, 1)
+        mr.negatedFailureMessageArgs shouldBe Vector(9, 8, 1)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(9, 8, 1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(9, 8, 1)
       }
       
       val nmr = mr.negated
       
-      def `should have correct negated MatchResult` {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("9 equaled 8 plus or minus 1"),
-          'negatedFailureMessage ("9 did not equal 8 plus or minus 1"),
-          'midSentenceFailureMessage ("9 equaled 8 plus or minus 1"),
-          'midSentenceNegatedFailureMessage ("9 did not equal 8 plus or minus 1"),
-          'rawFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(9, 8, 1)),
-          'negatedFailureMessageArgs(Vector(9, 8, 1)),
-          'midSentenceFailureMessageArgs(Vector(9, 8, 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(9, 8, 1))    
-        )
+      it("should have correct negated MatchResult") {
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "9 equaled 8 plus or minus 1"
+        nmr.negatedFailureMessage shouldBe "9 did not equal 8 plus or minus 1"
+        nmr.midSentenceFailureMessage shouldBe "9 equaled 8 plus or minus 1"
+        nmr.midSentenceNegatedFailureMessage shouldBe "9 did not equal 8 plus or minus 1"
+        nmr.rawFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        nmr.failureMessageArgs shouldBe Vector(9, 8, 1)
+        nmr.negatedFailureMessageArgs shouldBe Vector(9, 8, 1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(9, 8, 1)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(9, 8, 1)
       }
       
     }
     
-    object `equal(Null) method returns Matcher` {
+    describe("equal(Null) method returns Matcher") {
       
       val mt = equal (null)
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mt.toString should be ("equal (null)")
       }
       
       val mr = mt(null)
       
-      def `should have correct MatchResult` {
-        mr should have (
-          'matches (true),
-          'failureMessage ("null did not equal null"),
-          'negatedFailureMessage ("The reference equaled null"),
-          'midSentenceFailureMessage ("null did not equal null"),
-          'midSentenceNegatedFailureMessage ("the reference equaled null"),
-          'rawFailureMessage ("{0} did not equal null"),
-          'rawNegatedFailureMessage ("The reference equaled null"),
-          'rawMidSentenceFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
-          'failureMessageArgs(Vector(null)),
-          'negatedFailureMessageArgs(Vector.empty),
-          'midSentenceFailureMessageArgs(Vector(null)),
-          'midSentenceNegatedFailureMessageArgs(Vector.empty)    
-        )
+      it("should have correct MatchResult") {
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "null did not equal null"
+        mr.negatedFailureMessage shouldBe "The reference equaled null"
+        mr.midSentenceFailureMessage shouldBe "null did not equal null"
+        mr.midSentenceNegatedFailureMessage shouldBe "the reference equaled null"
+        mr.rawFailureMessage shouldBe "{0} did not equal null"
+        mr.rawNegatedFailureMessage shouldBe "The reference equaled null"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not equal null"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "the reference equaled null"
+        mr.failureMessageArgs shouldBe Vector(null)
+        mr.negatedFailureMessageArgs shouldBe Vector.empty
+        mr.midSentenceFailureMessageArgs shouldBe Vector(null)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector.empty
       }
       
       val nmr = mr.negated
       
-      def `should have correct negated MatchResult` {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("The reference equaled null"),
-          'negatedFailureMessage ("null did not equal null"),
-          'midSentenceFailureMessage ("the reference equaled null"),
-          'midSentenceNegatedFailureMessage ("null did not equal null"),
-          'rawFailureMessage ("The reference equaled null"),
-          'rawNegatedFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceFailureMessage ("the reference equaled null"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
-          'failureMessageArgs(Vector.empty),
-          'negatedFailureMessageArgs(Vector(null)),
-          'midSentenceFailureMessageArgs(Vector.empty),
-          'midSentenceNegatedFailureMessageArgs(Vector(null))    
-        )
+      it("should have correct negated MatchResult") {
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "The reference equaled null"
+        nmr.negatedFailureMessage shouldBe "null did not equal null"
+        nmr.midSentenceFailureMessage shouldBe "the reference equaled null"
+        nmr.midSentenceNegatedFailureMessage shouldBe "null did not equal null"
+        nmr.rawFailureMessage shouldBe "The reference equaled null"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not equal null"
+        nmr.rawMidSentenceFailureMessage shouldBe "the reference equaled null"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal null"
+        nmr.failureMessageArgs shouldBe Vector.empty
+        nmr.negatedFailureMessageArgs shouldBe Vector(null)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector.empty
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(null)
       }
       
     }
-    
-    object `HavePropertyMatcherGenerator ` {
+
+    // SKIP-SCALATESTJS-START
+    describe("HavePropertyMatcherGenerator ") {
       
-      object `apply(Any) returns HavePropertyMatcher` {
+      describe("apply(Any) returns HavePropertyMatcher") {
         
         val generator = new HavePropertyMatcherGenerator('name)
         val havePropMatcher = generator("test")
         
-        def `should have pretty toString` {
+        it("should have pretty toString") {
           havePropMatcher.toString should be ("HavePropertyMatcher[AnyRef, Any](expectedValue = \"test\")")
         }
         
       }
       
     }
+    // SKIP-SCALATESTJS-END
 
-    object `ResultOfBeWordForAny ` {
+    describe("ResultOfBeWordForAny ") {
       val word = 1 should be
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         word.toString should be ("ResultOfBeWordForAny(1, true)")
       }
     }
 
-    object `ResultOfIncludeWordForString ` {
+    describe("ResultOfIncludeWordForString ") {
       val word = "Bob" should include
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         word.toString should be ("ResultOfIncludeWordForString(\"Bob\", true)")
       }
     }
 
-    object `ResultOfStartWithWordForString ` {
+    describe("ResultOfStartWithWordForString ") {
       val word = "Bob" should startWith
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         word.toString should be ("ResultOfStartWithWordForString(\"Bob\", true)")
       }
     }
 
-    object `ResultOfEndWithWordForString ` {
+    describe("ResultOfEndWithWordForString ") {
       val word = "Bob" should endWith
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         word.toString should be ("ResultOfEndWithWordForString(\"Bob\", true)")
       }
     }
 
-    object `ResultOfFullyMatchWordForString ` {
+    describe("ResultOfFullyMatchWordForString ") {
       val word = "Bob" should fullyMatch
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         word.toString should be ("ResultOfFullyMatchWordForString(\"Bob\", true)")
       }
     }
     
-    object `RegexWord ` {
+    describe("RegexWord ") {
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         regex.toString should be ("regex")
       }
       
     }
 
-    object `KeyWord ` {
-      def `should have pretty toString` {
+    describe("KeyWord ") {
+      it("should have pretty toString") {
         key.toString should be ("key")
       }
     }
 
-    object `ValueWord ` {
-      def `should have pretty toString` {
+    describe("ValueWord ") {
+      it("should have pretty toString") {
         value.toString should be ("value")
       }
     }
 
-    object `AWord ` {
-      def `should have pretty toString` {
+    describe("AWord ") {
+      it("should have pretty toString") {
         val aWord = new AWord
         aWord.toString should be ("a")
       }
     }
 
-    object `AnWord ` {
-      def `should have pretty toString` {
+    describe("AnWord ") {
+      it("should have pretty toString") {
         val anWord = new AnWord
         anWord.toString should be ("an")
       }
     }
 
-    object `TheSameInstanceAsPhrase ` {
-      def `should have pretty toString` {
+    describe("TheSameInstanceAsPhrase ") {
+      it("should have pretty toString") {
         theSameInstanceAs.toString should be ("theSameInstanceAs")
       }
     }
 
-    object `ResultOfHaveWordForExtent ` {
-      def `should have pretty toString` {
+    describe("ResultOfHaveWordForExtent ") {
+      it("should have pretty toString") {
         val word = "Bob" should have
         word.toString should be ("ResultOfHaveWordForExtent(\"Bob\", true)")
       }
     }
 
-    object `ResultOfProduceInvocation ` {
-      def `should have pretty toString` {
+    describe("ResultOfProduceInvocation ") {
+      it("should have pretty toString") {
         val word = produce [StringIndexOutOfBoundsException]
         word.toString should be ("ResultOfProduceInvocation(classOf[java.lang.StringIndexOutOfBoundsException])")
       }
     }
 
-    object `ResultOfNotWordForCollectedAny ` {
-      def `should have pretty toString` {
+    describe("ResultOfNotWordForCollectedAny ") {
+      it("should have pretty toString") {
         val word = all(List(1, 2, 3)) should not
         word.toString should be ("ResultOfNotWordForCollectedAny(AllCollected, List(1, 2, 3), false)")
       }
     }
 
-    object `ResultOfContainWordForCollectedAny ` {
-      def `should have pretty toString` {
+    describe("ResultOfContainWordForCollectedAny ") {
+      it("should have pretty toString") {
         val word = all(List(List("1"), List("2"), List("3"))) should contain
         word.toString should be ("ResultOfContainWordForCollectedAny(AllCollected, List(List(\"1\"), List(\"2\"), List(\"3\")), true)")
       }
     }
 
-    object `ResultOfBeWordForCollectedAny ` {
-      def `should have pretty toString` {
+    describe("ResultOfBeWordForCollectedAny ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should be
         word.toString should be ("ResultOfBeWordForCollectedAny(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
     }
 
-    object `ResultOfBeWordForCollectedArray ` {
-      def `should have pretty toString` {
+    describe("ResultOfBeWordForCollectedArray ") {
+      it("should have pretty toString") {
         val a1 = Array("1")
         val a2 = Array("2")
         val a3 = Array("3")
@@ -258,43 +254,43 @@ class MatchersSpec extends Spec {
       }
     }
 
-    object `ResultOfCollectedAny ` {
-      def `should have pretty toString` {
+    describe("ResultOfCollectedAny ") {
+      it("should have pretty toString") {
         val word = all(List(1, 2, 3))
         word.toString should be ("ResultOfCollectedAny(AllCollected, List(1, 2, 3))")
       }
     }
 
-    object `ResultOfHaveWordForCollectedExtent ` {
-      def `should have pretty toString` {
+    describe("ResultOfHaveWordForCollectedExtent ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should have
         word.toString should be ("ResultOfHaveWordForCollectedExtent(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
     }
 
-    object `ResultOfStartWithWordForCollectedString ` {
-      def `should have pretty toString` {
+    describe("ResultOfStartWithWordForCollectedString ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should startWith
         word.toString should be ("ResultOfStartWithWordForCollectedString(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
     }
 
-    object `ResultOfIncludeWordForCollectedString ` {
-      def `should have pretty toString` {
+    describe("ResultOfIncludeWordForCollectedString ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should include
         word.toString should be ("ResultOfIncludeWordForCollectedString(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
     }
 
-    object `ResultOfEndWithWordForCollectedString ` {
-      def `should have pretty toString` {
+    describe("ResultOfEndWithWordForCollectedString ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should endWith
         word.toString should be ("ResultOfEndWithWordForCollectedString(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
     }
 
-    object `ResultOfFullyMatchWordForCollectedString ` {
-      def `should have pretty toString` {
+    describe("ResultOfFullyMatchWordForCollectedString ") {
+      it("should have pretty toString") {
         val word = all(List("1", "2", "3")) should fullyMatch
         word.toString should be ("ResultOfFullyMatchWordForCollectedString(AllCollected, List(\"1\", \"2\", \"3\"), true)")
       }
