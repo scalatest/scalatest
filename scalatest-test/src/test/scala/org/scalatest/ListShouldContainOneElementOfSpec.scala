@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import exceptions.TestFailedException
 import exceptions.NotAllowedException
 
-class ListShouldContainOneElementOfSpec extends Spec with Matchers {
+class ListShouldContainOneElementOfSpec extends FunSpec with Matchers {
 
   val upperCaseEquality =
     new Equality[String] {
@@ -32,15 +32,15 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
 
   //ADDITIONAL//
 
-  object `a List` {
+  describe("a List") {
 
     val fumList: List[String] = List("fum")
     val toList: List[String] = List("to")
     val fumfuList: List[String] = List("fum", "fu")
 
-    object `when used with contain oneElementOf (...) syntax` {
+    describe("when used with contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should contain oneElementOf Seq("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           fumList should contain oneElementOf Seq("happy", "birthday", "to", "you")
@@ -58,14 +58,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         // Contains duplicate elements in the right list
         fumList should contain oneElementOf Seq("fee", "fum", "foe", "fum")
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should contain oneElementOf Seq("FEE", "FUM", "FOE", "FU")
         intercept[TestFailedException] {
           fumList should contain oneElementOf Seq("fee", "fum", "foe", "fu")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should contain oneElementOf Seq("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (fumList should contain oneElementOf Seq("fee", "fum", "foe", "fu")) (decided by upperCaseEquality)
@@ -75,14 +75,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         }
         (fumList should contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum")
       }
     }
 
-    object `when used with (contain oneElementOf (...)) syntax` {
+    describe("when used with (contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
@@ -92,14 +92,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should (contain oneElementOf Seq("FEE", "FUM", "FOE", "FU"))
         intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fee", "fum", "foe", "fu"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain oneElementOf Seq("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (fumList should (contain oneElementOf Seq("fee", "fum", "foe", "fu"))) (decided by upperCaseEquality)
@@ -109,7 +109,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         }
         (fumList should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
@@ -122,9 +122,9 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
 
      Reason is that I don't want people putting parentheses between contain and oneElementOf, etc. This will not compile.
     */
-    object `when used with not contain oneElementOf (...) syntax` {
+    describe("when used with not contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList should not contain oneElementOf (Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           toList should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
@@ -133,14 +133,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           toList should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toList should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -150,7 +150,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (toList should not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         toList should not contain oneElementOf (Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
@@ -164,9 +164,9 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
 
     The bottom two don't, but still I don't want to support that in general.
     */
-    object `when used with (not contain oneElementOf (...)) syntax` {
+    describe("when used with (not contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList should (not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           toList should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
@@ -175,14 +175,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
         intercept[TestFailedException] {
           toList should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toList should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
@@ -192,14 +192,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (toList should (not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         toList should (not contain oneElementOf (Seq("fee", "fie", "foe", "fie", "fum")))
       }
     }
 
-    object `when used with shouldNot contain oneElementOf (...) syntax` {
+    describe("when used with shouldNot contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList shouldNot contain oneElementOf Seq("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           toList shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")
@@ -208,14 +208,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
           toList shouldNot contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toList shouldNot contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
@@ -225,14 +225,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (toList shouldNot contain oneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         toList shouldNot contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum")
       }
     }
 
-    object `when used with shouldNot (contain oneElementOf (...)) syntax` {
+    describe("when used with shouldNot (contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList shouldNot (contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           toList shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))
@@ -241,14 +241,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (FailureMessages.containedOneElementOf(toList, Seq("happy", "birthday", "to", "you")))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           toList shouldNot (contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toList shouldNot (contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -258,13 +258,13 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (toList shouldNot (contain oneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         toList shouldNot (contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
   }
 
-  object `a collection of Lists` {
+  describe("a collection of Lists") {
 
     val list1s: Vector[List[Int]] = Vector(List(1), List(1), List(1))
     val lists: Vector[List[Int]] = Vector(List(1), List(1), List(2))
@@ -273,9 +273,9 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
     val hiLists: Vector[List[String]] = Vector(List("hi"), List("hi"), List("hi"))
     val toLists: Vector[List[String]] = Vector(List("to"), List("to"), List("to"))
 
-    object `when used with contain oneElementOf (...) syntax` {
+    describe("when used with contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should contain oneElementOf Seq(1, 3, 4)
         atLeast (2, lists) should contain oneElementOf Seq(1, 3, 4)
         atMost (2, lists) should contain oneElementOf Seq(2, 3, 4)
@@ -311,7 +311,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "in " + decorateToStringValue(listsNil)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should contain oneElementOf Seq("hi", "he")
         intercept[TestFailedException] {
           all (hiLists) should contain oneElementOf Seq("ho", "he")
@@ -322,7 +322,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           all (hiLists) should contain oneElementOf Seq("hi", "he")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should contain oneElementOf Seq("HI", "HE")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (hiLists) should contain oneElementOf Seq("hi", "he")) (decided by upperCaseEquality)
@@ -333,14 +333,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (hiLists) should contain oneElementOf Seq("ho", "he")) (decided by defaultEquality[String])
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should contain oneElementOf Seq(1, 2, 2, 3)
       }
     }
 
-    object `when used with (contain oneElementOf (...)) syntax` {
+    describe("when used with (contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain oneElementOf Seq(1, 3, 4))
         atLeast (2, lists) should (contain oneElementOf Seq(1, 3, 4))
         atMost (2, lists) should (contain oneElementOf Seq(2, 3, 4))
@@ -376,7 +376,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "in " + decorateToStringValue(listsNil)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should (contain oneElementOf Seq("hi", "he"))
         intercept[TestFailedException] {
           all (hiLists) should (contain oneElementOf Seq("ho", "he"))
@@ -387,7 +387,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           all (hiLists) should (contain oneElementOf Seq("hi", "he"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (hiLists) should (contain oneElementOf Seq("hi", "he"))) (decided by upperCaseEquality)
@@ -398,7 +398,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (hiLists) should (contain oneElementOf Seq("ho", "he"))) (decided by defaultEquality[String])
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (list1s) should (contain oneElementOf Seq(1, 2, 2, 3))
       }
     }
@@ -418,9 +418,9 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
 
      Reason is that I don't want people putting parentheses between contain and oneElementOf, etc. This will not compile.
     */
-    object `when used with not contain oneElementOf (...) syntax` {
+    describe("when used with not contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should not contain oneElementOf (Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           all (toLists) should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
@@ -431,14 +431,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (ListShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           all (toLists) should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toLists) should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -448,7 +448,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (toLists) should not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (toLists) should not contain oneElementOf (Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
@@ -470,9 +470,9 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
 
     The top two don't, but still I don't want to support that in general.
     */
-    object `when used with (not contain oneElementOf (...)) syntax` {
+    describe("when used with (not contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should (not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           all (toLists) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
@@ -483,14 +483,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (ListShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
         intercept[TestFailedException] {
           all (toLists) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toLists) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
@@ -500,14 +500,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (toLists) should (not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (toLists) should (not contain oneElementOf (Seq("fee", "fie", "foe", "fie", "fum")))
       }
     }
 
-    object `when used with shouldNot contain oneElementOf (...) syntax` {
+    describe("when used with shouldNot contain oneElementOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot contain oneElementOf Seq("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")
@@ -518,14 +518,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (ListShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
           all (toLists) shouldNot contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain oneElementOf Seq("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
@@ -535,14 +535,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (toLists) shouldNot contain oneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (toLists) shouldNot contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum")
       }
     }
 
-    object `when used with shouldNot (contain oneElementOf (...)) syntax` {
+    describe("when used with shouldNot (contain oneElementOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot (contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))
@@ -553,14 +553,14 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           "  at index 0, " + FailureMessages.containedOneElementOf(toLists(0), Seq("happy", "birthday", "to", "you")) + " (ListShouldContainOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain oneElementOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot (contain oneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -570,7 +570,7 @@ class ListShouldContainOneElementOfSpec extends Spec with Matchers {
           (all (toLists) shouldNot (contain oneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should allow RHS to contain duplicated value` {
+      it("should allow RHS to contain duplicated value") {
         all (toLists) shouldNot (contain oneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
       }
     }
