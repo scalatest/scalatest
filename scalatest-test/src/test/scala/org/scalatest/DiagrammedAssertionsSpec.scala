@@ -2468,6 +2468,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      it("should compile when used with Java static method ") {
+        assertCompiles(
+          """
+            |assert(scala.compat.Platform.EOL == System.lineSeparator)
+          """.stripMargin)
+      }
     }
 
     describe("The assert(boolean, clue) method") {
@@ -4836,6 +4843,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should compile when used with Java static method") {
+        assertCompiles(
+          """
+            |assert(scala.compat.Platform.EOL == System.lineSeparator, "this is a clue")
+          """.stripMargin)
       }
     }
 
@@ -7206,6 +7220,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      it("should compile when used with Java static method") {
+        assertCompiles(
+          """
+            |assume(scala.compat.Platform.EOL == System.lineSeparator)
+          """.stripMargin)
+      }
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9574,6 +9595,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should compile when used with Java static method") {
+        assertCompiles(
+          """
+            |assume(scala.compat.Platform.EOL == System.lineSeparator, "this is a clue")
+          """.stripMargin)
       }
     }
 
