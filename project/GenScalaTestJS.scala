@@ -577,6 +577,7 @@ object GenScalaTestJS {
         "MatchersSpec.scala",
         "MethodSuiteProp.scala",
         "MethodSuiteExamples.scala",
+        "NoElementsOfContainMatcherDeciderSpec.scala",
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
