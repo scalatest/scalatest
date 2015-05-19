@@ -37,4 +37,6 @@ protected[scalatest] class ExampleBeforeAfterParallelSpec extends FunSpec with B
   after {
     info("In After")
   }
+
+  //SCALATESTJS-ONLY override def newInstance = new ExampleBeforeAfterParallelSpec
 }

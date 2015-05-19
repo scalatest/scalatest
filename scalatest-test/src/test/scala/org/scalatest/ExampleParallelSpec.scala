@@ -42,4 +42,6 @@ protected[scalatest] class ExampleParallelSpec extends WordSpec with ParallelTes
       Thread.sleep(50)
     }
   }
+
+  //SCALATESTJS-ONLY override def newInstance = new ExampleParallelSpec
 }
