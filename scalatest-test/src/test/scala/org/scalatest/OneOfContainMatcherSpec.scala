@@ -19,9 +19,9 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
-class OneOfContainMatcherSpec extends Spec {
+class OneOfContainMatcherSpec extends FunSpec {
 
-  object `oneOf ` {
+  describe("oneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       e.message should be (Some(FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.mkString(", ")))))
@@ -29,67 +29,72 @@ class OneOfContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeeded when left List contains same elements in same order as right List` {
+    it("should succeeded when left List contains same elements in same order as right List") {
       List(1, 3, 5, 8) should contain oneOf (7, 8, 9)
       Array(1, 3, 5, 8) should contain oneOf (7, 8, 9)
-      javaList(1, 3, 5, 8) should contain oneOf (7, 8, 9)
-      
       Set(1, 3, 5, 8) should contain oneOf (7, 8, 9)
-      javaSet(1, 3, 5, 8) should contain oneOf (7, 8, 9)
-      
       Map(1 -> "one", 3 -> "three", 5 -> "five", 8 -> "eight") should contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 3, 5, 8) should contain oneOf (7, 8, 9)
+      javaSet(1, 3, 5, 8) should contain oneOf (7, 8, 9)
       javaMap(Entry(1, "one"), Entry(3, "three"), Entry(5, "five"), Entry(8, "eight")) should contain oneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should succeeded when right List contains at least one element in right List` {
+    it("should succeeded when right List contains at least one element in right List") {
       List(1, 2, 3) should contain oneOf (5, 3, 8)
       Array(1, 2, 3) should contain oneOf (5, 3, 8)
-      javaList(1, 2, 3) should contain oneOf (5, 3, 8)
-      
       Set(1, 2, 3) should contain oneOf (5, 3, 8)
-      javaSet(1, 2, 3) should contain oneOf (5, 3, 8)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain oneOf (5 -> "five", 3 -> "three", 8 -> "eight")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should contain oneOf (5, 3, 8)
+      javaSet(1, 2, 3) should contain oneOf (5, 3, 8)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain oneOf (Entry(5, "five"), Entry(3, "three"), Entry(8, "eight"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should succeeded when used with atLeastOneOf and right List contains more than one element in right List` {
+    it("should succeeded when used with atLeastOneOf and right List contains more than one element in right List") {
       List(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
       Array(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
-      javaList(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
-      
       Set(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
-      javaSet(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain atLeastOneOf (5 -> "five", 3 -> "three", 2 -> "two")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
+      javaSet(1, 2, 3) should contain atLeastOneOf (5, 3, 2)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain atLeastOneOf (Entry(5, "five"), Entry(3, "three"), Entry(2, "two"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should succeeded when used with atLeastOneOf and right List contains all elements in left List in different order` {
+    it("should succeeded when used with atLeastOneOf and right List contains all elements in left List in different order") {
       List(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
       Array(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
-      javaList(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
-      
       Set(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
-      javaSet(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain atLeastOneOf (1 -> "one", 3 -> "three", 2 -> "twp")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
+      javaSet(1, 2, 3) should contain atLeastOneOf (1, 3, 2)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain atLeastOneOf (Entry(1, "one"), Entry(3, "three"), Entry(2, "twp"))
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should succeeded when used with atLeastOneOf and right List contains all elements in left List in same order` {
+    it("should succeeded when used with atLeastOneOf and right List contains all elements in left List in same order") {
       List(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
       Array(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
-      javaList(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
-      
       Set(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
-      javaSet(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain atLeastOneOf (1 -> "one", 2 -> "two", 3 -> "three")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
+      javaSet(1, 2, 3) should contain atLeastOneOf (1, 2, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain atLeastOneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw NotAllowedException when oneOf contains duplicate element` {
+    it("should throw NotAllowedException when oneOf contains duplicate element") {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain oneOf(6, 7, 6)
       }
@@ -106,14 +111,14 @@ class OneOfContainMatcherSpec extends Spec {
       e3.getMessage() should be (FailureMessages.oneOfDuplicate)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (7, 8, 9)
       }
       checkStackDepth(e1, left1, Array(7, 8, 9).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (7, 8, 9)
       }
@@ -124,182 +129,194 @@ class OneOfContainMatcherSpec extends Spec {
         left3 should contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
       }
       checkStackDepth(e3, left3, Array(7 -> "seven", 8 -> "eight", 9 -> "nine"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+        left4 should contain oneOf (7, 8, 9)
       }
-      checkStackDepth(e4, left4, Array(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(7, 8, 9).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (7, 8, 9)
+        left5 should contain oneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
-      checkStackDepth(e5, left5, Array(7, 8, 9).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is shorter than right List and does not contain any same element` {
+    it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List and does not contain any same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (6, 7, 8, 9)
       }
       checkStackDepth(e1, left1, Array(6, 7, 8, 9).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (6, 7, 8, 9)
       }
       checkStackDepth(e2, left2, Array(6, 7, 8, 9).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain oneOf (6 -> "six", 7 -> "seven", 8 -> "eight", 9 -> "nine")
       }
       checkStackDepth(e3, left3, Array(6 -> "six", 7 -> "seven", 8 -> "eight", 9 -> "nine"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+        left4 should contain oneOf (6, 7, 8, 9)
       }
-      checkStackDepth(e4, left4, Array(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(6, 7, 8, 9).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (6, 7, 8, 9)
+        left5 should contain oneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
-      checkStackDepth(e5, left5, Array(6, 7, 8, 9).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is longer than right List and does not contain any same element` {
+    it("should throw TestFailedException with correct stack depth and message when left List is longer than right List and does not contain any same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (8, 5)
       }
       checkStackDepth(e1, left1, Array(8, 5).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (8, 5)
       }
       checkStackDepth(e2, left2, Array(8, 5).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain oneOf (8 -> "eight", 5 -> "five")
       }
       checkStackDepth(e3, left3, Array(8 -> "eight", 5 -> "five"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(8, "eight"), Entry(5, "five"))
+        left4 should contain oneOf (8, 5)
       }
-      checkStackDepth(e4, left4, Array(Entry(8, "eight"), Entry(5, "five")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(8, 5).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (8, 5)
+        left5 should contain oneOf (Entry(8, "eight"), Entry(5, "five"))
       }
-      checkStackDepth(e5, left5, Array(8, 5).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(8, "eight"), Entry(5, "five")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List contain all same element in different order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contain all same element in different order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (3, 2, 1)
       }
       checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (3, 2, 1)
       }
       checkStackDepth(e2, left2, Array(3, 2, 1).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain oneOf (3 -> "three", 2 -> "two", 1 -> "one")
       }
       checkStackDepth(e3, left3, Array(3 -> "three", 2 -> "two", 1 -> "one"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
+        left4 should contain oneOf (3, 2, 1)
       }
-      checkStackDepth(e4, left4, Array(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(3, 2, 1).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (3, 2, 1)
+        left5 should contain oneOf (Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
       }
-      checkStackDepth(e5, left5, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List contain all same element in same order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contain all same element in same order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (1, 2, 3)
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+        left4 should contain oneOf (1, 2, 3)
       }
-      checkStackDepth(e4, left4, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (1, 2, 3)
+        left5 should contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
-      checkStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left and right List contain more than one same element` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contain more than one same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain oneOf (5, 1, 2)
       }
       checkStackDepth(e1, left1, Array(5, 1, 2).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain oneOf (5, 1, 2)
       }
       checkStackDepth(e2, left2, Array(5, 1, 2).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain oneOf (5 -> "five", 1 -> "one", 2 -> "two")
       }
       checkStackDepth(e3, left3, Array(5 -> "five", 1 -> "one", 2 -> "two"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain oneOf (Entry(5, "five"), Entry(1, "one"), Entry(2, "two"))
+        left4 should contain oneOf (5, 1, 2)
       }
-      checkStackDepth(e4, left4, Array(Entry(5, "five"), Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(5, 1, 2).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain oneOf (5, 1, 2)
+        left5 should contain oneOf (Entry(5, "five"), Entry(1, "one"), Entry(2, "two"))
       }
-      checkStackDepth(e5, left5, Array(5, 1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(5, "five"), Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
   
-  object `not oneOf ` {
+  describe("not oneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -308,59 +325,61 @@ class OneOfContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeed when left List contains different elements as right List` {
+    it("should succeed when left List contains different elements as right List") {
       List(1, 2, 3) should not contain oneOf (7, 8, 9)
       Array(1, 2, 3) should not contain oneOf (7, 8, 9)
-      javaList(1, 2, 3) should not contain oneOf (7, 8, 9)
-      
       Set(1, 2, 3) should not contain oneOf (7, 8, 9)
-      javaSet(1, 2, 3) should not contain oneOf (7, 8, 9)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should not contain oneOf (7, 8, 9)
+      javaSet(1, 2, 3) should not contain oneOf (7, 8, 9)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List contain at least one same element` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contain at least one same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain oneOf (5, 1, 7)
       }
       checkStackDepth(e1, left1, Array(5, 1, 7).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain oneOf (5, 1, 7)
       }
       checkStackDepth(e2, left2, Array(5, 1, 7).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain oneOf (5 -> "five", 1 -> "one", 7 -> "seven")
       }
       checkStackDepth(e3, left3, Array(5 -> "five", 1 -> "one", 7 -> "seven"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain oneOf (Entry(5, "five"), Entry(1, "one"), Entry(7, "seven"))
+        left4 should not contain oneOf (5, 1, 7)
       }
-      checkStackDepth(e4, left4, Array(Entry(5, "five"), Entry(1, "one"), Entry(7, "seven")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(5, 1, 7).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain oneOf (5, 1, 7)
+        left5 should not contain oneOf (Entry(5, "five"), Entry(1, "one"), Entry(7, "seven"))
       }
-      checkStackDepth(e5, left5, Array(5, 1, 7).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(5, "five"), Entry(1, "one"), Entry(7, "seven")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    @Ignore // TODO: Move these and other atLeastOneOf tests to an AtLeastOneOfContainMatcherSpec; these fail only because of the hard-coded err msg in checkStackDepth
-    def `should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain more than one same element` {
+    ignore("should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain more than one same element") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain atLeastOneOf (5, 1, 2)
       }
       checkStackDepth(e1, left1, Array(5, 1, 2).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain atLeastOneOf (5, 1, 2)
       }
@@ -371,29 +390,30 @@ class OneOfContainMatcherSpec extends Spec {
         left3 should not contain atLeastOneOf (5 -> "five", 1 -> "one", 2 -> "two")
       }
       checkStackDepth(e3, left3, Array(5 -> "five", 1 -> "one", 2 -> "two"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain atLeastOneOf (Entry(5, "five"), Entry(1, "one"), Entry(2, "two"))
+        left4 should not contain atLeastOneOf (5, 1, 2)
       }
-      checkStackDepth(e4, left4, Array(Entry(5, "five"), Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(5, 1, 2).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain atLeastOneOf (5, 1, 2)
+        left5 should not contain atLeastOneOf (Entry(5, "five"), Entry(1, "one"), Entry(2, "two"))
       }
-      checkStackDepth(e5, left5, Array(5, 1, 2).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(5, "five"), Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    @Ignore
-    def `should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain all same element in different order` {
+    ignore("should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain all same element in different order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain atLeastOneOf (3, 2, 1)
       }
       checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain atLeastOneOf (3, 2, 1)
       }
@@ -404,87 +424,93 @@ class OneOfContainMatcherSpec extends Spec {
         left3 should not contain atLeastOneOf (3 -> "three", 2 -> "two", 1 -> "one")
       }
       checkStackDepth(e3, left3, Array(3 -> "three", 2 -> "two", 1 -> "one"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain atLeastOneOf (Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
+        left4 should not contain atLeastOneOf (3, 2, 1)
       }
-      checkStackDepth(e4, left4, Array(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(3, 2, 1).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain atLeastOneOf (3, 2, 1)
+        left5 should not contain atLeastOneOf (Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
       }
-      checkStackDepth(e5, left5, Array(3, 2, 1).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
-    
-    @Ignore
-    def `should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain all same element in same order` {
+
+    ignore("should throw TestFailedException from atLeastOneOf with correct stack depth and message when left and right List contain all same element in same order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain atLeastOneOf (1, 2, 3)
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val left2 = javaList(1, 2, 3)
+
+      val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain atLeastOneOf (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain atLeastOneOf (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+
+      // SKIP-SCALATESTJS-START
+      val left4 = javaList(1, 2, 3)
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain atLeastOneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+        left4 should not contain atLeastOneOf (1, 2, 3)
       }
-      checkStackDepth(e4, left4, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
-      
-      val left5 = Array(1, 2, 3)
+      checkStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
+
+      val left5 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain atLeastOneOf (1, 2, 3)
+        left5 should not contain atLeastOneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
-      checkStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      checkStackDepth(e5, left5, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should succeeded when right List contains all elements in left List in different order` {
+    it("should succeeded when right List contains all elements in left List in different order") {
       List(1, 2, 3) should not contain oneOf (1, 3, 2)
       Array(1, 2, 3) should not contain oneOf (1, 3, 2)
-      javaList(1, 2, 3) should not contain oneOf (1, 3, 2)
-      
       Set(1, 2, 3) should not contain oneOf (1, 3, 2)
-      javaSet(1, 2, 3) should not contain oneOf (1, 3, 2)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 3 -> "three", 2 -> "twp")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should not contain oneOf (1, 3, 2)
+      javaSet(1, 2, 3) should not contain oneOf (1, 3, 2)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneOf (Entry(1, "one"), Entry(3, "three"), Entry(2, "twp"))
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should succeeded when right List contains all elements in left List in same order` {
+    it("should succeeded when right List contains all elements in left List in same order") {
       List(1, 2, 3) should not contain oneOf (1, 2, 3)
       Array(1, 2, 3) should not contain oneOf (1, 2, 3)
-      javaList(1, 2, 3) should not contain oneOf (1, 2, 3)
-      
       Set(1, 2, 3) should not contain oneOf (1, 2, 3)
-      javaSet(1, 2, 3) should not contain oneOf (1, 2, 3)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should not contain oneOf (1, 2, 3)
+      javaSet(1, 2, 3) should not contain oneOf (1, 2, 3)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should succeeded when right List contains more than one element in right List` {
+    it("should succeeded when right List contains more than one element in right List") {
       List(1, 2, 3) should not contain oneOf (5, 3, 2)
       Array(1, 2, 3) should not contain oneOf (5, 3, 2)
-      javaList(1, 2, 3) should not contain oneOf (5, 3, 2)
-      
       Set(1, 2, 3) should not contain oneOf (5, 3, 2)
-      javaSet(1, 2, 3) should not contain oneOf (5, 3, 2)
-      
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (5 -> "five", 3 -> "three", 2 -> "two")
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should not contain oneOf (5, 3, 2)
+      javaSet(1, 2, 3) should not contain oneOf (5, 3, 2)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneOf (Entry(5, "five"), Entry(3, "three"), Entry(2, "two"))
+      // SKIP-SCALATESTJS-END
     }
   }
 }
