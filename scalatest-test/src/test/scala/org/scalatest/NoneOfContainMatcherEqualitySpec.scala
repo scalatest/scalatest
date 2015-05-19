@@ -21,7 +21,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
-class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
+class NoneOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -67,7 +67,8 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       else
         !returnValue
   }
-  
+
+  // SKIP-SCALATESTJS-START
   class JavaMapSetEquality(validLeft: Set[java.util.Map.Entry[Int, String]], validRight: Set[Any], returnValue: Boolean) extends Equality[java.util.Map.Entry[Int, String]] {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any): Boolean = 
       if (validLeft.contains(left) && validRight.contains(right))
@@ -75,8 +76,9 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       else
         !returnValue
   }
+  // SKIP-SCALATESTJS-END
   
-  object `noneOf ` {
+  describe("noneOf ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -92,37 +94,43 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take custom implicit equality in scope when 'should contain' is used` {
+    it("should take custom implicit equality in scope when 'should contain' is used") {
       implicit val equality = new FalseEquality
       List(1, 2, 3) should contain noneOf (1, 2, 3)
       Set(1, 2, 3) should contain noneOf (1, 2, 3)
       Array(1, 2, 3) should contain noneOf (1, 2, 3)
-      javaList(1, 2, 3) should contain noneOf (1, 2, 3)
-      javaSet(1, 2, 3) should contain noneOf (1, 2, 3)
         
       implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> " two", 3 -> "three"), Set(1 -> "one", 2 -> " two", 3 -> "three"), false)
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (1 -> "one", 2 -> " two", 3 -> "three")
-      
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should contain noneOf (1, 2, 3)
+      javaSet(1, 2, 3) should contain noneOf (1, 2, 3)
+
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), false)
       javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take custom implicit equality in scope when 'should not contain' is used` {
+    it("should take custom implicit equality in scope when 'should not contain' is used") {
       implicit val equality = new SetEquality(Set(1, 2, 3), Set(7, 8, 9), true)
       List(1, 2, 3) should not contain noneOf (7, 8, 9)
       Set(1, 2, 3) should not contain noneOf (7, 8, 9)
       Array(1, 2, 3) should not contain noneOf (7, 8, 9)
-      javaList(1, 2, 3) should not contain noneOf (7, 8, 9)
-      javaSet(1, 2, 3) should not contain noneOf (7, 8, 9)
       
       implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(7 -> "seven", 8 -> "eight", 9 -> "nine"), true)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
-      
+
+      // SKIP-SCALATESTJS-START
+      javaList(1, 2, 3) should not contain noneOf (7, 8, 9)
+      javaSet(1, 2, 3) should not contain noneOf (7, 8, 9)
+
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), true)
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
       implicit val equality = new SetEquality(Set(1, 2, 3), Set(6, 7, 8), true)
       
       val left1 = List(1, 2, 3)
@@ -143,20 +151,21 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       }
         checkShouldContainStackDepth(e3, left3, Array(6, 7, 8).deep, thisLineNumber - 2)
         
-      val left4 = javaList(1, 2, 3)
-      val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain noneOf (6, 7, 8)
-      }
-      checkShouldContainStackDepth(e4, left4, Array(6, 7, 8).deep, thisLineNumber - 2)
-        
       implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(6 -> "six", 7 -> "seven", 8 -> "eight"), true)
         
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e4 = intercept[exceptions.TestFailedException] {
+        left4 should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")
       }
-      checkShouldContainStackDepth(e5, left5, Array(6 -> "six", 7 -> "seven", 8 -> "eight").deep, thisLineNumber - 2)
-      
+      checkShouldContainStackDepth(e4, left4, Array(6 -> "six", 7 -> "seven", 8 -> "eight").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
+      val e5 = intercept[exceptions.TestFailedException] {
+        left5 should contain noneOf (6, 7, 8)
+      }
+      checkShouldContainStackDepth(e5, left5, Array(6, 7, 8).deep, thisLineNumber - 2)
+
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")), true)
       
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
@@ -164,9 +173,10 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
         left6 should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
       implicit val equality = new SetEquality(Set(1, 2, 3), Set(1, 2, 3), false)
       
       val left1 = List(1, 2, 3)
@@ -187,20 +197,21 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       }
       checkShouldNotContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
         
-      val left4 = javaList(1, 2, 3)
-      val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain noneOf (1, 2, 3)
-      }
-      checkShouldNotContainStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-        
       implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(1 -> "one", 2 -> "two", 3 -> "three"), false)
         
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain noneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e4 = intercept[exceptions.TestFailedException] {
+        left4 should not contain noneOf (1 -> "one", 2 -> "two", 3 -> "three")
       }
-      checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
-      
+      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
+      val e5 = intercept[exceptions.TestFailedException] {
+        left5 should not contain noneOf (1, 2, 3)
+      }
+      checkShouldNotContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), false)
       
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
@@ -208,39 +219,46 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
         left6 should not contain noneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take custom explicit equality in scope when 'should contain' is used` {
+    it("should take custom explicit equality in scope when 'should contain' is used") {
       val equality = new FalseEquality
       (List(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
       (Set(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
       (Array(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
-      (javaList(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
-      (javaSet(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
         
       val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> " two", 3 -> "three"), Set(1 -> "one", 2 -> " two", 3 -> "three"), false)
       (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (1 -> "one", 2 -> " two", 3 -> "three")) (mapEquality)
-      
+
+      // SKIP-SCALATESTJS-START
+      (javaList(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
+      (javaSet(1, 2, 3) should contain noneOf (1, 2, 3)) (equality)
+
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), false)
       (javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take custom explicit equality in scope when 'should not contain' is used` {
+    it("should take custom explicit equality in scope when 'should not contain' is used") {
       val equality = new SetEquality(Set(1, 2, 3), Set(7, 8, 9), true)
       (List(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
       (Set(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
       (Array(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
-      (javaList(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
-      (javaSet(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
       
       val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(7 -> "seven", 8 -> "eight", 9 -> "nine"), true)
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")) (mapEquality)
-      
+
+      // SKIP-SCALATESTJS-START
+      (javaList(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
+      (javaSet(1, 2, 3) should not contain noneOf (7, 8, 9)) (equality)
+
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), true)
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))) (javaMapEquality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality in scope") {
       val equality = new SetEquality(Set(1, 2, 3), Set(6, 7, 8), true)
       
       val left1 = List(1, 2, 3)
@@ -261,29 +279,31 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
       }
         checkShouldContainStackDepth(e3, left3, Array(6, 7, 8).deep, thisLineNumber - 2)
         
-      val left4 = javaList(1, 2, 3)
-      val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain noneOf (6, 7, 8)) (equality)
-      }
-      checkShouldContainStackDepth(e4, left4, Array(6, 7, 8).deep, thisLineNumber - 2)
-        
       val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(6 -> "six", 7 -> "seven", 8 -> "eight"), true)
         
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")) (mapEquality)
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e4 = intercept[exceptions.TestFailedException] {
+        (left4 should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")) (mapEquality)
       }
-      checkShouldContainStackDepth(e5, left5, Array(6 -> "six", 7 -> "seven", 8 -> "eight").deep, thisLineNumber - 2)
-      
+      checkShouldContainStackDepth(e4, left4, Array(6 -> "six", 7 -> "seven", 8 -> "eight").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
+      val e5 = intercept[exceptions.TestFailedException] {
+        (left5 should contain noneOf (6, 7, 8)) (equality)
+      }
+      checkShouldContainStackDepth(e5, left5, Array(6, 7, 8).deep, thisLineNumber - 2)
+
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")), true)
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))) (javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality in scope") {
       val equality = new SetEquality(Set(1, 2, 3), Set(1, 2, 3), false)
       
       val left1 = List(1, 2, 3)
@@ -303,21 +323,22 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
         (left3 should not contain noneOf (1, 2, 3)) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
-        
-      val left4 = javaList(1, 2, 3)
-      val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain noneOf (1, 2, 3)) (equality)
-      }
-      checkShouldNotContainStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-        
+
       val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(1 -> "one", 2 -> "two", 3 -> "three"), false)
-        
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain noneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e4 = intercept[exceptions.TestFailedException] {
+        (left4 should not contain noneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
       }
-      checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
-      
+      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
+      val e5 = intercept[exceptions.TestFailedException] {
+        (left5 should not contain noneOf (1, 2, 3)) (equality)
+      }
+      checkShouldNotContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), false)
       
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
@@ -325,6 +346,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Explicitly {
         (left6 should not contain noneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
 }
