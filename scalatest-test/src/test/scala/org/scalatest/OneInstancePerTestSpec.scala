@@ -18,21 +18,22 @@ package org.scalatest
 import events._
 import SharedHelpers._
 
-class TopLevelSpec extends Spec with OneInstancePerTest {
+class TopLevelSpec extends FunSpec with OneInstancePerTest {
   import TopLevelSpec.sideEffectWasNotSeen
   var sideEffectWasIsolated = true
-  def `test one` = {
+  it("test one") {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
-  def `test two` = {
+  it("test two") {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
-  def `test three` = {
+  it("test three") {
     sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
     sideEffectWasIsolated = false
   }
+  override def newInstance: Suite with OneInstancePerTest = new TopLevelSpec
 }
 object TopLevelSpec {
   var sideEffectWasNotSeen = true
@@ -42,17 +43,17 @@ class OneInstancePerTestSpec extends FunSpec {
   describe("The OneInstancePerTest trait") {
     it("should isolate side effects from one test to the next in a top level Suite class that does not override newInstance") {
       var sideEffectWasNotSeen = true
-      class MySpec extends Spec with OneInstancePerTest {
+      class MySpec extends FunSpec with OneInstancePerTest {
         var sideEffectWasIsolated = true
-        def `test one`() {
+        it("test one") {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }
-        def `test two`() {
+        it("test two") {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }
-        def `test three`() {
+        it("test three") {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
           sideEffectWasIsolated = false
         }

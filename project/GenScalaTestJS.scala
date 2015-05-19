@@ -584,7 +584,12 @@ object GenScalaTestJS {
         "NoneOfContainMatcherEqualitySpec.scala",
         "NoneOfContainMatcherSpec.scala",
         "NonImplicitAssertionsSuite.scala",
-        "NotifierSpec.scala", 
+        "NotifierSpec.scala",
+        //"OldDocSpec.scala",             // Do we still need this?
+        "OneElementOfContainMatcherDeciderSpec.scala",
+        "OneElementOfContainMatcherEqualitySpec.scala",
+        "OneElementOfContainMatcherSpec.scala",
+        "OneInstancePerTestSpec.scala",
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
