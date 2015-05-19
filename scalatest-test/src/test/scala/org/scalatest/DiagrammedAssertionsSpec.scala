@@ -2472,7 +2472,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should compile when used with Java static method ") {
         assertCompiles(
           """
-            |assert(scala.compat.Platform.EOL == System.lineSeparator)
+            |assert(System.currentTimeMillis() > 0)
           """.stripMargin)
       }
     }
@@ -4848,7 +4848,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should compile when used with Java static method") {
         assertCompiles(
           """
-            |assert(scala.compat.Platform.EOL == System.lineSeparator, "this is a clue")
+            |assert(System.currentTimeMillis() > 0, "this is a clue")
           """.stripMargin)
       }
     }
@@ -7224,7 +7224,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should compile when used with Java static method") {
         assertCompiles(
           """
-            |assume(scala.compat.Platform.EOL == System.lineSeparator)
+            |assume(System.currentTimeMillis() > 0)
           """.stripMargin)
       }
     }
@@ -9600,7 +9600,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       it("should compile when used with Java static method") {
         assertCompiles(
           """
-            |assume(scala.compat.Platform.EOL == System.lineSeparator, "this is a clue")
+            |assume(System.currentTimeMillis() > 0, "this is a clue")
           """.stripMargin)
       }
     }
