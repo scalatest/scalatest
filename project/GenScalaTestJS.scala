@@ -163,7 +163,8 @@ object GenScalaTestJS {
               "DiagrammedExprMacro.scala",
               "EitherValues.scala",
               "LoneElement.scala",
-              "Retries.scala"
+              "Retries.scala",
+              "PartialFunctionValues.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -618,6 +619,10 @@ object GenScalaTestJS {
         "ParallelTestExecutionSuiteTimeoutExamples.scala",
         "ParallelTestExecutionTestTimeoutExamples.scala",
         "ParallelTestExecutionSpec.scala",
+        "PartialFunctionValuesSpec.scala",
+        "PrettyAstSpec.scala",
+        //"PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
+        //"PropertyFunSuite.scala",   // skipped because depends on java reflection
         "PropSpecSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
