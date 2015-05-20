@@ -335,7 +335,7 @@ class NoElementsOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
       val e5 = intercept[exceptions.TestFailedException] {
         (left5 should not contain noElementsOf (Seq(1, 2, 3))) (equality)
       }
-      checkShouldNotContainStackDepth(e4, left4, Seq(1, 2, 3), thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e5, left5, Seq(1, 2, 3), thisLineNumber - 2)
 
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), false)
 
