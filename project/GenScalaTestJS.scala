@@ -617,6 +617,7 @@ object GenScalaTestJS {
         "ParallelTestExecutionProp.scala",
         "ParallelTestExecutionSuiteTimeoutExamples.scala",
         "ParallelTestExecutionTestTimeoutExamples.scala",
+        "ParallelTestExecutionSpec.scala",
         "PropSpecSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
