@@ -15,8 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import scala.compat.Platform
-
 private[scalatest] object SleepHelper {
 
   def sleep(millis: Long, nanos: Int): Unit = {

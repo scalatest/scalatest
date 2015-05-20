@@ -162,7 +162,8 @@ object GenScalaTestJS {
               "DiagrammedAssertionsMacro.scala",
               "DiagrammedExprMacro.scala",
               "EitherValues.scala",
-              "LoneElement.scala"
+              "LoneElement.scala",
+              "Retries.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -387,6 +388,7 @@ object GenScalaTestJS {
         "Futures.scala",
         "PatienceConfiguration.scala",
         "AbstractPatienceConfiguration.scala",
+        //"Eventually.scala",      // not supported because js is single thread and does not share memory.
         "ScaledTimeSpans.scala"
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
@@ -395,6 +397,10 @@ object GenScalaTestJS {
         "FreeSpecLike.scala",
         "FunSpec.scala",
         "FunSpecLike.scala"
+      ), targetDir) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects",
+      List(
+        "Retryable.scala"
       ), targetDir)
   }
 
@@ -605,6 +611,12 @@ object GenScalaTestJS {
         "OptionShouldContainSpec.scala",
         "OptionValuesSpec.scala",
         "OutcomeSpec.scala",
+        "ParallelTestExecutionInfoExamples.scala",
+        "ParallelTestExecutionOrderExamples.scala",
+        "ParallelTestExecutionParallelSuiteExamples.scala",
+        "ParallelTestExecutionProp.scala",
+        "ParallelTestExecutionSuiteTimeoutExamples.scala",
+        "ParallelTestExecutionTestTimeoutExamples.scala",
         "PropSpecSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection

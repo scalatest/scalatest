@@ -21,8 +21,6 @@ import Reporter.propagateDispose
 import scala.collection.mutable.ListBuffer
 import scala.annotation.tailrec
 import org.scalatest.time.Span
-import java.util.Timer
-import java.util.TimerTask
 import java.io.PrintStream
 
 private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout: Span, val out: PrintStream) extends CatchReporter with DistributedSuiteSorter {
