@@ -17,30 +17,27 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks
-import japgolly.nyaya.test.Gen
+import org.scalatest.prop.GenDrivenPropertyChecks
+import org.scalatest.prop.Generator
 import OptionValues._
 
 import scala.util.{Failure, Success, Try}
 
-class PosIntSpec extends FunSpec with Matchers with NyayaGeneratorDrivenPropertyChecks {
-
-  implicit val posIntGen: Gen[PosInt] =
-    for {i <- Gen.chooseint(1, Int.MaxValue)} yield PosInt.from(i).get
-
-  implicit val intGen: Gen[Int] = Gen.int
-  implicit val longGen: Gen[Long] = Gen.long
-  implicit val shortGen: Gen[Short] = Gen.short
-  implicit val charGen: Gen[Char] = Gen.char
-  implicit val floatGen: Gen[Float] = Gen.float
-  implicit val doubleGen: Gen[Double] = Gen.double
-  implicit val byteGen: Gen[Byte] = Gen.byte
+class PosIntSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
       case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+      // I needed this because with GenDrivenPropertyChecks, got:
+      // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
       case _: Success[_] => a == b
@@ -66,7 +63,10 @@ class PosIntSpec extends FunSpec with Matchers with NyayaGeneratorDrivenProperty
         PosInt.from(-99) shouldBe None
       }
     }
-
+    it("should offer MaxValue and MinValue factory methods") {
+      PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
+      PosInt.MinValue shouldEqual PosInt(1)
+    }
     it("should have a pretty toString") {
       PosInt.from(42).value.toString shouldBe "PosInt(42)"
     }

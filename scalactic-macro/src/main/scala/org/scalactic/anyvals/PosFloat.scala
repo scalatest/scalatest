@@ -225,7 +225,21 @@ final class PosFloat private (val value: Float) extends AnyVal {
     longValue.toFloat == value || longValue == Long.MaxValue && value < Float.PositiveInfinity || longValue == Long.MinValue && value > Float.NegativeInfinity
   }
 
-  def round: PosZInt = PosZInt.from(math.round(value)).get // Also could be zero.
+  def round: PosZInt = {
+    import scala.util.Try
+    import scala.util.Success
+    import scala.util.Failure
+    val roundedInt: Int = math.round(value)
+    val result = Try(PosZInt.from(math.round(value)).get)
+    result match {
+      case Failure(ex) => println("PosZInt round failed")
+        println(s"value was $value")
+        println(s"result was $result")
+        throw ex
+      case Success(v) => v
+    }
+    // PosZInt.from(math.round(value)).get // Also could be zero.
+  }
   def ceil: PosFloat = PosFloat.from(math.ceil(value.toDouble).toFloat).get // I think this one is safe, but try NaN
   def floor: PosZFloat = PosZFloat.from(math.floor(value.toDouble).toFloat).get // Could be zero.
 
@@ -279,6 +293,8 @@ final class PosFloat private (val value: Float) extends AnyVal {
 }
 
 object PosFloat {
+  final val MaxValue: PosFloat = PosFloat.from(Float.MaxValue).get
+  final val MinValue: PosFloat = PosFloat.from(1.0f).get // Can't use the macro here
   def from(value: Float): Option[PosFloat] =
     if (value > 0.0F) Some(new PosFloat(value)) else None
   import language.experimental.macros

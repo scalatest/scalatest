@@ -548,6 +548,8 @@ final class PosZLong private (val value: Long) extends AnyVal {
 }
 
 object PosZLong {
+  final val MaxValue: PosZLong = PosZLong.from(Long.MaxValue).get
+  final val MinValue: PosZLong = PosZLong.from(0L).get // Can't use the macro here
   def from(value: Long): Option[PosZLong] =
     if (value >= 0L) Some(new PosZLong(value)) else None
   import language.experimental.macros

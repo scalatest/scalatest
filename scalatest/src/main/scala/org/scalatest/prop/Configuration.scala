@@ -15,10 +15,6 @@
  */
 package org.scalatest.prop
 
-import org.scalacheck.Test.Parameters
-import org.scalacheck.Test.TestCallback
-import org.scalacheck.Gen
-
 /**
  * Trait providing methods and classes used to configure property checks provided by the
  * the <code>forAll</code> methods of trait <code>GeneratorDrivenPropertyChecks</code> (for ScalaTest-style
@@ -277,85 +273,6 @@ trait Configuration {
    * @throws IllegalArgumentException if specified <code>value</code> is less than or equal to zero.
    */
   def workers(value: Int): Workers = new Workers(value)
-
-  private[prop] def getParams(
-    configParams: Seq[PropertyCheckConfigParam],
-    config: PropertyCheckConfig
-  ): Parameters = {
-
-    var minSuccessful = -1
-    var maxDiscarded = -1
-    var pminSize = -1
-    var pmaxSize = -1
-    var pworkers = -1
-
-    var minSuccessfulTotalFound = 0
-    var maxDiscardedTotalFound = 0
-    var minSizeTotalFound = 0
-    var maxSizeTotalFound = 0
-    var workersTotalFound = 0
-
-    for (configParam <- configParams) {
-      configParam match {
-        case param: MinSuccessful =>
-          minSuccessful = param.value
-          minSuccessfulTotalFound += 1
-        case param: MaxDiscarded =>
-          maxDiscarded = param.value
-          maxDiscardedTotalFound += 1
-        case param: MinSize =>
-          pminSize = param.value
-          minSizeTotalFound += 1
-        case param: MaxSize =>
-          pmaxSize = param.value
-          maxSizeTotalFound += 1
-        case param: Workers =>
-          pworkers = param.value
-          workersTotalFound += 1
-      }
-    }
-  
-    if (minSuccessfulTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MinSuccessful config parameters, but " + minSuccessfulTotalFound + " were passed")
-    if (maxDiscardedTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MaxDiscarded config parameters, but " + maxDiscardedTotalFound + " were passed")
-    if (minSizeTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MinSize config parameters, but " + minSizeTotalFound + " were passed")
-    if (maxSizeTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MaxSize config parameters, but " + maxSizeTotalFound + " were passed")
-    if (workersTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
-
-    // Adding one to maxDiscarded, because I think it is easier to understand that maxDiscarded means the maximum number of times
-    // allowed that discarding will occur and the property can still pass. One more discarded evaluation than this number and the property will fail
-    // because of it. ScalaCheck fails at exactly maxDiscardedTests.
-    new Parameters {
-      val minSuccessfulTests: Int = 
-        if (minSuccessful != -1) minSuccessful else config.minSuccessful
-
-      val minSize: Int = 
-        if (pminSize != -1) pminSize else config.minSize
-
-      val maxSize: Int = 
-        if (pmaxSize != -1) pmaxSize else config.maxSize
-
-      val rng: scala.util.Random = Gen.Parameters.default.rng
-
-      val workers: Int = 
-        if (pworkers != -1) pworkers else config.workers
-
-      val testCallback: TestCallback = new TestCallback {}
-
-      val maxDiscardRatio: Float = {
-        val maxDiscardedTests = (if (maxDiscarded != -1) maxDiscarded else config.maxDiscarded) + 1
-
-        if (maxDiscardedTests < 0) Parameters.default.maxDiscardRatio
-        else (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
-      }
-
-      val customClassLoader: Option[ClassLoader] = None
-    }
-  }
 
   /**
    * Implicit <code>PropertyCheckConfig</code> value providing default configuration values.

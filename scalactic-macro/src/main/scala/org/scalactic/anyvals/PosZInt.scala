@@ -554,6 +554,8 @@ final class PosZInt private (val value: Int) extends AnyVal {
 }
 
 object PosZInt {
+  final val MaxValue: PosZInt = PosZInt.from(Int.MaxValue).get
+  final val MinValue: PosZInt = PosZInt.from(0).get // Can't use the macro here
   def from(value: Int): Option[PosZInt] =
     if (value >= 0) Some(new PosZInt(value)) else None
   import language.experimental.macros
