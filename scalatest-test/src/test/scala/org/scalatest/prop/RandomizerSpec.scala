@@ -18,16 +18,16 @@ package org.scalatest.prop
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 
-class RndSpec extends FunSpec with Matchers {
+class RandomizerSpec extends FunSpec with Matchers {
 
-  describe("A Rnd") {
+  describe("A Randomizer") {
     it("should offer a nextInt method that produces the same values as java.util.Random given the same seed") {
       val jr = new java.util.Random(100)
       val ja = jr.nextInt()
       val jb = jr.nextInt()
       val jc = jr.nextInt()
 
-      val sr = Rnd(100)
+      val sr = Randomizer(100)
       val (ia, ra) = sr.nextInt
       val (ib, rb) = ra.nextInt
       val (ic, _) = rb.nextInt
@@ -43,7 +43,7 @@ class RndSpec extends FunSpec with Matchers {
       val jb = jr.nextLong()
       val jc = jr.nextLong()
 
-      val sr = Rnd(100)
+      val sr = Randomizer(100)
       val (ia, ra) = sr.nextLong
       val (ib, rb) = ra.nextLong
       val (ic, _) = rb.nextLong
@@ -59,7 +59,7 @@ class RndSpec extends FunSpec with Matchers {
       val jb = jr.nextFloat()
       val jc = jr.nextFloat()
 
-      val sr = Rnd(100)
+      val sr = Randomizer(100)
       val (ia, ra) = sr.nextFloatBetween0And1
       val (ib, rb) = ra.nextFloatBetween0And1
       val (ic, _) = rb.nextFloatBetween0And1
@@ -75,7 +75,7 @@ class RndSpec extends FunSpec with Matchers {
       val jb = jr.nextDouble()
       val jc = jr.nextDouble()
 
-      val sr = Rnd(100)
+      val sr = Randomizer(100)
       val (ia, ra) = sr.nextDoubleBetween0And1
       val (ib, rb) = ra.nextDoubleBetween0And1
       val (ic, _) = rb.nextDoubleBetween0And1
@@ -86,7 +86,7 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextByteWithEdges method that initially produces Byte edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextByteWithEdges
       val (a2, r2) = r1.nextByteWithEdges
       val (a3, r3) = r2.nextByteWithEdges
@@ -101,7 +101,7 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextShortWithEdges method that initially produces Short edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextShortWithEdges
       val (a2, r2) = r1.nextShortWithEdges
       val (a3, r3) = r2.nextShortWithEdges
@@ -116,7 +116,7 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextCharWithEdges method that initially produces Char edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextCharWithEdges
       val (a2, _) = r1.nextCharWithEdges
       val edges = List(a1, a2)
@@ -125,7 +125,7 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextIntWithEdges method that initially produces Int edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextIntWithEdges
       val (a2, r2) = r1.nextIntWithEdges
       val (a3, r3) = r2.nextIntWithEdges
@@ -140,7 +140,7 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextLongWithEdges method that initially produces Long edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextLongWithEdges
       val (a2, r2) = r1.nextLongWithEdges
       val (a3, r3) = r2.nextLongWithEdges
@@ -155,13 +155,13 @@ class RndSpec extends FunSpec with Matchers {
     }
 
     it("should offer a nextDoubleWithEdges method that initially produces Double edge values") {
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextDoubleWithEdges
       a1 should be (0.0)
     }
     it("should offer a nextPosIntWithEdges method that initially produces PosInt edge values") {
       import org.scalactic.anyvals.PosInt
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosIntWithEdges
       val (a2, _) = r1.nextPosIntWithEdges
       val edges = List(a1, a2)
@@ -170,7 +170,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosZIntWithEdges method that initially produces PosZInt edge values") {
       import org.scalactic.anyvals.PosZInt
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosZIntWithEdges
       val (a2, r2) = r1.nextPosZIntWithEdges
       val (a3, _) = r2.nextPosZIntWithEdges
@@ -181,7 +181,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosLongWithEdges method that initially produces PosLong edge values") {
       import org.scalactic.anyvals.PosLong
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosLongWithEdges
       val (a2, _) = r1.nextPosLongWithEdges
       val edges = List(a1, a2)
@@ -190,7 +190,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosZLongWithEdges method that initially produces PosZLong edge values") {
       import org.scalactic.anyvals.PosZLong
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosZLongWithEdges
       val (a2, r2) = r1.nextPosZLongWithEdges
       val (a3, _) = r2.nextPosZLongWithEdges
@@ -201,7 +201,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosFloatWithEdges method that initially produces PosFloat edge values") {
       import org.scalactic.anyvals.PosFloat
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosFloatWithEdges
       val (a2, _) = r1.nextPosFloatWithEdges
       val edges = List(a1, a2)
@@ -210,7 +210,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosZFloatWithEdges method that initially produces PosZFloat edge values") {
       import org.scalactic.anyvals.PosZFloat
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosZFloatWithEdges
       val (a2, r2) = r1.nextPosZFloatWithEdges
       val (a3, _) = r2.nextPosZFloatWithEdges
@@ -221,7 +221,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosDoubleWithEdges method that initially produces PosDouble edge values") {
       import org.scalactic.anyvals.PosDouble
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosDoubleWithEdges
       val (a2, _) = r1.nextPosDoubleWithEdges
       val edges = List(a1, a2)
@@ -230,7 +230,7 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a nextPosZDoubleWithEdges method that initially produces PosZDouble edge values") {
       import org.scalactic.anyvals.PosZDouble
-      val r0 = Rnd(100)
+      val r0 = Randomizer(100)
       val (a1, r1) = r0.nextPosZDoubleWithEdges
       val (a2, r2) = r1.nextPosZDoubleWithEdges
       val (a3, _) = r2.nextPosZDoubleWithEdges
@@ -241,35 +241,35 @@ class RndSpec extends FunSpec with Matchers {
     }
     it("should offer a chooseInt method that initially produces Int values between from and to") {
       import GenDrivenPropertyChecks._
-      var rnd = Rnd.default
+      var rnd = Randomizer.default
       forAll { (i: Int, j: Int) =>
-        val (k, nextRnd) = rnd.chooseInt(i, j)
+        val (k, nextRandomizer) = rnd.chooseInt(i, j)
         val min = i.min(j)
         val max = i.max(j)
         k should be <= max
         k should be >= min
-        rnd = nextRnd
+        rnd = nextRandomizer
       }
     }
     it("should offer a chooseLong method that initially produces Long values between from and to") {
       import GenDrivenPropertyChecks._
-      var rnd = Rnd.default
+      var rnd = Randomizer.default
       forAll { (i: Long, j: Long) =>
-        val (k, nextRnd) = rnd.chooseLong(i, j)
+        val (k, nextRandomizer) = rnd.chooseLong(i, j)
         val min = i.min(j)
         val max = i.max(j)
         k should be <= max
         k should be >= min
-        rnd = nextRnd
+        rnd = nextRandomizer
       }
     }
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {
 
       import GenDrivenPropertyChecks._
 
-      an [IllegalArgumentException] should be thrownBy { Rnd(100).nextString(-1) }
+      an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextString(-1) }
 
-      val (sa, ra) = Rnd(100).nextString(0)
+      val (sa, ra) = Randomizer(100).nextString(0)
       sa should have length 0
 
       val (sb, rb) = ra.nextString(1)
@@ -282,7 +282,7 @@ class RndSpec extends FunSpec with Matchers {
       sd should have length 100
 
       // Ensure not all chars are the same (because initially it did that, because
-      // I was using calling nextChar on the initial Rnd only)
+      // I was using calling nextChar on the initial Randomizer only)
       sd.distinct shouldNot have size 1
     }
   }

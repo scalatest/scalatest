@@ -36,15 +36,15 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         genA: org.scalatest.prop.Generator[A]
       ): Unit = {
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd, initialSizes: List[Int]): Unit = {
-      val (size, nextInitialSizes, nextRnd2) =
+    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): Unit = {
+      val (size, nextInitialSizes, nextRandomizer2) =
         initialSizes match {
-          case head :: tail => (head, tail, nextRnd)
+          case head :: tail => (head, tail, nextRandomizer)
           case Nil =>
-            val (sz, r2) = nextRnd.chooseInt(config.minSize, config.maxSize)
+            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, config.maxSize)
             (sz, Nil, r2)
         }
-      val (v, r) = genA.next(size, nextRnd2)
+      val (v, r) = genA.next(size, nextRandomizer2)
       val result: Try[Unit] = Try { fun(v) }
       val argsPassed = List(v)
       val scalaCheckLabels = Set.empty[String]
@@ -90,17 +90,17 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
     // When a different minSuccessful is used, we'll just generate random ones so
     // the max preallocated list will always have size 10.
     @tailrec
-    def sizesLoop(sizes: List[Int], count: Int, rnd: Rnd): List[Int] = {
+    def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
       sizes match {
         case Nil => sizesLoop(List(config.minSize), 1, rnd)
         case szs if count < 10 =>
-          val (nextSize, nextRnd) = rnd.chooseInt(config.minSize, config.maxSize)
-          sizesLoop(nextSize :: sizes, count + 1,  nextRnd)
+          val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, config.maxSize)
+          sizesLoop(nextSize :: sizes, count + 1,  nextRandomizer)
         case _ => sizes.sorted
       }
     }
-    val initialSizes = sizesLoop(Nil, 0, Rnd.default)
-    loop(0, 0, Rnd.default, initialSizes)
+    val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
+    loop(0, 0, Randomizer.default, initialSizes)
   }
   def forAll[A, B](fun: (A, B) => Unit)
       (implicit 
@@ -109,8 +109,8 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         genB: org.scalatest.prop.Generator[B]
       ): Unit = {
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
-      val (a, ar) = genA.next(10, nextRnd)
+    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
+      val (a, ar) = genA.next(10, nextRandomizer)
       val (b, br) = genB.next(10, ar)
       val result: Try[Unit] = Try { fun(a, b) }
       result match {
@@ -126,7 +126,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         case Failure(ex) => throw ex
       }
     }
-    loop(0, 0, Rnd.default)
+    loop(0, 0, Randomizer.default)
   }
   def forAll[A, B, C](fun: (A, B, C) => Unit)
       (implicit 
@@ -136,8 +136,8 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         genC: org.scalatest.prop.Generator[C]
       ): Unit = {
     @tailrec
-    def loop(succeededCount: Int, discardedCount: Int, nextRnd: Rnd): Unit = {
-      val (a, ar) = genA.next(10, nextRnd)
+    def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
+      val (a, ar) = genA.next(10, nextRandomizer)
       val (b, br) = genB.next(10, ar)
       val (c, cr) = genC.next(10, br)
       val result: Try[Unit] = Try { fun(a, b, c) }
@@ -154,7 +154,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
         case Failure(ex) => throw ex
       }
     }
-    loop(0, 0, Rnd.default)
+    loop(0, 0, Randomizer.default)
   }
 }
 

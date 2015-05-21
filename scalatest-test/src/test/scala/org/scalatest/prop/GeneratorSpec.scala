@@ -22,18 +22,18 @@ import org.scalactic.anyvals._
 
 class GeneratorSpec extends FunSpec with Matchers {
   describe("A Generator") {
-    it("should produce the same Byte values in the same order given the same Rnd") {
+    it("should produce the same Byte values in the same order given the same Randomizer") {
       import Generator._
       val aGen = byteGenerator
       val bGen = byteGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -45,18 +45,18 @@ class GeneratorSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
 
-    it("should produce the same Short values in the same order given the same Rnd") {
+    it("should produce the same Short values in the same order given the same Randomizer") {
       import Generator._
       val aGen= shortGenerator
       val bGen = shortGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -68,18 +68,18 @@ class GeneratorSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
 
-    it("should produce the same Char values in the same order given the same Rnd") {
+    it("should produce the same Char values in the same order given the same Randomizer") {
       import Generator._
       val aGen= charGenerator
       val bGen = charGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -91,18 +91,18 @@ class GeneratorSpec extends FunSpec with Matchers {
       a7 shouldEqual b7
     }
 
-    it("should produce the same Int values in the same order given the same Rnd") {
+    it("should produce the same Int values in the same order given the same Randomizer") {
       import Generator._
       val aGen= intGenerator
       val bGen = intGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -113,18 +113,18 @@ class GeneratorSpec extends FunSpec with Matchers {
       a6 shouldEqual b6
       a7 shouldEqual b7
     }
-    it("should produce the same Long values in the same order given the same Rnd") {
+    it("should produce the same Long values in the same order given the same Randomizer") {
       import Generator._
       val aGen= longGenerator
       val bGen = longGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -135,46 +135,46 @@ class GeneratorSpec extends FunSpec with Matchers {
       a6 shouldEqual b6
       a7 shouldEqual b7
     }
-    it("should produce the same Float values in the same order given the same Rnd") {
+    it("should produce the same Float values in the same order given the same Randomizer") {
       import Generator._
       val aGen = floatGenerator
       val bGen = floatGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
-    it("should produce the same Double values in the same order given the same Rnd") {
+    it("should produce the same Double values in the same order given the same Randomizer") {
       import Generator._
       val aGen = doubleGenerator
       val bGen = doubleGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
       a2 shouldEqual b2
       a3 shouldEqual b3
     }
-    it("should produce the same PosInt values in the same order given the same Rnd") {
+    it("should produce the same PosInt values in the same order given the same Randomizer") {
       import Generator._
       val aGen= posIntGenerator
       val bGen = posIntGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
       val (a5, ar5) = aGen.next(rnd = ar4)
       val (a6, ar6) = aGen.next(rnd = ar5)
       val (a7, _) = aGen.next(rnd = ar6)
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -195,12 +195,12 @@ class GeneratorSpec extends FunSpec with Matchers {
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
@@ -217,12 +217,12 @@ class GeneratorSpec extends FunSpec with Matchers {
         } yield (i, d)
       val aGen = pairGen()
       val bGen = pairGen()
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, _) = aGen.next(rnd = ar2)
       a1._1 should not equal a2._1
       a1._2 should not equal a2._2
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, _) = bGen.next(rnd = br2)
       a1 shouldEqual b1
@@ -289,7 +289,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce Byte edge values first in random order") {
       import Generator._
       val gen = byteGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
       val (a4, ar4) = gen.next(rnd = ar3)
@@ -304,7 +304,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce Short edge values first in random order") {
       import Generator._
       val gen = shortGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
       val (a4, ar4) = gen.next(rnd = ar3)
@@ -319,7 +319,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce Char edge values first in random order") {
       import Generator._
       val gen = charGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (Char.MinValue)
@@ -328,7 +328,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce Int edge values first in random order") {
       import Generator._
       val gen = intGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
       val (a4, ar4) = gen.next(rnd = ar3)
@@ -343,7 +343,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce Long edge values first in random order") {
       import Generator._
       val gen = longGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, ar3) = gen.next(rnd = ar2)
       val (a4, ar4) = gen.next(rnd = ar3)
@@ -358,19 +358,19 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce the Float edge value first") {
       import Generator._
       val gen = floatGenerator
-      val (a1, _) = gen.next(rnd = Rnd(100))
+      val (a1, _) = gen.next(rnd = Randomizer(100))
       a1 shouldEqual 0.0f
     }
     it("should produce the Double edge value first") {
       import Generator._
       val gen = doubleGenerator
-      val (a1, _) = gen.next(rnd = Rnd(100))
+      val (a1, _) = gen.next(rnd = Randomizer(100))
       a1 shouldEqual 0.0
     }
     it("should produce PosInt edge values first in random order") {
       import Generator._
       val gen = posIntGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (PosInt(1))
@@ -379,7 +379,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosZInt edge values first in random order") {
       import Generator._
       val gen = posZIntGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
       val edges = List(a1, a2, a3)
@@ -390,7 +390,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosLong edge values first in random order") {
       import Generator._
       val gen = posLongGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (PosLong(1L))
@@ -399,7 +399,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosZLong edge values first in random order") {
       import Generator._
       val gen = posZLongGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
       val edges = List(a1, a2, a3)
@@ -410,7 +410,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosFloat edge values first in random order") {
       import Generator._
       val gen = posFloatGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (PosFloat(1.0f))
@@ -419,7 +419,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosZFloat edge values first in random order") {
       import Generator._
       val gen = posZFloatGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
       val edges = List(a1, a2, a3)
@@ -430,7 +430,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosDouble edge values first in random order") {
       import Generator._
       val gen = posDoubleGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, _) = gen.next(rnd = ar1)
       val edges = List(a1, a2)
       edges should contain (PosDouble(1.0))
@@ -439,7 +439,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should produce PosZDouble edge values first in random order") {
       import Generator._
       val gen = posZDoubleGenerator
-      val (a1, ar1) = gen.next(rnd = Rnd(100))
+      val (a1, ar1) = gen.next(rnd = Randomizer(100))
       val (a2, ar2) = gen.next(rnd = ar1)
       val (a3, _) = gen.next(rnd = ar2)
       val edges = List(a1, a2, a3)
@@ -452,7 +452,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       import Generator._
       val gen = stringGenerator
 
-      val (s1, r1) = gen.next(size = 0, rnd = Rnd(100))
+      val (s1, r1) = gen.next(size = 0, rnd = Randomizer(100))
       s1.length shouldBe 0
 
       val (s2, r2) = gen.next(size = 3, rnd = r1)
@@ -468,7 +468,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       s5.length shouldBe 100
 
       an [IllegalArgumentException] should be thrownBy {
-        gen.next(size = -1, rnd = Rnd(100))
+        gen.next(size = -1, rnd = Randomizer(100))
       }
     }
     it("should offer a chooseInt method") {
@@ -478,7 +478,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         for (i <- Generator.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 
       val aGen = posIntGenerator
-      val (a1, ar1) = aGen.next(rnd = Rnd(100))
+      val (a1, ar1) = aGen.next(rnd = Randomizer(100))
       val (a2, ar2) = aGen.next(rnd = ar1)
       val (a3, ar3) = aGen.next(rnd = ar2)
       val (a4, ar4) = aGen.next(rnd = ar3)
@@ -487,7 +487,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       val (a7, _) = aGen.next(rnd = ar6)
 
       val bGen = posIntGenerator
-      val (b1, br1) = bGen.next(rnd = Rnd(100))
+      val (b1, br1) = bGen.next(rnd = Randomizer(100))
       val (b2, br2) = bGen.next(rnd = br1)
       val (b3, br3) = bGen.next(rnd = br2)
       val (b4, br4) = bGen.next(rnd = br3)
@@ -512,7 +512,7 @@ class GeneratorSpec extends FunSpec with Matchers {
           j <- intGenerator
         } yield (i, j)
       val gen = pairGen()
-      val ((i1, j1), r1) = gen.next(rnd = Rnd(100))
+      val ((i1, j1), r1) = gen.next(rnd = Randomizer(100))
       val ((i2, j2), r2) = gen.next(rnd = r1)
       val ((i3, j3), r3) = gen.next(rnd = r2)
       val ((i4, j4), r4) = gen.next(rnd = r3)

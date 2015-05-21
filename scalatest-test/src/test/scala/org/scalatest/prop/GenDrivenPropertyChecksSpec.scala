@@ -47,7 +47,7 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
         PropertyCheckConfig(minSuccessful = 10, maxDiscarded = 50, minSize = 0, maxSize = 99)
       implicit val intGen: Generator[Int] =
         new Generator[Int] {
-          def next(size: Int, rnd: Rnd): (Int, Rnd) = {
+          def next(size: Int, rnd: Randomizer): (Int, Randomizer) = {
             sizesBuf += size
             rnd.nextIntWithEdges
           }
