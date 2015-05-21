@@ -17,13 +17,15 @@ package org.scalatest
 
 import collection.mutable.ListBuffer
 import SharedHelpers.EventRecordingReporter
-import concurrent.Eventually._
+
+import scala.annotation.tailrec
 import prop.TableDrivenPropertyChecks._
-import org.scalatest.tags.Retryable
+import org.scalatest.tagobjects.Retryable
 import Retries._
 
-class RandomTestOrderSpec extends Spec {
+class RandomTestOrderSpec extends FunSpec {
 
+  // SKIP-SCALATESTJS-START
   class ExampleSpec(listBuffer: ListBuffer[Int]) extends Spec with RandomTestOrder {
     def `test 1` {
       listBuffer += 0
@@ -51,6 +53,7 @@ class RandomTestOrderSpec extends Spec {
 
     override def newInstance = new ExampleFixtureSpec(listBuffer)
   }
+  // SKIP-SCALATESTJS-END
 
   class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends FunSuite with RandomTestOrder {
     test("test 1") {
@@ -267,8 +270,10 @@ class RandomTestOrderSpec extends Spec {
   def examples =
     Table(
       ("suite", "test1Name", "test2Name", "test3Name"),
+      // SKIP-SCALATESTJS-START
       ((buffer: ListBuffer[Int]) => new ExampleSpec(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureSpec(buffer), "test 1", "test 2", "test 3"),
+      // SKIP-SCALATESTJS-END
       ((buffer: ListBuffer[Int]) => new ExampleFunSuite(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureFunSuite(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFunSpec(buffer), "test 1", "test 2", "test 3"),
@@ -294,19 +299,28 @@ class RandomTestOrderSpec extends Spec {
       super.withFixture(test)
   }
 
-  object `RandomTestOrder ` {
+  describe("RandomTestOrder ") {
 
-    @Retryable def `execute tests in random order, but fire events in original order` {
+    it("execute tests in random order, but fire events in original order", Retryable) {
       forAll(examples) { case (specFun, test1Name, test2Name, test3Name) =>
-        val rep =
-          eventually {
-            val buffer = new ListBuffer[Int]
-            val spec = specFun(buffer)
-            val rep = new EventRecordingReporter
-            spec.run(None, Args(reporter = rep))
-            assert(buffer(0) != 0 || buffer(1) != 1 || buffer(2) != 2)
+
+        @tailrec
+        def doUntilOutOfOrder(count: Int = 0): EventRecordingReporter = {
+          val buffer = new ListBuffer[Int]
+          val spec = specFun(buffer)
+          val rep = new EventRecordingReporter
+          spec.run(None, Args(reporter = rep))
+          if (buffer(0) != 0 || buffer(1) != 1 || buffer(2) != 2)
             rep
+          else {
+            if (count < 100)
+              doUntilOutOfOrder(count + 1)
+            else
+              fail("Tried 100 times but the order is still not shuffled, it probably never will.")
           }
+        }
+
+        val rep = doUntilOutOfOrder()
 
         val testStartingList = rep.testStartingEventsReceived
         assert(testStartingList.size == 3)

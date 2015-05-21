@@ -164,7 +164,8 @@ object GenScalaTestJS {
               "EitherValues.scala",
               "LoneElement.scala",
               "Retries.scala",
-              "PartialFunctionValues.scala"
+              "PartialFunctionValues.scala",
+              "RandomTestOrder.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -624,6 +625,7 @@ object GenScalaTestJS {
         //"PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
         //"PropertyFunSuite.scala",   // skipped because depends on java reflection
         "PropSpecSpec.scala",
+        "RandomTestOrderSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
         "StringFixture.scala",
