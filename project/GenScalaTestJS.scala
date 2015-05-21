@@ -627,6 +627,9 @@ object GenScalaTestJS {
         "PropSpecSpec.scala",
         "RandomTestOrderSpec.scala",
         "RetriesSpec.scala",
+        "RunInSpurtsSpec1.scala",
+        "RunInSpurtsSpec2.scala",
+        "RunningTestSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
         "StringFixture.scala",
