@@ -87,6 +87,7 @@ object GenScalaTestJS {
               "Reporter.scala",
               //"DispatchReporter.scala",
               "CatchReporter.scala",
+              //"ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
               "ResourcefulReporter.scala",
               "Tracker.scala",
               "Filter.scala",
@@ -165,7 +166,8 @@ object GenScalaTestJS {
               "LoneElement.scala",
               "Retries.scala",
               "PartialFunctionValues.scala",
-              "RandomTestOrder.scala"
+              "RandomTestOrder.scala",
+              "SequentialNestedSuiteExecution.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -630,8 +632,10 @@ object GenScalaTestJS {
         "RunInSpurtsSpec1.scala",
         "RunInSpurtsSpec2.scala",
         "RunningTestSpec.scala",
-        "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
+        "WordSpecSpec.scala",
+        "SequentialNestedSuiteExecutionSpec.scala",
+        "SeveredStackTracesFailureSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
