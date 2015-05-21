@@ -285,6 +285,26 @@ class RandomizerSpec extends FunSpec with Matchers {
       // I was using calling nextChar on the initial Randomizer only)
       sd.distinct shouldNot have size 1
     }
+    it("should offer a nextList[T] method that produces a List[T] of the requested 0 or greater size") {
+
+      import GenDrivenPropertyChecks._
+
+      an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextList[Int](-1) }
+
+      val (la, ra) = Randomizer(100).nextList[Int](0)
+      la should have length 0
+
+      val (lb, rb) = ra.nextString(1)
+      lb should have length 1
+
+      val (lc, rc) = rb.nextString(10)
+      lc should have length 10
+
+      val (ld, _) = rc.nextString(100)
+      ld should have length 100
+
+      ld.distinct shouldNot have size 1
+    }
   }
 }
 

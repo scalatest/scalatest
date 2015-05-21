@@ -225,6 +225,18 @@ class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
     }
     loop(List.empty, 0, thisRandomizer)
   }
+  def nextList[T](length: Int)(implicit genOfT: Generator[T]): (List[T], Randomizer) = {
+    require(length >= 0, "; the length passed to nextString must be >= 0")
+    @tailrec
+    def loop(acc: List[T], count: Int, nextRandomizer: Randomizer): (List[T], Randomizer) = {
+      if (count == length) (acc, nextRandomizer)
+      else {
+        val (o, r) = genOfT.next(length, nextRandomizer)
+        loop(o :: acc, count + 1, r)
+      }
+    }
+    loop(List.empty, 0, thisRandomizer)
+  }
   def chooseInt(from: Int, to: Int): (Int, Randomizer) = {
     if(from == to) {
       (from, this.nextInt._2)
