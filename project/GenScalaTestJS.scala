@@ -626,6 +626,7 @@ object GenScalaTestJS {
         //"PropertyFunSuite.scala",   // skipped because depends on java reflection
         "PropSpecSpec.scala",
         "RandomTestOrderSpec.scala",
+        "RetriesSpec.scala",
         "WordSpecSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
         "StringFixture.scala",

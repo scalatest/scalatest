@@ -22,13 +22,13 @@ import time.SpanSugar._
 import Matchers._
 import Retries._
 
-class RetriesSpec extends Spec {
+class RetriesSpec extends FunSpec {
 
-  object `The Retries trait` {
+  describe("The Retries trait") {
     
-    object `offers a withRetryOnFailure method that` {
+    describe("offers a withRetryOnFailure method that") {
 
-      def `should return Succeeded on Succeeded` {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetryOnFailure {
@@ -38,7 +38,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetryOnFailure {
@@ -48,7 +48,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return Canceled on Canceled` {
+      it("should return Canceled on Canceled") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -59,7 +59,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 1
       }
-      def `should return first Failed if fails twice` {
+      it("should return first Failed if fails twice") {
         var executionCount = 0
         val firstFailed = Failed()
         val secondFailed = Failed()
@@ -71,7 +71,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstFailed 
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Pending` { // unlikely case
+      it("should return Failed if fails first then gives Pending") { // unlikely case
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -82,7 +82,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Canceled` {
+      it("should return Failed if fails first then gives Canceled") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -93,7 +93,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then succeeds` {
+      it("should return Canceled if fails first then succeeds") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -111,9 +111,9 @@ class RetriesSpec extends Spec {
         }
       }
     }
-    object `offers a withRetryOnFailure(delay) method that` {
+    describe("offers a withRetryOnFailure(delay) method that") {
       
-      def `should return Succeeded on Succeeded` {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetryOnFailure(delay = 1 millisecond) {
@@ -123,7 +123,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetryOnFailure(delay = 1 millisecond) {
@@ -133,7 +133,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return Canceled on Canceled` {
+      it("should return Canceled on Canceled") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -144,7 +144,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 1
       }
-      def `should return first Failed if fails twice` {
+      it("should return first Failed if fails twice") {
         var executionCount = 0
         val firstFailed = Failed()
         val secondFailed = Failed()
@@ -156,7 +156,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstFailed 
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Pending` { // unlikely case
+      it("should return Failed if fails first then gives Pending") { // unlikely case
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -167,7 +167,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Canceled` {
+      it("should return Failed if fails first then gives Canceled") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -178,7 +178,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then succeeds` {
+      it("should return Canceled if fails first then succeeds") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -196,9 +196,9 @@ class RetriesSpec extends Spec {
         }
       }
     }
-    object `offers a withRetryOnCancel method that` {
+    describe("offers a withRetryOnCancel method that") {
 
-      def `should return Succeeded on Succeeded` {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetryOnCancel {
@@ -208,7 +208,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetryOnCancel {
@@ -218,7 +218,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return Failed on Failed` {
+      it("should return Failed on Failed") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -229,7 +229,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 1
       }
-      def `should return first Canceled if cancels twice` {
+      it("should return first Canceled if cancels twice") {
         var executionCount = 0
         val firstCanceled = Canceled()
         val secondCanceled = Canceled()
@@ -241,7 +241,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if cancels first then gives Pending` { // unlikely case
+      it("should return Canceled if cancels first then gives Pending") { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -252,7 +252,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 2
       }
-      def `should return Failed if cancels first then fails` {
+      it("should return Failed if cancels first then fails") {
         var executionCount = 0
         val canceled = Canceled()
         val failed = Failed()
@@ -264,7 +264,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Succeeded if cancels first then succeeds` {
+      it("should return Succeeded if cancels first then succeeds") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -276,9 +276,9 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
       }
     }
-    object `offers a withRetryOnCancel(delay) method that` {
+    describe("offers a withRetryOnCancel(delay) method that") {
 
-      def `should return Succeeded on Succeeded` {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetryOnCancel(delay = 1 millisecond) {
@@ -288,7 +288,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetryOnCancel(delay = 1 millisecond) {
@@ -298,7 +298,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return Failed on Failed` {
+      it("should return Failed on Failed") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -309,7 +309,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 1
       }
-      def `should return first Canceled if cancels twice` {
+      it("should return first Canceled if cancels twice") {
         var executionCount = 0
         val firstCanceled = Canceled()
         val secondCanceled = Canceled()
@@ -321,7 +321,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if cancels first then gives Pending` { // unlikely case
+      it("should return Canceled if cancels first then gives Pending") { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -332,7 +332,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 2
       }
-      def `should return Failed if cancels first then fails` {
+      it("should return Failed if cancels first then fails") {
         var executionCount = 0
         val canceled = Canceled()
         val failed = Failed()
@@ -344,7 +344,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Succeeded if cancels first then succeeds` {
+      it("should return Succeeded if cancels first then succeeds") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -356,8 +356,8 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
       }
     }
-    object `offers a withRetry method that` {
-      def `should return Succeeded on Succeeded` {
+    describe("offers a withRetry method that") {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetry {
@@ -367,7 +367,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetry {
@@ -377,7 +377,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return first Failed if fails twice` {
+      it("should return first Failed if fails twice") {
         var executionCount = 0
         val firstFailed = Failed()
         val secondFailed = Failed()
@@ -389,7 +389,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstFailed 
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Pending` { // unlikely case
+      it("should return Failed if fails first then gives Pending") { // unlikely case
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -400,7 +400,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Canceled` {
+      it("should return Failed if fails first then gives Canceled") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -411,7 +411,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then succeeds` {
+      it("should return Canceled if fails first then succeeds") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -428,7 +428,7 @@ class RetriesSpec extends Spec {
           case _ => fail()
         }
       }
-      def `should return first Canceled if cancels twice` {
+      it("should return first Canceled if cancels twice") {
         var executionCount = 0
         val firstCanceled = Canceled()
         val secondCanceled = Canceled()
@@ -440,7 +440,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if cancels first then gives Pending` { // unlikely case
+      it("should return Canceled if cancels first then gives Pending") { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -451,7 +451,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 2
       }
-      def `should return Failed if cancels first then fails` {
+      it("should return Failed if cancels first then fails") {
         var executionCount = 0
         val canceled = Canceled()
         val failed = Failed()
@@ -463,7 +463,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Succeeded if cancels first then succeeds` {
+      it("should return Succeeded if cancels first then succeeds") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -475,8 +475,8 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
       }
     }
-    object `offers a withRetry(delay) method that` {
-      def `should return Succeeded on Succeeded` {
+    describe("offers a withRetry(delay) method that") {
+      it("should return Succeeded on Succeeded") {
         var executionCount = 0
         val outcome =
           withRetry(delay = 1 millisecond) {
@@ -486,7 +486,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
-      def `should return Pending on Pending` {
+      it("should return Pending on Pending") {
         var executionCount = 0
         val outcome =
           withRetry(delay = 1 millisecond) {
@@ -496,7 +496,7 @@ class RetriesSpec extends Spec {
         outcome shouldBe Pending
         executionCount shouldBe 1
       }
-      def `should return first Failed if fails twice` {
+      it("should return first Failed if fails twice") {
         var executionCount = 0
         val firstFailed = Failed()
         val secondFailed = Failed()
@@ -508,7 +508,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstFailed 
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Pending` { // unlikely case
+      it("should return Failed if fails first then gives Pending") { // unlikely case
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -519,7 +519,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Failed if fails first then gives Canceled` {
+      it("should return Failed if fails first then gives Canceled") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -530,7 +530,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then succeeds` {
+      it("should return Canceled if fails first then succeeds") {
         var executionCount = 0
         val failed = Failed()
         val outcome =
@@ -547,7 +547,7 @@ class RetriesSpec extends Spec {
           case _ => fail()
         }
       }
-      def `should return first Canceled if cancels twice` {
+      it("should return first Canceled if cancels twice") {
         var executionCount = 0
         val firstCanceled = Canceled()
         val secondCanceled = Canceled()
@@ -559,7 +559,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if cancels first then gives Pending` { // unlikely case
+      it("should return Canceled if cancels first then gives Pending") { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -570,7 +570,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs canceled
         executionCount shouldBe 2
       }
-      def `should return Failed if cancels first then fails` {
+      it("should return Failed if cancels first then fails") {
         var executionCount = 0
         val canceled = Canceled()
         val failed = Failed()
@@ -582,7 +582,7 @@ class RetriesSpec extends Spec {
         outcome should be theSameInstanceAs failed
         executionCount shouldBe 2
       }
-      def `should return Succeeded if cancels first then succeeds` {
+      it("should return Succeeded if cancels first then succeeds") {
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -594,8 +594,8 @@ class RetriesSpec extends Spec {
         executionCount shouldBe 2
       }
     }
-    object `offers an isRetryable method that` {
-      def `should indicate given a TestData whether a test is tagged with org.scalatest.tags.Retryable` {
+    describe("offers an isRetryable method that") {
+      it("should indicate given a TestData whether a test is tagged with org.scalatest.tags.Retryable") {
         val yes = new TestData {
           val configMap: ConfigMap = ConfigMap.empty
           val name: String = "i am retryable"
