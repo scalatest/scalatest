@@ -18,9 +18,9 @@ package org.scalactic
 trait FastEquaSetView[+T] extends EquaSetView[T] {
   def map[U](f: T => U): FastEquaSetView[U]
   def flatMap[U](f: T => EquaSetView[U]): FastEquaSetView[U]
-  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet
-  def force[U >: T](toPath: EquaPath[U]): toPath.EquaSet
-  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
+  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
+  def force[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
+  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet[U]
   def toList: List[T]
   def size: Int
   /**
@@ -165,9 +165,9 @@ object FastEquaSetView {
     def collect[U](pf: PartialFunction[T, U]): FastEquaSetView[U] = new CollectFastEquaSetView(thisFastEquaSetView, pf)
     def map[U](f: T => U): FastEquaSetView[U] = new MapFastEquaSetView(thisFastEquaSetView, f)
     def flatMap[U](f: T => EquaSetView[U]): FastEquaSetView[U] = new FlatMapFastEquaSetView(thisFastEquaSetView, f)
-    def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = force(toPath)
-    def force[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet = toPath.FastEquaSet(args: _*)
-    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet = ???
+    def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet[U] = force(toPath)
+    def force[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet[U] = toPath.FastEquaSet[U](args: _*)
+    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet[U] = ???
     def toList: List[T] = args
 
     def scan[U >: T](z: U)(op: (U, U) ⇒ U): FastEquaSetView[U] = new ScanFastEquaSetView(thisFastEquaSetView, z, op)
@@ -207,11 +207,11 @@ object FastEquaSetView {
     def collect[V](pf: PartialFunction[U, V]): FastEquaSetView[V] = new CollectFastEquaSetView(thisFastEquaSetView, pf)
     def map[V](g: U => V): FastEquaSetView[V] = new MapFastEquaSetView[U, V](thisFastEquaSetView, g)
     def flatMap[V](f: U => EquaSetView[V]): FastEquaSetView[V] = ???
-    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = force(toPath)
-    def force[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet = {
-      toPath.FastEquaSet(toList: _*)
+    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet[V] = force(toPath)
+    def force[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet[V] = {
+      toPath.FastEquaSet[V](toList: _*)
     }
-    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet = ???
+    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet[V] = ???
     def toList: List[U] // This is the lone abstract method
 
     def scan[V >: U](z: V)(op: (V, V) ⇒ V): FastEquaSetView[V] = new ScanFastEquaSetView(thisFastEquaSetView, z, op)

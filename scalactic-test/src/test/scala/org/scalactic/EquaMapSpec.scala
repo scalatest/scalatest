@@ -15,6 +15,7 @@
  */
 package org.scalactic
 
+/*
 class EquaMapSpec extends UnitSpec {
 
   implicit class HasExactType[T](o: T) {
@@ -373,3 +374,4 @@ class EquaMapSpec extends UnitSpec {
     (1 /: lower.EquaMap("one" -> 1, "two" -> 2, "three" -> 3))(_ + _._2) shouldBe 7
   }
 }
+*/

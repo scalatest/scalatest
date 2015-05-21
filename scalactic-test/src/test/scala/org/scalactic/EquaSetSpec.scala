@@ -55,7 +55,7 @@ class EquaSetSpec extends UnitSpec {
   val numberList = EquaPath[List[Int]](normalHashingEquality[List[Int]])
   val numberLower = EquaPath[(Int, String)](normalHashingEquality[(Int, String)])
   val numberLowerTrimmed = EquaPath[(Int, String, String)](normalHashingEquality[(Int, String, String)])
-  val numberNumber = EquaPath[number.EquaSet](normalHashingEquality[number.EquaSet])
+  val numberNumber = EquaPath[number.EquaSet[Int]](normalHashingEquality[number.EquaSet[Int]])
   def upperCharHashingEquality =
     new HashingEquality[Char] {
       def hashCodeFor(a: Char): Int = a.toUpper.hashCode
@@ -94,190 +94,190 @@ class EquaSetSpec extends UnitSpec {
   it should "have a diff method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") diff lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet()
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") diff trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet()
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") diff trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.EquaSet("hi", "ho") diff lower.EquaSet("ho")
     result3 shouldBe lower.EquaSet("hi")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho", "let's", "go") diff lower.EquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.EquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho") diff lower.FastEquaSet("HI", "HO")
     result5 shouldBe lower.FastEquaSet()
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = trimmed.FastEquaSet("hi", "ho") diff trimmed.FastEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.FastEquaSet()
-    result6.shouldHaveExactType[trimmed.FastEquaSet]
+    result6.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") diff trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.FastEquaSet("hi", "ho") diff lower.FastEquaSet("ho")
     result7 shouldBe lower.FastEquaSet("hi")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho", "let's", "go") diff lower.FastEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.FastEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a &~ method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") &~ lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet()
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") &~ trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet()
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") &~ trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.EquaSet("hi", "ho") &~ lower.EquaSet("ho")
     result3 shouldBe lower.EquaSet("hi")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho", "let's", "go") &~ lower.EquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.EquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho") &~ lower.FastEquaSet("HI", "HO")
     result5 shouldBe lower.FastEquaSet()
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = trimmed.FastEquaSet("hi", "ho") &~ trimmed.FastEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.FastEquaSet()
-    result6.shouldHaveExactType[trimmed.FastEquaSet]
+    result6.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") &~ trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.FastEquaSet("hi", "ho") &~ lower.FastEquaSet("ho")
     result7 shouldBe lower.FastEquaSet("hi")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho", "let's", "go") &~ lower.FastEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.FastEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have an intersect method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") intersect lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") intersect trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") intersect trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.EquaSet("hi", "ho") intersect lower.EquaSet("ho")
     result3 shouldBe lower.EquaSet("ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho", "let's", "go") intersect lower.EquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.EquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho") intersect lower.FastEquaSet("HI", "HO")
     result5 shouldBe lower.FastEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = trimmed.FastEquaSet("hi", "ho") intersect trimmed.FastEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.FastEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.FastEquaSet]
+    result6.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") intersect trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.FastEquaSet("hi", "ho") intersect lower.FastEquaSet("ho")
     result7 shouldBe lower.FastEquaSet("ho")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho", "let's", "go") intersect lower.FastEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.FastEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have an & method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") & lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") & trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") & trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.EquaSet("hi", "ho") & lower.EquaSet("ho")
     result3 shouldBe lower.EquaSet("ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho", "let's", "go") & lower.EquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.EquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho") & lower.FastEquaSet("HI", "HO")
     result5 shouldBe lower.FastEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = trimmed.FastEquaSet("hi", "ho") & trimmed.FastEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.FastEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.FastEquaSet]
+    result6.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") & trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.FastEquaSet("hi", "ho") & lower.FastEquaSet("ho")
     result7 shouldBe lower.FastEquaSet("ho")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho", "let's", "go") & lower.FastEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.FastEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a union method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") union lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") union trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") union trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.FastEquaSet("hi", "ho") union lower.FastEquaSet("HI", "HO")
     result3 shouldBe lower.FastEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result4 = trimmed.FastEquaSet("hi", "ho") union trimmed.FastEquaSet(" hi ", " ho ")
     result4 shouldBe trimmed.FastEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.FastEquaSet]
+    result4.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") union trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a | method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.EquaSet("hi", "ho") | lower.EquaSet("HI", "HO")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = trimmed.EquaSet("hi", "ho") | trimmed.EquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.EquaSet]
+    result2.shouldHaveExactType[trimmed.EquaSet[String]]
 
     """lower.EquaSet(" hi ", "hi") | trimmed.EquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.FastEquaSet("hi", "ho") | lower.FastEquaSet("HI", "HO")
     result3 shouldBe lower.FastEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result4 = trimmed.FastEquaSet("hi", "ho") | trimmed.FastEquaSet(" hi ", " ho ")
     result4 shouldBe trimmed.FastEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.FastEquaSet]
+    result4.shouldHaveExactType[trimmed.FastEquaSet[String]]
 
     """lower.FastEquaSet(" hi ", "hi") | trimmed.FastEquaSet("hi", "HI")""" shouldNot typeCheck
   }
@@ -290,94 +290,94 @@ class EquaSetSpec extends UnitSpec {
   it should "have a + method that takes one argument" in {
     val result1 = lower.EquaSet("hi", "ho") + "ha"
     result1 shouldBe lower.EquaSet("hi", "ho", "ha")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho") + "HO"
     result2 shouldBe lower.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.FastEquaSet("hi", "ho") + "ha"
     result3 shouldBe lower.FastEquaSet("hi", "ho", "ha")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result4 = lower.FastEquaSet("hi", "ho") + "HO"
     result4 shouldBe lower.FastEquaSet("hi", "ho")
-    result4.shouldHaveExactType[lower.FastEquaSet]
+    result4.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a + method that takes two or more arguments" in {
     val result1 = lower.EquaSet("hi", "ho") + ("ha", "hey!")
     result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.FastEquaSet("hi", "ho") + ("ha", "hey!")
     result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result4 = lower.FastEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.FastEquaSet]
+    result4.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a - method that takes one argument" in {
     val result1 = lower.EquaSet("hi", "ho", "ha") - "ha"
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho") - "HO"
     result2 shouldBe lower.EquaSet("hi")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.EquaSet("hi", "ho") - "who?"
     result3 shouldBe lower.EquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.FastEquaSet("hi", "ho", "ha") - "ha"
     result4 shouldBe lower.FastEquaSet("hi", "ho")
-    result4.shouldHaveExactType[lower.FastEquaSet]
+    result4.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho") - "HO"
     result5 shouldBe lower.FastEquaSet("hi")
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = lower.FastEquaSet("hi", "ho") - "who?"
     result6 shouldBe lower.FastEquaSet("hi", "ho")
-    result6.shouldHaveExactType[lower.FastEquaSet]
+    result6.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a - method that takes two or more arguments" in {
     val result1 = lower.EquaSet("hi", "ho", "ha") - ("ha", "howdy!")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
     result2 shouldBe lower.EquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.EquaSet("hi", "ho") - ("who", "goes", "thar")
     result3 shouldBe lower.EquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho") - ("HI", "HO")
     result4 shouldBe lower.EquaSet.empty
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
     result5 shouldBe lower.FastEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
     result6 shouldBe lower.FastEquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.FastEquaSet]
+    result6.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result7 = lower.FastEquaSet("hi", "ho") - ("who", "goes", "thar")
     result7 shouldBe lower.FastEquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho") - ("HI", "HO")
     result8 shouldBe lower.FastEquaSet.empty
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "return an iterator that returns the set's elements" in {
     lower.EquaSet("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
@@ -385,198 +385,198 @@ class EquaSetSpec extends UnitSpec {
   it should "have a ++ method that takes a GenTraversableOnce" in {
     val result1 = lower.EquaSet("hi", "ho") ++ List("ha", "hey!")
     result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
     result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.EquaSet("hi", "ho") ++ Set("ha", "hey!")
     result3 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
     result4 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.EquaSet("hi", "ho") ++ Vector("ha", "hey!")
     result5 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result5.shouldHaveExactType[lower.EquaSet]
+    result5.shouldHaveExactType[lower.EquaSet[String]]
 
     val result6 = lower.EquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
     result6 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result6.shouldHaveExactType[lower.EquaSet]
+    result6.shouldHaveExactType[lower.EquaSet[String]]
 
     val result7 = lower.FastEquaSet("hi", "ho") ++ List("ha", "hey!")
     result7 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
     result8 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result9 = lower.FastEquaSet("hi", "ho") ++ Set("ha", "hey!")
     result9 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result9.shouldHaveExactType[lower.FastEquaSet]
+    result9.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result10 = lower.FastEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
     result10 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result10.shouldHaveExactType[lower.FastEquaSet]
+    result10.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result11 = lower.FastEquaSet("hi", "ho") ++ Vector("ha", "hey!")
     result11 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result11.shouldHaveExactType[lower.FastEquaSet]
+    result11.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result12 = lower.FastEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
     result12 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result12.shouldHaveExactType[lower.FastEquaSet]
+    result12.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a ++ method that takes another EquaSet" in {
     val result1 = lower.EquaSet("hi", "ho") ++ lower.EquaSet("ha", "hey!")
     result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho") ++ lower.EquaSet("HO", "hoe", "Ho!")
     result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.FastEquaSet("hi", "ho") ++ lower.FastEquaSet("ha", "hey!")
     result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result4 = lower.FastEquaSet("hi", "ho") ++ lower.FastEquaSet("HO", "hoe", "Ho!")
     result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.FastEquaSet]
+    result4.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
     val result1 = lower.EquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
     result2 shouldBe lower.EquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.EquaSet("hi", "ho") -- List("who", "goes", "thar")
     result3 shouldBe lower.EquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho") -- List("HI", "HO")
     result4 shouldBe lower.EquaSet.empty
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.EquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
     result5 shouldBe lower.EquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.EquaSet]
+    result5.shouldHaveExactType[lower.EquaSet[String]]
 
     val result6 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
     result6 shouldBe lower.EquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.EquaSet]
+    result6.shouldHaveExactType[lower.EquaSet[String]]
 
     val result7 = lower.EquaSet("hi", "ho") -- Set("who", "goes", "thar")
     result7 shouldBe lower.EquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.EquaSet]
+    result7.shouldHaveExactType[lower.EquaSet[String]]
 
     val result8 = lower.EquaSet("hi", "ho") -- Set("HI", "HO")
     result8 shouldBe lower.EquaSet.empty
-    result8.shouldHaveExactType[lower.EquaSet]
+    result8.shouldHaveExactType[lower.EquaSet[String]]
 
     val result9 = lower.EquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
     result9 shouldBe lower.EquaSet("hi", "ho")
-    result9.shouldHaveExactType[lower.EquaSet]
+    result9.shouldHaveExactType[lower.EquaSet[String]]
 
     val result10 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
     result10 shouldBe lower.EquaSet("hi", "fee", "foe")
-    result10.shouldHaveExactType[lower.EquaSet]
+    result10.shouldHaveExactType[lower.EquaSet[String]]
 
     val result11 = lower.EquaSet("hi", "ho") -- Vector("who", "goes", "thar")
     result11 shouldBe lower.EquaSet("hi", "ho")
-    result11.shouldHaveExactType[lower.EquaSet]
+    result11.shouldHaveExactType[lower.EquaSet[String]]
 
     val result12 = lower.EquaSet("hi", "ho") -- Vector("HI", "HO")
     result12 shouldBe lower.EquaSet.empty
-    result12.shouldHaveExactType[lower.EquaSet]
+    result12.shouldHaveExactType[lower.EquaSet[String]]
 
     val result13 = lower.FastEquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
     result13 shouldBe lower.FastEquaSet("hi", "ho")
-    result13.shouldHaveExactType[lower.FastEquaSet]
+    result13.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result14 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
     result14 shouldBe lower.FastEquaSet("hi", "fee", "foe")
-    result14.shouldHaveExactType[lower.FastEquaSet]
+    result14.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result15 = lower.FastEquaSet("hi", "ho") -- List("who", "goes", "thar")
     result15 shouldBe lower.FastEquaSet("hi", "ho")
-    result15.shouldHaveExactType[lower.FastEquaSet]
+    result15.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result16 = lower.FastEquaSet("hi", "ho") -- List("HI", "HO")
     result16 shouldBe lower.FastEquaSet.empty
-    result16.shouldHaveExactType[lower.FastEquaSet]
+    result16.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result17 = lower.FastEquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
     result17 shouldBe lower.FastEquaSet("hi", "ho")
-    result17.shouldHaveExactType[lower.FastEquaSet]
+    result17.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result18 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
     result18 shouldBe lower.FastEquaSet("hi", "fee", "foe")
-    result18.shouldHaveExactType[lower.FastEquaSet]
+    result18.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result19 = lower.FastEquaSet("hi", "ho") -- Set("who", "goes", "thar")
     result19 shouldBe lower.FastEquaSet("hi", "ho")
-    result19.shouldHaveExactType[lower.FastEquaSet]
+    result19.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result20 = lower.FastEquaSet("hi", "ho") -- Set("HI", "HO")
     result20 shouldBe lower.FastEquaSet.empty
-    result20.shouldHaveExactType[lower.FastEquaSet]
+    result20.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result21 = lower.FastEquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
     result21 shouldBe lower.FastEquaSet("hi", "ho")
-    result21.shouldHaveExactType[lower.FastEquaSet]
+    result21.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result22 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
     result22 shouldBe lower.FastEquaSet("hi", "fee", "foe")
-    result22.shouldHaveExactType[lower.FastEquaSet]
+    result22.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result23 = lower.FastEquaSet("hi", "ho") -- Vector("who", "goes", "thar")
     result23 shouldBe lower.FastEquaSet("hi", "ho")
-    result23.shouldHaveExactType[lower.FastEquaSet]
+    result23.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result24 = lower.FastEquaSet("hi", "ho") -- Vector("HI", "HO")
     result24 shouldBe lower.FastEquaSet.empty
-    result24.shouldHaveExactType[lower.FastEquaSet]
+    result24.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a -- method that takes another EquaSet" in {
     val result1 = lower.EquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!")
     result1 shouldBe lower.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
     val result2 = lower.EquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")
     result2 shouldBe lower.EquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
     val result3 = lower.EquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar")
     result3 shouldBe lower.EquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.EquaSet]
+    result3.shouldHaveExactType[lower.EquaSet[String]]
 
     val result4 = lower.EquaSet("hi", "ho") -- lower.EquaSet("HI", "HO")
     result4 shouldBe lower.EquaSet.empty
-    result4.shouldHaveExactType[lower.EquaSet]
+    result4.shouldHaveExactType[lower.EquaSet[String]]
 
     val result5 = lower.FastEquaSet("hi", "ho", "ha") -- lower.FastEquaSet("ha", "howdy!")
     result5 shouldBe lower.FastEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.FastEquaSet]
+    result5.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result6 = lower.FastEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.FastEquaSet("HO", "FIE", "fUm")
     result6 shouldBe lower.FastEquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.FastEquaSet]
+    result6.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result7 = lower.FastEquaSet("hi", "ho") -- lower.FastEquaSet("who", "goes", "thar")
     result7 shouldBe lower.FastEquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.FastEquaSet]
+    result7.shouldHaveExactType[lower.FastEquaSet[String]]
 
     val result8 = lower.FastEquaSet("hi", "ho") -- lower.FastEquaSet("HI", "HO")
     result8 shouldBe lower.FastEquaSet.empty
-    result8.shouldHaveExactType[lower.FastEquaSet]
+    result8.shouldHaveExactType[lower.FastEquaSet[String]]
   }
   it should "have a /: method" in {
     (0 /: number.EquaSet(1))(_ + _) shouldBe 1
@@ -607,21 +607,21 @@ class EquaSetSpec extends UnitSpec {
 
     lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
 
-    val result1 = lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(lower.EquaSet())(_ + _, _ ++ _)
+    val result1 = lower.EquaSet("hi", "ho", "ha", "hey!").aggregate(lower.EquaSet[String]())(_ + _, _ ++ _)
     result1 shouldBe lower.EquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.EquaSet]
+    result1.shouldHaveExactType[lower.EquaSet[String]]
 
-    val result2 = lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquaSet())(_ + _, _ ++ _)
+    val result2 = lower.EquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.EquaSet[String]())(_ + _, _ ++ _)
     result2 shouldBe lower.EquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.EquaSet]
+    result2.shouldHaveExactType[lower.EquaSet[String]]
 
-    val result3 = lower.FastEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.FastEquaSet())(_ + _, _ ++ _)
+    val result3 = lower.FastEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.FastEquaSet[String]())(_ + _, _ ++ _)
     result3 shouldBe lower.FastEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.FastEquaSet]
+    result3.shouldHaveExactType[lower.FastEquaSet[String]]
 
-    val result4 = lower.FastEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.FastEquaSet())(_ + _, _ ++ _)
+    val result4 = lower.FastEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.FastEquaSet[String]())(_ + _, _ ++ _)
     result4 shouldBe lower.FastEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.FastEquaSet]
+    result4.shouldHaveExactType[lower.FastEquaSet[String]]
   }
 /*
   it should "have an apply method" in {
@@ -763,51 +763,51 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = set.drop(0)
     result1 shouldBe number.EquaSet(seq(0), seq(1), seq(2), seq(3), seq(4))
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = set.drop(1)
     result2 shouldBe number.EquaSet(seq(1), seq(2), seq(3), seq(4))
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = set.drop(2)
     result3 shouldBe number.EquaSet(seq(2), seq(3), seq(4))
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = set.drop(3)
     result4 shouldBe number.EquaSet(seq(3), seq(4))
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = set.drop(4)
     result5 shouldBe number.EquaSet(seq(4))
-    result5.shouldHaveExactType[number.EquaSet]
+    result5.shouldHaveExactType[number.EquaSet[Int]]
 
     val result6 = set.drop(5)
     result6 shouldBe number.EquaSet()
-    result6.shouldHaveExactType[number.EquaSet]
+    result6.shouldHaveExactType[number.EquaSet[Int]]
 
     val result7 = fastSet.drop(0)
     result7 shouldBe number.FastEquaSet(seq(0), seq(1), seq(2), seq(3), seq(4))
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = fastSet.drop(1)
     result8 shouldBe number.FastEquaSet(seq(1), seq(2), seq(3), seq(4))
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result9 = fastSet.drop(2)
     result9 shouldBe number.FastEquaSet(seq(2), seq(3), seq(4))
-    result9.shouldHaveExactType[number.FastEquaSet]
+    result9.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result10 = fastSet.drop(3)
     result10 shouldBe number.FastEquaSet(seq(3), seq(4))
-    result10.shouldHaveExactType[number.FastEquaSet]
+    result10.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result11 = fastSet.drop(4)
     result11 shouldBe number.FastEquaSet(seq(4))
-    result11.shouldHaveExactType[number.FastEquaSet]
+    result11.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result12 = fastSet.drop(5)
     result12 shouldBe number.FastEquaSet()
-    result12.shouldHaveExactType[number.FastEquaSet]
+    result12.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a dropRight method" in {
     val set = number.EquaSet(1, 2, 3, 4, 5)
@@ -816,51 +816,51 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = set.dropRight(0)
     result1 shouldBe number.EquaSet(seq(0), seq(1), seq(2), seq(3), seq(4))
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = set.dropRight(1)
     result2 shouldBe number.EquaSet(seq(0), seq(1), seq(2), seq(3))
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = set.dropRight(2)
     result3 shouldBe number.EquaSet(seq(0), seq(1), seq(2))
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = set.dropRight(3)
     result4 shouldBe number.EquaSet(seq(0), seq(1))
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = set.dropRight(4)
     result5 shouldBe number.EquaSet(seq(0))
-    result5.shouldHaveExactType[number.EquaSet]
+    result5.shouldHaveExactType[number.EquaSet[Int]]
 
     val result6 = set.dropRight(5)
     result6 shouldBe number.EquaSet()
-    result6.shouldHaveExactType[number.EquaSet]
+    result6.shouldHaveExactType[number.EquaSet[Int]]
 
     val result7 = fastSet.dropRight(0)
     result7 shouldBe number.FastEquaSet(seq(0), seq(1), seq(2), seq(3), seq(4))
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = fastSet.dropRight(1)
     result8 shouldBe number.FastEquaSet(seq(0), seq(1), seq(2), seq(3))
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result9 = fastSet.dropRight(2)
     result9 shouldBe number.FastEquaSet(seq(0), seq(1), seq(2))
-    result9.shouldHaveExactType[number.FastEquaSet]
+    result9.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result10 = fastSet.dropRight(3)
     result10 shouldBe number.FastEquaSet(seq(0), seq(1))
-    result10.shouldHaveExactType[number.FastEquaSet]
+    result10.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result11 = fastSet.dropRight(4)
     result11 shouldBe number.FastEquaSet(seq(0))
-    result11.shouldHaveExactType[number.FastEquaSet]
+    result11.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result12 = fastSet.dropRight(5)
     result12 shouldBe number.FastEquaSet()
-    result12.shouldHaveExactType[number.FastEquaSet]
+    result12.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a dropWhile method" in {
     val set = number.EquaSet(1, 2, 3, 4, 5)
@@ -869,51 +869,51 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = set.dropWhile(_ < 1)
     result1 shouldBe number.EquaSet(seq.dropWhile(_ < 1): _*)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = set.dropWhile(_ < 2)
     result2 shouldBe number.EquaSet(seq.dropWhile(_ < 2): _*)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = set.dropWhile(_ < 3)
     result3 shouldBe number.EquaSet(seq.dropWhile(_ < 3): _*)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = set.dropWhile(_ < 4)
     result4 shouldBe number.EquaSet(seq.dropWhile(_ < 4): _*)
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = set.dropWhile(_ < 5)
     result5 shouldBe number.EquaSet(seq.dropWhile(_ < 5): _*)
-    result5.shouldHaveExactType[number.EquaSet]
+    result5.shouldHaveExactType[number.EquaSet[Int]]
 
     val result6 = set.dropWhile(_ < 6)
     result6 shouldBe number.EquaSet()
-    result6.shouldHaveExactType[number.EquaSet]
+    result6.shouldHaveExactType[number.EquaSet[Int]]
 
     val result7 = fastSet.dropWhile(_ < 1)
     result7 shouldBe number.FastEquaSet(seq.dropWhile(_ < 1): _*)
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = fastSet.dropWhile(_ < 2)
     result8 shouldBe number.FastEquaSet(seq.dropWhile(_ < 2): _*)
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result9 = fastSet.dropWhile(_ < 3)
     result9 shouldBe number.FastEquaSet(seq.dropWhile(_ < 3): _*)
-    result9.shouldHaveExactType[number.FastEquaSet]
+    result9.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result10 = fastSet.dropWhile(_ < 4)
     result10 shouldBe number.FastEquaSet(seq.dropWhile(_ < 4): _*)
-    result10.shouldHaveExactType[number.FastEquaSet]
+    result10.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result11 = fastSet.dropWhile(_ < 5)
     result11 shouldBe number.FastEquaSet(seq.dropWhile(_ < 5): _*)
-    result11.shouldHaveExactType[number.FastEquaSet]
+    result11.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result12 = fastSet.dropWhile(_ < 6)
     result12 shouldBe number.FastEquaSet()
-    result12.shouldHaveExactType[number.FastEquaSet]
+    result12.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have an path method" in {
     lower.EquaSet("hi").path shouldBe lower
@@ -958,27 +958,27 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = set.filter(_ == 1)
     result1 shouldBe number.EquaSet(1)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = set.filter(_ == 2)
     result2 shouldBe number.EquaSet(2)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = set.filter(_ == 3)
     result3 shouldBe number.EquaSet(3)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = fastSet.filter(_ == 1)
     result4 shouldBe number.FastEquaSet(1)
-    result4.shouldHaveExactType[number.FastEquaSet]
+    result4.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result5 = fastSet.filter(_ == 2)
     result5 shouldBe number.FastEquaSet(2)
-    result5.shouldHaveExactType[number.FastEquaSet]
+    result5.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result6 = fastSet.filter(_ == 3)
     result6 shouldBe number.FastEquaSet(3)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a filterNot method" in {
     val set = number.EquaSet(1, 2, 3)
@@ -986,27 +986,27 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = set.filterNot(_ == 1)
     result1 shouldBe number.EquaSet(2, 3)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = set.filterNot(_ == 2)
     result2 shouldBe number.EquaSet(1, 3)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = set.filterNot(_ == 3)
     result3 shouldBe number.EquaSet(1, 2)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = fastSet.filterNot(_ == 1)
     result4 shouldBe number.FastEquaSet(2, 3)
-    result4.shouldHaveExactType[number.FastEquaSet]
+    result4.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result5 = fastSet.filterNot(_ == 2)
     result5 shouldBe number.FastEquaSet(1, 3)
-    result5.shouldHaveExactType[number.FastEquaSet]
+    result5.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result6 = fastSet.filterNot(_ == 3)
     result6 shouldBe number.FastEquaSet(1, 2)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a find method" in {
     number.EquaSet(1, 2, 3).find(_ == 5) shouldBe None
@@ -1072,44 +1072,44 @@ class EquaSetSpec extends UnitSpec {
   it should "have a groupBy method" in {
     val result1 = number.EquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
     result1 shouldBe Map(1 -> number.EquaSet(1, 3, 5), 0 -> number.EquaSet(2, 4))
-    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet[Int]]]
 
     val result2 = number.EquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
     result2 shouldBe Map(1 -> number.EquaSet(1, 3, 3, 3), 0 -> number.EquaSet(2))
-    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet[Int]]]
 
     val result3 = number.EquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
     result3 shouldBe Map(1 -> number.EquaSet(1, 1, 3, 3, 3))
-    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet[Int]]]
 
     val result4 = number.EquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
     result4 shouldBe Map(1 -> number.EquaSet(1, 3, 5, 7), 0 -> number.EquaSet(2))
-    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet]]
+    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.EquaSet[Int]]]
 
     val result5 = number.FastEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
     result5 shouldBe Map(1 -> number.FastEquaSet(1, 3, 5), 0 -> number.FastEquaSet(2, 4))
-    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet[Int]]]
 
     val result6 = number.FastEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
     result6 shouldBe Map(1 -> number.FastEquaSet(1, 3, 3, 3), 0 -> number.FastEquaSet(2))
-    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet[Int]]]
 
     val result7 = number.FastEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
     result7 shouldBe Map(1 -> number.FastEquaSet(1, 1, 3, 3, 3))
-    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet[Int]]]
 
     val result8 = number.FastEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
     result8 shouldBe Map(1 -> number.FastEquaSet(1, 3, 5, 7), 0 -> number.FastEquaSet(2))
-    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet]]
+    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.FastEquaSet[Int]]]
   }
   it should "have a grouped method" in {
     val result1 = number.EquaSet(1, 2, 3).grouped(2).toList
     result1 shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
-    result1.shouldHaveExactType[List[number.EquaSet]]
+    result1.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result2 = number.EquaSet(1, 2, 3).grouped(1).toList
     result2 shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
-    result2.shouldHaveExactType[List[number.EquaSet]]
+    result2.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     an [IllegalArgumentException] should be thrownBy { number.EquaSet(1, 2, 3).grouped(0).toList }
 
@@ -1119,51 +1119,51 @@ class EquaSetSpec extends UnitSpec {
 
     val result3 = set.grouped(2).toList
     result3 shouldBe List(number.EquaSet(seq(0), seq(1)), number.EquaSet(seq(2), seq(3)), number.EquaSet(seq(4), seq(5)), number.EquaSet(seq(6), seq(7)), number.EquaSet(seq(8), seq(9)))
-    result3.shouldHaveExactType[List[number.EquaSet]]
+    result3.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result4 = set.grouped(3).toList
     result4 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(3), seq(4), seq(5)), number.EquaSet(seq(6), seq(7), seq(8)), number.EquaSet(seq(9)))
-    result4.shouldHaveExactType[List[number.EquaSet]]
+    result4.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result5 = set.grouped(4).toList
     result5 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2), seq(3)), number.EquaSet(seq(4), seq(5), seq(6), seq(7)), number.EquaSet(seq(8), seq(9)))
-    result5.shouldHaveExactType[List[number.EquaSet]]
+    result5.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result6 = number.EquaSet(1).grouped(2).toList
     result6 shouldBe List(number.EquaSet(1))
-    result6.shouldHaveExactType[List[number.EquaSet]]
+    result6.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result7 = number.EquaSet(1).grouped(1).toList
     result7 shouldBe List(number.EquaSet(1))
-    result7.shouldHaveExactType[List[number.EquaSet]]
+    result7.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result8 = number.FastEquaSet(1, 2, 3).grouped(2).toList
     result8 shouldBe List(number.FastEquaSet(1, 2), number.FastEquaSet(3))
-    result8.shouldHaveExactType[List[number.FastEquaSet]]
+    result8.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result9 = number.FastEquaSet(1, 2, 3).grouped(1).toList
     result9 shouldBe List(number.FastEquaSet(1), number.EquaSet(2), number.FastEquaSet(3))
-    result9.shouldHaveExactType[List[number.FastEquaSet]]
+    result9.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result10 = fastSet.grouped(2).toList
     result10 shouldBe List(number.FastEquaSet(seq(0), seq(1)), number.EquaSet(seq(2), seq(3)), number.FastEquaSet(seq(4), seq(5)), number.EquaSet(seq(6), seq(7)), number.FastEquaSet(seq(8), seq(9)))
-    result10.shouldHaveExactType[List[number.FastEquaSet]]
+    result10.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result11 = fastSet.grouped(3).toList
     result11 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(3), seq(4), seq(5)), number.FastEquaSet(seq(6), seq(7), seq(8)), number.FastEquaSet(seq(9)))
-    result11.shouldHaveExactType[List[number.FastEquaSet]]
+    result11.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result12 = fastSet.grouped(4).toList
     result12 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2), seq(3)), number.FastEquaSet(seq(4), seq(5), seq(6), seq(7)), number.FastEquaSet(seq(8), seq(9)))
-    result12.shouldHaveExactType[List[number.FastEquaSet]]
+    result12.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result13 = number.FastEquaSet(1).grouped(2).toList
     result13 shouldBe List(number.FastEquaSet(1))
-    result13.shouldHaveExactType[List[number.FastEquaSet]]
+    result13.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result14 = number.FastEquaSet(1).grouped(1).toList
     result14 shouldBe List(number.FastEquaSet(1))
-    result14.shouldHaveExactType[List[number.FastEquaSet]]
+    result14.shouldHaveExactType[List[number.FastEquaSet[Int]]]
   }
   it should "have a hasDefiniteSize method" in {
     number.EquaSet(1).hasDefiniteSize shouldBe true
@@ -1180,29 +1180,29 @@ class EquaSetSpec extends UnitSpec {
   it should "have an init method" in {
     val result1 = number.EquaSet(1, 2, 3).init
     result1 shouldBe number.EquaSet(1, 2)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = number.FastEquaSet(1, 2, 3).init
     result2 shouldBe number.FastEquaSet(1, 2)
-    result2.shouldHaveExactType[number.FastEquaSet]
+    result2.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have an inits method" in {
     val inits = number.EquaSet(1, 2, 3).inits
     val result1 = inits.next
     result1 shouldBe number.EquaSet(1,2,3)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = inits.next
     result2 shouldBe number.EquaSet(1,2)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = inits.next
     result3 shouldBe number.EquaSet(1)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = inits.next
     result4 shouldBe number.EquaSet()
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = inits.hasNext
     result5 shouldBe false
@@ -1210,19 +1210,19 @@ class EquaSetSpec extends UnitSpec {
     val fastInits = number.FastEquaSet(1, 2, 3).inits
     val result6 = fastInits.next
     result6 shouldBe number.FastEquaSet(1,2,3)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result7 = fastInits.next
     result7 shouldBe number.FastEquaSet(1,2)
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = fastInits.next
     result8 shouldBe number.FastEquaSet(1)
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result9 = fastInits.next
     result9 shouldBe number.FastEquaSet()
-    result9.shouldHaveExactType[number.FastEquaSet]
+    result9.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result10 = fastInits.hasNext
     result10 shouldBe false
@@ -1281,11 +1281,11 @@ class EquaSetSpec extends UnitSpec {
   it should "have a partition method" in {
     val result1 = number.EquaSet(1, 2, 3, 4).partition(_ < 3)
     result1 shouldBe (number.EquaSet(1, 2), number.EquaSet(3, 4))
-    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result1.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result2 = number.FastEquaSet(1, 2, 3, 4).partition(_ < 3)
     result2 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3, 4))
-    result2.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result2.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
   }
   it should "have a product method" in {
     number.EquaSet(1, 2, 3).product shouldBe 6
@@ -1349,27 +1349,27 @@ class EquaSetSpec extends UnitSpec {
   it should "have a slice method" in {
     val result1 = number.EquaSet(3).slice(0, 0)
     result1 shouldBe number.EquaSet()
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = number.EquaSet(1, 2, 3).slice(2, 1)
     result2 shouldBe number.EquaSet()
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = number.EquaSet(1, 2, 3).slice(1, 3)
     result3 shouldBe number.EquaSet(2, 3)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = number.FastEquaSet(3).slice(0, 0)
     result4 shouldBe number.FastEquaSet()
-    result4.shouldHaveExactType[number.FastEquaSet]
+    result4.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result5 = number.FastEquaSet(1, 2, 3).slice(2, 1)
     result5 shouldBe number.FastEquaSet()
-    result5.shouldHaveExactType[number.FastEquaSet]
+    result5.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result6 = number.FastEquaSet(1, 2, 3).slice(1, 3)
     result6 shouldBe number.FastEquaSet(2, 3)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have 2 sliding methods" in {
 
@@ -1377,253 +1377,253 @@ class EquaSetSpec extends UnitSpec {
 
     val result1 = number.EquaSet(1).sliding(1).toList
     result1 shouldBe List(number.EquaSet(1))
-    result1.shouldHaveExactType[List[number.EquaSet]]
+    result1.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result2 = number.EquaSet(1).sliding(2).toList
     result2 shouldBe List(number.EquaSet(1))
-    result2.shouldHaveExactType[List[number.EquaSet]]
+    result2.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result3 = number.EquaSet(1, 2, 3).sliding(2).toList
     result3 shouldBe List(number.EquaSet(1, 2), number.EquaSet(2, 3))
-    result3.shouldHaveExactType[List[number.EquaSet]]
+    result3.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result4 = number.EquaSet(1, 2, 3).sliding(1).toList
     result4 shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
-    result4.shouldHaveExactType[List[number.EquaSet]]
+    result4.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result5 = number.EquaSet(1, 2, 3).sliding(3).toList
     result5 shouldBe List(number.EquaSet(1, 2, 3))
-    result5.shouldHaveExactType[List[number.EquaSet]]
+    result5.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result6 = number.EquaSet(1, 2, 3, 4, 5).sliding(3).toList
     result6 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(1), seq(2), seq(3)), number.EquaSet(seq(2), seq(3), seq(4)))
-    result6.shouldHaveExactType[List[number.EquaSet]]
+    result6.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result7 = number.EquaSet(1, 2, 3, 4, 5).sliding(2).toList
     result7 shouldBe List(number.EquaSet(seq(0), seq(1)), number.EquaSet(seq(1), seq(2)), number.EquaSet(seq(2), seq(3)), number.EquaSet(seq(3), seq(4)))
-    result7.shouldHaveExactType[List[number.EquaSet]]
+    result7.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result8 = number.EquaSet(1, 2, 3, 4, 5).sliding(1).toList
     result8 shouldBe List(number.EquaSet(seq(0)), number.EquaSet(seq(1)), number.EquaSet(seq(2)), number.EquaSet(seq(3)), number.EquaSet(seq(4)))
-    result8.shouldHaveExactType[List[number.EquaSet]]
+    result8.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result9 = number.EquaSet(1, 2, 3, 4, 5).sliding(4).toList
     result9 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2), seq(3)), number.EquaSet(seq(1), seq(2), seq(3), seq(4)))
-    result9.shouldHaveExactType[List[number.EquaSet]]
+    result9.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result10 = number.EquaSet(1, 2, 3, 4, 5).sliding(5).toList
     result10 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2), seq(3), seq(4)))
-    result10.shouldHaveExactType[List[number.EquaSet]]
+    result10.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result11 = number.EquaSet(1).sliding(1, 1).toList
     result11 shouldBe List(number.EquaSet(1))
-    result11.shouldHaveExactType[List[number.EquaSet]]
+    result11.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result12 = number.EquaSet(1).sliding(1, 2).toList
     result12 shouldBe List(number.EquaSet(1))
-    result12.shouldHaveExactType[List[number.EquaSet]]
+    result12.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result13 = number.EquaSet(1, 2, 3).sliding(1, 1).toList
     result13 shouldBe List(number.EquaSet(1), number.EquaSet(2), number.EquaSet(3))
-    result13.shouldHaveExactType[List[number.EquaSet]]
+    result13.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result14 = number.EquaSet(1, 2, 3).sliding(2, 1).toList
     result14 shouldBe List(number.EquaSet(1, 2), number.EquaSet(2, 3))
-    result14.shouldHaveExactType[List[number.EquaSet]]
+    result14.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result15 = number.EquaSet(1, 2, 3).sliding(2, 2).toList
     result15 shouldBe List(number.EquaSet(1, 2), number.EquaSet(3))
-    result15.shouldHaveExactType[List[number.EquaSet]]
+    result15.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result16 = number.EquaSet(1, 2, 3).sliding(3, 2).toList
     result16 shouldBe List(number.EquaSet(1, 2, 3))
-    result16.shouldHaveExactType[List[number.EquaSet]]
+    result16.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result17 = number.EquaSet(1, 2, 3).sliding(3, 1).toList
     result17 shouldBe List(number.EquaSet(1, 2, 3))
-    result17.shouldHaveExactType[List[number.EquaSet]]
+    result17.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result18 = number.EquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result18 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(1), seq(2), seq(3)), number.EquaSet(seq(2), seq(3), seq(4)))
-    result18.shouldHaveExactType[List[number.EquaSet]]
+    result18.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result19 = number.EquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
     result19 shouldBe List(number.EquaSet(seq(0), seq(1)), number.EquaSet(seq(2), seq(3)), number.EquaSet(seq(4)))
-    result19.shouldHaveExactType[List[number.EquaSet]]
+    result19.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result20 = number.EquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
     result20 shouldBe List(number.EquaSet(seq(0), seq(1)), number.EquaSet(seq(3), seq(4)))
-    result20.shouldHaveExactType[List[number.EquaSet]]
+    result20.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result21 = number.EquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
     result21 shouldBe List(number.EquaSet(seq(0), seq(1)), number.EquaSet(seq(4)))
-    result21.shouldHaveExactType[List[number.EquaSet]]
+    result21.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result22 = number.EquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result22 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(1), seq(2), seq(3)), number.EquaSet(seq(2), seq(3), seq(4)))
-    result22.shouldHaveExactType[List[number.EquaSet]]
+    result22.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result23 = number.EquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
     result23 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(2), seq(3), seq(4)))
-    result23.shouldHaveExactType[List[number.EquaSet]]
+    result23.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result24 = number.EquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
     result24 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(3), seq(4)))
-    result24.shouldHaveExactType[List[number.EquaSet]]
+    result24.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result25 = number.EquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
     result25 shouldBe List(number.EquaSet(seq(0), seq(1), seq(2)), number.EquaSet(seq(4)))
-    result25.shouldHaveExactType[List[number.EquaSet]]
+    result25.shouldHaveExactType[List[number.EquaSet[Int]]]
 
     val result26 = number.FastEquaSet(1).sliding(1).toList
     result26 shouldBe List(number.FastEquaSet(1))
-    result26.shouldHaveExactType[List[number.FastEquaSet]]
+    result26.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result27 = number.FastEquaSet(1).sliding(2).toList
     result27 shouldBe List(number.FastEquaSet(1))
-    result27.shouldHaveExactType[List[number.FastEquaSet]]
+    result27.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result28 = number.FastEquaSet(1, 2, 3).sliding(2).toList
     result28 shouldBe List(number.FastEquaSet(1, 2), number.FastEquaSet(2, 3))
-    result28.shouldHaveExactType[List[number.FastEquaSet]]
+    result28.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result29 = number.FastEquaSet(1, 2, 3).sliding(1).toList
     result29 shouldBe List(number.FastEquaSet(1), number.FastEquaSet(2), number.FastEquaSet(3))
-    result29.shouldHaveExactType[List[number.FastEquaSet]]
+    result29.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result30 = number.FastEquaSet(1, 2, 3).sliding(3).toList
     result30 shouldBe List(number.FastEquaSet(1, 2, 3))
-    result30.shouldHaveExactType[List[number.FastEquaSet]]
+    result30.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result31 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3).toList
     result31 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(1), seq(2), seq(3)), number.FastEquaSet(seq(2), seq(3), seq(4)))
-    result31.shouldHaveExactType[List[number.FastEquaSet]]
+    result31.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result32 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(2).toList
     result32 shouldBe List(number.FastEquaSet(seq(0), seq(1)), number.FastEquaSet(seq(1), seq(2)), number.FastEquaSet(seq(2), seq(3)), number.FastEquaSet(seq(3), seq(4)))
-    result32.shouldHaveExactType[List[number.FastEquaSet]]
+    result32.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result33 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(1).toList
     result33 shouldBe List(number.FastEquaSet(seq(0)), number.FastEquaSet(seq(1)), number.FastEquaSet(seq(2)), number.FastEquaSet(seq(3)), number.FastEquaSet(seq(4)))
-    result33.shouldHaveExactType[List[number.FastEquaSet]]
+    result33.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result34 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(4).toList
     result34 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2), seq(3)), number.FastEquaSet(seq(1), seq(2), seq(3), seq(4)))
-    result34.shouldHaveExactType[List[number.FastEquaSet]]
+    result34.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result35 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(5).toList
     result35 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2), seq(3), seq(4)))
-    result35.shouldHaveExactType[List[number.FastEquaSet]]
+    result35.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result36 = number.FastEquaSet(1).sliding(1, 1).toList
     result36 shouldBe List(number.FastEquaSet(1))
-    result36.shouldHaveExactType[List[number.FastEquaSet]]
+    result36.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result37 = number.FastEquaSet(1).sliding(1, 2).toList
     result37 shouldBe List(number.FastEquaSet(1))
-    result37.shouldHaveExactType[List[number.FastEquaSet]]
+    result37.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result38 = number.FastEquaSet(1, 2, 3).sliding(1, 1).toList
     result38 shouldBe List(number.FastEquaSet(1), number.FastEquaSet(2), number.FastEquaSet(3))
-    result38.shouldHaveExactType[List[number.FastEquaSet]]
+    result38.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result39 = number.FastEquaSet(1, 2, 3).sliding(2, 1).toList
     result39 shouldBe List(number.FastEquaSet(1, 2), number.FastEquaSet(2, 3))
-    result39.shouldHaveExactType[List[number.FastEquaSet]]
+    result39.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result40 = number.FastEquaSet(1, 2, 3).sliding(2, 2).toList
     result40 shouldBe List(number.FastEquaSet(1, 2), number.FastEquaSet(3))
-    result40.shouldHaveExactType[List[number.FastEquaSet]]
+    result40.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result41 = number.FastEquaSet(1, 2, 3).sliding(3, 2).toList
     result41 shouldBe List(number.FastEquaSet(1, 2, 3))
-    result41.shouldHaveExactType[List[number.FastEquaSet]]
+    result41.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result42 = number.FastEquaSet(1, 2, 3).sliding(3, 1).toList
     result42 shouldBe List(number.FastEquaSet(1, 2, 3))
-    result42.shouldHaveExactType[List[number.FastEquaSet]]
+    result42.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result43 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result43 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(1), seq(2), seq(3)), number.FastEquaSet(seq(2), seq(3), seq(4)))
-    result43.shouldHaveExactType[List[number.FastEquaSet]]
+    result43.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result44 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
     result44 shouldBe List(number.FastEquaSet(seq(0), seq(1)), number.FastEquaSet(seq(2), seq(3)), number.FastEquaSet(seq(4)))
-    result44.shouldHaveExactType[List[number.FastEquaSet]]
+    result44.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result45 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
     result45 shouldBe List(number.FastEquaSet(seq(0), seq(1)), number.FastEquaSet(seq(3), seq(4)))
-    result45.shouldHaveExactType[List[number.FastEquaSet]]
+    result45.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result46 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
     result46 shouldBe List(number.FastEquaSet(seq(0), seq(1)), number.FastEquaSet(seq(4)))
-    result46.shouldHaveExactType[List[number.FastEquaSet]]
+    result46.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result47 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result47 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(1), seq(2), seq(3)), number.FastEquaSet(seq(2), seq(3), seq(4)))
-    result47.shouldHaveExactType[List[number.FastEquaSet]]
+    result47.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result48 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
     result48 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(2), seq(3), seq(4)))
-    result48.shouldHaveExactType[List[number.FastEquaSet]]
+    result48.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result49 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
     result49 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(3), seq(4)))
-    result49.shouldHaveExactType[List[number.FastEquaSet]]
+    result49.shouldHaveExactType[List[number.FastEquaSet[Int]]]
 
     val result50 = number.FastEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
     result50 shouldBe List(number.FastEquaSet(seq(0), seq(1), seq(2)), number.FastEquaSet(seq(4)))
-    result50.shouldHaveExactType[List[number.FastEquaSet]]
+    result50.shouldHaveExactType[List[number.FastEquaSet[Int]]]
   }
   it should "have a span method" in {
     val result1 = number.EquaSet(1, 2, 3).span(_ < 3)
     result1 shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
-    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result1.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result2 = number.EquaSet(1, 2, 3).span(_ > 3)
     result2 shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
-    result2.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result2.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result3 = number.FastEquaSet(1, 2, 3).span(_ < 3)
     result3 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3))
-    result3.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result3.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
 
     val result4 = number.FastEquaSet(1, 2, 3).span(_ > 3)
     result4 shouldBe (number.FastEquaSet(), number.FastEquaSet(1, 2, 3))
-    result4.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result4.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
   }
   it should "have a splitAt method" in {
     val result1 = number.EquaSet(1, 2, 3).splitAt(0)
     result1 shouldBe (number.EquaSet(), number.EquaSet(1, 2, 3))
-    result1.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result1.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result2 = number.EquaSet(1, 2, 3).splitAt(1)
     result2 shouldBe (number.EquaSet(1), number.EquaSet(2, 3))
-    result2.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result2.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result3 = number.EquaSet(1, 2, 3).splitAt(2)
     result3 shouldBe (number.EquaSet(1, 2), number.EquaSet(3))
-    result3.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result3.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result4 = number.EquaSet(1, 2, 3).splitAt(3)
     result4 shouldBe (number.EquaSet(1, 2, 3), number.EquaSet())
-    result4.shouldHaveExactType[(number.EquaSet, number.EquaSet)]
+    result4.shouldHaveExactType[(number.EquaSet[Int], number.EquaSet[Int])]
 
     val result5 = number.FastEquaSet(1, 2, 3).splitAt(0)
     result5 shouldBe (number.FastEquaSet(), number.FastEquaSet(1, 2, 3))
-    result5.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result5.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
 
     val result6 = number.FastEquaSet(1, 2, 3).splitAt(1)
     result6 shouldBe (number.FastEquaSet(1), number.FastEquaSet(2, 3))
-    result6.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result6.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
 
     val result7 = number.FastEquaSet(1, 2, 3).splitAt(2)
     result7 shouldBe (number.FastEquaSet(1, 2), number.FastEquaSet(3))
-    result7.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result7.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
 
     val result8 = number.FastEquaSet(1, 2, 3).splitAt(3)
     result8 shouldBe (number.FastEquaSet(1, 2, 3), number.FastEquaSet())
-    result8.shouldHaveExactType[(number.FastEquaSet, number.FastEquaSet)]
+    result8.shouldHaveExactType[(number.FastEquaSet[Int], number.FastEquaSet[Int])]
   }
   it should "have a stringPrefix method" in {
     number.EquaSet(1).stringPrefix shouldBe "EquaSet"
@@ -1658,11 +1658,11 @@ class EquaSetSpec extends UnitSpec {
     subsets2 should contain (number.EquaSet(1, 3))
     subsets2 should contain (number.EquaSet(2, 3))
 
-    number.EquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.EquaSet]]
-    number.EquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.EquaSet]]
+    number.EquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.EquaSet[Int]]]
+    number.EquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.EquaSet[Int]]]
 
-    number.FastEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.FastEquaSet]]
-    number.FastEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.FastEquaSet]]
+    number.FastEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.FastEquaSet[Int]]]
+    number.FastEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.FastEquaSet[Int]]]
   }
   it should "have a sum method" in {
     number.EquaSet(1).sum shouldBe 1
@@ -1673,86 +1673,86 @@ class EquaSetSpec extends UnitSpec {
   it should "have an tail method" in {
     val result1 = number.EquaSet(1, 2, 3).tail
     result1 shouldBe number.EquaSet(2, 3)
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = number.FastEquaSet(1, 2, 3).tail
     result2 shouldBe number.FastEquaSet(2, 3)
-    result2.shouldHaveExactType[number.FastEquaSet]
+    result2.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have an tails method" in {
     val result1 = number.EquaSet(1, 2, 3).tails
     result1.toList shouldBe List(number.EquaSet(1,2,3), number.EquaSet(2,3), number.EquaSet(3), number.EquaSet())
-    result1.shouldHaveExactType[Iterator[number.EquaSet]]
+    result1.shouldHaveExactType[Iterator[number.EquaSet[Int]]]
 
     val result2 = number.FastEquaSet(1, 2, 3).tails
     result2.toList shouldBe List(number.FastEquaSet(1,2,3), number.FastEquaSet(2,3), number.FastEquaSet(3), number.FastEquaSet())
-    result2.shouldHaveExactType[Iterator[number.FastEquaSet]]
+    result2.shouldHaveExactType[Iterator[number.FastEquaSet[Int]]]
   }
   it should "have a take method" in {
     val result1 = number.EquaSet(1, 2, 3).take(0)
     result1 shouldBe number.EquaSet()
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = number.EquaSet(1, 2, 3).take(1)
     result2 shouldBe number.EquaSet(1)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = number.EquaSet(1, 2, 3).take(2)
     result3 shouldBe number.EquaSet(1, 2)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = number.EquaSet(1, 2, 3).take(3)
     result4 shouldBe number.EquaSet(1, 2, 3)
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = number.FastEquaSet(1, 2, 3).take(0)
     result5 shouldBe number.FastEquaSet()
-    result5.shouldHaveExactType[number.FastEquaSet]
+    result5.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result6 = number.FastEquaSet(1, 2, 3).take(1)
     result6 shouldBe number.FastEquaSet(1)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result7 = number.FastEquaSet(1, 2, 3).take(2)
     result7 shouldBe number.FastEquaSet(1, 2)
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = number.FastEquaSet(1, 2, 3).take(3)
     result8 shouldBe number.FastEquaSet(1, 2, 3)
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a takeRight method" in {
     val result1 = number.EquaSet(1, 2, 3).takeRight(0)
     result1 shouldBe number.EquaSet()
-    result1.shouldHaveExactType[number.EquaSet]
+    result1.shouldHaveExactType[number.EquaSet[Int]]
 
     val result2 = number.EquaSet(1, 2, 3).takeRight(1)
     result2 shouldBe number.EquaSet(3)
-    result2.shouldHaveExactType[number.EquaSet]
+    result2.shouldHaveExactType[number.EquaSet[Int]]
 
     val result3 = number.EquaSet(1, 2, 3).takeRight(2)
     result3 shouldBe number.EquaSet(2, 3)
-    result3.shouldHaveExactType[number.EquaSet]
+    result3.shouldHaveExactType[number.EquaSet[Int]]
 
     val result4 = number.EquaSet(1, 2, 3).takeRight(3)
     result4 shouldBe number.EquaSet(1, 2, 3)
-    result4.shouldHaveExactType[number.EquaSet]
+    result4.shouldHaveExactType[number.EquaSet[Int]]
 
     val result5 = number.FastEquaSet(1, 2, 3).takeRight(0)
     result5 shouldBe number.FastEquaSet()
-    result5.shouldHaveExactType[number.FastEquaSet]
+    result5.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result6 = number.FastEquaSet(1, 2, 3).takeRight(1)
     result6 shouldBe number.FastEquaSet(3)
-    result6.shouldHaveExactType[number.FastEquaSet]
+    result6.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result7 = number.FastEquaSet(1, 2, 3).takeRight(2)
     result7 shouldBe number.FastEquaSet(2, 3)
-    result7.shouldHaveExactType[number.FastEquaSet]
+    result7.shouldHaveExactType[number.FastEquaSet[Int]]
 
     val result8 = number.FastEquaSet(1, 2, 3).takeRight(3)
     result8 shouldBe number.FastEquaSet(1, 2, 3)
-    result8.shouldHaveExactType[number.FastEquaSet]
+    result8.shouldHaveExactType[number.FastEquaSet[Int]]
   }
   it should "have a to method" in {
     number.EquaSet(1).to[List] shouldBe List(number.EquaBox(1))
@@ -1878,35 +1878,35 @@ class EquaSetSpec extends UnitSpec {
   it should "have a transpose method" in {
     val result1 = numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
     result1 shouldBe numberList.EquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    result1.shouldHaveExactType[numberList.EquaSet]
+    result1.shouldHaveExactType[numberList.EquaSet[List[Int]]]
 
     val result2 = numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
     result2 shouldBe numberList.EquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    result2.shouldHaveExactType[numberList.EquaSet]
+    result2.shouldHaveExactType[numberList.EquaSet[List[Int]]]
 
     val result3 = numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
     result3 shouldBe numberList.EquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    result3.shouldHaveExactType[numberList.EquaSet]
+    result3.shouldHaveExactType[numberList.EquaSet[List[Int]]]
 
     val result4 = numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
     result4 shouldBe numberList.EquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
-    result4.shouldHaveExactType[numberList.EquaSet]
+    result4.shouldHaveExactType[numberList.EquaSet[List[Int]]]
 
     val result5 = numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
     result5 shouldBe numberList.FastEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    result5.shouldHaveExactType[numberList.FastEquaSet]
+    result5.shouldHaveExactType[numberList.FastEquaSet[List[Int]]]
 
     val result6 = numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
     result6 shouldBe numberList.FastEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    result6.shouldHaveExactType[numberList.FastEquaSet]
+    result6.shouldHaveExactType[numberList.FastEquaSet[List[Int]]]
 
     val result7 = numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
     result7 shouldBe numberList.FastEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    result7.shouldHaveExactType[numberList.FastEquaSet]
+    result7.shouldHaveExactType[numberList.FastEquaSet[List[Int]]]
 
     val result8 = numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
     result8 shouldBe numberList.FastEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
-    result8.shouldHaveExactType[numberList.FastEquaSet]
+    result8.shouldHaveExactType[numberList.FastEquaSet[List[Int]]]
   }
   it should "have a withFilter method" in {
     var a = 0

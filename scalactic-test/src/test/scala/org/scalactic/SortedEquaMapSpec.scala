@@ -15,6 +15,7 @@
  */
 package org.scalactic
 
+/*
 class SortedEquaMapSpec extends UnitSpec {
 
   implicit class HasExactType[T](o: T) {
@@ -389,3 +390,4 @@ class SortedEquaMapSpec extends UnitSpec {
     (1 /: lower.SortedEquaMap("one" -> 1, "two" -> 2, "three" -> 3))(_ + _._2) shouldBe 7
   }
 }
+*/

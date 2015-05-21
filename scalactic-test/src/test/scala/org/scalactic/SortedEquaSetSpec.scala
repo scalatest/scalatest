@@ -87,12 +87,12 @@ class SortedEquaSetSpec extends UnitSpec {
   val numberList = SortedEquaPath[List[Int]](numberListEquality)
 
   val numberNumberEquality =
-    new OrderingEquality[number.SortedEquaSet] {
-      def hashCodeFor(a: number.SortedEquaSet): Int = a.hashCode
-      def areEqual(a: number.SortedEquaSet, b: Any): Boolean = a == b
-      def compare(a: number.SortedEquaSet, b: number.SortedEquaSet): Int = a.mkString compareTo b.mkString
+    new OrderingEquality[number.SortedEquaSet[Int]] {
+      def hashCodeFor(a: number.SortedEquaSet[Int]): Int = a.hashCode
+      def areEqual(a: number.SortedEquaSet[Int], b: Any): Boolean = a == b
+      def compare(a: number.SortedEquaSet[Int], b: number.SortedEquaSet[Int]): Int = a.mkString compareTo b.mkString
     }
-  val numberNumber = SortedEquaPath[number.SortedEquaSet](numberNumberEquality)
+  val numberNumber = SortedEquaPath[number.SortedEquaSet[Int]](numberNumberEquality)
 
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.SortedEquaSet.empty
@@ -101,17 +101,17 @@ class SortedEquaSetSpec extends UnitSpec {
     val treeEmptySet = lower.TreeEquaSet.empty
     treeEmptySet shouldBe empty
 
-    lower.SortedEquaSet.empty.shouldHaveExactType[lower.SortedEquaSet]
-    lower.TreeEquaSet.empty.shouldHaveExactType[lower.TreeEquaSet]
+    lower.SortedEquaSet.empty.shouldHaveExactType[lower.SortedEquaSet[String]]
+    lower.TreeEquaSet.empty.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it can "be constructed with apply" in {
     val result1 = lower.SortedEquaSet("one", "two", "three")
     result1 should have size 3
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.TreeEquaSet("one", "two", "three")
     result2 should have size 3
-    result2.shouldHaveExactType[lower.TreeEquaSet]
+    result2.shouldHaveExactType[lower.TreeEquaSet[String]]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedEquaSet.
   }
@@ -122,11 +122,11 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "eliminate 'duplicate' entries passed to the apply factory method" in {
     val result1 = lower.SortedEquaSet("one", "two", "two", "three", "Three")
     result1 should have size 3
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.TreeEquaSet("one", "two", "two", "three", "Three")
     result2 should have size 3
-    result2.shouldHaveExactType[lower.TreeEquaSet]
+    result2.shouldHaveExactType[lower.TreeEquaSet[String]]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedEquaSet.
   }
@@ -137,190 +137,190 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a diff method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") diff lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet()
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") diff trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet()
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") diff trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.SortedEquaSet("hi", "ho") diff lower.SortedEquaSet("ho")
     result3 shouldBe lower.SortedEquaSet("hi")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho", "let's", "go") diff lower.SortedEquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.SortedEquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho") diff lower.TreeEquaSet("HI", "HO")
     result5 shouldBe lower.TreeEquaSet()
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = trimmed.TreeEquaSet("hi", "ho") diff trimmed.TreeEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.TreeEquaSet()
-    result6.shouldHaveExactType[trimmed.TreeEquaSet]
+    result6.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") diff trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.TreeEquaSet("hi", "ho") diff lower.TreeEquaSet("ho")
     result7 shouldBe lower.TreeEquaSet("hi")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho", "let's", "go") diff lower.TreeEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.TreeEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a &~ method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") &~ lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet()
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") &~ trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet()
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") &~ trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.SortedEquaSet("hi", "ho") &~ lower.SortedEquaSet("ho")
     result3 shouldBe lower.SortedEquaSet("hi")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho", "let's", "go") &~ lower.SortedEquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.SortedEquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho") &~ lower.TreeEquaSet("HI", "HO")
     result5 shouldBe lower.TreeEquaSet()
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = trimmed.TreeEquaSet("hi", "ho") &~ trimmed.TreeEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.TreeEquaSet()
-    result6.shouldHaveExactType[trimmed.TreeEquaSet]
+    result6.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") &~ trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.TreeEquaSet("hi", "ho") &~ lower.TreeEquaSet("ho")
     result7 shouldBe lower.TreeEquaSet("hi")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho", "let's", "go") &~ lower.TreeEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.TreeEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have an intersect method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") intersect trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") intersect trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.SortedEquaSet("hi", "ho") intersect lower.SortedEquaSet("ho")
     result3 shouldBe lower.SortedEquaSet("ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho", "let's", "go") intersect lower.SortedEquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.SortedEquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho") intersect lower.TreeEquaSet("HI", "HO")
     result5 shouldBe lower.TreeEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = trimmed.TreeEquaSet("hi", "ho") intersect trimmed.TreeEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.TreeEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.TreeEquaSet]
+    result6.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") intersect trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.TreeEquaSet("hi", "ho") intersect lower.TreeEquaSet("ho")
     result7 shouldBe lower.TreeEquaSet("ho")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho", "let's", "go") intersect lower.TreeEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.TreeEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have an & method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") & lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") & trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") & trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.SortedEquaSet("hi", "ho") & lower.SortedEquaSet("ho")
     result3 shouldBe lower.SortedEquaSet("ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho", "let's", "go") & lower.SortedEquaSet("bo", "no", "go", "ho")
     result4 shouldBe lower.SortedEquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho") & lower.TreeEquaSet("HI", "HO")
     result5 shouldBe lower.TreeEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = trimmed.TreeEquaSet("hi", "ho") & trimmed.TreeEquaSet(" hi ", " ho ")
     result6 shouldBe trimmed.TreeEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.TreeEquaSet]
+    result6.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") & trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result7 = lower.TreeEquaSet("hi", "ho") & lower.TreeEquaSet("ho")
     result7 shouldBe lower.TreeEquaSet("ho")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho", "let's", "go") & lower.TreeEquaSet("bo", "no", "go", "ho")
     result8 shouldBe lower.TreeEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a union method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") union lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") union trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") union trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.TreeEquaSet("hi", "ho") union lower.TreeEquaSet("HI", "HO")
     result3 shouldBe lower.TreeEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result4 = trimmed.TreeEquaSet("hi", "ho") union trimmed.TreeEquaSet(" hi ", " ho ")
     result4 shouldBe trimmed.TreeEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.TreeEquaSet]
+    result4.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") union trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a | method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.SortedEquaSet("hi", "ho") | lower.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = trimmed.SortedEquaSet("hi", "ho") | trimmed.SortedEquaSet(" hi ", " ho ")
     result2 shouldBe trimmed.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.SortedEquaSet]
+    result2.shouldHaveExactType[trimmed.SortedEquaSet[String]]
 
     """lower.SortedEquaSet(" hi ", "hi") | trimmed.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
 
     val result3 = lower.TreeEquaSet("hi", "ho") | lower.TreeEquaSet("HI", "HO")
     result3 shouldBe lower.TreeEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result4 = trimmed.TreeEquaSet("hi", "ho") | trimmed.TreeEquaSet(" hi ", " ho ")
     result4 shouldBe trimmed.TreeEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.TreeEquaSet]
+    result4.shouldHaveExactType[trimmed.TreeEquaSet[String]]
 
     """lower.TreeEquaSet(" hi ", "hi") | trimmed.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
@@ -333,94 +333,94 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a + method that takes one argument" in {
     val result1 = lower.SortedEquaSet("hi", "ho") + "ha"
     result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho") + "HO"
     result2 shouldBe lower.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.TreeEquaSet("hi", "ho") + "ha"
     result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result4 = lower.TreeEquaSet("hi", "ho") + "HO"
     result4 shouldBe lower.TreeEquaSet("hi", "ho")
-    result4.shouldHaveExactType[lower.TreeEquaSet]
+    result4.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a + method that takes two or more arguments" in {
     val result1 = lower.SortedEquaSet("hi", "ho") + ("ha", "hey!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.TreeEquaSet("hi", "ho") + ("ha", "hey!")
     result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result4 = lower.TreeEquaSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.TreeEquaSet]
+    result4.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a - method that takes one argument" in {
     val result1 = lower.SortedEquaSet("hi", "ho", "ha") - "ha"
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho") - "HO"
     result2 shouldBe lower.SortedEquaSet("hi")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.SortedEquaSet("hi", "ho") - "who?"
     result3 shouldBe lower.SortedEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.TreeEquaSet("hi", "ho", "ha") - "ha"
     result4 shouldBe lower.TreeEquaSet("hi", "ho")
-    result4.shouldHaveExactType[lower.TreeEquaSet]
+    result4.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho") - "HO"
     result5 shouldBe lower.TreeEquaSet("hi")
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = lower.TreeEquaSet("hi", "ho") - "who?"
     result6 shouldBe lower.TreeEquaSet("hi", "ho")
-    result6.shouldHaveExactType[lower.TreeEquaSet]
+    result6.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a - method that takes two or more arguments" in {
     val result1 = lower.SortedEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
     result2 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.SortedEquaSet("hi", "ho") - ("who", "goes", "thar")
     result3 shouldBe lower.SortedEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho") - ("HI", "HO")
     result4 shouldBe lower.SortedEquaSet.empty
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho", "ha") - ("ha", "howdy!")
     result5 shouldBe lower.TreeEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") - ("HO", "FIE", "fUm")
     result6 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.TreeEquaSet]
+    result6.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result7 = lower.TreeEquaSet("hi", "ho") - ("who", "goes", "thar")
     result7 shouldBe lower.TreeEquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho") - ("HI", "HO")
     result8 shouldBe lower.TreeEquaSet.empty
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "return an iterator that returns elements in sorted order" in {
     lower.SortedEquaSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
@@ -428,198 +428,198 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a ++ method that takes a GenTraversableOnce" in {
     val result1 = lower.SortedEquaSet("hi", "ho") ++ List("ha", "hey!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
     result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.SortedEquaSet("hi", "ho") ++ Set("ha", "hey!")
     result3 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
     result4 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.SortedEquaSet("hi", "ho") ++ Vector("ha", "hey!")
     result5 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result5.shouldHaveExactType[lower.SortedEquaSet]
+    result5.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result6 = lower.SortedEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
     result6 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result6.shouldHaveExactType[lower.SortedEquaSet]
+    result6.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result7 = lower.TreeEquaSet("hi", "ho") ++ List("ha", "hey!")
     result7 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho") ++ List("HO", "hoe", "Ho!")
     result8 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result9 = lower.TreeEquaSet("hi", "ho") ++ Set("ha", "hey!")
     result9 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result9.shouldHaveExactType[lower.TreeEquaSet]
+    result9.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result10 = lower.TreeEquaSet("hi", "ho") ++ Set("HO", "hoe", "Ho!")
     result10 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result10.shouldHaveExactType[lower.TreeEquaSet]
+    result10.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result11 = lower.TreeEquaSet("hi", "ho") ++ Vector("ha", "hey!")
     result11 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result11.shouldHaveExactType[lower.TreeEquaSet]
+    result11.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result12 = lower.TreeEquaSet("hi", "ho") ++ Vector("HO", "hoe", "Ho!")
     result12 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result12.shouldHaveExactType[lower.TreeEquaSet]
+    result12.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a ++ method that takes another EquaSet" in {
     val result1 = lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("ha", "hey!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho") ++ lower.SortedEquaSet("HO", "hoe", "Ho!")
     result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.TreeEquaSet("hi", "ho") ++ lower.TreeEquaSet("ha", "hey!")
     result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result4 = lower.TreeEquaSet("hi", "ho") ++ lower.TreeEquaSet("HO", "hoe", "Ho!")
     result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.TreeEquaSet]
+    result4.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a -- method that takes a GenTraversableOnce" in {
     val result1 = lower.SortedEquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
     result2 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.SortedEquaSet("hi", "ho") -- List("who", "goes", "thar")
     result3 shouldBe lower.SortedEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho") -- List("HI", "HO")
     result4 shouldBe lower.SortedEquaSet.empty
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.SortedEquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
     result5 shouldBe lower.SortedEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.SortedEquaSet]
+    result5.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result6 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
     result6 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.SortedEquaSet]
+    result6.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result7 = lower.SortedEquaSet("hi", "ho") -- Set("who", "goes", "thar")
     result7 shouldBe lower.SortedEquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.SortedEquaSet]
+    result7.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result8 = lower.SortedEquaSet("hi", "ho") -- Set("HI", "HO")
     result8 shouldBe lower.SortedEquaSet.empty
-    result8.shouldHaveExactType[lower.SortedEquaSet]
+    result8.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result9 = lower.SortedEquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
     result9 shouldBe lower.SortedEquaSet("hi", "ho")
-    result9.shouldHaveExactType[lower.SortedEquaSet]
+    result9.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result10 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
     result10 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    result10.shouldHaveExactType[lower.SortedEquaSet]
+    result10.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result11 = lower.SortedEquaSet("hi", "ho") -- Vector("who", "goes", "thar")
     result11 shouldBe lower.SortedEquaSet("hi", "ho")
-    result11.shouldHaveExactType[lower.SortedEquaSet]
+    result11.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result12 = lower.SortedEquaSet("hi", "ho") -- Vector("HI", "HO")
     result12 shouldBe lower.SortedEquaSet.empty
-    result12.shouldHaveExactType[lower.SortedEquaSet]
+    result12.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result13 = lower.TreeEquaSet("hi", "ho", "ha") -- List("ha", "howdy!")
     result13 shouldBe lower.TreeEquaSet("hi", "ho")
-    result13.shouldHaveExactType[lower.TreeEquaSet]
+    result13.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result14 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- List("HO", "FIE", "fUm")
     result14 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
-    result14.shouldHaveExactType[lower.TreeEquaSet]
+    result14.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result15 = lower.TreeEquaSet("hi", "ho") -- List("who", "goes", "thar")
     result15 shouldBe lower.TreeEquaSet("hi", "ho")
-    result15.shouldHaveExactType[lower.TreeEquaSet]
+    result15.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result16 = lower.TreeEquaSet("hi", "ho") -- List("HI", "HO")
     result16 shouldBe lower.TreeEquaSet.empty
-    result16.shouldHaveExactType[lower.TreeEquaSet]
+    result16.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result17 = lower.TreeEquaSet("hi", "ho", "ha") -- Set("ha", "howdy!")
     result17 shouldBe lower.TreeEquaSet("hi", "ho")
-    result17.shouldHaveExactType[lower.TreeEquaSet]
+    result17.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result18 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Set("HO", "FIE", "fUm")
     result18 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
-    result18.shouldHaveExactType[lower.TreeEquaSet]
+    result18.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result19 = lower.TreeEquaSet("hi", "ho") -- Set("who", "goes", "thar")
     result19 shouldBe lower.TreeEquaSet("hi", "ho")
-    result19.shouldHaveExactType[lower.TreeEquaSet]
+    result19.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result20 = lower.TreeEquaSet("hi", "ho") -- Set("HI", "HO")
     result20 shouldBe lower.TreeEquaSet.empty
-    result20.shouldHaveExactType[lower.TreeEquaSet]
+    result20.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result21 = lower.TreeEquaSet("hi", "ho", "ha") -- Vector("ha", "howdy!")
     result21 shouldBe lower.TreeEquaSet("hi", "ho")
-    result21.shouldHaveExactType[lower.TreeEquaSet]
+    result21.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result22 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- Vector("HO", "FIE", "fUm")
     result22 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
-    result22.shouldHaveExactType[lower.TreeEquaSet]
+    result22.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result23 = lower.TreeEquaSet("hi", "ho") -- Vector("who", "goes", "thar")
     result23 shouldBe lower.TreeEquaSet("hi", "ho")
-    result23.shouldHaveExactType[lower.TreeEquaSet]
+    result23.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result24 = lower.TreeEquaSet("hi", "ho") -- Vector("HI", "HO")
     result24 shouldBe lower.TreeEquaSet.empty
-    result24.shouldHaveExactType[lower.TreeEquaSet]
+    result24.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a -- method that takes another EquaSet" in {
     val result1 = lower.SortedEquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!")
     result1 shouldBe lower.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result2 = lower.SortedEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")
     result2 shouldBe lower.SortedEquaSet("hi", "fee", "foe")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result3 = lower.SortedEquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar")
     result3 shouldBe lower.SortedEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.SortedEquaSet]
+    result3.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result4 = lower.SortedEquaSet("hi", "ho") -- lower.EquaSet("HI", "HO")
     result4 shouldBe lower.SortedEquaSet.empty
-    result4.shouldHaveExactType[lower.SortedEquaSet]
+    result4.shouldHaveExactType[lower.SortedEquaSet[String]]
 
     val result5 = lower.TreeEquaSet("hi", "ho", "ha") -- lower.EquaSet("ha", "howdy!")
     result5 shouldBe lower.TreeEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.TreeEquaSet]
+    result5.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result6 = lower.TreeEquaSet("hi", "ho", "fee", "fie", "foe", "fum") -- lower.EquaSet("HO", "FIE", "fUm")
     result6 shouldBe lower.TreeEquaSet("hi", "fee", "foe")
-    result6.shouldHaveExactType[lower.TreeEquaSet]
+    result6.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result7 = lower.TreeEquaSet("hi", "ho") -- lower.EquaSet("who", "goes", "thar")
     result7 shouldBe lower.TreeEquaSet("hi", "ho")
-    result7.shouldHaveExactType[lower.TreeEquaSet]
+    result7.shouldHaveExactType[lower.TreeEquaSet[String]]
 
     val result8 = lower.TreeEquaSet("hi", "ho") -- lower.EquaSet("HI", "HO")
     result8 shouldBe lower.TreeEquaSet.empty
-    result8.shouldHaveExactType[lower.TreeEquaSet]
+    result8.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
   it should "have a /: method" in {
     (0 /: number.SortedEquaSet(1))(_ + _) shouldBe 1
@@ -649,21 +649,21 @@ class SortedEquaSetSpec extends UnitSpec {
     lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "ha", "hey!")
     lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(Set[String]())(_ + _, _ ++ _) shouldBe Set("hi", "ho", "hoe", "Ho!")
 
-    val result1 = lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _)
+    val result1 = lower.SortedEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.SortedEquaSet[String]())(_ + _, _ ++ _)
     result1 shouldBe lower.SortedEquaSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.SortedEquaSet]
+    result1.shouldHaveExactType[lower.SortedEquaSet[String]]
 
-    val result2 = lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquaSet())(_ + _, _ ++ _)
+    val result2 = lower.SortedEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.SortedEquaSet[String]())(_ + _, _ ++ _)
     result2 shouldBe lower.SortedEquaSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.SortedEquaSet]
+    result2.shouldHaveExactType[lower.SortedEquaSet[String]]
 
-    val result3 = lower.TreeEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.TreeEquaSet())(_ + _, _ ++ _)
+    val result3 = lower.TreeEquaSet("hi", "ho", "ha", "hey!").aggregate(lower.TreeEquaSet[String]())(_ + _, _ ++ _)
     result3 shouldBe lower.TreeEquaSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.TreeEquaSet]
+    result3.shouldHaveExactType[lower.TreeEquaSet[String]]
 
-    val result4 = lower.TreeEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.TreeEquaSet())(_ + _, _ ++ _)
+    val result4 = lower.TreeEquaSet("hi", "ho", "HO", "hoe", "Ho!").aggregate(lower.TreeEquaSet[String]())(_ + _, _ ++ _)
     result4 shouldBe lower.TreeEquaSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.TreeEquaSet]
+    result4.shouldHaveExactType[lower.TreeEquaSet[String]]
   }
 /*
   it should "have an apply method" in {
@@ -781,51 +781,51 @@ class SortedEquaSetSpec extends UnitSpec {
 
     val result1 = set.drop(0)
     result1 shouldBe number.SortedEquaSet(1, 2, 3, 4, 5)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = set.drop(1)
     result2 shouldBe number.SortedEquaSet(2, 3, 4, 5)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = set.drop(2)
     result3 shouldBe number.SortedEquaSet(3, 4, 5)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = set.drop(3)
     result4 shouldBe number.SortedEquaSet(4, 5)
-    result4.shouldHaveExactType[number.SortedEquaSet]
+    result4.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result5 = set.drop(4)
     result5 shouldBe number.SortedEquaSet(5)
-    result5.shouldHaveExactType[number.SortedEquaSet]
+    result5.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result6 = set.drop(5)
     result6 shouldBe number.SortedEquaSet()
-    result6.shouldHaveExactType[number.SortedEquaSet]
+    result6.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result7 = treeSet.drop(0)
     result7 shouldBe number.TreeEquaSet(1, 2, 3, 4, 5)
-    result7.shouldHaveExactType[number.TreeEquaSet]
+    result7.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result8 = treeSet.drop(1)
     result8 shouldBe number.TreeEquaSet(2, 3, 4, 5)
-    result8.shouldHaveExactType[number.TreeEquaSet]
+    result8.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result9 = treeSet.drop(2)
     result9 shouldBe number.TreeEquaSet(3, 4, 5)
-    result9.shouldHaveExactType[number.TreeEquaSet]
+    result9.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result10 = treeSet.drop(3)
     result10 shouldBe number.TreeEquaSet(4, 5)
-    result10.shouldHaveExactType[number.TreeEquaSet]
+    result10.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result11 = treeSet.drop(4)
     result11 shouldBe number.TreeEquaSet(5)
-    result11.shouldHaveExactType[number.TreeEquaSet]
+    result11.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result12 = treeSet.drop(5)
     result12 shouldBe number.TreeEquaSet()
-    result12.shouldHaveExactType[number.TreeEquaSet]
+    result12.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have a dropRight method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
@@ -833,51 +833,51 @@ class SortedEquaSetSpec extends UnitSpec {
 
     val result1 = set.dropRight(0)
     result1 shouldBe number.SortedEquaSet(1, 2, 3, 4, 5)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = set.dropRight(1)
     result2 shouldBe number.SortedEquaSet(1, 2, 3, 4)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = set.dropRight(2)
     result3 shouldBe number.SortedEquaSet(1, 2, 3)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = set.dropRight(3)
     result4 shouldBe number.SortedEquaSet(1, 2)
-    result4.shouldHaveExactType[number.SortedEquaSet]
+    result4.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result5 = set.dropRight(4)
     result5 shouldBe number.SortedEquaSet(1)
-    result5.shouldHaveExactType[number.SortedEquaSet]
+    result5.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result6 = set.dropRight(5)
     result6 shouldBe number.SortedEquaSet()
-    result6.shouldHaveExactType[number.SortedEquaSet]
+    result6.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result7 = treeSet.dropRight(0)
     result7 shouldBe number.TreeEquaSet(1, 2, 3, 4, 5)
-    result7.shouldHaveExactType[number.TreeEquaSet]
+    result7.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result8 = treeSet.dropRight(1)
     result8 shouldBe number.TreeEquaSet(1, 2, 3, 4)
-    result8.shouldHaveExactType[number.TreeEquaSet]
+    result8.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result9 = treeSet.dropRight(2)
     result9 shouldBe number.TreeEquaSet(1, 2, 3)
-    result9.shouldHaveExactType[number.TreeEquaSet]
+    result9.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result10 = treeSet.dropRight(3)
     result10 shouldBe number.TreeEquaSet(1, 2)
-    result10.shouldHaveExactType[number.TreeEquaSet]
+    result10.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result11 = treeSet.dropRight(4)
     result11 shouldBe number.TreeEquaSet(1)
-    result11.shouldHaveExactType[number.TreeEquaSet]
+    result11.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result12 = treeSet.dropRight(5)
     result12 shouldBe number.TreeEquaSet()
-    result12.shouldHaveExactType[number.TreeEquaSet]
+    result12.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have a dropWhile method" in {
     val set = number.SortedEquaSet(1, 2, 3, 4, 5)
@@ -885,51 +885,51 @@ class SortedEquaSetSpec extends UnitSpec {
 
     val result1 = set.dropWhile(_ < 1)
     result1 shouldBe number.SortedEquaSet(1, 2, 3, 4, 5)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = set.dropWhile(_ < 2)
     result2 shouldBe number.SortedEquaSet(2, 3, 4, 5)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = set.dropWhile(_ < 3)
     result3 shouldBe number.SortedEquaSet(3, 4, 5)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = set.dropWhile(_ < 4)
     result4 shouldBe number.SortedEquaSet(4, 5)
-    result4.shouldHaveExactType[number.SortedEquaSet]
+    result4.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result5 = set.dropWhile(_ < 5)
     result5 shouldBe number.SortedEquaSet(5)
-    result5.shouldHaveExactType[number.SortedEquaSet]
+    result5.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result6 = set.dropWhile(_ < 6)
     result6 shouldBe number.SortedEquaSet()
-    result6.shouldHaveExactType[number.SortedEquaSet]
+    result6.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result7 = treeSet.dropWhile(_ < 1)
     result7 shouldBe number.TreeEquaSet(1, 2, 3, 4, 5)
-    result7.shouldHaveExactType[number.TreeEquaSet]
+    result7.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result8 = treeSet.dropWhile(_ < 2)
     result8 shouldBe number.TreeEquaSet(2, 3, 4, 5)
-    result8.shouldHaveExactType[number.TreeEquaSet]
+    result8.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result9 = treeSet.dropWhile(_ < 3)
     result9 shouldBe number.TreeEquaSet(3, 4, 5)
-    result9.shouldHaveExactType[number.TreeEquaSet]
+    result9.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result10 = treeSet.dropWhile(_ < 4)
     result10 shouldBe number.TreeEquaSet(4, 5)
-    result10.shouldHaveExactType[number.TreeEquaSet]
+    result10.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result11 = treeSet.dropWhile(_ < 5)
     result11 shouldBe number.TreeEquaSet(5)
-    result11.shouldHaveExactType[number.TreeEquaSet]
+    result11.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result12 = treeSet.dropWhile(_ < 6)
     result12 shouldBe number.TreeEquaSet()
-    result12.shouldHaveExactType[number.TreeEquaSet]
+    result12.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have an path method" in {
     trimmed.EquaSet("hi").path shouldBe trimmed
@@ -947,27 +947,27 @@ class SortedEquaSetSpec extends UnitSpec {
 
     val result1 = set.filter(_ == 1)
     result1 shouldBe number.SortedEquaSet(1)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = set.filter(_ == 2)
     result2 shouldBe number.SortedEquaSet(2)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = set.filter(_ == 3)
     result3 shouldBe number.SortedEquaSet(3)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = treeSet.filter(_ == 1)
     result4 shouldBe number.TreeEquaSet(1)
-    result4.shouldHaveExactType[number.TreeEquaSet]
+    result4.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result5 = treeSet.filter(_ == 2)
     result5 shouldBe number.TreeEquaSet(2)
-    result5.shouldHaveExactType[number.TreeEquaSet]
+    result5.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result6 = treeSet.filter(_ == 3)
     result6 shouldBe number.TreeEquaSet(3)
-    result6.shouldHaveExactType[number.TreeEquaSet]
+    result6.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have a filterNot method" in {
     val set = number.SortedEquaSet(1, 2, 3)
@@ -1037,96 +1037,96 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a groupBy method" in {
     val result1 = number.SortedEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
     result1 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5), 0 -> number.SortedEquaSet(2, 4))
-    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+    result1.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet[Int]]]
 
     val result2 = number.SortedEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
     result2 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 3, 3), 0 -> number.SortedEquaSet(2))
-    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+    result2.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet[Int]]]
 
     val result3 = number.SortedEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
     result3 shouldBe Map(1 -> number.SortedEquaSet(1, 1, 3, 3, 3))
-    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+    result3.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet[Int]]]
 
     val result4 = number.SortedEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
     result4 shouldBe Map(1 -> number.SortedEquaSet(1, 3, 5, 7), 0 -> number.SortedEquaSet(2))
-    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet]]
+    result4.shouldHaveExactType[scala.collection.GenMap[Int, number.SortedEquaSet[Int]]]
 
     val result5 = number.TreeEquaSet(1, 2, 3, 4, 5).groupBy(_ % 2)
     result5 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 5), 0 -> number.TreeEquaSet(2, 4))
-    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+    result5.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet[Int]]]
 
     val result6 = number.TreeEquaSet(1, 2, 3, 3, 3).groupBy(_ % 2)
     result6 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 3, 3), 0 -> number.TreeEquaSet(2))
-    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+    result6.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet[Int]]]
 
     val result7 = number.TreeEquaSet(1, 1, 3, 3, 3).groupBy(_ % 2)
     result7 shouldBe Map(1 -> number.TreeEquaSet(1, 1, 3, 3, 3))
-    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+    result7.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet[Int]]]
 
     val result8 = number.TreeEquaSet(1, 2, 3, 5, 7).groupBy(_ % 2)
     result8 shouldBe Map(1 -> number.TreeEquaSet(1, 3, 5, 7), 0 -> number.TreeEquaSet(2))
-    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet]]
+    result8.shouldHaveExactType[scala.collection.GenMap[Int, number.TreeEquaSet[Int]]]
   }
   it should "have a grouped method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).grouped(2).toList
     result1 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    result1.shouldHaveExactType[List[number.SortedEquaSet]]
+    result1.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).grouped(1).toList
     result2 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
-    result2.shouldHaveExactType[List[number.SortedEquaSet]]
+    result2.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     an [IllegalArgumentException] should be thrownBy { number.SortedEquaSet(1, 2, 3).grouped(0).toList }
 
     val result3 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
     result3 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5, 6), number.SortedEquaSet(7, 8), number.SortedEquaSet(9, 10))
-    result3.shouldHaveExactType[List[number.SortedEquaSet]]
+    result3.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result4 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
     result4 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5, 6), number.SortedEquaSet(7, 8, 9), number.SortedEquaSet(10))
-    result4.shouldHaveExactType[List[number.SortedEquaSet]]
+    result4.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result5 = number.SortedEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
     result5 shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(5, 6, 7, 8), number.SortedEquaSet(9, 10))
-    result5.shouldHaveExactType[List[number.SortedEquaSet]]
+    result5.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result6 = number.SortedEquaSet(1).grouped(2).toList
     result6 shouldBe List(number.SortedEquaSet(1))
-    result6.shouldHaveExactType[List[number.SortedEquaSet]]
+    result6.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result7 = number.SortedEquaSet(1).grouped(1).toList
     result7 shouldBe List(number.SortedEquaSet(1))
-    result7.shouldHaveExactType[List[number.SortedEquaSet]]
+    result7.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result8 = number.TreeEquaSet(1, 2, 3).grouped(2).toList
     result8 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
-    result8.shouldHaveExactType[List[number.TreeEquaSet]]
+    result8.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result9 = number.TreeEquaSet(1, 2, 3).grouped(1).toList
     result9 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
-    result9.shouldHaveExactType[List[number.TreeEquaSet]]
+    result9.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     an [IllegalArgumentException] should be thrownBy { number.TreeEquaSet(1, 2, 3).grouped(0).toList }
 
     val result10 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
     result10 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4), number.TreeEquaSet(5, 6), number.TreeEquaSet(7, 8), number.TreeEquaSet(9, 10))
-    result10.shouldHaveExactType[List[number.TreeEquaSet]]
+    result10.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result11 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
     result11 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(4, 5, 6), number.TreeEquaSet(7, 8, 9), number.TreeEquaSet(10))
-    result11.shouldHaveExactType[List[number.TreeEquaSet]]
+    result11.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result12 = number.TreeEquaSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
     result12 shouldBe List(number.TreeEquaSet(1, 2, 3, 4), number.TreeEquaSet(5, 6, 7, 8), number.TreeEquaSet(9, 10))
-    result12.shouldHaveExactType[List[number.TreeEquaSet]]
+    result12.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result13 = number.TreeEquaSet(1).grouped(2).toList
     result13 shouldBe List(number.TreeEquaSet(1))
-    result13.shouldHaveExactType[List[number.TreeEquaSet]]
+    result13.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result14 = number.TreeEquaSet(1).grouped(1).toList
     result14 shouldBe List(number.TreeEquaSet(1))
-    result14.shouldHaveExactType[List[number.TreeEquaSet]]
+    result14.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
   }
   it should "have a hasDefiniteSize method" in {
     number.SortedEquaSet(1).hasDefiniteSize shouldBe true
@@ -1143,15 +1143,15 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an init method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).init
     result1 shouldBe number.SortedEquaSet(1, 2)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.TreeEquaSet(1, 2, 3).init
     result2 shouldBe number.TreeEquaSet(1, 2)
-    result2.shouldHaveExactType[number.TreeEquaSet]
+    result2.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have an inits method" in {
     val inits = number.SortedEquaSet(1, 2, 3).inits
-    inits.shouldHaveExactType[Iterator[number.SortedEquaSet]]
+    inits.shouldHaveExactType[Iterator[number.SortedEquaSet[Int]]]
     inits.next shouldBe number.SortedEquaSet(1,2,3)
     inits.next shouldBe number.SortedEquaSet(1,2)
     inits.next shouldBe number.SortedEquaSet(1)
@@ -1159,7 +1159,7 @@ class SortedEquaSetSpec extends UnitSpec {
     inits.hasNext shouldBe false
 
     val treeInits = number.TreeEquaSet(1, 2, 3).inits
-    treeInits.shouldHaveExactType[Iterator[number.TreeEquaSet]]
+    treeInits.shouldHaveExactType[Iterator[number.TreeEquaSet[Int]]]
     treeInits.next shouldBe number.TreeEquaSet(1,2,3)
     treeInits.next shouldBe number.TreeEquaSet(1,2)
     treeInits.next shouldBe number.TreeEquaSet(1)
@@ -1220,11 +1220,11 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a partition method" in {
     val result1 = number.SortedEquaSet(1, 2, 3, 4).partition(_ < 3)
     result1 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4))
-    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result1.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result2 = number.TreeEquaSet(1, 2, 3, 4).partition(_ < 3)
     result2 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4))
-    result2.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result2.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
   }
   it should "have a product method" in {
     number.SortedEquaSet(1, 2, 3).product shouldBe 6
@@ -1272,10 +1272,10 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
   it should "have a repr method" in {
-    implicit val numberOrdering = new Ordering[number.EquaBox] {
-      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    implicit val numberOrdering = new Ordering[number.EquaBox[Int]] {
+      def compare(x: number.EquaBox[Int], y: number.EquaBox[Int]): Int = x.value - y.value
     }
-    number.SortedEquaSet(1, 2, 3).repr shouldBe SortedSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    number.SortedEquaSet(1, 2, 3).repr shouldBe SortedSet(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
   }
   it should "have a sameElements method that takes a GenIterable" in {
     number.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5)) shouldBe true
@@ -1289,315 +1289,315 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a scanLeft method" in {
     val result1 = number.SortedEquaSet(1).scanLeft(0)(_ + _)
     result1 shouldBe number.SortedEquaSet(0, 1)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).scanLeft(0)(_ + _)
     result2 shouldBe number.SortedEquaSet(0, 1, 3, 6)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = number.TreeEquaSet(1).scanLeft(0)(_ + _)
     result3 shouldBe number.TreeEquaSet(0, 1)
-    result3.shouldHaveExactType[number.TreeEquaSet]
+    result3.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result4 = number.TreeEquaSet(1, 2, 3).scanLeft(0)(_ + _)
     result4 shouldBe number.TreeEquaSet(0, 1, 3, 6)
-    result4.shouldHaveExactType[number.TreeEquaSet]
+    result4.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have an into.scanLeft method" is pending
   it should "have a scanRight method" in {
     val result1 = number.SortedEquaSet(1).scanRight(0)(_ + _)
     result1 shouldBe number.SortedEquaSet(1, 0)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).scanRight(0)(_ + _)
     result2 shouldBe number.SortedEquaSet(6, 5, 3, 0)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = number.TreeEquaSet(1).scanRight(0)(_ + _)
     result3 shouldBe number.TreeEquaSet(1, 0)
-    result3.shouldHaveExactType[number.TreeEquaSet]
+    result3.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result4 = number.TreeEquaSet(1, 2, 3).scanRight(0)(_ + _)
     result4 shouldBe number.TreeEquaSet(6, 5, 3, 0)
-    result4.shouldHaveExactType[number.TreeEquaSet]
+    result4.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have an into.scanRight method" is pending
   it should "have a slice method" in {
     val result1 = number.SortedEquaSet(3).slice(0, 0)
     result1 shouldBe number.SortedEquaSet()
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).slice(2, 1)
     result2 shouldBe number.SortedEquaSet()
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = number.SortedEquaSet(1, 2, 3).slice(1, 3)
     result3 shouldBe number.SortedEquaSet(2, 3)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = number.TreeEquaSet(3).slice(0, 0)
     result4 shouldBe number.TreeEquaSet()
-    result4.shouldHaveExactType[number.TreeEquaSet]
+    result4.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result5 = number.TreeEquaSet(1, 2, 3).slice(2, 1)
     result5 shouldBe number.TreeEquaSet()
-    result5.shouldHaveExactType[number.TreeEquaSet]
+    result5.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result6 = number.TreeEquaSet(1, 2, 3).slice(1, 3)
     result6 shouldBe number.TreeEquaSet(2, 3)
-    result6.shouldHaveExactType[number.TreeEquaSet]
+    result6.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have 2 sliding methods" in {
 
     val result1 = number.SortedEquaSet(1).sliding(1).toList
     result1 shouldBe List(number.SortedEquaSet(1))
-    result1.shouldHaveExactType[List[number.SortedEquaSet]]
+    result1.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result2 = number.SortedEquaSet(1).sliding(2).toList
     result2 shouldBe List(number.SortedEquaSet(1))
-    result2.shouldHaveExactType[List[number.SortedEquaSet]]
+    result2.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result3 = number.SortedEquaSet(1, 2, 3).sliding(2).toList
     result3 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
-    result3.shouldHaveExactType[List[number.SortedEquaSet]]
+    result3.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result4 = number.SortedEquaSet(1, 2, 3).sliding(1).toList
     result4 shouldBe List(number.SortedEquaSet(1), number.EquaSet(2), number.SortedEquaSet(3))
-    result4.shouldHaveExactType[List[number.SortedEquaSet]]
+    result4.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result5 = number.SortedEquaSet(1, 2, 3).sliding(3).toList
     result5 shouldBe List(number.SortedEquaSet(1, 2, 3))
-    result5.shouldHaveExactType[List[number.SortedEquaSet]]
+    result5.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result6 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3).toList
     result6 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    result6.shouldHaveExactType[List[number.SortedEquaSet]]
+    result6.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result7 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2).toList
     result7 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3), number.SortedEquaSet(3, 4), number.SortedEquaSet(4, 5))
-    result7.shouldHaveExactType[List[number.SortedEquaSet]]
+    result7.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result8 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(1).toList
     result8 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3), number.SortedEquaSet(4), number.SortedEquaSet(5))
-    result8.shouldHaveExactType[List[number.SortedEquaSet]]
+    result8.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result9 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(4).toList
     result9 shouldBe List(number.SortedEquaSet(1, 2, 3, 4), number.SortedEquaSet(2, 3, 4, 5))
-    result9.shouldHaveExactType[List[number.SortedEquaSet]]
+    result9.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result10 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(5).toList
     result10 shouldBe List(number.SortedEquaSet(1, 2, 3, 4, 5))
-    result10.shouldHaveExactType[List[number.SortedEquaSet]]
+    result10.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result11 = number.SortedEquaSet(1).sliding(1, 1).toList
     result11 shouldBe List(number.SortedEquaSet(1))
-    result11.shouldHaveExactType[List[number.SortedEquaSet]]
+    result11.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result12 = number.SortedEquaSet(1).sliding(1, 2).toList
     result12 shouldBe List(number.SortedEquaSet(1))
-    result12.shouldHaveExactType[List[number.SortedEquaSet]]
+    result12.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result13 = number.SortedEquaSet(1, 2, 3).sliding(1, 1).toList
     result13 shouldBe List(number.SortedEquaSet(1), number.SortedEquaSet(2), number.SortedEquaSet(3))
-    result13.shouldHaveExactType[List[number.SortedEquaSet]]
+    result13.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result14 = number.SortedEquaSet(1, 2, 3).sliding(2, 1).toList
     result14 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(2, 3))
-    result14.shouldHaveExactType[List[number.SortedEquaSet]]
+    result14.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result15 = number.SortedEquaSet(1, 2, 3).sliding(2, 2).toList
     result15 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    result15.shouldHaveExactType[List[number.SortedEquaSet]]
+    result15.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result16 = number.SortedEquaSet(1, 2, 3).sliding(3, 2).toList
     result16 shouldBe List(number.SortedEquaSet(1, 2, 3))
-    result16.shouldHaveExactType[List[number.SortedEquaSet]]
+    result16.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result17 = number.SortedEquaSet(1, 2, 3).sliding(3, 1).toList
     result17 shouldBe List(number.SortedEquaSet(1, 2, 3))
-    result17.shouldHaveExactType[List[number.SortedEquaSet]]
+    result17.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result18 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result18 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    result18.shouldHaveExactType[List[number.SortedEquaSet]]
+    result18.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result19 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
     result19 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(3, 4), number.SortedEquaSet(5))
-    result19.shouldHaveExactType[List[number.SortedEquaSet]]
+    result19.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result20 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
     result20 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(4, 5))
-    result20.shouldHaveExactType[List[number.SortedEquaSet]]
+    result20.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result21 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
     result21 shouldBe List(number.SortedEquaSet(1, 2), number.SortedEquaSet(5))
-    result21.shouldHaveExactType[List[number.SortedEquaSet]]
+    result21.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result22 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result22 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(2, 3, 4), number.SortedEquaSet(3, 4, 5))
-    result22.shouldHaveExactType[List[number.SortedEquaSet]]
+    result22.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result23 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
     result23 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(3, 4, 5))
-    result23.shouldHaveExactType[List[number.SortedEquaSet]]
+    result23.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result24 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
     result24 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(4, 5))
-    result24.shouldHaveExactType[List[number.SortedEquaSet]]
+    result24.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result25 = number.SortedEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
     result25 shouldBe List(number.SortedEquaSet(1, 2, 3), number.SortedEquaSet(5))
-    result25.shouldHaveExactType[List[number.SortedEquaSet]]
+    result25.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result26 = number.TreeEquaSet(1).sliding(1).toList
     result26 shouldBe List(number.TreeEquaSet(1))
-    result26.shouldHaveExactType[List[number.TreeEquaSet]]
+    result26.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result27 = number.TreeEquaSet(1).sliding(2).toList
     result27 shouldBe List(number.TreeEquaSet(1))
-    result27.shouldHaveExactType[List[number.TreeEquaSet]]
+    result27.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result28 = number.TreeEquaSet(1, 2, 3).sliding(2).toList
     result28 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3))
-    result28.shouldHaveExactType[List[number.TreeEquaSet]]
+    result28.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result29 = number.TreeEquaSet(1, 2, 3).sliding(1).toList
     result29 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
-    result29.shouldHaveExactType[List[number.TreeEquaSet]]
+    result29.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result30 = number.TreeEquaSet(1, 2, 3).sliding(3).toList
     result30 shouldBe List(number.TreeEquaSet(1, 2, 3))
-    result30.shouldHaveExactType[List[number.TreeEquaSet]]
+    result30.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result31 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3).toList
     result31 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
-    result31.shouldHaveExactType[List[number.TreeEquaSet]]
+    result31.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result32 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2).toList
     result32 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3), number.TreeEquaSet(3, 4), number.TreeEquaSet(4, 5))
-    result32.shouldHaveExactType[List[number.TreeEquaSet]]
+    result32.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result33 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(1).toList
     result33 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3), number.TreeEquaSet(4), number.TreeEquaSet(5))
-    result33.shouldHaveExactType[List[number.TreeEquaSet]]
+    result33.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result34 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(4).toList
     result34 shouldBe List(number.TreeEquaSet(1, 2, 3, 4), number.TreeEquaSet(2, 3, 4, 5))
-    result34.shouldHaveExactType[List[number.TreeEquaSet]]
+    result34.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result35 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(5).toList
     result35 shouldBe List(number.TreeEquaSet(1, 2, 3, 4, 5))
-    result35.shouldHaveExactType[List[number.TreeEquaSet]]
+    result35.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result36 = number.TreeEquaSet(1).sliding(1, 1).toList
     result36 shouldBe List(number.TreeEquaSet(1))
-    result36.shouldHaveExactType[List[number.TreeEquaSet]]
+    result36.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result37 = number.TreeEquaSet(1).sliding(1, 2).toList
     result37 shouldBe List(number.TreeEquaSet(1))
-    result37.shouldHaveExactType[List[number.TreeEquaSet]]
+    result37.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result38 = number.TreeEquaSet(1, 2, 3).sliding(1, 1).toList
     result38 shouldBe List(number.TreeEquaSet(1), number.TreeEquaSet(2), number.TreeEquaSet(3))
-    result38.shouldHaveExactType[List[number.TreeEquaSet]]
+    result38.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result39 = number.TreeEquaSet(1, 2, 3).sliding(2, 1).toList
     result39 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(2, 3))
-    result39.shouldHaveExactType[List[number.TreeEquaSet]]
+    result39.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result40 = number.TreeEquaSet(1, 2, 3).sliding(2, 2).toList
     result40 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
-    result40.shouldHaveExactType[List[number.TreeEquaSet]]
+    result40.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result41 = number.TreeEquaSet(1, 2, 3).sliding(3, 2).toList
     result41 shouldBe List(number.TreeEquaSet(1, 2, 3))
-    result41.shouldHaveExactType[List[number.TreeEquaSet]]
+    result41.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result42 = number.TreeEquaSet(1, 2, 3).sliding(3, 1).toList
     result42 shouldBe List(number.TreeEquaSet(1, 2, 3))
-    result42.shouldHaveExactType[List[number.TreeEquaSet]]
+    result42.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result43 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result43 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
-    result43.shouldHaveExactType[List[number.TreeEquaSet]]
+    result43.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result44 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 2).toList
     result44 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(3, 4), number.TreeEquaSet(5))
-    result44.shouldHaveExactType[List[number.TreeEquaSet]]
+    result44.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result45 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 3).toList
     result45 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(4, 5))
-    result45.shouldHaveExactType[List[number.TreeEquaSet]]
+    result45.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result46 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(2, 4).toList
     result46 shouldBe List(number.TreeEquaSet(1, 2), number.TreeEquaSet(5))
-    result46.shouldHaveExactType[List[number.TreeEquaSet]]
+    result46.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result47 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 1).toList
     result47 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(2, 3, 4), number.TreeEquaSet(3, 4, 5))
-    result47.shouldHaveExactType[List[number.TreeEquaSet]]
+    result47.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result48 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 2).toList
     result48 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(3, 4, 5))
-    result48.shouldHaveExactType[List[number.TreeEquaSet]]
+    result48.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result49 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 3).toList
     result49 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(4, 5))
-    result49.shouldHaveExactType[List[number.TreeEquaSet]]
+    result49.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
 
     val result50 = number.TreeEquaSet(1, 2, 3, 4, 5).sliding(3, 4).toList
     result50 shouldBe List(number.TreeEquaSet(1, 2, 3), number.TreeEquaSet(5))
-    result50.shouldHaveExactType[List[number.TreeEquaSet]]
+    result50.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
   }
   it should "have a span method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).span(_ < 3)
     result1 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result1.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result2 = number.SortedEquaSet(1, 2, 3).span(_ > 3)
     result2 shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
-    result2.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result2.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result3 = number.TreeEquaSet(1, 2, 3).span(_ < 3)
     result3 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
-    result3.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result3.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
 
     val result4 = number.TreeEquaSet(1, 2, 3).span(_ > 3)
     result4 shouldBe (number.TreeEquaSet(), number.TreeEquaSet(1, 2, 3))
-    result4.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result4.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
   }
   it should "have a splitAt method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).splitAt(0)
     result1 shouldBe (number.SortedEquaSet(), number.SortedEquaSet(1, 2, 3))
-    result1.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result1.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result2 = number.SortedEquaSet(1, 2, 3).splitAt(1)
     result2 shouldBe (number.SortedEquaSet(1), number.SortedEquaSet(2, 3))
-    result2.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result2.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result3 = number.SortedEquaSet(1, 2, 3).splitAt(2)
     result3 shouldBe (number.SortedEquaSet(1, 2), number.SortedEquaSet(3))
-    result3.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result3.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result4 = number.SortedEquaSet(1, 2, 3).splitAt(3)
     result4 shouldBe (number.SortedEquaSet(1, 2, 3), number.SortedEquaSet())
-    result4.shouldHaveExactType[(number.SortedEquaSet, number.SortedEquaSet)]
+    result4.shouldHaveExactType[(number.SortedEquaSet[Int], number.SortedEquaSet[Int])]
 
     val result5 = number.TreeEquaSet(1, 2, 3).splitAt(0)
     result5 shouldBe (number.TreeEquaSet(), number.TreeEquaSet(1, 2, 3))
-    result5.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result5.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
 
     val result6 = number.TreeEquaSet(1, 2, 3).splitAt(1)
     result6 shouldBe (number.TreeEquaSet(1), number.TreeEquaSet(2, 3))
-    result6.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result6.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
 
     val result7 = number.TreeEquaSet(1, 2, 3).splitAt(2)
     result7 shouldBe (number.TreeEquaSet(1, 2), number.TreeEquaSet(3))
-    result7.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result7.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
 
     val result8 = number.TreeEquaSet(1, 2, 3).splitAt(3)
     result8 shouldBe (number.TreeEquaSet(1, 2, 3), number.TreeEquaSet())
-    result8.shouldHaveExactType[(number.TreeEquaSet, number.TreeEquaSet)]
+    result8.shouldHaveExactType[(number.TreeEquaSet[Int], number.TreeEquaSet[Int])]
   }
   it should "have a stringPrefix method" in {
     number.SortedEquaSet(1).stringPrefix shouldBe "TreeEquaSet"
@@ -1632,11 +1632,11 @@ class SortedEquaSetSpec extends UnitSpec {
     subsets2 should contain (number.SortedEquaSet(1, 3))
     subsets2 should contain (number.SortedEquaSet(2, 3))
 
-    number.SortedEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.SortedEquaSet]]
-    number.SortedEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.SortedEquaSet]]
+    number.SortedEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.SortedEquaSet[Int]]]
+    number.SortedEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.SortedEquaSet[Int]]]
 
-    number.TreeEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.TreeEquaSet]]
-    number.TreeEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.TreeEquaSet]]
+    number.TreeEquaSet(1, 2, 3).subsets.shouldHaveExactType[Iterator[number.TreeEquaSet[Int]]]
+    number.TreeEquaSet(1, 2, 3).subsets(2).shouldHaveExactType[Iterator[number.TreeEquaSet[Int]]]
   }
   it should "have a sum method" in {
     number.SortedEquaSet(1).sum shouldBe 1
@@ -1647,92 +1647,92 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have an tail method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).tail
     result1 shouldBe number.SortedEquaSet(2, 3)
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.TreeEquaSet(1, 2, 3).tail
     result2 shouldBe number.TreeEquaSet(2, 3)
-    result2.shouldHaveExactType[number.TreeEquaSet]
+    result2.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have an tails method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).tails.toList
     result1 shouldBe List(number.SortedEquaSet(1,2,3), number.SortedEquaSet(2,3), number.SortedEquaSet(3), number.SortedEquaSet())
-    result1.shouldHaveExactType[List[number.SortedEquaSet]]
+    result1.shouldHaveExactType[List[number.SortedEquaSet[Int]]]
 
     val result2 = number.TreeEquaSet(1, 2, 3).tails.toList
     result2 shouldBe List(number.TreeEquaSet(1,2,3), number.TreeEquaSet(2,3), number.TreeEquaSet(3), number.TreeEquaSet())
-    result2.shouldHaveExactType[List[number.TreeEquaSet]]
+    result2.shouldHaveExactType[List[number.TreeEquaSet[Int]]]
   }
   it should "have a take method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).take(0)
     result1 shouldBe number.SortedEquaSet()
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).take(1)
     result2 shouldBe number.SortedEquaSet(1)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = number.SortedEquaSet(1, 2, 3).take(2)
     result3 shouldBe number.SortedEquaSet(1, 2)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = number.SortedEquaSet(1, 2, 3).take(3)
     result4 shouldBe number.SortedEquaSet(1, 2, 3)
-    result4.shouldHaveExactType[number.SortedEquaSet]
+    result4.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result5 = number.TreeEquaSet(1, 2, 3).take(0)
     result5 shouldBe number.TreeEquaSet()
-    result5.shouldHaveExactType[number.TreeEquaSet]
+    result5.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result6 = number.TreeEquaSet(1, 2, 3).take(1)
     result6 shouldBe number.TreeEquaSet(1)
-    result6.shouldHaveExactType[number.TreeEquaSet]
+    result6.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result7 = number.TreeEquaSet(1, 2, 3).take(2)
     result7 shouldBe number.TreeEquaSet(1, 2)
-    result7.shouldHaveExactType[number.TreeEquaSet]
+    result7.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result8 = number.TreeEquaSet(1, 2, 3).take(3)
     result8 shouldBe number.TreeEquaSet(1, 2, 3)
-    result8.shouldHaveExactType[number.TreeEquaSet]
+    result8.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have a takeRight method" in {
     val result1 = number.SortedEquaSet(1, 2, 3).takeRight(0)
     result1 shouldBe number.SortedEquaSet()
-    result1.shouldHaveExactType[number.SortedEquaSet]
+    result1.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result2 = number.SortedEquaSet(1, 2, 3).takeRight(1)
     result2 shouldBe number.SortedEquaSet(3)
-    result2.shouldHaveExactType[number.SortedEquaSet]
+    result2.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result3 = number.SortedEquaSet(1, 2, 3).takeRight(2)
     result3 shouldBe number.SortedEquaSet(2, 3)
-    result3.shouldHaveExactType[number.SortedEquaSet]
+    result3.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result4 = number.SortedEquaSet(1, 2, 3).takeRight(3)
     result4 shouldBe number.SortedEquaSet(1, 2, 3)
-    result4.shouldHaveExactType[number.SortedEquaSet]
+    result4.shouldHaveExactType[number.SortedEquaSet[Int]]
 
     val result5 = number.TreeEquaSet(1, 2, 3).takeRight(0)
     result5 shouldBe number.TreeEquaSet()
-    result5.shouldHaveExactType[number.TreeEquaSet]
+    result5.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result6 = number.TreeEquaSet(1, 2, 3).takeRight(1)
     result6 shouldBe number.TreeEquaSet(3)
-    result6.shouldHaveExactType[number.TreeEquaSet]
+    result6.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result7 = number.TreeEquaSet(1, 2, 3).takeRight(2)
     result7 shouldBe number.TreeEquaSet(2, 3)
-    result7.shouldHaveExactType[number.TreeEquaSet]
+    result7.shouldHaveExactType[number.TreeEquaSet[Int]]
 
     val result8 = number.TreeEquaSet(1, 2, 3).takeRight(3)
     result8 shouldBe number.TreeEquaSet(1, 2, 3)
-    result8.shouldHaveExactType[number.TreeEquaSet]
+    result8.shouldHaveExactType[number.TreeEquaSet[Int]]
   }
   it should "have a to method" in {
-    number.SortedEquaSet(1).to[List] shouldBe List(number.EquaBox(1))
-    number.SortedEquaSet(1, 2, 3).to[List] shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-    number.SortedEquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-    number.SortedEquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    number.SortedEquaSet(1).to[List] shouldBe List(number.EquaBox[Int](1))
+    number.SortedEquaSet(1, 2, 3).to[List] shouldBe List(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
+    number.SortedEquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
+    number.SortedEquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
   }
   it should "have a toArray method" in {
     number.SortedEquaSet(1, 2, 3).toArray shouldBe Array(1, 2, 3)
@@ -1740,9 +1740,9 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).toArray shouldBe Array(1)
   }
   it should "have a toEquaBoxArray method" in {
-    number.SortedEquaSet(1, 2, 3).toEquaBoxArray shouldBe Array(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
+    number.SortedEquaSet(1, 2, 3).toEquaBoxArray shouldBe Array(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
     lower.SortedEquaSet("a", "b").toEquaBoxArray shouldBe Array(lower.EquaBox("a"), lower.EquaBox("b"))
-    number.SortedEquaSet(1).toEquaBoxArray shouldBe Array(number.EquaBox(1))
+    number.SortedEquaSet(1).toEquaBoxArray shouldBe Array(number.EquaBox[Int](1))
   }
   it should "have a toBuffer method" in {
     number.SortedEquaSet(1, 2, 3).toBuffer shouldBe (Buffer(1, 2, 3))
@@ -1830,22 +1830,22 @@ class SortedEquaSetSpec extends UnitSpec {
     number.SortedEquaSet(1).toEquaBoxStream shouldBe(Stream(number.EquaBox(1)))
   }
   it should "have a toTraversable method" in {
-    implicit val numberOrdering = new Ordering[number.EquaBox] {
-      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    implicit val numberOrdering = new Ordering[number.EquaBox[Int]] {
+      def compare(x: number.EquaBox[Int], y: number.EquaBox[Int]): Int = x.value - y.value
     }
-    implicit val lowerOrdering = new Ordering[lower.EquaBox] {
-      def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
+    implicit val lowerOrdering = new Ordering[lower.EquaBox[String]] {
+      def compare(x: lower.EquaBox[String], y: lower.EquaBox[String]): Int = x.value compareTo y.value
     }
     number.SortedEquaSet(1, 2, 3).toTraversable should === (TreeSet(1, 2, 3))
     lower.SortedEquaSet("a", "b").toTraversable should === (TreeSet("a", "b"))
     number.SortedEquaSet(1).toTraversable should === (TreeSet(1))
   }
   it should "have a toEquaBoxTraversable method" in {
-    implicit val numberOrdering = new Ordering[number.EquaBox] {
-      def compare(x: number.EquaBox, y: number.EquaBox): Int = x.value - y.value
+    implicit val numberOrdering = new Ordering[number.EquaBox[Int]] {
+      def compare(x: number.EquaBox[Int], y: number.EquaBox[Int]): Int = x.value - y.value
     }
-    implicit val lowerOrdering = new Ordering[lower.EquaBox] {
-      def compare(x: lower.EquaBox, y: lower.EquaBox): Int = x.value compareTo y.value
+    implicit val lowerOrdering = new Ordering[lower.EquaBox[String]] {
+      def compare(x: lower.EquaBox[String], y: lower.EquaBox[String]): Int = x.value compareTo y.value
     }
     number.SortedEquaSet(1, 2, 3).toEquaBoxTraversable should === (TreeSet(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3)))
     lower.SortedEquaSet("a", "b").toEquaBoxTraversable should === (TreeSet(lower.EquaBox("a"), lower.EquaBox("b")))
@@ -1864,35 +1864,35 @@ class SortedEquaSetSpec extends UnitSpec {
   it should "have a transpose method" in {
     val result1 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
     result1 shouldBe numberList.SortedEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    result1.shouldHaveExactType[numberList.SortedEquaSet]
+    result1.shouldHaveExactType[numberList.SortedEquaSet[List[Int]]]
 
     val result2 = numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
     result2 shouldBe numberList.SortedEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    result2.shouldHaveExactType[numberList.SortedEquaSet]
+    result2.shouldHaveExactType[numberList.SortedEquaSet[List[Int]]]
 
     val result3 = numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
     result3 shouldBe numberList.SortedEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    result3.shouldHaveExactType[numberList.SortedEquaSet]
+    result3.shouldHaveExactType[numberList.SortedEquaSet[List[Int]]]
 
     val result4 = numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
     result4 shouldBe numberList.SortedEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
-    result4.shouldHaveExactType[numberList.SortedEquaSet]
+    result4.shouldHaveExactType[numberList.SortedEquaSet[List[Int]]]
 
     val result5 = numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
     result5 shouldBe numberList.TreeEquaSet(List(1, 4, 7), List(2, 5, 8), List(3, 6, 9))
-    result5.shouldHaveExactType[numberList.TreeEquaSet]
+    result5.shouldHaveExactType[numberList.TreeEquaSet[List[Int]]]
 
     val result6 = numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose
     result6 shouldBe numberList.TreeEquaSet(List(1, 3, 5, 7), List(2, 4, 6, 8))
-    result6.shouldHaveExactType[numberList.TreeEquaSet]
+    result6.shouldHaveExactType[numberList.TreeEquaSet[List[Int]]]
 
     val result7 = numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose
     result7 shouldBe numberList.TreeEquaSet(List(1, 2), List(3, 4), List(5, 6), List(7, 8))
-    result7.shouldHaveExactType[numberList.TreeEquaSet]
+    result7.shouldHaveExactType[numberList.TreeEquaSet[List[Int]]]
 
     val result8 = numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose
     result8 shouldBe numberList.TreeEquaSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
-    result8.shouldHaveExactType[numberList.TreeEquaSet]
+    result8.shouldHaveExactType[numberList.TreeEquaSet[List[Int]]]
   }
 
   it should "have a zip method" in {

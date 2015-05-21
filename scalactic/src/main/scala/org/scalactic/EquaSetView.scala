@@ -18,9 +18,9 @@ package org.scalactic
 trait EquaSetView[+T] {
   def map[U](f: T => U): EquaSetView[U]
   def flatMap[U](f: T => EquaSetView[U]): EquaSetView[U]
-  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet
-  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet
-  def force[U >: T](toPath: EquaPath[U]): toPath.EquaSet
+  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
+  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet[U]
+  def force[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
   def toList: List[T]
   def size: Int
   /**
