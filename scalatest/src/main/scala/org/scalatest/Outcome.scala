@@ -412,22 +412,29 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
 }
 
 object Failed {
-  def apply(): Failed = new Failed(new exceptions.TestFailedException(1))
-  def apply(message: String): Failed = new Failed(new exceptions.TestFailedException(message, 1))
+
+  // SKIP-SCALATESTJS-START
+  val stackDepth = 1
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY val stackDepth = 10
+
+  def apply(): Failed = new Failed(new exceptions.TestFailedException(stackDepth))
+  def apply(message: String): Failed = new Failed(new exceptions.TestFailedException(message, stackDepth))
   // I always wrap this in a TFE because I need to do that to get the message in there.
   def apply(message: String, cause: Throwable): Failed = {
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to a factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to a factory method in object Failed")
-    new Failed(new exceptions.TestFailedException(message, cause, 1))
+    new Failed(new exceptions.TestFailedException(message, cause, stackDepth))
   }
   def here(cause: Throwable): Failed = {
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to the \"here\" factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to the \"here\" factory method in object Failed")
+
     new Failed(
       if (cause.getMessage != null)
-        new exceptions.TestFailedException(cause.getMessage, cause, 1)
+        new exceptions.TestFailedException(cause.getMessage, cause, stackDepth)
        else
-        new exceptions.TestFailedException(cause, 1)
+        new exceptions.TestFailedException(cause, stackDepth)
      )
   }
 }
@@ -467,9 +474,14 @@ case class Canceled(exception: exceptions.TestCanceledException) extends Excepti
  */
 object Canceled {
 
-  def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(1))
+  // SKIP-SCALATESTJS-START
+  protected[scalatest] val stackDepth = 1
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY protected[scalatest] val stackDepth = 10
+
+  def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(stackDepth))
   def apply(message: String, cause: Throwable): Canceled = // TODO write tests for NPEs
-    new Canceled(new exceptions.TestCanceledException(message, cause, 1))
+    new Canceled(new exceptions.TestCanceledException(message, cause, stackDepth))
   def apply(ex: Throwable): Canceled = { // TODO write tests for NPEs
     ex match {
       case tce: exceptions.TestCanceledException => 
@@ -477,9 +489,9 @@ object Canceled {
       case _ =>
         val msg = ex.getMessage
         if (msg == null)
-          new Canceled(new exceptions.TestCanceledException(ex, 1))
+          new Canceled(new exceptions.TestCanceledException(ex, stackDepth))
         else 
-          new Canceled(new exceptions.TestCanceledException(msg, ex, 1))
+          new Canceled(new exceptions.TestCanceledException(msg, ex, stackDepth))
     }
   }
 
@@ -509,17 +521,17 @@ object Canceled {
   def apply(message: String): Canceled = {
     if (message == null)
       throw new NullPointerException("message was null")
-    val e = new exceptions.TestCanceledException(message, 1)
-    e.fillInStackTrace()
+    val e = new exceptions.TestCanceledException(message, stackDepth)
+    //e.fillInStackTrace()
     Canceled(e)
   }
 
   def here(cause: Throwable): Canceled = {
     new Canceled(
       if (cause.getMessage != null)
-        new exceptions.TestCanceledException(cause.getMessage, cause, 1)
+        new exceptions.TestCanceledException(cause.getMessage, cause, stackDepth)
        else
-        new exceptions.TestCanceledException(cause, 1)
+        new exceptions.TestCanceledException(cause, stackDepth)
      )
   }
 }

@@ -15,11 +15,13 @@
  */
 package org.scalatest.concurrent
 
-import scala.compat.Platform
-
-private[concurrent] object SleepHelper {
+private[scalatest] object SleepHelper {
 
   def sleep(millis: Long, nanos: Int): Unit = {
+    // Do nothing, as we cannot block in javascript environment.
+  }
+
+  def sleep(millis: Long): Unit = {
     // Do nothing, as we cannot block in javascript environment.
   }
 

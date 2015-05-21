@@ -16,10 +16,6 @@
 package org.scalatest
 
 import org.scalatest.prop.TableDrivenPropertyChecks
-import java.lang.annotation.AnnotationFormatError
-import java.nio.charset.CoderMalfunctionError
-import javax.xml.parsers.FactoryConfigurationError
-import javax.xml.transform.TransformerFactoryConfigurationError
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import collection._
@@ -27,30 +23,32 @@ import SharedHelpers._
 import FailureMessages._
 import Matchers._
 
-class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenPropertyChecks {
+class InspectorsForMapSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
 
   def examples =
     Table[Map[Int, String] => collection.GenMap[Int, String]](
-      ("Fun"), 
-      ((map: Map[Int, String]) => map), 
-      ((map: Map[Int, String]) => mutable.Map.empty ++ map), 
-      ((map: Map[Int, String]) => map.par), 
-      ((map: Map[Int, String]) => (mutable.Map.empty ++ map).par)
+      ("Fun"),
+      // SKIP-SCALATESTJS-START
+      ((map: Map[Int, String]) => map.par),
+      ((map: Map[Int, String]) => (mutable.Map.empty ++ map).par),
+      // SKIP-SCALATESTJS-END
+      ((map: Map[Int, String]) => map),
+      ((map: Map[Int, String]) => mutable.Map.empty ++ map)
     )
   
   val standardMap = 
     Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
   
-  object `forAll ` {
+  describe("forAll ") {
     
-    def `should pass when all elements passed` {
+    it("should pass when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         forAll(col) { e => e._2 should be (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun => 
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -74,7 +72,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when more than one element failed") {
       forAll(examples) { colFun => 
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e2 = intercept[exceptions.TestFailedException] {
@@ -99,9 +97,9 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     }
   }
   
-  object `forAtLeast ` {
+  describe("forAtLeast ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as min` {
+    it("should throw IllegalArgumentException when 0 is passed in as min") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -111,7 +109,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as min` {
+    it("should throw IllegalArgumentException when -1 is passed in as min") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -121,14 +119,14 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when minimum count of elements passed` {
+    it("should pass when minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "tiga"))
         forAtLeast(1, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -154,7 +152,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block` {
+    it("should use 'no element' in error message when no element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "Tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -183,7 +181,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -209,7 +207,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -226,14 +224,14 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when more than minimum count of elements passed` {
+    it("should pass when more than minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         forAtLeast(1, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when none of the elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when none of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "Tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -262,7 +260,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when all of the elements passed` {
+    it("should pass when all of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         forAtLeast(1, col) { e => e._2 should equal (standardMap(e._1)) }
@@ -271,9 +269,9 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     
   }
   
-  object `forAtMost ` {
+  describe("forAtMost ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as max` {
+    it("should throw IllegalArgumentException when 0 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -283,7 +281,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as max` {
+    it("should throw IllegalArgumentException when -1 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -293,21 +291,21 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when number of elements passed is less than maximum allowed` {
+    it("should pass when number of elements passed is less than maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "tiga"))
         forAtMost(2, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should pass when number of elements passed equal to maximum allowed` {
+    it("should pass when number of elements passed equal to maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "tiga"))
         forAtMost(2, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is more than maximum allowed` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is more than maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "tiga", 4 -> "four", 5 -> "five"))
         val e = intercept[exceptions.TestFailedException] {
@@ -326,7 +324,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when none of the elements passed` {
+    it("should pass when none of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "tiga"))
         forAtMost(2, col) { e => e._2 should equal (standardMap(e._1)) }
@@ -335,9 +333,9 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     
   }
   
-  object `forExactly ` {
+  describe("forExactly ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as max` {
+    it("should throw IllegalArgumentException when 0 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -347,7 +345,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as max` {
+    it("should throw IllegalArgumentException when -1 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -357,14 +355,14 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when number of element passes is equal to specified succeeded count` {
+    it("should pass when number of element passes is equal to specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "tiga"))
         forExactly(2, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block` {
+    it("should use 'no element' in error message when no element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "Tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -393,7 +391,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -419,7 +417,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -438,7 +436,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -459,7 +457,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -478,7 +476,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -503,7 +501,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count` {
+    it("should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -522,16 +520,16 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     
   }
   
-  object `forNo ` {
+  describe("forNo ") {
     
-    def `should pass when none of the element pass` {
+    it("should pass when none of the element pass") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "tiga"))
         forNo(col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 1 element passed` {
+    it("should throw TestFailedException with correct stack depth and message when 1 element passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -545,7 +543,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 2 element passed` {
+    it("should throw TestFailedException with correct stack depth and message when 2 element passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -562,7 +560,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when all elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -579,7 +577,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when empty list of element is passed in` {
+    it("should pass when empty list of element is passed in") {
       forAll(examples) { colFun =>
         val col = colFun(Map.empty[Int, String])
         forNo(col) { e => e._2 should equal (standardMap(e._1)) }
@@ -588,9 +586,9 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     
   }
   
-  object `forBetween ` {
+  describe("forBetween ") {
     
-    def `should throw IllegalArgumentException when -1 is passed in as from` {
+    it("should throw IllegalArgumentException when -1 is passed in as from") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -600,7 +598,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when 0 is passed in as upTo` {
+    it("should throw IllegalArgumentException when 0 is passed in as upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -610,7 +608,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as upTo` {
+    it("should throw IllegalArgumentException when -1 is passed in as upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -620,7 +618,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when from and upTo is the same` {
+    it("should throw IllegalArgumentException when from and upTo is the same") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -630,7 +628,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw IllegalArgumentException when from is greater than upTo` {
+    it("should throw IllegalArgumentException when from is greater than upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         val e = intercept[IllegalArgumentException] {
@@ -640,28 +638,28 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should pass when number of element passed is within the specified range` {
+    it("should pass when number of element passed is within the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "tiga", 4 -> "four", 5 -> "five"))
         forBetween(2, 4, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should pass when number of element passed is same as lower bound of the specified range` {
+    it("should pass when number of element passed is same as lower bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "tiga", 4 -> "four", 5 -> "lima"))
         forBetween(2, 4, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should pass when number of element passed is same as upper bound of the specified range` {
+    it("should pass when number of element passed is same as upper bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "tiga", 4 -> "four", 5 -> "five"))
         forBetween(2, 4, col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 ` {
+    it("should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 ") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "Tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -690,7 +688,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from'` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from'") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "Tiga"))
         val e = intercept[exceptions.TestFailedException] {
@@ -716,7 +714,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from'` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from'") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "two", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -737,7 +735,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo'` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo'") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "tiga", 4 -> "four", 5 -> "five"))
         val e = intercept[exceptions.TestFailedException] {
@@ -758,7 +756,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three", 4 -> "empat", 5 -> "lima"))
         val e = intercept[exceptions.TestFailedException] {
@@ -791,7 +789,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five"))
         val e = intercept[exceptions.TestFailedException] {
@@ -814,16 +812,16 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
     
   }
   
-  object `forEvery ` {
+  describe("forEvery ") {
     
-    def `should pass when all elements passed` {
+    it("should pass when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "two", 3 -> "three"))
         forEvery(col) { e => e._2 should equal (standardMap(e._1)) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "one", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {
@@ -839,7 +837,7 @@ class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenProperty
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when more than one element failed") {
       forAll(examples) { colFun =>
         val col = colFun(Map(1 -> "satu", 2 -> "dua", 3 -> "three"))
         val e = intercept[exceptions.TestFailedException] {

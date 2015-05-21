@@ -139,6 +139,20 @@ private[scalatest] object Reporter {
         case None => ""
       }
   }
+
+  // TODO: Not a real problem, but if a DispatchReporter ever got itself in
+  // its list of reporters, this would end up being an infinite loop. But
+  // That first part, a DispatchReporter getting itself in there would be the real
+  // bug.
+  def propagateDispose(reporter: Reporter) {
+    reporter match {
+      // SKIP-SCALATESTJS-START
+      case dispatchReporter: DispatchReporter => dispatchReporter.dispatchDisposeAndWaitUntilDone()
+      // SKIP-SCALATESTJS-END
+      case resourcefulReporter: ResourcefulReporter => resourcefulReporter.dispose()
+      case _ =>
+    }
+  }
 }
 
   /*

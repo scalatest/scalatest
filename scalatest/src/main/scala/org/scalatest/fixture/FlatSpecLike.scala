@@ -47,7 +47,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
@@ -98,11 +98,19 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -1
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -126,13 +134,18 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
 
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+
     // TODO: This is what was being used before but it is wrong
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -2045,7 +2058,11 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

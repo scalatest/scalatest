@@ -22,7 +22,9 @@ trait StringFixture { this: fixture.Suite =>
   }
 }
 
+// SKIP-SCALATESTJS-START
 trait StringFixtureSpec extends fixture.Spec with StringFixture
+// SKIP-SCALATESTJS-END
 trait StringFixtureFunSuite extends fixture.FunSuite with StringFixture
 trait StringFixtureFunSpec extends fixture.FunSpec with StringFixture
 trait StringFixtureWordSpec extends fixture.WordSpec with StringFixture

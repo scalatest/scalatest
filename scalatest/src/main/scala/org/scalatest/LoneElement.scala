@@ -77,6 +77,11 @@ trait LoneElement {
 
   import scala.language.higherKinds
 
+  // SKIP-SCALATESTJS-START
+  private[scalatest] val stackDepth = 1
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private[scalatest] val stackDepth = 9
+
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
    * an implicit <code>Collecting[C]</code> is available.
@@ -117,8 +122,8 @@ trait LoneElement {
             Some(FailureMessages.notLoneElement(
                  collection,
                  collecting.sizeOf(collection))), 
-            None, 
-            1
+            None,
+            stackDepth
           )
       }
     }
@@ -164,8 +169,8 @@ trait LoneElement {
             Some(FailureMessages.notLoneElement(
                  jmap,
                  collecting.sizeOf(jmap))), 
-            None, 
-            1
+            None,
+            stackDepth
           )
       }
     }
@@ -202,7 +207,7 @@ trait LoneElement {
             s,
             collecting.sizeOf(s))),
           None,
-          1
+          stackDepth
         )
     }
 

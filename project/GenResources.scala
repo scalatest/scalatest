@@ -236,7 +236,7 @@ trait GenResourcesJSVM extends GenResources {
     """.stripMargin
 
   def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
-    "final val raw" + kv.key.capitalize + " = \"" + kv.value.replaceAllLiterally("\"", "\\\"") + "\"\n\n" +
+    "final val raw" + kv.key.capitalize + " = \"" + kv.value.replaceAllLiterally("\"", "\\\"").replaceAllLiterally("''", "'") + "\"\n\n" +
     (
       if (paramCount == 0 )
         "final val " + kv.key + " = raw" + kv.key.capitalize

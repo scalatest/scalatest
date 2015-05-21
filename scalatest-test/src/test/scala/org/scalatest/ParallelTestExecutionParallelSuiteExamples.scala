@@ -28,8 +28,10 @@ object ParallelTestExecutionParallelSuiteExamples extends Tables {
   
   def parallelExamples = 
     Table(
-      "pair", 
-      new ExampleParallelTestExecutionParallelSpecPair, 
+      "pair",
+      // SKIP-SCALATESTJS-START
+      new ExampleParallelTestExecutionParallelSpecPair,
+      // SKIP-SCALATESTJS-END
       new ExampleParallelTestExecutionParallelFunSuitePair, 
       new ExampleParallelTestExecutionParallelFunSpecPair, 
       new ExampleParallelTestExecutionParallelFeatureSpecPair,
@@ -40,6 +42,7 @@ object ParallelTestExecutionParallelSuiteExamples extends Tables {
     )
 }
 
+// SKIP-SCALATESTJS-START
 class ExampleParallelTestExecutionParallelSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureSpec
@@ -66,6 +69,7 @@ class ExampleParallelTestExecutionParallelSpecPair extends ParallelSuites {
     checkSuiteCompleted(events(15), suite2.suiteId)
   }
 }
+// SKIP-SCALATESTJS-END
 
 class ExampleParallelTestExecutionParallelFunSuitePair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderFunSuite

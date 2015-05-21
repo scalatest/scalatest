@@ -17,10 +17,10 @@ package org.scalatest
 
 import SharedHelpers._
 
-class SequentialNestedSuiteExecutionSpec extends Spec {
-  object `the SequentialNestedSuiteExecution trait` {
-    object `when mixed into a Suite` {
-      def `should override runNestedSuites such that it calls super.runNestedSuites with the distributor set to None` {
+class SequentialNestedSuiteExecutionSpec extends FunSpec {
+  describe("the SequentialNestedSuiteExecution trait") {
+    describe("when mixed into a Suite") {
+      it("should override runNestedSuites such that it calls super.runNestedSuites with the distributor set to None") {
         class SuperSuite extends Suite {
           @volatile var distributorWasPropagated = false
           @volatile var firstNestedSuiteHasBeenRun = false

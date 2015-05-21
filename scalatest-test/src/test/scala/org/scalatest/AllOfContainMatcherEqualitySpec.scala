@@ -21,7 +21,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
-class AllOfContainMatcherEqualitySpec extends Spec {
+class AllOfContainMatcherEqualitySpec extends FunSpec {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -69,7 +69,7 @@ class AllOfContainMatcherEqualitySpec extends Spec {
     def areEqual(left: java.util.Map.Entry[Int, String], right: Any): Boolean = false
   }
   
-  object `allOf ` {
+  describe("allOf ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -85,7 +85,7 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take custom implicit equality in scope when 'should contain' is used` {
+    it("should take custom implicit equality in scope when 'should contain' is used") {
       
       implicit val trimEquality = new TrimEquality
       implicit val mapTrimEquality = new MapTrimEquality
@@ -94,14 +94,16 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       List("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3")
       Set("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3")
       Array("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3")
+      Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")
+
+      // SKIP-SCALATESTJS-START
       javaList("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3")
       javaSet("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3")
-        
-      Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")
       javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take custom implicit equality in scope when 'should not contain' is used` {
+    it("should take custom implicit equality in scope when 'should not contain' is used") {
       
       implicit val trimEquality = new TrimEquality
       implicit val mapTrimEquality = new MapTrimEquality
@@ -110,14 +112,16 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       List("A ", "B", "C ") should not contain allOf ("a ", "b", "c ")
       Set("A ", "B", "C ") should not contain allOf ("a ", "b", "c ")
       Array("A ", "B", "C ") should not contain allOf ("a ", "b", "c ")
+      Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allOf (1 -> "a ", 2 -> "b", 3 -> "c ")
+
+      // SKIP-SCALATESTJS-START
       javaList("A ", "B", "C ") should not contain allOf ("a ", "b", "c ")
       javaSet("A ", "B", "C ") should not contain allOf ("a ", "b", "c ")
-      
-      Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allOf (1 -> "a ", 2 -> "b", 3 -> "c ")
       javaMap(Entry(1, "A "), Entry(2, "B"), Entry(3, "C ")) should not contain allOf (Entry(1, "a "), Entry(2, "b"), Entry(3, "c "))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
       
       implicit val falseEquality = new FalseEquality
       implicit val mapFalseEquality = new MapFalseEquality
@@ -141,26 +145,28 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       }
         checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
         
-      val left4 = javaList(1, 2, 3)
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain allOf (1, 2, 3)
+        left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")
       }
-      checkShouldContainStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-        
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")
+        left5 should contain allOf (1, 2, 3)
       }
-      checkShouldContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
-      
+      checkShouldContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
       
       implicit val trimEquality = new TrimEquality
       implicit val mapTrimEquality = new MapTrimEquality
@@ -184,26 +190,28 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
-      val left4 = javaList("1 ", "2", "3 ")
+      val left4 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain allOf ("1", "2 ", "3")
+        left4 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")
       }
-      checkShouldNotContainStackDepth(e4, left4, Array("1", "2 ", "3").deep, thisLineNumber - 2)
-        
-      val left5 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
+      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")
+        left5 should not contain allOf ("1", "2 ", "3")
       }
-      checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
-        
+      checkShouldNotContainStackDepth(e5, left5, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+
       val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should not contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take passed in custom explicit equality when 'should contain' is used` {
+    it("should take passed in custom explicit equality when 'should contain' is used") {
       val trimEquality = new TrimEquality
       val mapTrimEquality = new MapTrimEquality
       val javaMapTrimEquality = new JavaMapTrimEquality
@@ -211,27 +219,30 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       (List("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
       (Set("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
       (Array("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-      (javaList("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-       
       (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
+
+      // SKIP-SCALATESTJS-START
+      (javaList("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (javaMapTrimEquality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take passed in custom explicit equality when 'should not contain' is used` {
+    it("should take passed in custom explicit equality when 'should not contain' is used") {
       val equality = new FalseEquality
       (List(1, 2, 3) should not contain allOf (1, 2, 3)) (equality)
       (Set(1, 2, 3) should not contain allOf (1, 2, 3)) (equality)
       (Array(1, 2, 3) should not contain allOf (1, 2, 3)) (equality)
-      (javaList(1, 2, 3) should not contain allOf (1, 2, 3)) (equality)
-        
       val mapEquality = new MapFalseEquality
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
-      
+
+      // SKIP-SCALATESTJS-START
+      (javaList(1, 2, 3) should not contain allOf (1, 2, 3)) (equality)
       val javaMapEquality = new JavaMapFalseEquality
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
       val equality = new FalseEquality
         
       val left1 = List(1, 2, 3)
@@ -252,20 +263,21 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       }
       checkShouldContainStackDepth(e3, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
         
-      val left4 = javaList(1, 2, 3)
-      val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain allOf (1, 2, 3)) (equality)
-      }
-      checkShouldContainStackDepth(e4, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-        
       val mapEquality = new MapFalseEquality
         
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e4 = intercept[exceptions.TestFailedException] {
+        (left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
       }
-      checkShouldContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
-        
+      checkShouldContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
+      val e5 = intercept[exceptions.TestFailedException] {
+        (left5 should contain allOf (1, 2, 3)) (equality)
+      }
+      checkShouldContainStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+
       val javaMapEquality = new JavaMapFalseEquality
       
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
@@ -273,9 +285,10 @@ class AllOfContainMatcherEqualitySpec extends Spec {
         (left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
       val trimEquality = new TrimEquality
         
       val left1 = List("1 ", "2", "3 ")
@@ -296,20 +309,21 @@ class AllOfContainMatcherEqualitySpec extends Spec {
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
-      val left4 = javaList("1 ", "2", "3 ")
-      val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain allOf ("1", "2 ", "3")) (trimEquality)
-      }
-      checkShouldNotContainStackDepth(e4, left4, Array("1", "2 ", "3").deep, thisLineNumber - 2)
-        
       val mapTrimEquality = new MapTrimEquality
        
-      val left5 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
-      val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
+      val left4 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
+      val e4 = intercept[exceptions.TestFailedException] {
+        (left4 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
       }
-      checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
-        
+      checkShouldNotContainStackDepth(e4, left4, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
+
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList("1 ", "2", "3 ")
+      val e5 = intercept[exceptions.TestFailedException] {
+        (left5 should not contain allOf ("1", "2 ", "3")) (trimEquality)
+      }
+      checkShouldNotContainStackDepth(e5, left5, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+
       val javaMapTrimEquality = new JavaMapTrimEquality
       
       val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three "))
@@ -317,6 +331,7 @@ class AllOfContainMatcherEqualitySpec extends Spec {
         (left6 should not contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (javaMapTrimEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")).deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
   

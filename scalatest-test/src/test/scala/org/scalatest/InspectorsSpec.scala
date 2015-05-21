@@ -27,7 +27,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 
-class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks {
+class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
   
   def examples =
     Table[Set[Int] => GenTraversable[Int]](
@@ -38,30 +38,32 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       ((set: Set[Int]) => set.toArray), 
       ((set: Set[Int]) => set.toIndexedSeq), 
       ((set: Set[Int]) => Vector.empty ++ set),
+      // SKIP-SCALATESTJS-START
       ((set: Set[Int]) => set.par), 
       ((set: Set[Int]) => set.toList.par), 
       ((set: Set[Int]) => set.toSeq.par), 
-      ((set: Set[Int]) => set.toIndexedSeq.par), 
+      ((set: Set[Int]) => set.toIndexedSeq.par),
+      ((set: Set[Int]) => (mutable.Set.empty ++ set).par),
+      ((set: Set[Int]) => (new mutable.ListBuffer() ++ set).par),
+      ((set: Set[Int]) => (mutable.Seq.empty ++ set).par),
+      ((set: Set[Int]) => (mutable.IndexedSeq.empty ++ set).par),
+      // SKIP-SCALATESTJS-END
       ((set: Set[Int]) => mutable.Set.empty ++ set), 
       ((set: Set[Int]) => new mutable.ListBuffer() ++ set), 
       ((set: Set[Int]) => mutable.Seq.empty ++ set), 
-      ((set: Set[Int]) => mutable.IndexedSeq.empty ++ set), 
-      ((set: Set[Int]) => (mutable.Set.empty ++ set).par), 
-      ((set: Set[Int]) => (new mutable.ListBuffer() ++ set).par), 
-      ((set: Set[Int]) => (mutable.Seq.empty ++ set).par), 
-      ((set: Set[Int]) => (mutable.IndexedSeq.empty ++ set).par) 
+      ((set: Set[Int]) => mutable.IndexedSeq.empty ++ set)
     )  
   
-  object `forAll ` {
+  describe("forAll ") {
     
-    def `should pass when all elements passed` {
+    it("should pass when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAll(col) { e => e should be < 4 }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun => 
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -85,7 +87,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when more than one element failed") {
       forAll(examples) { colFun => 
         val col = colFun(Set(1, 2, 3))
         val e2 = intercept[exceptions.TestFailedException] {
@@ -110,7 +112,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -119,7 +121,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestCanceledException] {
@@ -127,8 +129,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }  
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -137,7 +140,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -146,7 +149,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -155,7 +158,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -164,7 +167,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -173,7 +176,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -182,7 +185,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -190,12 +193,13 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
-    object `when used with Arrays` {
-      def `should do nothing if succeeds` {
+    describe("when used with Arrays") {
+      it("should do nothing if succeeds") {
         forAll(Array(1, 2, 3)) { e => e should be < 4 }
       }
-      def `should throw a TFE with a good error message if fails` {
+      it("should throw a TFE with a good error message if fails") {
         val e = intercept[exceptions.TestFailedException] {
           forAll(Array(1, 2, 3, 4, 5)) { e =>
             e should be < 4
@@ -217,11 +221,11 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
 
-    object `when used with Strings` {
-      def `should do nothing if succeeds` {
+    describe("when used with Strings") {
+      it("should do nothing if succeeds") {
         forAll("123") { e => e should be < '4' }
       }
-      def `should throw a TFE with a good error message if fails` {
+      it("should throw a TFE with a good error message if fails") {
         val e = intercept[exceptions.TestFailedException] {
           forAll("12345") { e =>
             e should be < '4'
@@ -243,13 +247,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
 
-    object `when used with java.util.Collection` {
+    // SKIP-SCALATESTJS-START
+    describe("when used with java.util.Collection") {
       import collection.JavaConverters._
-      def `should do nothing if succeeds` {
+      it("should do nothing if succeeds") {
         val jList123: java.util.List[Int] = List(1, 2, 3).asJava
         forAll(jList123) { e => e should be < 4 }
       }
-      def `should throw a TFE with a good error message if fails` {
+      it("should throw a TFE with a good error message if fails") {
         val jList12345: java.util.List[Int] = List(1, 2, 3, 4, 5).asJava
         val e = intercept[exceptions.TestFailedException] {
           forAll(jList12345) { e =>
@@ -272,13 +277,13 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
 
-    object `when used with java.util.Map` {
+    describe("when used with java.util.Map") {
       import collection.JavaConverters._
-      def `should do nothing if succeeds` {
+      it("should do nothing if succeeds") {
         val jMap123: java.util.Map[Int, Int] = Map(1 -> 2, 2 -> 3, 3 -> 4).asJava
         forAll(jMap123) { e => e.key should be < 4 }
       }
-      def `should throw a TFE with a good error message if fails` {
+      it("should throw a TFE with a good error message if fails") {
         val jMap12345: java.util.Map[Int, Int] = javaMap(Entry(1, 2), Entry(2, 3), Entry(3, 4), Entry(4, 5), Entry(5, 6))
         val e = intercept[exceptions.TestFailedException] {
           forAll(jMap12345) { e =>
@@ -300,11 +305,12 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forAtLeast ` {
+  describe("forAtLeast ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as min` {
+    it("should throw IllegalArgumentException when 0 is passed in as min") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -314,7 +320,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as min` {
+    it("should throw IllegalArgumentException when -1 is passed in as min") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -324,14 +330,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when minimum count of elements passed` {
+    it("should pass when minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtLeast(1, col) { e => e should be (2) }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -354,7 +360,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block` {
+    it("should use 'no element' in error message when no element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -377,7 +383,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -400,7 +406,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -418,14 +424,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when more than minimum count of elements passed` {
+    it("should pass when more than minimum count of elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtLeast(1, col) { e => e should be < 3 }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when none of the elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when none of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -448,14 +454,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when all of the elements passed` {
+    it("should pass when all of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtLeast(1, col) { e => e should be < 5 }
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -464,7 +470,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestCanceledException] {
@@ -472,8 +478,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -482,7 +489,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -491,7 +498,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -500,7 +507,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -509,7 +516,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -518,7 +525,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -527,7 +534,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -535,11 +542,12 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
 
-  object `forAtMost ` {
+  describe("forAtMost ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as max` {
+    it("should throw IllegalArgumentException when 0 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -549,7 +557,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as max` {
+    it("should throw IllegalArgumentException when -1 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -559,21 +567,21 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when number of elements passed is less than maximum allowed` {
+    it("should pass when number of elements passed is less than maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtMost(2, col) { e => e should be (2) }
       }
     }
     
-    def `should pass when number of elements passed equal to maximum allowed` {
+    it("should pass when number of elements passed equal to maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtMost(2, col) { e => e should be < 3 }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is more than maximum allowed` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is more than maximum allowed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         val e = intercept[exceptions.TestFailedException] {
@@ -594,14 +602,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when none of the elements passed` {
+    it("should pass when none of the elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forAtMost(2, col) { e => e should be > 5 }
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -610,7 +618,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestCanceledException] {
@@ -618,8 +626,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -628,7 +637,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -637,7 +646,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -646,7 +655,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -655,7 +664,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -664,7 +673,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -673,7 +682,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -681,11 +690,12 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forExactly ` {
+  describe("forExactly ") {
     
-    def `should throw IllegalArgumentException when 0 is passed in as max` {
+    it("should throw IllegalArgumentException when 0 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -695,7 +705,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as max` {
+    it("should throw IllegalArgumentException when -1 is passed in as max") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -705,14 +715,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when number of element passes is equal to specified succeeded count` {
+    it("should pass when number of element passes is equal to specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forExactly(2, col) { e => e should be < 3 }
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block` {
+    it("should use 'no element' in error message when no element satisfied the assertion block") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -735,7 +745,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -759,7 +769,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -774,7 +784,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -797,7 +807,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -817,7 +827,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -840,7 +850,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count` {
+    it("should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -852,7 +862,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -861,7 +871,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestCanceledException] {
@@ -869,8 +879,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -879,7 +890,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -888,7 +899,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -897,7 +908,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -906,7 +917,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -915,7 +926,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -924,7 +935,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -932,18 +943,19 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forNo ` {
+  describe("forNo ") {
     
-    def `should pass when none of the element pass` {
+    it("should pass when none of the element pass") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forNo(col) { e => e should be > 5 }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 1 element passed` {
+    it("should throw TestFailedException with correct stack depth and message when 1 element passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -956,7 +968,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 2 element passed` {
+    it("should throw TestFailedException with correct stack depth and message when 2 element passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -969,7 +981,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when all elements passed` {
+    it("should throw TestFailedException with correct stack depth and message when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -981,14 +993,14 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when empty list of element is passed in` {
+    it("should pass when empty list of element is passed in") {
       forAll(examples) { colFun =>
         val col = colFun(Set.empty[Int])
         forNo(col) { e => e should be < 5 }
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -997,7 +1009,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestCanceledException] {
@@ -1005,8 +1017,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -1015,7 +1028,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -1024,7 +1037,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -1033,7 +1046,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -1042,7 +1055,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -1051,7 +1064,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -1060,7 +1073,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -1068,11 +1081,12 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forBetween ` {
+  describe("forBetween ") {
     
-    def `should throw IllegalArgumentException when -1 is passed in as from` {
+    it("should throw IllegalArgumentException when -1 is passed in as from") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -1082,7 +1096,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when 0 is passed in as upTo` {
+    it("should throw IllegalArgumentException when 0 is passed in as upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -1092,7 +1106,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when -1 is passed in as upTo` {
+    it("should throw IllegalArgumentException when -1 is passed in as upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -1102,7 +1116,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when from and upTo is the same` {
+    it("should throw IllegalArgumentException when from and upTo is the same") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -1112,7 +1126,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw IllegalArgumentException when from is greater than upTo` {
+    it("should throw IllegalArgumentException when from is greater than upTo") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[IllegalArgumentException] {
@@ -1122,28 +1136,28 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should pass when number of element passed is within the specified range` {
+    it("should pass when number of element passed is within the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         forBetween(2, 4, col) { e => e should be > 2 }
       }
     }
     
-    def `should pass when number of element passed is same as lower bound of the specified range` {
+    it("should pass when number of element passed is same as lower bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         forBetween(2, 4, col) { e => e should be > 3 }
       }
     }
     
-    def `should pass when number of element passed is same as upper bound of the specified range` {
+    it("should pass when number of element passed is same as upper bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         forBetween(2, 4, col) { e => e should be > 1 }
       }
     }
     
-    def `should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 ` {
+    it("should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 ") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -1166,7 +1180,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from'` {
+    it("should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from'") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -1190,7 +1204,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from'` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from'") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -1211,7 +1225,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo'` {
+    it("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo'") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         val e = intercept[exceptions.TestFailedException] {
@@ -1231,7 +1245,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         val e = intercept[exceptions.TestFailedException] {
@@ -1260,7 +1274,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range` {
+    it("should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         val e = intercept[exceptions.TestFailedException] {
@@ -1272,7 +1286,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[exceptions.TestPendingException] {
@@ -1281,7 +1295,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[exceptions.TestCanceledException] {
@@ -1289,8 +1303,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[AnnotationFormatError] {
@@ -1299,7 +1314,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[CoderMalfunctionError] {
@@ -1308,7 +1323,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[FactoryConfigurationError] {
@@ -1317,7 +1332,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[LinkageError] {
@@ -1326,7 +1341,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[ThreadDeath] {
@@ -1335,7 +1350,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[TransformerFactoryConfigurationError] {
@@ -1344,7 +1359,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         intercept[VirtualMachineError] {
@@ -1352,18 +1367,19 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forEvery ` {
+  describe("forEvery ") {
     
-    def `should pass when all elements passed` {
+    it("should pass when all elements passed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         forEvery(col) { e => e should be < 4 }
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when at least one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -1378,7 +1394,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when more than one element failed` {
+    it("should throw TestFailedException with correct stack depth and message when more than one element failed") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         val e = intercept[exceptions.TestFailedException] {
@@ -1398,7 +1414,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestPendingException thrown from assertion` {
+    it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[exceptions.TestPendingException] {
@@ -1407,7 +1423,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate TestCanceledException thrown from assertion` {
+    it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val colFun = Set(1, 2, 3)
         intercept[exceptions.TestCanceledException] {
@@ -1415,8 +1431,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
-    
-    def `should propagate java.lang.annotation.AnnotationFormatError thrown from assertion` {
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[AnnotationFormatError] {
@@ -1425,7 +1442,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.nio.charset.CoderMalfunctionError thrown from assertion` {
+    it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[CoderMalfunctionError] {
@@ -1434,7 +1451,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[FactoryConfigurationError] {
@@ -1443,7 +1460,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.LinkageError thrown from assertion` {
+    it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[LinkageError] {
@@ -1452,7 +1469,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.ThreadDeath thrown from assertion` {
+    it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[ThreadDeath] {
@@ -1461,7 +1478,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion` {
+    it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[TransformerFactoryConfigurationError] {
@@ -1470,7 +1487,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should propagate java.lang.VirtualMachineError thrown from assertion` {
+    it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         intercept[VirtualMachineError] {
@@ -1478,11 +1495,12 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
         }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `forAll nested` {
+  describe("forAll nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 4, 6), 
@@ -1493,7 +1511,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when at least one element fails in nested forAll ` {
+    it("should throw TestFailedException with correct stack depth and error message when at least one element fails in nested forAll ") {
       val listOfList = 
         List(
           List(2, 4, 6), 
@@ -1533,9 +1551,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     }
   }
   
-  object `forAtLeast nested` {
+  describe("forAtLeast nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1546,7 +1564,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when nested satisfied assertion does not satisfied the outer` {
+    it("should throw TestFailedException with correct stack depth and error message when nested satisfied assertion does not satisfied the outer") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1571,9 +1589,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     }
   }
   
-  object `forAtMost nested` {
+  describe("forAtMost nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1584,7 +1602,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when nested satisfied assertion does not satisfied the outer` {
+    it("should throw TestFailedException with correct stack depth and error message when nested satisfied assertion does not satisfied the outer") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1605,9 +1623,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     
   }
   
-  object `forExactly nested ` {
+  describe("forExactly nested ") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1618,7 +1636,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer` {
+    it("should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer") {
       val listOfList = 
         List(
           List(2, 4, 6), 
@@ -1637,9 +1655,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     
   }
   
-  object `forNo nested` {
+  describe("forNo nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 3, 6), 
@@ -1650,7 +1668,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer` {
+    it("should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer") {
       val listOfList = 
         List(
           List(1, 8, 10), 
@@ -1668,9 +1686,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     }
   }
   
-  object `forBetween nested` {
+  describe("forBetween nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 4, 6, 8, 12), 
@@ -1686,7 +1704,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer` {
+    it("should throw TestFailedException with correct stack depth and error message when nested assertion does not satisfied the outer") {
       val listOfList = 
         List(
           List(3, 5, 6, 8, 12), 
@@ -1711,9 +1729,9 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
     }
   }
   
-  object `forEvery nested` {
+  describe("forEvery nested") {
     
-    def `should have no problem nesting themselves` {
+    it("should have no problem nesting themselves") {
       val listOfList = 
         List(
           List(2, 4, 6), 
@@ -1724,7 +1742,7 @@ class InspectorsSpec extends Spec with Inspectors with TableDrivenPropertyChecks
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and error message when at least one element fails in nested forAll ` {
+    it("should throw TestFailedException with correct stack depth and error message when at least one element fails in nested forAll ") {
       val listOfList = 
         List(
           List(2, 4, 6), 

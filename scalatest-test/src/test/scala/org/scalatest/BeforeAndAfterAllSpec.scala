@@ -18,6 +18,9 @@ package org.scalatest
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
 import Matchers._
+import concurrent.SleepHelper
+
+import scala.compat.Platform
 
 class BeforeAndAfterAllSpec extends FunSpec {
   
@@ -27,32 +30,32 @@ class BeforeAndAfterAllSpec extends FunSpec {
     @volatile var afterAllTime: Long = 0
     
     override protected def beforeAll() {
-      beforeAllTime = System.currentTimeMillis
+      beforeAllTime = Platform.currentTime
     }
     
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     
     override def newInstance: Suite with ParallelTestExecution = new ExampleSuite
     
     override protected def afterAll() {
-      afterAllTime = System.currentTimeMillis
+      afterAllTime = Platform.currentTime
     }
   }
   
   class ExampleNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
   @Ignore
   class ExampleIgnoreNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
@@ -62,10 +65,10 @@ class BeforeAndAfterAllSpec extends FunSpec {
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
     override protected def beforeAll() {
-      beforeAllTime = System.currentTimeMillis
+      beforeAllTime = Platform.currentTime
     } 
     override protected def afterAll() {
-      afterAllTime = System.currentTimeMillis
+      afterAllTime = Platform.currentTime
     }
   }
   
@@ -96,9 +99,9 @@ class BeforeAndAfterAllSpec extends FunSpec {
       counter.incrementAfterAllCount()
     }
     
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     
     override def newInstance: Suite with OneInstancePerTest = new ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter)
   }
@@ -274,6 +277,8 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
+
+    // SKIP-SCALATESTJS-START
     it("should not invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       @Ignore
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
@@ -295,6 +300,8 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
+    // SKIP-SCALATESTJS-END
+
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
@@ -319,6 +326,8 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
+
+    // SKIP-SCALATESTJS-START
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
@@ -342,5 +351,6 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
+    // SKIP-SCALATESTJS-END
   }
 }

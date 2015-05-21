@@ -18,9 +18,9 @@ package org.scalatest
 import SharedHelpers._
 import Matchers._
 
-class NotifierSpec extends Spec {
-  object `A Notifier` {
-    def `should fire NoteProvided event with correct message and None in payload when using apply(message)` {
+class NotifierSpec extends FunSpec {
+  describe("A Notifier") {
+    it("should fire NoteProvided event with correct message and None in payload when using apply(message)") {
       class MySuite extends FunSuite {
         note("update message")
       }
@@ -32,7 +32,7 @@ class NotifierSpec extends Spec {
       assert(noteProvidedEvents(0).message === "update message")
       assert(noteProvidedEvents(0).payload === None)
     }
-    def `should fire NoteProvided event with correct message and payload when using apply(message, payload)` {
+    it("should fire NoteProvided event with correct message and payload when using apply(message, payload)") {
       class MySuite extends FunSuite {
         note("update message", Some("a payload"))
       }

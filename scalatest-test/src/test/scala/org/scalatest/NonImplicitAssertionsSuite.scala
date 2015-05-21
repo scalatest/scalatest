@@ -28,12 +28,12 @@ class NonImplicitAssertionsSuite extends FunSuite with NonImplicitAssertions {
     assertResult("Expected 2, but got 3") { thrown.getMessage }
   }
   test("TypeCheckedTripleEquals should work still if mixed in after NonImplicitAssertions") {
-    class MySpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+    class MySpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals {
       assert(1 === 1)
     }
   }
   test("ConversionCheckedTripleEquals should work still if mixed in after NonImplicitAssertions") {
-    class MySpec extends Spec with NonImplicitAssertions with ConversionCheckedTripleEquals {
+    class MySpec extends FunSpec with NonImplicitAssertions with ConversionCheckedTripleEquals {
       assert(1 === 1)
     }
   }

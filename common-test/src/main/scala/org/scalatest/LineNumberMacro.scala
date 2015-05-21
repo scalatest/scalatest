@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,14 @@
  */
 package org.scalatest
 
-@DoNotDiscover
-protected[scalatest] class ExampleBeforeAfterParallelSpec extends FunSpec with BeforeAndAfter with ParallelTestExecution {
+import scala.reflect.macros._
 
-  before {
-   info("In Before")
-  }
-  
-  describe("Thing 1") {
-    it ("do thing 1a") {}
-    it ("do thing 1b") {}
-    it ("do thing 1c") {}
-  }
-  
-  describe("Thing 2") {
-    it ("do thing 2a") {}
-    it ("do thing 2b") {}
-    it ("do thing 2c") {}
-  }
-  
-  after {
-    info("In After")
+private[scalatest] object LineNumberMacro {
+
+  def thisLineNumberImpl(context: Context): context.Expr[Int] = {
+    import context.universe._
+    val lineNumber = context.enclosingPosition.line
+    context.literal(lineNumber)
   }
 
-  //SCALATESTJS-ONLY override def newInstance = new ExampleBeforeAfterParallelSpec
 }

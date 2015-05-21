@@ -19,7 +19,7 @@ import org.scalatest.time.Span
 import org.scalatest.time.Second
 
 @DoNotDiscover
-class ExampleTimeoutParallelSpec extends FunSpec with ParallelTestExecution {
+protected[scalatest] class ExampleTimeoutParallelSpec extends FunSpec with ParallelTestExecution {
 
   describe("Thing 1") {
     it ("do thing 1a") {}
@@ -34,4 +34,6 @@ class ExampleTimeoutParallelSpec extends FunSpec with ParallelTestExecution {
   }
   
   override protected def sortingTimeout: Span = Span(1, Second)
+
+  //SCALATESTJS-ONLY override def newInstance = new ExampleTimeoutParallelSpec
 }

@@ -69,7 +69,9 @@ object GenCommonTestJS {
       List(
         "SharedHelpers.scala",
         "mytags.scala",
-        "NyayaGeneratorDrivenPropertyChecks.scala"
+        "StubReporter.scala",
+        "LineNumberMacro.scala",
+        "LineNumberHelper.scala"
       ), targetDir)
   }
 

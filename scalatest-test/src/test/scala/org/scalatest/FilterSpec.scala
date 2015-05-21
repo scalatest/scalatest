@@ -591,7 +591,8 @@ class FilterSpec extends FunSpec {
       assert(filter.runnableTestCount(Set("myTestName"), Map("myTestName" -> Set("FastAsLight", "org.scalatest.Ignore")), suite.suiteId) === 0)
     }
   }
-  
+
+  // SKIP-SCALATESTJS-START
   describe("(when invoke apply on test names with suite annotation)") {
     
     @FastAsLight
@@ -705,4 +706,5 @@ class FilterSpec extends FunSpec {
       assertTestTags(insideTagSuiteTestTags)
     }
   }
+  // SKIP-SCALATESTJS-END
 }

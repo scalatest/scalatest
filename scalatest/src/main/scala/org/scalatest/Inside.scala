@@ -101,31 +101,44 @@ trait Inside {
    */
   def inside[T](value: T)(pf: PartialFunction[T, Unit]) {
 
+
     def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
-      val levelCount =
+      /*val levelCount =
         st.count { elem =>
           elem.getClassName == "org.scalatest.Inside$class" && elem.getMethodName == "inside"
-        }
-      val indentation = "  " * (levelCount - 1)
+        }*/
+      val levelCount = Inside.level.get
+      val indentation = "  " * (levelCount)
       currentMessage match {
         case Some(msg) => Some(Resources.insidePartialFunctionAppendSomeMsg(msg.trim, indentation, value.toString()))
         case None => Some(Resources.insidePartialFunctionAppendNone(indentation, value.toString()))
       }
     }
 
+    if (Inside.level.get == null) {
+      Inside.level.set(1)
+    }
+    else {
+      Inside.level.set(Inside.level.get + 1)
+    }
+
     if (pf.isDefinedAt(value)) {
       try {
         pf(value)
+        Inside.level.set(Inside.level.get - 1)
       }
       catch {
         case e: org.scalatest.exceptions.ModifiableMessage[_] =>
+          Inside.level.set(Inside.level.get - 1)
           throw e.modifyMessage(appendInsideMessage)
       }
     }
-    else
+    else {
+      Inside.level.set(Inside.level.get - 1)
       throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, getStackDepthFun("Inside.scala", "inside"))
       //throw new TestFailedException(Resources.insidePartialFunctionNotDefined(value.toString()), 2)
+    }
   }
 }
 
@@ -163,4 +176,8 @@ trait Inside {
  *   ...
  * </pre>
  */
-object Inside extends Inside
+object Inside extends Inside {
+
+  private val level = new ThreadLocal[Int]
+
+}

@@ -147,7 +147,10 @@ private[scalatest] object MatchersHelper {
     builder.toString
   }
 
+  // SKIP-SCALATESTJS-START
   def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 9): Throwable = {
     val temp = new RuntimeException
     // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
     // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements

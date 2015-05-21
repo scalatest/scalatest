@@ -49,7 +49,7 @@ package org.scalatest
  *
  * @author Bill Venners
  */
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 class Suites(suitesToNest: Suite*) extends Suite { thisSuite => 
 
   for (s <- suitesToNest) {

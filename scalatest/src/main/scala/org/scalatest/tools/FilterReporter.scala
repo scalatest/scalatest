@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest._
 import org.scalatest.events._
-import DispatchReporter.propagateDispose
+import Reporter.propagateDispose
 
 /**
  * FiterReporter catches exceptions that may be thrown by custom reporters, and doesn't forward

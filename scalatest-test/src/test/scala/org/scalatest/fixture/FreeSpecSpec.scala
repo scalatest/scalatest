@@ -30,7 +30,7 @@ import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalatest.exceptions.NotAllowedException
 
-class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
+class FreeSpecSpec extends org.scalatest.FunSpec {
 
   describe("A fixture.FreeSpec") {
 
@@ -1007,6 +1007,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
+    // SKIP-SCALATESTJS-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FreeSpec {
@@ -1023,6 +1024,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.run(None, Args(SilentReporter))
       }
     }
+    // SKIP-SCALATESTJS-END
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
             "calls made from a test that is pending and not canceled") {
@@ -1731,6 +1733,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(cause.getMessage == "on purpose")
     }
 
+    // SKIP-SCALATESTJS-START
     it("should propagate AnnotationFormatError when it is thrown inside scope") {
       class TestSpec extends FreeSpec {
         type FixtureParam = String
@@ -1842,5 +1845,6 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert(e.getMessage == "on purpose")
     }
+    // SKIP-SCALATESTJS-END
   }
 }

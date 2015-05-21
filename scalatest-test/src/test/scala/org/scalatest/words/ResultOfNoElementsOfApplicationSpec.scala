@@ -15,25 +15,24 @@
  */
 package org.scalatest.words
 
-import org.scalactic.Prettifier
+import org.scalatest.Matchers._
 import org.scalatest._
-import Matchers._
 
-class ResultOfNoElementsOfApplicationSpec extends Spec {
+class ResultOfNoElementsOfApplicationSpec extends FunSpec {
 
-  object `ResultOfNoElementsOfApplication ` {
+  describe("ResultOfNoElementsOfApplication ") {
 
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfNoElementsOfApplication(Vector.empty)
       result.toString should be ("noElementsOf (Vector())")
     }
 
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfNoElementsOfApplication(Vector("Bob"))
       result.toString should be ("noElementsOf (Vector(\"Bob\"))")
     }
 
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfNoElementsOfApplication(Vector("Bob", "Alice"))
       result.toString should be ("noElementsOf (Vector(\"Bob\", \"Alice\"))")
     }

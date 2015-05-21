@@ -25,6 +25,11 @@ import org.scalatest.Assertions.newAssertionFailedException
  * @author Bill Venners
  */
 final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
+
+  // SKIP-SCALATESTJS-START
+  private val stackDepth = 4
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private val stackDepth = 12
   
   /**
    * This method enables the following syntax: 
@@ -68,7 +73,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
+          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
         }
         else {
           Some(u)
@@ -78,7 +83,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
+        throw newAssertionFailedException(Some(message), None, stackDepth)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
@@ -125,7 +130,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
+          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
         }
         else {
           Some(u)
@@ -135,7 +140,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
+        throw newAssertionFailedException(Some(message), None, stackDepth)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
