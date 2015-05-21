@@ -476,7 +476,9 @@ class PosZFloatSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
+        // SKIP-SCALATESTJS-START
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
+        // SKIP-SCALATESTJS-END
         pzfloat.ceil.toFloat shouldEqual pzfloat.toFloat.ceil
         pzfloat.floor.toFloat shouldEqual pzfloat.toFloat.floor
       }
