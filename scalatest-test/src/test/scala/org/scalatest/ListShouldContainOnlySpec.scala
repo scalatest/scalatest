@@ -121,7 +121,7 @@ class ListShouldContainOnlySpec extends Spec {
                 case _ => a == b
               }
           }
-        List(Book("Peace", 1000), Book("War", 1100)) should contain only (BookTitled("Peace"), BookTitled("War"))
+        Vector(Book("Peace", 1000), Book("War", 1100)) should contain only (BookTitled("Peace"), BookTitled("War"))
       }
     }
 
