@@ -471,6 +471,30 @@ class GeneratorSpec extends FunSpec with Matchers {
         gen.next(size = -1, rnd = Randomizer(100))
       }
     }
+    it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {
+
+      import Generator._
+      val gen = listGenerator[Int]
+
+      val (l1, r1) = gen.next(size = 0, rnd = Randomizer(100))
+      l1.length shouldBe 0
+
+      val (l2, r2) = gen.next(size = 3, rnd = r1)
+      l2.length shouldBe 3
+
+      val (l3, r3) = gen.next(size = 38, rnd = r2)
+      l3.length shouldBe 38
+
+      val (l4, r4) = gen.next(size = 88, rnd = r3)
+      l4.length shouldBe 88
+
+      val (l5, _) = gen.next(size = 100, rnd = r4)
+      l5.length shouldBe 100
+
+      an [IllegalArgumentException] should be thrownBy {
+        gen.next(size = -1, rnd = Randomizer(100))
+      }
+    }
     it("should offer a chooseInt method") {
       import Generator._
       import org.scalactic.anyvals._

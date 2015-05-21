@@ -148,5 +148,15 @@ object Generator {
       }
       override def toString = "Generator[String]"
     }
+
+  // Should throw IAE on negative size in all generators, even the ones that ignore size.
+  implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] =
+    new Generator[List[T]] {
+      def next(size: Int, rnd: Randomizer): (List[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        rnd.nextList[T](size)
+      }
+      override def toString = "Generator[List[T]]"
+    }
 }
 
