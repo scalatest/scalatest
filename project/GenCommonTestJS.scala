@@ -72,10 +72,6 @@ object GenCommonTestJS {
         "StubReporter.scala",
         "LineNumberMacro.scala",
         "LineNumberHelper.scala"
-      ), targetDir) ++
-    copyDir("common-test/src/main/scala/org/scalatest", "org/scalatest",
-      List(
-        "NyayaGeneratorDrivenPropertyChecks.scala"
       ), targetDir)
   }
 

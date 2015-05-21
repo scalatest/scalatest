@@ -220,9 +220,7 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10"
+      libraryDependencies += scalacheckDependency("optional")
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -230,8 +228,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-core" % "0.5.11",
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-test" % "0.5.11",
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -327,8 +323,6 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
       libraryDependencies += scalacheckDependency("test"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -339,8 +333,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       jsDependencies += RuntimeDOM % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
