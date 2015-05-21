@@ -636,6 +636,7 @@ object GenScalaTestJS {
         "WordSpecSpec.scala",
         "SequentialNestedSuiteExecutionSpec.scala",
         "SeveredStackTracesFailureSpec.scala",
+        "SeveredStackTracesSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

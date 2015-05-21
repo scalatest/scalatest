@@ -831,6 +831,11 @@ trait Assertions extends TripleEquals {
 THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR JUST LEAVE IT OUT. FOR NOW I'LL LEAVE IT OUT.
    */
 
+  // SKIP-SCALATESTJS-START
+  private[scalatest] val failStackDepth = 4
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
+
   /**
    * Intercept and return an exception that's expected to
    * be thrown by the passed function value. The thrown exception must be an instance of the
@@ -866,7 +871,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
+          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
         }
         else {
           Some(u)
@@ -876,7 +881,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
+        throw newAssertionFailedException(Some(message), None, failStackDepth)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
@@ -1033,7 +1038,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
-      throw newAssertionFailedException(Some(fullMsg), None, 4)
+      throw newAssertionFailedException(Some(fullMsg), None, failStackDepth)
     }
   }
 
@@ -1052,7 +1057,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
-      throw newAssertionFailedException(Some(s), None, 4)
+      throw newAssertionFailedException(Some(s), None, failStackDepth)
     }
   }
   
@@ -1103,7 +1108,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail(): Nothing = { throw newAssertionFailedException(None, None, 4) }
+  def fail(): Nothing = { throw newAssertionFailedException(None, None, failStackDepth) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1118,7 +1123,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (message == null)
         throw new NullPointerException("message is null")
      
-    throw newAssertionFailedException(Some(message),  None, 4)
+    throw newAssertionFailedException(Some(message),  None, failStackDepth)
   }
 
   /**
@@ -1138,7 +1143,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
 
-    throw newAssertionFailedException(Some(message), Some(cause), 4)
+    throw newAssertionFailedException(Some(message), Some(cause), failStackDepth)
   }
 
   /**
@@ -1155,7 +1160,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
         
-    throw newAssertionFailedException(None, Some(cause), 4)
+    throw newAssertionFailedException(None, Some(cause), failStackDepth)
   }
   
   /**
