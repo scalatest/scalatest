@@ -641,6 +641,13 @@ object GenScalaTestJS {
         "FreeSpecSpec.scala", 
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala"
+      ), targetDir) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
+      List(
+        "ResultOfAllElementsOfApplicationSpec.scala",
+        "ResultOfAtLeastOneElementOfApplicationSpec.scala",
+        "ResultOfNoElementsOfApplicationSpec.scala",
+        "ResultOfOneElementOfApplicationSpec.scala"
       ), targetDir)
   }
 
