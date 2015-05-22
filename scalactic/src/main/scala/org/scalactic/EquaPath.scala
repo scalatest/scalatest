@@ -279,17 +279,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
   
       def canEqual(that: Any): Boolean
   
-      /*
-        TODO: Go back.
-        The reason I don't just do this:
-  
-        def contains(elem: T): Boolean
-  
-        Is because that indeed fails to type check, but before the compiler gives up, it looks around
-        for an implicit that solves the problem and finds the one to IndexedSeq[T] named,
-        equaSetToGenTraversableOnce, which works so it compiles.
-      */
-      def contains[U](elem: U)(implicit ev: U <:< T): Boolean
+      def contains(elem: T): Boolean
   
       /**
        * Copies values of this `EquaSet` to an array.
@@ -1494,7 +1484,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         }
       def collect(pf: PartialFunction[T, T]): thisCollections.immutable.FastEquaSet[T] =
         new immutable.FastEquaSet[T](underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[T](pf(hb.value)) })
-      def contains[U](elem: U)(implicit ev: U <:< T): Boolean = underlying.contains(EquaBox[T](elem))
+      def contains(elem: T): Boolean = underlying.contains(EquaBox[T](elem))
   
       def copyToArray(xs: Array[thisCollections.EquaBox[T]]): Unit = underlying.copyToArray(xs)
       def copyToArray(xs: Array[thisCollections.EquaBox[T]], start: Int): Unit = underlying.copyToArray(xs, start)
