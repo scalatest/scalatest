@@ -5223,7 +5223,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: Any) {
-      doCollected(collected, xs, original, "shouldBe", 1) { e =>
+      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
           throw newTestFailedException(FailureMessages.wasNot(eee, rightee), None, innerStackDepth)

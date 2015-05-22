@@ -72,7 +72,9 @@ object GenCommonTestJS {
         "StubReporter.scala",
         "LineNumberMacro.scala",
         "LineNumberHelper.scala",
-        "ReturnsNormallyThrowsAssertion.scala"
+        "ReturnsNormallyThrowsAssertion.scala",
+        "BookPropertyMatchers.scala",
+        "EmptyMocks.scala"
       ), targetDir)
   }
 

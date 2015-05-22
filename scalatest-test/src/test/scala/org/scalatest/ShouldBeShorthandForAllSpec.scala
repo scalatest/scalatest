@@ -21,16 +21,16 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookPropertyMatchers {
+class ShouldBeShorthandForAllSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (ShouldBeShorthandForAllSpec.scala:" + lineNumber + ") \n" +
     "in " + decorateToStringValue(left)
 
-  object `The shouldBe syntax` {
+  describe("The shouldBe syntax") {
 
-    def `should work with theSameInstanceAs` {
+    it("should work with theSameInstanceAs") {
 
       val string = "Hi"
       val obj: AnyRef = string
@@ -39,6 +39,8 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       all(List(string, obj)) shouldBe theSameInstanceAs (string)
       all(List(string, obj)) shouldBe theSameInstanceAs (obj)
 
+      // This won't work in js, string and otherString will be same instance in js.
+      // SKIP-SCALATESTJS-START
       val list = List(otherString, string)
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe theSameInstanceAs (otherString)
@@ -46,9 +48,10 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.message === (Some(errorMessage(1, "\"Hi\" was not the same instance as \"Hi\"", thisLineNumber - 2, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should work with any` {
+    it("should work with any") {
       
       all(List(8, 8, 8)) shouldBe 8
       val list1 = List(1, 2)
@@ -115,7 +118,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with BeMatcher` {
+    it("should work with BeMatcher") {
       
       class OddMatcher extends BeMatcher[Int] {
         def apply(left: Int): MatchResult = {
@@ -148,8 +151,9 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught2.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
-    
-    def `should work with symbol` {
+
+    // SKIP-SCALATESTJS-START
+    it("should work with symbol") {
       
       emptyMock shouldBe 'empty
       isEmptyMock shouldBe 'empty
@@ -191,8 +195,9 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(ex4.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
+    // SKIP-SCALATESTJS-END
     
-    def `should work with BePropertyMatcher` {
+    it("should work with BePropertyMatcher") {
       case class MyFile(
         val name: String,
         val file: Boolean,
@@ -250,7 +255,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should with +-` {
+    it("should with +-") {
       
       val sevenDotOh = 7.0
       val minusSevenDotOh = -7.0
@@ -520,7 +525,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list1) shouldBe (17.1 +- 0.2)
       }
-      assert(caught1.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 0.2", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, sevenDotOh+ " was not 17.1 plus or minus 0.2", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -529,7 +534,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught2 = intercept[TestFailedException] {
         all(list2) shouldBe (17.1 +- 0.2f)
       }
-      assert(caught2.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 0.20000000298023224", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, sevenDotOh + " was not 17.1 plus or minus 0.20000000298023224", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -538,7 +543,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught3 = intercept[TestFailedException] {
         all(list3) shouldBe (17.1 +- 2L)
       }
-      assert(caught3.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, sevenDotOh + " was not 17.1 plus or minus " + 2.0, thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -547,7 +552,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught4 = intercept[TestFailedException] {
         all(list4) shouldBe (17.1 +- 2)
       }
-      assert(caught4.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, sevenDotOh + " was not 17.1 plus or minus " + 2.0, thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -556,7 +561,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught5 = intercept[TestFailedException] {
         all(list5) shouldBe (17.1 +- 2.toShort)
       }
-      assert(caught5.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list5)))
+      assert(caught5.message === Some(errorMessage(0, sevenDotOh + " was not 17.1 plus or minus " + 2.0, thisLineNumber - 2, list5)))
       assert(caught5.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -565,7 +570,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught6 = intercept[TestFailedException] {
         all(list6) shouldBe (17.1 +- 2.toByte)
       }
-      assert(caught6.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list6)))
+      assert(caught6.message === Some(errorMessage(0, sevenDotOh + " was not 17.1 plus or minus " + 2.0, thisLineNumber - 2, list6)))
       assert(caught6.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -574,7 +579,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught7 = intercept[TestFailedException] {
         all(list7) shouldBe (17.1f +- 0.2f)
       }
-      assert(caught7.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 0.2", thisLineNumber - 2, list7)))
+      assert(caught7.message === Some(errorMessage(0, sevenDotOh + " was not " + 17.1f + " plus or minus " + 0.2f, thisLineNumber - 2, list7)))
       assert(caught7.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -583,7 +588,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught8 = intercept[TestFailedException] {
         all(list8) shouldBe (17.1f +- 2L)
       }
-      assert(caught8.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list8)))
+      assert(caught8.message === Some(errorMessage(0, sevenDotOh + " was not " + 17.1f + " plus or minus " + 2.0, thisLineNumber - 2, list8)))
       assert(caught8.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -592,7 +597,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught9 = intercept[TestFailedException] {
         all(list9) shouldBe (17.1f +- 2)
       }
-      assert(caught9.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list9)))
+      assert(caught9.message === Some(errorMessage(0, sevenDotOh + " was not " + 17.1f + " plus or minus " + 2.0, thisLineNumber - 2, list9)))
       assert(caught9.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -601,7 +606,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught10 = intercept[TestFailedException] {
         all(list10) shouldBe (17.1f +- 2.toShort)
       }
-      assert(caught10.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list10)))
+      assert(caught10.message === Some(errorMessage(0, sevenDotOh + " was not " + 17.1f + " plus or minus " + 2.0, thisLineNumber - 2, list10)))
       assert(caught10.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -610,7 +615,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught11 = intercept[TestFailedException] {
         all(list11) shouldBe (17.1f +- 2.toByte)
       }
-      assert(caught11.message === Some(errorMessage(0, "7.0 was not 17.1 plus or minus 2.0", thisLineNumber - 2, list11)))
+      assert(caught11.message === Some(errorMessage(0, sevenDotOh + " was not " + 17.1f + " plus or minus " + 2.0, thisLineNumber - 2, list11)))
       assert(caught11.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -705,7 +710,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [AnyRef]` {
+    it("should work with a [AnyRef]") {
 
       val string1 = "Hi"
       val string2: Any = "Hello"
@@ -718,12 +723,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [String]
       }
-      assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with a [java.lang.Integer] but not [Int]` {
+    it("should work with a [java.lang.Integer] but not [Int]") {
 
       val int1 = 7
       val int2: Any = 8
@@ -736,12 +745,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Int]
       }
-      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with a [java.lang.Long], but not [Long]` {
+    it("should work with a [java.lang.Long], but not [Long]") {
 
       val long1 = 7L
       val long2: Any = 8L
@@ -759,7 +772,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [java.lang.Short], but not [Short]` {
+    it("should work with a [java.lang.Short], but not [Short]") {
 
       val short1: Short = 7
       val short2: Any = 8.toShort
@@ -772,12 +785,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Short]
       }
-      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with a [java.lang.Byte], but not [Byte]` {
+    it("should work with a [java.lang.Byte], but not [Byte]") {
 
       val byte1: Byte = 7.toByte
       val byte2: Any = 8.toByte
@@ -795,7 +812,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [java.lang.Double], but not [Double]` {
+    it("should work with a [java.lang.Double], but not [Double]") {
 
       val double1: Double = 7.77
       val double2: Any = 8.88
@@ -808,12 +825,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe a [Double]
       }
-      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with a [java.lang.Float], but not [Float]` {
+    it("should work with a [java.lang.Float], but not [Float]") {
 
       val float1: Float = 7.77f
       val float2: Any = 8.88f
@@ -831,7 +852,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [java.lang.Boolean], but not [Boolean]` {
+    it("should work with a [java.lang.Boolean], but not [Boolean]") {
 
       val bool1 = false
       val bool2: Any = true
@@ -849,7 +870,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with a [java.lang.Character], but not [Char]` {
+    it("should work with a [java.lang.Character], but not [Char]") {
 
       val c1 = '7'
       val c2: Any = '8'
@@ -867,7 +888,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [AnyRef]` {
+    it("should work with an [AnyRef]") {
 
       val string1 = "Hi"
       val string2: Any = "Hello"
@@ -880,12 +901,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [String]
       }
-      assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Integer", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(1, "8 was not an instance of java.lang.String, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with an [java.lang.Intger], but not [Int]` {
+    it("should work with an [java.lang.Intger], but not [Int]") {
 
       val int1 = 7
       val int2: Any = 8
@@ -898,12 +923,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Int]
       }
-      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Integer", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, int1 + " was not an instance of int, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with an [java.lang.Long], but not [Long]` {
+    it("should work with an [java.lang.Long], but not [Long]") {
 
       val long1 = 7L
       val long2: Any = 8L
@@ -921,7 +950,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [java.lang.Short], but not [Short]` {
+    it("should work with an [java.lang.Short], but not [Short]") {
 
       val short1: Short = 7
       val short2: Any = 8.toShort
@@ -934,12 +963,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Short]
       }
-      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Short", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, short1 + " was not an instance of short, but an instance of java.lang.Byte", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with an [java.lang.Byte], but not [Byte]` {
+    it("should work with an [java.lang.Byte], but not [Byte]") {
 
       val byte1: Byte = 7.toByte
       val byte2: Any = 8.toByte
@@ -957,7 +990,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [java.lang.Double], but not [Double]` {
+    it("should work with an [java.lang.Double], but not [Double]") {
 
       val double1: Double = 7.77
       val double2: Any = 8.88
@@ -970,12 +1003,16 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       val caught1 = intercept[TestFailedException] {
         all(list) shouldBe an [Double]
       }
-      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", thisLineNumber - 2, list))))
+      val offendingLine = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Double", offendingLine, list))))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught1.message === (Some(errorMessage(0, double1 + " was not an instance of double, but an instance of java.lang.Float", offendingLine, list))))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandForAllSpec.scala"))
-      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught1.failedCodeLineNumber === Some(offendingLine))
     }
 
-    def `should work with an [java.lang.Float], but not [Float]` {
+    it("should work with an [java.lang.Float], but not [Float]") {
 
       val float1: Float = 7.77f
       val float2: Any = 8.88f
@@ -993,7 +1030,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [java.lang.Boolean], but not [Boolean]` {
+    it("should work with an [java.lang.Boolean], but not [Boolean]") {
 
       val bool1 = false
       val bool2: Any = true
@@ -1011,7 +1048,7 @@ class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookProperty
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with an [java.lang.Character], but not [Char]` {
+    it("should work with an [java.lang.Character], but not [Char]") {
 
       val c1 = '7'
       val c2: Any = '8'
