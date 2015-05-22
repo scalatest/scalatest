@@ -131,7 +131,7 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.1" % config
+    "org.scalacheck" %% "scalacheck" % "1.12.3" % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
@@ -188,7 +188,8 @@ object ScalatestBuild extends Build {
     )
 
   def scalatestTestOptions =
-    Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
       "-m", "org.scalatest",
       "-m", "org.scalactic",
       "-m", "org.scalactic.anyvals",
@@ -452,7 +453,7 @@ object ScalatestBuild extends Build {
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.2",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.3",
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
