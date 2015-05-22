@@ -1621,12 +1621,6 @@ class SortedEquaSetSpec extends UnitSpec {
     result8 shouldBe number.immutable.TreeEquaSet(1, 2, 3)
     result8.shouldHaveExactType[number.immutable.TreeEquaSet[Int]]
   }
-  it should "have a to method" in {
-    number.immutable.SortedEquaSet(1).to[List] shouldBe List(number.EquaBox[Int](1))
-    number.immutable.SortedEquaSet(1, 2, 3).to[List] shouldBe List(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
-    number.immutable.SortedEquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
-    number.immutable.SortedEquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
-  }
   it should "have a toArray method" in {
     number.immutable.SortedEquaSet(1, 2, 3).toArray shouldBe Array(1, 2, 3)
     lower.immutable.SortedEquaSet("a", "b").toArray shouldBe Array("a", "b")

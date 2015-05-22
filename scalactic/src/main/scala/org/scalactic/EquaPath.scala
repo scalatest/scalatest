@@ -996,13 +996,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def takeRight(n: Int): thisCollections.immutable.EquaSet[T]
   
       /**
-       * Converts this `EquaSet` into another by copying all elements.
-       * @tparam Col The collection type to build.
-       * @return a new collection containing all elements of this `EquaSet`.
-       */
-      def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisCollections.EquaBox[T], Col[thisCollections.EquaBox[T] @uV]]): Col[thisCollections.EquaBox[T] @uV]
-  
-      /**
        * Converts this `EquaSet` to an array.
        *
        * @return an array containing all elements of this `EquaSet[T]`.
@@ -1584,7 +1577,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def tails: Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.tails.map(new immutable.FastEquaSet[T](_))
       def take(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.takeRight(n))
-      def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisCollections.EquaBox[T], Col[thisCollections.EquaBox[T] @uV]]): Col[thisCollections.EquaBox[T] @uV] = underlying.to[Col]
       def toArray: Array[T] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T

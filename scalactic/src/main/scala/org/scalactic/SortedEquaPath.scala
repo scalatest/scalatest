@@ -645,7 +645,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def tails: Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.tails.map(new immutable.TreeEquaSet[T](_))
       def take(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.takeRight(n))
-      def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisCollections.EquaBox[T], Col[thisCollections.EquaBox[T] @uV]]): Col[thisCollections.EquaBox[T] @uV] = underlying.to[Col]
       def toArray: Array[T] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T

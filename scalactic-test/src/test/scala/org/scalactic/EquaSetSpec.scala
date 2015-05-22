@@ -1647,12 +1647,6 @@ class EquaSetSpec extends UnitSpec {
     result8 shouldBe number.immutable.FastEquaSet(1, 2, 3)
     result8.shouldHaveExactType[number.immutable.FastEquaSet[Int]]
   }
-  it should "have a to method" in {
-    number.immutable.EquaSet(1).to[List] shouldBe List(number.EquaBox(1))
-    number.immutable.EquaSet(1, 2, 3).to[List] shouldBe List(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-    number.immutable.EquaSet(1, 2, 3).to[scala.collection.mutable.ListBuffer] shouldBe ListBuffer(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-    number.immutable.EquaSet(1, 2, 3).to[Vector] shouldBe Vector(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-  }
   it should "have a toArray method" in {
     number.immutable.EquaSet(1, 2, 3).toArray shouldBe (Array(1, 2, 3))
     lower.immutable.EquaSet("a", "b").toArray shouldBe (Array("a", "b"))
