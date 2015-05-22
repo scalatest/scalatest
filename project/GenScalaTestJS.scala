@@ -382,7 +382,7 @@ object GenScalaTestJS {
         "GenDrivenPropertyChecks.scala", 
         "Generator.scala", 
         "Configuration.scala", 
-        "Rnd.scala", 
+        "Randomizer.scala",
         "Edges.scala", 
         "Whenever.scala"
       ), targetDir) ++
