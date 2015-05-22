@@ -22,8 +22,8 @@ class FastEquaSetViewSpec extends UnitSpec {
       def hashCodeFor(a: T): Int = a.hashCode
       def areEqual(a: T, b: Any): Boolean = a == b
     }
-  val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-  val number = EquaPath[Int](normalHashingEquality[Int])
+  val trimmed = Collections[String](StringNormalizations.trimmed.toHashingEquality)
+  val number = Collections[Int](normalHashingEquality[Int])
 
   "FastEquaSetView" should "offer a size method" in {
     FastEquaSetView(1, 2, 3).size shouldBe 3
@@ -66,7 +66,7 @@ class FastEquaSetViewSpec extends UnitSpec {
     assertPretty(FastEquaSetView("one", "two", "three", "four", "five"))
 
     // Test FlatMappedFastEquaSetView
-    val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
+    val trimmed = Collections[String](StringNormalizations.trimmed.toHashingEquality)
     val equaSetView = trimmed.immutable.EquaSet("1", "2", "01", "3").view
     val flatMapped = equaSetView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)

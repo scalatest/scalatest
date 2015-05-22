@@ -23,8 +23,8 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.parallel.mutable.ParArray
 
 /*
-val t = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-val w = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
+val t = Collections[String](StringNormalizations.trimmed.toHashingEquality)
+val w = SortedCollections[String](StringNormalizations.lowerCased.toOrderingEquality)
 val tes = t.EquaSet("tes")
 val tfes = t.FastEquaSet("tfes")
 val wes = w.EquaSet("les")
@@ -47,15 +47,15 @@ class EquaSetSpec extends UnitSpec {
       def hashCodeFor(a: T): Int = a.hashCode
       def areEqual(a: T, b: Any): Boolean = a == b
     }
-  val number = EquaPath[Int](normalHashingEquality[Int])
-  val sortedNumber = SortedEquaPath[Int](normalOrderingEquality[Int])
-  val lower = EquaPath[String](StringNormalizations.lowerCased.toHashingEquality)
-  val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-  val sortedLower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val numberList = EquaPath[List[Int]](normalHashingEquality[List[Int]])
-  val numberLower = EquaPath[(Int, String)](normalHashingEquality[(Int, String)])
-  val numberLowerTrimmed = EquaPath[(Int, String, String)](normalHashingEquality[(Int, String, String)])
-  val numberNumber = EquaPath[number.immutable.EquaSet[Int]](normalHashingEquality[number.immutable.EquaSet[Int]])
+  val number = Collections[Int](normalHashingEquality[Int])
+  val sortedNumber = SortedCollections[Int](normalOrderingEquality[Int])
+  val lower = Collections[String](StringNormalizations.lowerCased.toHashingEquality)
+  val trimmed = Collections[String](StringNormalizations.trimmed.toHashingEquality)
+  val sortedLower = SortedCollections[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val numberList = Collections[List[Int]](normalHashingEquality[List[Int]])
+  val numberLower = Collections[(Int, String)](normalHashingEquality[(Int, String)])
+  val numberLowerTrimmed = Collections[(Int, String, String)](normalHashingEquality[(Int, String, String)])
+  val numberNumber = Collections[number.immutable.EquaSet[Int]](normalHashingEquality[number.immutable.EquaSet[Int]])
   def upperCharHashingEquality =
     new HashingEquality[Char] {
       def hashCodeFor(a: Char): Int = a.toUpper.hashCode
@@ -65,9 +65,9 @@ class EquaSetSpec extends UnitSpec {
           case _ => false
         }
     }
-  val upperChar = EquaPath[Char](upperCharHashingEquality)
-  val regularChar = EquaPath[Char](normalHashingEquality[Char])
-  val tuple = EquaPath[(Int, String)](normalHashingEquality)
+  val upperChar = Collections[Char](upperCharHashingEquality)
+  val regularChar = Collections[Char](normalHashingEquality[Char])
+  val tuple = Collections[(Int, String)](normalHashingEquality)
 
   "An EquaSet" can "be constructed with empty" in {
     val emptySet = lower.immutable.EquaSet.empty
@@ -657,12 +657,12 @@ class EquaSetSpec extends UnitSpec {
     number.immutable.EquaSet(1).canEqual(number.immutable.EquaSet(1, 2, 3)) shouldBe true
     number.immutable.EquaSet(1).canEqual(lower.immutable.EquaSet("hi")) shouldBe false
     val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
-    val equaSets = EquaPath[String](orderingEquality) // Two different EquaPath instances
-    val sortedEquaPath = SortedEquaPath[String](orderingEquality)
+    val equaSets = Collections[String](orderingEquality) // Two different Collections instances
+    val sortedCollections = SortedCollections[String](orderingEquality)
     val equaSet = equaSets.immutable.EquaSet("hi", "ho")
     val fastEquaSet = equaSets.immutable.FastEquaSet("Bi", "Bo")
-    val sortedEquaSet = sortedEquaPath.immutable.SortedEquaSet("cI", "cO")
-    val treeEquaSet = sortedEquaPath.immutable.TreeEquaSet("DI", "DO")
+    val sortedEquaSet = sortedCollections.immutable.SortedEquaSet("cI", "cO")
+    val treeEquaSet = sortedCollections.immutable.TreeEquaSet("DI", "DO")
     equaSet.canEqual(equaSet) shouldBe true
     equaSet.canEqual(equaSets.immutable.FastEquaSet("Hi", "Ho")) shouldBe true
     equaSets.immutable.FastEquaSet("Hi", "Ho").canEqual(equaSet) shouldBe true
@@ -724,8 +724,8 @@ class EquaSetSpec extends UnitSpec {
           }
         def hashCodeFor(a: Fruit): Int = nameEquality.hashCodeFor(a.name)
       }
-    val fruitEquaPath = EquaPath(equalityOfFruit)
-    val fruits = fruitEquaPath.immutable.EquaSet(mac, navel)
+    val fruitCollections = Collections(equalityOfFruit)
+    val fruits = fruitCollections.immutable.EquaSet(mac, navel)
     fruits.contains(mac) shouldBe true
   }
   it should "have 3 copyToArray methods" in {
@@ -923,12 +923,12 @@ class EquaSetSpec extends UnitSpec {
     sortedLower.immutable.SortedEquaSet("one", "two", "three") shouldEqual sortedLower.immutable.EquaSet("Three", "Two", "One")
     sortedLower.immutable.EquaSet("one", "two", "three") shouldEqual sortedLower.immutable.SortedEquaSet("Three", "Two", "One")
     val orderingEquality = StringNormalizations.lowerCased.toOrderingEquality
-    val equaSets = EquaPath[String](orderingEquality) // Two different EquaPath instances
-    val sortedEquaPath = SortedEquaPath[String](orderingEquality)
+    val equaSets = Collections[String](orderingEquality) // Two different Collections instances
+    val sortedCollections = SortedCollections[String](orderingEquality)
     val equaSet = equaSets.immutable.EquaSet("hi", "ho")
     val fastEquaSet = equaSets.immutable.FastEquaSet("Hi", "Ho")
-    val sortedEquaSet = sortedEquaPath.immutable.SortedEquaSet("hI", "hO")
-    val treeEquaSet = sortedEquaPath.immutable.TreeEquaSet("HI", "HO")
+    val sortedEquaSet = sortedCollections.immutable.SortedEquaSet("hI", "hO")
+    val treeEquaSet = sortedCollections.immutable.TreeEquaSet("HI", "HO")
     equaSet shouldEqual equaSet
     equaSet shouldEqual equaSets.immutable.FastEquaSet("Hi", "Ho")
     equaSets.immutable.FastEquaSet("Hi", "Ho") shouldEqual equaSet
@@ -2148,9 +2148,12 @@ def zipWithIndex: Set[(A, Int)]
     val strictSet = mapped.toEquaSet(number)
     strictSet should equal (number.immutable.EquaSet(2, 3, 4))
   }
-  "The collections value" should "be a nice reference to a default EquaPath[Any]" in {
-    import collections.immutable._
+  "The collections value" should "be a nice reference to a default Collections[Any]" in {
+    import Collections.native._
+    immutable.EquaSet(1, 2, 3) intersect immutable.EquaSet(2, 3, 4) shouldEqual immutable.EquaSet(2, 3)
+    immutable.FastEquaSet(1, 2, 3) intersect immutable.FastEquaSet(2, 3, 4) shouldEqual immutable.FastEquaSet(2, 3)
     EquaSet(1, 2, 3) intersect EquaSet(2, 3, 4) shouldEqual EquaSet(2, 3)
+    FastEquaSet(1, 2, 3) intersect FastEquaSet(2, 3, 4) shouldEqual FastEquaSet(2, 3)
   }
 }
 

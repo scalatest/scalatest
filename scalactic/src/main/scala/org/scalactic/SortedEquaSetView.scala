@@ -20,10 +20,10 @@ trait SortedEquaSetView[+T] extends EquaSetView[T] {
 
   def map[U](f: T => U): TreeEquaSetView[U]
   def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U]
-  def force[U >: T](toPath: EquaPath[U]): toPath.immutable.EquaSet[U]
-  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.immutable.EquaSet[U]
-  def force[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.SortedEquaSet[U]
-  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.SortedEquaSet[U]
+  def force[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
+  def toEquaSet[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
+  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U]
+  def toSortedEquaSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U]
   def toList: List[T]
 
   def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U]

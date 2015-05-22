@@ -45,13 +45,13 @@ class SortedEquaSetSpec extends UnitSpec {
       def areEqual(a: Int, b: Any): Boolean = a == b
       def compare(a: Int, b: Int): Int = a - b
     }
-  val plainNumber = EquaPath[Int](intEquality)
-  val number = SortedEquaPath[Int](intEquality)
-  val sortedNumber = SortedEquaPath[Int](normalOrderingEquality[Int])
-  val lower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val plainLower = EquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val sortedLower = SortedEquaPath[String](StringNormalizations.lowerCased.toOrderingEquality)
-  val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
+  val plainNumber = Collections[Int](intEquality)
+  val number = SortedCollections[Int](intEquality)
+  val sortedNumber = SortedCollections[Int](normalOrderingEquality[Int])
+  val lower = SortedCollections[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val plainLower = Collections[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val sortedLower = SortedCollections[String](StringNormalizations.lowerCased.toOrderingEquality)
+  val trimmed = SortedCollections[String](StringNormalizations.trimmed.toOrderingEquality)
   val intStringEquality =
     new OrderingEquality[(Int, String)] {
       def hashCodeFor(a: (Int, String)): Int = a.hashCode
@@ -62,7 +62,7 @@ class SortedEquaSetSpec extends UnitSpec {
         else
           a._2 compareTo b._2
     }
-  val numberLower = SortedEquaPath(intStringEquality)
+  val numberLower = SortedCollections(intStringEquality)
   val intStringStringEquality =
     new OrderingEquality[(Int, String, String)] {
       def hashCodeFor(a: (Int, String, String)): Int = a.hashCode
@@ -75,7 +75,7 @@ class SortedEquaSetSpec extends UnitSpec {
         else
           a._3 compareTo b._3
     }
-  val numberLowerTrimmed = SortedEquaPath(intStringStringEquality)
+  val numberLowerTrimmed = SortedCollections(intStringStringEquality)
 
   def numberListEquality[T] =
     new OrderingEquality[List[Int]] {
@@ -84,7 +84,7 @@ class SortedEquaSetSpec extends UnitSpec {
       def compare(a: List[Int], b: List[Int]): Int = a.mkString compareTo b.mkString
     }
 
-  val numberList = SortedEquaPath[List[Int]](numberListEquality)
+  val numberList = SortedCollections[List[Int]](numberListEquality)
 
   val numberNumberEquality =
     new OrderingEquality[number.immutable.SortedEquaSet[Int]] {
@@ -92,7 +92,7 @@ class SortedEquaSetSpec extends UnitSpec {
       def areEqual(a: number.immutable.SortedEquaSet[Int], b: Any): Boolean = a == b
       def compare(a: number.immutable.SortedEquaSet[Int], b: number.immutable.SortedEquaSet[Int]): Int = a.mkString compareTo b.mkString
     }
-  val numberNumber = SortedEquaPath[number.immutable.SortedEquaSet[Int]](numberNumberEquality)
+  val numberNumber = SortedCollections[number.immutable.SortedEquaSet[Int]](numberNumberEquality)
 
   "An SortedEquaSet" can "be constructed with empty" in {
     val emptySet = lower.immutable.SortedEquaSet.empty
@@ -746,8 +746,8 @@ class SortedEquaSetSpec extends UnitSpec {
         def hashCodeFor(a: Fruit): Int = nameEquality.hashCodeFor(a.name)
         def compare(a: Fruit, b: Fruit): Int = nameEquality.compare(a.name, b.name)
       }
-    val fruitEquaPath = SortedEquaPath(equalityOfFruit)
-    val fruits = fruitEquaPath.immutable.SortedEquaSet(mac, navel)
+    val fruitCollections = SortedCollections(equalityOfFruit)
+    val fruits = fruitCollections.immutable.SortedEquaSet(mac, navel)
     fruits.contains(mac) shouldBe true
   }
   it should "have 3 copyToArray methods" in {
@@ -1957,6 +1957,21 @@ class SortedEquaSetSpec extends UnitSpec {
     modifiedTrimmedSeq.hashCode should equal (modifiedLowerSeq.hashCode)
     val thirdModifiedSeq = lowerSeq.map(_.toInt).map(_ + 2)
     modifiedTrimmedSeq.hashCode should not equal thirdModifiedSeq.hashCode // Overspecified
+  }
+  "The collections value" should "be a nice reference to a default SortedCollections[Any]" in {
+
+    val sortedIntCollections = SortedCollections.native[Int]
+    import sortedIntCollections._
+
+    EquaSet(1, 2, 3) intersect EquaSet(2, 3, 4) shouldEqual EquaSet(2, 3)
+    FastEquaSet(1, 2, 3) intersect FastEquaSet(2, 3, 4) shouldEqual FastEquaSet(2, 3)
+    SortedEquaSet(1, 2, 3) intersect SortedEquaSet(2, 3, 4) shouldEqual SortedEquaSet(2, 3)
+    TreeEquaSet(1, 2, 3) intersect TreeEquaSet(2, 3, 4) shouldEqual TreeEquaSet(2, 3)
+
+    immutable.EquaSet(1, 2, 3) intersect immutable.EquaSet(2, 3, 4) shouldEqual immutable.EquaSet(2, 3)
+    immutable.FastEquaSet(1, 2, 3) intersect immutable.FastEquaSet(2, 3, 4) shouldEqual immutable.FastEquaSet(2, 3)
+    immutable.SortedEquaSet(1, 2, 3) intersect immutable.SortedEquaSet(2, 3, 4) shouldEqual immutable.SortedEquaSet(2, 3)
+    immutable.TreeEquaSet(1, 2, 3) intersect immutable.TreeEquaSet(2, 3, 4) shouldEqual immutable.TreeEquaSet(2, 3)
   }
 }
 

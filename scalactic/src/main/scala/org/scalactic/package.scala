@@ -59,7 +59,5 @@ package object scalactic {
    * @return the Scalactic version number.
    */
   val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
-
-  val collections: EquaPath[Any] = EquaPath.default
 }
 

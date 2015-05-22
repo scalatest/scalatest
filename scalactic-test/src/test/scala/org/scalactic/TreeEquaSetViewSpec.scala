@@ -28,8 +28,8 @@ class TreeEquaSetViewSpec extends UnitSpec {
       def areEqual(a: Int, b: Any): Boolean = a == b
       def compare(a: Int, b: Int): Int = a - b
     }
-  val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
-  val number = SortedEquaPath[Int](intEquality)
+  val trimmed = SortedCollections[String](StringNormalizations.trimmed.toOrderingEquality)
+  val number = SortedCollections[Int](intEquality)
 
   "TreeEquaSetView" should "offer a size method" in {
     TreeEquaSetView(1, 2, 3).size shouldBe 3
@@ -75,7 +75,7 @@ class TreeEquaSetViewSpec extends UnitSpec {
     assertPretty(TreeEquaSetView("one", "two", "three", "four", "five"))
 
     // Test FlatMappedTreeEquaSetView
-    val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
+    val trimmed = SortedCollections[String](StringNormalizations.trimmed.toOrderingEquality)
     val sortedSetView = trimmed.immutable.SortedEquaSet("1", "2", "01", "3").view
     val flatMapped = sortedSetView.flatMap { (digit: String) =>
       TreeEquaSetView(digit.toInt)
