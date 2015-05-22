@@ -20,10 +20,10 @@ trait TreeEquaSetView[+T] extends SortedEquaSetView[T] {
 
   def map[U](f: T => U): TreeEquaSetView[U]
   def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U]
-  def force[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
-  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.EquaSet[U]
-  def force[U >: T](toPath: SortedEquaPath[U]): toPath.TreeEquaSet[U]
-  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet[U]
+  def force[U >: T](toPath: EquaPath[U]): toPath.immutable.EquaSet[U]
+  def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.immutable.EquaSet[U]
+  def force[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.TreeEquaSet[U]
+  def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.SortedEquaSet[U]
   def toList: List[T]
 
   def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U]
@@ -43,10 +43,10 @@ object TreeEquaSetView {
     def collect[U](pf: PartialFunction[T, U]): TreeEquaSetView[U] = new CollectTreeEquaSetView(thisTreeEquaSetView, pf)
     def map[U](f: T => U): TreeEquaSetView[U] = new MapTreeEquaSetView(thisTreeEquaSetView, f)
     def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U] = new FlatMapTreeEquaSetView(thisTreeEquaSetView, f)
-    def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet[U] = force(toPath)
-    def force[U >: T](toPath: EquaPath[U]): toPath.FastEquaSet[U] = toPath.FastEquaSet(args: _*)
-    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.SortedEquaSet[U] = force(toPath)
-    def force[U >: T](toPath: SortedEquaPath[U]): toPath.TreeEquaSet[U] = toPath.TreeEquaSet(args: _*)
+    def toEquaSet[U >: T](toPath: EquaPath[U]): toPath.immutable.FastEquaSet[U] = force(toPath)
+    def force[U >: T](toPath: EquaPath[U]): toPath.immutable.FastEquaSet[U] = toPath.immutable.FastEquaSet(args: _*)
+    def toSortedEquaSet[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.SortedEquaSet[U] = force(toPath)
+    def force[U >: T](toPath: SortedEquaPath[U]): toPath.immutable.TreeEquaSet[U] = toPath.immutable.TreeEquaSet(args: _*)
     def toList: List[T] = args
 
     def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U] = new ScanTreeEquaSetView(thisTreeEquaSetView, z, op)
@@ -80,14 +80,14 @@ object TreeEquaSetView {
     def collect[V](pf: PartialFunction[U, V]): TreeEquaSetView[V] = new CollectTreeEquaSetView(thisTreeEquaSetView, pf)
     def map[V](g: U => V): TreeEquaSetView[V] = new MapTreeEquaSetView[U, V](thisTreeEquaSetView, g)
     def flatMap[V](f: U => EquaSetView[V]): TreeEquaSetView[V] = new FlatMapTreeEquaSetView(thisTreeEquaSetView, f)
-    def force[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet[V] = {
-      toPath.FastEquaSet[V](toList: _*)
+    def force[V >: U](toPath: EquaPath[V]): toPath.immutable.FastEquaSet[V] = {
+      toPath.immutable.FastEquaSet[V](toList: _*)
     }
-    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.FastEquaSet[V] = force(toPath)
-    def force[V >: U](toPath: SortedEquaPath[V]): toPath.TreeEquaSet[V] = {
-      toPath.TreeEquaSet[V](toList: _*)
+    def toEquaSet[V >: U](toPath: EquaPath[V]): toPath.immutable.FastEquaSet[V] = force(toPath)
+    def force[V >: U](toPath: SortedEquaPath[V]): toPath.immutable.TreeEquaSet[V] = {
+      toPath.immutable.TreeEquaSet[V](toList: _*)
     }
-    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.SortedEquaSet[V] = force(toPath)
+    def toSortedEquaSet[V >: U](toPath: SortedEquaPath[V]): toPath.immutable.SortedEquaSet[V] = force(toPath)
     def toList: List[U]
 
     def scan[V >: U](z: V)(op: (V, V) ⇒ V): TreeEquaSetView[V] = new ScanTreeEquaSetView(thisTreeEquaSetView, z, op)

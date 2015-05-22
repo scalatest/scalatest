@@ -67,7 +67,7 @@ class FastEquaSetViewSpec extends UnitSpec {
 
     // Test FlatMappedFastEquaSetView
     val trimmed = EquaPath[String](StringNormalizations.trimmed.toHashingEquality)
-    val equaSetView = trimmed.EquaSet("1", "2", "01", "3").view
+    val equaSetView = trimmed.immutable.EquaSet("1", "2", "01", "3").view
     val flatMapped = equaSetView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
@@ -159,12 +159,12 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "offer a force method that returns a FastEquaSet" in {
-    val setView = trimmed.FastEquaSet("1", "2", "01", "3").view
+    val setView = trimmed.immutable.FastEquaSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)
-    strictSet should equal (number.FastEquaSet(1, 2, 3))
+    strictSet should equal (number.immutable.FastEquaSet(1, 2, 3))
   }
 }
 

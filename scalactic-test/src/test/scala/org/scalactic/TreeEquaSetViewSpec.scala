@@ -76,7 +76,7 @@ class TreeEquaSetViewSpec extends UnitSpec {
 
     // Test FlatMappedTreeEquaSetView
     val trimmed = SortedEquaPath[String](StringNormalizations.trimmed.toOrderingEquality)
-    val sortedSetView = trimmed.SortedEquaSet("1", "2", "01", "3").view
+    val sortedSetView = trimmed.immutable.SortedEquaSet("1", "2", "01", "3").view
     val flatMapped = sortedSetView.flatMap { (digit: String) =>
       TreeEquaSetView(digit.toInt)
     }
@@ -168,12 +168,12 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "offer a force method that returns a SortedEquaSet" in {
-    val setView = trimmed.TreeEquaSet("1", "2", "01", "3").view
+    val setView = trimmed.immutable.TreeEquaSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
       FastEquaSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)
-    strictSet should equal (number.TreeEquaSet(1, 2, 3))
+    strictSet should equal (number.immutable.TreeEquaSet(1, 2, 3))
   }
 }
 
