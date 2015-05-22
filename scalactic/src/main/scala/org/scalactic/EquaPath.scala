@@ -32,7 +32,7 @@ import scala.reflect.ClassTag
 
 class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
 
-  case class EquaBox[T <: E](value: T) {
+  case class EquaBox[+T <: E](value: T) {
     override def equals(o: Any): Boolean = 
       o match {
         case other: Collections[_]#EquaBox[_] if equality eq other.path.equality =>
@@ -73,7 +73,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
     // since number's type parameter is Int, you could say into(anotherIntOne).flatten. Boy that seems like
     // it would be never invoked.
   
-    trait EquaSet[T <: E] {
+    trait EquaSet[+T <: E] {
   
       /**
        * Creates a new `EquaSet` with an additional element, unless the element is
@@ -83,7 +83,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new `EquaSet` that contains all elements of this `EquaSet` and that also
        * contains `elem`.
        */
-      def + (elem: T): thisCollections.immutable.EquaSet[T]
+      def +[U >: T <: E](elem: U): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a new `EquaSet` with additional elements.
@@ -96,14 +96,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param elems the remaining elements to add.
        * @return a new `EquaSet` with the given elements added.
        */
-      def + (elem1: T, elem2: T, elems: T*): thisCollections.immutable.EquaSet[T]
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.EquaSet[U]
   
       /** Creates a new `EquaSet` by adding all elements contained in another collection to this `EquaSet`.
         *
         *  @param elems     the collection containing the added elements.
         *  @return          a new `EquaSet` with the given elements added.
         */
-      def ++ (elems: GenTraversableOnce[T]): thisCollections.immutable.EquaSet[T]
+      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a new `EquaSet` by adding elements contained in another `EquaSet`.
@@ -111,7 +111,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param that     the other `EquaSet` containing the added elements.
        * @return         a new `EquaSet` with the given elements added.
        */
-      def ++ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
+      def ++[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a new `EquaSet` with a given element removed from this `EquaSet`.
@@ -120,7 +120,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new `EquaSet` that contains all elements of this `EquaSet` but that does not
        * contain `elem`.
        */
-      def - (elem: T): thisCollections.immutable.EquaSet[T]
+      def -[U >: T <: E](elem: U): thisCollections.immutable.EquaSet[U]
   
       /* * USE LATER
        * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
@@ -143,7 +143,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new `EquaSet` that contains all elements of the current `EquaSet`
        * except one less occurrence of each of the given elements.
        */
-      def - (elem1: T, elem2: T, elems: T*): thisCollections.immutable.EquaSet[T]
+      def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another
@@ -153,7 +153,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *  @return a new `EquaSet` that contains all elements of the current `EquaSet`
        *  except one less occurrence of each of the elements of `elems`.
        */
-      def --(elems: GenTraversableOnce[T]): thisCollections.immutable.EquaSet[T]
+      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a new `EquaSet` from this `EquaSet` by removing all elements of another `EquaSet`
@@ -161,7 +161,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param that       the other `EquaSet` containing the removed elements.
        * @return a new `EquaSet` that contains all elements of the current `EquaSet` minus elements contained in the passed in `EquaSet`.
        */
-      def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
+      def --[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Appends all elements of this `EquaSet` to a string builder.
@@ -268,18 +268,9 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        */
       def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B
   
-      /**
-       * Tests if some element is contained in this set.
-       *
-       *  This method is equivalent to `contains`. It allows sets to be interpreted as predicates.
-       *  @param elem the element to test for membership.
-       *  @return  `true` if `elem` is contained in this set, `false` otherwise.
-      def apply(elem: T): Boolean
-       */
-  
       def canEqual(that: Any): Boolean
   
-      def contains(elem: T): Boolean
+      def contains[U >: T <: E](elem: U): Boolean
   
       /**
        * Copies values of this `EquaSet` to an array.
@@ -290,7 +281,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param xs the array to fill.
        *
        */
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]]): Unit
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]]): Unit
   
       /**
        * Copies values of this `EquaSet` to an array.
@@ -302,7 +293,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param start the starting index.
        *
        */
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]], start: Int): Unit
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int): Unit
   
       /**
        * Copies values of this `EquaSet` to an array.
@@ -314,14 +305,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param len the length of elements to copy
        *
        */
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]], start: Int, len: Int): Unit
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int, len: Int): Unit
   
       /**
        * Copies all elements of this `EquaSet` to a buffer.
        *
        * @param dest The buffer to which elements are copied.
        */
-      def copyToBuffer(dest: mutable.Buffer[thisCollections.EquaBox[T]]): Unit
+      def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.EquaBox[U]]): Unit
   
       /**
        * Counts the number of elements in the `EquaSet` which satisfy a predicate.
@@ -338,7 +329,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return an `EquaSet` containing those elements of this
        * `EquaSet` that are not also contained in the given `EquaSet` `that`.
        */
-      def diff(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
+      def diff[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Selects all elements except first ''n'' ones.
@@ -590,8 +581,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new `EquaSet` consisting of all elements that are both in this
        * `EquaSet` and in the given `EquaSet` `that`.
        */
-      def intersect(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
-  
+      def intersect[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.EquaSet[U]
+
       /**
        * Tests if this `EquaSet` is empty.
        *
@@ -821,11 +812,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1]
   
       /**
-       * The `Set[EquaBox[T]]` underlying this `EquaSet` object.
-       */
-      def repr: Set[EquaBox[T]]
-  
-      /**
        * Checks if the other iterable collection contains the same elements in the same order as this `EquaSet`.
        *
        * @param that the collection to compare with.
@@ -924,7 +910,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return `true` if this set is a subset of `that`, i.e. if
        * every element of this set is also an element of `that`.
        */
-      def subsetOf(that: thisCollections.immutable.EquaSet[T]): Boolean
+      def subsetOf[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): Boolean
   
       /**
        * An iterator over all subsets of this set of the given size.
@@ -1000,28 +986,28 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an array containing all elements of this `EquaSet[T]`.
        */
-      def toArray(implicit ct: ClassTag[T]): Array[T]
+      def toArray[U >: T <: E](implicit ct: ClassTag[U]): Array[U]
   
       /**
        * Converts this `EquaSet` to an array of `EquaBox[T]`es containing the elements.
        *
        * @return an array containing all elements of this `EquaSet`, boxed in `EquaBox`.
        */
-      def toEquaBoxArray: Array[thisCollections.EquaBox[T]]
+      def toEquaBoxArray[U >: T <: E]: Array[thisCollections.EquaBox[U]]
   
       /**
        * Uses the contents of this `EquaSet` to create a new mutable buffer.
        *
        * @return a buffer containing all elements of this `EquaSet`.
        */
-      def toBuffer: scala.collection.mutable.Buffer[T]
+      def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U]
   
       /**
        * Uses the contents of this `EquaSet` to create a new mutable buffer containing `EquaBox`es of elements.
        *
        * @return a buffer containing all elements of this `EquaSet`, boxed in `EquaBox`.
        */
-      def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisCollections.EquaBox[T]]
+      def toEquaBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.EquaBox[U]]
   
       /**
        * Converts this `EquaSet` to an indexed sequence.
@@ -1104,14 +1090,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a `ParArray` containing all elements of this `EquaSet`.
        */
-      def toParArray: ParArray[T]
+      def toParArray[U >: T <: E]: ParArray[U]
   
       /**
        * Converts this `EquaSet` to a `ParArray` containing `EquaBox`es of elements.
        *
        * @return a `ParArray` containing all elements of this `EquaSet`, boxed in `EquaBox`.
        */
-      def toEquaBoxParArray: ParArray[thisCollections.EquaBox[T]]
+      def toEquaBoxParArray[U >: T <: E]: ParArray[thisCollections.EquaBox[U]]
   
       /**
        * Converts this `EquaSet` to a sequence. As with `toIterable`, it's lazy
@@ -1136,14 +1122,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a set containing all elements of this `EquaSet`.
        */
-      def toSet: Set[T]
+      def toSet[U >: T <: E]: Set[U]
   
       /**
        * Converts this `EquaSet` to a set of `EquaBox`.
        *
        * @return a set containing all elements of this `EquaSet`, boxed in `EquaBox`.
        */
-      def toEquaBoxSet: Set[thisCollections.EquaBox[T]]
+      def toEquaBoxSet[U >: T <: E]: Set[thisCollections.EquaBox[U]]
   
       /**
        * Converts this `EquaSet` to a stream.
@@ -1229,7 +1215,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new set consisting of all elements that are in this
        * set or in the given set `that`.
        */
-      def union(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
+      def union[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.EquaSet[U]
   
       /**
        * Creates a non-strict filter of this `EquaSet`.
@@ -1451,47 +1437,46 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
     }
   */
 
-    class FastEquaSet[T <: E] private[scalactic] (private val underlying: Set[EquaBox[T]]) extends EquaSet[T] { thisFastEquaSet =>
-      def + (elem: T): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying + EquaBox[T](elem))
-      def + (elem1: T, elem2: T, elem3: T*): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying + (EquaBox[T](elem1), EquaBox[T](elem2), elem3.map(EquaBox[T](_)): _*))
-      def ++ (elems: GenTraversableOnce[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying ++ elems.toList.map(EquaBox[T](_)))
-      def ++ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying ++ that.toEquaBoxSet)
-      def - (elem: T): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying - EquaBox[T](elem))
-      def - (elem1: T, elem2: T, elem3: T*): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying - (EquaBox[T](elem1), EquaBox[T](elem2), elem3.map(EquaBox[T](_)): _*))
-      def --(elems: GenTraversableOnce[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying -- elems.toList.map(EquaBox[T](_)))
-      def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying -- that.toEquaBoxSet)
+    class FastEquaSet[+T <: E] private[scalactic] (private val underlying: Set[EquaBox[T@uV]]) extends EquaSet[T] { thisFastEquaSet =>
+      def +[U >: T <: E](elem: U): thisCollections.immutable.FastEquaSet[U] = new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) + EquaBox[U](elem))
+      def +[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) + (EquaBox[U](elem1), EquaBox[U](elem2), elem3.map(EquaBox[U](_)): _*))
+      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying ++ elems.toList.map(EquaBox[U](_)))
+      def ++[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.FastEquaSet[U] = new immutable.FastEquaSet[U](underlying ++ that.toEquaBoxSet)
+      def -[U >: T <: E](elem: U): thisCollections.immutable.FastEquaSet[U] = new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) - EquaBox[U](elem))
+      def -[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) - (EquaBox[U](elem1), EquaBox[U](elem2), elem3.map(EquaBox[U](_)): _*))
+      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) -- elems.toList.map(EquaBox[U](_)))
+      def --[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) -- that.toEquaBoxSet)
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
       def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
       def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
       def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox[T]) => seqop(b, e.value), combop)
-      // def apply(elem: T): Boolean = underlying.apply(EquaBox(elem))
       def canEqual(that: Any): Boolean =
         that match {
           case thatEquaSet: (Collections[_]#Immutable#EquaSet[_]) => thatEquaSet.path.equality eq thisCollections.equality
           case _ => false
         }
-      def collect(pf: PartialFunction[T, T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[T](pf(hb.value)) })
-      def contains(elem: T): Boolean = underlying.contains(EquaBox[T](elem))
+      def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[U](pf(hb.value)) })
+      def contains[U >: T <: E](elem: U): Boolean = underlying.toList.contains(EquaBox[U](elem))
   
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]]): Unit = underlying.copyToArray(xs)
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]], start: Int): Unit = underlying.copyToArray(xs, start)
-      def copyToArray(xs: Array[thisCollections.EquaBox[T]], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
-      def copyToBuffer(dest: mutable.Buffer[thisCollections.EquaBox[T]]): Unit = underlying.copyToBuffer(dest)
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]]): Unit = underlying.copyToArray(xs)
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int): Unit = underlying.copyToArray(xs, start)
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
+      def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.EquaBox[U]]): Unit = underlying.copyToBuffer(dest)
       def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
-      def diff(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying diff that.toEquaBoxSet)
+      def diff[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => ebt: EquaBox[U]) diff that.toEquaBoxSet)
       def drop(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.drop(n))
       def dropRight(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.dropRight(n))
       def dropWhile(pred: T => Boolean): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.dropWhile((p: EquaBox[T]) => pred(p.value)))
       override def equals(other: Any): Boolean = { 
         other match {
-          case thatEquaSet: Collections[_]#Immutable#EquaSet[_] => 
+          case thatEquaSet: Collections[E]#Immutable#EquaSet[T] => 
             (thisCollections.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
           case _ => false
         }
@@ -1517,8 +1502,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         }
       def init: thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.init)
       def inits: Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.inits.map(new immutable.FastEquaSet[T](_))
-      def intersect(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying intersect that.toEquaBoxSet)
+      def intersect[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => ebt: EquaBox[U]) intersect that.toEquaBoxSet)
       def isEmpty: Boolean = underlying.isEmpty
       def iterator: Iterator[T] = underlying.iterator.map(_.value)
       def last: T = underlying.last.value
@@ -1546,8 +1531,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def reduceOption[T1 >: T](op: (T1, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceOption(op)
       def reduceRight[T1 >: T](op: (T, T1) => T1): T1 = underlying.toList.map(_.value).reduceRight(op)
       def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
-      def repr: Set[EquaBox[T]] = underlying
       def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
+/*
       def scanLeft(z: T)(op: (T, T) => T): thisCollections.immutable.FastEquaSet[T] = {
         val set = underlying.scanLeft(EquaBox[T](z))((b1: EquaBox[T], b2: EquaBox[T]) => EquaBox[T](op(b1.value, b2.value)))
         new immutable.FastEquaSet[T](set)
@@ -1556,6 +1541,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         val set = underlying.scanRight(EquaBox[T](z))((b1: EquaBox[T], b2: EquaBox[T]) => EquaBox[T](op(b1.value, b2.value)))
         new immutable.FastEquaSet[T](set)
       }
+*/
       def size: Int = underlying.size
       def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.slice(unc_from, unc_until))
       def sliding(size: Int): Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.sliding(size).map(new immutable.FastEquaSet[T](_))
@@ -1569,7 +1555,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         (new immutable.FastEquaSet[T](trueSet), new immutable.FastEquaSet[T](falseSet))
       }
       def stringPrefix: String = "EquaSet"
-      def subsetOf(that: thisCollections.immutable.EquaSet[T]): Boolean = underlying.subsetOf(that.toEquaBoxSet)
+      def subsetOf[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): Boolean = underlying.map(ebt => ebt: EquaBox[U]).subsetOf(that.toEquaBoxSet)
       def subsets(len: Int): Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.subsets(len).map(new immutable.FastEquaSet[T](_))
       def subsets: Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.subsets.map(new immutable.FastEquaSet[T](_))
       def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
@@ -1577,7 +1563,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def tails: Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.tails.map(new immutable.FastEquaSet[T](_))
       def take(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.takeRight(n))
-      def toArray(implicit ct: ClassTag[T]): Array[T] = {
+      def toArray[U >: T <: E](implicit ct: ClassTag[U]): Array[U] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T
         // val arr: Array[Any] = new Array[Any](underlying.size)
@@ -1585,9 +1571,9 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         // arr.asInstanceOf[Array[T]]
         underlying.map(_.value).toArray
       }
-      def toEquaBoxArray: Array[thisCollections.EquaBox[T]] = underlying.toArray
-      def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
-      def toEquaBoxBuffer: scala.collection.mutable.Buffer[thisCollections.EquaBox[T]] = underlying.toBuffer
+      def toEquaBoxArray[U >: T <: E]: Array[thisCollections.EquaBox[U]] = underlying.toArray
+      def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
+      def toEquaBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.EquaBox[U]] = underlying.toBuffer
       def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
       def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.EquaBox[T]] = underlying.toIndexedSeq
       def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
@@ -1597,12 +1583,12 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def toEquaBoxList: List[thisCollections.EquaBox[T]] = underlying.toList
       def toList: List[T] = underlying.toList.map(_.value)
       def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
-      def toParArray: ParArray[T] = underlying.toParArray.map(_.value)
-      def toEquaBoxParArray: ParArray[thisCollections.EquaBox[T]] = underlying.toParArray
+      def toParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
+      def toEquaBoxParArray[U >: T <: E]: ParArray[thisCollections.EquaBox[U]] = underlying.toList.map(ebt => ebt: EquaBox[U]).toParArray
       def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
       def toEquaBoxSeq: GenSeq[thisCollections.EquaBox[T]] = underlying.toSeq
-      def toSet: Set[T] = underlying.map(_.value)
-      def toEquaBoxSet: Set[thisCollections.EquaBox[T]] = underlying
+      def toSet[U >: T <: E]: Set[U] = underlying.map(_.value)
+      def toEquaBoxSet[U >: T <: E]: Set[thisCollections.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U]))
       def toStream: Stream[T] = underlying.toStream.map(_.value)
       def toEquaBoxStream: Stream[thisCollections.EquaBox[T]] = underlying.toStream
       def toTraversable: GenTraversable[T] = underlying.map(_.value)
@@ -1615,8 +1601,9 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
         new immutable.FastEquaSet[T](listList.map(EquaBox[T](_)).toSet)
       }
-      def union(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] =
-        new immutable.FastEquaSet[T](underlying union that.toEquaBoxSet)
+      def union[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.FastEquaSet[U] =
+        new immutable.FastEquaSet[U](underlying.map(ebt => ebt: EquaBox[U]) union that.toEquaBoxSet)
+/*
       def unzip[T1, T2](t1Collections: Collections[T1], t2Collections: Collections[T2])(implicit asPair: T => (T1, T2)): (t1Collections.immutable.FastEquaSet[T1], t2Collections.immutable.FastEquaSet[T2]) = {
         val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
         (t1Collections.immutable.FastEquaSet[T1](t1: _*), t2Collections.immutable.FastEquaSet[T2](t2: _*))
@@ -1628,7 +1615,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def zip[U](that: GenIterable[U]): Set[(T, U)] = underlying.toList.map(_.value).zip(that).toSet
       def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U): Set[(T1, U)] = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
       def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
-  
+ */
       val path: thisCollections.type = thisCollections
       def view: FastEquaSetView[T] = FastEquaSetView(thisFastEquaSet.toList: _*)
     }

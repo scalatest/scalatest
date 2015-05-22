@@ -1225,9 +1225,6 @@ class EquaSetSpec extends UnitSpec {
     number.immutable.EquaSet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     number.immutable.EquaSet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
-  it should "have a repr method" in {
-    number.immutable.EquaSet(1, 2, 3).repr shouldBe Set(number.EquaBox(1), number.EquaBox(2), number.EquaBox(3))
-  }
   it should "have a sameElements method that takes a GenIterable" in {
     number.immutable.EquaSet(1, 2, 3, 4, 5).sameElements(number.immutable.EquaSet(1, 2, 3, 4, 5).toSet.toSeq) shouldBe true
     number.immutable.EquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4)) shouldBe false

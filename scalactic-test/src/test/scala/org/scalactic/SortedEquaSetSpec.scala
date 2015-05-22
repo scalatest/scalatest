@@ -234,6 +234,10 @@ class SortedEquaSetSpec extends UnitSpec {
   }
   it should "have a toEquaBoxSet method" in {
     lower.immutable.SortedEquaSet("hi", "ho").toEquaBoxSet should === (Set(lower.EquaBox("hi"), lower.EquaBox("ho")))
+    implicit val numberOrdering = new Ordering[number.EquaBox[Int]] {
+      def compare(x: number.EquaBox[Int], y: number.EquaBox[Int]): Int = x.value - y.value
+    }
+    number.immutable.SortedEquaSet(1, 2, 3).toEquaBoxSet shouldBe SortedSet(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
   }
   it should "have a + method that takes one argument" in {
     val result1 = lower.immutable.SortedEquaSet("hi", "ho") + "ha"
@@ -1164,12 +1168,6 @@ class SortedEquaSetSpec extends UnitSpec {
     number.immutable.SortedEquaSet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     number.immutable.SortedEquaSet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
-  it should "have a repr method" in {
-    implicit val numberOrdering = new Ordering[number.EquaBox[Int]] {
-      def compare(x: number.EquaBox[Int], y: number.EquaBox[Int]): Int = x.value - y.value
-    }
-    number.immutable.SortedEquaSet(1, 2, 3).repr shouldBe SortedSet(number.EquaBox[Int](1), number.EquaBox[Int](2), number.EquaBox[Int](3))
-  }
   it should "have a sameElements method that takes a GenIterable" in {
     number.immutable.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5)) shouldBe true
     number.immutable.SortedEquaSet(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4)) shouldBe false
@@ -1179,6 +1177,7 @@ class SortedEquaSetSpec extends UnitSpec {
     number.immutable.SortedEquaSet(3).sameElements(List(1)) shouldBe false
     number.immutable.SortedEquaSet(3).sameElements(List(3)) shouldBe true
   }
+/*
   it should "have a scanLeft method" in {
     val result1 = number.immutable.SortedEquaSet(1).scanLeft(0)(_ + _)
     result1 shouldBe number.immutable.SortedEquaSet(0, 1)
@@ -1215,6 +1214,7 @@ class SortedEquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[number.immutable.TreeEquaSet[Int]]
   }
   it should "have an into.scanRight method" is pending
+*/
   it should "have a slice method" in {
     val result1 = number.immutable.SortedEquaSet(3).slice(0, 0)
     result1 shouldBe number.immutable.SortedEquaSet()
