@@ -377,7 +377,7 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
       List(
         //"Configuration.scala",
-        //"Checkers.scala",
+        "Checkers.scala",
         //"PropertyChecks.scala",
         "GenDrivenPropertyChecks.scala", 
         "Generator.scala", 
@@ -640,6 +640,11 @@ object GenScalaTestJS {
         //"ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
         "ShorthandShouldBeThrownBySpec.scala",
         "ShorthandShouldNotBeThrownBySpec.scala",
+        "ShouldBeAMatcherAndOrSpec.scala",
+        "ShouldBeAnMatcherAndOrSpec.scala",
+        //"ShouldBeAnSymbolSpec".scala,    // skipeed because depends on java reflections
+        "ShouldBeAnTypeSpec.scala",
+        "ShouldBeAnySpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

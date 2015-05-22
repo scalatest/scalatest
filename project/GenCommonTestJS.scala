@@ -71,7 +71,8 @@ object GenCommonTestJS {
         "mytags.scala",
         "StubReporter.scala",
         "LineNumberMacro.scala",
-        "LineNumberHelper.scala"
+        "LineNumberHelper.scala",
+        "ReturnsNormallyThrowsAssertion.scala"
       ), targetDir)
   }
 
