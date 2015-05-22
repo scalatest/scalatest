@@ -18,7 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 
-class ShouldBeATypeSpec extends Spec with Matchers {
+class ShouldBeATypeSpec extends FunSpec with Matchers {
 
   val fileName: String = "ShouldBeATypeSpec.scala"
   
@@ -46,14 +46,14 @@ class ShouldBeATypeSpec extends Spec with Matchers {
   val aTaleOfThreeCities = new Book("A Tale of Three Cities")
 
   // Checking for a specific size
-  object `The be a [Type] syntax` {
+  describe("The be a [Type] syntax") {
 
-    def `should do nothing if the LHS is an instance of specified RHS` {
+    it("should do nothing if the LHS is an instance of specified RHS") {
       aTaleOfTwoCities should be (a [Book])
       aTaleOfTwoCities shouldBe a [Book]
     }
 
-    def `should throw TestFailedException if LHS is not an instance of specified RHS` { 
+    it("should throw TestFailedException if LHS is not an instance of specified RHS") { 
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should be (a [String])
       }
@@ -69,12 +69,12 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if LHS is not an instance of specified RHS, when used with not` { 
+    it("should do nothing if LHS is not an instance of specified RHS, when used with not") { 
       aTaleOfTwoCities should not be a [String]
       aTaleOfTwoCities shouldNot be (a [String])
     }
 
-    def `should throw TestFailedException LSH is an instance of specified RHS, when used with not` {
+    it("should throw TestFailedException LSH is an instance of specified RHS, when used with not") {
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should not be a [Book]
       }
@@ -90,7 +90,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if LHS true for both specified RHS, when used in a logical-and expression` {
+    it("should do nothing if LHS true for both specified RHS, when used in a logical-and expression") {
       aTaleOfTwoCities should (be (a [Book]) and be (a [Book]))
       aTaleOfTwoCities should (be (aTaleOfTwoCities) and be (a [Book]))
       aTaleOfTwoCities should (be (a [Book]) and be (aTaleOfTwoCities))
@@ -98,7 +98,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       aTaleOfTwoCities should (be (a [Book]) and equal (aTaleOfTwoCities))
     }
 
-    def `should throw TestFailedException if LHS is false for either specified RHS, when used in a logical-and expression` { 
+    it("should throw TestFailedException if LHS is false for either specified RHS, when used in a logical-and expression") { 
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should (be (a [String]) and be (a [Book]))
       }
@@ -205,7 +205,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if LHS is true for either specified RHS, when used in a logical-or expression` { 
+    it("should do nothing if LHS is true for either specified RHS, when used in a logical-or expression") { 
       aTaleOfTwoCities should (be (a [Book]) or be (a [Book]))
       aTaleOfTwoCities should (be (a [String]) or be (a [Book]))
       aTaleOfTwoCities should (be (a [Book]) or be (a [String]))
@@ -227,7 +227,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       aTaleOfTwoCities should (be (a [Book]) or equal (aTaleOfThreeCities))
     }
 
-    def `should throw TestFailedException LHS is false for both specified RHS, when used in a logical-or expression` {
+    it("should throw TestFailedException LHS is false for both specified RHS, when used in a logical-or expression") {
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should (be (a [String]) or be (a [String]))
       }
@@ -264,7 +264,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if should do nothing if LHS is false for both specified RHS, when used in a logical-and expression with not` { 
+    it("should do nothing if should do nothing if LHS is false for both specified RHS, when used in a logical-and expression with not") { 
       
       aTaleOfTwoCities should (not be a [String] and not be a [String])
       aTaleOfTwoCities should (not be aTaleOfThreeCities and not be a [String])
@@ -274,7 +274,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       
     }
 
-    def `should throw TestFailedException if LHS true for either specified RHS, when used in a logical-and expression with not` { 
+    it("should throw TestFailedException if LHS true for either specified RHS, when used in a logical-and expression with not") { 
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should (not be a [Book] and not be a [String])
       }
@@ -381,7 +381,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if LHS is false for either specified RHS, when used in a logical-or expression with not` { 
+    it("should do nothing if LHS is false for either specified RHS, when used in a logical-or expression with not") { 
       aTaleOfTwoCities should (not be a [String] or not be a [String])
       aTaleOfTwoCities should (not be a [Book] or not be a [String])
       aTaleOfTwoCities should (not be a [String] or not be a [Book])
@@ -403,7 +403,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       aTaleOfTwoCities should (not be a [String] or not equal (aTaleOfTwoCities))
     }
 
-    def `should throw TestFailedException if LHS is true both specified RHS, when used in a logical-or expression with not` { 
+    it("should throw TestFailedException if LHS is true both specified RHS, when used in a logical-or expression with not") { 
       val caught1 = intercept[exceptions.TestFailedException] {
         aTaleOfTwoCities should (not be a [Book] or not be a [Book])
       }
@@ -442,27 +442,27 @@ class ShouldBeATypeSpec extends Spec with Matchers {
 
     // TODO: to uncomment these tests after TypeMatcherMacro raises compiler error instead of warning
 
-    def `should do nothing if the LHS is an instance of specified RHS with _ type parameter` {
+    it("should do nothing if the LHS is an instance of specified RHS with _ type parameter") {
       List(Book("Book 1"), Book("Book 2")) should be (a [List[_]])
       List(Book("Book 1"), Book("Book 2")) shouldBe a [List[_]]
     }
 
-    /*def `should not compile when LHS is an instance of specified RHS with type parameter` {
+    /*it("should not compile when LHS is an instance of specified RHS with type parameter") {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should be (a [List[Book]])" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) shouldBe a [List[Book]]" shouldNot compile
     }*/
 
-    def `should do nothing if LHS is not an instance of specified RHS with _ type parameter` {
+    it("should do nothing if LHS is not an instance of specified RHS with _ type parameter") {
       Book("Book 1") should not be a [List[_]]
       Book("Book 1") shouldNot be (a [List[_]])
     }
 
-    /*def `should not compile when LHS is not an instance of specified RHS with type parameter ` {
+    /*it("should not compile when LHS is not an instance of specified RHS with type parameter ") {
       "Book(\"Book 1\") should not be a [List[Book]]" shouldNot compile
       "Book(\"Book 1\") shouldNot be (a [List[Book]])" shouldNot compile
     }*/
 
-    def `should do nothing if LHS true for both specified RHS with _ type parameter, when used in a logical-and expression` {
+    it("should do nothing if LHS true for both specified RHS with _ type parameter, when used in a logical-and expression") {
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and be (a [List[_]]))
       List(Book("Book 1"), Book("Book 2")) should (be (List(Book("Book 1"), Book("Book 2"))) and be (a [List[_]]))
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and be (List(Book("Book 1"), Book("Book 2"))))
@@ -470,7 +470,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) and equal (List(Book("Book 1"), Book("Book 2"))))
     }
 
-    /*def `should not compile when LHS is true for both specified RHS with type parameter` {
+    /*it("should not compile when LHS is true for both specified RHS with type parameter") {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and be (a [List[Book]]))" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (List(Book(\"Book 1\"), Book(\"Book 2\"))) and be (a [List[Book]]))" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and be (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
@@ -478,7 +478,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) and equal (List(Book(\"Book 1\"), Book(\"Book 2\"))))" shouldNot compile
     }*/
 
-    def `should do nothing if LHS is true for either specified RHS with _ type parameter, when used in a logical-or expression` {
+    it("should do nothing if LHS is true for either specified RHS with _ type parameter, when used in a logical-or expression") {
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (a [List[_]]))
       List(Book("Book 1"), Book("Book 2")) should (be (a [String]) or be (a [List[_]]))
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or be (a [String]))
@@ -496,7 +496,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       List(Book("Book 1"), Book("Book 2")) should (be (a [List[_]]) or equal (aTaleOfThreeCities))
     }
 
-    /*def `should not compile if LHS is true for either specified RHS with type parameter, when used in a logical-or expression` {
+    /*it("should not compile if LHS is true for either specified RHS with type parameter, when used in a logical-or expression") {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (a [List[Book]]))" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [String]) or be (a [List[Book]]))" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or be (a [String]))" shouldNot compile
@@ -514,7 +514,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (be (a [List[Book]]) or equal (aTaleOfThreeCities))" shouldNot compile
     }*/
 
-    def `should do nothing if LHS is false for both specified RHS with _ type parameter, when used in a logical-and expression with not` {
+    it("should do nothing if LHS is false for both specified RHS with _ type parameter, when used in a logical-and expression with not") {
 
       List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] and not be a [Vector[_]])
       List(Book("Book 1"), Book("Book 2")) should (not be aTaleOfThreeCities and not be a [Vector[_]])
@@ -524,7 +524,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
 
     }
 
-    /*def `should not compile if LHS is false for both specified RHS with type parameter, when used in a logical-and expression with not` {
+    /*it("should not compile if LHS is false for both specified RHS with type parameter, when used in a logical-and expression with not") {
 
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] and not be a [Vector[Book]])" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be aTaleOfThreeCities and not be a [Vector[Book]])" shouldNot compile
@@ -534,7 +534,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
 
     }*/
 
-    def `should do nothing if LHS is false for either specified RHS with _ type parameter, when used in a logical-or expression with not` {
+    it("should do nothing if LHS is false for either specified RHS with _ type parameter, when used in a logical-or expression with not") {
       List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be a [Vector[_]])
       List(Book("Book 1"), Book("Book 2")) should (not be a [List[_]] or not be a [Vector[_]])
       List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not be a [List[_]])
@@ -556,7 +556,7 @@ class ShouldBeATypeSpec extends Spec with Matchers {
       List(Book("Book 1"), Book("Book 2")) should (not be a [Vector[_]] or not equal (List(Book("Book 1"), Book("Book 2"))))
     }
 
-    /*def `should not compile if LHS is false for either specified RHS with type parameter, when used in a logical-or expression with not` {
+    /*it("should not compile if LHS is false for either specified RHS with type parameter, when used in a logical-or expression with not") {
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be a [Vector[Book]])" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [List[Book]] or not be a [Vector[Book]])" shouldNot compile
       "List(Book(\"Book 1\"), Book(\"Book 2\")) should (not be a [Vector[Book]] or not be a [List[Book]])" shouldNot compile

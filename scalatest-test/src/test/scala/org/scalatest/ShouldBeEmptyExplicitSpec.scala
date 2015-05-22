@@ -20,7 +20,7 @@ import enablers.Emptiness
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeEmptyExplicitSpec extends Spec {
+class ShouldBeEmptyExplicitSpec extends FunSpec {
   
   trait Thing {
     def isEmpty: Boolean
@@ -51,15 +51,15 @@ class ShouldBeEmptyExplicitSpec extends Spec {
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
-  object `Empty matcher` {
+  describe("Empty matcher") {
     
-    object `when work with 'list should be (empty)'` {
+    describe("when work with 'list should be (empty)'") {
       
-      def `should do nothing when list is empty` {
+      it("should do nothing when list is empty") {
         (emptyThing should be (empty)) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when list is not empty` {
+      it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
           (nonEmptyThing should be (empty)) (emptiness)
         }
@@ -70,13 +70,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       
     }
     
-    object `when work with 'list should not be empty'` {
+    describe("when work with 'list should not be empty'") {
       
-      def `should do nothing when list is not empty` {
+      it("should do nothing when list is not empty") {
         (nonEmptyThing should not be empty) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when list is empty` {
+      it("should throw TestFailedException with correct stack depth when list is empty") {
         val caught1 = intercept[TestFailedException] {
           (emptyThing should not be empty) (emptiness)
         }
@@ -86,13 +86,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'list shouldBe empty'` {
+    describe("when work with 'list shouldBe empty'") {
       
-      def `should do nothing when list is empty` {
+      it("should do nothing when list is empty") {
         (emptyThing shouldBe empty) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when list is not empty` {
+      it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
           (nonEmptyThing shouldBe empty) (emptiness)
         }
@@ -103,13 +103,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       
     }
     
-    object `when work with 'list shouldNot be (empty)'` {
+    describe("when work with 'list shouldNot be (empty)'") {
       
-      def `should do nothing when list is not empty` {
+      it("should do nothing when list is not empty") {
         (nonEmptyThing shouldNot be (empty)) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when list is empty` {
+      it("should throw TestFailedException with correct stack depth when list is empty") {
         val caught1 = intercept[TestFailedException] {
           (emptyThing shouldNot be (empty)) (emptiness)
         }
@@ -120,13 +120,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) should be (empty)'` {
+    describe("when work with 'all(xs) should be (empty)'") {
       
-      def `should do nothing when all(xs) is empty` {
+      it("should do nothing when all(xs) is empty") {
         (all(List(emptyThing)) should be (empty)) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not empty") {
         val left1 = List(nonEmptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should be (empty)) (emptiness)
@@ -138,13 +138,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) should not be empty'` {
+    describe("when work with 'all(xs) should not be empty'") {
       
-      def `should do nothing when all(xs) is not empty` {
+      it("should do nothing when all(xs) is not empty") {
         (all(List(nonEmptyThing)) should not be empty) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is empty") {
         val left1 = List(emptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should not be empty) (emptiness)
@@ -156,13 +156,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) shouldBe empty'` {
+    describe("when work with 'all(xs) shouldBe empty'") {
       
-      def `should do nothing when all(xs) is empty` {
+      it("should do nothing when all(xs) is empty") {
         (all(List(emptyThing)) shouldBe empty) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not empty") {
         val left1 = List(nonEmptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) shouldBe empty) (emptiness)
@@ -173,13 +173,13 @@ class ShouldBeEmptyExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) shouldNot be (empty)'` {
+    describe("when work with 'all(xs) shouldNot be (empty)'") {
       
-      def `should do nothing when all(xs) is not empty` {
+      it("should do nothing when all(xs) is not empty") {
         (all(List(nonEmptyThing)) shouldNot be (empty)) (emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is empty") {
         val left1 = List(emptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) shouldNot be (empty)) (emptiness)

@@ -69,8 +69,8 @@ object KeyMapping {
   implicit def keyMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[K]): KeyMapping[MAP[K, V]] = 
     new KeyMapping[MAP[K, V]] {
       def containsKey(map: MAP[K, V], key: Any): Boolean = {
-        // map.keySet.exists((k: K) => equality.areEqual(k, key)) go back to this once I'm off 2.9
-        map.iterator.map(_._1).exists((k: K) => equality.areEqual(k, key))
+        //SCALATESTJS-ONLY if (map == null) throw new NullPointerException
+        map.keySet.exists((k: K) => equality.areEqual(k, key))
       }
     }
 
