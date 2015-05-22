@@ -2148,5 +2148,9 @@ def zipWithIndex: Set[(A, Int)]
     val strictSet = mapped.toEquaSet(number)
     strictSet should equal (number.immutable.EquaSet(2, 3, 4))
   }
+  "The collections value" should "be a nice reference to a default EquaPath[Any]" in {
+    import collections.immutable._
+    EquaSet(1, 2, 3) intersect EquaSet(2, 3, 4) shouldEqual EquaSet(2, 3)
+  }
 }
 
