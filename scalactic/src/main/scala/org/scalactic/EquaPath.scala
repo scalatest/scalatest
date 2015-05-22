@@ -1000,7 +1000,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an array containing all elements of this `EquaSet[T]`.
        */
-      def toArray: Array[T]
+      def toArray(implicit ct: ClassTag[T]): Array[T]
   
       /**
        * Converts this `EquaSet` to an array of `EquaBox[T]`es containing the elements.
@@ -1577,12 +1577,13 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def tails: Iterator[thisCollections.immutable.FastEquaSet[T]] = underlying.tails.map(new immutable.FastEquaSet[T](_))
       def take(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.FastEquaSet[T] = new immutable.FastEquaSet[T](underlying.takeRight(n))
-      def toArray: Array[T] = {
+      def toArray(implicit ct: ClassTag[T]): Array[T] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T
-        val arr: Array[Any] = new Array[Any](underlying.size)
-        underlying.map(_.value).copyToArray(arr)
-        arr.asInstanceOf[Array[T]]
+        // val arr: Array[Any] = new Array[Any](underlying.size)
+        // underlying.map(_.value).copyToArray(arr)
+        // arr.asInstanceOf[Array[T]]
+        underlying.map(_.value).toArray
       }
       def toEquaBoxArray: Array[thisCollections.EquaBox[T]] = underlying.toArray
       def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer

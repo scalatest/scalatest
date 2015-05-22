@@ -28,6 +28,7 @@ import scala.collection.TraversableView
 import scala.collection.parallel.mutable.ParArray
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
+import scala.reflect.ClassTag
 
 class SortedCollections[E](override val equality: OrderingEquality[E]) extends Collections[E](equality) { thisCollections =>
 
@@ -645,12 +646,13 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def tails: Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.tails.map(new immutable.TreeEquaSet[T](_))
       def take(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.takeRight(n))
-      def toArray: Array[T] = {
+      def toArray(implicit ct: ClassTag[T]): Array[T] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T
-        val arr: Array[Any] = new Array[Any](underlying.size)
-        underlying.map(_.value).copyToArray(arr)
-        arr.asInstanceOf[Array[T]]
+        // val arr: Array[Any] = new Array[Any](underlying.size)
+        // underlying.map(_.value).copyToArray(arr)
+        // arr.asInstanceOf[Array[T]]
+        underlying.map(_.value).toArray
       }
       def toEquaBoxArray: Array[thisCollections.EquaBox[T]] = underlying.toArray
       def toBuffer: scala.collection.mutable.Buffer[T] = underlying.map(_.value).toBuffer
