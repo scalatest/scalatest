@@ -130,36 +130,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.SortedEquaSet[T]
   
       /**
-       * Computes the union between this `SortedEquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `union`.
-       * @param that the `EquaSet` to form the union with.
-       * @return a new `SortedEquaSet` consisting of all elements that are in this
-       * `SortedEquaSet` or in the given `EquaSet` `that`.
-       */
-      def | (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.SortedEquaSet[T]
-  
-      /**
-       * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `intersect`.
-       * @param that the `EquaSet` to intersect with.
-       * @return a new `SortedEquaSet` consisting of all elements that are both in this
-       * `SortedEquaSet` and in the given `EquaSet` `that`.
-       */
-      def & (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.SortedEquaSet[T]
-  
-      /**
-       * The difference of this `SortedEquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `diff`.
-       * @param that the `EquaSet` of elements to exclude.
-       * @return a `SortedEquaSet` containing those elements of this
-       * `SortedEquaSet` that are not also contained in the given `EquaSet` `that`.
-       */
-      def &~ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.SortedEquaSet[T]
-  
-      /**
        * Builds a new collection by applying a partial function to all elements of this `SortedEquaSet`
        * on which the function is defined.
        *
@@ -173,9 +143,9 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * The order of the elements is preserved.
        */
       def collect(pf: PartialFunction[T, T]): thisCollections.immutable.SortedEquaSet[T]
-  
+
       def contains[U](elem: U)(implicit ev: U <:< T): Boolean
-  
+
       /**
        * Computes the difference of this `SortedEquaSet` and another `SortedEquaSet`.
        *
@@ -552,9 +522,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         new immutable.TreeEquaSet[T](underlying -- elems.toSeq.map(EquaBox[T](_)))
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] =
         new immutable.TreeEquaSet[T](underlying -- that.toEquaBoxSet)
-      def | (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this union that
-      def & (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this intersect that
-      def &~ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this diff that
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
       def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
       def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)

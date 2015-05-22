@@ -128,43 +128,6 @@ class EquaSetSpec extends UnitSpec {
     result8 shouldBe lower.immutable.FastEquaSet("hi", "let's")
     result8.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
   }
-  it should "have a &~ method that takes another EquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.EquaSet("hi", "ho") &~ lower.immutable.EquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.EquaSet()
-    result1.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result2 = trimmed.immutable.EquaSet("hi", "ho") &~ trimmed.immutable.EquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.EquaSet()
-    result2.shouldHaveExactType[trimmed.immutable.EquaSet[String]]
-
-    """lower.immutable.EquaSet(" hi ", "hi") &~ trimmed.immutable.EquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.EquaSet("hi", "ho") &~ lower.immutable.EquaSet("ho")
-    result3 shouldBe lower.immutable.EquaSet("hi")
-    result3.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result4 = lower.immutable.EquaSet("hi", "ho", "let's", "go") &~ lower.immutable.EquaSet("bo", "no", "go", "ho")
-    result4 shouldBe lower.immutable.EquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result5 = lower.immutable.FastEquaSet("hi", "ho") &~ lower.immutable.FastEquaSet("HI", "HO")
-    result5 shouldBe lower.immutable.FastEquaSet()
-    result5.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-
-    val result6 = trimmed.immutable.FastEquaSet("hi", "ho") &~ trimmed.immutable.FastEquaSet(" hi ", " ho ")
-    result6 shouldBe trimmed.immutable.FastEquaSet()
-    result6.shouldHaveExactType[trimmed.immutable.FastEquaSet[String]]
-
-    """lower.immutable.FastEquaSet(" hi ", "hi") &~ trimmed.immutable.FastEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result7 = lower.immutable.FastEquaSet("hi", "ho") &~ lower.immutable.FastEquaSet("ho")
-    result7 shouldBe lower.immutable.FastEquaSet("hi")
-    result7.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-
-    val result8 = lower.immutable.FastEquaSet("hi", "ho", "let's", "go") &~ lower.immutable.FastEquaSet("bo", "no", "go", "ho")
-    result8 shouldBe lower.immutable.FastEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-  }
   it should "have an intersect method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.immutable.EquaSet("hi", "ho") intersect lower.immutable.EquaSet("HI", "HO")
     result1 shouldBe lower.immutable.EquaSet("hi", "ho")
@@ -202,43 +165,6 @@ class EquaSetSpec extends UnitSpec {
     result8 shouldBe lower.immutable.FastEquaSet("ho", "go")
     result8.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
   }
-  it should "have an & method that takes another EquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.EquaSet("hi", "ho") & lower.immutable.EquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result2 = trimmed.immutable.EquaSet("hi", "ho") & trimmed.immutable.EquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.immutable.EquaSet[String]]
-
-    """lower.immutable.EquaSet(" hi ", "hi") & trimmed.immutable.EquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.EquaSet("hi", "ho") & lower.immutable.EquaSet("ho")
-    result3 shouldBe lower.immutable.EquaSet("ho")
-    result3.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result4 = lower.immutable.EquaSet("hi", "ho", "let's", "go") & lower.immutable.EquaSet("bo", "no", "go", "ho")
-    result4 shouldBe lower.immutable.EquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result5 = lower.immutable.FastEquaSet("hi", "ho") & lower.immutable.FastEquaSet("HI", "HO")
-    result5 shouldBe lower.immutable.FastEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-
-    val result6 = trimmed.immutable.FastEquaSet("hi", "ho") & trimmed.immutable.FastEquaSet(" hi ", " ho ")
-    result6 shouldBe trimmed.immutable.FastEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.immutable.FastEquaSet[String]]
-
-    """lower.immutable.FastEquaSet(" hi ", "hi") & trimmed.immutable.FastEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result7 = lower.immutable.FastEquaSet("hi", "ho") & lower.immutable.FastEquaSet("ho")
-    result7 shouldBe lower.immutable.FastEquaSet("ho")
-    result7.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-
-    val result8 = lower.immutable.FastEquaSet("hi", "ho", "let's", "go") & lower.immutable.FastEquaSet("bo", "no", "go", "ho")
-    result8 shouldBe lower.immutable.FastEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-  }
   it should "have a union method that takes another EquaSet instance with the same path-dependant type" in {
     val result1 = lower.immutable.EquaSet("hi", "ho") union lower.immutable.EquaSet("HI", "HO")
     result1 shouldBe lower.immutable.EquaSet("hi", "ho")
@@ -259,27 +185,6 @@ class EquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[trimmed.immutable.FastEquaSet[String]]
 
     """lower.immutable.FastEquaSet(" hi ", "hi") union trimmed.immutable.FastEquaSet("hi", "HI")""" shouldNot typeCheck
-  }
-  it should "have a | method that takes another EquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.EquaSet("hi", "ho") | lower.immutable.EquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.EquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.immutable.EquaSet[String]]
-
-    val result2 = trimmed.immutable.EquaSet("hi", "ho") | trimmed.immutable.EquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.EquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.immutable.EquaSet[String]]
-
-    """lower.immutable.EquaSet(" hi ", "hi") | trimmed.immutable.EquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.FastEquaSet("hi", "ho") | lower.immutable.FastEquaSet("HI", "HO")
-    result3 shouldBe lower.immutable.FastEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
-
-    val result4 = trimmed.immutable.FastEquaSet("hi", "ho") | trimmed.immutable.FastEquaSet(" hi ", " ho ")
-    result4 shouldBe trimmed.immutable.FastEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.immutable.FastEquaSet[String]]
-
-    """lower.immutable.FastEquaSet(" hi ", "hi") | trimmed.immutable.FastEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
     lower.immutable.EquaSet("hi", "ho").toSet should === (Set("hi", "ho"))

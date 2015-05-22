@@ -171,43 +171,6 @@ class SortedEquaSetSpec extends UnitSpec {
     result8 shouldBe lower.immutable.TreeEquaSet("hi", "let's")
     result8.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
   }
-  it should "have a &~ method that takes another SortedEquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.SortedEquaSet("hi", "ho") &~ lower.immutable.SortedEquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.SortedEquaSet()
-    result1.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result2 = trimmed.immutable.SortedEquaSet("hi", "ho") &~ trimmed.immutable.SortedEquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.SortedEquaSet()
-    result2.shouldHaveExactType[trimmed.immutable.SortedEquaSet[String]]
-
-    """lower.immutable.SortedEquaSet(" hi ", "hi") &~ trimmed.immutable.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.SortedEquaSet("hi", "ho") &~ lower.immutable.SortedEquaSet("ho")
-    result3 shouldBe lower.immutable.SortedEquaSet("hi")
-    result3.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result4 = lower.immutable.SortedEquaSet("hi", "ho", "let's", "go") &~ lower.immutable.SortedEquaSet("bo", "no", "go", "ho")
-    result4 shouldBe lower.immutable.SortedEquaSet("hi", "let's")
-    result4.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result5 = lower.immutable.TreeEquaSet("hi", "ho") &~ lower.immutable.TreeEquaSet("HI", "HO")
-    result5 shouldBe lower.immutable.TreeEquaSet()
-    result5.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-
-    val result6 = trimmed.immutable.TreeEquaSet("hi", "ho") &~ trimmed.immutable.TreeEquaSet(" hi ", " ho ")
-    result6 shouldBe trimmed.immutable.TreeEquaSet()
-    result6.shouldHaveExactType[trimmed.immutable.TreeEquaSet[String]]
-
-    """lower.immutable.TreeEquaSet(" hi ", "hi") &~ trimmed.immutable.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result7 = lower.immutable.TreeEquaSet("hi", "ho") &~ lower.immutable.TreeEquaSet("ho")
-    result7 shouldBe lower.immutable.TreeEquaSet("hi")
-    result7.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-
-    val result8 = lower.immutable.TreeEquaSet("hi", "ho", "let's", "go") &~ lower.immutable.TreeEquaSet("bo", "no", "go", "ho")
-    result8 shouldBe lower.immutable.TreeEquaSet("hi", "let's")
-    result8.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-  }
   it should "have an intersect method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.immutable.SortedEquaSet("hi", "ho") intersect lower.immutable.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.immutable.SortedEquaSet("hi", "ho")
@@ -245,43 +208,6 @@ class SortedEquaSetSpec extends UnitSpec {
     result8 shouldBe lower.immutable.TreeEquaSet("ho", "go")
     result8.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
   }
-  it should "have an & method that takes another SortedEquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.SortedEquaSet("hi", "ho") & lower.immutable.SortedEquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result2 = trimmed.immutable.SortedEquaSet("hi", "ho") & trimmed.immutable.SortedEquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.immutable.SortedEquaSet[String]]
-
-    """lower.immutable.SortedEquaSet(" hi ", "hi") & trimmed.immutable.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.SortedEquaSet("hi", "ho") & lower.immutable.SortedEquaSet("ho")
-    result3 shouldBe lower.immutable.SortedEquaSet("ho")
-    result3.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result4 = lower.immutable.SortedEquaSet("hi", "ho", "let's", "go") & lower.immutable.SortedEquaSet("bo", "no", "go", "ho")
-    result4 shouldBe lower.immutable.SortedEquaSet("ho", "go")
-    result4.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result5 = lower.immutable.TreeEquaSet("hi", "ho") & lower.immutable.TreeEquaSet("HI", "HO")
-    result5 shouldBe lower.immutable.TreeEquaSet("hi", "ho")
-    result5.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-
-    val result6 = trimmed.immutable.TreeEquaSet("hi", "ho") & trimmed.immutable.TreeEquaSet(" hi ", " ho ")
-    result6 shouldBe trimmed.immutable.TreeEquaSet("hi", "ho")
-    result6.shouldHaveExactType[trimmed.immutable.TreeEquaSet[String]]
-
-    """lower.immutable.TreeEquaSet(" hi ", "hi") & trimmed.immutable.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result7 = lower.immutable.TreeEquaSet("hi", "ho") & lower.immutable.TreeEquaSet("ho")
-    result7 shouldBe lower.immutable.TreeEquaSet("ho")
-    result7.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-
-    val result8 = lower.immutable.TreeEquaSet("hi", "ho", "let's", "go") & lower.immutable.TreeEquaSet("bo", "no", "go", "ho")
-    result8 shouldBe lower.immutable.TreeEquaSet("ho", "go")
-    result8.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-  }
   it should "have a union method that takes another SortedEquaSet instance with the same path-dependant type" in {
     val result1 = lower.immutable.SortedEquaSet("hi", "ho") union lower.immutable.SortedEquaSet("HI", "HO")
     result1 shouldBe lower.immutable.SortedEquaSet("hi", "ho")
@@ -302,27 +228,6 @@ class SortedEquaSetSpec extends UnitSpec {
     result4.shouldHaveExactType[trimmed.immutable.TreeEquaSet[String]]
 
     """lower.immutable.TreeEquaSet(" hi ", "hi") union trimmed.immutable.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
-  }
-  it should "have a | method that takes another SortedEquaSet instance with the same path-dependant type" in {
-    val result1 = lower.immutable.SortedEquaSet("hi", "ho") | lower.immutable.SortedEquaSet("HI", "HO")
-    result1 shouldBe lower.immutable.SortedEquaSet("hi", "ho")
-    result1.shouldHaveExactType[lower.immutable.SortedEquaSet[String]]
-
-    val result2 = trimmed.immutable.SortedEquaSet("hi", "ho") | trimmed.immutable.SortedEquaSet(" hi ", " ho ")
-    result2 shouldBe trimmed.immutable.SortedEquaSet("hi", "ho")
-    result2.shouldHaveExactType[trimmed.immutable.SortedEquaSet[String]]
-
-    """lower.immutable.SortedEquaSet(" hi ", "hi") | trimmed.immutable.SortedEquaSet("hi", "HI")""" shouldNot typeCheck
-
-    val result3 = lower.immutable.TreeEquaSet("hi", "ho") | lower.immutable.TreeEquaSet("HI", "HO")
-    result3 shouldBe lower.immutable.TreeEquaSet("hi", "ho")
-    result3.shouldHaveExactType[lower.immutable.TreeEquaSet[String]]
-
-    val result4 = trimmed.immutable.TreeEquaSet("hi", "ho") | trimmed.immutable.TreeEquaSet(" hi ", " ho ")
-    result4 shouldBe trimmed.immutable.TreeEquaSet("hi", "ho")
-    result4.shouldHaveExactType[trimmed.immutable.TreeEquaSet[String]]
-
-    """lower.immutable.TreeEquaSet(" hi ", "hi") | trimmed.immutable.TreeEquaSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
     lower.immutable.SortedEquaSet("hi", "ho").toSet should === (Set("hi", "ho"))

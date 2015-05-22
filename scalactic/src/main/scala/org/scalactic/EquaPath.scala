@@ -164,36 +164,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
   
       /**
-       * Computes the union between this `EquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `union`.
-       * @param that the `EquaSet` to form the union with.
-       * @return a new `EquaSet` consisting of all elements that are in this
-       * `EquaSet` or in the given `EquaSet` `that`.
-       */
-      def | (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
-  
-      /**
-       * Computes the intersection between this `EquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `intersect`.
-       * @param that the `EquaSet` to intersect with.
-       * @return a new `EquaSet` consisting of all elements that are both in this
-       * `EquaSet` and in the given `EquaSet` `that`.
-       */
-      def & (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
-  
-      /**
-       * The difference of this `EquaSet` and another `EquaSet`.
-       *
-       * '''Note:''' Same as `diff`.
-       * @param that the `EquaSet` of elements to exclude.
-       * @return an `EquaSet` containing those elements of this
-       * `EquaSet` that are not also contained in the given `EquaSet` `that`.
-       */
-      def &~ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.EquaSet[T]
-  
-      /**
        * Appends all elements of this `EquaSet` to a string builder.
        *  The written text consists of the string representations (w.r.t. the method
        * `toString`) of all elements of this `EquaSet` without any separator string.
@@ -1512,9 +1482,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         new immutable.FastEquaSet[T](underlying -- elems.toList.map(EquaBox[T](_)))
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] =
         new immutable.FastEquaSet[T](underlying -- that.toEquaBoxSet)
-      def | (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] = this union that
-      def & (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] = this intersect that
-      def &~ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.FastEquaSet[T] = this diff that
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
       def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
       def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
