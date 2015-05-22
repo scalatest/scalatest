@@ -578,18 +578,6 @@ class EquaSetSpec extends UnitSpec {
     result8 shouldBe lower.immutable.FastEquaSet.empty
     result8.shouldHaveExactType[lower.immutable.FastEquaSet[String]]
   }
-  it should "have a /: method" in {
-    (0 /: number.immutable.EquaSet(1))(_ + _) shouldBe 1
-    (1 /: number.immutable.EquaSet(1))(_ + _) shouldBe 2
-    (0 /: number.immutable.EquaSet(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: number.immutable.EquaSet(1, 2, 3))(_ + _) shouldBe 7
-  }
-  it should "have a :\\ method" in {
-    (number.immutable.EquaSet(1) :\ 0)(_ + _) shouldBe 1
-    (number.immutable.EquaSet(1) :\ 1)(_ + _) shouldBe 2
-    (number.immutable.EquaSet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (number.immutable.EquaSet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
-  }
   it should "have 3 addString methods" in {
     lower.immutable.EquaSet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     number.immutable.EquaSet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")

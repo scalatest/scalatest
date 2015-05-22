@@ -130,78 +130,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.SortedEquaSet[T]
   
       /**
-       * Applies a binary operator to a start value and all elements of this `SortedEquaSet`,
-       *  going left to right.
-       *
-       *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
-       *  `xs foldLeft z`.
-       *
-       *  Examples:
-       *
-       *  Note that the folding function used to compute b is equivalent to that used to compute c.
-       *  {{{
-       *      scala> val a = List(1,2,3,4)
-       *      a: List[Int] = List(1, 2, 3, 4)
-       *
-       *      scala> val b = (5 /: a)(_+_)
-       *      b: Int = 15
-       *
-       *      scala> val c = (5 /: a)((x,y) => x + y)
-       *      c: Int = 15
-       *  }}}
-       *
-       *  $willNotTerminateInf
-       *  $orderDependentFold
-       *
-       *  @param   z    the start value.
-       *  @param   op   the binary operator.
-       *  @tparam  B    the result type of the binary operator.
-       *  @return  the result of inserting `op` between consecutive elements of this `SortedEquaSet`,
-       *           going left to right with the start value `z` on the left:
-       *           {{{
-       *             op(...op(op(z, x_1), x_2), ..., x_n)
-       *           }}}
-       *           where `x,,1,,, ..., x,,n,,` are the elements of this `SortedEquaSet`.
-       */
-      def /:[B](z: B)(op: (B, T) => B): B
-  
-      /**
-       * Applies a binary operator to all elements of this `SortedEquaSet` and a start value,
-       *  going right to left.
-       *
-       *  Note: `:\` is alternate syntax for `foldRight`; `xs :\ z` is the same as
-       *  `xs foldRight z`.
-       *  $willNotTerminateInf
-       *  $orderDependentFold
-       *
-       *  Examples:
-       *
-       *  Note that the folding function used to compute b is equivalent to that used to compute c.
-       *  {{{
-       *      scala> val a = List(1,2,3,4)
-       *      a: List[Int] = List(1, 2, 3, 4)
-       *
-       *      scala> val b = (a :\ 5)(_+_)
-       *      b: Int = 15
-       *
-       *      scala> val c = (a :\ 5)((x,y) => x + y)
-       *      c: Int = 15
-       *
-       *  }}}
-       *
-       *  @param   z    the start value
-       *  @param   op   the binary operator
-       *  @tparam  B    the result type of the binary operator.
-       *  @return  the result of inserting `op` between consecutive elements of this `SortedEquaSet`,
-       *           going right to left with the start value `z` on the right:
-       *           {{{
-       *             op(x_1, op(x_2, ... op(x_n, z)...))
-       *           }}}
-       *           where `x,,1,,, ..., x,,n,,` are the elements of this `SortedEquaSet`.
-       */
-      def :\[B](z: B)(op: (T, B) => B): B
-  
-      /**
        * Computes the union between this `SortedEquaSet` and another `EquaSet`.
        *
        * '''Note:''' Same as `union`.
@@ -624,10 +552,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         new immutable.TreeEquaSet[T](underlying -- elems.toSeq.map(EquaBox[T](_)))
       def --(that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] =
         new immutable.TreeEquaSet[T](underlying -- that.toEquaBoxSet)
-      def /:[B](z: B)(op: (B, T) => B): B =
-        underlying./:(z)((b: B, e: EquaBox[T]) => op(b, e.value))
-      def :\[B](z: B)(op: (T, B) => B): B =
-        underlying.:\(z)((e: EquaBox[T], b: B) => op(e.value, b))
       def | (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this union that
       def & (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this intersect that
       def &~ (that: thisCollections.immutable.EquaSet[T]): thisCollections.immutable.TreeEquaSet[T] = this diff that
@@ -912,41 +836,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        */
       def --(equaSet: thisCollections.immutable.EquaSet): thisCollections.immutable.SortedEquaMap[V]
   
-      /**
-       * Applies a binary operator to a start value and all elements of this `SortedEquaMap`,
-       *  going left to right.
-       *
-       *  Note: `/:` is alternate syntax for `foldLeft`; `z /: xs` is the same as
-       *  `xs foldLeft z`.
-       *
-       *  Examples:
-       *
-       *  Note that the folding function used to compute b is equivalent to that used to compute c.
-       *  {{{
-       *      scala> val a = List(1,2,3,4)
-       *      a: List[Int] = List(1, 2, 3, 4)
-       *
-       *      scala> val b = (5 /: a)(_+_)
-       *      b: Int = 15
-       *
-       *      scala> val c = (5 /: a)((x,y) => x + y)
-       *      c: Int = 15
-       *  }}}
-       *
-       *  $willNotTerminateInf
-       *  $orderDependentFold
-       *
-       *  @param   z    the start value.
-       *  @param   op   the binary operator.
-       *  @tparam  R    the result type of the binary operator.
-       *  @return  the result of inserting `op` between consecutive entries of this `SortedEquaMap`,
-       *           going left to right with the start value `z` on the left:
-       *           {{{
-       *             op(...op(op(z, x_1), x_2), ..., x_n)
-       *           }}}
-       *           where `x,,1,,, ..., x,,n,,` are the entries of this `SortedEquaMap`.
-       */
-      def /:[R](z: R)(op: (R, (T, V)) => R): R
   
       /**
        * Tests if this `SortedEquaMap` is empty.
