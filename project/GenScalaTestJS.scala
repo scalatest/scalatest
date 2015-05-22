@@ -639,6 +639,7 @@ object GenScalaTestJS {
         "SeveredStackTracesSpec.scala",
         //"ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
         "ShorthandShouldBeThrownBySpec.scala",
+        "ShorthandShouldNotBeThrownBySpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
