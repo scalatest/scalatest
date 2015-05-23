@@ -1124,14 +1124,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a set containing all elements of this `EquaSet`.
        */
-      def toSet[U >: T <: E]: Set[U]
+      def toSet[U >: T <: E]: scala.collection.immutable.Set[U]
   
       /**
        * Converts this `EquaSet` to a set of `EquaBox`.
        *
        * @return a set containing all elements of this `EquaSet`, boxed in `EquaBox`.
        */
-      def toEquaBoxSet[U >: T <: E]: Set[thisCollections.EquaBox[U]]
+      def toEquaBoxSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.EquaBox[U]]
   
       /**
        * Converts this `EquaSet` to a stream.
@@ -1439,7 +1439,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
     }
   */
 
-    class FastEquaSet[+T <: E] private[scalactic] (private val underlying: Set[EquaBox[T@uV]]) extends EquaSet[T] { thisFastEquaSet =>
+    class FastEquaSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.Set[EquaBox[T@uV]]) extends EquaSet[T] { thisFastEquaSet =>
       def +[U >: T <: E](elem: U): thisCollections.immutable.FastEquaSet[U] = new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) + EquaBox[U](elem))
       def +[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastEquaSet[U] =
         new immutable.FastEquaSet[U](underlying.map(ebt => (ebt: EquaBox[U])) + (EquaBox[U](elem1), EquaBox[U](elem2), elem3.map(EquaBox[U](_)): _*))
@@ -1590,8 +1590,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def toEquaBoxParArray[U >: T <: E]: ParArray[thisCollections.EquaBox[U]] = underlying.toList.map(ebt => ebt: EquaBox[U]).toParArray
       def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
       def toEquaBoxSeq: GenSeq[thisCollections.EquaBox[T]] = underlying.toSeq
-      def toSet[U >: T <: E]: Set[U] = underlying.map(_.value)
-      def toEquaBoxSet[U >: T <: E]: Set[thisCollections.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U]))
+      def toSet[U >: T <: E]: scala.collection.immutable.Set[U] = underlying.map(_.value)
+      def toEquaBoxSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U]))
       def toStream: Stream[T] = underlying.toStream.map(_.value)
       def toEquaBoxStream: Stream[thisCollections.EquaBox[T]] = underlying.toStream
       def toTraversable: GenTraversable[T] = underlying.map(_.value)

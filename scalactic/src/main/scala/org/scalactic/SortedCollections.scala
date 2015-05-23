@@ -506,40 +506,40 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
     class TreeEquaSet[+T <: E] private[scalactic] (private val underlying: TreeSet[EquaBox[T@uV]]) extends SortedEquaSet[T] { thisTreeEquaSet =>
 
       def +[U >: T <: E](elem: U): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) + EquaBox[U](elem)
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) + EquaBox[U](elem)
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) + (EquaBox[U](elem1), EquaBox[U](elem2), elems.map(EquaBox[U](_)): _*)
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) ++ elems.toSeq.map(EquaBox[U](_))
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def ++[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) ++ that.toEquaBoxSet
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def -[U >: T <: E](elem: U): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) - EquaBox[U](elem)
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) - EquaBox[U](elem)
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) - (EquaBox[U](elem1), EquaBox[U](elem2), elems.map(EquaBox[U](_)): _*)
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) -- elems.toSeq.map(EquaBox[U](_))
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def --[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] =
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
           underlying.map(ebt => (ebt: EquaBox[U])) -- that.toEquaBoxSet
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
@@ -556,7 +556,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         }
         // that.isInstanceOf[thisCollections.immutable.EquaSet] && equality == that.asInstanceOf[thisCollections.immutable.EquaSet].path.equality
       def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: Set[SortedCollections.this.EquaBox[U]] = underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[U](pf(hb.value)) }
+        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[U](pf(hb.value)) }
         new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
       }
       def contains[U >: T <: E](elem: U): Boolean = underlying.toList.contains(EquaBox[U](elem))
