@@ -645,6 +645,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        */
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T
   
+      def membership[U >: T <: E]: Membership[U]
+
       /**
        * Finds the smallest element.
        *
@@ -1514,6 +1516,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         }
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
+      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisFastEquaSet.toList.exists(ele => equality.areEqual(ele, a)))
       def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
       def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
       def mkString(start: String, sep: String, end: String): String = underlying.toList.map(_.value).mkString(start, sep, end)

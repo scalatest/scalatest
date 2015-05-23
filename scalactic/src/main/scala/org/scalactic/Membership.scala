@@ -16,18 +16,18 @@
 package org.scalactic
 
 final class Membership[-A](predicate: A => Boolean) {
-  def contains(ele: A): Boolean = predicate(ele)
+  def apply(ele: A): Boolean = predicate(ele)
   def complement: Membership[A] = {
-    new Membership((ele: A) => !contains(ele))
+    new Membership((ele: A) => !apply(ele))
   }
   def diff[B <: A](other: Membership[B]): Membership[B] = {
-    new Membership((ele: B) => !(contains(ele) && other.contains(ele)))
+    new Membership((ele: B) => !(apply(ele) && other.apply(ele)))
   }
   def intersect[B <: A](other: Membership[B]): Membership[B] = {
-    new Membership((ele: B) => contains(ele) && other.contains(ele))
+    new Membership((ele: B) => apply(ele) && other.apply(ele))
   }
   def union[B <: A](other: Membership[B]): Membership[B] = {
-    new Membership((ele: B) => contains(ele) || other.contains(ele))
+    new Membership((ele: B) => apply(ele) || other.apply(ele))
   }
   override def toString = "<membership>"
 }

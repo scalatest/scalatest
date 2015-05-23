@@ -616,6 +616,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case None => None
         }
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
+      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeEquaSet.toList.exists(ele => equality.areEqual(ele, a)))
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
       def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
       def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)

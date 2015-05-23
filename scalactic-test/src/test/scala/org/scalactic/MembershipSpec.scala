@@ -20,93 +20,93 @@ class MembershipSpec extends UnitSpec {
   val pos = (i: Int) => i > 0
   val neg = (i: Int) => i < 0
   val small = (i: Int) => i >= -5 && i <= 5
-  val posInts = Membership(pos)
-  val negInts = Membership(neg)
-  val smallInts = Membership(small)
+  val isPosInt = Membership(pos)
+  val isNegInt = Membership(neg)
+  val isSmallInt = Membership(small)
 
   "An Membership" should "offer a constructor that takes a predicate" in {
     val pos = (i: Int) => i > 0
-    val posInts = new Membership(pos)
-    assert(posInts.contains(Int.MaxValue))
-    assert(posInts.contains(88))
-    assert(posInts.contains(1))
-    assert(!posInts.contains(0))
-    assert(!posInts.contains(-1))
-    assert(!posInts.contains(Int.MinValue))
+    val isPosInt = new Membership(pos)
+    assert(isPosInt(Int.MaxValue))
+    assert(isPosInt(88))
+    assert(isPosInt(1))
+    assert(!isPosInt(0))
+    assert(!isPosInt(-1))
+    assert(!isPosInt(Int.MinValue))
   }
   it should "offer an apply factory method that takes a predicate" in {
-    val shortStrings = Membership { (s: String) => s.length <= 3 }
-    assert(shortStrings.contains("cat"))
-    assert(shortStrings.contains("in"))
-    assert(shortStrings.contains("a"))
-    assert(shortStrings.contains(""))
-    assert(!shortStrings.contains("flat"))
-    assert(!shortStrings.contains("top hat"))
+    val isShortString = Membership { (s: String) => s.length <= 3 }
+    assert(isShortString("cat"))
+    assert(isShortString("in"))
+    assert(isShortString("a"))
+    assert(isShortString(""))
+    assert(!isShortString("flat"))
+    assert(!isShortString("top hat"))
   }
   it should "offer an intersect method" in {
-    val posAndNeg = posInts intersect negInts
-    val posAndSmall = posInts intersect smallInts
-    val negAndSmall = negInts intersect smallInts
-    assert(!posAndNeg.contains(-1))
-    assert(!posAndNeg.contains(0))
-    assert(!posAndNeg.contains(1))
-    assert(!posAndSmall.contains(-1))
-    assert(!posAndSmall.contains(0))
-    assert(posAndSmall.contains(1))
-    assert(negAndSmall.contains(-1))
-    assert(!negAndSmall.contains(0))
-    assert(!negAndSmall.contains(1))
+    val isPosAndNeg = isPosInt intersect isNegInt
+    val isPosAndSmall = isPosInt intersect isSmallInt
+    val isNegAndSmall = isNegInt intersect isSmallInt
+    assert(!isPosAndNeg(-1))
+    assert(!isPosAndNeg(0))
+    assert(!isPosAndNeg(1))
+    assert(!isPosAndSmall(-1))
+    assert(!isPosAndSmall(0))
+    assert(isPosAndSmall(1))
+    assert(isNegAndSmall(-1))
+    assert(!isNegAndSmall(0))
+    assert(!isNegAndSmall(1))
   }
   it should "have a pretty toString" in {
     Membership[Int](i => true).toString shouldEqual "<membership>"
   }
   it should "offer a union method" in {
-    val posOrNeg = posInts union negInts
-    val posOrSmall = posInts union smallInts
-    val negOrSmall = negInts union smallInts
-    assert(posOrNeg.contains(-1))
-    assert(!posOrNeg.contains(0))
-    assert(posOrNeg.contains(1))
-    assert(!posOrSmall.contains(-9))
-    assert(posOrSmall.contains(-1))
-    assert(posOrSmall.contains(0))
-    assert(posOrSmall.contains(1))
-    assert(posOrSmall.contains(9))
-    assert(negOrSmall.contains(-9))
-    assert(negOrSmall.contains(-1))
-    assert(negOrSmall.contains(0))
-    assert(negOrSmall.contains(1))
-    assert(!negOrSmall.contains(9))
+    val isPosOrNeg = isPosInt union isNegInt
+    val isPosOrSmall = isPosInt union isSmallInt
+    val isNegOrSmall = isNegInt union isSmallInt
+    assert(isPosOrNeg(-1))
+    assert(!isPosOrNeg(0))
+    assert(isPosOrNeg(1))
+    assert(!isPosOrSmall(-9))
+    assert(isPosOrSmall(-1))
+    assert(isPosOrSmall(0))
+    assert(isPosOrSmall(1))
+    assert(isPosOrSmall(9))
+    assert(isNegOrSmall(-9))
+    assert(isNegOrSmall(-1))
+    assert(isNegOrSmall(0))
+    assert(isNegOrSmall(1))
+    assert(!isNegOrSmall(9))
   }
   it should "offer a diff method" in {
-    val posAndNotNeg = posInts diff negInts
-    val posAndNotSmall = posInts diff smallInts
-    val negAndNotSmall = negInts diff smallInts
-    assert(posAndNotNeg.contains(-1))
-    assert(posAndNotNeg.contains(0))
-    assert(posAndNotNeg.contains(1))
-    assert(posAndNotSmall.contains(-1))
-    assert(posAndNotSmall.contains(0))
-    assert(!posAndNotSmall.contains(1))
-    assert(!negAndNotSmall.contains(-1))
-    assert(negAndNotSmall.contains(0))
-    assert(negAndNotSmall.contains(1))
+    val isPosAndNotNeg = isPosInt diff isNegInt
+    val isPosAndNotSmall = isPosInt diff isSmallInt
+    val isNegAndNotSmall = isNegInt diff isSmallInt
+    assert(isPosAndNotNeg(-1))
+    assert(isPosAndNotNeg(0))
+    assert(isPosAndNotNeg(1))
+    assert(isPosAndNotSmall(-1))
+    assert(isPosAndNotSmall(0))
+    assert(!isPosAndNotSmall(1))
+    assert(!isNegAndNotSmall(-1))
+    assert(isNegAndNotSmall(0))
+    assert(isNegAndNotSmall(1))
   }
   it should "offer a complement method" in {
-    val nonPosInts = posInts.complement
-    val nonNegInts = negInts.complement
-    val nonSmallInts = smallInts.complement
-    assert(nonPosInts.contains(-1))
-    assert(nonPosInts.contains(0))
-    assert(!nonPosInts.contains(1))
-    assert(!nonNegInts.contains(-1))
-    assert(nonNegInts.contains(0))
-    assert(nonNegInts.contains(1))
-    assert(nonSmallInts.contains(9))
-    assert(!nonSmallInts.contains(-1))
-    assert(!nonSmallInts.contains(0))
-    assert(!nonSmallInts.contains(1))
-    assert(nonSmallInts.contains(-9))
+    val isNonPosInt = isPosInt.complement
+    val isNonNegInt = isNegInt.complement
+    val isNonSmallInt = isSmallInt.complement
+    assert(isNonPosInt(-1))
+    assert(isNonPosInt(0))
+    assert(!isNonPosInt(1))
+    assert(!isNonNegInt(-1))
+    assert(isNonNegInt(0))
+    assert(isNonNegInt(1))
+    assert(isNonSmallInt(9))
+    assert(!isNonSmallInt(-1))
+    assert(!isNonSmallInt(0))
+    assert(!isNonSmallInt(1))
+    assert(isNonSmallInt(-9))
   }
 }
 

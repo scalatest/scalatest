@@ -79,6 +79,15 @@ class EquaSetSpec extends UnitSpec {
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for EquaSet.
   }
+  it should "have a a membership method that returns a Membership" in {
+    val membership = lower.immutable.EquaSet("hi", "ho").membership
+    membership("hi") shouldBe true
+    membership("ho") shouldBe true
+    membership("Hi") shouldBe true
+    membership("HO") shouldBe true
+    membership(" hi") shouldBe false
+    """membership(1) shouldBe false""" shouldNot typeCheck
+  }
   it should "construct only sets with appropriate element types" in {
     "lower.immutable.EquaSet(1, 2, 3)" shouldNot compile
   }
