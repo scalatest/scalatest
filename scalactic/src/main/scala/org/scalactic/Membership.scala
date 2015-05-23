@@ -15,6 +15,7 @@
  */
 package org.scalactic
 
+// For intensional sets
 final class Membership[-A](predicate: A => Boolean) {
   def apply(ele: A): Boolean = predicate(ele)
   def complement: Membership[A] = {
