@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-class TreeEquaSetViewSpec extends UnitSpec {
+class TreeSetViewSpec extends UnitSpec {
 
   def normalHashingEquality[T] =
     new HashingEquality[T] {
@@ -31,19 +31,19 @@ class TreeEquaSetViewSpec extends UnitSpec {
   val trimmed = SortedCollections[String](StringNormalizations.trimmed.toOrderingEquality)
   val number = SortedCollections[Int](intEquality)
 
-  "TreeEquaSetView" should "offer a size method" in {
-    TreeEquaSetView(1, 2, 3).size shouldBe 3
-    TreeEquaSetView(1, 1, 3, 2).size shouldBe 4
-    TreeEquaSetView(1, 1, 1, 1).size shouldBe 4
+  "TreeSetView" should "offer a size method" in {
+    TreeSetView(1, 2, 3).size shouldBe 3
+    TreeSetView(1, 1, 3, 2).size shouldBe 4
+    TreeSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](sortedSetView: SortedEquaSetView[T]) = {
+    def assertPretty[T](sortedSetView: SortedSetView[T]) = {
       val lss = sortedSetView.toString
-      lss should startWith ("TreeEquaSetView(")
+      lss should startWith ("TreeSetView(")
       lss should endWith (")")
       /*
-      scala> val lss = "TreeEquaSetView(1, 2, 3)"
-      lss: String = TreeEquaSetView()
+      scala> val lss = "TreeSetView(1, 2, 3)"
+      lss: String = TreeSetView()
 
       scala> lss.replaceAll(""".*\((.*)\).*""", "$1")
       res0: String = 1,2,3
@@ -51,8 +51,8 @@ class TreeEquaSetViewSpec extends UnitSpec {
       scala> res0.split(',')
       res1: Array[String] = Array(1, 2, 3)
 
-      scala> val lss = "TreeEquaSetView()"
-      lss: String = TreeEquaSetView()
+      scala> val lss = "TreeSetView()"
+      lss: String = TreeSetView()
 
       scala> lss.replaceAll(""".*\((.*)\).*""", "$1")
       res2: String = ""
@@ -67,18 +67,18 @@ class TreeEquaSetViewSpec extends UnitSpec {
       elemStrArr should contain theSameElementsAs sortedSetView.toList.map(_.toString)
     }
 
-    // Test BasicTreeEquaSetView
-    assertPretty(TreeEquaSetView(1, 2, 3))
-    assertPretty(TreeEquaSetView(1, 2, 3, 4))
-    assertPretty(TreeEquaSetView(1))
-    assertPretty(TreeEquaSetView())
-    assertPretty(TreeEquaSetView("one", "two", "three", "four", "five"))
+    // Test BasicTreeSetView
+    assertPretty(TreeSetView(1, 2, 3))
+    assertPretty(TreeSetView(1, 2, 3, 4))
+    assertPretty(TreeSetView(1))
+    assertPretty(TreeSetView())
+    assertPretty(TreeSetView("one", "two", "three", "four", "five"))
 
-    // Test FlatMappedTreeEquaSetView
+    // Test FlatMappedTreeSetView
     val trimmed = SortedCollections[String](StringNormalizations.trimmed.toOrderingEquality)
-    val sortedSetView = trimmed.immutable.SortedEquaSet("1", "2", "01", "3").view
+    val sortedSetView = trimmed.immutable.SortedSet("1", "2", "01", "3").view
     val flatMapped = sortedSetView.flatMap { (digit: String) =>
-      TreeEquaSetView(digit.toInt)
+      TreeSetView(digit.toInt)
     }
     assertPretty(flatMapped)
     val mapped = flatMapped.map(_ + 1)
@@ -86,10 +86,10 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have an unzip method" in {
-    val zipped = TreeEquaSetView(3, 1, 2, -3, 3).zip(TreeEquaSetView("z", "a", "b", "c", "z"))
+    val zipped = TreeSetView(3, 1, 2, -3, 3).zip(TreeSetView("z", "a", "b", "c", "z"))
     val (intSeq, stringSeq) = zipped.unzip
-    intSeq.toList shouldBe TreeEquaSetView(3, 1, 2, -3, 3).toList
-    stringSeq.toList shouldBe TreeEquaSetView("z", "a", "b", "c", "z").toList
+    intSeq.toList shouldBe TreeSetView(3, 1, 2, -3, 3).toList
+    stringSeq.toList shouldBe TreeSetView("z", "a", "b", "c", "z").toList
   }
 
   it should "have an unzip3 method" in {
@@ -99,15 +99,15 @@ class TreeEquaSetViewSpec extends UnitSpec {
       ("c", 2.2, 0),
       ("z", -2.2, 0)
     )
-    val (stringSeq, doubleSeq, intSeq) = TreeEquaSetView(tuples: _*).unzip3
-    stringSeq.toList shouldBe TreeEquaSetView("a", "b", "c", "z").toList
-    doubleSeq.toList shouldBe TreeEquaSetView(0.0, 1.1, 2.2, -2.2).toList
-    intSeq.toList shouldBe TreeEquaSetView(3, -3, 0, 0).toList
+    val (stringSeq, doubleSeq, intSeq) = TreeSetView(tuples: _*).unzip3
+    stringSeq.toList shouldBe TreeSetView("a", "b", "c", "z").toList
+    doubleSeq.toList shouldBe TreeSetView(0.0, 1.1, 2.2, -2.2).toList
+    intSeq.toList shouldBe TreeSetView(3, -3, 0, 0).toList
   }
 
   it should "have a zip method" in {
-    val seq1 = TreeEquaSetView(1,2,3)
-    val seq2 = TreeEquaSetView("a", "b", "c")
+    val seq1 = TreeSetView(1,2,3)
+    val seq2 = TreeSetView("a", "b", "c")
     val zipped = seq1.zip(seq2)
     val (b1, b2) = zipped.toList.unzip
     b1 shouldBe seq1.toList
@@ -115,12 +115,12 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a zipAll method" in {
-    val shortSeq1 = TreeEquaSetView(1,2,3)
-    val longSeq1 = TreeEquaSetView(1,2,3,4)
-    val shortSeq2 = TreeEquaSetView("a", "b", "c")
-    val longSeq2 = TreeEquaSetView("a", "b", "c", "d")
+    val shortSeq1 = TreeSetView(1,2,3)
+    val longSeq1 = TreeSetView(1,2,3,4)
+    val shortSeq2 = TreeSetView("a", "b", "c")
+    val longSeq2 = TreeSetView("a", "b", "c", "d")
 
-    def assertSameElements(thisSeq: TreeEquaSetView[_], thatSeq: TreeEquaSetView[_]): Unit = {
+    def assertSameElements(thisSeq: TreeSetView[_], thatSeq: TreeSetView[_]): Unit = {
       val zipped = thisSeq.zipAll(thatSeq, 4, "d")
       val (unzip1, unzip2) = zipped.toList.unzip
       unzip1 shouldBe longSeq1.toList
@@ -132,7 +132,7 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a zipWithIndex method" in {
-    val bag = TreeEquaSetView("a", "b", "c")
+    val bag = TreeSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
     val (b1, b2) = zipped.toList.unzip
     b1 shouldBe bag.toList
@@ -140,40 +140,40 @@ class TreeEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a collect method" in {
-    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
+    val seq = TreeSetView(1, 2, 3, 4, 5)
     val doubledOdds = seq.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList shouldBe TreeEquaSetView(2, 6, 10).toList
+    doubledOdds.toList shouldBe TreeSetView(2, 6, 10).toList
     val noMatch = seq.collect { case n: Int if n < 0 => n }
     noMatch.toList shouldBe empty
   }
 
   it should "have a scan method" in {
-    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
+    val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scan(0)(_+_)
-    scanned.toList shouldBe TreeEquaSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanLeft method" in {
-    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
+    val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanLeft(0)(_+_)
-    scanned.toList shouldBe TreeEquaSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanRight method" in {
-    val seq = TreeEquaSetView(1, 2, 3, 4, 5)
+    val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanRight(0)(_+_)
-    scanned.toList shouldBe TreeEquaSetView(15, 14, 12, 9, 5, 0).toList
+    scanned.toList shouldBe TreeSetView(15, 14, 12, 9, 5, 0).toList
   }
 
-  it should "offer a force method that returns a SortedEquaSet" in {
-    val setView = trimmed.immutable.TreeEquaSet("1", "2", "01", "3").view
+  it should "offer a force method that returns a SortedSet" in {
+    val setView = trimmed.immutable.TreeSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
-      FastEquaSetView(digit.toInt)
+      FastSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)
-    strictSet should equal (number.immutable.TreeEquaSet(1, 2, 3))
+    strictSet should equal (number.immutable.TreeSet(1, 2, 3))
   }
 }
 

@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-class FastEquaSetViewSpec extends UnitSpec {
+class FastSetViewSpec extends UnitSpec {
 
   def normalHashingEquality[T] =
     new HashingEquality[T] {
@@ -25,15 +25,15 @@ class FastEquaSetViewSpec extends UnitSpec {
   val trimmed = Collections[String](StringNormalizations.trimmed.toHashingEquality)
   val number = Collections[Int](normalHashingEquality[Int])
 
-  "FastEquaSetView" should "offer a size method" in {
-    FastEquaSetView(1, 2, 3).size shouldBe 3
-    FastEquaSetView(1, 1, 3, 2).size shouldBe 4
-    FastEquaSetView(1, 1, 1, 1).size shouldBe 4
+  "FastSetView" should "offer a size method" in {
+    FastSetView(1, 2, 3).size shouldBe 3
+    FastSetView(1, 1, 3, 2).size shouldBe 4
+    FastSetView(1, 1, 1, 1).size shouldBe 4
   }
   it should "have a pretty toString" in {
-    def assertPretty[T](equaSetView: EquaSetView[T]) = {
+    def assertPretty[T](equaSetView: SetView[T]) = {
       val lbs = equaSetView.toString
-      lbs should startWith ("FastEquaSetView(")
+      lbs should startWith ("FastSetView(")
       lbs should endWith (")")
       /*
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
@@ -42,8 +42,8 @@ class FastEquaSetViewSpec extends UnitSpec {
       scala> res0.split(',')
       res1: Array[String] = Array(1, 2, 3)
 
-      scala> val lbs = "FastEquaSetView()"
-      lbs: String = FastEquaSetView()
+      scala> val lbs = "FastSetView()"
+      lbs: String = FastSetView()
 
       scala> lbs.replaceAll(""".*\((.*)\).*""", "$1")
       res2: String = ""
@@ -58,18 +58,18 @@ class FastEquaSetViewSpec extends UnitSpec {
       elemStrArr should contain theSameElementsAs equaSetView.toList.map(_.toString)
     }
 
-    // Test BasicFastEquaSetView
-    assertPretty(FastEquaSetView(1, 2, 3))
-    assertPretty(FastEquaSetView(1, 2, 3, 4))
-    assertPretty(FastEquaSetView(1))
-    assertPretty(FastEquaSetView())
-    assertPretty(FastEquaSetView("one", "two", "three", "four", "five"))
+    // Test BasicFastSetView
+    assertPretty(FastSetView(1, 2, 3))
+    assertPretty(FastSetView(1, 2, 3, 4))
+    assertPretty(FastSetView(1))
+    assertPretty(FastSetView())
+    assertPretty(FastSetView("one", "two", "three", "four", "five"))
 
-    // Test FlatMappedFastEquaSetView
+    // Test FlatMappedFastSetView
     val trimmed = Collections[String](StringNormalizations.trimmed.toHashingEquality)
-    val equaSetView = trimmed.immutable.EquaSet("1", "2", "01", "3").view
+    val equaSetView = trimmed.immutable.Set("1", "2", "01", "3").view
     val flatMapped = equaSetView.flatMap { (digit: String) =>
-      FastEquaSetView(digit.toInt)
+      FastSetView(digit.toInt)
     }
     assertPretty(flatMapped)
     val mapped = flatMapped.map(_ + 1)
@@ -77,10 +77,10 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have an unzip method" in {
-    val zipped = FastEquaSetView(3, 1, 2, -3, 3).zip(FastEquaSetView("z", "a", "b", "c", "z"))
+    val zipped = FastSetView(3, 1, 2, -3, 3).zip(FastSetView("z", "a", "b", "c", "z"))
     val (intBag, stringBag) = zipped.unzip
-    intBag.toList should contain theSameElementsAs FastEquaSetView(3, -3, 3, 2, 1).toList
-    stringBag.toList should contain theSameElementsAs FastEquaSetView("z", "z", "a", "b", "c").toList
+    intBag.toList should contain theSameElementsAs FastSetView(3, -3, 3, 2, 1).toList
+    stringBag.toList should contain theSameElementsAs FastSetView("z", "z", "a", "b", "c").toList
   }
 
   it should "have an unzip3 method" in {
@@ -90,15 +90,15 @@ class FastEquaSetViewSpec extends UnitSpec {
       ("c", 2.2, 0),
       ("z", -2.2, 0)
     )
-    val (stringBag, doubleBag, intBag) = FastEquaSetView(tuples: _*).unzip3
-    stringBag.toList should contain theSameElementsAs FastEquaSetView("z", "a", "b", "c").toList
-    doubleBag.toList should contain theSameElementsAs FastEquaSetView(-2.2, 0.0, 1.1, 2.2).toList
-    intBag.toList should contain theSameElementsAs FastEquaSetView(0, 3, -3, 0).toList
+    val (stringBag, doubleBag, intBag) = FastSetView(tuples: _*).unzip3
+    stringBag.toList should contain theSameElementsAs FastSetView("z", "a", "b", "c").toList
+    doubleBag.toList should contain theSameElementsAs FastSetView(-2.2, 0.0, 1.1, 2.2).toList
+    intBag.toList should contain theSameElementsAs FastSetView(0, 3, -3, 0).toList
   }
 
   it should "have a zip method" in {
-    val bag1 = FastEquaSetView(1,2,3)
-    val bag2 = FastEquaSetView("a", "b", "c")
+    val bag1 = FastSetView(1,2,3)
+    val bag2 = FastSetView("a", "b", "c")
     val zipped = bag1.zip(bag2)
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag1.toList
@@ -106,12 +106,12 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a zipAll method" in {
-    val shortBag1 = FastEquaSetView(1,2,3)
-    val longBag1 = FastEquaSetView(1,2,3,4)
-    val shortBag2 = FastEquaSetView("a", "b", "c")
-    val longBag2 = FastEquaSetView("a", "b", "c", "d")
+    val shortBag1 = FastSetView(1,2,3)
+    val longBag1 = FastSetView(1,2,3,4)
+    val shortBag2 = FastSetView("a", "b", "c")
+    val longBag2 = FastSetView("a", "b", "c", "d")
 
-    def assertSameElements(thisBag: FastEquaSetView[_], thatBag: FastEquaSetView[_]): Unit = {
+    def assertSameElements(thisBag: FastSetView[_], thatBag: FastSetView[_]): Unit = {
       val zipped = thisBag.zipAll(thatBag, 4, "d")
       val (unzip1, unzip2) = zipped.toList.unzip
       unzip1 should contain theSameElementsAs longBag1.toList
@@ -123,7 +123,7 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a zipWithIndex method" in {
-    val bag = FastEquaSetView("a", "b", "c")
+    val bag = FastSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
     val (b1, b2) = zipped.toList.unzip
     b1 should contain theSameElementsAs bag.toList
@@ -131,40 +131,40 @@ class FastEquaSetViewSpec extends UnitSpec {
   }
 
   it should "have a collect method" in {
-    val bag = FastEquaSetView(1, 2, 3, 4, 5)
+    val bag = FastSetView(1, 2, 3, 4, 5)
     val doubledOdds = bag.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList should contain theSameElementsAs FastEquaSetView(2, 6, 10).toList
+    doubledOdds.toList should contain theSameElementsAs FastSetView(2, 6, 10).toList
     val noMatch = bag.collect { case n: Int if n < 0 => n }
     noMatch.toList shouldBe empty
   }
 
   it should "have a scan method" in {
-    val bag = FastEquaSetView(1, 2, 3, 4, 5)
+    val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scan(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanLeft method" in {
-    val bag = FastEquaSetView(1, 2, 3, 4, 5)
+    val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanLeft(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toList
   }
 
   it should "have a scanRight method" in {
-    val bag = FastEquaSetView(1, 2, 3, 4, 5)
+    val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanRight(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastEquaSetView(0, 5, 9, 12, 14, 15).toList
+    scanned.toList should contain theSameElementsAs FastSetView(0, 5, 9, 12, 14, 15).toList
   }
 
-  it should "offer a force method that returns a FastEquaSet" in {
-    val setView = trimmed.immutable.FastEquaSet("1", "2", "01", "3").view
+  it should "offer a force method that returns a FastSet" in {
+    val setView = trimmed.immutable.FastSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
-      FastEquaSetView(digit.toInt)
+      FastSetView(digit.toInt)
     }
     val strictSet = flatMapped.force(number)
-    strictSet should equal (number.immutable.FastEquaSet(1, 2, 3))
+    strictSet should equal (number.immutable.FastSet(1, 2, 3))
   }
 }
 

@@ -15,168 +15,168 @@
  */
 package org.scalactic
 
-trait TreeEquaSetView[+T] extends SortedEquaSetView[T] {
-  def collect[U](pf: PartialFunction[T, U]): TreeEquaSetView[U]
+trait TreeSetView[+T] extends SortedSetView[T] {
+  def collect[U](pf: PartialFunction[T, U]): TreeSetView[U]
 
-  def map[U](f: T => U): TreeEquaSetView[U]
-  def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U]
-  def force[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
-  def toEquaSet[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
-  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeEquaSet[U]
-  def toSortedEquaSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U]
+  def map[U](f: T => U): TreeSetView[U]
+  def flatMap[U](f: T => SetView[U]): TreeSetView[U]
+  def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U]
+  def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toList: List[T]
 
-  def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U]
-  def scanLeft[U](z: U)(op: (U, T) => U): TreeEquaSetView[U]
-  def scanRight[U](z: U)(op: (T, U) => U): TreeEquaSetView[U]
+  def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeSetView[U]
+  def scanLeft[U](z: U)(op: (U, T) => U): TreeSetView[U]
+  def scanRight[U](z: U)(op: (T, U) => U): TreeSetView[U]
 
   def size: Int
-  def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeEquaSetView[U1], TreeEquaSetView[U2])
-  def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeEquaSetView[U1], TreeEquaSetView[U2], TreeEquaSetView[U3])
-  def zip[U](that: EquaSetView[U]): TreeEquaSetView[(T, U)]
-  def zipAll[U, T1 >: T](that: EquaSetView[U], thisElem: T1, thatElem: U): TreeEquaSetView[(T1, U)]
-  def zipWithIndex: TreeEquaSetView[(T, Int)]
+  def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeSetView[U1], TreeSetView[U2])
+  def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeSetView[U1], TreeSetView[U2], TreeSetView[U3])
+  def zip[U](that: SetView[U]): TreeSetView[(T, U)]
+  def zipAll[U, T1 >: T](that: SetView[U], thisElem: T1, thatElem: U): TreeSetView[(T1, U)]
+  def zipWithIndex: TreeSetView[(T, Int)]
 }
 
-object TreeEquaSetView {
-  private class BasicTreeEquaSetView[T](private val args: List[T]) extends TreeEquaSetView[T] { thisTreeEquaSetView =>
-    def collect[U](pf: PartialFunction[T, U]): TreeEquaSetView[U] = new CollectTreeEquaSetView(thisTreeEquaSetView, pf)
-    def map[U](f: T => U): TreeEquaSetView[U] = new MapTreeEquaSetView(thisTreeEquaSetView, f)
-    def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U] = new FlatMapTreeEquaSetView(thisTreeEquaSetView, f)
-    def toEquaSet[U >: T](toPath: Collections[U]): toPath.immutable.FastEquaSet[U] = force(toPath)
-    def force[U >: T](toPath: Collections[U]): toPath.immutable.FastEquaSet[U] = toPath.immutable.FastEquaSet(args: _*)
-    def toSortedEquaSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U] = force(toPath)
-    def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeEquaSet[U] = toPath.immutable.TreeEquaSet(args: _*)
+object TreeSetView {
+  private class BasicTreeSetView[T](private val args: List[T]) extends TreeSetView[T] { thisTreeSetView =>
+    def collect[U](pf: PartialFunction[T, U]): TreeSetView[U] = new CollectTreeSetView(thisTreeSetView, pf)
+    def map[U](f: T => U): TreeSetView[U] = new MapTreeSetView(thisTreeSetView, f)
+    def flatMap[U](f: T => SetView[U]): TreeSetView[U] = new FlatMapTreeSetView(thisTreeSetView, f)
+    def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
+    def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = toPath.immutable.FastSet(args: _*)
+    def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = force(toPath)
+    def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U] = toPath.immutable.TreeSet(args: _*)
     def toList: List[T] = args
 
-    def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U] = new ScanTreeEquaSetView(thisTreeEquaSetView, z, op)
-    def scanLeft[U](z: U)(op: (U, T) => U): TreeEquaSetView[U] = new ScanLeftTreeEquaSetView(thisTreeEquaSetView, z, op)
-    def scanRight[U](z: U)(op: (T, U) => U): TreeEquaSetView[U] = new ScanRightTreeEquaSetView(thisTreeEquaSetView, z, op)
+    def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeSetView[U] = new ScanTreeSetView(thisTreeSetView, z, op)
+    def scanLeft[U](z: U)(op: (U, T) => U): TreeSetView[U] = new ScanLeftTreeSetView(thisTreeSetView, z, op)
+    def scanRight[U](z: U)(op: (T, U) => U): TreeSetView[U] = new ScanRightTreeSetView(thisTreeSetView, z, op)
 
     def size: Int = args.size
 
-    def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeEquaSetView[U1], TreeEquaSetView[U2]) = (
-      new UnzipLeftTreeEquaSetView[T, U1, U2](thisTreeEquaSetView)(asPair),
-      new UnzipRightTreeEquaSetView[T, U1, U2](thisTreeEquaSetView)(asPair)
+    def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeSetView[U1], TreeSetView[U2]) = (
+      new UnzipLeftTreeSetView[T, U1, U2](thisTreeSetView)(asPair),
+      new UnzipRightTreeSetView[T, U1, U2](thisTreeSetView)(asPair)
     )
 
-    def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeEquaSetView[U1], TreeEquaSetView[U2], TreeEquaSetView[U3]) = (
-      new Unzip3LeftTreeEquaSetView[T, U1, U2, U3](thisTreeEquaSetView),
-      new Unzip3MiddleTreeEquaSetView[T, U1, U2, U3](thisTreeEquaSetView),
-      new Unzip3RightTreeEquaSetView[T, U1, U2, U3](thisTreeEquaSetView)
+    def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeSetView[U1], TreeSetView[U2], TreeSetView[U3]) = (
+      new Unzip3LeftTreeSetView[T, U1, U2, U3](thisTreeSetView),
+      new Unzip3MiddleTreeSetView[T, U1, U2, U3](thisTreeSetView),
+      new Unzip3RightTreeSetView[T, U1, U2, U3](thisTreeSetView)
     )
 
-    def zip[U](that: EquaSetView[U]): TreeEquaSetView[(T, U)] = new ZipTreeEquaSetView(thisTreeEquaSetView, that)
-    def zipAll[U, T1 >: T](that: EquaSetView[U], thisElem: T1, thatElem: U): TreeEquaSetView[(T1, U)] =
-      new ZipAllTreeEquaSetView(thisTreeEquaSetView, that, thisElem, thatElem)
-    def zipWithIndex: TreeEquaSetView[(T, Int)] = new ZipWithIndex(thisTreeEquaSetView)
+    def zip[U](that: SetView[U]): TreeSetView[(T, U)] = new ZipTreeSetView(thisTreeSetView, that)
+    def zipAll[U, T1 >: T](that: SetView[U], thisElem: T1, thatElem: U): TreeSetView[(T1, U)] =
+      new ZipAllTreeSetView(thisTreeSetView, that, thisElem, thatElem)
+    def zipWithIndex: TreeSetView[(T, Int)] = new ZipWithIndex(thisTreeSetView)
 
-    override def toString = args.mkString("TreeEquaSetView(", ",", ")")
+    override def toString = args.mkString("TreeSetView(", ",", ")")
     override def equals(other: Any): Boolean = ???
     override def hashCode: Int = ???
   }
 
-  private abstract class TransformTreeEquaSetView[T, U] extends TreeEquaSetView[U] { thisTreeEquaSetView =>
-    def collect[V](pf: PartialFunction[U, V]): TreeEquaSetView[V] = new CollectTreeEquaSetView(thisTreeEquaSetView, pf)
-    def map[V](g: U => V): TreeEquaSetView[V] = new MapTreeEquaSetView[U, V](thisTreeEquaSetView, g)
-    def flatMap[V](f: U => EquaSetView[V]): TreeEquaSetView[V] = new FlatMapTreeEquaSetView(thisTreeEquaSetView, f)
-    def force[V >: U](toPath: Collections[V]): toPath.immutable.FastEquaSet[V] = {
-      toPath.immutable.FastEquaSet[V](toList: _*)
+  private abstract class TransformTreeSetView[T, U] extends TreeSetView[U] { thisTreeSetView =>
+    def collect[V](pf: PartialFunction[U, V]): TreeSetView[V] = new CollectTreeSetView(thisTreeSetView, pf)
+    def map[V](g: U => V): TreeSetView[V] = new MapTreeSetView[U, V](thisTreeSetView, g)
+    def flatMap[V](f: U => SetView[V]): TreeSetView[V] = new FlatMapTreeSetView(thisTreeSetView, f)
+    def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
+      toPath.immutable.FastSet[V](toList: _*)
     }
-    def toEquaSet[V >: U](toPath: Collections[V]): toPath.immutable.FastEquaSet[V] = force(toPath)
-    def force[V >: U](toPath: SortedCollections[V]): toPath.immutable.TreeEquaSet[V] = {
-      toPath.immutable.TreeEquaSet[V](toList: _*)
+    def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = force(toPath)
+    def force[V >: U](toPath: SortedCollections[V]): toPath.immutable.TreeSet[V] = {
+      toPath.immutable.TreeSet[V](toList: _*)
     }
-    def toSortedEquaSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedEquaSet[V] = force(toPath)
+    def toSortedSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedSet[V] = force(toPath)
     def toList: List[U]
 
-    def scan[V >: U](z: V)(op: (V, V) ⇒ V): TreeEquaSetView[V] = new ScanTreeEquaSetView(thisTreeEquaSetView, z, op)
-    def scanLeft[V](z: V)(op: (V, U) => V): TreeEquaSetView[V] = new ScanLeftTreeEquaSetView(thisTreeEquaSetView, z, op)
-    def scanRight[V](z: V)(op: (U, V) => V): TreeEquaSetView[V] = new ScanRightTreeEquaSetView(thisTreeEquaSetView, z, op)
+    def scan[V >: U](z: V)(op: (V, V) ⇒ V): TreeSetView[V] = new ScanTreeSetView(thisTreeSetView, z, op)
+    def scanLeft[V](z: V)(op: (V, U) => V): TreeSetView[V] = new ScanLeftTreeSetView(thisTreeSetView, z, op)
+    def scanRight[V](z: V)(op: (U, V) => V): TreeSetView[V] = new ScanRightTreeSetView(thisTreeSetView, z, op)
 
     def size: Int = toList.size
 
-    def unzip[V1, V2](implicit asPair: U => (V1, V2)): (TreeEquaSetView[V1], TreeEquaSetView[V2]) = (
-      new UnzipLeftTreeEquaSetView[U, V1, V2](thisTreeEquaSetView)(asPair),
-      new UnzipRightTreeEquaSetView[U, V1, V2](thisTreeEquaSetView)(asPair)
+    def unzip[V1, V2](implicit asPair: U => (V1, V2)): (TreeSetView[V1], TreeSetView[V2]) = (
+      new UnzipLeftTreeSetView[U, V1, V2](thisTreeSetView)(asPair),
+      new UnzipRightTreeSetView[U, V1, V2](thisTreeSetView)(asPair)
     )
 
-    def unzip3[V1, V2, V3](implicit asTriple: U => (V1, V2, V3)): (TreeEquaSetView[V1], TreeEquaSetView[V2], TreeEquaSetView[V3]) = (
-      new Unzip3LeftTreeEquaSetView[U, V1, V2, V3](thisTreeEquaSetView),
-      new Unzip3MiddleTreeEquaSetView[U, V1, V2, V3](thisTreeEquaSetView),
-      new Unzip3RightTreeEquaSetView[U, V1, V2, V3](thisTreeEquaSetView)
+    def unzip3[V1, V2, V3](implicit asTriple: U => (V1, V2, V3)): (TreeSetView[V1], TreeSetView[V2], TreeSetView[V3]) = (
+      new Unzip3LeftTreeSetView[U, V1, V2, V3](thisTreeSetView),
+      new Unzip3MiddleTreeSetView[U, V1, V2, V3](thisTreeSetView),
+      new Unzip3RightTreeSetView[U, V1, V2, V3](thisTreeSetView)
     )
 
-    def zip[V](that: EquaSetView[V]): TreeEquaSetView[(U, V)] = new ZipTreeEquaSetView(thisTreeEquaSetView, that)
-    def zipAll[V, U1 >: U](that: EquaSetView[V], thisElem: U1, thatElem: V): TreeEquaSetView[(U1, V)] =
-      new ZipAllTreeEquaSetView(thisTreeEquaSetView, that, thisElem, thatElem)
-    def zipWithIndex: TreeEquaSetView[(U, Int)] = new ZipWithIndex(thisTreeEquaSetView)
+    def zip[V](that: SetView[V]): TreeSetView[(U, V)] = new ZipTreeSetView(thisTreeSetView, that)
+    def zipAll[V, U1 >: U](that: SetView[V], thisElem: U1, thatElem: V): TreeSetView[(U1, V)] =
+      new ZipAllTreeSetView(thisTreeSetView, that, thisElem, thatElem)
+    def zipWithIndex: TreeSetView[(U, Int)] = new ZipWithIndex(thisTreeSetView)
 
-    override def toString: String = toList.mkString("TreeEquaSetView(", ",", ")")
+    override def toString: String = toList.mkString("TreeSetView(", ",", ")")
     override def equals(other: Any): Boolean =
       other match {
-        case otherTreeEquaSetView: TreeEquaSetView[_] =>
-          thisTreeEquaSetView.toList == otherTreeEquaSetView.toList
+        case otherTreeSetView: TreeSetView[_] =>
+          thisTreeSetView.toList == otherTreeSetView.toList
         case _ => false
       }
-    override def hashCode: Int = thisTreeEquaSetView.toList.hashCode
+    override def hashCode: Int = thisTreeSetView.toList.hashCode
   }
 
-  private class CollectTreeEquaSetView[T, U](lazyBag: TreeEquaSetView[T], pf: PartialFunction[T, U]) extends TransformTreeEquaSetView[T, U] {
+  private class CollectTreeSetView[T, U](lazyBag: TreeSetView[T], pf: PartialFunction[T, U]) extends TransformTreeSetView[T, U] {
     def toList: List[U] = lazyBag.toList.collect(pf)
   }
 
-  private class MapTreeEquaSetView[T, U](lazySeq: TreeEquaSetView[T], f: T => U) extends TransformTreeEquaSetView[T, U] { thisTreeEquaSetView =>
+  private class MapTreeSetView[T, U](lazySeq: TreeSetView[T], f: T => U) extends TransformTreeSetView[T, U] { thisTreeSetView =>
     def toList: List[U] = lazySeq.toList.map(f)
   }
 
-  private class FlatMapTreeEquaSetView[T, U](lazySeq: TreeEquaSetView[T], f: T => EquaSetView[U]) extends TransformTreeEquaSetView[T, U] { thisTreeEquaSetView =>
+  private class FlatMapTreeSetView[T, U](lazySeq: TreeSetView[T], f: T => SetView[U]) extends TransformTreeSetView[T, U] { thisTreeSetView =>
     def toList: List[U] = lazySeq.toList.flatMap(f.andThen(_.toList))
   }
 
-  private class ScanTreeEquaSetView[T](lazySeq: TreeEquaSetView[T], z: T, op: (T, T) ⇒ T) extends TransformTreeEquaSetView[T, T] {
+  private class ScanTreeSetView[T](lazySeq: TreeSetView[T], z: T, op: (T, T) ⇒ T) extends TransformTreeSetView[T, T] {
     def toList: List[T] = lazySeq.toList.scan(z)(op)
   }
 
-  private class ScanLeftTreeEquaSetView[T, U](lazySeq: TreeEquaSetView[T], z: U, op: (U, T) ⇒ U) extends TransformTreeEquaSetView[T, U] {
+  private class ScanLeftTreeSetView[T, U](lazySeq: TreeSetView[T], z: U, op: (U, T) ⇒ U) extends TransformTreeSetView[T, U] {
     def toList: List[U] = lazySeq.toList.scanLeft(z)(op)
   }
 
-  private class ScanRightTreeEquaSetView[T, U](lazySeq: TreeEquaSetView[T], z: U, op: (T, U) ⇒ U) extends TransformTreeEquaSetView[T, U] {
+  private class ScanRightTreeSetView[T, U](lazySeq: TreeSetView[T], z: U, op: (T, U) ⇒ U) extends TransformTreeSetView[T, U] {
     def toList: List[U] = lazySeq.toList.scanRight(z)(op)
   }
 
-  private class ZipTreeEquaSetView[T, U](thisSeq: TreeEquaSetView[T], that: EquaSetView[U]) extends TransformTreeEquaSetView[T, (T, U)] {
+  private class ZipTreeSetView[T, U](thisSeq: TreeSetView[T], that: SetView[U]) extends TransformTreeSetView[T, (T, U)] {
     def toList: List[(T, U)] = thisSeq.toList.zip(that.toList)
   }
 
-  private class ZipAllTreeEquaSetView[T, U](thisSeq: TreeEquaSetView[T], thatBag: EquaSetView[U], thisElem: T, thatElem: U) extends TransformTreeEquaSetView[T, (T, U)] {
+  private class ZipAllTreeSetView[T, U](thisSeq: TreeSetView[T], thatBag: SetView[U], thisElem: T, thatElem: U) extends TransformTreeSetView[T, (T, U)] {
     def toList: List[(T, U)] = thisSeq.toList.zipAll(thatBag.toList, thisElem, thatElem)
   }
 
-  private class ZipWithIndex[T, U](thisSeq: TreeEquaSetView[T]) extends TransformTreeEquaSetView[T, (T, Int)] {
+  private class ZipWithIndex[T, U](thisSeq: TreeSetView[T]) extends TransformTreeSetView[T, (T, Int)] {
     def toList: List[(T, Int)] = thisSeq.toList.zipWithIndex
   }
 
-  private class UnzipLeftTreeEquaSetView[T, U1, U2](lazySeq: TreeEquaSetView[T])(implicit asPair: T => (U1, U2)) extends TransformTreeEquaSetView[T, U1] {
+  private class UnzipLeftTreeSetView[T, U1, U2](lazySeq: TreeSetView[T])(implicit asPair: T => (U1, U2)) extends TransformTreeSetView[T, U1] {
     def toList: List[U1] = lazySeq.toList.unzip._1.toList
   }
 
-  private class UnzipRightTreeEquaSetView[T, U1, U2](lazySeq: TreeEquaSetView[T])(implicit asPair: T => (U1, U2)) extends TransformTreeEquaSetView[T, U2] {
+  private class UnzipRightTreeSetView[T, U1, U2](lazySeq: TreeSetView[T])(implicit asPair: T => (U1, U2)) extends TransformTreeSetView[T, U2] {
     def toList: List[U2] = lazySeq.toList.unzip._2.toList
   }
 
-  private class Unzip3LeftTreeEquaSetView[T, U1, U2, U3](lazySeq: TreeEquaSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeEquaSetView[T, U1] {
+  private class Unzip3LeftTreeSetView[T, U1, U2, U3](lazySeq: TreeSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeSetView[T, U1] {
     def toList: List[U1] = lazySeq.toList.unzip3._1.toList
   }
 
-  private class Unzip3MiddleTreeEquaSetView[T, U1, U2, U3](lazySeq: TreeEquaSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeEquaSetView[T, U2] {
+  private class Unzip3MiddleTreeSetView[T, U1, U2, U3](lazySeq: TreeSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeSetView[T, U2] {
     def toList: List[U2] = lazySeq.toList.unzip3._2.toList
   }
 
-  private class Unzip3RightTreeEquaSetView[T, U1, U2, U3](lazySeq: TreeEquaSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeEquaSetView[T, U3] {
+  private class Unzip3RightTreeSetView[T, U1, U2, U3](lazySeq: TreeSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformTreeSetView[T, U3] {
     def toList: List[U3] = lazySeq.toList.unzip3._3.toList
   }
 
-  def apply[T](args: T*): TreeEquaSetView[T] = new BasicTreeEquaSetView(args.toList)
+  def apply[T](args: T*): TreeSetView[T] = new BasicTreeSetView(args.toList)
 }

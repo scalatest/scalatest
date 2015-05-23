@@ -15,26 +15,26 @@
  */
 package org.scalactic
 
-trait SortedEquaSetView[+T] extends EquaSetView[T] {
-  def collect[U](pf: PartialFunction[T, U]): TreeEquaSetView[U]
+trait SortedSetView[+T] extends SetView[T] {
+  def collect[U](pf: PartialFunction[T, U]): TreeSetView[U]
 
-  def map[U](f: T => U): TreeEquaSetView[U]
-  def flatMap[U](f: T => EquaSetView[U]): TreeEquaSetView[U]
-  def force[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
-  def toEquaSet[U >: T](toPath: Collections[U]): toPath.immutable.EquaSet[U]
-  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U]
-  def toSortedEquaSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedEquaSet[U]
+  def map[U](f: T => U): TreeSetView[U]
+  def flatMap[U](f: T => SetView[U]): TreeSetView[U]
+  def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
+  def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toList: List[T]
 
-  def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeEquaSetView[U]
-  def scanLeft[U](z: U)(op: (U, T) => U): TreeEquaSetView[U]
-  def scanRight[U](z: U)(op: (T, U) => U): TreeEquaSetView[U]
+  def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeSetView[U]
+  def scanLeft[U](z: U)(op: (U, T) => U): TreeSetView[U]
+  def scanRight[U](z: U)(op: (T, U) => U): TreeSetView[U]
 
   def size: Int
-  def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeEquaSetView[U1], TreeEquaSetView[U2])
-  def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeEquaSetView[U1], TreeEquaSetView[U2], TreeEquaSetView[U3])
-  def zip[U](that: EquaSetView[U]): TreeEquaSetView[(T, U)]
-  def zipAll[U, T1 >: T](that: EquaSetView[U], thisElem: T1, thatElem: U): TreeEquaSetView[(T1, U)]
-  def zipWithIndex: TreeEquaSetView[(T, Int)]
+  def unzip[U1, U2](implicit asPair: T => (U1, U2)): (TreeSetView[U1], TreeSetView[U2])
+  def unzip3[U1, U2, U3](implicit asTriple: T => (U1, U2, U3)): (TreeSetView[U1], TreeSetView[U2], TreeSetView[U3])
+  def zip[U](that: SetView[U]): TreeSetView[(T, U)]
+  def zipAll[U, T1 >: T](that: SetView[U], thisElem: T1, thatElem: U): TreeSetView[(T1, U)]
+  def zipWithIndex: TreeSetView[(T, Int)]
 }
 

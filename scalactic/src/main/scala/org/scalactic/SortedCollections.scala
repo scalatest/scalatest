@@ -32,28 +32,28 @@ import scala.reflect.ClassTag
 
 class SortedCollections[E](override val equality: OrderingEquality[E]) extends Collections[E](equality) { thisCollections =>
 
-  def ordering[T <: E]: Ordering[thisCollections.EquaBox[T]] =
-    new Ordering[thisCollections.EquaBox[T]] {
-      def compare(a: thisCollections.EquaBox[T], b: thisCollections.EquaBox[T]): Int =
+  def ordering[T <: E]: Ordering[thisCollections.Box[T]] =
+    new Ordering[thisCollections.Box[T]] {
+      def compare(a: thisCollections.Box[T], b: thisCollections.Box[T]): Int =
         equality.compare(a.value, b.value)
     }
 
   class SortedImmutable extends Immutable {
 
-    trait SortedEquaSet[+T <: E] extends EquaSet[T] {
+    trait SortedSet[+T <: E] extends Set[T] {
   
       /**
-       * Creates a new `SortedEquaSet` with an additional element, unless the element is
+       * Creates a new `SortedSet` with an additional element, unless the element is
        * already present.
        *
        * @param elem the element to be added
-       * @return a new `SortedEquaSet` that contains all elements of this `SortedEquaSet` and that also
+       * @return a new `SortedSet` that contains all elements of this `SortedSet` and that also
        * contains `elem`.
        */
-      def +[U >: T <: E](elem: U): thisCollections.immutable.SortedEquaSet[U]
+      def +[U >: T <: E](elem: U): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Creates a new `SortedEquaSet` with additional elements.
+       * Creates a new `SortedSet` with additional elements.
        *
        * This method takes two or more elements to be added. Another overloaded
        * variant of this method handles the case where a single element is added.
@@ -61,45 +61,45 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @param elem1 the first element to add.
        * @param elem2 the second element to add.
        * @param elems the remaining elements to add.
-       * @return a new `SortedEquaSet` with the given elements added.
+       * @return a new `SortedSet` with the given elements added.
        */
-      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.SortedEquaSet[U]
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.SortedSet[U]
   
-      /** Creates a new `SortedEquaSet` by adding all elements contained in another collection to this `SortedEquaSet`.
+      /** Creates a new `SortedSet` by adding all elements contained in another collection to this `SortedSet`.
         *
         *  @param elems     the collection containing the added elements.
-        *  @return          a new `SortedEquaSet` with the given elements added.
+        *  @return          a new `SortedSet` with the given elements added.
         */
-      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.SortedEquaSet[U]
+      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Creates a new `SortedEquaSet` by adding elements contained in another `EquaSet`.
+       * Creates a new `SortedSet` by adding elements contained in another `Set`.
        *
-       * @param that     the other `EquaSet` containing the added elements.
-       * @return         a new `SortedEquaSet` with the given elements added.
+       * @param that     the other `Set` containing the added elements.
+       * @return         a new `SortedSet` with the given elements added.
        */
-      def ++[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.SortedEquaSet[U]
+      def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Creates a new `SortedEquaSet` with a given element removed from this `SortedEquaSet`.
+       * Creates a new `SortedSet` with a given element removed from this `SortedSet`.
        *
        * @param elem the element to be removed
-       * @return a new `SortedEquaSet` that contains all elements of this `SortedEquaSet` but that does not
+       * @return a new `SortedSet` that contains all elements of this `SortedSet` but that does not
        * contain `elem`.
        */
-      def -[U >: T <: E](elem: U): thisCollections.immutable.SortedEquaSet[U]
+      def -[U >: T <: E](elem: U): thisCollections.immutable.SortedSet[U]
   
       /* * USE LATER
-       * Creates a new `SortedEquaSet` from this `SortedEquaSet` by removing all elements of another
+       * Creates a new `SortedSet` from this `SortedSet` by removing all elements of another
        * collection.
        *
        * @param xs the collection containing the removed elements.
-       * @return a new `SortedEquaSet` that contains all elements of the current `SortedEquaSet`
+       * @return a new `SortedSet` that contains all elements of the current `SortedSet`
        * except one less occurrence of each of the elements of `elems`.
        */
   
       /**
-       * Creates a new `SortedEquaSet` from this `SortedEquaSet` with some elements removed.
+       * Creates a new `SortedSet` from this `SortedSet` with some elements removed.
        *
        * This method takes two or more elements to be removed. Another overloaded
        * variant of this method handles the case where a single element is
@@ -107,89 +107,89 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @param elem1 the first element to remove.
        * @param elem2 the second element to remove.
        * @param elems the remaining elements to remove.
-       * @return a new `SortedEquaSet` that contains all elements of the current `SortedEquaSet`
+       * @return a new `SortedSet` that contains all elements of the current `SortedSet`
        * except one less occurrence of each of the given elements.
        */
-      def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.SortedEquaSet[U]
+      def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Creates a new `SortedEquaSet` from this `SortedEquaSet` by removing all elements of another
+       * Creates a new `SortedSet` from this `SortedSet` by removing all elements of another
        *  collection.
        *
        *  @param elems     the collection containing the removed elements.
-       *  @return a new `SortedEquaSet` that contains all elements of the current `SortedEquaSet`
+       *  @return a new `SortedSet` that contains all elements of the current `SortedSet`
        *  except one less occurrence of each of the elements of `elems`.
        */
-      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.SortedEquaSet[U]
+      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Creates a new `SortedEquaSet` from this `SortedEquaSet` by removing all elements of another `EquaSet`
+       * Creates a new `SortedSet` from this `SortedSet` by removing all elements of another `Set`
        *
-       * @param that       the other `EquaSet` containing the removed elements.
-       * @return a new `SortedEquaSet` that contains all elements of the current `EquaSet` minus elements contained in the passed in `EquaSet`.
+       * @param that       the other `Set` containing the removed elements.
+       * @return a new `SortedSet` that contains all elements of the current `Set` minus elements contained in the passed in `Set`.
        */
-      def --[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.SortedEquaSet[U]
+      def --[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Builds a new collection by applying a partial function to all elements of this `SortedEquaSet`
+       * Builds a new collection by applying a partial function to all elements of this `SortedSet`
        * on which the function is defined.
        *
-       * @param pf the partial function which filters and maps the `SortedEquaSet`.
+       * @param pf the partial function which filters and maps the `SortedSet`.
        * @return a new collection of type `That` resulting from applying the partial function
        * `pf` to each element on which it is defined and collecting the results.
        * The order of the elements is preserved.
        *
-       * @return a new `SortedEquaSet` resulting from applying the given partial function
+       * @return a new `SortedSet` resulting from applying the given partial function
        * `pf` to each element on which it is defined and collecting the results.
        * The order of the elements is preserved.
        */
-      def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.SortedEquaSet[U]
+      def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.SortedSet[U]
 
       def contains[U >: T <: E](elem: U): Boolean
 
       /**
-       * Computes the difference of this `SortedEquaSet` and another `SortedEquaSet`.
+       * Computes the difference of this `SortedSet` and another `SortedSet`.
        *
-       * @param that the `EquaSet` of elements to exclude.
-       * @return a `SortedEquaSet` containing those elements of this
-       * `SortedEquaSet` that are not also contained in the given `EquaSet` `that`.
+       * @param that the `Set` of elements to exclude.
+       * @return a `SortedSet` containing those elements of this
+       * `SortedSet` that are not also contained in the given `Set` `that`.
        */
-      def diff[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.SortedEquaSet[U]
+      def diff[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.SortedSet[U]
   
       /**
        * Selects all elements except first ''n'' ones.
        *
-       * @param n the number of elements to drop from this `SortedEquaSet`.
-       * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet` except the first `n` ones, or else the
-       * empty `SortedEquaSet`, if this `EquaSet` has less than `n` elements.
+       * @param n the number of elements to drop from this `SortedSet`.
+       * @return a `SortedSet` consisting of all elements of this `SortedSet` except the first `n` ones, or else the
+       * empty `SortedSet`, if this `Set` has less than `n` elements.
        */
-      def drop(n: Int): thisCollections.immutable.SortedEquaSet[T]
+      def drop(n: Int): thisCollections.immutable.SortedSet[T]
   
       /** Selects all elements except last ''n'' ones.
         *
         * @param n The number of elements to take
-        * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet` except the last `n` ones, or else the
-        * empty `SortedEquaSet`, if this `SortedEquaSet` has less than `n` elements.
+        * @return a `SortedSet` consisting of all elements of this `SortedSet` except the last `n` ones, or else the
+        * empty `SortedSet`, if this `SortedSet` has less than `n` elements.
         */
-      def dropRight(n: Int): thisCollections.immutable.SortedEquaSet[T]
+      def dropRight(n: Int): thisCollections.immutable.SortedSet[T]
   
       /**
        * Drops longest prefix of elements that satisfy a predicate.
        *
        * @param pred The predicate used to test elements.
-       * @return the longest suffix of this `SortedEquaSet` whose first element
+       * @return the longest suffix of this `SortedSet` whose first element
        * does not satisfy the predicate `p`.
        */
-      def dropWhile(pred: T => Boolean): thisCollections.immutable.SortedEquaSet[T]
+      def dropWhile(pred: T => Boolean): thisCollections.immutable.SortedSet[T]
   
       /**
-       * Selects all elements of this `SortedEquaSet` which satisfy a predicate.
+       * Selects all elements of this `SortedSet` which satisfy a predicate.
        *
        * @param pred the predicate used to test elements.
-       * @return a new `SortedEquaSet` consisting of all elements of this `SortedEquaSet` that satisfy the given
+       * @return a new `SortedSet` consisting of all elements of this `SortedSet` that satisfy the given
        * predicate <code>pred</code>.
        */
-      def filter(pred: T => Boolean): thisCollections.immutable.SortedEquaSet[T]
+      def filter(pred: T => Boolean): thisCollections.immutable.SortedSet[T]
   
       /**
        * Selects all elements of this `SortedCollections` which do not satisfy a predicate.
@@ -198,89 +198,89 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @return a new `SortedCollections` consisting of all elements of this `SortedCollections` that do not satisfy the given
        * predicate <code>pred</code>.
        */
-      def filterNot(pred: T => Boolean): thisCollections.immutable.SortedEquaSet[T]
+      def filterNot(pred: T => Boolean): thisCollections.immutable.SortedSet[T]
   
       /**
-       * Partitions this `SortedEquaSet` into a map of `SortedEquaSet`s according to some discriminator function.
+       * Partitions this `SortedSet` into a map of `SortedSet`s according to some discriminator function.
        *
        * Note: this method is not re-implemented by views. This means
        * when applied to a view it will always force the view and
-       * return a new `SortedEquaSet`.
+       * return a new `SortedSet`.
        *
        * @param f the discriminator function.
        * @tparam K the type of keys returned by the discriminator function.
-       * @return A map from keys to `SortedEquaSet`s such that the following invariant holds:
+       * @return A map from keys to `SortedSet`s such that the following invariant holds:
        * {{{
        * (xs groupBy f)(k) = xs filter (x => f(x) == k)
        * }}}
-       * That is, every key `k` is bound to a `SortedEquaSet` of those elements `x`
+       * That is, every key `k` is bound to a `SortedSet` of those elements `x`
        * for which `f(x)` equals `k`.
        *
        */
-      def groupBy[K](f: T => K): GenMap[K, thisCollections.immutable.SortedEquaSet[T]]
+      def groupBy[K](f: T => K): GenMap[K, thisCollections.immutable.SortedSet[T]]
   
       /**
-       * Partitions elements in fixed size `SortedEquaSet`s.
+       * Partitions elements in fixed size `SortedSet`s.
        * @see [[scala.collection.Iterator]], method `grouped`
        *
        * @param size the number of elements per group
-       * @return An iterator producing `SortedEquaSet`s of size `size`, except the
+       * @return An iterator producing `SortedSet`s of size `size`, except the
        * last will be less than size `size` if the elements don't divide evenly.
        */
-      def grouped(size: Int): Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def grouped(size: Int): Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
        * Selects all elements except the last.
        *
-       * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet`
+       * @return a `SortedSet` consisting of all elements of this `SortedSet`
        * except the last one.
-       * @throws `UnsupportedOperationException` if the `SortedEquaSet` is empty.
+       * @throws `UnsupportedOperationException` if the `SortedSet` is empty.
        */
-      def init: thisCollections.immutable.SortedEquaSet[T]
+      def init: thisCollections.immutable.SortedSet[T]
   
       /**
-       * Iterates over the inits of this `SortedEquaSet`. The first value will be this
-       * `SortedEquaSet` and the final one will be an empty `SortedEquaSet`, with the intervening
+       * Iterates over the inits of this `SortedSet`. The first value will be this
+       * `SortedSet` and the final one will be an empty `SortedSet`, with the intervening
        * values the results of successive applications of `init`.
        *
-       * @return an iterator over all the inits of this `SortedEquaSet`
-       * @example SortedEquaSet(1,2,3).inits = Iterator(SortedEquaSet(1,2,3), SortedEquaSet(1,2), SortedEquaSet(1), SortedEquaSet())
+       * @return an iterator over all the inits of this `SortedSet`
+       * @example SortedSet(1,2,3).inits = Iterator(SortedSet(1,2,3), SortedSet(1,2), SortedSet(1), SortedSet())
        */
-      def inits: Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def inits: Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
-       * Computes the intersection between this `SortedEquaSet` and another `EquaSet`.
+       * Computes the intersection between this `SortedSet` and another `Set`.
        *
-       * @param that the `EquaSet` to intersect with.
-       * @return a new `SortedEquaSet` consisting of all elements that are both in this
-       * `SortedEquaSet` and in the given `EquaSet` `that`.
+       * @param that the `Set` to intersect with.
+       * @return a new `SortedSet` consisting of all elements that are both in this
+       * `SortedSet` and in the given `Set` `that`.
        */
-      def intersect[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.SortedEquaSet[U]
+      def intersect[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.SortedSet[U]
   
       /**
-       * Tests if this `SortedEquaSet` is empty.
+       * Tests if this `SortedSet` is empty.
        *
        * @return `true` if there is no element in the set, `false` otherwise.
        */
       def isEmpty: Boolean
   
       /**
-       * Get an instance of `Iterator` for elements of this `SortedEquaSet`.
+       * Get an instance of `Iterator` for elements of this `SortedSet`.
        *
-       * @return an instance of `Iterator` for elements of this `SortedEquaSet`
+       * @return an instance of `Iterator` for elements of this `SortedSet`
        */
       def iterator: Iterator[T]
   
       /**
-       * Partitions this `SortedEquaSet` in two `SortedEquaSet`s according to a predicate.
+       * Partitions this `SortedSet` in two `SortedSet`s according to a predicate.
        *
        * @param pred the predicate on which to partition.
-       * @return a pair of `SortedEquaSet`s: the first `SortedEquaSet` consists of all elements that
-       * satisfy the predicate `p` and the second `SortedEquaSet` consists of all elements
-       * that don't. The relative order of the elements in the resulting `SortedEquaSet`s
+       * @return a pair of `SortedSet`s: the first `SortedSet` consists of all elements that
+       * satisfy the predicate `p` and the second `SortedSet` consists of all elements
+       * that don't. The relative order of the elements in the resulting `SortedSet`s
        * may not be preserved.
        */
-      def partition(pred: T => Boolean): (thisCollections.immutable.SortedEquaSet[T], thisCollections.immutable.SortedEquaSet[T])
+      def partition(pred: T => Boolean): (thisCollections.immutable.SortedSet[T], thisCollections.immutable.SortedSet[T])
   
       /* *
        * Produces a collection containing cumulative results of applying the
@@ -288,9 +288,9 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * @param z the initial value
        * @param op the binary operator applied to the intermediate result and the element
-       * @return `SortedEquaSet` with intermediate results
+       * @return `SortedSet` with intermediate results
        */
-      // def scanLeft(z: T)(op: (T, T) => T): thisCollections.immutable.SortedEquaSet[T]
+      // def scanLeft(z: T)(op: (T, T) => T): thisCollections.immutable.SortedSet[T]
   
       /* *
        * Produces a collection containing cumulative results of applying the operator going right to left.
@@ -298,19 +298,19 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * Example:
        * {{{
-       * `SortedEquaSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `SortedEquaSet`(10, 9, 7, 4, 0)
+       * `SortedSet`(1, 2, 3, 4).scanRight(0)(_ + _) == `SortedSet`(10, 9, 7, 4, 0)
        * }}}
        *
        * @param z the initial value
        * @param op the binary operator applied to the intermediate result and the element
-       * @return `SortedEquaSet` with intermediate results
+       * @return `SortedSet` with intermediate results
        */
-      // def scanRight(z: T)(op: (T, T) => T): thisCollections.immutable.SortedEquaSet[T]
+      // def scanRight(z: T)(op: (T, T) => T): thisCollections.immutable.SortedSet[T]
   
       /**
-       * The size of this `SortedEquaSet`.
+       * The size of this `SortedSet`.
        *
-       * @return the number of elements in this `SortedEquaSet`.
+       * @return the number of elements in this `SortedSet`.
        */
       def size: Int
   
@@ -321,13 +321,13 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * from <= indexOf(x) < until
        * }}}
        *
-       * @param unc_from the lowest index to include from this `EquaSet`.
-       * @param unc_until the lowest index to EXCLUDE from this `EquaSet`.
-       * @return an `EquaSet` containing the elements greater than or equal to
+       * @param unc_from the lowest index to include from this `Set`.
+       * @param unc_until the lowest index to EXCLUDE from this `Set`.
+       * @return an `Set` containing the elements greater than or equal to
        * index `from` extending up to (but not including) index `until`
-       * of this `EquaSet`.
+       * of this `Set`.
        */
-      def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.SortedEquaSet[T]
+      def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.SortedSet[T]
   
       /**
        * Groups elements in fixed size blocks by passing a "sliding window"
@@ -335,11 +335,11 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @see [[scala.collection.Iterator]], method `sliding`
        *
        * @param size the number of elements per group
-       * @return An iterator producing `SortedEquaSet`s of size `size`, except the
+       * @return An iterator producing `SortedSet`s of size `size`, except the
        * last and the only element will be truncated if there are
        * fewer elements than size.
        */
-      def sliding(size: Int): Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def sliding(size: Int): Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
        * Groups elements in fixed size blocks by passing a "sliding window"
@@ -349,14 +349,14 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @param size the number of elements per group
        * @param step the distance between the first elements of successive
        * groups (defaults to 1)
-       * @return An iterator producing `SortedEquaSet`s of size `size`, except the
+       * @return An iterator producing `SortedSet`s of size `size`, except the
        * last and the only element will be truncated if there are
        * fewer elements than size.
        */
-      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
-       * Splits this `SortedEquaSet` into a prefix/suffix pair according to a predicate.
+       * Splits this `SortedSet` into a prefix/suffix pair according to a predicate.
        *
        * Note: `c span p` is equivalent to (but possibly more efficient than)
        * `(c takeWhile p, c dropWhile p)`, provided the evaluation of the
@@ -364,22 +364,22 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        *
        * @param pred the test predicate
-       * @return a pair consisting of the longest prefix of this `SortedEquaSet` whose
-       * elements all satisfy `p`, and the rest of this `SortedEquaSet`.
+       * @return a pair consisting of the longest prefix of this `SortedSet` whose
+       * elements all satisfy `p`, and the rest of this `SortedSet`.
        */
-      def span(pred: T => Boolean): (thisCollections.immutable.SortedEquaSet[T], thisCollections.immutable.SortedEquaSet[T])
+      def span(pred: T => Boolean): (thisCollections.immutable.SortedSet[T], thisCollections.immutable.SortedSet[T])
   
       /**
-       * Splits this `SortedEquaSet` into two at a given position.
+       * Splits this `SortedSet` into two at a given position.
        * Note: `c splitAt n` is equivalent to (but possibly more efficient than)
        * `(c take n, c drop n)`.
        *
        *
        * @param n the position at which to split.
-       * @return a pair of `SortedEquaSet`s consisting of the first `n`
-       * elements of this `SortedEquaSet`, and the other elements.
+       * @return a pair of `SortedSet`s consisting of the first `n`
+       * elements of this `SortedSet`, and the other elements.
        */
-      def splitAt(n: Int): (thisCollections.immutable.SortedEquaSet[T], thisCollections.immutable.SortedEquaSet[T])
+      def splitAt(n: Int): (thisCollections.immutable.SortedSet[T], thisCollections.immutable.SortedSet[T])
   
       /**
        * An iterator over all subsets of this set of the given size.
@@ -388,87 +388,87 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @param len the size of the subsets.
        * @return the iterator.
        */
-      def subsets(len: Int): Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def subsets(len: Int): Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
        * An iterator over all subsets of this set.
        *
        * @return the iterator.
        */
-      def subsets: Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def subsets: Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
        * Selects all elements except the first.
        *
-       * @return a `SortedEquaSet` consisting of all elements of this `SortedEquaSet`
+       * @return a `SortedSet` consisting of all elements of this `SortedSet`
        * except the first one.
-       * @throws `UnsupportedOperationException` if the `SortedEquaSet` is empty.
+       * @throws `UnsupportedOperationException` if the `SortedSet` is empty.
        */
-      def tail: thisCollections.immutable.SortedEquaSet[T]
+      def tail: thisCollections.immutable.SortedSet[T]
   
       /**
-       * Iterates over the tails of this `SortedEquaSet`. The first value will be this
-       * `SortedEquaSet` and the final one will be an empty `SortedEquaSet`, with the intervening
+       * Iterates over the tails of this `SortedSet`. The first value will be this
+       * `SortedSet` and the final one will be an empty `SortedSet`, with the intervening
        * values the results of successive applications of `tail`.
        *
-       * @return an iterator over all the tails of this `SortedEquaSet`
-       * @example `SortedEquaSet(1,2,3).tails = Iterator(SortedEquaSet(1,2,3), SortedEquaSet(2,3), SortedEquaSet(3), SortedEquaSet())`
+       * @return an iterator over all the tails of this `SortedSet`
+       * @example `SortedSet(1,2,3).tails = Iterator(SortedSet(1,2,3), SortedSet(2,3), SortedSet(3), SortedSet())`
        */
-      def tails: Iterator[thisCollections.immutable.SortedEquaSet[T]]
+      def tails: Iterator[thisCollections.immutable.SortedSet[T]]
   
       /**
        * Selects first ''n'' elements.
        *
-       * @param n the number of elements to take from this `SortedEquaSet`.
-       * @return a `SortedEquaSet` consisting only of the first `n` elements of this `SortedEquaSet`,
-       * or else the whole `SortedEquaSet`, if it has less than `n` elements.
+       * @param n the number of elements to take from this `SortedSet`.
+       * @return a `SortedSet` consisting only of the first `n` elements of this `SortedSet`,
+       * or else the whole `SortedSet`, if it has less than `n` elements.
        */
-      def take(n: Int): thisCollections.immutable.SortedEquaSet[T]
+      def take(n: Int): thisCollections.immutable.SortedSet[T]
   
       /**
        * Selects last ''n'' elements.
        *
        *
        * @param n the number of elements to take
-       * @return a `SortedEquaSet` consisting only of the last `n` elements of this `SortedEquaSet`, or else the
-       * whole `SortedEquaSet`, if it has less than `n` elements.
+       * @return a `SortedSet` consisting only of the last `n` elements of this `SortedSet`, or else the
+       * whole `SortedSet`, if it has less than `n` elements.
        */
-      def takeRight(n: Int): thisCollections.immutable.SortedEquaSet[T]
+      def takeRight(n: Int): thisCollections.immutable.SortedSet[T]
   
       /**
-       * Converts this `SortedEquaSet` to a set.
+       * Converts this `SortedSet` to a set.
        *
-       * @return a set containing all elements of this `SortedEquaSet`.
+       * @return a set containing all elements of this `SortedSet`.
        */
-      def toSet[U >: T <: E]: SortedSet[U]
+      def toSet[U >: T <: E]: scala.collection.immutable.SortedSet[U]
   
       /**
-       * Converts this `SortedEquaSet` to a set of `EquaBox`.
+       * Converts this `SortedSet` to a set of `Box`.
        *
-       * @return a set containing all elements of this `SortedEquaSet`, boxed in `EquaBox`.
+       * @return a set containing all elements of this `SortedSet`, boxed in `Box`.
        */
-      def toEquaBoxSet[U >: T <: E]: SortedSet[thisCollections.EquaBox[U]]
+      def toBoxSet[U >: T <: E]: scala.collection.immutable.SortedSet[thisCollections.Box[U]]
   
       /**
-       * Transposes this `SortedEquaSet` of traversable collections into
-       * a `SortedEquaSet` of `GenTraversableOnce`s.
+       * Transposes this `SortedSet` of traversable collections into
+       * a `SortedSet` of `GenTraversableOnce`s.
        *
        * The resulting collection's type will be guided by the
-       * static type of `EquaSet`. For example:
+       * static type of `Set`. For example:
        *
        * {{{
-       * val xs = SortedEquaSet(
+       * val xs = SortedSet(
        * List(1, 2, 3),
        * List(4, 5, 6)).transpose
-       * // xs == SortedEquaSet(
+       * // xs == SortedSet(
        * // List(1, 4),
        * // List(2, 5),
        * // List(3, 6))
        *
-       * val ys = SortedEquaSet(
+       * val ys = SortedSet(
        * List(1, 2, 3),
        * List(4, 5, 6)).transpose
-       * // ys == SortedEquaSet(
+       * // ys == SortedSet(
        * // Vector(1, 4),
        * // Vector(2, 5),
        * // Vector(3, 6))
@@ -476,13 +476,13 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * @tparam B the type of the elements of each traversable collection.
        * @param asTraversable an implicit conversion which asserts that the
-       * element type of this `SortedEquaSet` is a `Traversable`.
-       * @return a two-dimensional `SortedEquaSet` of ${coll}s which has as ''n''th row
-       * the ''n''th column of this `SortedEquaSet`.
-       * @throws `IllegalArgumentException` if all collections in this `SortedEquaSet`
+       * element type of this `SortedSet` is a `Traversable`.
+       * @return a two-dimensional `SortedSet` of ${coll}s which has as ''n''th row
+       * the ''n''th column of this `SortedSet`.
+       * @throws `IllegalArgumentException` if all collections in this `SortedSet`
        * are not of the same size.
        */
-      def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.SortedEquaSet[T]
+      def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.SortedSet[T]
   
       /**
        * Computes the union between of set and another set.
@@ -491,110 +491,110 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @return a new set consisting of all elements that are in this
        * set or in the given set `that`.
        */
-      def union[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.SortedEquaSet[U]
+      def union[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.SortedSet[U]
   
       override val path: thisCollections.type
   
   /*
-      def copyInto(thatCollections: Collections[T]): thatCollections.EquaSet
+      def copyInto(thatCollections: Collections[T]): thatCollections.Set
   
-      def copyInto(thatCollections: SortedCollections[T]): thatCollections.SortedEquaSet
+      def copyInto(thatCollections: SortedCollections[T]): thatCollections.SortedSet
   */
-      def view: SortedEquaSetView[T]
+      def view: SortedSetView[T]
     }
 
-    class TreeEquaSet[+T <: E] private[scalactic] (private val underlying: TreeSet[EquaBox[T@uV]]) extends SortedEquaSet[T] { thisTreeEquaSet =>
+    class TreeSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.TreeSet[Box[T@uV]]) extends SortedSet[T] { thisTreeSet =>
 
-      def +[U >: T <: E](elem: U): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) + EquaBox[U](elem)
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def +[U >: T <: E](elem: U): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] = underlying.map(ebt => (ebt: Box[U])) + Box[U](elem)
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) + (EquaBox[U](elem1), EquaBox[U](elem2), elems.map(EquaBox[U](_)): _*)
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elems.map(Box[U](_)): _*)
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) ++ elems.toSeq.map(EquaBox[U](_))
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) ++ elems.toSeq.map(Box[U](_))
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def ++[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) ++ that.toEquaBoxSet
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) ++ that.toBoxSet
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def -[U >: T <: E](elem: U): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying.map(ebt => (ebt: EquaBox[U])) - EquaBox[U](elem)
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def -[U >: T <: E](elem: U): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] = underlying.map(ebt => (ebt: Box[U])) - Box[U](elem)
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) - (EquaBox[U](elem1), EquaBox[U](elem2), elems.map(EquaBox[U](_)): _*)
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def -[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) - (Box[U](elem1), Box[U](elem2), elems.map(Box[U](_)): _*)
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) -- elems.toSeq.map(EquaBox[U](_))
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) -- elems.toSeq.map(Box[U](_))
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def --[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] =
-          underlying.map(ebt => (ebt: EquaBox[U])) -- that.toEquaBoxSet
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+      def --[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
+          underlying.map(ebt => (ebt: Box[U])) -- that.toBoxSet
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
       def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
       def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
-      def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: EquaBox[T]) => seqop(b, e.value), combop)
+      def aggregate[B](z: =>B)(seqop: (B, T) => B, combop: (B, B) => B): B = underlying.aggregate(z)((b: B, e: Box[T]) => seqop(b, e.value), combop)
       // What this one is saying is that two different Collections instances can contain equal Collections so
       // long as the Equality discriminator is the same instance.
       def canEqual(that: Any): Boolean =
         that match {
-          case thatEquaSet: Collections[_]#Immutable#EquaSet[_] => thatEquaSet.path.equality eq thisCollections.equality
+          case thatSet: Collections[_]#Immutable#Set[_] => thatSet.path.equality eq thisCollections.equality
           case _ => false
         }
-        // that.isInstanceOf[thisCollections.immutable.EquaSet] && equality == that.asInstanceOf[thisCollections.immutable.EquaSet].path.equality
-      def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.TreeEquaSet[U] = {
-        val setOfEquaBoxOfU: scala.collection.immutable.Set[SortedCollections.this.EquaBox[U]] = underlying collect { case hb: thisCollections.EquaBox[T] if pf.isDefinedAt(hb.value) => EquaBox[U](pf(hb.value)) }
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]](setOfEquaBoxOfU.toList: _*)(ordering[U]))
+        // that.isInstanceOf[thisCollections.immutable.Set] && equality == that.asInstanceOf[thisCollections.immutable.Set].path.equality
+      def collect[U >: T <: E](pf: PartialFunction[T, U]): thisCollections.immutable.TreeSet[U] = {
+        val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] = underlying collect { case hb: thisCollections.Box[T] if pf.isDefinedAt(hb.value) => Box[U](pf(hb.value)) }
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def contains[U >: T <: E](elem: U): Boolean = underlying.toList.contains(EquaBox[U](elem))
-      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]]): Unit = underlying.copyToArray(xs)
-      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int): Unit = underlying.copyToArray(xs, start)
-      def copyToArray[U >: T <: E](xs: Array[thisCollections.EquaBox[U]], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
-      def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.EquaBox[U]]): Unit = underlying.copyToBuffer(dest)
+      def contains[U >: T <: E](elem: U): Boolean = underlying.toList.contains(Box[U](elem))
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.Box[U]]): Unit = underlying.copyToArray(xs)
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.Box[U]], start: Int): Unit = underlying.copyToArray(xs, start)
+      def copyToArray[U >: T <: E](xs: Array[thisCollections.Box[U]], start: Int, len: Int): Unit = underlying.copyToArray(xs, start, len)
+      def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.Box[U]]): Unit = underlying.copyToBuffer(dest)
       def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
-      def diff[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] =
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]]((underlying.map(ebt => ebt: EquaBox[U]) diff that.toEquaBoxSet).toList: _*)(ordering[U]))
-      def drop(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.drop(n))
-      def dropRight(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.dropRight(n))
-      def dropWhile(pred: T => Boolean): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.dropWhile((p: EquaBox[T]) => pred(p.value)))
+      def diff[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) diff that.toBoxSet).toList: _*)(ordering[U]))
+      def drop(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.drop(n))
+      def dropRight(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.dropRight(n))
+      def dropWhile(pred: T => Boolean): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.dropWhile((p: Box[T]) => pred(p.value)))
       // Two Collections whose containing Collections have identical equalities can be equal
       override def equals(other: Any): Boolean =
         other match {
-          case thatEquaSet: Collections[E]#Immutable#EquaSet[T] => 
-            (thisCollections.equality eq thatEquaSet.path.equality) && underlying == thatEquaSet.toEquaBoxSet
+          case thatSet: Collections[E]#Immutable#Set[T] => 
+            (thisCollections.equality eq thatSet.path.equality) && underlying == thatSet.toBoxSet
           case _ => false
         }
   /*
         other match {
-          case equaSet: thisCollections.immutable.EquaSet => 
+          case equaSet: thisCollections.immutable.Set => 
             underlying == equaSet.toSet
           case _ => false
         }
   */
-      def exists(pred: T => Boolean): Boolean = underlying.exists((box: EquaBox[T]) => pred(box.value))
-      def filter(pred: T => Boolean): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.filter((box: EquaBox[T]) => pred(box.value)))
-      def filterNot(pred: T => Boolean): thisCollections.immutable.SortedEquaSet[T] = new immutable.TreeEquaSet[T](underlying.filterNot((box: EquaBox[T]) => pred(box.value)))
-      def find(pred: T => Boolean): Option[T] = underlying.find((box: EquaBox[T]) => pred(box.value)).map(_.value)
+      def exists(pred: T => Boolean): Boolean = underlying.exists((box: Box[T]) => pred(box.value))
+      def filter(pred: T => Boolean): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.filter((box: Box[T]) => pred(box.value)))
+      def filterNot(pred: T => Boolean): thisCollections.immutable.SortedSet[T] = new immutable.TreeSet[T](underlying.filterNot((box: Box[T]) => pred(box.value)))
+      def find(pred: T => Boolean): Option[T] = underlying.find((box: Box[T]) => pred(box.value)).map(_.value)
       def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
       def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
       def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
       def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
       def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
-      def groupBy[K](f: T => K): GenMap[K, thisCollections.immutable.TreeEquaSet[T]] = underlying.groupBy((box: EquaBox[T]) => f(box.value)).map(t => (t._1, new immutable.TreeEquaSet[T](t._2)))
-      def grouped(size: Int): Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.grouped(size).map(new immutable.TreeEquaSet[T](_))
+      def groupBy[K](f: T => K): GenMap[K, thisCollections.immutable.TreeSet[T]] = underlying.groupBy((box: Box[T]) => f(box.value)).map(t => (t._1, new immutable.TreeSet[T](t._2)))
+      def grouped(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.grouped(size).map(new immutable.TreeSet[T](_))
       def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
       override def hashCode: Int = underlying.hashCode
       def head: T = underlying.head.value
@@ -603,10 +603,10 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case Some(head) => Some(head.value)
           case None => None
         }
-      def init: thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.init)
-      def inits: Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.inits.map(new immutable.TreeEquaSet[T](_))
-      def intersect[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] =
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]]((underlying.map(ebt => ebt: EquaBox[U]) intersect that.toEquaBoxSet).toList: _*)(ordering[U]))
+      def init: thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.init)
+      def inits: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.inits.map(new immutable.TreeSet[T](_))
+      def intersect[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) intersect that.toBoxSet).toList: _*)(ordering[U]))
       def isEmpty: Boolean = underlying.isEmpty
       def iterator: Iterator[T] = underlying.iterator.map(_.value)
       def last: T = underlying.last.value
@@ -616,7 +616,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case None => None
         }
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
-      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeEquaSet.toList.exists(ele => equality.areEqual(ele, a)))
+      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeSet.toList.exists(ele => equality.areEqual(ele, a)))
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
       def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
       def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
@@ -624,9 +624,9 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def mkString(sep: String): String = underlying.toList.map(_.value).mkString(sep)
       def mkString: String = underlying.toList.map(_.value).mkString
       def nonEmpty: Boolean = underlying.nonEmpty
-      def partition(pred: T => Boolean): (thisCollections.immutable.TreeEquaSet[T], thisCollections.immutable.TreeEquaSet[T]) = {
-        val tuple2 = underlying.partition((box: EquaBox[T]) => pred(box.value))
-        (new immutable.TreeEquaSet[T](tuple2._1), new immutable.TreeEquaSet[T](tuple2._2))
+      def partition(pred: T => Boolean): (thisCollections.immutable.TreeSet[T], thisCollections.immutable.TreeSet[T]) = {
+        val tuple2 = underlying.partition((box: Box[T]) => pred(box.value))
+        (new immutable.TreeSet[T](tuple2._1), new immutable.TreeSet[T](tuple2._2))
       }
       def product[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.toList.map(_.value).product(num)
       def reduce[T1 >: T](op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).reduce(op)
@@ -637,36 +637,36 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def reduceRightOption[T1 >: T](op: (T, T1) => T1): Option[T1] = underlying.toList.map(_.value).reduceRightOption(op)
       def sameElements[T1 >: T](that: GenIterable[T1]): Boolean = underlying.toList.map(_.value).sameElements(that)
 /*
-      def scanLeft(z: T)(op: (T, T) => T): thisCollections.immutable.TreeEquaSet[T] = {
-        val set = underlying.scanLeft(EquaBox[T](z))((b1: EquaBox[T], b2: EquaBox[T]) => EquaBox[T](op(b1.value, b2.value)))
-        new immutable.TreeEquaSet[T](TreeSet(set.toList: _*)(ordering))
+      def scanLeft(z: T)(op: (T, T) => T): thisCollections.immutable.TreeSet[T] = {
+        val set = underlying.scanLeft(Box[T](z))((b1: Box[T], b2: Box[T]) => Box[T](op(b1.value, b2.value)))
+        new immutable.TreeSet[T](TreeSet(set.toList: _*)(ordering))
       }
-      def scanRight(z: T)(op: (T, T) => T): thisCollections.immutable.TreeEquaSet[T] = {
-        val set = underlying.scanRight(EquaBox[T](z))((b1: EquaBox[T], b2: EquaBox[T]) => EquaBox[T](op(b1.value, b2.value)))
-        new immutable.TreeEquaSet[T](TreeSet(set.toList: _*)(ordering))
+      def scanRight(z: T)(op: (T, T) => T): thisCollections.immutable.TreeSet[T] = {
+        val set = underlying.scanRight(Box[T](z))((b1: Box[T], b2: Box[T]) => Box[T](op(b1.value, b2.value)))
+        new immutable.TreeSet[T](TreeSet(set.toList: _*)(ordering))
       }
 */
       def size: Int = underlying.size
-      def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.slice(unc_from, unc_until))
-      def sliding(size: Int): Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.sliding(size).map(new immutable.TreeEquaSet[T](_))
-      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.sliding(size, step).map(new immutable.TreeEquaSet[T](_))
-      def span(pred: T => Boolean): (thisCollections.immutable.TreeEquaSet[T], thisCollections.immutable.TreeEquaSet[T]) = {
-        val (trueSet, falseSet) = underlying.span((box: EquaBox[T]) => pred(box.value))
-        (new immutable.TreeEquaSet[T](trueSet), new immutable.TreeEquaSet[T](falseSet))
+      def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.slice(unc_from, unc_until))
+      def sliding(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.sliding(size).map(new immutable.TreeSet[T](_))
+      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.sliding(size, step).map(new immutable.TreeSet[T](_))
+      def span(pred: T => Boolean): (thisCollections.immutable.TreeSet[T], thisCollections.immutable.TreeSet[T]) = {
+        val (trueSet, falseSet) = underlying.span((box: Box[T]) => pred(box.value))
+        (new immutable.TreeSet[T](trueSet), new immutable.TreeSet[T](falseSet))
       }
-      def splitAt(n: Int): (thisCollections.immutable.TreeEquaSet[T], thisCollections.immutable.TreeEquaSet[T]) = {
+      def splitAt(n: Int): (thisCollections.immutable.TreeSet[T], thisCollections.immutable.TreeSet[T]) = {
         val (trueSet, falseSet) = underlying.splitAt(n)
-        (new immutable.TreeEquaSet[T](trueSet), new immutable.TreeEquaSet[T](falseSet))
+        (new immutable.TreeSet[T](trueSet), new immutable.TreeSet[T](falseSet))
       }
-      def stringPrefix: String = "TreeEquaSet"
-      def subsetOf[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): Boolean = underlying.map(ebt => ebt: EquaBox[U]).subsetOf(that.toEquaBoxSet)
-      def subsets(len: Int): Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.subsets(len).map(new immutable.TreeEquaSet[T](_))
-      def subsets: Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.subsets.map(new immutable.TreeEquaSet[T](_))
+      def stringPrefix: String = "TreeSet"
+      def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxSet)
+      def subsets(len: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets(len).map(new immutable.TreeSet[T](_))
+      def subsets: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets.map(new immutable.TreeSet[T](_))
       def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
-      def tail: thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.tail)
-      def tails: Iterator[thisCollections.immutable.TreeEquaSet[T]] = underlying.tails.map(new immutable.TreeEquaSet[T](_))
-      def take(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.take(n))
-      def takeRight(n: Int): thisCollections.immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](underlying.takeRight(n))
+      def tail: thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.tail)
+      def tails: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.tails.map(new immutable.TreeSet[T](_))
+      def take(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.take(n))
+      def takeRight(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.takeRight(n))
       def toArray[U >: T <: E](implicit ct: ClassTag[U]): Array[U] = {
         // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
         // No ClassTag available for T
@@ -675,52 +675,52 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         // arr.asInstanceOf[Array[T]]
         underlying.map(_.value).toArray
       }
-      def toEquaBoxArray[U >: T <: E]: Array[thisCollections.EquaBox[U]] = underlying.toArray
+      def toBoxArray[U >: T <: E]: Array[thisCollections.Box[U]] = underlying.toArray
       def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
-      def toEquaBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.EquaBox[U]] = underlying.toBuffer
+      def toBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]] = underlying.toBuffer
       def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
-      def toEquaBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.EquaBox[T]] = underlying.toIndexedSeq
+      def toBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
       def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-      def toEquaBoxIterable: GenIterable[thisCollections.EquaBox[T]] = underlying.toIterable
+      def toBoxIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
       def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-      def toEquaBoxIterator: Iterator[thisCollections.EquaBox[T]] = underlying.toIterator
-      def toEquaBoxList: List[thisCollections.EquaBox[T]] = underlying.toList
+      def toBoxIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
+      def toBoxList: List[thisCollections.Box[T]] = underlying.toList
       def toList: List[T] = underlying.toList.map(_.value)
       def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
       def toParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
-      def toEquaBoxParArray[U >: T <: E]: ParArray[thisCollections.EquaBox[U]] = underlying.toList.map(ebt => ebt: EquaBox[U]).toParArray
+      def toBoxParArray[U >: T <: E]: ParArray[thisCollections.Box[U]] = underlying.toList.map(ebt => ebt: Box[U]).toParArray
       def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-      def toEquaBoxSeq: GenSeq[thisCollections.EquaBox[T]] = underlying.toSeq
-      def toSet[U >: T <: E]: TreeSet[U] = {
+      def toBoxSeq: GenSeq[thisCollections.Box[T]] = underlying.toSeq
+      def toSet[U >: T <: E]: scala.collection.immutable.TreeSet[U] = {
         val valueOrdering: Ordering[U] =
           new Ordering[U] {
             def compare(a: U, b: U): Int =
               equality.compare(a, b)
           }
-        TreeSet[U](underlying.map(_.value).toList: _*)(valueOrdering)
+        scala.collection.immutable.TreeSet[U](underlying.map(_.value).toList: _*)(valueOrdering)
       }
-      def toEquaBoxSet[U >: T <: E]: TreeSet[thisCollections.EquaBox[U]] = TreeSet[EquaBox[U]](underlying.map(ebt => (ebt: EquaBox[U])).toList: _*)(ordering[U])
+      def toBoxSet[U >: T <: E]: scala.collection.immutable.TreeSet[thisCollections.Box[U]] = scala.collection.immutable.TreeSet[Box[U]](underlying.map(ebt => (ebt: Box[U])).toList: _*)(ordering[U])
       def toStream: Stream[T] = underlying.toStream.map(_.value)
-      def toEquaBoxStream: Stream[thisCollections.EquaBox[T]] = underlying.toStream
+      def toBoxStream: Stream[thisCollections.Box[T]] = underlying.toStream
       def toTraversable: GenTraversable[T] = underlying.map(_.value)
-      def toEquaBoxTraversable: GenTraversable[thisCollections.EquaBox[T]] = underlying.toTraversable
+      def toBoxTraversable: GenTraversable[thisCollections.Box[T]] = underlying.toTraversable
       def toVector: Vector[T] = underlying.toVector.map(_.value)
-      def toEquaBoxVector: Vector[thisCollections.EquaBox[T]] = underlying.toVector
+      def toBoxVector: Vector[thisCollections.Box[T]] = underlying.toVector
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
-      def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.TreeEquaSet[T] = {
+      def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.TreeSet[T] = {
         val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
-        new immutable.TreeEquaSet[T](TreeSet(listList.map(EquaBox[T](_)): _ *)(ordering))
+        new immutable.TreeSet[T](scala.collection.immutable.TreeSet(listList.map(Box[T](_)): _ *)(ordering))
       }
-      def union[U >: T <: E](that: thisCollections.immutable.EquaSet[U]): thisCollections.immutable.TreeEquaSet[U] =
-        new immutable.TreeEquaSet[U](TreeSet[EquaBox[U]]((underlying.map(ebt => ebt: EquaBox[U]) union that.toEquaBoxSet).toList: _*)(ordering[U]))
+      def union[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) union that.toBoxSet).toList: _*)(ordering[U]))
 /*
-      def unzip[T1, T2](t1Collections: Collections[T1], t2Collections: Collections[T2])(implicit asPair: T => (T1, T2)): (t1Collections.immutable.EquaSet[T1], t2Collections.immutable.EquaSet[T2]) = {
+      def unzip[T1, T2](t1Collections: Collections[T1], t2Collections: Collections[T2])(implicit asPair: T => (T1, T2)): (t1Collections.immutable.Set[T1], t2Collections.immutable.Set[T2]) = {
         val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
-        (t1Collections.immutable.EquaSet[T1](t1: _*), t2Collections.immutable.EquaSet[T2](t2: _*))
+        (t1Collections.immutable.Set[T1](t1: _*), t2Collections.immutable.Set[T2](t2: _*))
       }
-      def unzip3[T1, T2, T3](t1Collections: Collections[T1], t2Collections: Collections[T2], t3Collections: Collections[T3])(implicit asTriple: T => (T1, T2, T3)): (t1Collections.immutable.EquaSet[T1], t2Collections.immutable.EquaSet[T2], t3Collections.immutable.EquaSet[T3]) = {
+      def unzip3[T1, T2, T3](t1Collections: Collections[T1], t2Collections: Collections[T2], t3Collections: Collections[T3])(implicit asTriple: T => (T1, T2, T3)): (t1Collections.immutable.Set[T1], t2Collections.immutable.Set[T2], t3Collections.immutable.Set[T3]) = {
         val (t1, t2, t3) =  underlying.toList.map(_.value).unzip3(asTriple)
-        (t1Collections.immutable.EquaSet[T1](t1: _*), t2Collections.immutable.EquaSet[T2](t2: _*), t3Collections.immutable.EquaSet[T3](t3: _*))
+        (t1Collections.immutable.Set[T1](t1: _*), t2Collections.immutable.Set[T2](t2: _*), t3Collections.immutable.Set[T3](t3: _*))
       }
       def zip[U](that: GenIterable[U]) = underlying.toList.map(_.value).zip(that).toSet
       def zipAll[U, T1 >: T](that: GenIterable[U], thisElem: T1, thatElem: U) = underlying.toList.map(_.value).zipAll(that, thisElem, thatElem).toSet
@@ -728,24 +728,24 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
 */
       val path: thisCollections.type = thisCollections
   /*
-      def copyInto(thatCollections: Collections[T]): thatCollections.EquaSet = thisTreeEquaSet.into(thatCollections).map(t => t)
-      def copyInto(thatCollections: SortedCollections[T]): thatCollections.TreeEquaSet =
+      def copyInto(thatCollections: Collections[T]): thatCollections.Set = thisTreeSet.into(thatCollections).map(t => t)
+      def copyInto(thatCollections: SortedCollections[T]): thatCollections.TreeSet =
         if (thatCollections eq thisCollections)
-          thisTreeEquaSet.asInstanceOf[thatCollections.TreeEquaSet]
+          thisTreeSet.asInstanceOf[thatCollections.TreeSet]
         else
-          thisTreeEquaSet.into(thatCollections).map(t => t)
+          thisTreeSet.into(thatCollections).map(t => t)
   */
 
-      def view: TreeEquaSetView[T] = TreeEquaSetView(thisTreeEquaSet.toList: _*)
+      def view: TreeSetView[T] = TreeSetView(thisTreeSet.toList: _*)
     }
-    object SortedEquaSet {
-      def empty[T <: E]: immutable.SortedEquaSet[T] = immutable.TreeEquaSet.empty[T]
-      def apply[T <: E](elems: T*): immutable.SortedEquaSet[T] = immutable.TreeEquaSet[T](elems: _*)
+    object SortedSet {
+      def empty[T <: E]: immutable.SortedSet[T] = immutable.TreeSet.empty[T]
+      def apply[T <: E](elems: T*): immutable.SortedSet[T] = immutable.TreeSet[T](elems: _*)
     }
-    object TreeEquaSet {
-      def empty[T <: E]: immutable.TreeEquaSet[T] = new immutable.TreeEquaSet[T](TreeSet.empty(ordering))
-      def apply[T <: E](elems: T*): immutable.TreeEquaSet[T] = 
-        new immutable.TreeEquaSet[T](TreeSet(elems.map(EquaBox[T](_)): _*)(ordering))
+    object TreeSet {
+      def empty[T <: E]: immutable.TreeSet[T] = new immutable.TreeSet[T](scala.collection.immutable.TreeSet.empty(ordering))
+      def apply[T <: E](elems: T*): immutable.TreeSet[T] = 
+        new immutable.TreeSet[T](scala.collection.immutable.TreeSet(elems.map(Box[T](_)): _*)(ordering))
     }
 
   /*
@@ -820,12 +820,12 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def --(keys: GenTraversableOnce[T]): thisCollections.immutable.SortedEquaMap[V]
   
       /**
-       * Creates a new `SortedEquaMap` from this `SortedEquaMap` by removing all entries with keys contains in the given `EquaSet`
+       * Creates a new `SortedEquaMap` from this `SortedEquaMap` by removing all entries with keys contains in the given `Set`
        *
-       * @param equaSet       the `EquaSet` containing keys of entries to be removed.
-       * @return a new `SortedEquaMap` that contains all entries of the current `EquaMap` minus entries with keys contained in the passed in `EquaSet`.
+       * @param equaSet       the `Set` containing keys of entries to be removed.
+       * @return a new `SortedEquaMap` that contains all entries of the current `EquaMap` minus entries with keys contained in the passed in `Set`.
        */
-      def --(equaSet: thisCollections.immutable.EquaSet): thisCollections.immutable.SortedEquaMap[V]
+      def --(equaSet: thisCollections.immutable.Set): thisCollections.immutable.SortedEquaMap[V]
   
   
       /**
@@ -866,26 +866,26 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def toMap: SortedMap[T, V]
   
       /**
-       * Converts this `SortedEquaMap` to a `Map` with `EquaBox` as its key type.
+       * Converts this `SortedEquaMap` to a `Map` with `Box` as its key type.
        *
-       * @return a `Map` containing all entries of this `SortedEquaMap`, with its key boxed in `EquaBox`.
+       * @return a `Map` containing all entries of this `SortedEquaMap`, with its key boxed in `Box`.
        */
-      def toEquaBoxMap: SortedMap[thisCollections.EquaBox, V]
+      def toBoxMap: SortedMap[thisCollections.Box, V]
     }
   
-    class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[EquaBox, V]) extends SortedEquaMap[V] { thisTreeEquaSet =>
-      def +[V1 >: V](kv: (T, V1)): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying + (EquaBox(kv._1) -> kv._2))
+    class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[Box, V]) extends SortedEquaMap[V] { thisTreeSet =>
+      def +[V1 >: V](kv: (T, V1)): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying + (Box(kv._1) -> kv._2))
       def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): TreeEquaMap[V1] =
-        new immutable.TreeEquaMap(underlying + (EquaBox(entry1._1) -> entry1._2, EquaBox(entry2._1) -> entry2._2, entries.map(e => EquaBox(e._1) -> e._2): _*))
+        new immutable.TreeEquaMap(underlying + (Box(entry1._1) -> entry1._2, Box(entry2._1) -> entry2._2, entries.map(e => Box(e._1) -> e._2): _*))
       def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): TreeEquaMap[V1] =
-        new immutable.TreeEquaMap(underlying ++ entries.toSeq.map(e => (EquaBox(e._1) -> e._2)))
-      def ++[V1 >: V](that: EquaMap[V1]): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying ++ that.toEquaBoxMap)
-      def -(key: T): TreeEquaMap[V] = new immutable.TreeEquaMap(underlying - EquaBox(key))
-      def -(key1: T, key2: T, keys: T*): TreeEquaMap[V] = new immutable.TreeEquaMap(underlying - (EquaBox(key1), EquaBox(key2), keys.map(EquaBox(_)): _*))
+        new immutable.TreeEquaMap(underlying ++ entries.toSeq.map(e => (Box(e._1) -> e._2)))
+      def ++[V1 >: V](that: EquaMap[V1]): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying ++ that.toBoxMap)
+      def -(key: T): TreeEquaMap[V] = new immutable.TreeEquaMap(underlying - Box(key))
+      def -(key1: T, key2: T, keys: T*): TreeEquaMap[V] = new immutable.TreeEquaMap(underlying - (Box(key1), Box(key2), keys.map(Box(_)): _*))
       def --(keys: GenTraversableOnce[T]): TreeEquaMap[V] =
-        new immutable.TreeEquaMap(underlying -- keys.toSeq.map(EquaBox(_)))
-      def --(equaSet: thisCollections.immutable.EquaSet): TreeEquaMap[V] =
-        new immutable.TreeEquaMap(underlying -- equaSet.toEquaBoxSet)
+        new immutable.TreeEquaMap(underlying -- keys.toSeq.map(Box(_)))
+      def --(equaSet: thisCollections.immutable.Set): TreeEquaMap[V] =
+        new immutable.TreeEquaMap(underlying -- equaSet.toBoxSet)
       def /:[R](z: R)(op: (R, (T, V)) => R): R =
         underlying.toSeq.map(e => (e._1.value, e._2))./:(z)((r: R, e: (T, V)) => op(r, e))
       def isEmpty: Boolean = underlying.isEmpty
@@ -901,13 +901,13 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           }
         TreeMap(underlying.map(e => (e._1.value, e._2)).toList: _*)(keyOrdering)
       }
-      def toEquaBoxMap: TreeMap[thisCollections.EquaBox, V] = underlying
+      def toBoxMap: TreeMap[thisCollections.Box, V] = underlying
       def stringPrefix: String = "TreeEquaMap"
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(e => e._1.value + " -> " + e._2).mkString(", ")})"
       override def equals(other: Any): Boolean = {
         other match {
           case thatEquaMap: Collections[_]#EquaMap[_] =>
-            (thisCollections.equality eq thatEquaMap.path.equality) && underlying == thatEquaMap.toEquaBoxMap
+            (thisCollections.equality eq thatEquaMap.path.equality) && underlying == thatEquaMap.toBoxMap
           case _ => false
         }
       }
@@ -915,19 +915,19 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
   
     object SortedEquaMap {
       def empty[V]: SortedEquaMap[V] = TreeEquaMap.empty[V]
-      def apply[V](entries: (T, V)*): SortedEquaMap[V] = new immutable.TreeEquaMap[V](TreeMap(entries.map(e => EquaBox(e._1) -> e._2): _*)(ordering))
+      def apply[V](entries: (T, V)*): SortedEquaMap[V] = new immutable.TreeEquaMap[V](TreeMap(entries.map(e => Box(e._1) -> e._2): _*)(ordering))
     }
     object TreeEquaMap {
-      def empty[V]: TreeEquaMap[V] = new immutable.TreeEquaMap(TreeMap.empty[EquaBox, V](ordering))
-      def apply[V](entries: (T, V)*): TreeEquaMap[V] = new immutable.TreeEquaMap[V](TreeMap(entries.map(e => EquaBox(e._1) -> e._2): _*)(ordering))
+      def empty[V]: TreeEquaMap[V] = new immutable.TreeEquaMap(TreeMap.empty[Box, V](ordering))
+      def apply[V](entries: (T, V)*): TreeEquaMap[V] = new immutable.TreeEquaMap[V](TreeMap(entries.map(e => Box(e._1) -> e._2): _*)(ordering))
     }
   */
   }
   override val immutable: SortedImmutable = new SortedImmutable
-  type SortedEquaSet[T <: E] = immutable.SortedEquaSet[T]
-  lazy val SortedEquaSet = immutable.SortedEquaSet
-  type TreeEquaSet[T <: E] = immutable.TreeEquaSet[T]
-  lazy val TreeEquaSet = immutable.TreeEquaSet
+  type SortedSet[T <: E] = immutable.SortedSet[T]
+  lazy val SortedSet = immutable.SortedSet
+  type TreeSet[T <: E] = immutable.TreeSet[T]
+  lazy val TreeSet = immutable.TreeSet
 }
 
 object SortedCollections {
