@@ -60,7 +60,7 @@ class FastSetViewSpec extends UnitSpec {
       val elemStrArr = if (elemStrings.size != 0) elemStrings.split(',') else Array.empty[String]
       elemStrArr.size should equal (equaSetView.size)
 
-      elemStrArr should contain theSameElementsAs equaSetView.toList.map(_.toString)
+      elemStrArr should contain theSameElementsAs equaSetView.toStandardList.map(_.toString)
     }
 
     // Test BasicFastSetView
@@ -84,8 +84,8 @@ class FastSetViewSpec extends UnitSpec {
   it should "have an unzip method" in {
     val zipped = FastSetView(3, 1, 2, -3, 3).zip(FastSetView("z", "a", "b", "c", "z"))
     val (intBag, stringBag) = zipped.unzip
-    intBag.toList should contain theSameElementsAs FastSetView(3, -3, 3, 2, 1).toList
-    stringBag.toList should contain theSameElementsAs FastSetView("z", "z", "a", "b", "c").toList
+    intBag.toStandardList should contain theSameElementsAs FastSetView(3, -3, 3, 2, 1).toStandardList
+    stringBag.toStandardList should contain theSameElementsAs FastSetView("z", "z", "a", "b", "c").toStandardList
   }
 
   it should "have an unzip3 method" in {
@@ -96,18 +96,18 @@ class FastSetViewSpec extends UnitSpec {
       ("z", -2.2, 0)
     )
     val (stringBag, doubleBag, intBag) = FastSetView(tuples: _*).unzip3
-    stringBag.toList should contain theSameElementsAs FastSetView("z", "a", "b", "c").toList
-    doubleBag.toList should contain theSameElementsAs FastSetView(-2.2, 0.0, 1.1, 2.2).toList
-    intBag.toList should contain theSameElementsAs FastSetView(0, 3, -3, 0).toList
+    stringBag.toStandardList should contain theSameElementsAs FastSetView("z", "a", "b", "c").toStandardList
+    doubleBag.toStandardList should contain theSameElementsAs FastSetView(-2.2, 0.0, 1.1, 2.2).toStandardList
+    intBag.toStandardList should contain theSameElementsAs FastSetView(0, 3, -3, 0).toStandardList
   }
 
   it should "have a zip method" in {
     val bag1 = FastSetView(1,2,3)
     val bag2 = FastSetView("a", "b", "c")
     val zipped = bag1.zip(bag2)
-    val (b1, b2) = zipped.toList.unzip
-    b1 should contain theSameElementsAs bag1.toList
-    b2 should contain theSameElementsAs bag2.toList
+    val (b1, b2) = zipped.toStandardList.unzip
+    b1 should contain theSameElementsAs bag1.toStandardList
+    b2 should contain theSameElementsAs bag2.toStandardList
   }
 
   it should "have a zipAll method" in {
@@ -118,9 +118,9 @@ class FastSetViewSpec extends UnitSpec {
 
     def assertSameElements(thisBag: FastSetView[_], thatBag: FastSetView[_]): Unit = {
       val zipped = thisBag.zipAll(thatBag, 4, "d")
-      val (unzip1, unzip2) = zipped.toList.unzip
-      unzip1 should contain theSameElementsAs longBag1.toList
-      unzip2 should contain theSameElementsAs longBag2.toList
+      val (unzip1, unzip2) = zipped.toStandardList.unzip
+      unzip1 should contain theSameElementsAs longBag1.toStandardList
+      unzip2 should contain theSameElementsAs longBag2.toStandardList
     }
     assertSameElements(shortBag1, longBag2)
     assertSameElements(longBag1, shortBag2)
@@ -130,8 +130,8 @@ class FastSetViewSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     val bag = FastSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
-    val (b1, b2) = zipped.toList.unzip
-    b1 should contain theSameElementsAs bag.toList
+    val (b1, b2) = zipped.toStandardList.unzip
+    b1 should contain theSameElementsAs bag.toStandardList
     b2 should contain theSameElementsAs List(0, 1, 2)
   }
 
@@ -140,27 +140,27 @@ class FastSetViewSpec extends UnitSpec {
     val doubledOdds = bag.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList should contain theSameElementsAs FastSetView(2, 6, 10).toList
+    doubledOdds.toStandardList should contain theSameElementsAs FastSetView(2, 6, 10).toStandardList
     val noMatch = bag.collect { case n: Int if n < 0 => n }
-    noMatch.toList shouldBe empty
+    noMatch.toStandardList shouldBe empty
   }
 
   it should "have a scan method" in {
     val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scan(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toStandardList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toStandardList
   }
 
   it should "have a scanLeft method" in {
     val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanLeft(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toStandardList should contain theSameElementsAs FastSetView(0, 1, 3, 6, 10, 15).toStandardList
   }
 
   it should "have a scanRight method" in {
     val bag = FastSetView(1, 2, 3, 4, 5)
     val scanned = bag.scanRight(0)(_+_)
-    scanned.toList should contain theSameElementsAs FastSetView(0, 5, 9, 12, 14, 15).toList
+    scanned.toStandardList should contain theSameElementsAs FastSetView(0, 5, 9, 12, 14, 15).toStandardList
   }
 
   it should "offer a force method that returns a FastSet" in {

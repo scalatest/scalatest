@@ -24,7 +24,7 @@ trait SetView[+T] {
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
-  def toList: List[T]
+  def toStandardList: List[T]
   def size: Int
   /**
    * Builds a new collection by applying a partial function to all elements of this `SetView`

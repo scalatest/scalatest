@@ -1002,28 +1002,28 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a buffer containing all elements of this `Set`.
        */
-      def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U]
+      def toStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U]
   
       /**
        * Uses the contents of this `Set` to create a new mutable buffer containing `Box`es of elements.
        *
        * @return a buffer containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]]
+      def toBoxStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]]
   
       /**
        * Converts this `Set` to an indexed sequence.
        *
        * @return an indexed sequence containing all elements of this `Set`.
        */
-      def toIndexedSeq: scala.collection.immutable.IndexedSeq[T]
+      def toStandardIndexedSeq: scala.collection.immutable.IndexedSeq[T]
   
       /**
        * Converts this `Set` to an indexed sequence containing `Box`es of elements.
        *
        * @return an indexed sequence containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]]
+      def toBoxStandardIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to an iterable collection. Note that
@@ -1033,7 +1033,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an `Iterable` containing all elements of this `Set`.
        */
-      def toIterable: GenIterable[T]
+      def toStandardIterable: GenIterable[T]
   
       /**
        * Converts this `Set` to an iterable collection of `Box`es containing the elements. Note that
@@ -1042,7 +1042,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an `Iterable` containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxIterable: GenIterable[thisCollections.Box[T]]
+      def toBoxStandardIterable: GenIterable[thisCollections.Box[T]]
   
       /**
        * Returns an Iterator over the elements in this `Set`.  Will return
@@ -1050,7 +1050,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an Iterator containing all elements of this  `Set`.
        */
-      def toIterator: Iterator[T]
+      def toStandardIterator: Iterator[T]
   
       /**
        * Returns an Iterator over the `Box`es in this `Set`.  Will return
@@ -1058,21 +1058,21 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return an Iterator containing all elements of this  `Set`, boxed in `Box`.
        */
-      def toBoxIterator: Iterator[thisCollections.Box[T]]
+      def toBoxStandardIterator: Iterator[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to a list of `Box`.
        *
        * @return a list containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxList: List[thisCollections.Box[T]]
+      def toBoxStandardList: List[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to a list.
        *
        * @return a list containing all elements of this `Set`.
        */
-      def toList: List[T]
+      def toStandardList: List[T]
   
       /**
        * Converts this `Set` to a map. This method is unavailable unless
@@ -1085,21 +1085,21 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a map of type `immutable.Map[K, V]`
        * containing all key/value pairs of type `(K, V)` of this `Set`.
        */
-      def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
+      def toStandardMap[K, V](implicit ev: T <:< (K, V)): Map[K, V]
   
       /**
        * Converts this `Set` to a `ParArray`.
        *
        * @return a `ParArray` containing all elements of this `Set`.
        */
-      def toParArray[U >: T <: E]: ParArray[U]
+      def toStandardParArray[U >: T <: E]: ParArray[U]
   
       /**
        * Converts this `Set` to a `ParArray` containing `Box`es of elements.
        *
        * @return a `ParArray` containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxParArray[U >: T <: E]: ParArray[thisCollections.Box[U]]
+      def toBoxStandardParArray[U >: T <: E]: ParArray[thisCollections.Box[U]]
   
       /**
        * Converts this `Set` to a sequence. As with `toIterable`, it's lazy
@@ -1108,7 +1108,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a sequence containing all elements of this `Set`.
        */
-      def toSeq: GenSeq[T]
+      def toStandardSeq: GenSeq[T]
   
       /**
        * Converts this `Set` to a sequence containing `Box`es of elements.
@@ -1117,63 +1117,63 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a sequence containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxSeq: GenSeq[thisCollections.Box[T]]
+      def toBoxStandardSeq: GenSeq[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to a set.
        *
        * @return a set containing all elements of this `Set`.
        */
-      def toSet[U >: T <: E]: scala.collection.immutable.Set[U]
+      def toStandardSet[U >: T <: E]: scala.collection.immutable.Set[U]
   
       /**
        * Converts this `Set` to a set of `Box`.
        *
        * @return a set containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.Box[U]]
+      def toBoxStandardSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.Box[U]]
   
       /**
        * Converts this `Set` to a stream.
        *
        * @return a stream containing all elements of this `Set`.
        */
-      def toStream: Stream[T]
+      def toStandardStream: Stream[T]
   
       /**
        * Converts this `Set` to a stream of `Box`es containing the elements.
        *
        * @return a stream containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxStream: Stream[thisCollections.Box[T]]
+      def toBoxStandardStream: Stream[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to a `Traversable`.
        *
        * @return a Traversable containing all elements of this `Set`.
        */
-      def toTraversable: GenTraversable[T]
+      def toStandardTraversable: GenTraversable[T]
   
       /**
        * Converts this `Set` to a `Traversable` of `Box`es containing the elements.
        *
        * @return a Traversable containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxTraversable: GenTraversable[thisCollections.Box[T]]
+      def toBoxStandardTraversable: GenTraversable[thisCollections.Box[T]]
   
       /**
        * Converts this `Set` to a Vector.
        *
        * @return a vector containing all elements of this `Set`.
        */
-      def toVector: Vector[T]
+      def toStandardVector: Vector[T]
   
       /**
        * Converts this `Set` to a Vector of `Box`es containing the elements.
        *
        * @return a vector containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxVector: Vector[thisCollections.Box[T]]
+      def toBoxStandardVector: Vector[thisCollections.Box[T]]
   
       /**
        * Transposes this `Set` of traversable collections into
@@ -1426,14 +1426,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        *
        * @return a `Map` containing all entries of this `EquaMap`.
        */
-      def toMap: Map[T, V]
+      def toStandardMap: Map[T, V]
   
       /**
        * Converts this `Set` to a set of `Box`.
        *
        * @return a set containing all elements of this `Set`, boxed in `Box`.
        */
-      def toBoxMap: Map[thisCollections.Box[T], V]
+      def toBoxStandardMap: Map[thisCollections.Box[T], V]
   
       val path: thisCollections.type
     }
@@ -1445,14 +1445,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elem3.map(Box[U](_)): _*))
       def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.FastSet[U] =
         new immutable.FastSet[U](underlying ++ elems.toList.map(Box[U](_)))
-      def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying ++ that.toBoxSet)
+      def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying ++ that.toBoxStandardSet)
       def -[U >: T <: E](elem: U): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) - Box[U](elem))
       def -[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastSet[U] =
         new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) - (Box[U](elem1), Box[U](elem2), elem3.map(Box[U](_)): _*))
       def --[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.FastSet[U] =
         new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) -- elems.toList.map(Box[U](_)))
       def --[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] =
-        new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) -- that.toBoxSet)
+        new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) -- that.toBoxStandardSet)
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
       def addString(b: StringBuilder, sep: String): StringBuilder = underlying.toList.map(_.value).addString(b, sep)
       def addString(b: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.toList.map(_.value).addString(b, start, sep, end)
@@ -1472,14 +1472,14 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.Box[U]]): Unit = underlying.copyToBuffer(dest)
       def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
       def diff[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] =
-        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) diff that.toBoxSet)
+        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) diff that.toBoxStandardSet)
       def drop(n: Int): thisCollections.immutable.FastSet[T] = new immutable.FastSet[T](underlying.drop(n))
       def dropRight(n: Int): thisCollections.immutable.FastSet[T] = new immutable.FastSet[T](underlying.dropRight(n))
       def dropWhile(pred: T => Boolean): thisCollections.immutable.FastSet[T] = new immutable.FastSet[T](underlying.dropWhile((p: Box[T]) => pred(p.value)))
       override def equals(other: Any): Boolean = { 
         other match {
           case thatSet: Collections[E]#Immutable#Set[T] => 
-            (thisCollections.equality eq thatSet.path.equality) && underlying == thatSet.toBoxSet
+            (thisCollections.equality eq thatSet.path.equality) && underlying == thatSet.toBoxStandardSet
           case _ => false
         }
       }
@@ -1505,7 +1505,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def init: thisCollections.immutable.FastSet[T] = new immutable.FastSet[T](underlying.init)
       def inits: Iterator[thisCollections.immutable.FastSet[T]] = underlying.inits.map(new immutable.FastSet[T](_))
       def intersect[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] =
-        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) intersect that.toBoxSet)
+        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) intersect that.toBoxStandardSet)
       def isEmpty: Boolean = underlying.isEmpty
       def iterator: Iterator[T] = underlying.iterator.map(_.value)
       def last: T = underlying.last.value
@@ -1516,7 +1516,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         }
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
-      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisFastSet.toList.exists(ele => equality.areEqual(ele, a)))
+      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisFastSet.toStandardList.exists(ele => equality.areEqual(ele, a)))
       def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
       def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
       def mkString(start: String, sep: String, end: String): String = underlying.toList.map(_.value).mkString(start, sep, end)
@@ -1558,7 +1558,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         (new immutable.FastSet[T](trueSet), new immutable.FastSet[T](falseSet))
       }
       def stringPrefix: String = "Set"
-      def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxSet)
+      def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxStandardSet)
       def subsets(len: Int): Iterator[thisCollections.immutable.FastSet[T]] = underlying.subsets(len).map(new immutable.FastSet[T](_))
       def subsets: Iterator[thisCollections.immutable.FastSet[T]] = underlying.subsets.map(new immutable.FastSet[T](_))
       def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
@@ -1575,29 +1575,29 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         underlying.map(_.value).toArray
       }
       def toBoxArray[U >: T <: E]: Array[thisCollections.Box[U]] = underlying.toArray
-      def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
-      def toBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]] = underlying.toBuffer
-      def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
-      def toBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
-      def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-      def toBoxIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
-      def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-      def toBoxIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
-      def toBoxList: List[thisCollections.Box[T]] = underlying.toList
-      def toList: List[T] = underlying.toList.map(_.value)
-      def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
-      def toParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
-      def toBoxParArray[U >: T <: E]: ParArray[thisCollections.Box[U]] = underlying.toList.map(ebt => ebt: Box[U]).toParArray
-      def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-      def toBoxSeq: GenSeq[thisCollections.Box[T]] = underlying.toSeq
-      def toSet[U >: T <: E]: scala.collection.immutable.Set[U] = underlying.map(_.value)
-      def toBoxSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.Box[U]] = underlying.map(ebt => (ebt: Box[U]))
-      def toStream: Stream[T] = underlying.toStream.map(_.value)
-      def toBoxStream: Stream[thisCollections.Box[T]] = underlying.toStream
-      def toTraversable: GenTraversable[T] = underlying.map(_.value)
-      def toBoxTraversable: GenTraversable[thisCollections.Box[T]] = underlying.toTraversable
-      def toVector: Vector[T] = underlying.toVector.map(_.value)
-      def toBoxVector: Vector[thisCollections.Box[T]] = underlying.toVector
+      def toStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
+      def toBoxStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]] = underlying.toBuffer
+      def toStandardIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
+      def toBoxStandardIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
+      def toStandardIterable: GenIterable[T] = underlying.toIterable.map(_.value)
+      def toBoxStandardIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
+      def toStandardIterator: Iterator[T] = underlying.toIterator.map(_.value)
+      def toBoxStandardIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
+      def toBoxStandardList: List[thisCollections.Box[T]] = underlying.toList
+      def toStandardList: List[T] = underlying.toList.map(_.value)
+      def toStandardMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
+      def toStandardParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
+      def toBoxStandardParArray[U >: T <: E]: ParArray[thisCollections.Box[U]] = underlying.toList.map(ebt => ebt: Box[U]).toParArray
+      def toStandardSeq: GenSeq[T] = underlying.toSeq.map(_.value)
+      def toBoxStandardSeq: GenSeq[thisCollections.Box[T]] = underlying.toSeq
+      def toStandardSet[U >: T <: E]: scala.collection.immutable.Set[U] = underlying.map(_.value)
+      def toBoxStandardSet[U >: T <: E]: scala.collection.immutable.Set[thisCollections.Box[U]] = underlying.map(ebt => (ebt: Box[U]))
+      def toStandardStream: Stream[T] = underlying.toStream.map(_.value)
+      def toBoxStandardStream: Stream[thisCollections.Box[T]] = underlying.toStream
+      def toStandardTraversable: GenTraversable[T] = underlying.map(_.value)
+      def toBoxStandardTraversable: GenTraversable[thisCollections.Box[T]] = underlying.toTraversable
+      def toStandardVector: Vector[T] = underlying.toVector.map(_.value)
+      def toBoxStandardVector: Vector[thisCollections.Box[T]] = underlying.toVector
       // Be consistent with standard library. HashSet's toString is Set(1, 2, 3)
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
       def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.FastSet[T] = {
@@ -1605,7 +1605,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
         new immutable.FastSet[T](listList.map(Box[T](_)).toSet)
       }
       def union[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] =
-        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) union that.toBoxSet)
+        new immutable.FastSet[U](underlying.map(ebt => ebt: Box[U]) union that.toBoxStandardSet)
 /*
       def unzip[T1, T2](t1Collections: Collections[T1], t2Collections: Collections[T2])(implicit asPair: T => (T1, T2)): (t1Collections.immutable.FastSet[T1], t2Collections.immutable.FastSet[T2]) = {
         val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
@@ -1620,7 +1620,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def zipWithIndex: Set[(T, Int)] = underlying.toList.map(_.value).zipWithIndex.toSet
  */
       val path: thisCollections.type = thisCollections
-      def view: FastSetView[T] = FastSetView(thisFastSet.toList: _*)
+      def view: FastSetView[T] = FastSetView(thisFastSet.toStandardList: _*)
     }
   
     object FastSet {
@@ -1645,15 +1645,15 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def --(keys: GenTraversableOnce[T]): FastEquaMap[V] =
         new FastEquaMap(underlying -- keys.toList.map(Box(_)))
       def --(equaSet: thisCollections.immutable.Set): FastEquaMap[V] =
-        new FastEquaMap(underlying -- equaSet.toBoxSet)
+        new FastEquaMap(underlying -- equaSet.toBoxStandardSet)
       def /:[R](z: R)(op: (R, (T, V)) => R): R =
         underlying.toSeq.map(e => (e._1.value, e._2))./:(z)((r: R, e: (T, V)) => op(r, e))
       def keysIterator: Iterator[T] = underlying.keysIterator.map(_.value)
       def valuesIterator: Iterator[V] = underlying.valuesIterator
       def isEmpty: Boolean = underlying.isEmpty
       def size: Int = underlying.size
-      def toMap: Map[T, V] = underlying.map(e => (e._1.value, e._2))
-      def toBoxMap: Map[thisCollections.Box, V] = underlying
+      def toStandardMap: Map[T, V] = underlying.map(e => (e._1.value, e._2))
+      def toBoxStandardMap: Map[thisCollections.Box, V] = underlying
       val path: thisCollections.type = thisCollections
       def stringPrefix: String = "EquaMap"
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(e => e._1.value + " -> " + e._2).mkString(", ")})"

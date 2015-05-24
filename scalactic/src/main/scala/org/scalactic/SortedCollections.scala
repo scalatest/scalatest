@@ -440,14 +440,14 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * @return a set containing all elements of this `SortedSet`.
        */
-      def toSet[U >: T <: E]: scala.collection.immutable.SortedSet[U]
+      def toStandardSet[U >: T <: E]: scala.collection.immutable.SortedSet[U]
   
       /**
        * Converts this `SortedSet` to a set of `Box`.
        *
        * @return a set containing all elements of this `SortedSet`, boxed in `Box`.
        */
-      def toBoxSet[U >: T <: E]: scala.collection.immutable.SortedSet[thisCollections.Box[U]]
+      def toBoxStandardSet[U >: T <: E]: scala.collection.immutable.SortedSet[thisCollections.Box[U]]
   
       /**
        * Transposes this `SortedSet` of traversable collections into
@@ -521,7 +521,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       }
       def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] = {
         val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
-          underlying.map(ebt => (ebt: Box[U])) ++ that.toBoxSet
+          underlying.map(ebt => (ebt: Box[U])) ++ that.toBoxStandardSet
         new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
       def -[U >: T <: E](elem: U): thisCollections.immutable.TreeSet[U] = {
@@ -540,7 +540,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       }
       def --[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] = {
         val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
-          underlying.map(ebt => (ebt: Box[U])) -- that.toBoxSet
+          underlying.map(ebt => (ebt: Box[U])) -- that.toBoxStandardSet
         new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
       def addString(b: StringBuilder): StringBuilder = underlying.toList.map(_.value).addString(b)
@@ -566,7 +566,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def copyToBuffer[U >: T <: E](dest: mutable.Buffer[thisCollections.Box[U]]): Unit = underlying.copyToBuffer(dest)
       def count(p: T => Boolean): Int = underlying.map(_.value).count(p)
       def diff[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
-        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) diff that.toBoxSet).toList: _*)(ordering[U]))
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) diff that.toBoxStandardSet).toList: _*)(ordering[U]))
       def drop(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.drop(n))
       def dropRight(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.dropRight(n))
       def dropWhile(pred: T => Boolean): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.dropWhile((p: Box[T]) => pred(p.value)))
@@ -574,7 +574,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       override def equals(other: Any): Boolean =
         other match {
           case thatSet: Collections[E]#Immutable#Set[T] => 
-            (thisCollections.equality eq thatSet.path.equality) && underlying == thatSet.toBoxSet
+            (thisCollections.equality eq thatSet.path.equality) && underlying == thatSet.toBoxStandardSet
           case _ => false
         }
   /*
@@ -606,7 +606,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def init: thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.init)
       def inits: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.inits.map(new immutable.TreeSet[T](_))
       def intersect[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
-        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) intersect that.toBoxSet).toList: _*)(ordering[U]))
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) intersect that.toBoxStandardSet).toList: _*)(ordering[U]))
       def isEmpty: Boolean = underlying.isEmpty
       def iterator: Iterator[T] = underlying.iterator.map(_.value)
       def last: T = underlying.last.value
@@ -616,7 +616,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case None => None
         }
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
-      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeSet.toList.exists(ele => equality.areEqual(ele, a)))
+      def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeSet.toStandardList.exists(ele => equality.areEqual(ele, a)))
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
       def min[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).min(ord)
       def minBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).minBy(f)
@@ -659,7 +659,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         (new immutable.TreeSet[T](trueSet), new immutable.TreeSet[T](falseSet))
       }
       def stringPrefix: String = "TreeSet"
-      def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxSet)
+      def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxStandardSet)
       def subsets(len: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets(len).map(new immutable.TreeSet[T](_))
       def subsets: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets.map(new immutable.TreeSet[T](_))
       def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
@@ -676,22 +676,22 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         underlying.map(_.value).toArray
       }
       def toBoxArray[U >: T <: E]: Array[thisCollections.Box[U]] = underlying.toArray
-      def toBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
-      def toBoxBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]] = underlying.toBuffer
-      def toIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
-      def toBoxIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
-      def toIterable: GenIterable[T] = underlying.toIterable.map(_.value)
-      def toBoxIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
-      def toIterator: Iterator[T] = underlying.toIterator.map(_.value)
-      def toBoxIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
-      def toBoxList: List[thisCollections.Box[T]] = underlying.toList
-      def toList: List[T] = underlying.toList.map(_.value)
-      def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
-      def toParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
-      def toBoxParArray[U >: T <: E]: ParArray[thisCollections.Box[U]] = underlying.toList.map(ebt => ebt: Box[U]).toParArray
-      def toSeq: GenSeq[T] = underlying.toSeq.map(_.value)
-      def toBoxSeq: GenSeq[thisCollections.Box[T]] = underlying.toSeq
-      def toSet[U >: T <: E]: scala.collection.immutable.TreeSet[U] = {
+      def toStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[U] = underlying.map(_.value).toBuffer
+      def toBoxStandardBuffer[U >: T <: E]: scala.collection.mutable.Buffer[thisCollections.Box[U]] = underlying.toBuffer
+      def toStandardIndexedSeq: scala.collection.immutable.IndexedSeq[T] = underlying.map(_.value).toIndexedSeq
+      def toBoxStandardIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
+      def toStandardIterable: GenIterable[T] = underlying.toIterable.map(_.value)
+      def toBoxStandardIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
+      def toStandardIterator: Iterator[T] = underlying.toIterator.map(_.value)
+      def toBoxStandardIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
+      def toBoxStandardList: List[thisCollections.Box[T]] = underlying.toList
+      def toStandardList: List[T] = underlying.toList.map(_.value)
+      def toStandardMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
+      def toStandardParArray[U >: T <: E]: ParArray[U] = underlying.toParArray.map(_.value)
+      def toBoxStandardParArray[U >: T <: E]: ParArray[thisCollections.Box[U]] = underlying.toList.map(ebt => ebt: Box[U]).toParArray
+      def toStandardSeq: GenSeq[T] = underlying.toSeq.map(_.value)
+      def toBoxStandardSeq: GenSeq[thisCollections.Box[T]] = underlying.toSeq
+      def toStandardSet[U >: T <: E]: scala.collection.immutable.TreeSet[U] = {
         val valueOrdering: Ordering[U] =
           new Ordering[U] {
             def compare(a: U, b: U): Int =
@@ -699,20 +699,20 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           }
         scala.collection.immutable.TreeSet[U](underlying.map(_.value).toList: _*)(valueOrdering)
       }
-      def toBoxSet[U >: T <: E]: scala.collection.immutable.TreeSet[thisCollections.Box[U]] = scala.collection.immutable.TreeSet[Box[U]](underlying.map(ebt => (ebt: Box[U])).toList: _*)(ordering[U])
-      def toStream: Stream[T] = underlying.toStream.map(_.value)
-      def toBoxStream: Stream[thisCollections.Box[T]] = underlying.toStream
-      def toTraversable: GenTraversable[T] = underlying.map(_.value)
-      def toBoxTraversable: GenTraversable[thisCollections.Box[T]] = underlying.toTraversable
-      def toVector: Vector[T] = underlying.toVector.map(_.value)
-      def toBoxVector: Vector[thisCollections.Box[T]] = underlying.toVector
+      def toBoxStandardSet[U >: T <: E]: scala.collection.immutable.TreeSet[thisCollections.Box[U]] = scala.collection.immutable.TreeSet[Box[U]](underlying.map(ebt => (ebt: Box[U])).toList: _*)(ordering[U])
+      def toStandardStream: Stream[T] = underlying.toStream.map(_.value)
+      def toBoxStandardStream: Stream[thisCollections.Box[T]] = underlying.toStream
+      def toStandardTraversable: GenTraversable[T] = underlying.map(_.value)
+      def toBoxStandardTraversable: GenTraversable[thisCollections.Box[T]] = underlying.toTraversable
+      def toStandardVector: Vector[T] = underlying.toVector.map(_.value)
+      def toBoxStandardVector: Vector[thisCollections.Box[T]] = underlying.toVector
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(_.value).mkString(", ")})"
       def transpose[B](implicit asTraversable: T => GenTraversableOnce[B]): thisCollections.immutable.TreeSet[T] = {
         val listList: List[T] = underlying.toList.map(_.value).transpose.asInstanceOf[List[T]]  // should be safe cast
         new immutable.TreeSet[T](scala.collection.immutable.TreeSet(listList.map(Box[T](_)): _ *)(ordering))
       }
       def union[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
-        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) union that.toBoxSet).toList: _*)(ordering[U]))
+        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) union that.toBoxStandardSet).toList: _*)(ordering[U]))
 /*
       def unzip[T1, T2](t1Collections: Collections[T1], t2Collections: Collections[T2])(implicit asPair: T => (T1, T2)): (t1Collections.immutable.Set[T1], t2Collections.immutable.Set[T2]) = {
         val (t1, t2) =  underlying.toList.map(_.value).unzip(asPair)
@@ -736,7 +736,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           thisTreeSet.into(thatCollections).map(t => t)
   */
 
-      def view: TreeSetView[T] = TreeSetView(thisTreeSet.toList: _*)
+      def view: TreeSetView[T] = TreeSetView(thisTreeSet.toStandardList: _*)
     }
     object SortedSet {
       def empty[T <: E]: immutable.SortedSet[T] = immutable.TreeSet.empty[T]
@@ -863,14 +863,14 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * @return a `Map` containing all entries of this `SortedEquaMap`.
        */
-      def toMap: SortedMap[T, V]
+      def toStandardMap: SortedMap[T, V]
   
       /**
        * Converts this `SortedEquaMap` to a `Map` with `Box` as its key type.
        *
        * @return a `Map` containing all entries of this `SortedEquaMap`, with its key boxed in `Box`.
        */
-      def toBoxMap: SortedMap[thisCollections.Box, V]
+      def toBoxStandardMap: SortedMap[thisCollections.Box, V]
     }
   
     class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[Box, V]) extends SortedEquaMap[V] { thisTreeSet =>
@@ -885,7 +885,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def --(keys: GenTraversableOnce[T]): TreeEquaMap[V] =
         new immutable.TreeEquaMap(underlying -- keys.toSeq.map(Box(_)))
       def --(equaSet: thisCollections.immutable.Set): TreeEquaMap[V] =
-        new immutable.TreeEquaMap(underlying -- equaSet.toBoxSet)
+        new immutable.TreeEquaMap(underlying -- equaSet.toBoxStandardSet)
       def /:[R](z: R)(op: (R, (T, V)) => R): R =
         underlying.toSeq.map(e => (e._1.value, e._2))./:(z)((r: R, e: (T, V)) => op(r, e))
       def isEmpty: Boolean = underlying.isEmpty
@@ -893,7 +893,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def valuesIterator: Iterator[V] = underlying.valuesIterator
       def size: Int = underlying.size
       val path: thisCollections.type = thisCollections
-      def toMap: TreeMap[T, V] = {
+      def toStandardMap: TreeMap[T, V] = {
         val keyOrdering: Ordering[T] =
           new Ordering[T] {
             def compare(a: T, b: T): Int =
@@ -901,7 +901,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           }
         TreeMap(underlying.map(e => (e._1.value, e._2)).toList: _*)(keyOrdering)
       }
-      def toBoxMap: TreeMap[thisCollections.Box, V] = underlying
+      def toBoxStandardMap: TreeMap[thisCollections.Box, V] = underlying
       def stringPrefix: String = "TreeEquaMap"
       override def toString: String = s"$stringPrefix(${underlying.toVector.map(e => e._1.value + " -> " + e._2).mkString(", ")})"
       override def equals(other: Any): Boolean = {

@@ -197,10 +197,10 @@ class SetSpec extends UnitSpec {
     """lower.immutable.FastSet(" hi ", "hi") union trimmed.immutable.FastSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.immutable.Set("hi", "ho").toSet should === (Set("hi", "ho"))
+    lower.immutable.Set("hi", "ho").toStandardSet should === (Set("hi", "ho"))
   }
   it should "have a toBoxSet method" in {
-    lower.immutable.Set("hi", "ho").toBoxSet should === (Set(lower.Box("hi"), lower.Box("ho")))
+    lower.immutable.Set("hi", "ho").toBoxStandardSet should === (Set(lower.Box("hi"), lower.Box("ho")))
   }
   it should "have a + method that takes one argument" in {
     val result1 = lower.immutable.Set("hi", "ho") + "ha"
@@ -633,7 +633,7 @@ class SetSpec extends UnitSpec {
   }
   it should "have 3 copyToArray methods" in {
 
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toBoxSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toBoxStandardSet.toSeq
 
     val arr1 = Array.fill(5)(number.Box(-1))
     number.immutable.Set(1, 2, 3, 4, 5).copyToArray(arr1)
@@ -648,7 +648,7 @@ class SetSpec extends UnitSpec {
     arr3 shouldEqual Array(number.Box(-1), seq(0), seq(1), number.Box(-1), number.Box(-1))
   }
   it should "have a copyToBuffer method" in {
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toBoxSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toBoxStandardSet.toSeq
     val buf = ListBuffer.fill(3)(number.Box(-1))
     number.immutable.Set(1, 2, 3, 4, 5).copyToBuffer(buf)
     buf shouldEqual Buffer(number.Box(-1), number.Box(-1), number.Box(-1), seq(0), seq(1), seq(2), seq(3), seq(4))
@@ -662,7 +662,7 @@ class SetSpec extends UnitSpec {
   it should "have a drop method" in {
     val set = number.immutable.Set(1, 2, 3, 4, 5)
     val fastSet = number.immutable.FastSet(1, 2, 3, 4, 5)
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
     val result1 = set.drop(0)
     result1 shouldBe number.immutable.Set(seq(0), seq(1), seq(2), seq(3), seq(4))
@@ -715,7 +715,7 @@ class SetSpec extends UnitSpec {
   it should "have a dropRight method" in {
     val set = number.immutable.Set(1, 2, 3, 4, 5)
     val fastSet = number.immutable.FastSet(1, 2, 3, 4, 5)
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
     val result1 = set.dropRight(0)
     result1 shouldBe number.immutable.Set(seq(0), seq(1), seq(2), seq(3), seq(4))
@@ -768,7 +768,7 @@ class SetSpec extends UnitSpec {
   it should "have a dropWhile method" in {
     val set = number.immutable.Set(1, 2, 3, 4, 5)
     val fastSet = number.immutable.FastSet(1, 2, 3, 4, 5)
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
     val result1 = set.dropWhile(_ < 1)
     result1 shouldBe number.immutable.Set(seq.dropWhile(_ < 1): _*)
@@ -926,7 +926,7 @@ class SetSpec extends UnitSpec {
     Vector(number.immutable.Set(1, 2, 3), number.immutable.Set(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(number.immutable.Set(1, 2, 3), number.immutable.Set(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     // TODO: this is not working 2.10, we may want to enable this back when we understand better how flatten is supported by the implicit in 2.10
-    //List(number.immutable.Set(1, 2, 3), number.immutable.Set(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    //List(number.immutable.Set(1, 2, 3), number.immutable.Set(1, 2, 3)).toStandardIterator.flatten.toStandardStream shouldBe List(1, 2, 3, 1, 2, 3).toStandardIterator.toStream
     List(number.immutable.Set(1, 2, 3), number.immutable.Set(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
   }
   it should "have a flatten method that works on nested GenTraversable" in {
@@ -1018,7 +1018,7 @@ class SetSpec extends UnitSpec {
 
     val set = number.immutable.Set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     val fastSet = number.immutable.FastSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-    val seq = set.toSet.toSeq
+    val seq = set.toStandardSet.toSeq
 
     val result3 = set.grouped(2).toList
     result3 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(2), seq(3)), number.immutable.Set(seq(4), seq(5)), number.immutable.Set(seq(6), seq(7)), number.immutable.Set(seq(8), seq(9)))
@@ -1236,7 +1236,7 @@ class SetSpec extends UnitSpec {
     number.immutable.Set(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
   it should "have a sameElements method that takes a GenIterable" in {
-    number.immutable.Set(1, 2, 3, 4, 5).sameElements(number.immutable.Set(1, 2, 3, 4, 5).toSet.toSeq) shouldBe true
+    number.immutable.Set(1, 2, 3, 4, 5).sameElements(number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq) shouldBe true
     number.immutable.Set(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4)) shouldBe false
     number.immutable.Set(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 5, 6)) shouldBe false
     number.immutable.Set(1, 2, 3, 4, 5).sameElements(List(1, 2, 3, 4, 4)) shouldBe false
@@ -1273,7 +1273,7 @@ class SetSpec extends UnitSpec {
   }
   it should "have 2 sliding methods" in {
 
-    val seq = number.immutable.Set(1, 2, 3, 4, 5).toSet.toSeq
+    val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
     val result1 = number.immutable.Set(1).sliding(1).toList
     result1 shouldBe List(number.immutable.Set(1))
@@ -1665,109 +1665,109 @@ class SetSpec extends UnitSpec {
     number.immutable.Set(1).toBoxArray shouldBe (Array(number.Box(1)))
   }
   it should "have a toBuffer method" in {
-    number.immutable.Set(1, 2, 3).toBuffer shouldBe (Buffer(1, 2, 3))
-    lower.immutable.Set("a", "b").toBuffer shouldBe (Buffer("a", "b"))
-    number.immutable.Set(1).toBuffer shouldBe (Buffer(1))
+    number.immutable.Set(1, 2, 3).toStandardBuffer shouldBe (Buffer(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardBuffer shouldBe (Buffer("a", "b"))
+    number.immutable.Set(1).toStandardBuffer shouldBe (Buffer(1))
   }
   it should "have a toBoxBuffer method" in {
-    number.immutable.Set(1, 2, 3).toBoxBuffer shouldBe (Buffer(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxBuffer shouldBe (Buffer(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxBuffer shouldBe (Buffer(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardBuffer shouldBe (Buffer(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardBuffer shouldBe (Buffer(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardBuffer shouldBe (Buffer(number.Box(1)))
   }
   it should "have a toIndexedSeq method" in {
-    number.immutable.Set(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
-    lower.immutable.Set("a", "b").toIndexedSeq shouldBe (IndexedSeq("a", "b"))
-    number.immutable.Set(1).toIndexedSeq shouldBe (IndexedSeq(1))
+    number.immutable.Set(1, 2, 3).toStandardIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardIndexedSeq shouldBe (IndexedSeq("a", "b"))
+    number.immutable.Set(1).toStandardIndexedSeq shouldBe (IndexedSeq(1))
   }
   it should "have a toBoxIndexedSeq method" in {
-    number.immutable.Set(1, 2, 3).toBoxIndexedSeq shouldBe (IndexedSeq(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxIndexedSeq shouldBe (IndexedSeq(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxIndexedSeq shouldBe (IndexedSeq(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardIndexedSeq shouldBe (IndexedSeq(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardIndexedSeq shouldBe (IndexedSeq(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardIndexedSeq shouldBe (IndexedSeq(number.Box(1)))
   }
   it should "have a toIterable method" in {
-    number.immutable.Set(1, 2, 3).toIterable shouldBe (Set(1, 2, 3))
-    lower.immutable.Set("a", "b").toIterable shouldBe (Set("a", "b"))
-    number.immutable.Set(1).toIterable shouldBe (Set(1))
+    number.immutable.Set(1, 2, 3).toStandardIterable shouldBe (Set(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardIterable shouldBe (Set("a", "b"))
+    number.immutable.Set(1).toStandardIterable shouldBe (Set(1))
   }
   it should "have a toBoxIterable method" in {
-    number.immutable.Set(1, 2, 3).toBoxIterable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxIterable shouldBe (Set(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardIterable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardIterable shouldBe (Set(number.Box(1)))
   }
   it should "have a toIterator method" in {
-    number.immutable.Set(1, 2, 3).toIterator.toList shouldBe (Iterator(1, 2, 3).toList)
-    lower.immutable.Set("a", "b").toIterator.toList shouldBe (Iterator("a", "b").toList)
-    number.immutable.Set(1).toIterator.toList shouldBe (Iterator(1).toList)
-    number.immutable.Set(1, 2, 3).toIterator shouldBe an [Iterator[_]]
-    lower.immutable.Set("a", "b").toIterator shouldBe an [Iterator[_]]
-    number.immutable.Set(1).toIterator shouldBe an [Iterator[_]]
+    number.immutable.Set(1, 2, 3).toStandardIterator.toList shouldBe (Iterator(1, 2, 3).toList)
+    lower.immutable.Set("a", "b").toStandardIterator.toList shouldBe (Iterator("a", "b").toList)
+    number.immutable.Set(1).toStandardIterator.toList shouldBe (Iterator(1).toList)
+    number.immutable.Set(1, 2, 3).toStandardIterator shouldBe an [Iterator[_]]
+    lower.immutable.Set("a", "b").toStandardIterator shouldBe an [Iterator[_]]
+    number.immutable.Set(1).toStandardIterator shouldBe an [Iterator[_]]
   }
   it should "have a toBoxIterator method" in {
-    number.immutable.Set(1, 2, 3).toBoxIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
-    lower.immutable.Set("a", "b").toBoxIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
-    number.immutable.Set(1).toBoxIterator.toList shouldBe (Iterator(number.Box(1)).toList)
-    number.immutable.Set(1, 2, 3).toBoxIterator shouldBe an [Iterator[_]]
-    lower.immutable.Set("a", "b").toBoxIterator shouldBe an [Iterator[_]]
-    number.immutable.Set(1).toBoxIterator shouldBe an [Iterator[_]]
+    number.immutable.Set(1, 2, 3).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
+    lower.immutable.Set("a", "b").toBoxStandardIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
+    number.immutable.Set(1).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1)).toList)
+    number.immutable.Set(1, 2, 3).toBoxStandardIterator shouldBe an [Iterator[_]]
+    lower.immutable.Set("a", "b").toBoxStandardIterator shouldBe an [Iterator[_]]
+    number.immutable.Set(1).toBoxStandardIterator shouldBe an [Iterator[_]]
   }
   it should "have a toList method" in {
-    number.immutable.Set(1, 2, 3).toList shouldBe (List(1, 2, 3))
-    lower.immutable.Set("a", "b").toList shouldBe (List("a", "b"))
-    number.immutable.Set(1).toList shouldBe (List(1))
+    number.immutable.Set(1, 2, 3).toStandardList shouldBe (List(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardList shouldBe (List("a", "b"))
+    number.immutable.Set(1).toStandardList shouldBe (List(1))
   }
   it should "have a toBoxList method" in {
-    number.immutable.Set(1, 2, 3).toBoxList shouldBe (List(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxList shouldBe (List(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxList shouldBe (List(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardList shouldBe (List(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardList shouldBe (List(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardList shouldBe (List(number.Box(1)))
   }
   it should "have a toMap method" in {
-    tuple.immutable.Set((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
+    tuple.immutable.Set((1, "one"), (2, "two"), (3, "three")).toStandardMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
   }
   it should "have a toParArray method" in {
-    number.immutable.Set(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
+    number.immutable.Set(1, 2, 3).toStandardParArray shouldBe ParArray(1, 2, 3)
   }
   it should "have a toBoxParArray method" in {
-    number.immutable.Set(1, 2, 3).toBoxParArray shouldBe ParArray(number.Box(1), number.Box(2), number.Box(3))
+    number.immutable.Set(1, 2, 3).toBoxStandardParArray shouldBe ParArray(number.Box(1), number.Box(2), number.Box(3))
   }
   it should "have a toSeq method" in {
-    number.immutable.Set(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
-    lower.immutable.Set("a", "b").toSeq shouldBe (Seq("a", "b"))
-    number.immutable.Set(1).toSeq shouldBe (Seq(1))
+    number.immutable.Set(1, 2, 3).toStandardSeq shouldBe (Seq(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardSeq shouldBe (Seq("a", "b"))
+    number.immutable.Set(1).toStandardSeq shouldBe (Seq(1))
   }
   it should "have a toBoxSeq method" in {
-    number.immutable.Set(1, 2, 3).toBoxSeq shouldBe (Seq(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxSeq shouldBe (Seq(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxSeq shouldBe (Seq(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardSeq shouldBe (Seq(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardSeq shouldBe (Seq(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardSeq shouldBe (Seq(number.Box(1)))
   }
   it should "have a toStream method" in {
-    number.immutable.Set(1, 2, 3).toStream shouldBe (Stream(1, 2, 3))
-    lower.immutable.Set("a", "b").toStream shouldBe (Stream("a", "b"))
-    number.immutable.Set(1).toStream shouldBe(Stream(1))
+    number.immutable.Set(1, 2, 3).toStandardStream shouldBe (Stream(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardStream shouldBe (Stream("a", "b"))
+    number.immutable.Set(1).toStandardStream shouldBe(Stream(1))
   }
   it should "have a toBoxStream method" in {
-    number.immutable.Set(1, 2, 3).toBoxStream shouldBe (Stream(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxStream shouldBe (Stream(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxStream shouldBe(Stream(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardStream shouldBe (Stream(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardStream shouldBe (Stream(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardStream shouldBe(Stream(number.Box(1)))
   }
   it should "have a toBoxTraversable method" in {
-    number.immutable.Set(1, 2, 3).toBoxTraversable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxTraversable shouldBe (Set(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxTraversable shouldBe (Set(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardTraversable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardTraversable shouldBe (Set(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardTraversable shouldBe (Set(number.Box(1)))
   }
   it should "have a toTraversable method" in {
-    number.immutable.Set(1, 2, 3).toTraversable shouldBe (Set(1, 2, 3))
-    lower.immutable.Set("a", "b").toTraversable shouldBe (Set("a", "b"))
-    number.immutable.Set(1).toTraversable shouldBe (Set(1))
+    number.immutable.Set(1, 2, 3).toStandardTraversable shouldBe (Set(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardTraversable shouldBe (Set("a", "b"))
+    number.immutable.Set(1).toStandardTraversable shouldBe (Set(1))
   }
   it should "have a toBoxVector method" in {
-    number.immutable.Set(1, 2, 3).toBoxVector should === (Vector(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.Set("a", "b").toBoxVector should === (Vector(lower.Box("a"), lower.Box("b")))
-    number.immutable.Set(1).toBoxVector should === (Vector(number.Box(1)))
+    number.immutable.Set(1, 2, 3).toBoxStandardVector should === (Vector(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.Set("a", "b").toBoxStandardVector should === (Vector(lower.Box("a"), lower.Box("b")))
+    number.immutable.Set(1).toBoxStandardVector should === (Vector(number.Box(1)))
   }
   it should "have a toVector method" in {
-    number.immutable.Set(1, 2, 3).toVector should === (Vector(1, 2, 3))
-    lower.immutable.Set("a", "b").toVector should === (Vector("a", "b"))
-    number.immutable.Set(1).toVector should === (Vector(1))
+    number.immutable.Set(1, 2, 3).toStandardVector should === (Vector(1, 2, 3))
+    lower.immutable.Set("a", "b").toStandardVector should === (Vector("a", "b"))
+    number.immutable.Set(1).toStandardVector should === (Vector(1))
   }
   it should "have a transpose method" in {
     val result1 = numberList.immutable.Set(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
@@ -1839,24 +1839,24 @@ class SetSpec extends UnitSpec {
     """number.immutable.Set(1, 2, 3).zip(List("4", "5", "6"))""" shouldNot typeCheck
     """number.immutable.Set(1, 2, 3).zip(List("4", "5"))""" shouldNot typeCheck
 
-    number.immutable.Set(1, 2, 3).toSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.immutable.Set(1, 2, 3).toSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
+    number.immutable.Set(1, 2, 3).toStandardSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.immutable.Set(1, 2, 3).toStandardSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
   }
   it should "not have a zipAll method" in {
     """number.immutable.Set(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
     """number.immutable.Set(1, 2, 3).zipAll(List("4", "5"), 0, "0")""" shouldNot typeCheck
     """number.immutable.Set(1, 2).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
 
-    number.immutable.Set(1, 2, 3).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.immutable.Set(1, 2, 3).toSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
-    number.immutable.Set(1, 2).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
+    number.immutable.Set(1, 2, 3).toStandardSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.immutable.Set(1, 2, 3).toStandardSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
+    number.immutable.Set(1, 2).toStandardSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
   }
   it should "not have a zipWithIndex method" in {
     """number.immutable.Set(99).zipWithIndex""" shouldNot typeCheck
     """number.immutable.Set(1, 2, 3).zipWithIndex""" shouldNot typeCheck
 
-    number.immutable.Set(99).toSet.zipWithIndex should contain theSameElementsAs Set((99,0))
-    number.immutable.Set(1, 2, 3).toSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
+    number.immutable.Set(99).toStandardSet.zipWithIndex should contain theSameElementsAs Set((99,0))
+    number.immutable.Set(1, 2, 3).toStandardSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
   }
 
   it should "have a filter method after it is converted into EquaBridge with into" is pending

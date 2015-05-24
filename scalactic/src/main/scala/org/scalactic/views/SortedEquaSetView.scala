@@ -27,7 +27,7 @@ trait SortedSetView[+T] extends SetView[T] {
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
-  def toList: List[T]
+  def toStandardList: List[T]
 
   def scan[U >: T](z: U)(op: (U, U) ⇒ U): TreeSetView[U]
   def scanLeft[U](z: U)(op: (U, T) => U): TreeSetView[U]

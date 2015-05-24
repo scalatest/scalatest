@@ -70,7 +70,7 @@ class TreeSetViewSpec extends UnitSpec {
       val elemStrArr = if (elemStrings.size != 0) elemStrings.split(',') else Array.empty[String]
       elemStrArr.size should equal (sortedSetView.size)
 
-      elemStrArr should contain theSameElementsAs sortedSetView.toList.map(_.toString)
+      elemStrArr should contain theSameElementsAs sortedSetView.toStandardList.map(_.toString)
     }
 
     // Test BasicTreeSetView
@@ -94,8 +94,8 @@ class TreeSetViewSpec extends UnitSpec {
   it should "have an unzip method" in {
     val zipped = TreeSetView(3, 1, 2, -3, 3).zip(TreeSetView("z", "a", "b", "c", "z"))
     val (intSeq, stringSeq) = zipped.unzip
-    intSeq.toList shouldBe TreeSetView(3, 1, 2, -3, 3).toList
-    stringSeq.toList shouldBe TreeSetView("z", "a", "b", "c", "z").toList
+    intSeq.toStandardList shouldBe TreeSetView(3, 1, 2, -3, 3).toStandardList
+    stringSeq.toStandardList shouldBe TreeSetView("z", "a", "b", "c", "z").toStandardList
   }
 
   it should "have an unzip3 method" in {
@@ -106,18 +106,18 @@ class TreeSetViewSpec extends UnitSpec {
       ("z", -2.2, 0)
     )
     val (stringSeq, doubleSeq, intSeq) = TreeSetView(tuples: _*).unzip3
-    stringSeq.toList shouldBe TreeSetView("a", "b", "c", "z").toList
-    doubleSeq.toList shouldBe TreeSetView(0.0, 1.1, 2.2, -2.2).toList
-    intSeq.toList shouldBe TreeSetView(3, -3, 0, 0).toList
+    stringSeq.toStandardList shouldBe TreeSetView("a", "b", "c", "z").toStandardList
+    doubleSeq.toStandardList shouldBe TreeSetView(0.0, 1.1, 2.2, -2.2).toStandardList
+    intSeq.toStandardList shouldBe TreeSetView(3, -3, 0, 0).toStandardList
   }
 
   it should "have a zip method" in {
     val seq1 = TreeSetView(1,2,3)
     val seq2 = TreeSetView("a", "b", "c")
     val zipped = seq1.zip(seq2)
-    val (b1, b2) = zipped.toList.unzip
-    b1 shouldBe seq1.toList
-    b2 shouldBe seq2.toList
+    val (b1, b2) = zipped.toStandardList.unzip
+    b1 shouldBe seq1.toStandardList
+    b2 shouldBe seq2.toStandardList
   }
 
   it should "have a zipAll method" in {
@@ -128,9 +128,9 @@ class TreeSetViewSpec extends UnitSpec {
 
     def assertSameElements(thisSeq: TreeSetView[_], thatSeq: TreeSetView[_]): Unit = {
       val zipped = thisSeq.zipAll(thatSeq, 4, "d")
-      val (unzip1, unzip2) = zipped.toList.unzip
-      unzip1 shouldBe longSeq1.toList
-      unzip2 shouldBe longSeq2.toList
+      val (unzip1, unzip2) = zipped.toStandardList.unzip
+      unzip1 shouldBe longSeq1.toStandardList
+      unzip2 shouldBe longSeq2.toStandardList
     }
     assertSameElements(shortSeq1, longSeq2)
     assertSameElements(longSeq1, shortSeq2)
@@ -140,8 +140,8 @@ class TreeSetViewSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     val bag = TreeSetView("a", "b", "c")
     val zipped = bag.zipWithIndex
-    val (b1, b2) = zipped.toList.unzip
-    b1 shouldBe bag.toList
+    val (b1, b2) = zipped.toStandardList.unzip
+    b1 shouldBe bag.toStandardList
     b2 shouldBe List(0, 1, 2)
   }
 
@@ -150,27 +150,27 @@ class TreeSetViewSpec extends UnitSpec {
     val doubledOdds = seq.collect {
       case n: Int if n % 2 == 1 => n * 2
     }
-    doubledOdds.toList shouldBe TreeSetView(2, 6, 10).toList
+    doubledOdds.toStandardList shouldBe TreeSetView(2, 6, 10).toStandardList
     val noMatch = seq.collect { case n: Int if n < 0 => n }
-    noMatch.toList shouldBe empty
+    noMatch.toStandardList shouldBe empty
   }
 
   it should "have a scan method" in {
     val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scan(0)(_+_)
-    scanned.toList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toStandardList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toStandardList
   }
 
   it should "have a scanLeft method" in {
     val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanLeft(0)(_+_)
-    scanned.toList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toList
+    scanned.toStandardList shouldBe TreeSetView(0, 1, 3, 6, 10, 15).toStandardList
   }
 
   it should "have a scanRight method" in {
     val seq = TreeSetView(1, 2, 3, 4, 5)
     val scanned = seq.scanRight(0)(_+_)
-    scanned.toList shouldBe TreeSetView(15, 14, 12, 9, 5, 0).toList
+    scanned.toStandardList shouldBe TreeSetView(15, 14, 12, 9, 5, 0).toStandardList
   }
 
   it should "offer a force method that returns a SortedSet" in {

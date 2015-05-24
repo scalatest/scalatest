@@ -239,14 +239,14 @@ class SortedSetSpec extends UnitSpec {
     """lower.immutable.TreeSet(" hi ", "hi") union trimmed.immutable.TreeSet("hi", "HI")""" shouldNot typeCheck
   }
   it should "have a toSet method" in {
-    lower.immutable.SortedSet("hi", "ho").toSet should === (Set("hi", "ho"))
+    lower.immutable.SortedSet("hi", "ho").toStandardSet should === (Set("hi", "ho"))
   }
   it should "have a toBoxSet method" in {
-    lower.immutable.SortedSet("hi", "ho").toBoxSet should === (Set(lower.Box("hi"), lower.Box("ho")))
+    lower.immutable.SortedSet("hi", "ho").toBoxStandardSet should === (Set(lower.Box("hi"), lower.Box("ho")))
     implicit val numberOrdering = new Ordering[number.Box[Int]] {
       def compare(x: number.Box[Int], y: number.Box[Int]): Int = x.value - y.value
     }
-    number.immutable.SortedSet(1, 2, 3).toBoxSet shouldBe StandardSortedSet(number.Box[Int](1), number.Box[Int](2), number.Box[Int](3))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardSet shouldBe StandardSortedSet(number.Box[Int](1), number.Box[Int](2), number.Box[Int](3))
   }
   it should "have a + method that takes one argument" in {
     val result1 = lower.immutable.SortedSet("hi", "ho") + "ha"
@@ -894,7 +894,7 @@ class SortedSetSpec extends UnitSpec {
     Vector(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     // TODO: this is not working 2.10, we may want to enable this back when we understand better how flatten is supported by the implicit in 2.10
-    //List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
+    //List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(1, 2, 3)).toStandardIterator.flatten.toStandardStream shouldBe List(1, 2, 3, 1, 2, 3).toStandardIterator.toStream
     List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
   }
   it should "have a flatten method that works on nested GenTraversable" in {
@@ -1641,89 +1641,89 @@ class SortedSetSpec extends UnitSpec {
     number.immutable.SortedSet(1).toBoxArray shouldBe Array(number.Box[Int](1))
   }
   it should "have a toBuffer method" in {
-    number.immutable.SortedSet(1, 2, 3).toBuffer shouldBe (Buffer(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toBuffer shouldBe (Buffer("a", "b"))
-    number.immutable.SortedSet(1).toBuffer shouldBe (Buffer(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardBuffer shouldBe (Buffer(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardBuffer shouldBe (Buffer("a", "b"))
+    number.immutable.SortedSet(1).toStandardBuffer shouldBe (Buffer(1))
   }
   it should "have a toBoxBuffer method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxBuffer shouldBe (Buffer(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxBuffer shouldBe (Buffer(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxBuffer shouldBe (Buffer(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardBuffer shouldBe (Buffer(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardBuffer shouldBe (Buffer(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardBuffer shouldBe (Buffer(number.Box(1)))
   }
   it should "have a toIndexedSeq method" in {
-    number.immutable.SortedSet(1, 2, 3).toIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toIndexedSeq shouldBe (IndexedSeq("a", "b"))
-    number.immutable.SortedSet(1).toIndexedSeq shouldBe (IndexedSeq(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardIndexedSeq shouldBe (IndexedSeq(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardIndexedSeq shouldBe (IndexedSeq("a", "b"))
+    number.immutable.SortedSet(1).toStandardIndexedSeq shouldBe (IndexedSeq(1))
   }
   it should "have a toBoxIndexedSeq method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxIndexedSeq shouldBe (IndexedSeq(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxIndexedSeq shouldBe (IndexedSeq(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxIndexedSeq shouldBe (IndexedSeq(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIndexedSeq shouldBe (IndexedSeq(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardIndexedSeq shouldBe (IndexedSeq(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardIndexedSeq shouldBe (IndexedSeq(number.Box(1)))
   }
   it should "have a toIterable method" in {
-    number.immutable.SortedSet(1, 2, 3).toIterable shouldBe (Set(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toIterable shouldBe (Set("a", "b"))
-    number.immutable.SortedSet(1).toIterable shouldBe (Set(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardIterable shouldBe (Set(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardIterable shouldBe (Set("a", "b"))
+    number.immutable.SortedSet(1).toStandardIterable shouldBe (Set(1))
   }
   it should "have a toBoxIterable method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxIterable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxIterable shouldBe (Set(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterable shouldBe (Set(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardIterable shouldBe (Set(number.Box(1)))
   }
   it should "have a toIterator method" in {
-    number.immutable.SortedSet(1, 2, 3).toIterator.toList shouldBe (Iterator(1, 2, 3).toList)
-    lower.immutable.SortedSet("a", "b").toIterator.toList shouldBe (Iterator("a", "b").toList)
-    number.immutable.SortedSet(1).toIterator.toList shouldBe (Iterator(1).toList)
-    number.immutable.SortedSet(1, 2, 3).toIterator shouldBe an [Iterator[_]]
-    lower.immutable.SortedSet("a", "b").toIterator shouldBe an [Iterator[_]]
-    number.immutable.SortedSet(1).toIterator shouldBe an [Iterator[_]]
+    number.immutable.SortedSet(1, 2, 3).toStandardIterator.toList shouldBe (Iterator(1, 2, 3).toList)
+    lower.immutable.SortedSet("a", "b").toStandardIterator.toList shouldBe (Iterator("a", "b").toList)
+    number.immutable.SortedSet(1).toStandardIterator.toList shouldBe (Iterator(1).toList)
+    number.immutable.SortedSet(1, 2, 3).toStandardIterator shouldBe an [Iterator[_]]
+    lower.immutable.SortedSet("a", "b").toStandardIterator shouldBe an [Iterator[_]]
+    number.immutable.SortedSet(1).toStandardIterator shouldBe an [Iterator[_]]
   }
   it should "have a toBoxIterator method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
-    lower.immutable.SortedSet("a", "b").toBoxIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
-    number.immutable.SortedSet(1).toBoxIterator.toList shouldBe (Iterator(number.Box(1)).toList)
-    number.immutable.SortedSet(1, 2, 3).toBoxIterator shouldBe an [Iterator[_]]
-    lower.immutable.SortedSet("a", "b").toBoxIterator shouldBe an [Iterator[_]]
-    number.immutable.SortedSet(1).toBoxIterator shouldBe an [Iterator[_]]
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
+    lower.immutable.SortedSet("a", "b").toBoxStandardIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
+    number.immutable.SortedSet(1).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1)).toList)
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator shouldBe an [Iterator[_]]
+    lower.immutable.SortedSet("a", "b").toBoxStandardIterator shouldBe an [Iterator[_]]
+    number.immutable.SortedSet(1).toBoxStandardIterator shouldBe an [Iterator[_]]
   }
   it should "have a toList method" in {
-    number.immutable.SortedSet(1, 2, 3).toList shouldBe (List(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toList shouldBe (List("a", "b"))
-    number.immutable.SortedSet(1).toList shouldBe (List(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardList shouldBe (List(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardList shouldBe (List("a", "b"))
+    number.immutable.SortedSet(1).toStandardList shouldBe (List(1))
   }
   it should "have a toBoxList method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxList shouldBe (List(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxList shouldBe (List(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxList shouldBe (List(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardList shouldBe (List(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardList shouldBe (List(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardList shouldBe (List(number.Box(1)))
   }
   it should "have a toMap method" in {
-    numberLower.immutable.SortedSet((1, "one"), (2, "two"), (3, "three")).toMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
+    numberLower.immutable.SortedSet((1, "one"), (2, "two"), (3, "three")).toStandardMap shouldBe Map(1 -> "one", 2 -> "two", 3 -> "three")
   }
   it should "have a toParArray method" in {
-    number.immutable.SortedSet(1, 2, 3).toParArray shouldBe ParArray(1, 2, 3)
+    number.immutable.SortedSet(1, 2, 3).toStandardParArray shouldBe ParArray(1, 2, 3)
   }
   it should "have a toBoxParArray method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxParArray shouldBe ParArray(number.Box(1), number.Box(2), number.Box(3))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardParArray shouldBe ParArray(number.Box(1), number.Box(2), number.Box(3))
   }
   it should "have a toSeq method" in {
-    number.immutable.SortedSet(1, 2, 3).toSeq shouldBe (Seq(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toSeq shouldBe (Seq("a", "b"))
-    number.immutable.SortedSet(1).toSeq shouldBe (Seq(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardSeq shouldBe (Seq(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardSeq shouldBe (Seq("a", "b"))
+    number.immutable.SortedSet(1).toStandardSeq shouldBe (Seq(1))
   }
   it should "have a toBoxSeq method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxSeq shouldBe (Seq(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxSeq shouldBe (Seq(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxSeq shouldBe (Seq(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardSeq shouldBe (Seq(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardSeq shouldBe (Seq(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardSeq shouldBe (Seq(number.Box(1)))
   }
   it should "have a toStream method" in {
-    number.immutable.SortedSet(1, 2, 3).toStream shouldBe (Stream(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toStream shouldBe (Stream("a", "b"))
-    number.immutable.SortedSet(1).toStream shouldBe(Stream(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardStream shouldBe (Stream(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardStream shouldBe (Stream("a", "b"))
+    number.immutable.SortedSet(1).toStandardStream shouldBe(Stream(1))
   }
   it should "have a toBoxStream method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxStream shouldBe (Stream(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxStream shouldBe (Stream(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxStream shouldBe(Stream(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardStream shouldBe (Stream(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardStream shouldBe (Stream(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardStream shouldBe(Stream(number.Box(1)))
   }
   it should "have a toTraversable method" in {
     implicit val numberOrdering = new Ordering[number.Box[Int]] {
@@ -1732,9 +1732,9 @@ class SortedSetSpec extends UnitSpec {
     implicit val lowerOrdering = new Ordering[lower.Box[String]] {
       def compare(x: lower.Box[String], y: lower.Box[String]): Int = x.value compareTo y.value
     }
-    number.immutable.SortedSet(1, 2, 3).toTraversable should === (StandardTreeSet(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toTraversable should === (StandardTreeSet("a", "b"))
-    number.immutable.SortedSet(1).toTraversable should === (StandardTreeSet(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardTraversable should === (StandardTreeSet(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardTraversable should === (StandardTreeSet("a", "b"))
+    number.immutable.SortedSet(1).toStandardTraversable should === (StandardTreeSet(1))
   }
   it should "have a toBoxTraversable method" in {
     implicit val numberOrdering = new Ordering[number.Box[Int]] {
@@ -1743,19 +1743,19 @@ class SortedSetSpec extends UnitSpec {
     implicit val lowerOrdering = new Ordering[lower.Box[String]] {
       def compare(x: lower.Box[String], y: lower.Box[String]): Int = x.value compareTo y.value
     }
-    number.immutable.SortedSet(1, 2, 3).toBoxTraversable should === (StandardTreeSet(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxTraversable should === (StandardTreeSet(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxTraversable should === (StandardTreeSet(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardTraversable should === (StandardTreeSet(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardTraversable should === (StandardTreeSet(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardTraversable should === (StandardTreeSet(number.Box(1)))
   }
   it should "have a toBoxVector method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxVector should === (Vector(number.Box(1), number.Box(2), number.Box(3)))
-    lower.immutable.SortedSet("a", "b").toBoxVector should === (Vector(lower.Box("a"), lower.Box("b")))
-    number.immutable.SortedSet(1).toBoxVector should === (Vector(number.Box(1)))
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardVector should === (Vector(number.Box(1), number.Box(2), number.Box(3)))
+    lower.immutable.SortedSet("a", "b").toBoxStandardVector should === (Vector(lower.Box("a"), lower.Box("b")))
+    number.immutable.SortedSet(1).toBoxStandardVector should === (Vector(number.Box(1)))
   }
   it should "have a toVector method" in {
-    number.immutable.SortedSet(1, 2, 3).toVector should === (Vector(1, 2, 3))
-    lower.immutable.SortedSet("a", "b").toVector should === (Vector("a", "b"))
-    number.immutable.SortedSet(1).toVector should === (Vector(1))
+    number.immutable.SortedSet(1, 2, 3).toStandardVector should === (Vector(1, 2, 3))
+    lower.immutable.SortedSet("a", "b").toStandardVector should === (Vector("a", "b"))
+    number.immutable.SortedSet(1).toStandardVector should === (Vector(1))
   }
   it should "have a transpose method" in {
     val result1 = numberList.immutable.SortedSet(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose
@@ -1795,24 +1795,24 @@ class SortedSetSpec extends UnitSpec {
     """number.immutable.SortedSet(1, 2, 3).zip(List("4", "5", "6"))""" shouldNot typeCheck
     """number.immutable.SortedSet(1, 2, 3).zip(List("4", "5"))""" shouldNot typeCheck
 
-    number.immutable.SortedSet(1, 2, 3).toSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.immutable.SortedSet(1, 2, 3).toSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
+    number.immutable.SortedSet(1, 2, 3).toStandardSet.zip(List("4", "5", "6")) should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.immutable.SortedSet(1, 2, 3).toStandardSet.zip(List("4", "5")) should contain theSameElementsAs Set((1, "4"), (2, "5"))
   }
   it should "have a zipAll method" in {
     """number.immutable.SortedSet(1, 2, 3).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
     """number.immutable.SortedSet(1, 2, 3).zipAll(List("4", "5"), 0, "0")""" shouldNot typeCheck
     """number.immutable.SortedSet(1, 2).zipAll(List("4", "5", "6"), 0, "0")""" shouldNot typeCheck
 
-    number.immutable.SortedSet(1, 2, 3).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
-    number.immutable.SortedSet(1, 2, 3).toSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
-    number.immutable.SortedSet(1, 2).toSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
+    number.immutable.SortedSet(1, 2, 3).toStandardSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "6"))
+    number.immutable.SortedSet(1, 2, 3).toStandardSet.zipAll(List("4", "5"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (3, "0"))
+    number.immutable.SortedSet(1, 2).toStandardSet.zipAll(List("4", "5", "6"), 0, "0") should contain theSameElementsAs Set((1, "4"), (2, "5"), (0, "6"))
   }
   it should "have a zipWithIndex method" in {
     """number.immutable.SortedSet(99).zipWithIndex""" shouldNot typeCheck
     """number.immutable.SortedSet(1, 2, 3).zipWithIndex""" shouldNot typeCheck
 
-    number.immutable.SortedSet(99).toSet.zipWithIndex should contain theSameElementsAs Set((99,0))
-    number.immutable.SortedSet(1, 2, 3).toSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
+    number.immutable.SortedSet(99).toStandardSet.zipWithIndex should contain theSameElementsAs Set((99,0))
+    number.immutable.SortedSet(1, 2, 3).toStandardSet.zipWithIndex should contain theSameElementsAs Set((1,0), (2,1), (3,2))
   }
 
   it should "have a filter method after it is converted into EquaBridge with into" is pending

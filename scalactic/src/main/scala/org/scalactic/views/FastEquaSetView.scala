@@ -24,7 +24,7 @@ trait FastSetView[+T] extends SetView[T] {
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
-  def toList: List[T]
+  def toStandardList: List[T]
   def size: Int
   /**
    * Builds a new collection by applying a partial function to all elements of this `FastSetView`
@@ -171,7 +171,7 @@ object FastSetView {
     def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
     def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = toPath.immutable.FastSet[U](args: _*)
     def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = ???
-    def toList: List[T] = args
+    def toStandardList: List[T] = args
 
     def scan[U >: T](z: U)(op: (U, U) ⇒ U): FastSetView[U] = new ScanFastSetView(thisFastSetView, z, op)
     def scanLeft[U](z: U)(op: (U, T) => U): FastSetView[U] = new ScanLeftFastSetView(thisFastSetView, z, op)
@@ -199,10 +199,10 @@ object FastSetView {
     override def equals(other: Any): Boolean =
       other match {
         case otherFastSetView: FastSetView[_] => 
-          thisFastSetView.toList.groupBy(o => o) == otherFastSetView.toList.groupBy(o => o)
+          thisFastSetView.toStandardList.groupBy(o => o) == otherFastSetView.toStandardList.groupBy(o => o)
         case _ => false
       }
-    override def hashCode: Int = thisFastSetView.toList.groupBy(o => o).hashCode
+    override def hashCode: Int = thisFastSetView.toStandardList.groupBy(o => o).hashCode
 */
   }
 
@@ -212,16 +212,16 @@ object FastSetView {
     def flatMap[V](f: U => SetView[V]): FastSetView[V] = ???
     def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = force(toPath)
     def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
-      toPath.immutable.FastSet[V](toList: _*)
+      toPath.immutable.FastSet[V](toStandardList: _*)
     }
     def toSortedSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedSet[V] = ???
-    def toList: List[U] // This is the lone abstract method
+    def toStandardList: List[U] // This is the lone abstract method
 
     def scan[V >: U](z: V)(op: (V, V) ⇒ V): FastSetView[V] = new ScanFastSetView(thisFastSetView, z, op)
     def scanLeft[V](z: V)(op: (V, U) => V): FastSetView[V] = new ScanLeftFastSetView(thisFastSetView, z, op)
     def scanRight[V](z: V)(op: (U, V) => V): FastSetView[V] = new ScanRightFastSetView(thisFastSetView, z, op)
 
-    def size: Int = toList.size
+    def size: Int = toStandardList.size
 
     def unzip[V1, V2](implicit asPair: U => (V1, V2)): (FastSetView[V1], FastSetView[V2]) =
       (new UnzipLeftFastSetView[U, V1, V2](thisFastSetView)(asPair), new UnzipRightFastSetView[U, V1, V2](thisFastSetView)(asPair))
@@ -233,70 +233,70 @@ object FastSetView {
     def zipAll[V, U1 >: U](that: SetView[V], thisElem: U1, thatElem: V): FastSetView[(U1, V)] =
       new ZipAllFastSetView(thisFastSetView, that, thisElem, thatElem)
     def zipWithIndex: FastSetView[(U, Int)] = new ZipWithIndex(thisFastSetView)
-    override def toString: String = toList.mkString("FastSetView(", ",", ")")
+    override def toString: String = toStandardList.mkString("FastSetView(", ",", ")")
     override def equals(other: Any): Boolean =
       other match {
         case otherFastSetView: FastSetView[_] => 
-          thisFastSetView.toList.groupBy(o => o) == otherFastSetView.toList.groupBy(o => o)
+          thisFastSetView.toStandardList.groupBy(o => o) == otherFastSetView.toStandardList.groupBy(o => o)
         case _ => false
       }
-    override def hashCode: Int = thisFastSetView.toList.groupBy(o => o).hashCode
+    override def hashCode: Int = thisFastSetView.toStandardList.groupBy(o => o).hashCode
   }
 
   private class CollectFastSetView[T, U](lazyBag: FastSetView[T], pf: PartialFunction[T, U]) extends TransformFastSetView[T, U] {
-    def toList: List[U] = lazyBag.toList.collect(pf)
+    def toStandardList: List[U] = lazyBag.toStandardList.collect(pf)
   }
 
   private class MapFastSetView[T, U](lazyBag: FastSetView[T], f: T => U) extends TransformFastSetView[T, U] {
-    def toList: List[U] = lazyBag.toList.map(f)
+    def toStandardList: List[U] = lazyBag.toStandardList.map(f)
   }
 
   private class FlatMapFastSetView[T, U](lazyBag: FastSetView[T], f: T => SetView[U]) extends TransformFastSetView[T, U] {
-    def toList: List[U] = lazyBag.toList.flatMap(f.andThen(_.toList))
+    def toStandardList: List[U] = lazyBag.toStandardList.flatMap(f.andThen(_.toStandardList))
   }
 
   private class ScanFastSetView[T](lazyBag: FastSetView[T], z: T, op: (T, T) ⇒ T) extends TransformFastSetView[T, T] {
-    def toList: List[T] = lazyBag.toList.scan(z)(op)
+    def toStandardList: List[T] = lazyBag.toStandardList.scan(z)(op)
   }
 
   private class ScanLeftFastSetView[T, U](lazyBag: FastSetView[T], z: U, op: (U, T) ⇒ U) extends TransformFastSetView[T, U] {
-    def toList: List[U] = lazyBag.toList.scanLeft(z)(op)
+    def toStandardList: List[U] = lazyBag.toStandardList.scanLeft(z)(op)
   }
 
   private class ScanRightFastSetView[T, U](lazyBag: FastSetView[T], z: U, op: (T, U) ⇒ U) extends TransformFastSetView[T, U] {
-    def toList: List[U] = lazyBag.toList.scanRight(z)(op)
+    def toStandardList: List[U] = lazyBag.toStandardList.scanRight(z)(op)
   }
 
   private class UnzipLeftFastSetView[T, U1, U2](lazyBag: FastSetView[T])(implicit asPair: T => (U1, U2)) extends TransformFastSetView[T, U1] {
-    def toList: List[U1] = lazyBag.toList.unzip._1.toList
+    def toStandardList: List[U1] = lazyBag.toStandardList.unzip._1.toList
   }
 
   private class UnzipRightFastSetView[T, U1, U2](lazyBag: FastSetView[T])(implicit asPair: T => (U1, U2)) extends TransformFastSetView[T, U2] {
-    def toList: List[U2] = lazyBag.toList.unzip._2.toList
+    def toStandardList: List[U2] = lazyBag.toStandardList.unzip._2.toList
   }
 
   private class Unzip3LeftFastSetView[T, U1, U2, U3](lazyBag: FastSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformFastSetView[T, U1] {
-    def toList: List[U1] = lazyBag.toList.unzip3._1.toList
+    def toStandardList: List[U1] = lazyBag.toStandardList.unzip3._1.toList
   }
 
   private class Unzip3MiddleFastSetView[T, U1, U2, U3](lazyBag: FastSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformFastSetView[T, U2] {
-    def toList: List[U2] = lazyBag.toList.unzip3._2.toList
+    def toStandardList: List[U2] = lazyBag.toStandardList.unzip3._2.toList
   }
 
   private class Unzip3RightFastSetView[T, U1, U2, U3](lazyBag: FastSetView[T])(implicit asTriple: T => (U1, U2, U3)) extends TransformFastSetView[T, U3] {
-    def toList: List[U3] = lazyBag.toList.unzip3._3.toList
+    def toStandardList: List[U3] = lazyBag.toStandardList.unzip3._3.toList
   }
 
   private class ZipFastSetView[T, U](lazyBag: SetView[T], that: SetView[U]) extends TransformFastSetView[T, (T, U)] {
-    def toList: List[(T, U)] = lazyBag.toList.zip(that.toList)
+    def toStandardList: List[(T, U)] = lazyBag.toStandardList.zip(that.toStandardList)
   }
 
   private class ZipAllFastSetView[T, U](thisBag: SetView[T], thatBag: SetView[U], thisElem: T, thatElem: U) extends TransformFastSetView[T, (T, U)] {
-    def toList: List[(T, U)] = thisBag.toList.zipAll(thatBag.toList, thisElem, thatElem)
+    def toStandardList: List[(T, U)] = thisBag.toStandardList.zipAll(thatBag.toStandardList, thisElem, thatElem)
   }
 
   private class ZipWithIndex[T, U](thisBag: FastSetView[T]) extends TransformFastSetView[T, (T, Int)] {
-    def toList: List[(T, Int)] = thisBag.toList.zipWithIndex
+    def toStandardList: List[(T, Int)] = thisBag.toStandardList.zipWithIndex
   }
 
   def apply[T](args: T*): FastSetView[T] = new BasicFastSetView(args.toList)
