@@ -19,32 +19,32 @@ import SharedHelpers.thisLineNumber
 import OptionValues._
 import OutcomeOf._
 
-class OutcomeSpec extends Spec {
+class OutcomeSpec extends FunSpec {
 
   val fileName = "OutcomeSpec.scala"
 
-  object `An Outcome` {
-    def `can be Succeeded` {
+  describe("An Outcome") {
+    it("can be Succeeded") {
       assert(Succeeded.isSucceeded)
       assert(!Succeeded.isFailed)
       assert(!Succeeded.isCanceled)
       assert(!Succeeded.isPending)
     }
-    def `can be Failed` {
+    it("can be Failed") {
       val ex = new Exception
       assert(!Failed(ex).isSucceeded)
       assert(Failed(ex).isFailed)
       assert(!Failed(ex).isCanceled)
       assert(!Failed(ex).isPending)
     }
-    def `can be Canceled` {
+    it("can be Canceled") {
       val ex = new exceptions.TestCanceledException(0)
       assert(!Canceled(ex).isSucceeded)
       assert(!Canceled(ex).isFailed)
       assert(Canceled(ex).isCanceled)
       assert(!Canceled(ex).isPending)
     }
-    def `can be Pending` {
+    it("can be Pending") {
       assert(!Pending.isSucceeded)
       assert(!Pending.isFailed)
       assert(!Pending.isCanceled)
@@ -56,7 +56,7 @@ class OutcomeSpec extends Spec {
     val ex3 = new exceptions.TestCanceledException(0)
     val res3: Outcome = Canceled(ex3)
     val res4: Outcome = Pending
-    def `can be easily pattern matched on based on whether it is Exceptional` {
+    it("can be easily pattern matched on based on whether it is Exceptional") {
       def matchesExceptional(res: Outcome): Boolean =
         res match {
           case _: Exceptional => true
@@ -67,7 +67,7 @@ class OutcomeSpec extends Spec {
       assert(matchesExceptional(res3))
       assert(!matchesExceptional(res4))
     }
-    def `can be easily pattern matched on, extracting the exception, based on whether it is Exceptional` {
+    it("can be easily pattern matched on, extracting the exception, based on whether it is Exceptional") {
       def insideExceptional(res: Outcome): Option[Throwable] =
         res match {
           case Exceptional(ex) => Some(ex)
@@ -78,19 +78,19 @@ class OutcomeSpec extends Spec {
       assert(insideExceptional(res3).value eq ex3)
       assert(insideExceptional(res4).isEmpty)
     }
-    def `can be queried to determine whether or not it is "exceptional"` {
+    it("can be queried to determine whether or not it is \"exceptional\"") {
       assert(!res1.isExceptional)
       assert(res2.isExceptional)
       assert(res3.isExceptional)
       assert(!res4.isExceptional)
     }
-    def `can be transformed into an Option[Throwable]` {
+    it("can be transformed into an Option[Throwable]") {
       assert(res1.toOption.isEmpty)
       assert(res2.toOption.value eq ex2)
       assert(res3.toOption.value eq ex3)
       assert(res4.toOption.isEmpty)
     }
-    def `can be implicitly converted to an Iterable so it can be flattened` {
+    it("can be implicitly converted to an Iterable so it can be flattened") {
       assert(Vector(res1, res2, res3, res4).flatten === Vector(ex2, ex3))
       val succeededs: Vector[Succeeded.type] = Vector(Succeeded, Succeeded, Succeeded)
       assert(succeededs.flatten === Vector.empty)
@@ -106,16 +106,16 @@ class OutcomeSpec extends Spec {
       assert(canceleds.flatten === Vector(tceEx1, ex3, tceEx2))
     }
   }
-  object `The Failed class` {
-    def `should offer a constructor that takes any exception except for TCE, TPE, and TOE and returns it unchanged from its exception field` {
+  describe("The Failed class") {
+    it("should offer a constructor that takes any exception except for TCE, TPE, and TOE and returns it unchanged from its exception field") {
       val ex2 = new exceptions.TestFailedException(0)
       assert(new Failed(ex2).exception eq ex2)
       val ex3 = new RuntimeException
       assert(new Failed(ex3).exception eq ex3)
     }
   }
-  object `The Failed companion object` {
-    def `should offer an apply factory method that takes no parameters` {
+  describe("The Failed companion object") {
+    it("should offer an apply factory method that takes no parameters") {
       val failed = Failed()
       failed.exception match {
         case tfe: exceptions.TestFailedException => 
@@ -126,12 +126,12 @@ class OutcomeSpec extends Spec {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     } 
-    def `should offer an apply factory method that takes (and simply holds) an exception` {
+    it("should offer an apply factory method that takes (and simply holds) an exception") {
       val ex = new RuntimeException
       val failed = Failed(ex)
       assert(failed.exception eq ex)
     }
-    def `should offer a "here" factory method that takes an exception and wraps it in a TestFailedException` {
+    it("should offer a \"here\" factory method that takes an exception and wraps it in a TestFailedException") {
       val ex = new RuntimeException("I meant to do that!")
       val failed = Failed.here(ex)
       failed.exception match {
@@ -143,7 +143,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     }
-    def `should offer an apply factory method that takes a message` {
+    it("should offer an apply factory method that takes a message") {
       val failed = Failed("Oops!")
       failed.exception match {
         case tfe: exceptions.TestFailedException => 
@@ -154,7 +154,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     }
-    def `should offer an apply factory method that takes a message and an exception, simply holding the exception` {
+    it("should offer an apply factory method that takes a message and an exception, simply holding the exception") {
       val ex = new RuntimeException
       val failed = Failed("Oops!", ex)
       failed.exception match {
@@ -166,7 +166,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     }
-    def `should throw IAE from its apply factory methods if TestCanceledException is passed` {
+    it("should throw IAE from its apply factory methods if TestCanceledException is passed") {
       val tce = new exceptions.TestCanceledException(0)
       intercept[IllegalArgumentException] {
         Failed(tce)
@@ -181,7 +181,7 @@ class OutcomeSpec extends Spec {
         Failed.here(tce)
       }
     }
-    def `should throw IAE from its apply factory methods if TestPendingException is passed` {
+    it("should throw IAE from its apply factory methods if TestPendingException is passed") {
       val tpe = new exceptions.TestPendingException
       intercept[IllegalArgumentException] {
         Failed(tpe)
@@ -197,14 +197,14 @@ class OutcomeSpec extends Spec {
       }
     }
   }
-  object `The Canceled class` {
-    def `should offer a constructor that takes a TestCanceledException and returns it unchanged from its exception field` {
+  describe("The Canceled class") {
+    it("should offer a constructor that takes a TestCanceledException and returns it unchanged from its exception field") {
       val ex1 = new exceptions.TestCanceledException(0)
       assert(new Canceled(ex1).exception eq ex1)
     }
   }
-  object `The Canceled companion object` {
-    def `should offer an apply factory method that takes no parameters` {
+  describe("The Canceled companion object") {
+    it("should offer an apply factory method that takes no parameters") {
       val canceled = Canceled()
       canceled.exception match {
         case tce: exceptions.TestCanceledException => 
@@ -215,7 +215,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer an apply factory method that takes and holds a TCE, but wraps any other exception in a new TCE` {
+    it("should offer an apply factory method that takes and holds a TCE, but wraps any other exception in a new TCE") {
       val tce = new exceptions.TestCanceledException(1)
       val canceled = Canceled(tce)
       assert(canceled.exception eq tce)
@@ -235,7 +235,7 @@ class OutcomeSpec extends Spec {
       val ex3 = new RuntimeException
       assert(Canceled(ex3).exception.getCause eq ex3)
     }
-    def `should offer a "here" factory method that takes an exception and wraps it in a TestCanceledException` {
+    it("should offer a \"here\" factory method that takes an exception and wraps it in a TestCanceledException") {
       val ex = new RuntimeException("I meant to do that!")
       val canceled = Canceled.here(ex)
       canceled.exception match {
@@ -247,7 +247,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer an apply factory method that takes a message` {
+    it("should offer an apply factory method that takes a message") {
       val canceled = Canceled("Oops!")
       canceled.exception match {
         case tfe: exceptions.TestCanceledException => 
@@ -258,7 +258,7 @@ class OutcomeSpec extends Spec {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer an apply factory method that takes a message and an exception (simply holding the exception)` {
+    it("should offer an apply factory method that takes a message and an exception (simply holding the exception)") {
       val ex = new RuntimeException
       val canceled = Canceled("Oops!", ex)
       canceled.exception match {
@@ -272,8 +272,8 @@ class OutcomeSpec extends Spec {
     }
   }
 
-  object `The outcomeOf method` {
-    def `must transform expression evaluations into the appropriate Outcome class` {
+  describe("The outcomeOf method") {
+    it("must transform expression evaluations into the appropriate Outcome class") {
       assert(outcomeOf { 99 } == Succeeded)
       val tfe = new exceptions.TestFailedException(0)
       assert(outcomeOf { throw tfe } === Failed(tfe))
@@ -284,22 +284,24 @@ class OutcomeSpec extends Spec {
       val tpe = new exceptions.TestPendingException
       assert(outcomeOf { throw tpe } === Pending)
     }
-    def `if UnknownError is thrown, should complete abruptly with that exception` {
+    // SKIP-SCALATESTJS-START
+    it("if UnknownError is thrown, should complete abruptly with that exception") {
       intercept[UnknownError] {
         outcomeOf { throw new UnknownError }
       }
     }
+    // SKIP-SCALATESTJS-END
   }
   
-  object `The Outcome's toSucceeded method` {
+  describe("The Outcome's toSucceeded method") {
     
-    def `should return itself when it is Succeeded` {
+    it("should return itself when it is Succeeded") {
       val outcome: Outcome = Succeeded
       val result = outcome.toSucceeded
       assert(result eq outcome)
     }
     
-    def `should throw the containing exception when it is Failed` {
+    it("should throw the containing exception when it is Failed") {
       val tfe = new exceptions.TestFailedException("boom!", 3)
       val outcome1: Outcome = Failed(tfe)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -315,7 +317,7 @@ class OutcomeSpec extends Spec {
       assert(e2 eq re)
     }
 
-    def `should throw the containing exception when it is Canceled` {
+    it("should throw the containing exception when it is Canceled") {
       val tce = new exceptions.TestCanceledException("boom!", 3)
       val outcome1: Outcome = Canceled(tce)
       val e1 = intercept[exceptions.TestCanceledException] {
@@ -331,7 +333,7 @@ class OutcomeSpec extends Spec {
       assert(e2.getCause eq re)
     }
 
-    def `should throw TestPendingException when it is Pending` {
+    it("should throw TestPendingException when it is Pending") {
       val outcome2: Outcome = Pending
       intercept[exceptions.TestPendingException] {
         outcome2.toSucceeded

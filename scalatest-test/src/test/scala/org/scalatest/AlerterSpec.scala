@@ -18,9 +18,9 @@ package org.scalatest
 import SharedHelpers._
 import Matchers._
 
-class AlerterSpec extends Spec {
-  object `An Alerter` {
-    def `should fire AlertProvided event with correct message and None in payload when using apply(message)` {
+class AlerterSpec extends FunSpec {
+  describe("An Alerter") {
+    it("should fire AlertProvided event with correct message and None in payload when using apply(message)") {
       class MySuite extends FunSuite {
         alert("alert message")
       }
@@ -32,7 +32,7 @@ class AlerterSpec extends Spec {
       assert(alertProvidedEvents(0).message === "alert message")
       assert(alertProvidedEvents(0).payload === None)
     }
-    def `should fire AlertProvided event with correct message and payload when using apply(message, payload)` {
+    it("should fire AlertProvided event with correct message and payload when using apply(message, payload)") {
       class MySuite extends FunSuite {
         alert("alert message", Some("a payload"))
       }

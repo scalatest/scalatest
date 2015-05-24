@@ -16,7 +16,9 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestCanceledException}
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
+// SKIP-SCALATESTJS-END
 import prop.TableDrivenPropertyChecks
 import prop.TableFor1
 import time.{Second, Span}
@@ -32,7 +34,9 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
     Table(
       "exception",
       new TestFailedException("message", 3),
+      // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", 3),
+      // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
@@ -89,8 +93,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
         }
       }
       caught should not be theSameInstanceAs (e)
-      caught.message should be ('defined)
-      caught.message.get should equal (white + "message")
+      caught.message should equal (Some(white + "message"))
       caught.getClass should be theSameInstanceAs (e.getClass)
     }
   }
@@ -103,8 +106,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
         }
       }
       caught should not be theSameInstanceAs (e)
-      caught.message should be ('defined)
-      caught.message.get should equal ("clue message")
+      caught.message should equal (Some("clue message"))
       caught.getClass should be theSameInstanceAs (e.getClass)
     }
   }
@@ -117,8 +119,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
         }
       }
       caught should not be theSameInstanceAs (e)
-      caught.message should be ('defined)
-      caught.message.get should equal ("clue message")
+      caught.message should equal (Some("clue message"))
       caught.getClass should be theSameInstanceAs (e.getClass)
     }
   }
@@ -131,8 +132,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
         }
       }
       caught should not be theSameInstanceAs (e)
-      caught.message should be ('defined)
-      caught.message.get should equal ("clue\nmessage")
+      caught.message should equal (Some("clue\nmessage"))
       caught.getClass should be theSameInstanceAs (e.getClass)
     }
   }
@@ -148,8 +148,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
         }
       }
       caught should not be theSameInstanceAs (e)
-      caught.message should be ('defined)
-      caught.message.get should equal ("List(1, 2, 3) message")
+      caught.message should equal (Some("List(1, 2, 3) message"))
       caught.getClass should be theSameInstanceAs (e.getClass)
     }
   }

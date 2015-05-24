@@ -17,26 +17,15 @@ package org.scalactic.anyvals
 
 import org.scalactic._
 import org.scalatest._
-import prop.NyayaGeneratorDrivenPropertyChecks._
-import japgolly.nyaya.test.Gen
+import org.scalatest.prop.GenDrivenPropertyChecks
+import org.scalatest.prop.Generator
 import OptionValues._
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
-
-  implicit val posFloatGen: Gen[PosFloat] =
-    for {i <- Gen.choosefloat(1, Float.MaxValue)} yield PosFloat.from(i).get
-
-  implicit val intGen: Gen[Int] = Gen.int
-  implicit val longGen: Gen[Long] = Gen.long
-  implicit val shortGen: Gen[Short] = Gen.short
-  implicit val charGen: Gen[Char] = Gen.char
-  implicit val floatGen: Gen[Float] = Gen.float
-  implicit val doubleGen: Gen[Double] = Gen.double
-  implicit val byteGen: Gen[Byte] = Gen.byte
+class PosFloatSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
   describe("A PosFloat") {
     describe("should offer a from factory method that") {
@@ -50,6 +39,10 @@ class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         PosFloat.from(-99.9F) shouldBe None
       }
     } 
+    it("should offer MaxValue and MinValue factory methods") {
+      PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
+      PosFloat.MinValue shouldEqual PosFloat(1.0f)
+    }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
       PosFloat.from(42.0F).value.toString shouldBe "PosFloat(42.0)"
@@ -456,7 +449,9 @@ class PosFloatSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
 
       it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
         forAll { (pfloat: PosFloat) =>
+          // SKIP-SCALATESTJS-START
           pfloat.round.toFloat shouldEqual pfloat.toFloat.round
+          // SKIP-SCALATESTJS-END
           pfloat.ceil.toFloat shouldEqual pfloat.toFloat.ceil
           pfloat.floor.toFloat shouldEqual pfloat.toFloat.floor
         }

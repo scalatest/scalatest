@@ -819,6 +819,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain noElementsOf (1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.contain.noElementsOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -1662,6 +1673,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain noElementsOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfNoElementsOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -2035,6 +2057,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain noElementsOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.contain.noElementsOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -2877,6 +2910,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain noElementsOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfNoElementsOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**

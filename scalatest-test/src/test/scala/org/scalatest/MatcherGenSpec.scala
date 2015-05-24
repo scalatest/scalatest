@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-class MatcherGenSpec extends Spec {
+class MatcherGenSpec extends FunSpec {
 
-  object `A MatcherGen2` {
-    def `can be constructed by anding two MatcherGen1s` { pending }
+  describe("A MatcherGen2") {
+    it("can be constructed by anding two MatcherGen1s") { pending }
   }
 }
 

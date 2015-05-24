@@ -20,7 +20,7 @@ import enablers.Definition
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
+class ShouldBeDefinedLogicalOrExplicitSpec extends FunSpec {
   
   val fileName: String = "ShouldBeDefinedLogicalOrExplicitSpec.scala"
   
@@ -64,11 +64,11 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
       def isDefined(thing: Thing): Boolean = thing.isDefined
     }
   
-  object `Sorted matcher` {
+  describe("Sorted matcher") {
     
-    object `when work with 'thing should be (defined )'` {
+    describe("when work with 'thing should be (defined )'") {
       
-      def `should do nothing when thing is defined ` {
+      it("should do nothing when thing is defined ") {
         
         (something should (be (defined ) or be (something))) (definition)
         (nothing should (be (defined ) or be (nothing))) (definition)
@@ -87,7 +87,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (nothing should (equal (nothing) or be (defined ))) (defaultEquality, definition)
       }
       
-      def `should throw TestFailedException with correct stack depth when thing is not defined ` {
+      it("should throw TestFailedException with correct stack depth when thing is not defined ") {
         val caught1 = intercept[TestFailedException] {
           (nothing should (be (defined ) or be (something))) (definition)
         }
@@ -118,9 +118,9 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'thing should not be defined '` {
+    describe("when work with 'thing should not be defined '") {
       
-      def `should do nothing when thing is not defined ` {
+      it("should do nothing when thing is not defined ") {
         (nothing should (not be defined  or not be something)) (definition)
         (something should (not be defined  or not be nothing)) (definition)
         (nothing should (not be defined  or not be nothing)) (definition)
@@ -138,7 +138,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (something should (not equal nothing or not be defined )) (defaultEquality, definition)
       }
       
-      def `should throw TestFailedException with correct stack depth when thing is defined ` {
+      it("should throw TestFailedException with correct stack depth when thing is defined ") {
         val caught1 = intercept[TestFailedException] {
           (something should (not be defined  or not be something)) (definition)
         }
@@ -169,9 +169,9 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (defined )'` {
+    describe("when work with 'all(xs) should be (defined )'") {
       
-      def `should do nothing when all(xs) is defined ` {
+      it("should do nothing when all(xs) is defined ") {
         (all(List(something)) should (be (defined ) or be (something))) (definition)
         (all(List(nothing)) should (be (defined ) or be (nothing))) (definition)
         (all(List(something)) should (be (defined ) or be (nothing))) (definition)
@@ -189,7 +189,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (all(List(nothing)) should (equal (nothing) or be (defined ))) (defaultEquality, definition)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not defined ` {
+      it("should throw TestFailedException with correct stack depth when xs is not defined ") {
         val left1 = List(nothing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should (be (something) or be (defined ))) (definition)
@@ -224,8 +224,8 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be defined '` {
-      def `should do nothing when xs is not defined ` {
+    describe("when work with 'all(xs) should not be defined '") {
+      it("should do nothing when xs is not defined ") {
         (all(List(nothing)) should (not be defined  or not be something)) (definition)
         (all(List(something)) should (not be defined  or not be nothing)) (definition)
         (all(List(nothing)) should (not be defined  or not be nothing)) (definition)
@@ -243,7 +243,7 @@ class ShouldBeDefinedLogicalOrExplicitSpec extends Spec {
         (all(List(something)) should (not equal nothing or not be defined )) (defaultEquality, definition)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not defined ` {
+      it("should throw TestFailedException with correct stack depth when xs is not defined ") {
         val left1 = List(something)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should (not be something or not be defined )) (definition)

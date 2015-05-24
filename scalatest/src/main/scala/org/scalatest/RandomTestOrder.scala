@@ -16,11 +16,9 @@
 package org.scalatest
 
 import scala.util.Random
-import java.util.concurrent.LinkedBlockingQueue
-import collection.JavaConverters._
 import org.scalatest.events.Event
 import org.scalatest.time.Span
-import org.scalatest.tools.{TestSortingReporter, Runner}
+import org.scalatest.tools.{TestSortingReporter}
 
 /**
  * Trait that causes tests to be run in pseudo-random order.
@@ -41,7 +39,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
 
   private[scalatest] case class DeferredSuiteRun(suite: Suite with RandomTestOrder, testName: String, status: ScalaTestStatefulStatus)
 
-  private val suiteRunQueue = new LinkedBlockingQueue[DeferredSuiteRun]
+  private val suiteRunQueue = new ConcurrentLinkedQueue[DeferredSuiteRun]
 
   /**
    * Modifies the behavior of <code>super.runTest</code> to facilitate pseudo-random order test execution.
@@ -87,7 +85,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
 
       // defer the suite execution
       val status = new ScalaTestStatefulStatus
-      suiteRunQueue.put(DeferredSuiteRun(newInstance, testName, status))
+      suiteRunQueue.add(DeferredSuiteRun(newInstance, testName, status))
       status
     }
     else {
@@ -148,7 +146,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    *
    * <p>
    * The default implementation of this method returns the value specified via <code>-T</code> to
-   * <a href="tools/Runner$.html"></code>Runner</code></a>, or 2 seconds, if no <code>-T</code> was supplied.
+   * <a href="tools/Suite$.html"></code>Suite</code></a>, or 2 seconds, if no <code>-T</code> was supplied.
    * </p>
    *
    * @return a maximum amount of time to wait for events while resorting them into sequential order

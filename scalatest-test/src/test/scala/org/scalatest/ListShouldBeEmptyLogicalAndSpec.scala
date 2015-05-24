@@ -19,7 +19,7 @@ import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
 
-class ListShouldBeEmptyLogicalAndSpec extends Spec {
+class ListShouldBeEmptyLogicalAndSpec extends FunSpec {
   
   //ADDITIONAL//
   
@@ -55,11 +55,11 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
   val nonEmptyList = List(1, 2, 3)
   val emptyList = List.empty[Int]
   
-  object `Emptiness matcher` {
+  describe("Emptiness matcher") {
     
-    object `when work with 'list should be (empty)'` {
+    describe("when work with 'list should be (empty)'") {
       
-      def `should do nothing when list is empty` {
+      it("should do nothing when list is empty") {
         emptyList should (equal (emptyList) and be (empty))
         emptyList should (be (empty) and equal (emptyList))
         
@@ -67,7 +67,7 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
         emptyList should (be (empty) and be (emptyList))
       }
       
-      def `should throw TestFailedException with correct stack depth when list is not empty` {
+      it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
           nonEmptyList should (equal (nonEmptyList) and be (empty))
         }
@@ -98,9 +98,9 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'list should not be empty'` {
+    describe("when work with 'list should not be empty'") {
       
-      def `should do nothing when file is not empty` {
+      it("should do nothing when file is not empty") {
         nonEmptyList should (not equal emptyList and not be empty)
         nonEmptyList should (not be empty and not equal emptyList)
         
@@ -108,7 +108,7 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
         nonEmptyList should (not be empty and not be emptyList)
       }
       
-      def `should throw TestFailedException with correct stack depth when list is not empty` {
+      it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
           emptyList should (not equal nonEmptyList and not be empty)
         }
@@ -139,9 +139,9 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (empty)'` {
+    describe("when work with 'all(xs) should be (empty)'") {
       
-      def `should do nothing when all(xs) is empty` {
+      it("should do nothing when all(xs) is empty") {
         all(List(emptyList)) should (be (emptyList) and be (empty))
         all(List(emptyList)) should (be (empty) and be (emptyList))
         
@@ -149,7 +149,7 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
         all(List(emptyList)) should (be (empty) and equal (emptyList))
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not empty") {
         val left1 = List(nonEmptyList)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (nonEmptyList) and be (empty))
@@ -184,8 +184,8 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be empty'` {
-      def `should do nothing when all(xs) is not empty` {
+    describe("when work with 'all(xs) should not be empty'") {
+      it("should do nothing when all(xs) is not empty") {
         all(List(nonEmptyList)) should (not be empty and not be emptyList)
         all(List(nonEmptyList)) should (not be emptyList and not be empty)
         
@@ -193,7 +193,7 @@ class ListShouldBeEmptyLogicalAndSpec extends Spec {
         all(List(nonEmptyList)) should (not equal emptyList and not be empty)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is empty` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is empty") {
         val left1 = List(emptyList)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be nonEmptyList and not be empty)

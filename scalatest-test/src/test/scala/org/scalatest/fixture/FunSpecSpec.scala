@@ -30,7 +30,7 @@ import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 
-class FunSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
+class FunSpecSpec extends org.scalatest.FunSpec {
 
   describe("A fixture.FunSpec") {
 
@@ -890,6 +890,7 @@ class FunSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
+    // SKIP-SCALATESTJS-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FunSpec {
@@ -904,6 +905,7 @@ class FunSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.run(None, Args(SilentReporter))
       }
     }
+    // SKIP-SCALATESTJS-END
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true for info " +
             "calls made from a test that is pending") {
@@ -1587,6 +1589,7 @@ class FunSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(cause.getMessage == "on purpose")
     }
 
+    // SKIP-SCALATESTJS-START
     it("should propagate AnnotationFormatError when it is thrown inside scope") {
       class TestSpec extends FunSpec {
 
@@ -1714,5 +1717,6 @@ class FunSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       }
       assert(e.getMessage == "on purpose")
     }
+    // SKIP-SCALATESTJS-END
   }
 }

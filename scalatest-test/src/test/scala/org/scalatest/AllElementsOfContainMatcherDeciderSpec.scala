@@ -21,7 +21,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
-class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
+class AllElementsOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
 
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {
@@ -38,6 +38,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
         }
     }
 
+  // SKIP-SCALATESTJS-START
   val javaMapTrimmed: Uniformity[java.util.Map.Entry[Int, String]] =
     new Uniformity[java.util.Map.Entry[Int, String]] {
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
@@ -60,6 +61,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
 
   val incremented: Uniformity[Int] =
     new Uniformity[Int] {
@@ -99,6 +101,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
         }
     }
 
+  // SKIP-SCALATESTJS-START
   val javaMapIncremented: Uniformity[java.util.Map.Entry[Int, String]] =
     new Uniformity[java.util.Map.Entry[Int, String]] {
       var count = 0
@@ -125,6 +128,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
 
   val appended: Uniformity[String] =
     new Uniformity[String] {
@@ -164,6 +168,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
         }
     }
 
+  // SKIP-SCALATESTJS-START
   val javaMapAppended: Uniformity[java.util.Map.Entry[Int, String]] =
     new Uniformity[java.util.Map.Entry[Int, String]] {
       var count = 0
@@ -190,6 +195,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case _ => b
         }
     }
+  // SKIP-SCALATESTJS-END
 
   val lowerCaseEquality =
     new Equality[String] {
@@ -214,6 +220,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
         }
     }
 
+  // SKIP-SCALATESTJS-START
   val javaMapLowerCaseEquality =
     new Equality[java.util.Map.Entry[Int, String]] {
       def areEqual(left: java.util.Map.Entry[Int, String], right: Any) =
@@ -227,6 +234,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case right => left == right
         }
     }
+  // SKIP-SCALATESTJS-END
 
   val reverseEquality =
     new Equality[String] {
@@ -251,6 +259,7 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
         }
     }
 
+  // SKIP-SCALATESTJS-START
   val javaMapReverseEquality =
     new Equality[java.util.Map.Entry[Int, String]] {
       def areEqual(left: java.util.Map.Entry[Int, String], right: Any) =
@@ -264,8 +273,9 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
           case right => left == right
         }
     }
+  // SKIP-SCALATESTJS-END
 
-  object `allElementsOf ` {
+  describe("allElementsOf ") {
 
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = Prettifier.default(left)
@@ -283,31 +293,35 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def `should take specified normalization in scope when 'should contain' is used` {
+    it("should take specified normalization in scope when 'should contain' is used") {
 
       (List("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")) (after being trimmed)
       (Set("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")) (after being trimmed)
       (Array("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")) (after being trimmed)
+      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allElementsOf Seq(1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
+
+      // SKIP-SCALATESTJS-START
       (javaList("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")) (after being trimmed)
       (javaSet("1 ", "2", "3 ") should contain allElementsOf Seq("1", "2 ", "3")) (after being trimmed)
-
-      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allElementsOf Seq(1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (after being javaMapTrimmed)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should take specified normalization when 'should not contain' is used` {
+    it("should take specified normalization when 'should not contain' is used") {
 
       (List("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))) (after being appended)
       (Set("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))) (after being appended)
       (Array("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))) (after being appended)
+      (Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allElementsOf (Seq(1 -> "a ", 2 -> "b", 3 -> "c "))) (after being mapAppended)
+
+      // SKIP-SCALATESTJS-START
       (javaList("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))) (after being appended)
       (javaSet("A ", "B", "C ") should not contain allElementsOf (Seq("a ", "b", "c "))) (after being appended)
-
-      (Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allElementsOf (Seq(1 -> "a ", 2 -> "b", 3 -> "c "))) (after being mapAppended)
       (javaMap(Entry(1, "A "), Entry(2, "B"), Entry(3, "C ")) should not contain allElementsOf (Seq(Entry(1, "a "), Entry(2, "b"), Entry(3, "c ")))) (after being javaMapAppended)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization") {
 
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -327,26 +341,28 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
       }
       checkShouldContainStackDepth(e3, left3, Seq(1, 2, 3), thisLineNumber - 2)
 
-      val left4 = javaList(1, 2, 3)
+      val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain allElementsOf Seq(1, 2, 3)) (after being incremented)
+        (left4 should contain allElementsOf Seq(1 -> "one", 2 -> "two", 3 -> "three")) (after being mapIncremented)
       }
-      checkShouldContainStackDepth(e4, left4, Seq(1, 2, 3), thisLineNumber - 2)
+      checkShouldContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
 
-      val left5 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain allElementsOf Seq(1 -> "one", 2 -> "two", 3 -> "three")) (after being mapIncremented)
+        (left5 should contain allElementsOf Seq(1, 2, 3)) (after being incremented)
       }
-      checkShouldContainStackDepth(e5, left5, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
+      checkShouldContainStackDepth(e5, left5, Seq(1, 2, 3), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (after being javaMapIncremented)
       }
       checkShouldContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization") {
 
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -366,47 +382,53 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
       }
       checkShouldNotContainStackDepth(e3, left3, Seq("1", "2 ", "3"), thisLineNumber - 2)
 
-      val left4 = javaList("1 ", "2", "3 ")
+      val left4 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain allElementsOf (Seq("1", "2 ", "3"))) (after being trimmed)
+        (left4 should not contain allElementsOf (Seq(1 -> "one", 2 -> "two ", 3 -> "three"))) (after being mapTrimmed)
       }
-      checkShouldNotContainStackDepth(e4, left4, Seq("1", "2 ", "3"), thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
 
-      val left5 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList("1 ", "2", "3 ")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain allElementsOf (Seq(1 -> "one", 2 -> "two ", 3 -> "three"))) (after being mapTrimmed)
+        (left5 should not contain allElementsOf (Seq("1", "2 ", "3"))) (after being trimmed)
       }
-      checkShouldNotContainStackDepth(e5, left5, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e5, left5, Seq("1", "2 ", "3"), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain allElementsOf (Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")))) (after being javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should take specified equality and normalization when 'should contain' is used` {
+    it("should take specified equality and normalization when 'should contain' is used") {
 
       (List("A ", "B", "C ") should contain allElementsOf Seq("a", "b ", "c ")) (decided by lowerCaseEquality afterBeing trimmed)
       (Set("A ", "B", "C ") should contain allElementsOf Seq("a", "b ", "c ")) (decided by lowerCaseEquality afterBeing trimmed)
       (Array("A ", "B", "C ") should contain allElementsOf Seq("a", "b ", "c ")) (decided by lowerCaseEquality afterBeing trimmed)
-      (javaList("A ", "B", "C ") should contain allElementsOf Seq("a", "b ", "c ")) (decided by lowerCaseEquality afterBeing trimmed)
-
       (Map(1 -> "ONE ", 2 -> "TWO", 3 -> "THREE ") should contain allElementsOf Seq(1 -> "one", 2 -> "two ", 3 -> "three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+
+      // SKIP-SCALATESTJS-START
+      (javaList("A ", "B", "C ") should contain allElementsOf Seq("a", "b ", "c ")) (decided by lowerCaseEquality afterBeing trimmed)
       (javaMap(Entry(1, "ONE "), Entry(2, "TWO"), Entry(3, "THREE ")) should contain allElementsOf Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should take specified equality and normalization when 'should not contain' is used` {
+    it("should take specified equality and normalization when 'should not contain' is used") {
       (List("one ", " two", "three ") should not contain allElementsOf (Seq(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
       (Set("one ", " two", "three ") should not contain allElementsOf (Seq(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
       (Array("one ", " two", "three ") should not contain allElementsOf (Seq(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
-      (javaList("one ", " two", "three ") should not contain allElementsOf (Seq(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
-
       (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain allElementsOf (Seq(1 -> " one", 2 -> "two ", 3 -> " three"))) (decided by mapReverseEquality afterBeing mapTrimmed)
+
+      // SKIP-SCALATESTJS-START
+      (javaList("one ", " two", "three ") should not contain allElementsOf (Seq(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
       (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should not contain allElementsOf (Seq(Entry(1, " one"), Entry(2, "two "), Entry(3, " three")))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization") {
 
       val left1 = List("one ", " two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -426,26 +448,28 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
       }
       checkShouldContainStackDepth(e3, left3, Seq(" one", "two ", " three"), thisLineNumber - 2)
 
-      val left4 = javaList("one ", " two", "three ")
+      val left4 = Map(1 -> "one ", 2 -> " two", 3 -> "three ")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain allElementsOf Seq(" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+        (left4 should contain allElementsOf Seq(1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
       }
-      checkShouldContainStackDepth(e4, left4, Seq(" one", "two ", " three"), thisLineNumber - 2)
+      checkShouldContainStackDepth(e4, left4, Seq(1 -> " one", 2 -> "two ", 3 -> " three"), thisLineNumber - 2)
 
-      val left5 = Map(1 -> "one ", 2 -> " two", 3 -> "three ")
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList("one ", " two", "three ")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain allElementsOf Seq(1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
+        (left5 should contain allElementsOf Seq(" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
       }
-      checkShouldContainStackDepth(e5, left5, Seq(1 -> " one", 2 -> "two ", 3 -> " three"), thisLineNumber - 2)
+      checkShouldContainStackDepth(e5, left5, Seq(" one", "two ", " three"), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain allElementsOf Seq(Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
       }
       checkShouldContainStackDepth(e6, left6, Seq(Entry(1, " one"), Entry(2, "two "), Entry(3, " three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
 
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization") {
 
       val left1 = List("ONE ", "TWO", "THREE ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -465,23 +489,25 @@ class AllElementsOfContainMatcherDeciderSpec extends Spec with Explicitly {
       }
       checkShouldNotContainStackDepth(e3, left3, Seq("one", "two ", "three"), thisLineNumber - 2)
 
-      val left4 = javaList("ONE ", "TWO", "THREE ")
+      val left4 = Map(1 -> "ONE ", 2 -> "TWO", 3 -> "THREE ")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain allElementsOf (Seq("one", "two ", "three"))) (decided by lowerCaseEquality afterBeing trimmed)
+        (left4 should not contain allElementsOf (Seq(1 -> "one", 2 -> "two ", 3 -> "three"))) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
       }
-      checkShouldNotContainStackDepth(e4, left4, Seq("one", "two ", "three"), thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
 
-      val left5 = Map(1 -> "ONE ", 2 -> "TWO", 3 -> "THREE ")
+      // SKIP-SCALATESTJS-START
+      val left5 = javaList("ONE ", "TWO", "THREE ")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain allElementsOf (Seq(1 -> "one", 2 -> "two ", 3 -> "three"))) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+        (left5 should not contain allElementsOf (Seq("one", "two ", "three"))) (decided by lowerCaseEquality afterBeing trimmed)
       }
-      checkShouldNotContainStackDepth(e5, left5, Seq(1 -> "one", 2 -> "two ", 3 -> "three"), thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e5, left5, Seq("one", "two ", "three"), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "ONE "), Entry(2, "TWO"), Entry(3, "THREE "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain allElementsOf (Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two "), Entry(3, "three")), thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
 }

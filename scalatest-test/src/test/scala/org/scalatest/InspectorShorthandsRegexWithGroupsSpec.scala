@@ -19,16 +19,16 @@ import SharedHelpers._
 import FailureMessages._
 import exceptions.TestFailedException
 
-class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
+class InspectorShorthandsRegexWithGroupsSpec extends FunSpec with Matchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (InspectorShorthandsRegexWithGroupsSpec.scala:" + lineNumber + ") \n" +
     "in " + decorateToStringValue(left)
   
-  object `Inspector shorthands` {
+  describe("Inspector shorthands") {
     
-    def `should work with fullyMatch regex withGroup and withGroups` {
+    it("should work with fullyMatch regex withGroup and withGroups") {
       
       all(List("abbc")) should fullyMatch regex ("a(b*)c" withGroup "bb")
       all(List("abbcc")) should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -142,7 +142,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with fullyMatch regex withGroup and withGroups when used with logical-and expression` {
+    it("should work with fullyMatch regex withGroup and withGroups when used with logical-and expression") {
       
       all(List("abbc")) should (fullyMatch regex ("a(b*)c" withGroup "bb") and fullyMatch regex ("a(b*)c" withGroup "bb"))
       all(List("abbcc")) should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")) and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -459,7 +459,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))*/
     }
     
-    def `should work with fullyMatch regex withGroup and withGroups when used with logical-or expression` {
+    it("should work with fullyMatch regex withGroup and withGroups when used with logical-or expression") {
       
       all(List("abbc")) should (fullyMatch regex ("a(b*)c" withGroup "bb") or fullyMatch regex ("a(b*)c" withGroup "bbb"))
       all(List("abbcc")) should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")) or fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
@@ -668,7 +668,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))*/
     }
     
-    def `should work with startWith regex withGroup and withGroups` {
+    it("should work with startWith regex withGroup and withGroups") {
       
       all(List("abbc")) should startWith regex ("a(b*)c" withGroup "bb")
       all(List("abbcc")) should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -893,7 +893,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught24.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with startWith regex withGroup and withGroups when used with logical-and expression` {
+    it("should work with startWith regex withGroup and withGroups when used with logical-and expression") {
       
       all(List("abbc")) should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
       all(List("abbcc")) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -1172,7 +1172,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught32.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with startWith regex withGroup and withGroups when used with logical-or expression` {
+    it("should work with startWith regex withGroup and withGroups when used with logical-or expression") {
       
       all(List("abbc")) should (startWith regex ("a(b*)c" withGroup "bbb") or startWith regex ("a(b*)c" withGroup "bb"))
       all(List("abbcc")) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -1343,7 +1343,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with endWith regex withGroup and withGroups` {
+    it("should work with endWith regex withGroup and withGroups") {
       
       all(List("abbc")) should endWith regex ("a(b*)c" withGroup "bb")
       all(List("abbcc")) should endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -1568,7 +1568,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught24.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with endWith regex withGroup and withGroups when used with logical-and expression` {
+    it("should work with endWith regex withGroup and withGroups when used with logical-and expression") {
       
       all(List("abbc")) should (endWith regex ("a(b*)c" withGroup "bb") and endWith regex ("a(b*)c" withGroup "bb"))
       all(List("abbcc")) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -1847,7 +1847,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught32.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with endWith regex withGroup and withGroups when used with logical-or expression` {
+    it("should work with endWith regex withGroup and withGroups when used with logical-or expression") {
       
       all(List("abbc")) should (endWith regex ("a(b*)c" withGroup "bbb") or endWith regex ("a(b*)c" withGroup "bb"))
       all(List("abbcc")) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -2018,7 +2018,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with include regex withGroup and withGroups` {
+    it("should work with include regex withGroup and withGroups") {
       
       all(List("abbc")) should include regex ("a(b*)c" withGroup "bb")
       all(List("abbcc")) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -2577,7 +2577,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       
     }
     
-    def `should work with include regex withGroup and withGroups when used with logical-and expression` {
+    it("should work with include regex withGroup and withGroups when used with logical-and expression") {
       
       all(List("123abbcdef")) should (include regex ("a(b*)c" withGroup "bb") and include regex ("a(b*)c" withGroup "bb"))
       all(List("123abbccdef")) should (include regex ("a(b*)(c*)" withGroups ("bb", "cc")) and include regex ("a(b*)(c*)" withGroups ("bb", "cc")))
@@ -2897,7 +2897,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
       
     }
     
-    def `should work with include regex withGroup and withGroups when used with logical-or expression` {
+    it("should work with include regex withGroup and withGroups when used with logical-or expression") {
       
       all(List("123abbcdef")) should (include regex ("a(b*)c" withGroup "b") or include regex ("a(b*)c" withGroup "bb"))
       all(List("123abbccdef")) should (include regex ("a(b*)(c*)" withGroups ("bb", "c")) or include regex ("a(b*)(c*)" withGroups ("bb", "cc")))

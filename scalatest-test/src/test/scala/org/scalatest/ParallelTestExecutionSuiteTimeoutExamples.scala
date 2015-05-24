@@ -62,8 +62,10 @@ object ParallelTestExecutionSuiteTimeoutExamples extends Tables {
   
   def suiteTimeoutExamples = 
     Table(
-      "pair", 
-      new ExampleParallelTestExecutionSuiteTimeoutSpecPair, 
+      "pair",
+      // SKIP-SCALATESTJS-START
+      new ExampleParallelTestExecutionSuiteTimeoutSpecPair,
+      // SKIP-SCALATESTJS-END
       new ExampleParallelTestExecutionSuiteTimeoutFunSuitePair, 
       new ExampleParallelTestExecutionSuiteTimeoutFunSpecPair, 
       new ExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair,
@@ -74,6 +76,7 @@ object ParallelTestExecutionSuiteTimeoutExamples extends Tables {
     )
 }
 
+// SKIP-SCALATESTJS-START
 class ExampleParallelTestExecutionSuiteTimeoutSpecPair extends SuiteTimeoutSuites {
   def suite1 = new ExampleParallelTestExecutionSuiteTimeoutSpec
   def suite2 = new ExampleParallelTestExecutionSuiteTimeoutFixtureSpec
@@ -106,18 +109,19 @@ class ExampleParallelTestExecutionSuiteTimeoutSpecPair extends SuiteTimeoutSuite
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutSpec extends Spec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends Spec with ParallelTestExecution with SuiteTimeoutSetting {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}
 }
+// SKIP-SCALATESTJS-END
 
 class ExampleParallelTestExecutionSuiteTimeoutFunSuitePair extends SuiteTimeoutSuites {
   def suite1 = new ExampleParallelTestExecutionSuiteTimeoutFunSuite
@@ -151,17 +155,19 @@ class ExampleParallelTestExecutionSuiteTimeoutFunSuitePair extends SuiteTimeoutS
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFunSuite extends FunSuite with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFunSuite extends FunSuite with ParallelTestExecution with SuiteTimeoutSetting {
   test("Test 1") {}
   test("Test 2") {}
-  test("Test 3") {}  
+  test("Test 3") {}
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFunSuite
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite extends fixture.FunSuite with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite extends fixture.FunSuite with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutFunSpecPair extends SuiteTimeoutSuites {
@@ -208,7 +214,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFunSpecPair extends SuiteTimeoutSu
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFunSpec extends FunSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFunSpec extends FunSpec with ParallelTestExecution with SuiteTimeoutSetting {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -217,10 +223,11 @@ class ExampleParallelTestExecutionSuiteTimeoutFunSpec extends FunSpec with Paral
     it("Test 3") {}
     it("Test 4") {}
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFunSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec extends fixture.FunSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec extends fixture.FunSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   describe("Fixture Scope 1") {
     it("Fixture Test 1") { fixture => }
     it("Fixture Test 2") { fixture => }
@@ -229,6 +236,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec extends fixture.Fun
     it("Fixture Test 3") { fixture => }
     it("Fixture Test 4") { fixture => }
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends SuiteTimeoutSuites {
@@ -275,7 +283,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends SuiteTimeo
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting {
   feature("Scope 1") {
     scenario("Test 1") {}
     scenario("Test 2") {}
@@ -284,10 +292,11 @@ class ExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec wi
     scenario("Test 3") {}
     scenario("Test 4") {}
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFeatureSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   feature("Fixture Scope 1") {
     scenario("Fixture Test 1") { fixture => }
     scenario("Fixture Test 2") { fixture =>}
@@ -296,6 +305,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture
     scenario("Fixture Test 3") { fixture => }
     scenario("Fixture Test 4") { fixture => }
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutFlatSpecPair extends SuiteTimeoutSuites {
@@ -342,7 +352,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFlatSpecPair extends SuiteTimeoutS
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFlatSpec extends FlatSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFlatSpec extends FlatSpec with ParallelTestExecution with SuiteTimeoutSetting {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -350,10 +360,11 @@ class ExampleParallelTestExecutionSuiteTimeoutFlatSpec extends FlatSpec with Par
   behavior of "Scope 2"
   it should "Test 3" in {}
   it should "Test 4" in {}
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFlatSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureFlatSpec extends fixture.FlatSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFlatSpec extends fixture.FlatSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   behavior of "Fixture Scope 1"
   it should "Fixture Test 1" in { fixture => }
   it should "Fixture Test 2" in { fixture => }
@@ -361,6 +372,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFixtureFlatSpec extends fixture.Fl
   behavior of "Fixture Scope 2"
   it should "Fixture Test 3" in { fixture => }
   it should "Fixture Test 4" in { fixture => }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFlatSpec
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutFreeSpecPair extends SuiteTimeoutSuites {
@@ -407,7 +419,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFreeSpecPair extends SuiteTimeoutS
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFreeSpec extends FreeSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFreeSpec extends FreeSpec with ParallelTestExecution with SuiteTimeoutSetting {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -417,10 +429,11 @@ class ExampleParallelTestExecutionSuiteTimeoutFreeSpec extends FreeSpec with Par
     "Test 3" in {}
     "Test 4" in {}
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFreeSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec extends fixture.FreeSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec extends fixture.FreeSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   "Fixture Scope 1" - {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -430,6 +443,7 @@ class ExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec extends fixture.Fr
     "Fixture Test 3" in { fixture => }
     "Fixture Test 4" in { fixture => }
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutPropSpecPair extends SuiteTimeoutSuites {
@@ -464,17 +478,19 @@ class ExampleParallelTestExecutionSuiteTimeoutPropSpecPair extends SuiteTimeoutS
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutPropSpec extends PropSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutPropSpec extends PropSpec with ParallelTestExecution with SuiteTimeoutSetting {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutPropSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixturePropSpec extends fixture.PropSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixturePropSpec extends fixture.PropSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixturePropSpec
 }
 
 class ExampleParallelTestExecutionSuiteTimeoutWordSpecPair extends SuiteTimeoutSuites {
@@ -521,7 +537,7 @@ class ExampleParallelTestExecutionSuiteTimeoutWordSpecPair extends SuiteTimeoutS
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutWordSpec extends WordSpec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutWordSpec extends WordSpec with ParallelTestExecution with SuiteTimeoutSetting {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -531,10 +547,11 @@ class ExampleParallelTestExecutionSuiteTimeoutWordSpec extends WordSpec with Par
     "Test 3" in {}
     "Test 4" in {}
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutWordSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec extends fixture.WordSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec extends fixture.WordSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   "Fixture Scope 1" should {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -544,4 +561,5 @@ class ExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec extends fixture.Wo
     "Fixture Test 3" in { fixture => }
     "Fixture Test 4" in { fixture => }
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec
 }

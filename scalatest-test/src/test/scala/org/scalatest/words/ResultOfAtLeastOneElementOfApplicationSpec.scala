@@ -15,24 +15,24 @@
  */
 package org.scalatest.words
 
+import org.scalatest.Matchers._
 import org.scalatest._
-import Matchers._
 
-class ResultOfAtLeastOneElementOfApplicationSpec extends Spec {
+class ResultOfAtLeastOneElementOfApplicationSpec extends FunSpec {
 
-  object `ResultOfAtLeastOneElementOfApplication ` {
+  describe("ResultOfAtLeastOneElementOfApplication ") {
 
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfAtLeastOneElementOfApplication(Vector.empty)
       result.toString should be ("atLeastOneElementOf (Vector())")
     }
 
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfAtLeastOneElementOfApplication(Vector("Bob"))
       result.toString should be ("atLeastOneElementOf (Vector(\"Bob\"))")
     }
 
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfAtLeastOneElementOfApplication(Vector("Bob", "Alice"))
       result.toString should be ("atLeastOneElementOf (Vector(\"Bob\", \"Alice\"))")
     }

@@ -20,7 +20,7 @@ import java.io.FileNotFoundException
 import Matchers._
 import exceptions.TestFailedException
 
-class ShorthandShouldNotBeThrownBySpec extends Spec {
+class ShorthandShouldNotBeThrownBySpec extends FunSpec {
   
   val fileName: String = "ShorthandShouldNotBeThrownBySpec.scala"
     
@@ -32,19 +32,21 @@ class ShorthandShouldNotBeThrownBySpec extends Spec {
     
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
     FailureMessages.hadExpectedMessage(left, expectedMessage)
+
+  class TestException(message: String) extends Exception(message)
   
-  object `the [Exception] 'should not have message' syntax should` {
+  describe("the [Exception] 'should not have message' syntax should") {
     
-    def `do nothing when 'should have message' exception's message not equal expected` {
-      the [FileNotFoundException] thrownBy {
-        throw new FileNotFoundException("purposely")
+    it("do nothing when 'should have message' exception's message not equal expected") {
+      the [TestException] thrownBy {
+        throw new TestException("purposely")
       } shouldNot have message ("accidentally")
     }
     
-    def `throw new TestFailedException with correct message and stack depth when used with 'should not have message' and provided code produced exception that has message equal to expected` {
+    it("throw new TestFailedException with correct message and stack depth when used with 'should not have message' and provided code produced exception that has message equal to expected") {
       val fnfe = 
-        the [FileNotFoundException] thrownBy {
-          throw new FileNotFoundException("purposely")
+        the [TestException] thrownBy {
+          throw new TestException("purposely")
         }
       val e = intercept[TestFailedException] {
         fnfe shouldNot have message ("purposely")
@@ -54,15 +56,19 @@ class ShorthandShouldNotBeThrownBySpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `throw new TestFailedException with correct message and stack depth when used with 'should not have message' and provided code does not produce any exception` {
+    it("throw new TestFailedException with correct message and stack depth when used with 'should not have message' and provided code does not produce any exception") {
       val e = intercept[TestFailedException] {
         the [RuntimeException] thrownBy {
           assert(1 === 1)
         } shouldNot have message ("purposely")
       }
+      val offendingLine = thisLineNumber - 4
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
-      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+      // TODO: should re-enable this when we got the macro-based source location working.
+      // SKIP-SCALATESTJS-START
+      assert(e.failedCodeLineNumber === Some(offendingLine))
+      // SKIP-SCALATESTJS-END
     }
   }
 }

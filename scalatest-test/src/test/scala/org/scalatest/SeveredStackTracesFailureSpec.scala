@@ -16,7 +16,7 @@
 package org.scalatest
 
 import Matchers._
-import exceptions.TestFailedException
+import org.scalatest.exceptions.{StackDepthExceptionHelper, TestFailedException}
 
 class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
 
@@ -98,7 +98,7 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
   }
   private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {
     val stackTraceElement = e.getStackTrace()(e.failedCodeStackDepth)
-    val fileName = stackTraceElement.getFileName
+    val fileName = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement).get
     val lineNumber = stackTraceElement.getLineNumber
     failedCodeFileNameAndLineNumberString should equal (fileName + ":" + lineNumber)
   }

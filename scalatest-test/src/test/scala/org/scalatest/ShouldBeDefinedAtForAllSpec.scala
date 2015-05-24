@@ -19,7 +19,7 @@ import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeDefinedAtForAllSpec extends Spec {
+class ShouldBeDefinedAtForAllSpec extends FunSpec {
   
   def wasDefinedAt(left: Any, right: Any): String = 
     left + " was defined at " + right
@@ -38,7 +38,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
     "  at index " + index + ", " + message + " (ShouldBeDefinedAtForAllSpec.scala:" + lineNumber + ") \n" +
     "in " + left
   
-  object `PartialFunction ` {
+  describe("PartialFunction ") {
     
     val fraction = new PartialFunction[Int, Int] {
       def apply(d: Int) = 42 / d
@@ -52,13 +52,13 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
     
     val list = List(fraction)
     
-    object `all(xs) should be definedAt` {
+    describe("all(xs) should be definedAt") {
       
-      def `should do nothing when PartialFunction is defined at the specified value` {
+      it("should do nothing when PartialFunction is defined at the specified value") {
         all(List(fraction)) should be definedAt (6)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is not defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is not defined at the specified value") {
         val caught = intercept[TestFailedException] {
           all(list) should be definedAt (0)
         }
@@ -67,7 +67,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-and expression passed` {
+      it("should do nothing when both expressions in logical-and expression passed") {
         all(list) should (be definedAt (6) and be definedAt (8))
         all(list) should (be definedAt (6) and (be definedAt (8)))
         all(list) should (be (definedAt (6)) and be (definedAt (8)))
@@ -81,7 +81,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (be (definedAt (6)) and (equal (fraction)))
       }
       
-      def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when first expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and be definedAt (8))
         }
@@ -125,7 +125,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when second expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (8) and be definedAt (0))
         }
@@ -169,7 +169,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and be definedAt (0))
         }
@@ -192,7 +192,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-or expression passed` {
+      it("should do nothing when both expressions in logical-or expression passed") {
         all(list) should (be definedAt (6) or be definedAt (8))
         all(list) should (be definedAt (6) or (be definedAt (8)))
         all(list) should (be (definedAt (6)) or be (definedAt (8)))
@@ -206,7 +206,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (be (definedAt (6)) or (equal (fraction)))
       }
       
-      def `should do nothing when first expression in logical-or expression failed` {
+      it("should do nothing when first expression in logical-or expression failed") {
         all(list) should (be definedAt (0) or be definedAt (8))
         all(list) should (be definedAt (0) or (be definedAt (8)))
         all(list) should (be (definedAt (0)) or be (definedAt (8)))
@@ -220,7 +220,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (be (definedAt (0)) or (equal (fraction)))
       }
       
-      def `should do nothing when second expressions in logical-or expression failed` {
+      it("should do nothing when second expressions in logical-or expression failed") {
         all(list) should (be definedAt (6) or be definedAt (0))
         all(list) should (be definedAt (6) or (be definedAt (0)))
         all(list) should (be (definedAt (6)) or be (definedAt (0)))
@@ -234,7 +234,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (be (definedAt (6)) or (equal (fraction2)))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-or expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) or be definedAt (0))
         }
@@ -272,13 +272,13 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
       }
     }
     
-    object `all(xs) should not be definedAt` {
+    describe("all(xs) should not be definedAt") {
       
-      def `should do nothing when PartialFunction is not defined at the specified value` {
+      it("should do nothing when PartialFunction is not defined at the specified value") {
         all(list) should not be definedAt (0)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value") {
         val caught = intercept[TestFailedException] {
           all(list) should not be definedAt (8)
         }
@@ -287,7 +287,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-and expression passed` {
+      it("should do nothing when both expressions in logical-and expression passed") {
         all(list) should (not be definedAt (0) and not be definedAt (0))
         all(list) should (not be definedAt (0) and (not be definedAt (0)))
         all(list) should (not be (definedAt (0)) and not be (definedAt (0)))
@@ -301,7 +301,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (not be (definedAt (0)) and (not equal (fraction2)))
       }
       
-      def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when first expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and not be definedAt (0))
         }
@@ -345,7 +345,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when second expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (0) and not be definedAt (8))
         }
@@ -389,7 +389,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and not be definedAt (8))
         }
@@ -412,7 +412,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-or expression passed` {
+      it("should do nothing when both expressions in logical-or expression passed") {
         all(list) should (not be definedAt (0) or not be definedAt (0))
         all(list) should (not be definedAt (0) or (not be definedAt (0)))
         all(list) should (not be (definedAt (0)) or not be (definedAt (0)))
@@ -426,7 +426,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (not be (definedAt (0)) or (not equal (fraction2)))
       }
       
-      def `should do nothing when first expression in logical-or expression failed` {
+      it("should do nothing when first expression in logical-or expression failed") {
         all(list) should (not be definedAt (8) or not be definedAt (0))
         all(list) should (not be definedAt (8) or (not be definedAt (0)))
         all(list) should (not be (definedAt (8)) or not be (definedAt (0)))
@@ -440,7 +440,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (not be (definedAt (8)) or (not equal (fraction2)))
       }
       
-      def `should do nothing when second expressions in logical-or expression failed` {
+      it("should do nothing when second expressions in logical-or expression failed") {
         all(list) should (not be definedAt (0) or not be definedAt (8))
         all(list) should (not be definedAt (0) or (not be definedAt (8)))
         all(list) should (not be (definedAt (0)) or not be (definedAt (8)))
@@ -454,7 +454,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
         all(list) should (not be (definedAt (0)) or (not equal (fraction)))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-or expression failed") {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) or not be definedAt (8))
         }
@@ -493,13 +493,13 @@ class ShouldBeDefinedAtForAllSpec extends Spec {
       
     }
     
-    object `all(xs) shouldNot be definedAt` {
+    describe("all(xs) shouldNot be definedAt") {
       
-      def `should do nothing when PartialFunction is not defined at the specified value` {
+      it("should do nothing when PartialFunction is not defined at the specified value") {
         all(list) shouldNot be definedAt (0)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value") {
         val caught = intercept[TestFailedException] {
           all(list) shouldNot be definedAt (8)
         }

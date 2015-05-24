@@ -17,8 +17,8 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.NyayaGeneratorDrivenPropertyChecks._
-import japgolly.nyaya.test.Gen
+import org.scalatest.prop.GenDrivenPropertyChecks
+import org.scalatest.prop.Generator
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -29,21 +29,23 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ {
-
-  implicit val posZLongGen: Gen[PosZLong] =
-    for {i <- Gen.chooselong(1, Long.MaxValue)} yield PosZLong.from(i).get
-
-  implicit val intGen: Gen[Int] = Gen.int
-  implicit val longGen: Gen[Long] = Gen.long
-  implicit val shortGen: Gen[Short] = Gen.short
-  implicit val charGen: Gen[Char] = Gen.char
-  implicit val floatGen: Gen[Float] = Gen.float
-  implicit val doubleGen: Gen[Double] = Gen.double
-  implicit val byteGen: Gen[Byte] = Gen.byte
+class PosZLongSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
+      case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
+      // I needed this because with GenDrivenPropertyChecks, got:
+      // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
+      // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(float: Float) if float.isNaN =>
+        b match {
+          case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
       case _: Success[_] => a == b
       case Failure(ex) => b match {
         case _: Success[_] => false
@@ -64,6 +66,10 @@ class PosZLongSpec extends FunSpec with Matchers/* with StrictCheckedEquality*/ 
         PosZLong.from(-1L) shouldBe None
         PosZLong.from(-99L) shouldBe None
       }
+    }
+    it("should offer MaxValue and MinValue factory methods") {
+      PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
+      PosZLong.MinValue shouldEqual PosZLong(0L)
     }
     it("should have a pretty toString") {
       PosZLong.from(42L).value.toString shouldBe "PosZLong(42)"

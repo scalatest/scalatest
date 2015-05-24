@@ -16,6 +16,7 @@
 package org.scalatest
 
 import scala.collection.GenTraversable
+import scala.scalajs.js.timers.SetTimeoutHandle
 
 private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
@@ -52,5 +53,33 @@ private[scalatest] class CountDownLatch(count: Int) {
 private[scalatest] object NameTransformer {
 
   def decode(encoded: String): String = encoded
+
+}
+
+private[scalatest] trait TimerTask extends Runnable {
+
+  var handle: Option[SetTimeoutHandle] = None
+
+  def run()
+
+  def cancel(): Unit = {
+    handle match {
+      case Some(h) => scala.scalajs.js.timers.clearTimeout(h)
+      case None =>
+    }
+  }
+
+}
+
+private[scalatest] class Timer {
+
+  def schedule(task: TimerTask, millis: Long): Unit = {
+    task.handle =
+      Some(
+        scala.scalajs.js.timers.setTimeout(millis) {
+          task.run()
+        }
+      )
+  }
 
 }

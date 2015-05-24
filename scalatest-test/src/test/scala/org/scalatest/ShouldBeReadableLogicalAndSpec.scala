@@ -16,13 +16,16 @@
 package org.scalatest
 
 import SharedHelpers.{thisLineNumber, createTempDirectory}
-import java.io.File
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeReadableLogicalAndSpec extends Spec {
+class ShouldBeReadableLogicalAndSpec extends FunSpec {
   
   val fileName: String = "ShouldBeReadableLogicalAndSpec.scala"
+
+  trait File {
+    def isReadable: Boolean
+  }
   
   def wasEqualTo(left: Any, right: Any): String = 
     FailureMessages.wasEqualTo(left, right)
@@ -46,19 +49,16 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
     val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
-    
-  val tempDir = createTempDirectory()
-  val readableFile = File.createTempFile("delete", "me", tempDir)
-  readableFile.setReadable(true)
+
+  val readableFile = new File { val isReadable = true }
   
-  val secretFile = new File(tempDir, "imaginary")
-  secretFile.setReadable(false)
+  val secretFile = new File { val isReadable = false }
   
-  object `Readability matcher` {
+  describe("Readability matcher") {
     
-    object `when work with 'file should be (readable)'` {
+    describe("when work with 'file should be (readable)'") {
       
-      def `should do nothing when file is readable` {
+      it("should do nothing when file is readable") {
         readableFile should (equal (readableFile) and be (readable))
         readableFile should (be (readable) and equal (readableFile))
         
@@ -66,7 +66,7 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
         readableFile should (be (readable) and be (readableFile))
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           secretFile should (equal (secretFile) and be (readable))
         }
@@ -97,9 +97,9 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'file should not be sorted'` {
+    describe("when work with 'file should not be sorted'") {
       
-      def `should do nothing when file is not readable` {
+      it("should do nothing when file is not readable") {
         secretFile should (not equal readableFile and not be readable)
         secretFile should (not be readable and not equal readableFile)
         
@@ -107,7 +107,7 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
         secretFile should (not be readable and not be readableFile)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           readableFile should (not equal secretFile and not be readable)
         }
@@ -138,9 +138,9 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (readable)'` {
+    describe("when work with 'all(xs) should be (readable)'") {
       
-      def `should do nothing when all(xs) is readable` {
+      it("should do nothing when all(xs) is readable") {
         all(List(readableFile)) should (be (readableFile) and be (readable))
         all(List(readableFile)) should (be (readable) and be (readableFile))
         
@@ -148,7 +148,7 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
         all(List(readableFile)) should (be (readable) and equal (readableFile))
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(secretFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (secretFile) and be (readable))
@@ -183,8 +183,8 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be readable'` {
-      def `should do nothing when all(xs) is not readable` {
+    describe("when work with 'all(xs) should not be readable'") {
+      it("should do nothing when all(xs) is not readable") {
         all(List(secretFile)) should (not be readable and not be readableFile)
         all(List(secretFile)) should (not be readableFile and not be readable)
         
@@ -192,7 +192,7 @@ class ShouldBeReadableLogicalAndSpec extends Spec {
         all(List(secretFile)) should (not equal readableFile and not be readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(readableFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be secretFile and not be readable)

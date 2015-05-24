@@ -17,7 +17,7 @@ package org.scalatest
 
 import java.io.PrintStream
 import org.scalatest.events.Event
-import DispatchReporter.propagateDispose
+import Reporter.propagateDispose
 
 /**
  * This report just catches exceptions thrown by the passed report and

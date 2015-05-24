@@ -15,9 +15,12 @@
  */
 package org.scalatest.concurrent
 
-private[concurrent] object SleepHelper {
+private[scalatest] object SleepHelper {
 
   def sleep(millis: Long, nanos: Int): Unit =
     Thread.sleep(millis, nanos)
+
+  def sleep(millis: Long): Unit =
+    Thread.sleep(millis)
 
 }

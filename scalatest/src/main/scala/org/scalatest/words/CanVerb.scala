@@ -71,7 +71,7 @@ import org.scalatest._
  * and <code>MustVerb</code>. Both <code>ShouldVerb</code> and <code>MustVerb</code> must exist
  * as a separate trait because an implicit conversion provided directly would conflict
  * with the implicit conversion that provides <code>should</code> or <code>must</code> methods on <code>String</code>
- * in the <code>ShouldMatchers</code> and <code>MustMatchers</code> traits.
+ * in the <code>Matchers</code> and <code>MustMatchers</code> traits.
  * </p>
  *
  * @author Bill Venners

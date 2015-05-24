@@ -17,10 +17,10 @@ package org.scalatest
 
 import Matchers._
 
-class RunningTestSpec extends Spec {
+class RunningTestSpec extends FunSpec {
 
-  object `The RunningTest class` {
-    def `should determine equality based on the suite ID and test name only` {
+  describe("The RunningTest class") {
+    it("should determine equality based on the suite ID and test name only") {
       val a = new RunningTest("suite name", "suite ID", "test name", 0)
       val b = new RunningTest("suite name", "suite ID", "test name", 0)
       val c = new RunningTest("different suite name", "suite ID", "test name", 0)

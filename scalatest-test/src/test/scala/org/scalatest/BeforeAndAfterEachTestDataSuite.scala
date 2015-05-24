@@ -24,7 +24,7 @@ import org.scalatest.events.InfoProvided
 
 class BeforeAndAfterEachTestDataSuite extends FunSuite {
 
-  class TheSuper extends Spec {
+  class TheSuper extends FunSuite {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -48,7 +48,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     var beforeAllConfigGotTheGreeting = false
     var afterAllConfigGotTheGreeting = false
 
-    def `test something` = ()
+    test("test something") {}
 
     override def beforeAll(config: ConfigMap) {
       if (!runWasCalled)
@@ -197,9 +197,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
        
-    class MySuite extends Spec with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterEach(td: TestData) { throw new NumberFormatException }
-      def `test July` = ()
+      test("test July") {}
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -211,9 +211,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
   test("If any invocation of beforeAll completes abruptly with an exception, run " +
     "will complete abruptly with the same exception.") {
     
-    class MySuite extends Spec with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def beforeAll(cm: ConfigMap) { throw new NumberFormatException }
-      def `test July` = ()
+      test("test July") {}
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -223,16 +223,16 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
  
   test("If any call to super.run completes abruptly with an exception, run " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
-    trait FunkySuite extends Spec {
+    trait FunkySuite extends FunSuite {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
-      def `test 1` = {}
-      def `test 2` = {}
-      def `test 3` = {}
+      test("test 1") {}
+      test("test 2") {}
+      test("test 3") {}
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
       }
@@ -246,16 +246,16 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
    
   test("If both super.run and afterAll complete abruptly with an exception, run " + 
     "will complete abruptly with the exception thrown by super.run.") {
-    trait FunkySuite extends Spec {
+    trait FunkySuite extends FunSuite {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
-      def `test 1` = {}
-      def `test 2` = {}
-      def `test 3` = {}
+      test("test 1") {}
+      test("test 2") {}
+      test("test 3") {}
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
         throw new IllegalArgumentException
@@ -271,9 +271,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, run will complete abruptly with the same exception.") {
        
-    class MySuite extends Spec with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
-      def `test July` = ()
+      test("test July") {}
     }
     intercept[NumberFormatException] {
       val a = new MySuite

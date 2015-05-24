@@ -24,8 +24,10 @@ trait OrderExpectedResults extends EventHelpers {
 
 object ParallelTestExecutionOrderExamples extends Tables {
 
+  // SKIP-SCALATESTJS-START
   def orderSpec = new ExampleParallelTestExecutionOrderSpec
   def orderFixtureSpec = new ExampleParallelTestExecutionOrderFixtureSpec
+  // SKIP-SCALATESTJS-END
   def orderFunSuite = new ExampleParallelTestExecutionOrderFunSuite
   def orderFixtureFunSuite = new ExampleParallelTestExecutionOrderFixtureFunSuite
   def orderFunSpec = new ExampleParallelTestExecutionOrderFunSpec
@@ -44,8 +46,10 @@ object ParallelTestExecutionOrderExamples extends Tables {
   def orderExamples =
     Table(
       "suite1",
+      // SKIP-SCALATESTJS-START
       orderSpec,
       orderFixtureSpec,
+      // SKIP-SCALATESTJS-END
       orderFunSuite, 
       orderFixtureFunSuite, 
       orderFunSpec, 
@@ -63,8 +67,9 @@ object ParallelTestExecutionOrderExamples extends Tables {
     )
 }
 
+// SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderSpec extends Spec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends Spec with OrderExpectedResults with ParallelTestExecution {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
@@ -81,7 +86,7 @@ class ExampleParallelTestExecutionOrderSpec extends Spec with OrderExpectedResul
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}
@@ -96,9 +101,10 @@ class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with Ord
     checkTestSucceeded(events(5), "test 3")
   }
 }
+// SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFunSuite extends FunSuite with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends FunSuite with OrderExpectedResults with ParallelTestExecution {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -111,10 +117,11 @@ class ExampleParallelTestExecutionOrderFunSuite extends FunSuite with OrderExpec
     checkTestStarting(events(4), "Test 3")
     checkTestSucceeded(events(5), "Test 3")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSuite
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite with OrderExpectedResults with ParallelTestExecution with StringFixture {
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
@@ -127,10 +134,11 @@ class ExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite 
     checkTestStarting(events(4), "Fixture Test 3")
     checkTestSucceeded(events(5), "Fixture Test 3")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSuite
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFunSpec extends FunSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends FunSpec with OrderExpectedResults with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -154,10 +162,11 @@ class ExampleParallelTestExecutionOrderFunSpec extends FunSpec with OrderExpecte
     checkTestSucceeded(events(10), "Scope 2 Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFunSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   describe("Fixture Scope 1") {
     it("Fixture Test 1") { fixture => }
     it("Fixture Test 2") { fixture =>}
@@ -181,10 +190,11 @@ class ExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec wi
     checkTestSucceeded(events(10), "Fixture Scope 2 Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFunSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with OrderExpectedResults with ParallelTestExecution {
   feature("Scope 1") {
     scenario("Test 1") {}
     scenario("Test 2") {}
@@ -208,10 +218,11 @@ class ExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with Orde
     checkTestSucceeded(events(10), "Feature: Scope 2 Scenario: Test 4")
     checkScopeClosed(events(11), "Feature: Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFeatureSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.FeatureSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.FeatureSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   feature("Fixture Scope 1") {
     scenario("Fixture Test 1") { fixture => }
     scenario("Fixture Test 2") { fixture =>}
@@ -235,10 +246,11 @@ class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.Featur
     checkTestSucceeded(events(10), "Feature: Fixture Scope 2 Scenario: Fixture Test 4")
     checkScopeClosed(events(11), "Feature: Fixture Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFeatureSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with OrderExpectedResults with ParallelTestExecution {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -262,10 +274,11 @@ class ExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with OrderExpec
     checkTestSucceeded(events(10), "Scope 2 should Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFlatSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   behavior of "Fixture Scope 1"
   it should "Fixture Test 1" in { fixture => }
   it should "Fixture Test 2" in { fixture => }
@@ -289,10 +302,11 @@ class ExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec 
     checkTestSucceeded(events(10), "Fixture Scope 2 should Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFlatSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -318,10 +332,11 @@ class ExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with OrderExpec
     checkTestSucceeded(events(10), "Scope 2 Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFreeSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" - {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -347,10 +362,11 @@ class ExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec 
     checkTestSucceeded(events(10), "Fixture Scope 2 Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureFreeSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderPropSpec extends PropSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends PropSpec with OrderExpectedResults with ParallelTestExecution {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -364,10 +380,11 @@ class ExampleParallelTestExecutionOrderPropSpec extends PropSpec with OrderExpec
     checkTestStarting(events(4), "Test 3")
     checkTestSucceeded(events(5), "Test 3")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderPropSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
@@ -381,10 +398,11 @@ class ExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec 
     checkTestStarting(events(4), "Fixture Test 3")
     checkTestSucceeded(events(5), "Fixture Test 3")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixturePropSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderWordSpec extends WordSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends WordSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -410,10 +428,11 @@ class ExampleParallelTestExecutionOrderWordSpec extends WordSpec with OrderExpec
     checkTestSucceeded(events(10), "Scope 2 should Test 4")
     checkScopeClosed(events(11), "Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderWordSpec
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" should {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -439,4 +458,5 @@ class ExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec 
     checkTestSucceeded(events(10), "Fixture Scope 2 should Fixture Test 4")
     checkScopeClosed(events(11), "Fixture Scope 2")
   }
+  //SCALATESTJS-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionOrderFixtureWordSpec
 }

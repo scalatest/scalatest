@@ -16,17 +16,25 @@
 package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
+// SKIP-SCALATESTJS-START
 import java.io.File
+// SKIP-SCALATESTJS-END
 import exceptions.TestFailedException
 
-class ShouldBeReadableSpec extends Spec with Matchers {
-  
+class ShouldBeReadableSpec extends FunSpec with Matchers {
+
+  // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
   val readableFile = File.createTempFile("delete", "me", tempDir)
   readableFile.setReadable(true)
   
   val secretFile = new File(tempDir, "imaginary")
   secretFile.setReadable(false)
+  // SKIP-SCALATESTJS-END
+
+  //SCALATESTJS-ONLY trait File { def isReadable: Boolean }
+  //SCALATESTJS-ONLY val readableFile = new File { val isReadable = true }
+  //SCALATESTJS-ONLY val secretFile = new File { val isReadable = false }
   
   val fileName: String = "ShouldBeReadableSpec.scala"
     
@@ -36,25 +44,29 @@ class ShouldBeReadableSpec extends Spec with Matchers {
   def wasReadable(left: Any): String = 
     FailureMessages.wasReadable(left)
   
-  def `readableFile should be readable, secretFile should not be readable` {
+  it("readableFile should be readable, secretFile should not be readable") {
+    // SKIP-SCALATESTJS-START
     assert(readableFile.canRead === true)
     assert(secretFile.canRead === false)
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY assert(readableFile.isReadable === true)
+    //SCALATESTJS-ONLY assert(secretFile.isReadable === false)
   }
-  
+
   def allError(left: Any, message: String, lineNumber: Int): String = {
     val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
-  
-  object `Readable matcher` {
-    
-    object `when work with 'file should be (readable)'` {
-      
-      def `should do nothing when file is readable` {
+
+  describe("Readable matcher") {
+
+    describe("when work with 'file should be (readable)'") {
+
+      it("should do nothing when file is readable") {
         readableFile should be (readable)
       }
-      
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           secretFile should be (readable)
         }
@@ -62,16 +74,16 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
-      
+
     }
-    
-    object `when work with 'file should not be readable'` {
-      
-      def `should do nothing when file is not readable` {
+
+    describe("when work with 'file should not be readable'") {
+
+      it("should do nothing when file is not readable") {
         secretFile should not be readable
       }
-      
-      def `should throw TestFailedException with correct stack depth when file is readable` {
+
+      it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
           readableFile should not be readable
         }
@@ -80,14 +92,14 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
-    
-    object `when work with 'file shouldBe readable'` {
-      
-      def `should do nothing when file is readable` {
+
+    describe("when work with 'file shouldBe readable'") {
+
+      it("should do nothing when file is readable") {
         readableFile shouldBe readable
       }
-      
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           secretFile shouldBe readable
         }
@@ -95,16 +107,16 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
-      
+
     }
-    
-    object `when work with 'file shouldNot be (readable)'` {
-      
-      def `should do nothing when file is not readable` {
+
+    describe("when work with 'file shouldNot be (readable)'") {
+
+      it("should do nothing when file is not readable") {
         secretFile shouldNot be (readable)
       }
-      
-      def `should throw TestFailedException with correct stack depth when file is readable` {
+
+      it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
           readableFile shouldNot be (readable)
         }
@@ -112,16 +124,16 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
-      
+
     }
-    
-    object `when work with 'all(xs) should be (readable)'` {
-      
-      def `should do nothing when all(xs) is readable` {
+
+    describe("when work with 'all(xs) should be (readable)'") {
+
+      it("should do nothing when all(xs) is readable") {
         all(List(readableFile)) should be (readable)
       }
-      
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(secretFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) should be (readable)
@@ -130,16 +142,16 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
-      
+
     }
-    
-    object `when work with 'all(xs) should not be readable'` {
-      
-      def `should do nothing when all(xs) is not readable` {
+
+    describe("when work with 'all(xs) should not be readable'") {
+
+      it("should do nothing when all(xs) is not readable") {
         all(List(secretFile)) should not be readable
       }
-      
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(readableFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) should not be readable
@@ -148,16 +160,16 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
-      
+
     }
-    
-    object `when work with 'all(xs) shouldBe readable'` {
-      
-      def `should do nothing when all(xs) is readable` {
+
+    describe("when work with 'all(xs) shouldBe readable'") {
+
+      it("should do nothing when all(xs) is readable") {
         all(List(readableFile)) shouldBe readable
       }
-      
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(secretFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldBe readable
@@ -167,14 +179,14 @@ class ShouldBeReadableSpec extends Spec with Matchers {
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
-    
-    object `when work with 'all(xs) shouldNot be (readable)'` {
-      
-      def `should do nothing when all(xs) is not readable` {
+
+    describe("when work with 'all(xs) shouldNot be (readable)'") {
+
+      it("should do nothing when all(xs) is not readable") {
         all(List(secretFile)) shouldNot be (readable)
       }
-      
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(readableFile)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldNot be (readable)

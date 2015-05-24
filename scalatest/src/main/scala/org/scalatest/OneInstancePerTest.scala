@@ -220,6 +220,9 @@ trait OneInstancePerTest extends SuiteMixin {
    * }
    * </pre>
    */
+  // SKIP-SCALATESTJS-START
   def newInstance: Suite with OneInstancePerTest = this.getClass.newInstance.asInstanceOf[Suite with OneInstancePerTest]
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest
 }
 

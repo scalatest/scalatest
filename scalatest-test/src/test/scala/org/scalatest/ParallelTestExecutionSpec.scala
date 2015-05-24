@@ -25,7 +25,9 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.InfoProvided
 import java.util.concurrent.Future
+// SKIP-SCALATESTJS-START
 import java.util.concurrent.LinkedBlockingQueue
+// SKIP-SCALATESTJS-END
 import org.scalatest.time.Span
 import org.scalatest.time.Second
 import org.scalatest.time.Seconds
@@ -79,7 +81,8 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     class ControlledOrderConcurrentDistributor(poolSize: Int) extends Distributor {
       private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
       
@@ -111,6 +114,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
       }
     }
+    // SKIP-SCALATESTJS-END
 
     it("should have the events reported in correct order when tests are executed in parallel") {
 
@@ -190,7 +194,8 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
     }
-    
+
+    // SKIP-SCALATESTJS-START
     it("should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
       def withDistributor(fun: ControlledOrderConcurrentDistributor => Unit) {
         val recordingReporter = new EventRecordingReporter
@@ -437,6 +442,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       checkTestSucceeded(eventRecorded(32), "Thing 2 do thing 2b")
       checkScopeClosed(eventRecorded(33), "Thing 2")
     }
+    // SKIP-SCALATESTJS-END
     
     it("should only execute nested suites in outer instance") {
       

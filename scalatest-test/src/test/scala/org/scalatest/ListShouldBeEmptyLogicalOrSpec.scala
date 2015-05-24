@@ -19,7 +19,7 @@ import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
 
-class ListShouldBeEmptyLogicalOrSpec extends Spec {
+class ListShouldBeEmptyLogicalOrSpec extends FunSpec {
   
   //ADDITIONAL//
   
@@ -55,11 +55,11 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
   val nonEmptyList = List(1, 2, 3)
   val emptyList = List.empty[Int]
   
-  object `Sorted matcher` {
+  describe("Sorted matcher") {
     
-    object `when work with 'list should be (empty)'` {
+    describe("when work with 'list should be (empty)'") {
       
-      def `should do nothing when list is empty` {
+      it("should do nothing when list is empty") {
         
         emptyList should (be (empty) or be (emptyList))
         nonEmptyList should (be (empty) or be (nonEmptyList))
@@ -78,7 +78,7 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
         nonEmptyList should (equal (nonEmptyList) or be (empty))
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not empty` {
+      it("should throw TestFailedException with correct stack depth when file is not empty") {
         val caught1 = intercept[TestFailedException] {
           nonEmptyList should (be (empty) or be (emptyList))
         }
@@ -109,9 +109,9 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'file should not be empty'` {
+    describe("when work with 'file should not be empty'") {
       
-      def `should do nothing when file is not empty` {
+      it("should do nothing when file is not empty") {
         nonEmptyList should (not be empty or not be emptyList)
         emptyList should (not be empty or not be nonEmptyList)
         nonEmptyList should (not be empty or not be nonEmptyList)
@@ -129,7 +129,7 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
         emptyList should (not equal nonEmptyList or not be empty)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is empty` {
+      it("should throw TestFailedException with correct stack depth when file is empty") {
         val caught1 = intercept[TestFailedException] {
           emptyList should (not be empty or not be emptyList)
         }
@@ -160,9 +160,9 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (empty)'` {
+    describe("when work with 'all(xs) should be (empty)'") {
       
-      def `should do nothing when all(xs) is empty` {
+      it("should do nothing when all(xs) is empty") {
         all(List(emptyList)) should (be (empty) or be (emptyList))
         all(List(nonEmptyList)) should (be (empty) or be (nonEmptyList))
         all(List(emptyList)) should (be (empty) or be (nonEmptyList))
@@ -180,7 +180,7 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
         all(List(nonEmptyList)) should (equal (nonEmptyList) or be (empty))
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(nonEmptyList)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (emptyList) or be (empty))
@@ -215,8 +215,8 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be sorted'` {
-      def `should do nothing when xs is not sorted` {
+    describe("when work with 'all(xs) should not be sorted'") {
+      it("should do nothing when xs is not sorted") {
         all(List(nonEmptyList)) should (not be empty or not be emptyList)
         all(List(emptyList)) should (not be empty or not be nonEmptyList)
         all(List(nonEmptyList)) should (not be empty or not be nonEmptyList)
@@ -234,7 +234,7 @@ class ListShouldBeEmptyLogicalOrSpec extends Spec {
         all(List(emptyList)) should (not equal nonEmptyList or not be empty)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(emptyList)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be emptyList or not be empty)

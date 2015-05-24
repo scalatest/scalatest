@@ -25,6 +25,11 @@ import org.scalatest.Assertions.newAssertionFailedException
  * @author Bill Venners
  */
 final class NoExceptionWord {
+
+  // SKIP-SCALATESTJS-START
+  private val stackDepth = 4
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private val stackDepth = 12
   
   /**
    * This method enables the following syntax: 
@@ -52,7 +57,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), 4)
+        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
       }
     }
   }
@@ -83,7 +88,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), 4)
+        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
       }
     }
   }

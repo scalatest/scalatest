@@ -17,6 +17,7 @@ package org.scalatest
 
 import collection.JavaConverters._
 import scala.collection.GenTraversable
+import java.util.concurrent.atomic.AtomicReference
 
 private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
@@ -47,5 +48,46 @@ private[scalatest] class CountDownLatch(count: Int) {
 private[scalatest] object NameTransformer {
 
   def decode(encoded: String): String = scala.reflect.NameTransformer.decode(encoded)
+
+}
+
+private[scalatest] trait TimerTask extends Runnable {
+
+  val timerTaskRef: AtomicReference[Option[java.util.TimerTask]] = new AtomicReference(None)
+
+  def run()
+
+  def cancel(): Unit = timerTaskRef.get match {
+    case Some(javaTimerTask) => javaTimerTask.cancel
+    case None =>
+  }
+
+}
+
+private[scalatest] class Timer {
+
+  val timer = new java.util.Timer
+
+  def schedule(task: TimerTask, delay: Long): Unit = {
+    val javaTimerTask = new java.util.TimerTask {
+      def run(): Unit = {
+        task.run()
+      }
+    }
+    task.timerTaskRef.getAndSet(Some(javaTimerTask))
+    timer.schedule(javaTimerTask, delay)
+  }
+
+  def schedule(task: TimerTask, delay: Long, period: Long): Unit = {
+    val javaTimerTask = new java.util.TimerTask {
+      def run(): Unit = {
+        task.run()
+      }
+    }
+    task.timerTaskRef.getAndSet(Some(javaTimerTask))
+    timer.schedule(javaTimerTask, delay, period)
+  }
+
+  def cancel(): Unit = timer.cancel
 
 }

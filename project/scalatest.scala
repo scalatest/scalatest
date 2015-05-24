@@ -131,7 +131,7 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.1" % config
+    "org.scalacheck" %% "scalacheck" % "1.12.3" % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
@@ -171,7 +171,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.2",
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.3",
       "org.easymock" % "easymockclassextension" % "3.1" % "optional",
       "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
@@ -188,7 +188,8 @@ object ScalatestBuild extends Build {
     )
 
   def scalatestTestOptions =
-    Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
       "-m", "org.scalatest",
       "-m", "org.scalactic",
       "-m", "org.scalactic.anyvals",
@@ -220,9 +221,7 @@ object ScalatestBuild extends Build {
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
-      libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10"
+      libraryDependencies += scalacheckDependency("optional")
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -230,8 +229,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies += scalacheckDependency("optional"),
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %%% "nyaya-test" % "0.5.10",
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
@@ -327,8 +324,6 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
       libraryDependencies += scalacheckDependency("test"),
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -339,8 +334,6 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-core" % "0.5.10",
-      libraryDependencies += "com.github.japgolly.nyaya" %% "nyaya-test" % "0.5.10",
       jsDependencies += RuntimeDOM % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
@@ -459,8 +452,8 @@ object ScalatestBuild extends Build {
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      //libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.2",
       libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.3",
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {

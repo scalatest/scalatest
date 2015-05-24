@@ -136,6 +136,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain noElementsOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]) {
+    val right = elements.toList
+    if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.containedAtLeastOneOf(left, right)
+        else
+          FailureMessages.didNotContainAtLeastOneOf(left, right)
+      )
+  }
   
   /**
    * This method enables the following syntax: 

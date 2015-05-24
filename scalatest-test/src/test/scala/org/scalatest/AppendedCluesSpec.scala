@@ -16,7 +16,9 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException, ModifiableMessage}
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
+// SKIP-SCALATESTJS-END
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}
 import SharedHelpers.EventRecordingReporter
@@ -30,7 +32,9 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
     Table(
       "exception",
       new TestFailedException("message", 3),
+      // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", 3),
+      // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
@@ -93,8 +97,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue white
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message" + white)
+      caught.message should be (Some("message" + white))
     }
   }
 
@@ -106,8 +109,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue "clue"
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message clue")
+      caught.message should be(Some("message clue"))
     }
   }
 
@@ -119,8 +121,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue " clue" // has a leading space
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message clue")
+      caught.message should be(Some("message clue"))
     }
   }
 
@@ -132,8 +133,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue "\nclue" // has an end of line character
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message\nclue")
+      caught.message should be (Some("message\nclue"))
     }
   }
 
@@ -145,8 +145,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue ". clue" // has an end of line character
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message. clue")
+      caught.message should be (Some("message. clue"))
     }
   }
 
@@ -158,8 +157,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue ", clue" // has an end of line character
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message, clue")
+      caught.message should be (Some("message, clue"))
     }
   }
 
@@ -171,8 +169,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue ", clue" // has an end of line character
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message, clue")
+      caught.message should be (Some("message, clue"))
     }
   }
 
@@ -185,8 +182,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
         } withClue (list)
       }
       caught should not be theSameInstanceAs(e)
-      caught.message should be('defined)
-      caught.message.get should equal("message List(1, 2, 3)")
+      caught.message should be (Some("message List(1, 2, 3)"))
     }
   }
 

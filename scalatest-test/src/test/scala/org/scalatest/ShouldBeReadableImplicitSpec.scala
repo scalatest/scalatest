@@ -20,7 +20,7 @@ import enablers.Readability
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeReadableImplicitSpec extends Spec {
+class ShouldBeReadableImplicitSpec extends FunSpec {
   
   trait Thing {
     def canRead: Boolean
@@ -47,7 +47,7 @@ class ShouldBeReadableImplicitSpec extends Spec {
   def wasReadable(left: Any): String = 
     FailureMessages.wasReadable(left)
   
-  def `book should be readable, stone should not be readable` {
+  it("book should be readable, stone should not be readable") {
     assert(book.canRead === true)
     assert(stone.canRead === false)
   }
@@ -57,15 +57,15 @@ class ShouldBeReadableImplicitSpec extends Spec {
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
-  object `Readable matcher` {
+  describe("Readable matcher") {
     
-    object `when work with 'file should be (readable)'` {
+    describe("when work with 'file should be (readable)'") {
       
-      def `should do nothing when file is readable` {
+      it("should do nothing when file is readable") {
         book should be (readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           stone should be (readable)
         }
@@ -76,13 +76,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       
     }
     
-    object `when work with 'file should not be readable'` {
+    describe("when work with 'file should not be readable'") {
       
-      def `should do nothing when file is not readable` {
+      it("should do nothing when file is not readable") {
         stone should not be readable
       }
       
-      def `should throw TestFailedException with correct stack depth when file is readable` {
+      it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
           book should not be readable
         }
@@ -92,13 +92,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'file shouldBe readable'` {
+    describe("when work with 'file shouldBe readable'") {
       
-      def `should do nothing when file is readable` {
+      it("should do nothing when file is readable") {
         book shouldBe readable
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           stone shouldBe readable
         }
@@ -109,13 +109,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       
     }
     
-    object `when work with 'file shouldNot be (readable)'` {
+    describe("when work with 'file shouldNot be (readable)'") {
       
-      def `should do nothing when file is not readable` {
+      it("should do nothing when file is not readable") {
         stone shouldNot be (readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is readable` {
+      it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
           book shouldNot be (readable)
         }
@@ -126,13 +126,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) should be (readable)'` {
+    describe("when work with 'all(xs) should be (readable)'") {
       
-      def `should do nothing when all(xs) is readable` {
+      it("should do nothing when all(xs) is readable") {
         all(List(book)) should be (readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
           all(left1) should be (readable)
@@ -144,13 +144,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) should not be readable'` {
+    describe("when work with 'all(xs) should not be readable'") {
       
-      def `should do nothing when all(xs) is not readable` {
+      it("should do nothing when all(xs) is not readable") {
         all(List(stone)) should not be readable
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
           all(left1) should not be readable
@@ -162,13 +162,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) shouldBe readable'` {
+    describe("when work with 'all(xs) shouldBe readable'") {
       
-      def `should do nothing when all(xs) is readable` {
+      it("should do nothing when all(xs) is readable") {
         all(List(book)) shouldBe readable
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldBe readable
@@ -179,13 +179,13 @@ class ShouldBeReadableImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) shouldNot be (readable)'` {
+    describe("when work with 'all(xs) shouldNot be (readable)'") {
       
-      def `should do nothing when all(xs) is not readable` {
+      it("should do nothing when all(xs) is not readable") {
         all(List(stone)) shouldNot be (readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldNot be (readable)
