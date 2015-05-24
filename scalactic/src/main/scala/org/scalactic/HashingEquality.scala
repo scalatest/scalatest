@@ -70,7 +70,7 @@ object HashingEquality {
    * then compares the resulting objects with <code>==</code>, and whose <code>hashCodeFor</code> method first calls
    * .deep if the passed object is an <code>array</code>, then calls <code>##</code>.
    *
-   * @return a default <code>Equivalence[A]</code>
+   * @return a default <code>HashingEquality[A]</code>
    */
   implicit def default[A]: HashingEquality[A] = new DefaultHashingEquality[A]
 }

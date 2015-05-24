@@ -931,22 +931,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
 }
 
 object SortedCollections {
-
   def apply[T](implicit equality: OrderingEquality[T]): SortedCollections[T] = new SortedCollections(equality)
-
-/*
-  def native[T](implicit ordering: Ordering[T]): SortedCollections[T] = 
-    SortedCollections[T] {
-      new OrderingEquality[T] {
-        def compare(a: T, b: T): Int = ordering.compare(a, b) // Need to deal with arrays somehow
-        def areEqual(a: T, b: Any): Boolean = Equality.default.areEqual(a, b)
-        def hashCodeFor(a: T): Int =
-          a match {
-            case arr: Array[_] => arr.deep.##
-            case _ => a.##
-          }
-      }
-    }
-*/
 }
 

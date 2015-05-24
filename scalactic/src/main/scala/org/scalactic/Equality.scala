@@ -250,7 +250,7 @@ object Equality {
    * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
    * then compares the resulting objects with <code>==</code>.
    *
-   * @return a default <code>Equivalence[A]</code>
+   * @return a default <code>Equality[A]</code>
    */
   implicit def default[A]: Equality[A] = new DefaultEquality[A]
 }

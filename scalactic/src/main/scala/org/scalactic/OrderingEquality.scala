@@ -123,9 +123,16 @@ object OrderingEquality {
    * Provides default <code>HashingEquality</code> implementations for the specified type whose
    * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
    * then compares the resulting objects with <code>==</code>, and whose <code>hashCodeFor</code> method first calls
-   * .deep if the passed object is an <code>array</code>, then calls <code>##</code>.
+   * .deep if the passed object is an <code>array</code>, then calls <code>##</code>. The compare method is defined
+   * by the <code>compare</code> method of the implicitly provided <code>Ordering[A]</code>.
    *
-   * @return a default <code>Equivalence[A]</code>
+   * <p>
+   * Note, the implicitly provided <code>Ordering</code> must be consistent with the <code>areEqual</code> and <code>hashCodeFor</code>
+   * methods. This will be true by default because the <code>Ordering</code>s provided by Scala are consistent with <code>==</code>
+   * and <code>##</code>, and Scala provides no implicit <code>Ordering</code> for arrays.
+   * </p>
+   *
+   * @return a default <code>OrderingEquivalence[A]</code>
    */
   implicit def default[A](implicit ordering: Ordering[A]): OrderingEquality[A] = new DefaultOrderingEquality[A]
 }

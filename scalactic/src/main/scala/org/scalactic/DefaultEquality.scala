@@ -62,6 +62,11 @@ private[scalactic] sealed class DefaultHashingEquality[A] extends DefaultEqualit
   override def toString: String = "HashingEquality.default"
 }
 
+/*
+This is a tad suspect because picking up an implicit Ordering for arrays, but treating them structurally.
+This works currently becauyse there's no Ordering for arrays defined by Scala. This is unlikely to
+change, but might be worth a comment in the Scaladoc for OrderingEquality.default.
+*/
 private[scalactic] final class DefaultOrderingEquality[A](implicit ordering: Ordering[A]) extends DefaultHashingEquality[A] with OrderingEquality[A] {
 
   def compare(a: A, b: A): Int = ordering.compare(a, b)
