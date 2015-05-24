@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.equalities
 
-import scala.language.higherKinds
-import scala.language.implicitConversions
+import org.scalactic.Equality
 
+import scala.language.{higherKinds, implicitConversions}
+
+/**
+ * An [[Equality]] that allows the comparison of values nested in [[Seq]]s using whatever Equality is
+ * in scope for the contained type.
+ */
 trait RecursiveSeqEquality {
-
-  implicit def recursiveSeqEquality[E, SEQ[e] <: collection.GenSeq[e]](implicit equalityOfE: Equality[E]): Equality[SEQ[E]] =
+  implicit def recursiveSeqEquality[E, SEQ[e] <: collection.GenSeq[e]](implicit eqE: Equality[E]): Equality[SEQ[E]] =
     new Equality[SEQ[E]] {
-      def areEqual(seqA: SEQ[E], b: Any): Boolean = {
-        b match {
-          case seqB: collection.GenSeq[_] =>
-            seqA.length == seqB.length && (seqA zip seqB).forall {
-              case (eleA, eleB) => equalityOfE.areEqual(eleA, eleB)
-            }
+      def areEqual(seqA: SEQ[E], b: Any): Boolean = b match {
+          case seqB: collection.GenSeq[_] => seqA.corresponds(seqB) {
+            case (eleA, eleB) => eqE.areEqual(eleA, eleB)
+          }
           case _ => false
         }
-      }
     }
 }
 

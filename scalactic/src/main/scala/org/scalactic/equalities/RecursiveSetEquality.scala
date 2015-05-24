@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.equalities
+
+import org.scalactic.Equality
 
 import scala.annotation.tailrec
 import scala.collection.{GenSeq, mutable}
-import scala.language.higherKinds
-import scala.language.implicitConversions
+import scala.language.{higherKinds, implicitConversions}
 
-trait RecursiveMapEquality {
-
-  implicit def recursiveMapEquality[K, V, MAP[k, v] <: collection.GenMap[k, v]](implicit eqK: Equality[K], eqV: Equality[V]): Equality[MAP[K, V]] =
-    new Equality[MAP[K, V]] {
-      def areEqual(mapA: MAP[K, V], b: Any): Boolean = {
+/**
+ * An [[Equality]] that allows the comparison of values nested in [[Set]]s using whatever Equality is
+ * in scope for the contained type.
+ */
+trait RecursiveSetEquality {
+  implicit def recursiveSetEquality[E, SET[e] <: collection.GenSet[e]](implicit eqE: Equality[E]): Equality[SET[E]] =
+    new Equality[SET[E]] {
+      def areEqual(setA: SET[E], b: Any): Boolean = {
 
         @tailrec
-        def nextElement(seqA: GenSeq[(K,V)], mapB: mutable.Buffer[(_,_)]): Boolean = (seqA, mapB) match {
-          case (a, b) if a.length == 0 && b.length == 0 => true
-          case (a, b) if a.length == 0 || b.length == 0 => false
+        def nextElement(seqA: GenSeq[E], bufB: mutable.Buffer[_]): Boolean = (seqA, bufB) match {
+          case (a, b) if a.isEmpty && b.isEmpty => true
+          case (a, b) if a.isEmpty || b.isEmpty => false
           case (a, b) =>
-            val elemA = a.head
-            val index = b.indexWhere(kv => eqK.areEqual(elemA._1, kv._1) && eqV.areEqual(elemA._2, kv._2))
+            val index = b.indexWhere(eqE.areEqual(a.head, _))
             if (index < 0) {
               false
             } else {
@@ -42,11 +45,11 @@ trait RecursiveMapEquality {
         }
 
         b match {
-          case mapB: collection.GenMap[_, _] => nextElement(mapA.toSeq, mapB.toBuffer)
+          case setB: collection.GenSet[_] => nextElement(setA.toSeq, setB.toBuffer)
           case _ => false
         }
       }
     }
 }
 
-object RecursiveMapEquality extends RecursiveMapEquality
+object RecursiveSetEquality extends RecursiveSetEquality

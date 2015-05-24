@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.equalities
+
+import org.scalactic.{EnabledEqualityBetween, Equality}
 
 import scala.language.higherKinds
 
+/**
+ * An [[Equality]] that allows the comparison of values nested in [[Option]]s using whatever Equality is
+ * in scope for the contained type.
+ */
 trait RecursiveOptionEquality {
 
   // The following does not work in 2.10, it breaks implicit lookup somehow and breaks matchers tests compile.
@@ -50,10 +56,6 @@ trait RecursiveOptionEquality {
         }
       }
     }
-
-  implicit def optionToOptionRecursiveEnabledEqualityBetween[A, OPTA[a] <: Option[a], B, OPTB[b] <: Option[b]](implicit ev: EnabledEqualityBetween[A, B]): EnabledEqualityBetween[OPTA[A], OPTB[B]] =
-      EnabledEqualityBetween[OPTA[A], OPTB[B]]
-
 }
 
 object RecursiveOptionEquality extends RecursiveOptionEquality
