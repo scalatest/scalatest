@@ -58,3 +58,19 @@ trait HashingEquality[T] extends Equality[T] {
   def hashCodeFor(a: T): Int
 } 
 
+/**
+ * Companion object for trait <code>HashingEquality</code> that provides a factory method for producing <code>HashingEquality</code>
+ * instances.
+ */ 
+object HashingEquality {
+
+  /**
+   * Provides default <code>HashingEquality</code> implementations for the specified type whose
+   * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
+   * then compares the resulting objects with <code>==</code>, and whose <code>hashCodeFor</code> method first calls
+   * .deep if the passed object is an <code>array</code>, then calls <code>##</code>.
+   *
+   * @return a default <code>Equivalence[A]</code>
+   */
+  implicit def default[A]: HashingEquality[A] = new DefaultHashingEquality[A]
+}

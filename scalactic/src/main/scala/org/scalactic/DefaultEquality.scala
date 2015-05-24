@@ -21,7 +21,7 @@ package org.scalactic
  * first on any passed object that is an array.
  * </p>
  */
-private[scalactic] final class DefaultEquality[A] extends Equality[A] {
+private[scalactic] sealed class DefaultEquality[A] extends Equality[A] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by invoking <code>==</code> on <code>a</code>
@@ -48,5 +48,17 @@ private[scalactic] final class DefaultEquality[A] extends Equality[A] {
   }
 
   override def toString: String = "Equality.default"
+}
+
+private[scalactic] sealed class DefaultHashingEquality[A] extends DefaultEquality[A] with HashingEquality[A] {
+
+  def hashCodeFor(a: A): Int = {
+    a match {
+      case arr: Array[_] => arr.deep.##
+      case _ => a.##
+    }
+  }
+
+  override def toString: String = "HashingEquality.default"
 }
 

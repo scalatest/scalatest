@@ -2041,12 +2041,5 @@ def zipWithIndex: Set[(A, Int)]
     val strictSet = mapped.toSet(number)
     strictSet should equal (number.immutable.Set(2, 3, 4))
   }
-  "The collections value" should "be a nice reference to a default Collections[Any]" in {
-    import Collections.native._
-    immutable.Set(1, 2, 3) intersect immutable.Set(2, 3, 4) shouldEqual immutable.Set(2, 3)
-    immutable.FastSet(1, 2, 3) intersect immutable.FastSet(2, 3, 4) shouldEqual immutable.FastSet(2, 3)
-    Set(1, 2, 3) intersect Set(2, 3, 4) shouldEqual Set(2, 3)
-    FastSet(1, 2, 3) intersect FastSet(2, 3, 4) shouldEqual FastSet(2, 3)
-  }
 }
 

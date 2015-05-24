@@ -1683,8 +1683,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
 }
 
 object Collections {
-  def apply[T](equality: HashingEquality[T]): Collections[T] = new Collections(equality)
-  val native: Collections[Any] = 
+  def apply[T](implicit equality: HashingEquality[T]): Collections[T] = new Collections(equality)
+  val default: Collections[Any] = 
     Collections[Any] {
       new HashingEquality[Any] {
         def areEqual(a: Any, b: Any): Boolean = Equality.default.areEqual(a, b)
