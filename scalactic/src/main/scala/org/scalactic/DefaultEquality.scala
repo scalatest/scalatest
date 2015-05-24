@@ -62,3 +62,10 @@ private[scalactic] sealed class DefaultHashingEquality[A] extends DefaultEqualit
   override def toString: String = "HashingEquality.default"
 }
 
+private[scalactic] final class DefaultOrderingEquality[A](implicit ordering: Ordering[A]) extends DefaultHashingEquality[A] with OrderingEquality[A] {
+
+  def compare(a: A, b: A): Int = ordering.compare(a, b)
+
+  override def toString: String = "OrderingEquality.default"
+}
+

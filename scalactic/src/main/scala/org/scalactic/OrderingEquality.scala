@@ -113,16 +113,20 @@ trait OrderingEquality[A] extends HashingEquality[A] {
   final def min(a: A, b: A): A = if (lteq(a, b)) a else b
 }
 
+/**
+ * Companion object for trait <code>HashingEquality</code> that provides a factory method for producing <code>HashingEquality</code>
+ * instances.
+ */ 
 object OrderingEquality {
-  implicit def defaultOrderingEqualityForString: OrderingEquality[String] =
-    new OrderingEquality[String] {
-      def compare(a: String, b: String): Int = a.compareTo(b)
-      def hashCodeFor(a: String): Int = a.hashCode
-      def areEqual(a: String, b: Any): Boolean =
-        b match {
-          case s: String => a == s
-          case _ => false
-        }
-    }
+
+  /**
+   * Provides default <code>HashingEquality</code> implementations for the specified type whose
+   * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
+   * then compares the resulting objects with <code>==</code>, and whose <code>hashCodeFor</code> method first calls
+   * .deep if the passed object is an <code>array</code>, then calls <code>##</code>.
+   *
+   * @return a default <code>Equivalence[A]</code>
+   */
+  implicit def default[A](implicit ordering: Ordering[A]): OrderingEquality[A] = new DefaultOrderingEquality[A]
 }
 

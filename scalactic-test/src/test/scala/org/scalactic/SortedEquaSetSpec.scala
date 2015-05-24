@@ -1856,7 +1856,7 @@ class SortedSetSpec extends UnitSpec {
   }
   "The collections value" should "be a nice reference to a default SortedCollections[Any]" in {
 
-    val sortedIntCollections = SortedCollections.native[Int]
+    val sortedIntCollections = SortedCollections[Int]
     import sortedIntCollections._
 
     Set(1, 2, 3) intersect Set(2, 3, 4) shouldEqual Set(2, 3)

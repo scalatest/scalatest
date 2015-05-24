@@ -1684,15 +1684,5 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
 
 object Collections {
   def apply[T](implicit equality: HashingEquality[T]): Collections[T] = new Collections(equality)
-  val default: Collections[Any] = 
-    Collections[Any] {
-      new HashingEquality[Any] {
-        def areEqual(a: Any, b: Any): Boolean = Equality.default.areEqual(a, b)
-        def hashCodeFor(a: Any): Int =
-          a match {
-            case arr: Array[_] => arr.deep.##
-            case _ => a.##
-          }
-      }
-    }
+  val default: Collections[Any] = Collections[Any](HashingEquality.default[Any])
 }

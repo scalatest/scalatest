@@ -23,7 +23,7 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.parallel.mutable.ParArray
 
 class CollectionsSpec extends UnitSpec {
-  "The Collections value" should "offer a default Collections[Any] that calls ==, except .deep on Arrays" in {
+  "The Collections object" should "offer a default Collections[Any] that calls ==, except .deep on Arrays" in {
     import Collections.default._
     immutable.Set(1, 2, 3) intersect immutable.Set(2, 3, 4) shouldEqual immutable.Set(2, 3)
     immutable.FastSet(1, 2, 3) intersect immutable.FastSet(2, 3, 4) shouldEqual immutable.FastSet(2, 3)
