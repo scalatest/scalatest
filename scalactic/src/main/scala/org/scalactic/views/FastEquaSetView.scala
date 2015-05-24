@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.views
+
+import org.scalactic.Collections
+import org.scalactic.SortedCollections
 
 trait FastSetView[+T] extends SetView[T] {
   def map[U](f: T => U): FastSetView[U]

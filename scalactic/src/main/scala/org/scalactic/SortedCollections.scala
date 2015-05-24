@@ -24,11 +24,11 @@ import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
 import scala.collection.GenIterable
-import scala.collection.TraversableView
 import scala.collection.parallel.mutable.ParArray
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
 import scala.reflect.ClassTag
+import org.scalactic.views._
 
 class SortedCollections[E](override val equality: OrderingEquality[E]) extends Collections[E](equality) { thisCollections =>
 

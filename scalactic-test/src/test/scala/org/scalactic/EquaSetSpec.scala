@@ -21,6 +21,7 @@ import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 import scala.collection.parallel.mutable.ParArray
+import org.scalactic.views.FastSetView
 
 /*
 val t = Collections[String](StringNormalizations.trimmed.toHashingEquality)

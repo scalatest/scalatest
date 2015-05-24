@@ -24,11 +24,11 @@ import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
 import scala.collection.GenIterable
-import scala.collection.TraversableView
 import scala.collection.parallel.mutable.ParArray
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
+import org.scalactic.views._
 
 class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
 

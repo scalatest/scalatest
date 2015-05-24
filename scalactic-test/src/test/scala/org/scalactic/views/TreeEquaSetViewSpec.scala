@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.views
+
+import org.scalactic.UnitSpec
+import org.scalactic.SortedCollections
+import org.scalactic.StringNormalizations
+import org.scalactic.HashingEquality
+import org.scalactic.OrderingEquality
 
 class TreeSetViewSpec extends UnitSpec {
 
