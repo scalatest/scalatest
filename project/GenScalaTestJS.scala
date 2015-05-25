@@ -688,6 +688,9 @@ object GenScalaTestJS {
         "ShouldBeReadableStructuralSpec.scala",
         "ShouldBeShorthandForAllSpec.scala",
         "ShouldBeShorthandSpec.scala",
+        "ShouldBeSortedLogicalAndSpec.scala",
+        "ShouldBeSortedLogicalOrSpec.scala",
+        "ShouldBeSortedSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

@@ -21,7 +21,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeSortedSpec extends Spec {
+class ShouldBeSortedSpec extends FunSpec {
   
   //ADDITIONAL//
   
@@ -65,28 +65,28 @@ class ShouldBeSortedSpec extends Spec {
       def isSorted(o: List[Int]) = false
     }
   
-  object `Sorted matcher` {
+  describe("Sorted matcher") {
     
-    object `when work with 'xs should be (sorted)'` {
+    describe("when work with 'xs should be (sorted)'") {
       
-      def `should do nothing when xs is empty` {
+      it("should do nothing when xs is empty") {
         emptyInts should be (sorted)
         emptyStudents should be (sorted)
         emptyString should be (sorted)
       }
 
-      def `should do nothing when xs contains single element` {
+      it("should do nothing when xs contains single element") {
         loneInts should be (sorted)
         loneCharString should be (sorted)
       }
       
-      def `should do nothing when xs is sorted` {
+      it("should do nothing when xs is sorted") {
         orderedInts should be (sorted)
         orderedStudents should be (sorted)
         orderedString should be (sorted)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
@@ -109,7 +109,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
@@ -117,7 +117,7 @@ class ShouldBeSortedSpec extends Spec {
         outOfOrderInts should be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
@@ -126,10 +126,10 @@ class ShouldBeSortedSpec extends Spec {
       
     }
     
-    object `when work with 'xs should not be sorted'` {
+    describe("when work with 'xs should not be sorted'") {
       import org.scalatest.enablers.Sortable
       
-      def `should throw TestFailedException wht correct stack depth when xs is empty` {
+      it("should throw TestFailedException wht correct stack depth when xs is empty") {
         val caught1 = intercept[TestFailedException] {
           emptyInts should not be sorted
         }
@@ -152,7 +152,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+      it("should throw TestFailedException wht correct stack depth when xs contains single element") {
         val caught1 = intercept[TestFailedException] {
           loneInts should not be sorted
         }
@@ -168,13 +168,13 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when xs is not sorted` {
+      it("should do nothing when xs is not sorted") {
         outOfOrderInts should not be sorted
         outOfOrderString should not be sorted
         outOfOrderStudents should not be sorted
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           orderedInts should not be (sorted)
         }
@@ -197,7 +197,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           orderedInts should not be (sorted)
         }
@@ -205,7 +205,7 @@ class ShouldBeSortedSpec extends Spec {
         orderedInts should not be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           orderedInts should not be sorted
         }
@@ -213,26 +213,26 @@ class ShouldBeSortedSpec extends Spec {
       }
     }
     
-    object `when work with 'xs shouldBe (sorted)'` {
+    describe("when work with 'xs shouldBe (sorted)'") {
       
-      def `should do nothing when xs is empty` {
+      it("should do nothing when xs is empty") {
         emptyInts shouldBe sorted
         emptyStudents shouldBe (sorted)
         emptyString shouldBe sorted
       }
 
-      def `should do nothing when xs contains single element` {
+      it("should do nothing when xs contains single element") {
         loneInts shouldBe sorted
         loneCharString shouldBe sorted
       }
       
-      def `should do nothing when xs is sorted` {
+      it("should do nothing when xs is sorted") {
         orderedInts shouldBe sorted
         orderedStudents shouldBe sorted
         orderedString shouldBe sorted
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           outOfOrderInts shouldBe (sorted)
         }
@@ -255,7 +255,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           outOfOrderInts shouldBe sorted
         }
@@ -263,7 +263,7 @@ class ShouldBeSortedSpec extends Spec {
         outOfOrderInts shouldBe sorted
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           outOfOrderInts shouldBe sorted
         }
@@ -272,10 +272,10 @@ class ShouldBeSortedSpec extends Spec {
       
     }
     
-    object `when work with 'xs shouldNot be (sorted)'` {
+    describe("when work with 'xs shouldNot be (sorted)'") {
       import org.scalatest.enablers.Sortable
       
-      def `should throw TestFailedException wht correct stack depth when xs is empty` {
+      it("should throw TestFailedException wht correct stack depth when xs is empty") {
         val caught1 = intercept[TestFailedException] {
           emptyInts shouldNot be (sorted)
         }
@@ -298,7 +298,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+      it("should throw TestFailedException wht correct stack depth when xs contains single element") {
         val caught1 = intercept[TestFailedException] {
           loneInts shouldNot be (sorted)
         }
@@ -314,13 +314,13 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when xs is not sorted` {
+      it("should do nothing when xs is not sorted") {
         outOfOrderInts shouldNot be (sorted)
         outOfOrderStudents shouldNot be (sorted)
         outOfOrderString shouldNot be (sorted)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
@@ -343,7 +343,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
@@ -351,7 +351,7 @@ class ShouldBeSortedSpec extends Spec {
         orderedInts shouldNot be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
@@ -359,26 +359,26 @@ class ShouldBeSortedSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (sorted)'` {
+    describe("when work with 'all(xs) should be (sorted)'") {
       
-      def `should do nothing when xs is empty` {
+      it("should do nothing when xs is empty") {
         all(List(emptyInts)) should be (sorted)
         all(List(emptyStudents)) should be (sorted)
         all(List(emptyString)) should be (sorted)
       }
 
-      def `should do nothing when xs contains single element` {
+      it("should do nothing when xs contains single element") {
         all(List(loneInts)) should be (sorted)
         all(List(loneCharString)) should be (sorted)
       }
       
-      def `should do nothing when xs is sorted` {
+      it("should do nothing when xs is sorted") {
         all(List(orderedInts)) should be (sorted)
         all(List(orderedStudents)) should be (sorted)
         all(List(orderedString)) should be (sorted)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(outOfOrderInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) should be (sorted)
@@ -404,7 +404,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should be (sorted)
         }
@@ -412,7 +412,7 @@ class ShouldBeSortedSpec extends Spec {
         all(List(outOfOrderInts)) should be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should be (sorted)
         }
@@ -420,10 +420,10 @@ class ShouldBeSortedSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be sorted'` {
+    describe("when work with 'all(xs) should not be sorted'") {
       import org.scalatest.enablers.Sortable
       
-      def `should throw TestFailedException wht correct stack depth when xs is empty` {
+      it("should throw TestFailedException wht correct stack depth when xs is empty") {
         val left1 = List(emptyInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) should not be sorted
@@ -449,7 +449,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+      it("should throw TestFailedException wht correct stack depth when xs contains single element") {
         val left1 = List(loneInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) should not be sorted
@@ -467,13 +467,13 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when xs is not sorted` {
+      it("should do nothing when xs is not sorted") {
         all(List(outOfOrderInts)) should not be sorted
         all(List(outOfOrderStudents)) should not be sorted
         all(List(outOfOrderString)) should not be sorted
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(orderedInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) should not be (sorted)
@@ -499,7 +499,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           all(List(orderedInts)) should not be (sorted)
         }
@@ -507,7 +507,7 @@ class ShouldBeSortedSpec extends Spec {
         all(List(orderedInts)) should not be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           all(List(orderedInts)) should not be sorted
         }
@@ -515,26 +515,26 @@ class ShouldBeSortedSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) shouldBe (sorted)'` {
+    describe("when work with 'all(xs) shouldBe (sorted)'") {
       
-      def `should do nothing when xs is empty` {
+      it("should do nothing when xs is empty") {
         all(List(emptyInts)) shouldBe sorted
         all(List(emptyStudents)) shouldBe (sorted)
         all(List(emptyString)) shouldBe sorted
       }
 
-      def `should do nothing when xs contains single element` {
+      it("should do nothing when xs contains single element") {
         all(List(loneInts)) shouldBe sorted
         all(List(loneCharString)) shouldBe sorted
       }
       
-      def `should do nothing when xs is sorted` {
+      it("should do nothing when xs is sorted") {
         all(List(orderedInts)) shouldBe sorted
         all(List(orderedStudents)) shouldBe sorted
         all(List(orderedString)) shouldBe sorted
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(outOfOrderInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldBe (sorted)
@@ -560,7 +560,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) shouldBe sorted
         }
@@ -568,7 +568,7 @@ class ShouldBeSortedSpec extends Spec {
         all(List(outOfOrderInts)) shouldBe sorted
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) shouldBe sorted
         }
@@ -577,10 +577,10 @@ class ShouldBeSortedSpec extends Spec {
       
     }
     
-    object `when work with 'all(xs) shouldNot be (sorted)'` {
+    describe("when work with 'all(xs) shouldNot be (sorted)'") {
       import org.scalatest.enablers.Sortable
       
-      def `should throw TestFailedException wht correct stack depth when xs is empty` {
+      it("should throw TestFailedException wht correct stack depth when xs is empty") {
         val left1 = List(emptyInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldNot be (sorted)
@@ -606,7 +606,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+      it("should throw TestFailedException wht correct stack depth when xs contains single element") {
         val left1 = List(loneInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldNot be (sorted)
@@ -624,13 +624,13 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when xs is not sorted` {
+      it("should do nothing when xs is not sorted") {
         all(List(outOfOrderInts)) shouldNot be (sorted)
         all(List(outOfOrderStudents)) shouldNot be (sorted)
         all(List(outOfOrderString)) shouldNot be (sorted)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(orderedInts)
         val caught1 = intercept[TestFailedException] {
           all(left1) shouldNot be (sorted)
@@ -656,7 +656,7 @@ class ShouldBeSortedSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sortable when available` {
+      it("should use implicit Sortable when available") {
         intercept[TestFailedException] {
           all(List(orderedInts)) shouldNot be (sorted)
         }
@@ -664,7 +664,7 @@ class ShouldBeSortedSpec extends Spec {
         all(List(orderedInts)) shouldNot be (sorted)
       }
       
-      def `should use explicitly specified Sortable` {
+      it("should use explicitly specified Sortable") {
         intercept[TestFailedException] {
           all(List(orderedInts)) shouldNot be (sorted)
         }
