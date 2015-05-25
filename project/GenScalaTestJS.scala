@@ -707,6 +707,7 @@ object GenScalaTestJS {
         "ShouldBeWritableStructuralSpec.scala",
         "ShouldCollectedTripleEqualsSpec.scala",
         "ShouldCollectedTripleEqualsToleranceSpec.scala",
+        "ShouldCompileSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
