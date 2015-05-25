@@ -704,7 +704,9 @@ object GenScalaTestJS {
         "ShouldBeWritableSpec.scala",
         "ShouldBeWritableStructuralLogicalAndSpec.scala",
         "ShouldBeWritableStructuralLogicalOrSpec.scala",
-        "ShouldBeWritableStructuralSpec.scala", 
+        "ShouldBeWritableStructuralSpec.scala",
+        "ShouldCollectedTripleEqualsSpec.scala",
+        "ShouldCollectedTripleEqualsToleranceSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
