@@ -577,33 +577,49 @@ class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMat
       val caught8 = intercept[TestFailedException] {
         sevenDotOhFloat shouldBe (17.1f +- 2L)
       }
-      assert(caught8.message === Some(7.0 + " was not " + 17.1f + " plus or minus " + 2L))
+      val offendingLine8 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught8.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught8.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2"))
       assert(caught8.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
-      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught8.failedCodeLineNumber === Some(offendingLine8))
 
       // Float +- Int
       val caught9 = intercept[TestFailedException] {
         sevenDotOhFloat shouldBe (17.1f +- 2)
       }
-      assert(caught9.message === Some(7.0 + " was not " + 17.1f + " plus or minus " + 2))
+      val offendingLine9 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught9.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught9.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2"))
       assert(caught9.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
-      assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught9.failedCodeLineNumber === Some(offendingLine9))
 
       // Float +- Short
       val caught10 = intercept[TestFailedException] {
         sevenDotOhFloat shouldBe (17.1f +- 2.toShort)
       }
-      assert(caught10.message === Some(7.0 + " was not " + 17.1f + " plus or minus " + 2.toShort))
+      val offendingLine10 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught10.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught10.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2"))
       assert(caught10.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
-      assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught10.failedCodeLineNumber === Some(offendingLine10))
 
       // Float +- Byte
       val caught11 = intercept[TestFailedException] {
         sevenDotOhFloat shouldBe (17.1f +- 2.toByte)
       }
-      assert(caught11.message === Some(7.0 + " was not " + 17.1f + " plus or minus " + 2.toByte))
+      val offendingLine11 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught11.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught11.message === Some(7.0 + " was not " + 17.1f + " plus or minus 2"))
       assert(caught11.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
-      assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught11.failedCodeLineNumber === Some(offendingLine11))
 
       // Long +- Long
       val caught12 = intercept[TestFailedException] {
