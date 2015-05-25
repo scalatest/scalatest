@@ -693,6 +693,18 @@ object GenScalaTestJS {
         "ShouldBeSortedSpec.scala",
         //"ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
         "ShouldBeThrownBySpec.scala",
+        "ShouldBeWritableExplicitSpec.scala",
+        "ShouldBeWritableImplicitSpec.scala",
+        "ShouldBeWritableLogicalAndExplicitSpec.scala",
+        "ShouldBeWritableLogicalAndImplicitSpec.scala",
+        "ShouldBeWritableLogicalAndSpec.scala",
+        "ShouldBeWritableLogicalOrExplicitSpec.scala",
+        "ShouldBeWritableLogicalOrImplicitSpec.scala",
+        "ShouldBeWritableLogicalOrSpec.scala",
+        "ShouldBeWritableSpec.scala",
+        "ShouldBeWritableStructuralLogicalAndSpec.scala",
+        "ShouldBeWritableStructuralLogicalOrSpec.scala",
+        "ShouldBeWritableStructuralSpec.scala", 
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
