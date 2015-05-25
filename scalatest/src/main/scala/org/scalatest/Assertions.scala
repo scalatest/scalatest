@@ -1388,7 +1388,11 @@ object Assertions extends Assertions {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), 4)
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 4
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 13
+        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
       }
     }
   }

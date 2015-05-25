@@ -20,7 +20,7 @@ import java.io.FileNotFoundException
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeThrownBySpec extends Spec {
+class ShouldBeThrownBySpec extends FunSpec {
   
   val fileName: String = "ShouldBeThrownBySpec.scala"
   
@@ -35,16 +35,18 @@ class ShouldBeThrownBySpec extends Spec {
     
   def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
     FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage)
+
+  class TestException(message: String) extends Exception(message)
   
-  object `a [Exception] should` {
+  describe("a [Exception] should") {
     
-    def `do nothing when provided code produce expected exception` {
+    it("do nothing when provided code produce expected exception") {
       a [RuntimeException] should be thrownBy {
         throw new RuntimeException("purposely")
       }
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce any exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce any exception") {
       val e = intercept[TestFailedException] {
         a [RuntimeException] should be thrownBy {
           assert(1 === 1)
@@ -55,27 +57,27 @@ class ShouldBeThrownBySpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception") {
       val e = intercept[TestFailedException] {
         a [RuntimeException] should be thrownBy {
-          throw new FileNotFoundException("secret file not found")
+          throw new TestException("secret file not found")
         }
       }
-      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
   }
   
-  object `an [Exception] should` {
+  describe("an [Exception] should") {
     
-    def `do nothing when provided code produce expected exception` {
+    it("do nothing when provided code produce expected exception") {
       an [UnsupportedOperationException] should be thrownBy {
         throw new UnsupportedOperationException("purposely")
       }
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce any exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce any exception") {
       val e = intercept[TestFailedException] {
         an [RuntimeException] should be thrownBy {
           assert(1 === 1)
@@ -86,28 +88,28 @@ class ShouldBeThrownBySpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception") {
       val e = intercept[TestFailedException] {
         an [RuntimeException] should be thrownBy {
-          throw new FileNotFoundException("secret file not found")
+          throw new TestException("secret file not found")
         }
       }
-      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
   }
   
-  object `the [Exception] should` {
+  describe("the [Exception] should") {
     
-    def `work return instance of expected exception when provided code produce expected exception` {
-      val e = the [FileNotFoundException] thrownBy {
-        throw new FileNotFoundException("purposely")
+    it("work return instance of expected exception when provided code produce expected exception") {
+      val e = the [TestException] thrownBy {
+        throw new TestException("purposely")
       }
-      assert(e.isInstanceOf[FileNotFoundException])
+      assert(e.isInstanceOf[TestException])
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce any exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce any exception") {
       val e = intercept[TestFailedException] {
         val e1 = the [RuntimeException] thrownBy {
           assert(1 === 1)
@@ -119,39 +121,43 @@ class ShouldBeThrownBySpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 7))
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception") {
       val e = intercept[TestFailedException] {
         val e1 = the [RuntimeException] thrownBy {
-          throw new FileNotFoundException("secret file not found")
+          throw new TestException("secret file not found")
         }
         assert(e1.isInstanceOf[RuntimeException])
       }
-      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 7))
     }
     
-    def `do nothing when 'should have message' check passed` {
-      the [FileNotFoundException] thrownBy {
-        throw new FileNotFoundException("purposely")
+    it("do nothing when 'should have message' check passed") {
+      the [TestException] thrownBy {
+        throw new TestException("purposely")
       } should have message "purposely"
     }
     
-    def `throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code does not produce any exception` {
+    it("throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code does not produce any exception") {
       val e = intercept[TestFailedException] {
         the [RuntimeException] thrownBy {
           assert(1 === 1)
         } should have message "purposely"
       }
+      val offendingLine = thisLineNumber - 4
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
-      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+      // TODO: Skipped because stack trace for multiline expression in scala-js is wrong, should re-enable this after we got macro based stack depth working or scala-js fix the problem.
+      // SKIP-SCALATESTJS-START
+      assert(e.failedCodeLineNumber === Some(offendingLine))
+      // SKIP-SCALATESTJS-END
     }
     
-    def `throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code produced expected exception with different message` {
+    it("throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code produced expected exception with different message") {
       val fnfe = 
-        the [FileNotFoundException] thrownBy {
-          throw new FileNotFoundException("secret file not found")
+        the [TestException] thrownBy {
+          throw new TestException("secret file not found")
         }
       val e = intercept[TestFailedException] {
         fnfe should have message "file not found"
@@ -162,15 +168,15 @@ class ShouldBeThrownBySpec extends Spec {
     }
   }
   
-  object `noException should` {
+  describe("noException should") {
     
-    def `do nothing when no exception is thrown from the provided code` {
+    it("do nothing when no exception is thrown from the provided code") {
       noException should be thrownBy {
         assert(1 === 1)
       }
     }
     
-    def `throw new TestFailedException with correct message and stack depth when provided code produces exception` {
+    it("throw new TestFailedException with correct message and stack depth when provided code produces exception") {
       val e = intercept[TestFailedException] {
         noException should be thrownBy {
           throw new RuntimeException("purposely")

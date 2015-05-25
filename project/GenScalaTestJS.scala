@@ -691,6 +691,8 @@ object GenScalaTestJS {
         "ShouldBeSortedLogicalAndSpec.scala",
         "ShouldBeSortedLogicalOrSpec.scala",
         "ShouldBeSortedSpec.scala",
+        //"ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldBeThrownBySpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
