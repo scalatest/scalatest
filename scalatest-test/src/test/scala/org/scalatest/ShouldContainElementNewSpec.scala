@@ -28,16 +28,16 @@ import Matchers._
 // Calling this ShouldContainElementNewSpec so that it is easy to 
 // keep track of the new tests that we'll need to port over to
 // inspector shorthands.
-class ShouldContainElementNewSpec extends Spec with Explicitly {
+class ShouldContainElementNewSpec extends FunSpec with Explicitly {
 
   // Checking for a specific size
-  object `The 'contain (<value>)' syntax` {
-    def `should allow any type to be passed in` {
+  describe("The 'contain (<value>)' syntax") {
+    it("should allow any type to be passed in") {
       Vector(1, "2") should contain ("2")
       Vector(1, "2") should contain (1)
     }
 
-    def `should use an Equality of the element type of the left-hand "holder" on a GenTraversable` {
+    it("should use an Equality of the element type of the left-hand \"holder\" on a GenTraversable") {
 
       Vector(2, 2) should contain (2)
       val e1 = intercept[TestFailedException] {
@@ -68,7 +68,7 @@ class ShouldContainElementNewSpec extends Spec with Explicitly {
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
-    def `should use an Equality of the element type of the left-hand "holder" on a String` {
+    it("should use an Equality of the element type of the left-hand \"holder\" on a String") {
       
       "22" should contain ('2')
       val e1 = intercept[TestFailedException] {
@@ -99,7 +99,7 @@ class ShouldContainElementNewSpec extends Spec with Explicitly {
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
-    def `should use an Equality of the element type of the left-hand "holder" on an Array` {
+    it("should use an Equality of the element type of the left-hand \"holder\" on an Array") {
       
       Array(2, 2) should contain (2)
       val e1 = intercept[TestFailedException] {
@@ -130,7 +130,8 @@ class ShouldContainElementNewSpec extends Spec with Explicitly {
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
-    def `should use an Equality of the element type of the left-hand "holder" on a Java Collection` {
+    // SKIP-SCALATESTJS-START
+    it("should use an Equality of the element type of the left-hand \"holder\" on a Java Collection") {
 
       val javaSet: java.util.Set[Int] = new java.util.HashSet
       javaSet.add(2)
@@ -163,6 +164,7 @@ class ShouldContainElementNewSpec extends Spec with Explicitly {
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
+    // SKIP-SCALATESTJS-END
   }
 }
 

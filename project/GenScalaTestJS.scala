@@ -708,6 +708,8 @@ object GenScalaTestJS {
         "ShouldCollectedTripleEqualsSpec.scala",
         "ShouldCollectedTripleEqualsToleranceSpec.scala",
         "ShouldCompileSpec.scala",
+        "ShouldContainElementNewSpec.scala",
+        "ShouldContainElementSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
