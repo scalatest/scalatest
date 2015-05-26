@@ -157,10 +157,22 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
 
         Good(Bad("HI")) should not equal Good(Bad("hi"))
         Bad(Good("HI")) should not equal Bad(Good("hi"))
+
+/*
+        // With Or as left hand type
+        (Good("HI"): Or[String, Int]) should not equal Good("hi")
+        (Good(Good("HI")): Or[Or[String, Int], Float]) should not equal Good(Good("hi"))
+
+        (Bad("HI"): Or[Int, String]) should not equal Bad("hi")
+        (Bad(Bad("HI")): Or[Float, Or[Int, String]]) should not equal Bad(Bad("hi"))
+
+        (Good(Bad("HI")): Or[Or[Float, String], Int]) should not equal Good(Bad("hi"))
+        (Bad(Good("HI")): Or[Int, Or[String, Float]]) should not equal Bad(Good("hi"))
+*/
       }
     }
     it("should do recursive equality under with RecursiveOrEquality") {
-      new UncheckedEquality {
+      new TripleEquals {
         import RecursiveOrEquality._
 
         Good("HI") shouldEqual Good("hi")
@@ -171,6 +183,18 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
 
         Good(Bad("HI")) shouldEqual Good(Bad("hi"))
         Bad(Good("HI")) shouldEqual Bad(Good("hi"))
+
+/*
+        // With Or as left hand type
+        (Good("HI"): Or[String, Int]) shouldEqual Good("hi")
+        (Good(Good("HI")): Or[Or[String, Int], Float]) shouldEqual Good(Good("hi"))
+
+        (Bad("HI"): Or[Int, String]) shouldEqual Bad("hi")
+        (Bad(Bad("HI")): Or[Float, Or[Int, String]]) shouldEqual Bad(Bad("hi"))
+
+        (Good(Bad("HI")): Or[Or[Float, String], Int]) shouldEqual Good(Bad("hi"))
+        (Bad(Good("HI")): Or[Int, Or[String, Float]]) shouldEqual Bad(Good("hi"))
+*/
       }
     }
   }
