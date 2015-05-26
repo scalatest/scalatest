@@ -19,11 +19,17 @@ import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import Matchers._
 
-class ShouldExistSpec extends Spec {
-  
+class ShouldExistSpec extends FunSpec {
+
+  // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
   val existFile = File.createTempFile("delete", "me", tempDir)
   val imaginaryFile = new File(tempDir, "imaginary")
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY trait File { def exists: Boolean }
+  //SCALATESTJS-ONLY val existFile = new File { val exists: Boolean = true }
+  //SCALATESTJS-ONLY val imaginaryFile = new File { val exists: Boolean = false }
+  //SCALATESTJS-ONLY implicit val fileExistence = new org.scalatest.enablers.Existence[File] { def exists(file: File): Boolean = file.exists }
   
   val fileName = "ShouldExistSpec.scala"
   
@@ -38,13 +44,13 @@ class ShouldExistSpec extends Spec {
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
   
-  object `The exist syntax when used with File` {
+  describe("The exist syntax when used with File") {
     
-    def `should do nothing when the file exists` {
+    it("should do nothing when the file exists") {
       existFile should exist
     }
     
-    def `should throw TFE with correct stack depth and message when the file does not exist` {
+    it("should throw TFE with correct stack depth and message when the file does not exist") {
       val e = intercept[exceptions.TestFailedException] {
         imaginaryFile should exist
       }
@@ -53,11 +59,11 @@ class ShouldExistSpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with not and the file does not exists` {
+    it("should do nothing when it is used with not and the file does not exists") {
       imaginaryFile should not (exist)
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val e = intercept[exceptions.TestFailedException] {
         existFile should not (exist)
       }
@@ -66,11 +72,11 @@ class ShouldExistSpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with shouldNot and the file does not exists` {
+    it("should do nothing when it is used with shouldNot and the file does not exists") {
       imaginaryFile shouldNot exist
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists") {
       val e = intercept[exceptions.TestFailedException] {
         existFile shouldNot exist
       }
@@ -80,13 +86,13 @@ class ShouldExistSpec extends Spec {
     }
   }
   
-  object `The exist syntax when used with all(xs)` {
+  describe("The exist syntax when used with all(xs)") {
     
-    def `should do nothing when the file exists` {
+    it("should do nothing when the file exists") {
       all(List(existFile)) should exist
     }
     
-    def `should throw TFE with correct stack depth and message when the file does not exist` {
+    it("should throw TFE with correct stack depth and message when the file does not exist") {
       val left = List(imaginaryFile)
       val e = intercept[exceptions.TestFailedException] {
         all(left) should exist
@@ -96,11 +102,11 @@ class ShouldExistSpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with not and the file does not exists` {
+    it("should do nothing when it is used with not and the file does not exists") {
       all(List(imaginaryFile)) should not (exist)
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val left = List(existFile)
       val e = intercept[exceptions.TestFailedException] {
         all(left) should not (exist)
@@ -110,11 +116,11 @@ class ShouldExistSpec extends Spec {
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with shouldNot and the file does not exists` {
+    it("should do nothing when it is used with shouldNot and the file does not exists") {
       all(List(imaginaryFile)) shouldNot exist
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists") {
       val left = List(existFile)
       val e = intercept[exceptions.TestFailedException] {
         all(left) shouldNot exist
