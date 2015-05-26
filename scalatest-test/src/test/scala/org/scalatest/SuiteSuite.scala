@@ -33,7 +33,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.NotAllowedException
 */
 
-class SuiteSuite extends FunSpec with SeveredStackTraces {
+class SuiteSuite extends Spec with SeveredStackTraces {
 
   def `test prettify Array` = {
 
@@ -50,9 +50,9 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
     assert(FailureMessages.decorateToStringValue(Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
   }
 
-  it("test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names") {
+  def `test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names` {
 
-    class TestWasCalledSpec extends FunSpec {
+    class TestWasCalledSpec extends Spec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       var theTestTheOtherCalled = false
@@ -130,7 +130,7 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
   }
 
   def `test test tags` = {
-    class TagSpec extends FunSpec {  
+    class TagSpec extends Spec {  
       def `test no tag method` = {}
       @SlowAsMolasses
       def `test tag method` = {}
@@ -145,19 +145,19 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
   
   def `test runNestedSuites` = {
     
-    class NoTagSpec extends FunSpec
+    class NoTagSpec extends Spec
     @Ignore
-    class IgnoreSpec extends FunSpec {
+    class IgnoreSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @SlowAsMolasses
-    class SlowAsMolassesSpec extends FunSpec
+    class SlowAsMolassesSpec extends Spec
     @FastAsLight
-    class FastAsLightSpec extends FunSpec
+    class FastAsLightSpec extends Spec
     
-    class MasterSpec extends FunSpec {
+    class MasterSpec extends Spec {
       override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
       override def runNestedSuites(args: Args): Status = {
         super.runNestedSuites(args)
@@ -209,31 +209,31 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
   }
   
   def `test expectedTestCount` = {
-    class NoTagSpec extends FunSpec {
+    class NoTagSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @Ignore
-    class IgnoreSpec extends FunSpec {
+    class IgnoreSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @SlowAsMolasses
-    class SlowAsMolassesSpec extends FunSpec {
+    class SlowAsMolassesSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @FastAsLight
-    class FastAsLightSpec extends FunSpec {
+    class FastAsLightSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     
-    class MasterSpec extends FunSpec {
+    class MasterSpec extends Spec {
       override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
       override def runNestedSuites(args: Args): Status = {
         super.runNestedSuites(args)
@@ -255,7 +255,7 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
   }
   
   def `test check chosenStyles` = {
-    class SimpleSpec extends FunSpec {
+    class SimpleSpec extends Spec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
@@ -296,7 +296,7 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
   }
 
   def `test stack depth` = {
-    class TestSpec extends FunSpec {
+    class TestSpec extends Spec {
       def `test failure` = {
         assert(1 === 2)
       }
@@ -372,11 +372,11 @@ class SuiteSuite extends FunSpec with SeveredStackTraces {
 }
 
 @DoNotDiscover
-class `My Test` extends FunSpec {}
+class `My Test` extends Spec {}
 @DoNotDiscover
-class NormalSuite extends FunSpec
+class NormalSuite extends Spec
 @DoNotDiscover
 @WrapWith(classOf[ConfigMapWrapperSuite]) 
-class WrappedSuite(configMap: Map[_, _]) extends FunSpec
+class WrappedSuite(configMap: Map[_, _]) extends Spec
 @DoNotDiscover
-class NotAccessibleSuite(name: String) extends FunSpec
+class NotAccessibleSuite(name: String) extends Spec

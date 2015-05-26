@@ -28,7 +28,7 @@ class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
 class MandarinOrangeFunSpec(ns: Suite*) extends FunSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-class MandarinOrangeSpec(ns: Suite*) extends FunSpec {
+class MandarinOrangeSpec(ns: Suite*) extends Spec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 class MandarinOrangeWordSpec(ns: Suite*) extends WordSpec {
@@ -369,7 +369,7 @@ class SuiteSpec extends FunSpec {
   }
   describe("NoArgTest") {
     it("should offer a factory method that takes another NoArgTest and a function that implements apply") {
-      class SideEffectedFixtureWasSpec extends FunSpec {
+      class SideEffectedFixtureWasSpec extends Spec {
         type FixtureParam = String
         var theFixture = ""
         var sideEffectedFixtureWas = ""
