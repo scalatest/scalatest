@@ -15,7 +15,7 @@
  */
 package org.scalactic.equalities
 
-import org.scalactic.{Equality, One, Many}
+import org.scalactic.{Equality, Every, One, Many}
 
 import scala.language.{higherKinds, implicitConversions}
 
@@ -24,18 +24,11 @@ import scala.language.{higherKinds, implicitConversions}
  * in scope for the contained type.
  */
 trait RecursiveEveryEquality {
-  implicit def recursiveOneEquality[E, ONE[e] <: One[e]](implicit eqE: Equality[E]): Equality[ONE[E]] =
-    new Equality[ONE[E]] {
-      def areEqual(oneA: ONE[E], other: Any): Boolean = (oneA, other) match {
+  implicit def recursiveEveryEquality[E, EVERY[e] <: Every[e]](implicit eqE: Equality[E]): Equality[EVERY[E]] =
+    new Equality[EVERY[E]] {
+      def areEqual(everyA: EVERY[E], other: Any): Boolean = (everyA, other) match {
         case (One(a), One(b)) => eqE.areEqual(a, b)
-        case _ => false
-      }
-    }
-
-  implicit def recursiveManyEquality[E, MANY[e] <: Many[e]](implicit eqE: Equality[E]): Equality[MANY[E]] =
-    new Equality[MANY[E]] {
-      def areEqual(manyA: MANY[E], b: Any): Boolean = b match {
-        case manyB: Many[_] => manyA.corresponds(manyB) { case (eleA, eleB) => eqE.areEqual(eleA, eleB) }
+        case (manyA: Many[_], manyB: Many[_]) => manyA.corresponds(manyB) { case (eleA, eleB) => eqE.areEqual(eleA, eleB) }
         case _ => false
       }
     }

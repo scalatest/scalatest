@@ -55,6 +55,16 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
 
         One(Many("HI", "THERE")) should not equal One(Many("hi", "there"))
         Many(One("HI"), One("THERE")) should not equal Many(One("hi"), One("there"))
+
+        // With Every as left hand type
+        (One("HI"): Every[String]) should not equal One("hi")
+        (One(One("HI")): Every[Every[String]]) should not equal One(One("hi"))
+
+        (Many("HI", "THERE"): Every[String]) should not equal Many("hi", "there")
+        (Many(Many("HI", "THERE"), Many("FOO", "BAR")): Every[Every[String]]) should not equal Many(Many("hi", "there"), Many("Foo", "Bar"))
+
+        (One(Many("HI", "THERE")): Every[Every[String]]) should not equal One(Many("hi", "there"))
+        (Many(One("HI"), One("THERE")): Every[Every[String]]) should not equal Many(One("hi"), One("there"))
       }
     }
     it("should do recursive equality under RecursiveEveryEquality") {
@@ -68,6 +78,16 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
 
         One(Many("HI", "THERE")) shouldEqual One(Many("hi", "there"))
         Many(One("HI"), One("THERE")) shouldEqual Many(One("hi"), One("there"))
+
+        // With Every as left hand type
+        (One("HI"): Every[String]) shouldEqual One("hi")
+        (One(One("HI")): Every[Every[String]]) shouldEqual One(One("hi"))
+
+        (Many("HI", "THERE"): Every[String]) shouldEqual Many("hi", "there")
+        (Many(Many("HI", "THERE"), Many("FOO", "BAR")): Every[Every[String]]) shouldEqual Many(Many("hi", "there"), Many("Foo", "Bar"))
+
+        (One(Many("HI", "THERE")): Every[Every[String]]) shouldEqual One(Many("hi", "there"))
+        (Many(One("HI"), One("THERE")): Every[Every[String]]) shouldEqual Many(One("hi"), One("there"))
       }
     }
   }
