@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.equalities
 
-import org.scalactic.equalities._
 import org.scalatest._
+import org.scalactic._
 
 import scala.util.Success
 
