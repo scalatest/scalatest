@@ -19,7 +19,7 @@ import SharedHelpers.thisLineNumber
 import enablers.Messaging
 import exceptions.TestFailedException
 
-class ShouldMessageSpec extends Spec with Matchers {
+class ShouldMessageSpec extends FunSpec with Matchers {
   
   def hadMessageInsteadOfExpectedMessage(left: Any, actualMessage: String, expectedMessage: String): String = 
     FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage)
@@ -39,18 +39,18 @@ class ShouldMessageSpec extends Spec with Matchers {
   def wasNotEqualTo(left: Any, right: Any): String = 
     FailureMessages.wasNotEqualTo(left, right)
   
-  object `The 'have message (xxx)' syntax` {
+  describe("The 'have message (xxx)' syntax") {
     
-    object `on Throwable` {
+    describe("on Throwable") {
       
       val t = new RuntimeException("We have an error!")
       val t2 = new RuntimeException("This is another error!")
       
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -59,12 +59,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -80,7 +80,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -94,7 +94,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -152,7 +152,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -166,7 +166,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -225,7 +225,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -263,7 +263,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -321,7 +321,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -359,7 +359,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -418,7 +418,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       }
     }
     
-    object `on an arbitrary object that has an empty-paren String message method` {
+    describe("on an arbitrary object that has an empty-paren String message method") {
       
       class Messenger(theMessage: String) {
         def message(): String = theMessage
@@ -428,11 +428,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -441,12 +441,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -462,7 +462,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -476,7 +476,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -534,7 +534,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -548,7 +548,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -607,7 +607,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -645,7 +645,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -703,7 +703,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -741,7 +741,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -801,7 +801,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       
     }
     
-    object `on an arbitrary object that has an parameterless String message method` {
+    describe("on an arbitrary object that has an parameterless String message method") {
       
       class Messenger(theMessage: String) {
         def message: String = theMessage
@@ -811,11 +811,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -824,12 +824,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -845,7 +845,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -859,7 +859,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -917,7 +917,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -931,7 +931,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -990,7 +990,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -1028,7 +1028,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -1086,7 +1086,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -1124,7 +1124,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -1184,7 +1184,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       
     }
     
-    object `on an arbitrary object that has an parameterless String message val` {
+    describe("on an arbitrary object that has an parameterless String message val") {
       
       class Messenger(theMessage: String) {
         val message: String = theMessage
@@ -1194,11 +1194,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -1207,12 +1207,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -1228,7 +1228,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -1242,7 +1242,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -1300,7 +1300,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -1314,7 +1314,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -1373,7 +1373,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -1411,7 +1411,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -1469,7 +1469,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -1507,7 +1507,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -1567,7 +1567,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       
     }
     
-    object `on an arbitrary object that has an empty-paren String getMessage method` {
+    describe("on an arbitrary object that has an empty-paren String getMessage method") {
       
       class Messenger(theMessage: String) {
         def getMessage(): String = theMessage
@@ -1577,11 +1577,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -1590,12 +1590,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -1611,7 +1611,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -1625,7 +1625,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -1683,7 +1683,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -1697,7 +1697,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -1756,7 +1756,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -1794,7 +1794,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -1852,7 +1852,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -1890,7 +1890,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -1950,7 +1950,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       
     }
     
-    object `on an arbitrary object that has an parameterless String getMessage method` {
+    describe("on an arbitrary object that has an parameterless String getMessage method") {
       
       class Messenger(theMessage: String) {
         def getMessage: String = theMessage
@@ -1960,11 +1960,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -1973,12 +1973,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -1994,7 +1994,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -2008,7 +2008,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -2066,7 +2066,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -2080,7 +2080,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -2139,7 +2139,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -2177,7 +2177,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -2235,7 +2235,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -2273,7 +2273,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }
@@ -2333,7 +2333,7 @@ class ShouldMessageSpec extends Spec with Matchers {
       
     }
     
-    object `on an arbitrary object that has an parameterless String getMessage val` {
+    describe("on an arbitrary object that has an parameterless String getMessage val") {
       
       class Messenger(theMessage: String) {
         val getMessage: String = theMessage
@@ -2343,11 +2343,11 @@ class ShouldMessageSpec extends Spec with Matchers {
       val t = new Messenger("We have an error!")
       val t2 = new Messenger("This is another error!")
      
-      def `should do nothing if message matches the throwable's message` {
+      it("should do nothing if message matches the throwable's message") {
         t should have message "We have an error!"
       }
       
-      def `should throw TFE with correct stack depth if message does not match the throwable's message` {
+      it("should throw TFE with correct stack depth if message does not match the throwable's message") {
         val e =intercept[TestFailedException] { 
           t should have message "We have a boom!"
         }
@@ -2356,12 +2356,12 @@ class ShouldMessageSpec extends Spec with Matchers {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if message does not match the throwable's message and used with should not` {
+      it("should do nothing if message does not match the throwable's message and used with should not") {
         t should not { have message "We have a boom!" }
         t should not have message ("We have a boom!")
       }
       
-      def `should throw TFE with correct stack depth if message matches throwable's message and used with should not` {
+      it("should throw TFE with correct stack depth if message matches throwable's message and used with should not") {
         val e1 = intercept[TestFailedException] {
           t should not { have message "We have an error!" }
         }
@@ -2377,7 +2377,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression` {
+      it("should do nothing if error message matches and used in a logical-and expression") {
         t should (have message ("We have an error!") and (equal (t)))
         t should (equal (t) and (have message ("We have an error!")))
         
@@ -2391,7 +2391,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-and expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-and expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") and (equal (t)))
         }
@@ -2449,7 +2449,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-and expression and not` {
+      it("should do nothing if error message does not match and used in a logical-and expression and not") {
         t should (not have message ("We have a boom!") and (equal (t)))
         t should (equal (t) and (not have message ("We have a boom!")))
         
@@ -2463,7 +2463,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t) and not have message ("We have a boom!"))
       }
       
-      def `should do nothing if error message matches and used in a logical-and expression and not` {
+      it("should do nothing if error message matches and used in a logical-and expression and not") {
         
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") and (equal (t)))
@@ -2522,7 +2522,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message matches and used in a logical-or expression` {
+      it("should do nothing if error message matches and used in a logical-or expression") {
         t should (have message ("We have an error!") or (equal (t)))
         t should (equal (t) or (have message ("We have an error!")))
         
@@ -2560,7 +2560,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or have message ("We have an error!"))
       }
       
-      def `should throw TFE with correct stack depth if error message does not match and used in a logical-or expression` {
+      it("should throw TFE with correct stack depth if error message does not match and used in a logical-or expression") {
         val e1 = intercept[TestFailedException] {
           t should (have message ("We have a boom!") or (equal (t2)))
         }
@@ -2618,7 +2618,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         e8.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
-      def `should do nothing if error message does not match and used in a logical-or expression and not` {
+      it("should do nothing if error message does not match and used in a logical-or expression and not") {
         t should (not have message ("We have a boom!") or (equal (t)))
         t should (equal (t) or (not have message ("We have a boom!")))
         
@@ -2656,7 +2656,7 @@ class ShouldMessageSpec extends Spec with Matchers {
         t should (be (t2) or not have message ("We have a boom!"))
       }
       
-      def `should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not` {
+      it("should throw TFE with correct stack depth if error message matches and used in a logical-or expression and not") {
         val e1 = intercept[TestFailedException] {
           t should (not have message ("We have an error!") or (equal (t2)))
         }

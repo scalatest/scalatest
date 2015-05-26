@@ -739,6 +739,16 @@ object GenScalaTestJS {
         "ShouldLengthSpec.scala",
         //"ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
         "ShouldMatcherSpec.scala",
+        "ShouldMatchPatternSpec.scala",
+        "ShouldMessageSpec.scala",
+        "ShouldNotBeThrownBySpec.scala",
+        "ShouldNotCompileSpec.scala",
+        "ShouldNotShorthandForAllSpec.scala",
+        "ShouldNotShorthandSpec.scala",
+        "ShouldNotTypeCheckSpec.scala",
+        "ShouldPlusOrMinusSpec.scala",
+        //"ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+        "ShouldSizeSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

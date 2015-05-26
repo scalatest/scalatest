@@ -21,11 +21,12 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatchers {
+class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
 
-  object `The shouldNot syntax` {
+  describe("The shouldNot syntax") {
 
-    def `should work with theSameInstanceAs` {
+    // SKIP-SCALATESTJS-START
+    it("should work with theSameInstanceAs") {
       val string = "Hi"
       val obj: AnyRef = string
       val otherString = new String("Hi")
@@ -47,8 +48,9 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
+    // SKIP-SCALATESTJS-END
 
-    def `should work with any` {
+    it("should work with any") {
       1 shouldNot { be (2) }
       1 shouldNot be (2)
       "hi" shouldNot be (null)
@@ -123,7 +125,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with BeMatcher` {
+    it("should work with BeMatcher") {
 
       class OddMatcher extends BeMatcher[Int] {
         def apply(left: Int): MatchResult = {
@@ -164,7 +166,8 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should work with symbol` {
+    // SKIP-SCALATESTJS-START
+    it("should work with symbol") {
       notEmptyMock shouldNot { be ('empty) }
       notEmptyMock shouldNot be ('empty)
       isNotEmptyMock shouldNot { be ('empty) }
@@ -198,8 +201,9 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(ex4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
+    // SKIP-SCALATESTJS-END
 
-    def `should work with BePropertyMatcher` {
+    it("should work with BePropertyMatcher") {
       case class MyFile(
                          val name: String,
                          val file: Boolean,
@@ -273,7 +277,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should with +-` {
+    it("should with +-") {
       val sevenDotOh = 7.0
       val minusSevenDotOh = -7.0
       val sevenDotOhFloat = 7.0f
@@ -459,7 +463,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       val caught1 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 0.2)
       }
-      assert(caught1.message === Some("7.0 was 7.1 plus or minus 0.2"))
+      assert(caught1.message === Some(sevenDotOh + " was 7.1 plus or minus 0.2"))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -467,7 +471,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       val caught2 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 0.2f)
       }
-      assert(caught2.message === Some("7.0 was 7.1 plus or minus 0.20000000298023224"))
+      assert(caught2.message === Some(sevenDotOh + " was 7.1 plus or minus 0.20000000298023224"))
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -475,73 +479,106 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       val caught3 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 2L)
       }
-      assert(caught3.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine3 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught3.message === Some(sevenDotOh + " was 7.1 plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught3.message === Some(sevenDotOh + " was 7.1 plus or minus 2"))
       assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught3.failedCodeLineNumber === Some(offendingLine3))
 
       // Double +- Int
       val caught4 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 2)
       }
-      assert(caught4.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine4 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught4.message === Some(sevenDotOh + " was 7.1 plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught4.message === Some(sevenDotOh + " was 7.1 plus or minus 2"))
       assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught4.failedCodeLineNumber === Some(offendingLine4))
 
       // Double +- Short
       val caught5 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 2.toShort)
       }
-      assert(caught5.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine5 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught5.message === Some(sevenDotOh + " was 7.1 plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught5.message === Some(sevenDotOh + " was 7.1 plus or minus 2"))
       assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught5.failedCodeLineNumber === Some(offendingLine5))
 
       // Double +- Byte
       val caught6 = intercept[TestFailedException] {
         sevenDotOh shouldNot be (7.1 +- 2.toByte)
       }
-      assert(caught6.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine6 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught6.message === Some(sevenDotOh + " was 7.1 plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught6.message === Some(sevenDotOh + " was 7.1 plus or minus 2"))
       assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught6.failedCodeLineNumber === Some(offendingLine6))
 
       // Float +- Float
       val caught7 = intercept[TestFailedException] {
         sevenDotOhFloat shouldNot be (7.1f +- 0.2f)
       }
-      assert(caught7.message === Some("7.0 was 7.1 plus or minus 0.2"))
+      val offendingLine7 = thisLineNumber - 2
+      assert(caught7.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus " + 0.2f))
       assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught7.failedCodeLineNumber === Some(offendingLine7))
 
       // Float +- Long
       val caught8 = intercept[TestFailedException] {
         sevenDotOhFloat shouldNot be (7.1f +- 2L)
       }
-      assert(caught8.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine8 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught8.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught8.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2"))
       assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught8.failedCodeLineNumber === Some(offendingLine8))
 
       // Float +- Int
       val caught9 = intercept[TestFailedException] {
         sevenDotOhFloat shouldNot be (7.1f +- 2)
       }
-      assert(caught9.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine9 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught9.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught9.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2"))
       assert(caught9.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught9.failedCodeLineNumber === Some(offendingLine9))
 
       // Float +- Short
       val caught10 = intercept[TestFailedException] {
         sevenDotOhFloat shouldNot be (7.1f +- 2.toShort)
       }
-      assert(caught10.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine10 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught10.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught10.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2"))
       assert(caught10.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught10.failedCodeLineNumber === Some(offendingLine10))
 
       // Float +- Byte
       val caught11 = intercept[TestFailedException] {
         sevenDotOhFloat shouldNot be (7.1f +- 2.toByte)
       }
-      assert(caught11.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      val offendingLine11 = thisLineNumber - 2
+      // SKIP-SCALATESTJS-START
+      assert(caught11.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2.0"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught11.message === Some(sevenDotOh + " was " + 7.1f + " plus or minus 2"))
       assert(caught11.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
-      assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+      assert(caught11.failedCodeLineNumber === Some(offendingLine11))
 
       // Long +- Long
       val caught12 = intercept[TestFailedException] {
@@ -624,7 +661,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with fullyMatch regex withGroup and withGroups` {
+    it("should work with fullyMatch regex withGroup and withGroups") {
       
       "abbbc" shouldNot fullyMatch regex ("a(b*)c" withGroup "bb")
       "abbbc" shouldNot fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -660,7 +697,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with startWith regex withGroup and withGroups` {
+    it("should work with startWith regex withGroup and withGroups") {
       
       "abbbc" shouldNot startWith regex ("a(b*)c" withGroup "bb")
       "abbbc" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -729,7 +766,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with endWith regex withGroup and withGroups` {
+    it("should work with endWith regex withGroup and withGroups") {
       
       "abbbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
       "abbbc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -798,7 +835,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should work with include regex withGroup and withGroups` {
+    it("should work with include regex withGroup and withGroups") {
       
       "abbbc" shouldNot include regex ("a(b*)c" withGroup "bb")
       "abbbc" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
@@ -930,7 +967,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       assert(caught16.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
     }
     
-    def `should work with contain key` {
+    it("should work with contain key") {
       
       val map = Map("1" -> "one", "2" -> "two", "3" -> "three")
       
@@ -947,7 +984,7 @@ class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatch
       
     }
     
-    def `should work with contain value` {
+    it("should work with contain value") {
       val map = Map("1" -> "one", "2" -> "two", "3" -> "three")
       
       map shouldNot contain value "seven"
