@@ -105,7 +105,17 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
         Right(Right("HI")) should not equal Right(Right("hi"))
 
         Left(Right("HI")) should not equal Left(Right("hi"))
-        Left(Right("HI")) should not equal Right(Left("hi"))
+        Right(Left("HI")) should not equal Right(Left("hi"))
+ 
+        // With Either as left hand type
+        (Left("HI"): Either[String, Int]) should not equal Left("hi")
+        (Left(Left("HI")): Either[Either[String, Int], Float]) should not equal Left(Left("hi"))
+
+        (Right("HI"): Either[Int, String]) should not equal Right("hi")
+        (Right(Right("HI")): Either[Float, Either[Int, String]]) should not equal Right(Right("hi"))
+
+        (Left(Right("HI")): Either[Either[Float, String], Int]) should not equal Left(Right("hi"))
+        (Right(Left("HI")): Either[Int, Either[String, Float]]) should not equal Right(Left("hi"))
       }
     }
 
@@ -120,6 +130,16 @@ class RecursiveEqualitySpec extends FunSpec with Matchers with NonImplicitAssert
 
         Left(Right("HI")) shouldEqual Left(Right("hi"))
         Left(Right("HI")) should not equal Right(Left("hi"))
+ 
+        // With Either as left hand type
+        (Left("HI"): Either[String, Int]) shouldEqual Left("hi")
+        (Left(Left("HI")): Either[Either[String, Int], Float]) shouldEqual Left(Left("hi"))
+
+        (Right("HI"): Either[Int, String]) shouldEqual Right("hi")
+        (Right(Right("HI")): Either[Float, Either[Int, String]]) shouldEqual Right(Right("hi"))
+
+        (Left(Right("HI")): Either[Either[Float, String], Int]) shouldEqual Left(Right("hi"))
+        (Right(Left("HI")): Either[Int, Either[String, Float]]) shouldEqual Right(Left("hi"))
       }
     }
   }

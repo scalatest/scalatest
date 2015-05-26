@@ -24,17 +24,28 @@ import scala.language.{higherKinds, implicitConversions}
  * in scope for the [[Left]] and/or [[Right]] contained type.
  */
 trait RecursiveEitherEquality {
-  implicit def recursiveLeftEquality[L, R, LEFT[l] <: Left[l, R]](implicit eqL: Equality[L]): Equality[Left[L, R]] =
-    new Equality[Left[L, R]] {
-      override def areEqual(left: Left[L, R], other: Any): Boolean = (left, other) match {
+  implicit def recursiveEitherEquality[L, R, EITHER[l, r] <: Either[l, r]](implicit eqL: Equality[L], eqR: Equality[R]): Equality[EITHER[L, R]] =
+    new Equality[EITHER[L, R]] {
+      override def areEqual(either: EITHER[L, R], other: Any): Boolean = (either, other) match {
+        case (Left(l), Left(otherL)) => eqL.areEqual(l, otherL)
+        case (Right(r), Right(otherR)) => eqR.areEqual(r, otherR)
+        case _ => false
+      }
+    }
+
+  // This is a Left
+  implicit def recursiveRightNothingEquality[L, EITHER[l, r] <: Either[l, r]](implicit eqL: Equality[L]): Equality[EITHER[L, Nothing]] =
+    new Equality[EITHER[L, Nothing]] {
+      override def areEqual(either: EITHER[L, Nothing], other: Any): Boolean = (either, other) match {
         case (Left(l), Left(otherL)) => eqL.areEqual(l, otherL)
         case _ => false
       }
     }
 
-  implicit def recursiveRightEquality[L, R, LEFT[l] <: Right[l, R]](implicit eqR: Equality[R]): Equality[Right[L, R]] =
-    new Equality[Right[L, R]] {
-      override def areEqual(right: Right[L, R], other: Any): Boolean = (right, other) match {
+  // This is a Right
+  implicit def recursiveLeftNothingEquality[R, EITHER[l, r] <: Either[l, r]](implicit eqR: Equality[R]): Equality[EITHER[Nothing, R]] =
+    new Equality[EITHER[Nothing, R]] {
+      override def areEqual(either: EITHER[Nothing, R], other: Any): Boolean = (either, other) match {
         case (Right(r), Right(otherR)) => eqR.areEqual(r, otherR)
         case _ => false
       }
