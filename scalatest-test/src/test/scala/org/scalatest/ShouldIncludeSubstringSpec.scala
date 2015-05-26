@@ -22,11 +22,11 @@ import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeSubstringSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
-  object `The include substring syntax` {
+  describe("The include substring syntax") {
 
-    def `should do nothing if the string includes the specified substring` {
+    it("should do nothing if the string includes the specified substring") {
 
       "1.78" should include ("1.7")
       "21.7" should include ("1.7")
@@ -35,7 +35,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String, t: String, u: String) => returnsNormally(s + t + u should include (t)))
     }
 
-    def `should do nothing if the string does not include the specified substring when used with not` {
+    it("should do nothing if the string does not include the specified substring when used with not") {
 
       "eight" should not { include ("1.7") }
       "eight" should not include ("1.7")
@@ -43,7 +43,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String, t: String, u: String) => (s + u).indexOf(t) == -1 ==> returnsNormally(s + u should not include (t)))
     }
 
-    def `should do nothing if the string does not include the specified substring when used in a logical-and expression` {
+    it("should do nothing if the string does not include the specified substring when used in a logical-and expression") {
 
       "a1.7" should (include ("1.7") and (include ("1.7")))
       "a1.7" should (include ("1.7") and (include ("1.7")))
@@ -64,7 +64,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String, t: String, u: String) => returnsNormally(s + t + u should (include (s) and include (t) and include (u))))
     }
 
-    def `should do nothing if the string does not include the specified substring when used in a logical-or expression` {
+    it("should do nothing if the string does not include the specified substring when used in a logical-or expression") {
 
       "a1.7" should (include ("hello") or (include ("1.7")))
       "a1.7" should (include ("hello") or (include ("1.7")))
@@ -85,21 +85,21 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String, t: String, u: String) => returnsNormally(s + t + u should (include ("hi") or include ("ho") or include (t))))
     }
 
-    def `should do nothing if the string does not include the specified substring when used in a logical-and expression with not` {
+    it("should do nothing if the string does not include the specified substring when used in a logical-and expression with not") {
       "fred" should (not (include ("bob")) and not (include ("1.7")))
       "fred" should ((not include ("bob")) and (not include ("1.7")))
       "fred" should (not include ("bob") and not include ("1.7"))
       check((s: String) => s.indexOf("bob") == -1 && s.indexOf("1.7") == -1 ==> returnsNormally(s should (not include ("bob") and not include ("1.7"))))
     }
 
-    def `should do nothing if the string does not include the specified substring when used in a logical-or expression with not` {
+    it("should do nothing if the string does not include the specified substring when used in a logical-or expression with not") {
       "fred" should (not (include ("fred")) or not (include ("1.7")))
       "fred" should ((not include ("fred")) or (not include ("1.7")))
       "fred" should (not include ("fred") or not include ("1.7"))
       check((s: String) => s.indexOf("a") == -1 || s.indexOf("b") == -1 ==> returnsNormally(s should (not include ("a") or not include ("b"))))
     }
 
-    def `should throw TestFailedException if the string does not match the specified substring` {
+    it("should throw TestFailedException if the string does not match the specified substring") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should include ("1.78")
@@ -139,7 +139,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String) => s.indexOf("1.7") == -1 ==> throwsTestFailedException(s should include ("1.7")))
     }
 
-    def `should throw TestFailedException if the string does matches the specified substring when used with not` {
+    it("should throw TestFailedException if the string does matches the specified substring when used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should not { include ("1.7") }
@@ -209,7 +209,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String) => s.length > 1 ==> throwsTestFailedException(s should not include (s.substring(1, 2))))
     }
 
-    def `should throw TestFailedException if the string includes the specified substring when used in a logical-and expression` {
+    it("should throw TestFailedException if the string includes the specified substring when used in a logical-and expression") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (include ("1.7") and (include ("1.8")))
@@ -245,7 +245,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       check((s: String, t: String, u: String) => (s + u).indexOf(t) == -1 ==> throwsTestFailedException(s + u should (include (s) and include (t))))
     }
 
-    def `should throw TestFailedException if the string includes the specified substring when used in a logical-or expression` {
+    it("should throw TestFailedException if the string includes the specified substring when used in a logical-or expression") {
 
       val caught1 = intercept[TestFailedException] {
         "one.seven" should (include ("1.7") or (include ("1.8")))
@@ -270,7 +270,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       )
     }
 
-    def `should throw TestFailedException if the string includes the specified substring when used in a logical-and expression used with not` {
+    it("should throw TestFailedException if the string includes the specified substring when used in a logical-and expression used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (not include ("1.8") and (not include ("1.7")))
@@ -309,7 +309,7 @@ class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormally
       )
     }
 
-    def `should throw TestFailedException if the string includes the specified substring when used in a logical-or expression used with not` {
+    it("should throw TestFailedException if the string includes the specified substring when used in a logical-or expression used with not") {
 
       val caught1 = intercept[TestFailedException] {
         "1.7" should (not include ("1.7") or (not include ("1.7")))

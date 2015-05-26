@@ -730,6 +730,15 @@ object GenScalaTestJS {
         "ShouldExistLogicalOrImplicitSpec.scala",
         "ShouldExistLogicalOrSpec.scala",
         "ShouldExistSpec.scala",
+        //"ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
+        "ShouldFullyMatchSpec.scala",
+        "ShouldHavePropertiesSpec.scala",
+        "ShouldIncludeRegexSpec.scala",
+        "ShouldIncludeSubstringSpec.scala",
+        "ShouldLengthSizeSpec.scala",
+        "ShouldLengthSpec.scala",
+        //"ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
+        "ShouldMatcherSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
