@@ -18,17 +18,14 @@ package org.scalactic.equalities
 
 object RecursiveEquality
   extends RecursiveArrayEquality
-  with RecursiveBadEquality
   with RecursiveChainEquality
-  with RecursiveGoodEquality
+  with RecursiveEitherEquality
+  with RecursiveEveryEquality
   with RecursiveJavaListEquality
   with RecursiveJavaMapEquality
   with RecursiveJavaSetEquality
-  with RecursiveLeftEquality
-  with RecursiveManyEquality
   with RecursiveMapEquality
-  with RecursiveOneEquality
   with RecursiveOptionEquality
-  with RecursiveRightEquality
+  with RecursiveOrEquality
   with RecursiveSeqEquality
   with RecursiveSetEquality

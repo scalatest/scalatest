@@ -20,10 +20,10 @@ import org.scalactic.{Equality, Good, Bad}
 import scala.language.{higherKinds, implicitConversions}
 
 /**
- * An [[Equality]] that allows the comparison of values nested in [[Good]]s using whatever Equality is
- * in scope for the contained type.
+ * An [[Equality]] that allows the comparison of values nested in [[Or]]s using whatever Equality is
+ * in scope for the contained [[Good]] and/or [[Bad]] type.
  */
-trait RecursiveGoodEquality {
+trait RecursiveOrEquality {
   implicit def recursiveGoodEquality[G, GOOD[g] <: Good[g]](implicit eqG: Equality[G]): Equality[Good[G]] =
     new Equality[Good[G]] {
       override def areEqual(good: Good[G], other: Any): Boolean = (good, other) match {
@@ -31,13 +31,7 @@ trait RecursiveGoodEquality {
         case _ => false
       }
     }
-}
 
-/**
- * An [[Equality]] that allows the comparison of values nested in [[Bad]]s using whatever Equality is
- * in scope for the contained type.
- */
-trait RecursiveBadEquality {
   implicit def recursiveBadEquality[B, BAD[b] <: Bad[b]](implicit eqB: Equality[B]): Equality[Bad[B]] =
     new Equality[Bad[B]] {
       override def areEqual(good: Bad[B], other: Any): Boolean = (good, other) match {
@@ -47,4 +41,4 @@ trait RecursiveBadEquality {
     }
 }
 
-object RecursiveOrEquality extends RecursiveGoodEquality with RecursiveBadEquality
+object RecursiveOrEquality extends RecursiveOrEquality

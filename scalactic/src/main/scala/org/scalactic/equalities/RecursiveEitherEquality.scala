@@ -20,11 +20,10 @@ import org.scalactic.Equality
 import scala.language.{higherKinds, implicitConversions}
 
 /**
- * An [[Equality]] that allows the comparison of values nested in [[Left]]s using whatever Equality is
- * in scope for the contained type.
+ * An [[Equality]] that allows the comparison of values nested in [[Either]]s using whatever Equality is
+ * in scope for the [[Left]] and/or [[Right]] contained type.
  */
-
-trait RecursiveLeftEquality {
+trait RecursiveEitherEquality {
   implicit def recursiveLeftEquality[L, R, LEFT[l] <: Left[l, R]](implicit eqL: Equality[L]): Equality[Left[L, R]] =
     new Equality[Left[L, R]] {
       override def areEqual(left: Left[L, R], other: Any): Boolean = (left, other) match {
@@ -32,14 +31,7 @@ trait RecursiveLeftEquality {
         case _ => false
       }
     }
-}
 
-/**
- * An [[Equality]] that allows the comparison of values nested in [[Right]]s using whatever Equality is
- * in scope for the contained type.
- */
-
-trait RecursiveRightEquality {
   implicit def recursiveRightEquality[L, R, LEFT[l] <: Right[l, R]](implicit eqR: Equality[R]): Equality[Right[L, R]] =
     new Equality[Right[L, R]] {
       override def areEqual(right: Right[L, R], other: Any): Boolean = (right, other) match {
@@ -49,5 +41,4 @@ trait RecursiveRightEquality {
     }
 }
 
-
-object RecursiveEitherEquality extends RecursiveLeftEquality with RecursiveRightEquality
+object RecursiveEitherEquality extends RecursiveEitherEquality

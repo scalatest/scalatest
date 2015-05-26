@@ -20,10 +20,10 @@ import org.scalactic.{Equality, One, Many}
 import scala.language.{higherKinds, implicitConversions}
 
 /**
- * An [[Equality]] that allows the comparison of values nested in [[One]]s using whatever Equality is
+ * An [[Equality]] that allows the comparison of values nested in [[Every]]s using whatever Equality is
  * in scope for the contained type.
  */
-trait RecursiveOneEquality {
+trait RecursiveEveryEquality {
   implicit def recursiveOneEquality[E, ONE[e] <: One[e]](implicit eqE: Equality[E]): Equality[ONE[E]] =
     new Equality[ONE[E]] {
       def areEqual(oneA: ONE[E], other: Any): Boolean = (oneA, other) match {
@@ -31,13 +31,7 @@ trait RecursiveOneEquality {
         case _ => false
       }
     }
-}
 
-/**
- * An [[Equality]] that allows the comparison of values nested in [[Many]]s using whatever Equality is
- * in scope for the contained type.
- */
-trait RecursiveManyEquality {
   implicit def recursiveManyEquality[E, MANY[e] <: Many[e]](implicit eqE: Equality[E]): Equality[MANY[E]] =
     new Equality[MANY[E]] {
       def areEqual(manyA: MANY[E], b: Any): Boolean = b match {
@@ -47,4 +41,4 @@ trait RecursiveManyEquality {
     }
 }
 
-object RecursiveEveryEquality extends RecursiveOneEquality with RecursiveManyEquality
+object RecursiveEveryEquality extends RecursiveEveryEquality
