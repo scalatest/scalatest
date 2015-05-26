@@ -715,6 +715,12 @@ object GenScalaTestJS {
         "ShouldConversionCheckedTripleEqualsEqualitySpec.scala",
         "ShouldEndWithRegexSpec.scala",
         "ShouldEndWithSubstringSpec.scala",
+        "ShouldEqualEqualitySpec.scala",
+        "ShouldEqualExplicitlySpec.scala",
+        "ShouldEqualNullSpec.scala",
+        "ShouldEqualSpec.scala",
+        "ShouldEqualTokenToleranceSpec.scala",
+        "ShouldEqualToleranceSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

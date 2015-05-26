@@ -20,7 +20,7 @@ import Matchers._
 import exceptions.TestFailedException
 
 // For shouldEqual instead of should equal
-class ShouldEqualTokenToleranceSpec extends Spec with Tolerance {
+class ShouldEqualTokenToleranceSpec extends FunSpec with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0
@@ -46,9 +46,9 @@ class ShouldEqualTokenToleranceSpec extends Spec with Tolerance {
       (7.1 +- 0.2) shouldEqual sevenDotOh
       (7.5 +- 0.2) should not equal sevenDotOh
  */
-  object `The shouldEqual syntax` {
+  describe("The shouldEqual syntax") {
 
-    def `should succeed if the number is within the given interval` {
+    it("should succeed if the number is within the given interval") {
 
       // Double +- Double
       sevenDotOh shouldEqual (7.1 +- 0.2)
@@ -303,11 +303,11 @@ class ShouldEqualTokenToleranceSpec extends Spec with Tolerance {
       minusSevenByte shouldEqual ((-5).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is outside the given interval` {
+    it("should throw TFE if the number is outside the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh shouldEqual (7.5 +- 0.2) }
-      assert(caught.getMessage === "7.0 did not equal 7.5 plus or minus 0.2")
+      assert(caught.getMessage === sevenDotOh + " did not equal 7.5 plus or minus 0.2")
       intercept[TestFailedException] { sevenDotOh shouldEqual (6.5 +- 0.2) }
       intercept[TestFailedException] { minusSevenDotOh shouldEqual (-7.5 +- 0.2) }
       intercept[TestFailedException] { minusSevenDotOh shouldEqual (-6.5 +- 0.2) }

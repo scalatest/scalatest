@@ -19,7 +19,7 @@ import org.scalactic._
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldEqualToleranceSpec extends Spec with Tolerance {
+class ShouldEqualToleranceSpec extends FunSpec with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0
@@ -45,9 +45,9 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       (7.1 +- 0.2) should equal sevenDotOh
       (7.5 +- 0.2) should not equal sevenDotOh
  */
-  object `The should equal syntax` {
+  describe("The should equal syntax") {
 
-    def `should succeed if the number is within the given interval` {
+    it("should succeed if the number is within the given interval") {
 
       // Double +- Double
       sevenDotOh should equal (7.1 +- 0.2)
@@ -302,11 +302,11 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       minusSevenByte should equal ((-5).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is outside the given interval` {
+    it("should throw TFE if the number is outside the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should equal (7.5 +- 0.2) }
-      assert(caught.getMessage === "7.0 did not equal 7.5 plus or minus 0.2")
+      assert(caught.getMessage === sevenDotOh + " did not equal 7.5 plus or minus 0.2")
       intercept[TestFailedException] { sevenDotOh should equal (6.5 +- 0.2) }
       intercept[TestFailedException] { minusSevenDotOh should equal (-7.5 +- 0.2) }
       intercept[TestFailedException] { minusSevenDotOh should equal (-6.5 +- 0.2) }
@@ -432,7 +432,7 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       intercept[TestFailedException] { minusSevenByte should equal ((-10).toByte +- 2.toByte) }
     }
 
-    def `should succeed if the number is outside the given interval when used with not` {
+    it("should succeed if the number is outside the given interval when used with not") {
 
       // Double +- Double
       sevenDotOh should not equal (7.5 +- 0.2)
@@ -561,11 +561,11 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       minusSevenByte should not equal ((-10).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is within the given interval when used with not` {
+    it("should throw TFE if the number is within the given interval when used with not") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 0.2) }
-      assert(caught.getMessage === "7.0 equaled 7.1 plus or minus 0.2")
+      assert(caught.getMessage === sevenDotOh + " equaled 7.1 plus or minus 0.2")
       intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 0.2) }
       intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 0.2) }
       intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 0.2) }
@@ -817,7 +817,7 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       intercept[TestFailedException] { minusSevenByte should not equal ((-5).toByte +- 2.toByte) }
     }
 
-    def `should succeed when equal and used in a logical-and expression` {
+    it("should succeed when equal and used in a logical-and expression") {
       // Double +- Double
       sevenDotOh should (equal (7.1 +- 0.2) and equal (7.1 +- 0.2))
       sevenDotOh should (equal (6.9 +- 0.2) and equal (6.9 +- 0.2))
@@ -1071,7 +1071,7 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       minusSevenByte should (equal ((-5).toByte +- 2.toByte) and equal ((-5).toByte +- 2.toByte))
     }
 
-    def `should succeed when equal and used in a logical-or expression` {
+    it("should succeed when equal and used in a logical-or expression") {
 
       sevenDotOh should (equal (7.1 +- 0.2) or equal (7.1 +- 0.2))
       sevenDotOh should (equal (6.9 +- 0.2) or equal (6.9 +- 0.2))
@@ -1325,33 +1325,33 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       minusSevenByte should (equal ((-5).toByte +- 2.toByte) or equal ((-5).toByte +- 2.toByte))
     }
 
-    def `should succeed when not equal and used in a logical-and expression with not` {
+    it("should succeed when not equal and used in a logical-and expression with not") {
       1 should { not { equal (3 +- 1) } and not { equal (3 +- 1) }}
       1 should { not equal (3 +- 1) and (not equal (3 +- 1)) }
       1 should (not equal (3 +- 1) and not equal (3 +- 1))
     }
 
-    def `should succeed when not equal and used in a logical-or expression with not` {
+    it("should succeed when not equal and used in a logical-or expression with not") {
       1 should { not { equal (3 +- 1) } or not { equal (3 +- 1) }}
       1 should { not equal (3 +- 1) or (not equal (3 +- 1)) }
       1 should (not equal (3 +- 1) or not equal (3 +- 1))
     }
 
-    def `should throw a TFE when not equal and used in a logical-and expression` {
+    it("should throw a TFE when not equal and used in a logical-and expression") {
       val caught = intercept[TestFailedException] {
         1 should { equal (5 +- 1) and equal (2 +- 1) }
       }
       assert(caught.getMessage === "1 did not equal 5 plus or minus 1")
     }
 
-    def `should throw a TFE when not equal and used in a logical-or expression` {
+    it("should throw a TFE when not equal and used in a logical-or expression") {
       val caught = intercept[TestFailedException] {
         1 should { equal (5 +- 1) or equal (4 +- 1) }
       }
       assert(caught.getMessage === "1 did not equal 5 plus or minus 1, and 1 did not equal 4 plus or minus 1")
     }
 
-    def `should throw a TFE when equal and used in a logical-and expression with not` {
+    it("should throw a TFE when equal and used in a logical-and expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         1 should { not { equal (2 +- 1) } and not { equal (3 - 1) }}
@@ -1384,7 +1384,7 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       assert(caught6.getMessage === "1 did not equal 3 plus or minus 1, but 1 equaled 2 plus or minus 1")
     }
 
-    def `should throw a TFE when equal and used in a logical-or expression with not` {
+    it("should throw a TFE when equal and used in a logical-or expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         1 should { not { equal (2 +- 1) } or not { equal (2 +- 1) }}
@@ -1403,9 +1403,9 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
     }
   }
 
-  object `The X +- Y syntax` {
+  describe("The X +- Y syntax") {
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative") {
 
       // Double +- Double
       val caught1 = intercept[IllegalArgumentException] {
@@ -1423,55 +1423,79 @@ class ShouldEqualToleranceSpec extends Spec with Tolerance {
       val caught3 = intercept[IllegalArgumentException] {
         sevenDotOh should equal (7.1 +- -2L)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught3.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught3.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Int
       val caught4 = intercept[IllegalArgumentException] {
         sevenDotOh should equal (7.1 +- -2)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught4.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught4.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Short
       val caught5 = intercept[IllegalArgumentException] {
         sevenDotOh should equal (7.1 +- (-2).toShort)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught5.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught5.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Byte
       val caught6 = intercept[IllegalArgumentException] {
         sevenDotOh should equal (7.1 +- (-2).toByte)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught6.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught6.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Float
       val caught7 = intercept[IllegalArgumentException] {
         sevenDotOhFloat should equal (7.1f +- -0.2f)
       }
-      assert(caught7.getMessage === "-0.2 passed to +- was zero or negative. Must be a positive non-zero number.")
+      assert(caught7.getMessage === -0.2f + " passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Long
       val caught8 = intercept[IllegalArgumentException] {
         sevenDotOhFloat should equal (7.1f +- -2L)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught8.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught8.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Int
       val caught9 = intercept[IllegalArgumentException] {
         sevenDotOhFloat should equal (7.1f +- -2)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught9.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught9.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Short
       val caught10 = intercept[IllegalArgumentException] {
         sevenDotOhFloat should equal (7.1f +- (-2).toShort)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught10.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught10.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Byte
       val caught11 = intercept[IllegalArgumentException] {
         sevenDotOhFloat should equal (7.1f +- (-2).toByte)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught11.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught11.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Long +- Long
       val caught12 = intercept[IllegalArgumentException] {
