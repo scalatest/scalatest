@@ -710,6 +710,11 @@ object GenScalaTestJS {
         "ShouldCompileSpec.scala",
         "ShouldContainElementNewSpec.scala",
         "ShouldContainElementSpec.scala",
+        "ShouldContainKeySpec.scala",
+        "ShouldContainValueSpec.scala",
+        "ShouldConversionCheckedTripleEqualsEqualitySpec.scala",
+        "ShouldEndWithRegexSpec.scala",
+        "ShouldEndWithSubstringSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
