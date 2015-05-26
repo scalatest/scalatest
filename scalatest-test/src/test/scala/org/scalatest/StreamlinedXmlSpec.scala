@@ -23,15 +23,15 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.xml.{Elem, Node, Text, NodeSeq}
 
-class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
+class StreamlinedXmlSpec extends FunSpec with Matchers with StreamlinedXml {
 
-  object `Xml Equality of Elems (after being streamlined)` {
+  describe("Xml Equality of Elems (after being streamlined)") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
       <summer></summer> should equal (<summer></summer>) (after being streamlined[Elem])
     }
 
-    def `should zap text that is only whitespace` {
+    it("should zap text that is only whitespace") {
 
       <summer> </summer> should equal (<summer></summer>) (after being streamlined[Elem])
 
@@ -60,16 +60,16 @@ class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
     }
   }
 
-  object `Xml Equality of Nodes (after being streamlined)` {
+  describe("Xml Equality of Nodes (after being streamlined)") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
 
       ((<summer></summer>: Node) shouldEqual (<summer></summer>)) (after being streamlined[Node])
 
       ((Text("Bla"): Node) shouldEqual (Text("Bla"))) (after being streamlined[Node])
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
 
       (<summer> </summer>: Node) should equal (<summer></summer>) (after being streamlined[Node])
 
@@ -100,16 +100,16 @@ class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
     }
   }
 
-  object `Xml Equality of NodeSeq (after being streamlined)` {
+  describe("Xml Equality of NodeSeq (after being streamlined)") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
 
       (<summer></summer>: NodeSeq) should equal (<summer></summer>) (after being streamlined[NodeSeq])
 
       (Text("Bla"): NodeSeq) should equal (Text("Bla")) (after being streamlined[NodeSeq])
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
 
       (<summer> </summer>: NodeSeq) should equal (<summer></summer>) (after being streamlined[NodeSeq])
 

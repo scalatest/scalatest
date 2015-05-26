@@ -15,5 +15,5 @@
  */
 package org.scalatest
 
-class UnitSpec extends Spec with Matchers 
+class UnitSpec extends FunSpec with Matchers 
 

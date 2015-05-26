@@ -19,9 +19,9 @@ import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
 
-class TheSameElementsAsContainMatcherSpec extends Spec {
+class TheSameElementsAsContainMatcherSpec extends FunSpec {
   
-  object `theSameElementsAs ` {
+  describe("theSameElementsAs ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -31,7 +31,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeeded when left List contains same elements in same order as right List` {
+    it("should succeeded when left List contains same elements in same order as right List") {
       List(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       Array(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       javaList(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
@@ -40,7 +40,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
-    def `should succeeded when left List contains same elements in different order as right List` {
+    it("should succeeded when left List contains same elements in different order as right List") {
       List(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       Array(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       javaList(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
@@ -49,7 +49,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
     }
     
-    def `should succeeded when left List contains same elements in different order as right Set` {
+    it("should succeeded when left List contains same elements in different order as right Set") {
       List(1, 2, 3) should contain theSameElementsAs Set(2, 1, 3)
       Array(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       javaList(1, 2, 3) should contain theSameElementsAs Set(2, 1, 3)
@@ -58,7 +58,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
     }
     
-    def `should succeeded when left List contains same elements in same order as right Set` {
+    it("should succeeded when left List contains same elements in same order as right Set") {
       List(1, 2, 3) should contain theSameElementsAs Set(1, 2, 3)
       Array(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       javaList(1, 2, 3) should contain theSameElementsAs Set(1, 2, 3)
@@ -67,12 +67,12 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
-    def `should succeeded when left Map contains same elements as right Map` {
+    it("should succeeded when left Map contains same elements as right Map") {
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
       val left1 = List(1, 2, 3)
       val right1 = List(2, 5, 3)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -109,7 +109,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is shorter than right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3, 4)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -146,7 +146,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is longer than right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List is longer than right List") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -183,7 +183,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain different elements` {
+    it("should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain different elements") {
       val left1 = List(1, 2, 3)
       val right1 = Set(2, 5, 3)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -220,7 +220,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are not same size, though they contain same elements` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are not same size, though they contain same elements") {
       val left1 = List(1, 2, 3, 3, 4)
       val right1 = List(1, 2, 3, 4) 
       val e1 = intercept[exceptions.TestFailedException] {
@@ -251,7 +251,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       }
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is shorter than right Set` {
+    it("should throw TestFailedException with correct stack depth and message when left List is shorter than right Set") {
       val left1 = List(1, 2, 3)
       val right1 = Set(1, 2, 3, 4)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -288,7 +288,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is longer than right Set` {
+    it("should throw TestFailedException with correct stack depth and message when left List is longer than right Set") {
       val left1 = List(1, 2, 3)
       val right1 = Set(1, 2)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -325,7 +325,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List does not contain all repeated elements in right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List does not contain all repeated elements in right List") {
       val left1 = List(1, 1, 2)
       val right1 = List(1, 2, 2)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -349,7 +349,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
     }
   }
   
-  object `not theSameElementsAs ` {
+  describe("not theSameElementsAs ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -359,7 +359,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeeded when left List contains different elements as right List` {
+    it("should succeeded when left List contains different elements as right List") {
       List(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       Array(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       javaList(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
@@ -368,7 +368,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
     }
     
-    def `should succeeded when left List contains different elements in different order as right List` {
+    it("should succeeded when left List contains different elements in different order as right List") {
       List(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       Array(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       javaList(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
@@ -377,7 +377,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
     }
     
-    def `should succeeded when left List contains different elements in different order as right Set` {
+    it("should succeeded when left List contains different elements in different order as right Set") {
       List(1, 2, 3) should not contain theSameElementsAs (Set(2, 1, 8))
       Array(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(2, 1, 8))
@@ -386,7 +386,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
     }
     
-    def `should succeeded when left List contains different elements in same order as right Set` {
+    it("should succeeded when left List contains different elements in same order as right Set") {
       List(1, 2, 3) should not contain theSameElementsAs (Set(1, 2, 8))
       Array(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(1, 2, 8))
@@ -395,13 +395,13 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
     }
     
-    def `should succeed when left and right List contains same element but has different size` {
+    it("should succeed when left and right List contains same element but has different size") {
       List(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
       Array(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
       javaList(1, 2, 3, 3, 4) should not contain theSameElementsAs (List(1, 2, 3, 4))
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in different order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in different order") {
       val left1 = List(1, 2, 3)
       val right1 = List(2, 1, 3)
       val e1 = intercept[exceptions.TestFailedException] {
@@ -438,7 +438,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain same elements in different order` {
+    it("should throw TestFailedException with correct stack depth and message when left List and right Set are same size but contain same elements in different order") {
       val left1 = List(2, 3, 5)
       val right1 = Set(2, 5, 3)
       val e1 = intercept[exceptions.TestFailedException] {

@@ -23,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldStartWithRegexSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStartWithRegexSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t
@@ -35,14 +35,14 @@ s should endWith regex t
 s should fullyMatch regex t
 */
 
-  object `The startWith regex syntax` {
+  describe("The startWith regex syntax") {
 
     val decimal = """(-)?(\d+)(\.\d*)?"""
     val decimalRegex = """(-)?(\d+)(\.\d*)?""".r
 
-    object `(when the regex is specified by a string)` {
+    describe("(when the regex is specified by a string)") {
 
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string") {
 
         "1.78" should startWith regex ("1.7")
         "1.7" should startWith regex (decimal)
@@ -59,7 +59,7 @@ s should fullyMatch regex t
         "1." should startWith regex (decimal)
       }
       
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string and withGroup` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string and withGroup") {
 
         "abbc" should startWith regex ("a(b*)c" withGroup "bb")
         "aabbc" should startWith regex ("aa(b*)c" withGroup "bb")
@@ -67,7 +67,7 @@ s should fullyMatch regex t
         
       }
       
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string and withGroups` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string and withGroups") {
 
         "abbcc" should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
         "aabbcc" should startWith regex ("aa(b*)(c*)" withGroups ("bb", "cc"))
@@ -75,7 +75,7 @@ s should fullyMatch regex t
         
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used with not") {
 
         "eight" should not { startWith regex (decimal) }
         "one.eight" should not { startWith regex (decimal) }
@@ -84,19 +84,19 @@ s should fullyMatch regex t
         "one.eight" should not startWith regex (decimal)
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used with not") {
 
         "abcdef" should not { startWith regex ("a(b*)c" withGroup "bb") }
         "abcdef" should not startWith regex ("a(b*)c" withGroup "bb")
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used with not") {
 
         "abbcdef" should not { startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) }
         "abbcdef" should not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression") {
 
         "1.7b" should (startWith regex (decimal) and (startWith regex (decimal)))
         "1.7b" should ((startWith regex (decimal)) and (startWith regex (decimal)))
@@ -107,7 +107,7 @@ s should fullyMatch regex t
         "1.7" should (startWith regex (decimal) and startWith regex (decimal))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
 
         "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bb")))
         "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bb")) and (startWith regex ("a(b*)c" withGroup "bb")))
@@ -126,7 +126,7 @@ s should fullyMatch regex t
         "abbcdef" should (equal ("abbcdef") and startWith regex ("a(b*)c" withGroup "bb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
 
         "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -145,7 +145,7 @@ s should fullyMatch regex t
         "abbccdef" should (equal ("abbccdef") and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression") {
 
         "1.7b" should (startWith regex ("hello") or (startWith regex (decimal)))
         "1.7b" should ((startWith regex ("hello")) or (startWith regex (decimal)))
@@ -156,7 +156,7 @@ s should fullyMatch regex t
         "1.7" should (startWith regex ("hello") or startWith regex (decimal))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
 
         "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") or (startWith regex ("a(b*)c" withGroup "bb")))
         "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bbb")) or (startWith regex ("a(b*)c" withGroup "bb")))
@@ -175,7 +175,7 @@ s should fullyMatch regex t
         "abbcdef" should (equal ("abbbcdef") or startWith regex ("a(b*)c" withGroup "bb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
 
         "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -186,13 +186,13 @@ s should fullyMatch regex t
         "abbccdef" should (equal ("abbcccdef") or startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (startWith regex ("bob")) and not (startWith regex (decimal)))
         "fred" should ((not startWith regex ("bob")) and (not startWith regex (decimal)))
         "fred" should (not startWith regex ("bob") and not startWith regex (decimal))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not") {
         "abbbcdef" should (not (startWith regex ("a(b*)c" withGroup "b")) and not (startWith regex ("a(b*)c" withGroup "bb")))
         "abbbcdef" should ((not startWith regex ("a(b*)c" withGroup "b")) and (not startWith regex ("a(b*)c" withGroup "bb")))
         "abbbcdef" should (not startWith regex ("a(b*)c" withGroup "b") and not startWith regex ("a(b*)c" withGroup "bb"))
@@ -202,7 +202,7 @@ s should fullyMatch regex t
         "abbbcdef" should (not equal ("abcdef") and not startWith regex ("a(b*)c" withGroup "bb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not") {
         "abbccdef" should (not (startWith regex ("a(b*)(c*)" withGroups ("bb", "c"))) and not (startWith regex ("a(b*)(c*)" withGroups ("bb", "c"))))
         "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bb", "c"))) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "c"))))
         "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) and not startWith regex ("a(b*)(c*)" withGroups ("bb", "c")))
@@ -212,13 +212,13 @@ s should fullyMatch regex t
         "abbccdef" should (not equal ("abbcdef") and not startWith regex ("a(b*)(c*)" withGroups ("bb", "c")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (startWith regex ("fred")) or not (startWith regex (decimal)))
         "fred" should ((not startWith regex ("fred")) or (not startWith regex (decimal)))
         "fred" should (not startWith regex ("fred") or not startWith regex (decimal))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not") {
         "abbcdef" should (not (startWith regex ("a(b*)c" withGroup "bb")) or not (startWith regex ("a(b*)c" withGroup "bbb")))
         "abbcdef" should ((not startWith regex ("a(b*)c" withGroup "bb")) or (not startWith regex ("a(b*)c" withGroup "bbb")))
         "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bb") or not startWith regex ("a(b*)c" withGroup "bbb"))
@@ -228,7 +228,7 @@ s should fullyMatch regex t
         "abbcdef" should (not equal ("abbcdef") or not startWith regex ("a(b*)c" withGroup "bbb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not") {
         "abbccdef" should (not (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) or not (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) or (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
@@ -238,7 +238,7 @@ s should fullyMatch regex t
         "abbccdef" should (not equal ("abbccdef") or not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should startWith regex ("1.78")
@@ -276,7 +276,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should startWith regex ("a(b*)c" withGroup "b")
@@ -286,7 +286,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))
@@ -296,7 +296,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { startWith regex ("1.7") }
@@ -365,7 +365,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"-1.8b\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should not { startWith regex ("a(b*)c" withGroup "bb") }
@@ -382,7 +382,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should not { startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) }
@@ -399,7 +399,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (startWith regex (decimal) and (startWith regex ("1.8")))
@@ -433,7 +433,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"one.eight\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bbb")))
@@ -522,7 +522,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
@@ -611,7 +611,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "one.seven" should (startWith regex (decimal) or (startWith regex ("1.8")))
@@ -629,7 +629,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"one.seven\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"one.seven\" did not start with a substring that matched the regular expression 1.8")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "b") or (startWith regex ("a(b*)c" withGroup "bbb")))
@@ -674,7 +674,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
@@ -719,7 +719,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not startWith regex ("1.8") and (not startWith regex (decimal)))
@@ -747,7 +747,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7\" did not start with a substring that matched the regular expression 1.8, but \"1.7\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and (not startWith regex ("a(b*)c" withGroup "bb")))
@@ -792,7 +792,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -837,7 +837,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not startWith regex (decimal) or (not startWith regex ("1.7")))
@@ -865,7 +865,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7a\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.7a\" started with a substring that matched the regular expression 1.7")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bb") or (not startWith regex ("a(b*)c" withGroup "bb")))
@@ -924,7 +924,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -984,9 +984,9 @@ s should fullyMatch regex t
       }
     }
 
-    object `(when the regex is specified by an actual Regex)` {
+    describe("(when the regex is specified by an actual Regex)") {
 
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string") {
 
         "1.7" should startWith regex (decimalRegex)
         "21.7" should startWith regex (decimalRegex)
@@ -1001,21 +1001,21 @@ s should fullyMatch regex t
         "1." should startWith regex (decimalRegex)
       }
       
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string withGroup` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string withGroup") {
 
         "abbcdef" should startWith regex ("a(b*)c".r withGroup "bb")
         // full matches, which should also work with "startWith"
         "abbc" should startWith regex ("a(b*)c".r withGroup "bb")
       }
       
-      def `should do nothing if the string starts with substring that matched the regular expression specified as a string withGroups` {
+      it("should do nothing if the string starts with substring that matched the regular expression specified as a string withGroups") {
 
         "abbccdef" should startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
         // full matches, which should also work with "startWith"
         "abbcc" should startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used with not") {
 
         "eight" should not { startWith regex (decimalRegex) }
         "one.eight" should not { startWith regex (decimalRegex) }
@@ -1024,19 +1024,19 @@ s should fullyMatch regex t
         "one.eight" should not startWith regex (decimalRegex)
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroup when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroup when used with not") {
 
         "abbcdef" should not { startWith regex ("a(b*)c".r withGroup "bbb") }
         "abbcdef" should not startWith regex ("a(b*)c".r withGroup "bbb")
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroups when used with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroups when used with not") {
 
         "abbccdef" should not { startWith regex ("a(b*)(c*)".r withGroups ("bb", "ccc")) }
         "abbccdef" should not startWith regex ("a(b*)(c*)".r withGroups ("bb", "ccc"))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression") {
 
         "1.7b" should (startWith regex (decimalRegex) and (startWith regex (decimalRegex)))
         "1.7b" should ((startWith regex (decimalRegex)) and (startWith regex (decimalRegex)))
@@ -1047,7 +1047,7 @@ s should fullyMatch regex t
         "1.7" should (startWith regex (decimalRegex) and startWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroup when used in a logical-and expression") {
 
         "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bb")))
         "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bb")) and (startWith regex ("a(b*)c" withGroup "bb")))
@@ -1066,7 +1066,7 @@ s should fullyMatch regex t
         "abbc" should (equal ("abbc") and startWith regex ("a(b*)c" withGroup "bb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string withGroups when used in a logical-and expression") {
 
         "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -1085,7 +1085,7 @@ s should fullyMatch regex t
         "abbcc" should (equal ("abbcc") and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression") {
 
         "1.7b" should (startWith regex ("hello") or (startWith regex (decimalRegex)))
         "1.7b" should ((startWith regex ("hello")) or (startWith regex (decimalRegex)))
@@ -1096,7 +1096,7 @@ s should fullyMatch regex t
         "1.7" should (startWith regex ("hello") or startWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
 
         "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") or (startWith regex ("a(b*)c" withGroup "bb")))
         "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bbb")) or (startWith regex ("a(b*)c" withGroup "bb")))
@@ -1115,7 +1115,7 @@ s should fullyMatch regex t
         "abbc" should (equal ("abbbc") or startWith regex ("a(b*)c" withGroup "bb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
 
         "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -1134,13 +1134,13 @@ s should fullyMatch regex t
         "abbcc" should (equal ("abbccc") or startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (startWith regex ("bob")) and not (startWith regex (decimalRegex)))
         "fred" should ((not startWith regex ("bob")) and (not startWith regex (decimalRegex)))
         "fred" should (not startWith regex ("bob") and not startWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not") {
         "abbcdef" should (not (startWith regex ("a(b*)c" withGroup "bob")) and not (startWith regex ("a(b*)c" withGroup "bob")))
         "abbcdef" should ((not startWith regex ("a(b*)c" withGroup "bob")) and (not startWith regex ("a(b*)c" withGroup "bob")))
         "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bob") and not startWith regex ("a(b*)c" withGroup "bob"))
@@ -1150,7 +1150,7 @@ s should fullyMatch regex t
         "abbcdef" should (not equal ("abobcdef") and not startWith regex ("a(b*)c" withGroup "bob"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not") {
         "abbccdef" should (not (startWith regex ("a(b*)(c*)" withGroups ("bob", "cat"))) and not (startWith regex ("a(b*)(c*)" withGroups ("bob", "cat"))))
         "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bob", "cat"))) and (not startWith regex ("a(b*)(c*)" withGroups ("bob", "cat"))))
         "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bob", "cat")) and not startWith regex ("a(b*)(c*)" withGroups ("bob", "cat")))
@@ -1160,13 +1160,13 @@ s should fullyMatch regex t
         "abbccdef" should (not equal ("abobcatdef") and not startWith regex ("a(b*)(c*)" withGroups ("bob", "cat")))
       }
   
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (startWith regex ("fred")) or not (startWith regex (decimalRegex)))
         "fred" should ((not startWith regex ("fred")) or (not startWith regex (decimalRegex)))
         "fred" should (not startWith regex ("fred") or not startWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not") {
         "abbcdef" should (not (startWith regex ("a(b*)c" withGroup "bb")) or not (startWith regex ("a(b*)c" withGroup "bbb")))
         "abbcdef" should ((not startWith regex ("a(b*)c" withGroup "bb")) or (not startWith regex ("a(b*)c" withGroup "bbb")))
         "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bb") or not startWith regex ("a(b*)c" withGroup "bbb"))
@@ -1176,7 +1176,7 @@ s should fullyMatch regex t
         "abbcdef" should (not equal ("abbcdef") or not startWith regex ("a(b*)c" withGroup "bbb"))
       }
       
-      def `should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not start with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not") {
         "abbccdef" should (not (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) or not (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) or (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
@@ -1186,7 +1186,7 @@ s should fullyMatch regex t
         "abbccdef" should (not equal ("abbccdef") or not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should startWith regex ("1.78")
@@ -1224,7 +1224,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should startWith regex ("a(b*)c" withGroup "bbb")
@@ -1241,7 +1241,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))
@@ -1258,7 +1258,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { startWith regex ("1.7") }
@@ -1327,7 +1327,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"-1.8b\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should not { startWith regex ("a(b*)c" withGroup "bb") }
@@ -1358,7 +1358,7 @@ s should fullyMatch regex t
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should not { startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) }
@@ -1389,7 +1389,7 @@ s should fullyMatch regex t
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (startWith regex (decimalRegex) and (startWith regex ("1.8")))
@@ -1423,7 +1423,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"one.eight\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bbb")))
@@ -1512,7 +1512,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
@@ -1577,7 +1577,7 @@ s should fullyMatch regex t
         assert(caught12.getMessage === "\"abbcc[]def\" did not equal \"abbcc[c]def\"")
       }
   
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "one.seven" should (startWith regex (decimalRegex) or (startWith regex ("1.8")))
@@ -1595,7 +1595,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"one.seven\" did not start with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"one.seven\" did not start with a substring that matched the regular expression 1.8")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") or (startWith regex ("a(b*)c" withGroup "bbb")))
@@ -1640,7 +1640,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
@@ -1685,7 +1685,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not startWith regex ("1.8") and (not startWith regex (decimalRegex)))
@@ -1713,7 +1713,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7\" did not start with a substring that matched the regular expression 1.8, but \"1.7\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and (not startWith regex ("a(b*)c" withGroup "bb")))
@@ -1758,7 +1758,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
@@ -1803,7 +1803,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not startWith regex (decimalRegex) or (not startWith regex ("1.7")))
@@ -1831,7 +1831,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7a\" started with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.7a\" started with a substring that matched the regular expression 1.7")
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bb") or (not startWith regex ("a(b*)c" withGroup "bb")))
@@ -1890,7 +1890,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))

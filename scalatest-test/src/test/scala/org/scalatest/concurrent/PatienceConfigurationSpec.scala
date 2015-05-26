@@ -20,12 +20,12 @@ import org.scalatest.UnitSpec
 import PatienceConfiguration._
 
 class PatienceConfigurationSpec extends UnitSpec {
-  object `An Interval` {
+  describe("An Interval") {
     def `should throw NPE if null is passed` = {
       a [NullPointerException] should be thrownBy { new Interval(null) }
     }
   }
-  object `A Timeout` {
+  describe("A Timeout") {
     def `should throw NPE if null is passed` = {
       a [NullPointerException] should be thrownBy { new Timeout(null) }
     }

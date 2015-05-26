@@ -20,7 +20,7 @@ import org.scalactic.Explicitly
 import SharedHelpers._
 import Matchers._
 
-class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Explicitly {
+class TheSameElementsInOrderAsContainMatcherEqualitySpec extends FunSpec with Explicitly {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -51,7 +51,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Expli
     def areEqual(left: (Int, String), right: Any): Boolean = false
   }
   
-  object `theSameElementsInOrderAs ` {
+  describe("theSameElementsInOrderAs ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -69,21 +69,21 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Expli
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take custom implicit equality in scope when 'should contain' is used` {
+    it("should take custom implicit equality in scope when 'should contain' is used") {
       implicit val equality = new TrimEquality
       List("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")
       Array("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")
       javaList("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")
     }
     
-    def `should take custom implicit equality in scope when 'should not contain' is used` {
+    it("should take custom implicit equality in scope when 'should not contain' is used") {
       implicit val equality = new FalseEquality
       List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
       implicit val equality = new FalseEquality
       
       val left1 = List(1, 2, 3)
@@ -108,7 +108,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Expli
       checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
       implicit val equality = new TrimEquality
         
       val left1 = List("1 ", " 2", "3 ")
@@ -133,21 +133,21 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Expli
       checkShouldNotContainStackDepth(e3, left3, right3, thisLineNumber - 2)
     }
     
-    def `should take passed in custom explicit equality when 'should contain' is used` {
+    it("should take passed in custom explicit equality when 'should contain' is used") {
       implicit val equality = new TrimEquality
       (List("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
       (Array("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
       (javaList("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
     }
     
-    def `should take passed in custom explicit equality when 'should not contain' is used` {
+    it("should take passed in custom explicit equality when 'should not contain' is used") {
       implicit val equality = new FalseEquality
       (List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
       (Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
       (javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
       implicit val equality = new FalseEquality
         
       val left1 = List(1, 2, 3)
@@ -172,7 +172,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Expli
       checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
       implicit val equality = new TrimEquality
         
       val left1 = List("1 ", " 2", "3 ")

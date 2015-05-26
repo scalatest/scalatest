@@ -20,7 +20,7 @@ import Matchers._
 import TripleEquals._
 import exceptions.TestFailedException
 
-class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Tolerance {
+class ShouldTripleEqualsToleranceSpec extends FunSpec /* with NonImplicitAssertions */ with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0
@@ -46,9 +46,9 @@ class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions
       (7.1 +- 0.2) should === (sevenDotOh)
       (7.5 +- 0.2) should !== (sevenDotOh)
  */
-  object `The should === syntax` {
+  describe("The should === syntax") {
 
-    def `should be true if the number is within the given interval` {
+    it("should be true if the number is within the given interval") {
 
       // Double +- Double
       sevenDotOh should === (7.1 +- 0.2)
@@ -303,7 +303,7 @@ class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions
       minusSevenByte should === ((-5).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is outside the given interval` {
+    it("should throw TFE if the number is outside the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should === (7.5 +- 0.2) }
@@ -434,9 +434,9 @@ class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions
     }
   }
 
-  object `The !== syntax` {
+  describe("The !== syntax") {
 
-    def `should succeed if the number is outside the given interval` {
+    it("should succeed if the number is outside the given interval") {
 
       // Double +- Double
       sevenDotOh should !== (7.5 +- 0.2)
@@ -565,7 +565,7 @@ class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions
       minusSevenByte should !== ((-10).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is within the given interval` {
+    it("should throw TFE if the number is within the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should !== (7.1 +- 0.2) }
@@ -822,9 +822,9 @@ class ShouldTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions
     }
   }
 
-  object `The X +- Y syntax` {
+  describe("The X +- Y syntax") {
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative") {
 
       // Double +- Double
       val caught1 = intercept[IllegalArgumentException] {

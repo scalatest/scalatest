@@ -20,16 +20,16 @@ import SpanSugar._
 import Matchers._
 import Now._
 
-class SlowpokeDetectorSpec extends Spec with Now {
+class SlowpokeDetectorSpec extends FunSpec with Now {
 
-  object `The Slowpoke detector` {
-    def `should allow a timeout to be specified at construction` {
+  describe("The Slowpoke detector") {
+    it("should allow a timeout to be specified at construction") {
       // Timeout is how long something needs to be running before we send an info provided complaining about it
       // interval is how long we sleep between looking to see if anything has been there longer than the timeout, but
       // That's something that will be set up by DispatchReporter, which will invoke detectSlowpokes periodically.
       new SlowpokeDetector(timeout = 300000)
     }
-    def `should offer a method to register a starting test` {
+    it("should offer a method to register a starting test") {
       val spd = new SlowpokeDetector
       spd.testStarting(
         suiteId = "the suite name",
@@ -70,7 +70,7 @@ class SlowpokeDetectorSpec extends Spec with Now {
         )
       }
     }
-    def `should offer a method to register a finished (succeeded, failed, pending, canceled, or omitted) test` {
+    it("should offer a method to register a finished (succeeded, failed, pending, canceled, or omitted) test") {
       val spd = new SlowpokeDetector
       spd.testFinished(
         suiteId = "the suite name",
@@ -99,11 +99,11 @@ class SlowpokeDetectorSpec extends Spec with Now {
         )
       }
     }
-    def `should return an empty Slowpoke seq if the SlowpokeDetector has received no events` {
+    it("should return an empty Slowpoke seq if the SlowpokeDetector has received no events") {
       val spd = new SlowpokeDetector
       spd.detectSlowpokes(now()) shouldBe empty
     }
-    def `should return an empty Slowpoke seq if less than the timeout has elapsed since receiving a test starting event` {
+    it("should return an empty Slowpoke seq if less than the timeout has elapsed since receiving a test starting event") {
       val spd = new SlowpokeDetector(timeout = 60000)
       spd.testStarting(
         suiteName = "the suite name",
@@ -113,7 +113,7 @@ class SlowpokeDetectorSpec extends Spec with Now {
       )
       spd.detectSlowpokes(20) shouldBe empty
     }
-    def `should return a Slowpoke if more than the timeout has elapsed since receiving a test starting event` {
+    it("should return a Slowpoke if more than the timeout has elapsed since receiving a test starting event") {
       val spd = new SlowpokeDetector(timeout = 60000)
       spd.testStarting(
         suiteName = "the suite name",
@@ -124,7 +124,7 @@ class SlowpokeDetectorSpec extends Spec with Now {
       val thisMagicMoment = now()
       spd.detectSlowpokes(thisMagicMoment) shouldEqual Seq(Slowpoke("the suite name", "the suite ID", "the test name", Span(thisMagicMoment - 10, Millis)))
     }
-    def `should return multiple Slowpokes in oldest to youngest order` {
+    it("should return multiple Slowpokes in oldest to youngest order") {
       val spd = new SlowpokeDetector(timeout = 60000)
       spd.testStarting(
         suiteName = "the younger suite name",
@@ -144,7 +144,7 @@ class SlowpokeDetectorSpec extends Spec with Now {
         Slowpoke("the younger suite name", "AAA the younger suite ID", "the younger test name", Span(thisMagicMoment - 20, Millis))
       )
     }
-    def `should return an empty Slowpoke seq if both a starting and ending event was received` {
+    it("should return an empty Slowpoke seq if both a starting and ending event was received") {
       val spd = new SlowpokeDetector(timeout = 60000)
       spd.testStarting(
         suiteName = "the suite name",

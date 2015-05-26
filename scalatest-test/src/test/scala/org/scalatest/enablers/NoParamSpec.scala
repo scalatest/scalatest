@@ -20,13 +20,13 @@ import org.scalactic.Equality
 import scala.collection.immutable
 import org.scalatest.exceptions.TestFailedException
 
-class NoParamSpec extends Spec with Matchers with LoneElement {
+class NoParamSpec extends FunSpec with Matchers with LoneElement {
 
-  object `The implicit Containing providers` {
-    def `should work with no-param collection types and default equality` {
+  describe("The implicit Containing providers") {
+    it("should work with no-param collection types and default equality") {
       ConfigMap("hi" -> 1, "ho" -> "two") should contain ("hi" -> 1)
     }
-    def `should be overridable with something that takes a specific equality` {
+    it("should be overridable with something that takes a specific equality") {
       implicit val inverseEquality = 
         new Equality[(String, Any)] {
           def areEqual(a: (String, Any), b: Any): Boolean = a != b
@@ -34,11 +34,11 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
       ConfigMap("hi" -> 1) should not contain ("hi" -> 1)
     }
   }
-  object `The implicit Aggregating providers` {
-    def `should work with no-param collection types and default equality` {
+  describe("The implicit Aggregating providers") {
+    it("should work with no-param collection types and default equality") {
       ConfigMap("hi" -> 1, "ho" -> "two") should contain allOf ("hi" -> 1, "ho" -> "two")
     }
-    def `should be overridable with something that takes a specific equality` {
+    it("should be overridable with something that takes a specific equality") {
       implicit val inverseEquality = 
         new Equality[(String, Any)] {
           def areEqual(a: (String, Any), b: Any): Boolean = a != b
@@ -46,11 +46,11 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
       ConfigMap("hi" -> 1) should not contain allOf ("hi" -> 1, "ho" -> "two")
     }
   }
-  object `The implicit KeyMapping providers` {
-    def `should work with no-param collection types and default equality` {
+  describe("The implicit KeyMapping providers") {
+    it("should work with no-param collection types and default equality") {
       ConfigMap("hi" -> 1, "ho" -> "two") should contain key ("hi")
     }
-    def `should be overridable with something that takes a specific equality` {
+    it("should be overridable with something that takes a specific equality") {
       implicit val inverseEquality = 
         new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
@@ -58,11 +58,11 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
       ConfigMap("hi" -> 1) should not contain key ("hi")
     }
   }
-  object `The implicit ValueMapping providers` {
-    def `should work with no-param collection types and default equality` {
+  describe("The implicit ValueMapping providers") {
+    it("should work with no-param collection types and default equality") {
       ConfigMap("hi" -> 1, "ho" -> "two") should contain value (1)
     }
-    def `should be overridable with something that takes a specific equality` {
+    it("should be overridable with something that takes a specific equality") {
       implicit val inverseEquality = 
         new Equality[Any] {
           def areEqual(a: Any, b: Any): Boolean = a != b
@@ -78,11 +78,11 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
   object MyStringSeq {
     def apply(args: String*): MyStringSeq = new MyStringSeq(immutable.Seq.empty[String] ++ args)
   }
-  object `The implicit Sequencing providers` {
-    def `should work with no-param collection types and default equality` {
+  describe("The implicit Sequencing providers") {
+    it("should work with no-param collection types and default equality") {
       MyStringSeq("hi", "ho", "hey") should contain inOrder ("hi", "hey")
     }
-    def `should be overridable with something that takes a specific equality` {
+    it("should be overridable with something that takes a specific equality") {
       implicit val inverseEquality = 
         new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
@@ -90,8 +90,8 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
       MyStringSeq("hi", "ho") should not contain inOrder ("hi", "ho")
     }
   }
-  object `The implicit Collecting providers` { // I am not sure why this one already works without needing to make Collecting contravariant in C
-    def `should work with no-param collection types` {
+  describe("The implicit Collecting providers") { // I am not sure why this one already works without needing to make Collecting contravariant in C
+    it("should work with no-param collection types") {
       MyStringSeq("hi").loneElement should be ("hi")
       intercept[TestFailedException] {
         MyStringSeq("hi", "ho").loneElement
@@ -102,8 +102,8 @@ class NoParamSpec extends Spec with Matchers with LoneElement {
       }
     }
   }
-  object `The implicit Sortable providers` {
-    def `should work with no-param collection types` {
+  describe("The implicit Sortable providers") {
+    it("should work with no-param collection types") {
       MyStringSeq("hey", "hi", "ho") should be (sorted)
       MyStringSeq("hi", "di", "ho") should not be sorted
     }

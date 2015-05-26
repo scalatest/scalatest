@@ -19,10 +19,10 @@ import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
 
-class CollectingSpec extends Spec with Matchers {
+class CollectingSpec extends FunSpec with Matchers {
 
-  object `The implicit Containing providers` {
-    def `should provide a working genTraversableFrom method` {
+  describe("The implicit Containing providers") {
+    it("should provide a working genTraversableFrom method") {
 
       Collecting.collectingNatureOfGenTraversable[Int, List].genTraversableFrom(List(1, 2, 3)) shouldEqual List(1, 2, 3)
 

@@ -23,17 +23,17 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.xml.{Node, Text, NodeSeq}
 
-class StreamlinedXmlEqualitySpec extends Spec with Matchers {
+class StreamlinedXmlEqualitySpec extends FunSpec with Matchers {
 
   import StreamlinedXmlEquality._
 
-  object `Streamlined Xml Equality of Elems` {
+  describe("Streamlined Xml Equality of Elems") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
       <summer></summer> should equal (<summer></summer>)
     }
 
-    def `should zap text that is only whitespace` {
+    it("should zap text that is only whitespace") {
 
       <summer> </summer> should equal (<summer></summer>)
 
@@ -62,16 +62,16 @@ class StreamlinedXmlEqualitySpec extends Spec with Matchers {
     }
   }
 
-  object `Streamlined Xml Equality of Nodes` {
+  describe("Streamlined Xml Equality of Nodes") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
 
       (<summer></summer>: Node) shouldEqual (<summer></summer>)
 
       (Text("Bla"): Node) shouldEqual (Text("Bla"))
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
 
       (<summer> </summer>: Node) should equal (<summer></summer>)
 
@@ -102,16 +102,16 @@ class StreamlinedXmlEqualitySpec extends Spec with Matchers {
     }
   }
 
-  object `Streamlined Xml Normalization of NodeSeq` {
+  describe("Streamlined Xml Normalization of NodeSeq") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
 
       (<summer></summer>: NodeSeq) should equal (<summer></summer>)
 
       (Text("Bla"): NodeSeq) should equal (Text("Bla"))
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
 
       (<summer> </summer>: NodeSeq) should equal (<summer></summer>)
 
