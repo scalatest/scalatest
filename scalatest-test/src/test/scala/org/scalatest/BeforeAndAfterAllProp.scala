@@ -385,8 +385,12 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureWordSpec extends f
 
 // Not supported as path.FreeSpec cannot use ParallelTestExecution
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropPathFreeSpec extends path.FreeSpec with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropPathFreeSpec extends path.FreeSpec with BeforeAndAfterAllPropFixtureServices {
+  override def newInstance: path.FreeSpecLike = new ExampleBeforeAndAfterAllPropPathFreeSpec
+}
 
 // Not supported as path.FunSpec cannot use ParallelTestExecution
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropPathFunSpec extends path.FunSpec with BeforeAndAfterAllPropFixtureServices { }
+protected[scalatest] class ExampleBeforeAndAfterAllPropPathFunSpec extends path.FunSpec with BeforeAndAfterAllPropFixtureServices {
+  override def newInstance: path.FunSpecLike = new ExampleBeforeAndAfterAllPropPathFunSpec
+}

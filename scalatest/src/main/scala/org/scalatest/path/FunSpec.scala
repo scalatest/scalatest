@@ -696,7 +696,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Chua Chee Seng
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
+// SKIP-SCALATESTJS-START
 class FunSpec extends FunSpecLike {
+// SKIP-SCALATESTJS-END
+//SCALATESTJS-ONLY abstract class FunSpec extends FunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

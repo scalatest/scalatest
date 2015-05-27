@@ -43,12 +43,16 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
+//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
 
+  // SKIP-SCALATESTJS-START
   override def newInstance: FreeSpecLike = this.getClass.newInstance.asInstanceOf[FreeSpecLike]
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY override def newInstance: FreeSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its

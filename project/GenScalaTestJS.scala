@@ -171,7 +171,8 @@ object GenScalaTestJS {
               "StepwiseNestedSuiteExecution.scala",
               "StopOnFailure.scala",
               "Sequential.scala",
-              "Stepwise.scala"
+              "Stepwise.scala",
+              "TryValues.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -408,7 +409,11 @@ object GenScalaTestJS {
       ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects",
       List(
-        "Retryable.scala"
+        "Retryable.scala",
+        "CPU.scala",
+        "Disk.scala",
+        "Network.scala",
+        "Slow.scala"
       ), targetDir)
   }
 
@@ -637,7 +642,6 @@ object GenScalaTestJS {
         "RunInSpurtsSpec2.scala",
         "RunningTestSpec.scala",
         //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
-        "WordSpecSpec.scala",
         "SequentialNestedSuiteExecutionSpec.scala",
         "SeveredStackTracesFailureSpec.scala",
         "SeveredStackTracesSpec.scala",
@@ -779,7 +783,27 @@ object GenScalaTestJS {
         "SuiteExamples.scala",
         "SuiteProp.scala",
         "SuiteSpec.scala",
-        "SuitesSpec.scala"
+        "SuitesSpec.scala",
+        //"SuiteSuite.scala",         // skipped because it depends on java reflection
+        "TaggingScopesSpec.scala",
+        "TagGroupsSpec.scala",
+        "TestColonEscapeProp.scala",
+        "TestDataProp.scala",
+        "TestNameProp.scala",
+        "TheSameElementsAsContainMatcherDeciderSpec.scala",
+        "TheSameElementsAsContainMatcherEqualitySpec.scala",
+        "TheSameElementsAsContainMatcherSpec.scala",
+        "TheSameElementsInOrderAsContainMatcherDeciderSpec.scala",
+        "TheSameElementsInOrderAsContainMatcherEqualitySpec.scala",
+        "TheSameElementsInOrderAsContainMatcherSpec.scala",
+        "ThreadNameSpec.scala",
+        "TryValuesSpec.scala",
+        "TypeCheckedAssertionsSpec.scala",
+        "UnitSpec.scala",
+        "VariousWordSpec.scala",
+        "WordSpecImportedMatchersSpec.scala",
+        "WordSpecMixedInMatchersSpec.scala",
+        "WordSpecSpec.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(

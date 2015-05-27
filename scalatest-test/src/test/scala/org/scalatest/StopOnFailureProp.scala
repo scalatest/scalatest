@@ -327,10 +327,12 @@ protected[scalatest] class ExampleStopOnFailureFixtureWordSpec extends fixture.W
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailurePathFreeSpec extends path.FreeSpec with StopOnFailureFixtureServices {
   override val supported = false
+  override def newInstance: path.FreeSpecLike = new ExampleStopOnFailurePathFreeSpec
 }
 
 // Not supported as run is final.
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailurePathFunSpec extends path.FunSpec with StopOnFailureFixtureServices {
   override val supported = false
+  override def newInstance: path.FunSpecLike = new ExampleStopOnFailurePathFunSpec
 }

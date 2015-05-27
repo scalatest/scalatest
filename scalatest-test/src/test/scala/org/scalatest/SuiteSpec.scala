@@ -84,9 +84,9 @@ protected[scalatest] class MandarinOrangeFixturePropSpec(ns: Suite*) extends fix
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 
-class MandarinOrangeSuites(suites: Suite*) extends Suites(suites: _*)
-class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
-class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
+protected[scalatest] class MandarinOrangeSuites(suites: Suite*) extends Suites(suites: _*)
+protected[scalatest] class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
+protected[scalatest] class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
 
 // SKIP-SCALATESTJS-START
 import PrivateMethodTester._
