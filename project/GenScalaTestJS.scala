@@ -749,6 +749,15 @@ object GenScalaTestJS {
         "ShouldPlusOrMinusSpec.scala",
         //"ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
         "ShouldSizeSpec.scala",
+        "ShouldStartWithRegexSpec.scala",
+        "ShouldStartWithSubstringSpec.scala",
+        "ShouldStructuralLengthSpec.scala",
+        "ShouldStructuralSizeSpec.scala",
+        "ShouldThrowSpec.scala",
+        "ShouldTripleEqualsEqualitySpec.scala",
+        "ShouldTripleEqualsSpec.scala",
+        "ShouldTripleEqualsToleranceSpec.scala",
+        "ShouldTypeCheckedTripleEqualsEqualitySpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
