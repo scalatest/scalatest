@@ -1683,7 +1683,8 @@ private[scalatest] object Suite {
     else
       fullyQualifiedName
   }
-  
+
+  // SKIP-SCALATESTJS-START
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
     
     try {
@@ -1695,6 +1696,7 @@ private[scalatest] object Suite {
       case nsme: NoSuchMethodException => false
     }
   }
+  // SKIP-SCALATESTJS-END
 
   // This attempts to strip dollar signs that happen when using the interpreter. It is quite fragile
   // and already broke once. In the early days, all funky dollar sign encrusted names coming out of
