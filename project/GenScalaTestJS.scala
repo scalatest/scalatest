@@ -761,6 +761,8 @@ object GenScalaTestJS {
         "SlowpokeDetectorSpec.scala",
         //"SpecSpec.scala",          // skipped because depends on java reflections.
         "StatefulStatusSpec.scala",
+        //"StatusProp.scala",        // skipped because uses VirtualMachineError
+        "StatusSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
