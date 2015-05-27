@@ -24,15 +24,12 @@ class ShouldThrowSpec extends FunSpec {
 
   describe("The a [ExceptionType] should be thrownBy { ... } syntax") {
 
-    // TODO: "hi".charAt(-1) is throwing UndefinedBehaviorError, not the expected StringIndexOutOfBoundsException, we'll re-enable this when scala-js fix this.
-    // SKIP-SCALATESTJS-START
     it("fail if a different exception is thrown") {
       val caught1 = intercept[TestFailedException] {
-        an [IllegalArgumentException] should be thrownBy { "hi".charAt(-1) }
+        an [UnsupportedOperationException] should be thrownBy { "hi".toInt }
       }
-      assert(caught1.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but java.lang.StringIndexOutOfBoundsException was thrown.")
+      assert(caught1.getMessage === "Expected exception java.lang.UnsupportedOperationException to be thrown, but java.lang.NumberFormatException was thrown.")
     }
-    // SKIP-SCALATESTJS-END
 
     it("fail if no exception is thrown") {
       val caught2 = intercept[TestFailedException] {
@@ -41,19 +38,13 @@ class ShouldThrowSpec extends FunSpec {
       assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown.")
     }
 
-    // TODO: "hi".charAt(-1) is throwing UndefinedBehaviorError, not the expected StringIndexOutOfBoundsException, we'll re-enable this when scala-js fix this.
-    // SKIP-SCALATESTJS-START
     it("succeed if the expected exception is thrown") {
-      a [StringIndexOutOfBoundsException] should be thrownBy { "hi".charAt(-1) }
+      a [NumberFormatException] should be thrownBy { "hi".toInt }
     }
-    // SKIP-SCALATESTJS-END
 
-    // TODO: "hi".charAt(-1) is throwing UndefinedBehaviorError, not the expected StringIndexOutOfBoundsException, we'll re-enable this when scala-js fix this.
-    // SKIP-SCALATESTJS-START
     it("succeed if a subtype of the expected exception is thrown, where the expected type is a class") {
-      a [Exception] should be thrownBy { "hi".charAt(-1) }
+      a [Exception] should be thrownBy { "hi".toInt }
     }
-    // SKIP-SCALATESTJS-END
 
     it("succeed if a subtype of the expected exception is thrown, where the expected type is a trait") {
       trait Excitement
