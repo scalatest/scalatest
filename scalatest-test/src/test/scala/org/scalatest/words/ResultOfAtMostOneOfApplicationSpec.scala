@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfAtMostOneOfApplicationSpec extends Spec {
+class ResultOfAtMostOneOfApplicationSpec extends FunSpec {
   
-  object `ResultOfAtMostOneOfApplication ` {
+  describe("ResultOfAtMostOneOfApplication ") {
     
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfAtMostOneOfApplication(Vector.empty)
       result.toString should be ("atMostOneOf ()")
     }
     
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfAtMostOneOfApplication(Vector("Bob"))
       result.toString should be ("atMostOneOf (\"Bob\")")
     }
     
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfAtMostOneOfApplication(Vector("Bob", "Alice"))
       result.toString should be ("atMostOneOf (\"Bob\", \"Alice\")")
     }

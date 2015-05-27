@@ -25,7 +25,7 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
-class CheckersSpec extends Spec with Checkers {
+class CheckersSpec extends FunSpec with Checkers {
 
   def `test check prop` = {
 

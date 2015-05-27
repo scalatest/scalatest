@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class DefinedWordSpec extends Spec with Matchers {
+class DefinedWordSpec extends FunSpec with Matchers {
   
-  object `DefinedWord ` {
+  describe("DefinedWord ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       defined.toString should be ("defined")
     }
     

@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfSizeWordApplicationSpec extends Spec {
+class ResultOfSizeWordApplicationSpec extends FunSpec {
   
-  object `ResultOfSizeWordApplication ` {
+  describe("ResultOfSizeWordApplication ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfSizeWordApplication(8)
       result.toString should be ("size (8)")
     }

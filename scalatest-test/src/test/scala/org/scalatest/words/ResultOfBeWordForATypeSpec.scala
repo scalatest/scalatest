@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfBeWordForATypeSpec extends Spec {
+class ResultOfBeWordForATypeSpec extends FunSpec {
   
-  object `ResultOfBeWordForAType ` {
+  describe("ResultOfBeWordForAType ") {
     
-    def `should have pretty toString when used` {
+    it("should have pretty toString when used") {
       val result = a[Exception] should be
       result.toString should be ("ResultOfBeWordForAType(classOf[java.lang.Exception])")
     }

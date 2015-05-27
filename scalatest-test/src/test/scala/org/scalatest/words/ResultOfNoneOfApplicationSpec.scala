@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfNoneOfApplicationSpec extends Spec {
+class ResultOfNoneOfApplicationSpec extends FunSpec {
   
-  object `ResultOfNoneOfApplication ` {
+  describe("ResultOfNoneOfApplication ") {
     
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfNoneOfApplication(Vector.empty)
       result.toString should be ("noneOf ()")
     }
     
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfNoneOfApplication(Vector("Bob"))
       result.toString should be ("noneOf (\"Bob\")")
     }
     
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfNoneOfApplication(Vector("Bob", "Alice"))
       result.toString should be ("noneOf (\"Bob\", \"Alice\")")
     }

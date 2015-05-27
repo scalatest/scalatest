@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class WritableWordSpec extends Spec {
+class WritableWordSpec extends FunSpec {
   
-  object `WritableWord ` {
+  describe("WritableWord ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new WritableWord
       result.toString should be ("writable")
     }

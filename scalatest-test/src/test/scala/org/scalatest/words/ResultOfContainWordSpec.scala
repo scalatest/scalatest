@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfContainWordSpec extends Spec {
+class ResultOfContainWordSpec extends FunSpec {
   
-  object `ResultOfContainWord ` {
+  describe("ResultOfContainWord ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = List(1, 2, 3) should contain
       result.toString should be ("ResultOfContainWord(List(1, 2, 3), true)")
     }

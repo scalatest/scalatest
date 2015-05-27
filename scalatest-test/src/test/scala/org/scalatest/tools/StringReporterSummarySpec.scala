@@ -192,8 +192,8 @@ class StringReporterSummarySpec extends UnitSpec {
       Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tceLineNumber + ")", AnsiYellow)
     )
 
-  object `the summaryFragments method` {
-    def `should produce just a run completed message when the run completes but the summary is not defined` {
+  describe("the summaryFragments method") {
+    it("should produce just a run completed message when the run completes but the summary is not defined") {
       val fragments =
         summaryFragments(
           true,
@@ -208,7 +208,7 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       fragments should be (Vector(Fragment(Resources.runCompleted, AnsiCyan)))
     }
-    def `should produce just a run stopped message when the run stops but the summary is not defined` {
+    it("should produce just a run stopped message when the run stops but the summary is not defined") {
       val fragments =
         summaryFragments(
           false,
@@ -224,7 +224,7 @@ class StringReporterSummarySpec extends UnitSpec {
       fragments should be (Vector(Fragment(Resources.runStopped, AnsiCyan)))
     }
 
-    def `should produce a good summary when Summary is all zeroes` {
+    it("should produce a good summary when Summary is all zeroes") {
       val summary =
         new Summary(
           testsSucceededCount = 0,
@@ -260,7 +260,7 @@ class StringReporterSummarySpec extends UnitSpec {
       )
     }
 
-    def `should produce a good summary when Summary is all tests pass` {
+    it("should produce a good summary when Summary is all tests pass") {
       val summaryAllPassed =
         new Summary(
           testsSucceededCount = 5,
@@ -296,7 +296,7 @@ class StringReporterSummarySpec extends UnitSpec {
       )
     }
  
-    def `should sort the passed exceptionalEvents in ordinal order` {
+    it("should sort the passed exceptionalEvents in ordinal order") {
       val fragments =
         summaryFragments(
           true,
@@ -314,8 +314,8 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsTheOneCanceledTestReminder)
     }
 
-    object `when one test failed` {
-      def `should produce a good summary when reminders are disabled` {
+    describe("when one test failed") {
+      it("should produce a good summary when reminders are disabled") {
         val fragments =
           summaryFragments(
             true,
@@ -331,7 +331,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneFailedTest)
       }
 
-      def `should produce a good summary when reminders are enabled but the exceptional events vector is empty` {
+      it("should produce a good summary when reminders are enabled but the exceptional events vector is empty") {
         val fragments =
           summaryFragments(
             true,
@@ -347,7 +347,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneFailedTest)
       }
 
-      def `should produce a good summary when reminders are enabled without stack traces` {
+      it("should produce a good summary when reminders are enabled without stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -364,7 +364,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (initialFragmentsForJustOneFailedTest)
       }
 
-      def `should produce a good summary when reminders are enabled with short stack traces` {
+      it("should produce a good summary when reminders are enabled with short stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -382,7 +382,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.length should equal (initialFragmentsForJustOneFailedTest.size + StringReporter.shortStackTraceSize) 
       }
 
-      def `should produce a good summary when reminders are enabled with full stack traces` {
+      it("should produce a good summary when reminders are enabled with full stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -401,8 +401,8 @@ class StringReporterSummarySpec extends UnitSpec {
       }
     }
 
-    object `when one test failed and one canceled` {
-      def `should produce a good summary when reminders are disabled` {
+    describe("when one test failed and one canceled") {
+      it("should produce a good summary when reminders are disabled") {
         val fragments =
           summaryFragments(
             true,
@@ -418,7 +418,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneFailedAndOneCanceledTest)
       }
 
-      def `should produce a good summary when reminders are enabled but the exceptional events vector is empty` {
+      it("should produce a good summary when reminders are enabled but the exceptional events vector is empty") {
         val fragments =
           summaryFragments(
             true,
@@ -434,7 +434,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneFailedAndOneCanceledTest)
       }
 
-      def `should produce a good summary when reminders are enabled without stack traces` {
+      it("should produce a good summary when reminders are enabled without stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -452,7 +452,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsTheOneCanceledTestReminder)
       }
 
-      def `should produce a good summary when reminders are enabled, but canceled tests are deselected` {
+      it("should produce a good summary when reminders are enabled, but canceled tests are deselected") {
         val fragments =
           summaryFragments(
             true,
@@ -469,7 +469,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (initialFragmentsForOneFailedAndOneCanceledTest)
       }
 
-      def `should produce a good summary when reminders are enabled with short stack traces` {
+      it("should produce a good summary when reminders are enabled with short stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -488,7 +488,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.length should equal (initialFragmentsForJustOneFailedTest.size + initialFragmentsTheOneCanceledTestReminder.size + (2 * StringReporter.shortStackTraceSize))
       }
 
-      def `should produce a good summary when reminders are enabled with full stack traces` {
+      it("should produce a good summary when reminders are enabled with full stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -507,7 +507,7 @@ class StringReporterSummarySpec extends UnitSpec {
       }
     }
 
-    object `when one Suite aborted` {
+    describe("when one Suite aborted") {
       val summaryWithOneAbortedSuite =
         new Summary(
           testsSucceededCount = 0,
@@ -580,7 +580,7 @@ class StringReporterSummarySpec extends UnitSpec {
         )
 
 
-      def `should produce a good summary when reminders are disabled` {
+      it("should produce a good summary when reminders are disabled") {
         val fragments =
           summaryFragments(
             true,
@@ -596,7 +596,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
       }
 
-      def `should produce a good summary when reminders are enabled but the exceptional events vector is empty` {
+      it("should produce a good summary when reminders are enabled but the exceptional events vector is empty") {
         val fragments =
           summaryFragments(
             true,
@@ -612,7 +612,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
       }
 
-      def `should produce a good summary when reminders are enabled without stack traces` {
+      it("should produce a good summary when reminders are enabled without stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -629,7 +629,7 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments should be (initialFragmentsForJustOneAbortedSuite)
       }
 
-      def `should produce a good summary when reminders are enabled with short stack traces` {
+      it("should produce a good summary when reminders are enabled with short stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -651,7 +651,7 @@ class StringReporterSummarySpec extends UnitSpec {
           StringReporter.shortStackTraceSize) 
       }
 
-      def `should produce a good summary when reminders are enabled with full stack traces` {
+      it("should produce a good summary when reminders are enabled with full stack traces") {
         val fragments =
           summaryFragments(
             true,
@@ -674,12 +674,11 @@ class StringReporterSummarySpec extends UnitSpec {
       }
     }
 
-    /* @org.scalatest.Ignore */
-    @org.scalatest.Ignore def `should fail on purpose` {
+    ignore("should fail on purpose") {
       info("I should not show up in the reminder")
       fail("I meant to do that!")
     }
-    @org.scalatest.Ignore def `should cancel on purpose` {
+    ignore("should cancel on purpose") {
       info("I should not show up in the reminder")
       cancel("I meant to do that!")
     }

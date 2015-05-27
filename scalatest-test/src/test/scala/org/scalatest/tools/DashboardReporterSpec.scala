@@ -19,11 +19,11 @@ import org.scalatest._
 import SharedHelpers._
 import events._
 
-class DashboardReporterSpec extends Spec {
+class DashboardReporterSpec extends FunSpec {
 
-  object `DashboardReporter ` {
+  describe("DashboardReporter ") {
     
-    def `should work with error message that contains '<' and '>' symbol` {
+    it("should work with error message that contains '<' and '>' symbol") {
       val tempDir = createTempDirectory()
       val ordinal = new Ordinal(123)
       val rep = new DashboardReporter(tempDir.getAbsolutePath, 0)

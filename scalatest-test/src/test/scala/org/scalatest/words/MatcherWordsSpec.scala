@@ -18,23 +18,23 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class MatcherWordsSpec extends Spec with MatcherWords {
+class MatcherWordsSpec extends FunSpec with MatcherWords {
   
-  object `MatcherWords ` {
+  describe("MatcherWords ") {
     
-    object `equal(Any) method returns MatcherFactory1` {
+    describe("equal(Any) method returns MatcherFactory1") {
       
       val mtf = equal ("tommy")
       val mt = mtf.matcher[String]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("equal (\"tommy\")")
         mt.toString should be ("equal (\"tommy\")")
       }
       
       val mr = mt("tomy")
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (false),
           'failureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
@@ -54,7 +54,7 @@ class MatcherWordsSpec extends Spec with MatcherWords {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (true),
           'failureMessage ("\"tomy\" equaled \"tommy\""),

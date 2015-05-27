@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfMessageWordApplicationSpec extends Spec {
+class ResultOfMessageWordApplicationSpec extends FunSpec {
   
-  object `ResultOfMessageWordApplication ` {
+  describe("ResultOfMessageWordApplication ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfMessageWordApplication("Message from Mars!")
       result.toString should be ("message (\"Message from Mars!\")")
     }

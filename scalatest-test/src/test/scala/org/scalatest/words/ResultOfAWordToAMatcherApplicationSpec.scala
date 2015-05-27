@@ -20,11 +20,11 @@ import Matchers._
 import matchers.AMatcher
 import java.io.File
 
-class ResultOfAWordToAMatcherApplicationSpec extends Spec {
+class ResultOfAWordToAMatcherApplicationSpec extends FunSpec {
   
-  object `ResultOfAWordToAMatcherApplication ` {
+  describe("ResultOfAWordToAMatcherApplication ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfAWordToAMatcherApplication(AMatcher[File]("file") { _.isFile  })
       result.toString should be ("a (AMatcher[java.io.File](\"file\", java.io.File => Boolean))")
     }

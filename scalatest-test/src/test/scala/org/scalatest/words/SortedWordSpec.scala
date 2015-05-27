@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class SortedWordSpec extends Spec {
+class SortedWordSpec extends FunSpec {
   
-  object `SortedWord ` {
+  describe("SortedWord ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new SortedWord
       result.toString should be ("sorted")
     }

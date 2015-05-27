@@ -23,18 +23,18 @@ import matchers.{MatchResult,
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
 
-class MatcherSpec extends Spec {
+class MatcherSpec extends FunSpec {
   
-  object `Matcher ` {
+  describe("Matcher ") {
     
-    object `AndNotWord ` {
+    describe("AndNotWord ") {
       
-      object `equal(Null) method returns Matcher` {
+      describe("equal(Null) method returns Matcher") {
         
         val aNullRef: String = null
         val mt = not be ("hi") and not equal (null)
       
-        def `should have pretty toString` {
+        it("should have pretty toString") {
           mt.toString should be ("(not be \"hi\") and (not equal null)")
         }
         
@@ -60,7 +60,7 @@ class MatcherSpec extends Spec {
             Vector("Bob")
           )
           
-        def `should have correct MatcherResult` {
+        it("should have correct MatcherResult") {
           mr should have (
             'matches (true),
             'failureMessage ("\"[Bob]\" was not equal to \"[hi]\", but the reference equaled null"),
@@ -80,7 +80,7 @@ class MatcherSpec extends Spec {
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
+        it("should have correct negated MatcherResult") {
           nmr should have (
             'matches (false),
             'failureMessage ("\"[Bob]\" was not equal to \"[hi]\", and \"Bob\" did not equal null"),
@@ -102,14 +102,14 @@ class MatcherSpec extends Spec {
       
     }
     
-    object `OrNotWord ` {
+    describe("OrNotWord ") {
       
-      object `equal(Null) method returns Matcher` {
+      describe("equal(Null) method returns Matcher") {
         
         val aNullRef: String = null
         val mt = not be ("Bob") or not equal (null)
       
-        def `should have pretty toString` {
+        it("should have pretty toString") {
           mt.toString should be ("(not be \"Bob\") or (not equal null)")
         }
         
@@ -135,7 +135,7 @@ class MatcherSpec extends Spec {
             Vector("Bob")
           )
         
-        def `should have correct MatcherResult` {
+        it("should have correct MatcherResult") {
           mr should have (
             'matches (true),
             'failureMessage ("\"Bob\" was equal to \"Bob\", and the reference equaled null"),
@@ -155,7 +155,7 @@ class MatcherSpec extends Spec {
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
+        it("should have correct negated MatcherResult") {
           nmr should have (
             'matches (false),
             'failureMessage ("\"Bob\" was equal to \"Bob\", and \"Bob\" did not equal null"),
@@ -177,45 +177,45 @@ class MatcherSpec extends Spec {
       
     }
     
-    object `and(MatcherFactory1) method returns MatcherFactory1` {
+    describe("and(MatcherFactory1) method returns MatcherFactory1") {
       
       val mt1 = be ("Bob")
       val mtf = mt1 and (equal ("Alice"))
       val mt = mtf.matcher[String]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("(be (\"Bob\")) and (equal (\"Alice\"))")
       }
     }
     
-    object `or(MatcherFactory1) method returns MatcherFactory1` {
+    describe("or(MatcherFactory1) method returns MatcherFactory1") {
       
       val mt1 = be ("Bob")
       val mtf = mt1 or (equal ("Alice"))
       val mt = mtf.matcher[String]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("(be (\"Bob\")) or (equal (\"Alice\"))")
       }
     }
     
-    /*object `compose(U => T) returns Matcher` {
+    /*describe("compose(U => T) returns Matcher") {
       
       val mt1 = be > 18
       def fun(input: String): Int = 88
       val mt = mt1 compose fun
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mt.toString should be ("(be > 18) compose (java.lang.String => Int)")
       }
       
     }*/
     
-    object `apply(T => MatchResult) method returns Matcher` {
+    describe("apply(T => MatchResult) method returns Matcher") {
       
       val mt = Matcher.apply((test: String) => MatchResult(true, "test", "test"))
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mt.toString should be ("Matcher[java.lang.String](java.lang.String => MatchResult)")
       }
       

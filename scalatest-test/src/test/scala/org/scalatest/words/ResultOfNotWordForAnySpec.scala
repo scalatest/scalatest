@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfNotWordForAnySpec extends Spec {
+class ResultOfNotWordForAnySpec extends FunSpec {
   
-  object `ResultOfNotWordForAny ` {
+  describe("ResultOfNotWordForAny ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result: ResultOfNotWordForAny[Int] = 1 should not
       result.toString should be ("ResultOfNotWordForAny(1, false)")
     }

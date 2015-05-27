@@ -22,7 +22,7 @@ import org.scalactic.Uniformity
 import SharedHelpers._
 import Matchers._
 
-class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
+class TheSameElementsAsContainMatcherDeciderSpec extends FunSpec with Explicitly {
   
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {
@@ -197,7 +197,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       }
     }
 
-  object `theSameElementsAs ` {
+  describe("theSameElementsAs ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -215,7 +215,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take specified normalization when 'should contain' is used` {
+    it("should take specified normalization when 'should contain' is used") {
       (List("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (after being trimmed)
       (Set("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (after being trimmed)
       (Array("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (after being trimmed)
@@ -226,7 +226,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (after being javaMapTrimmed)
     }
     
-    def `should take specified normalization in scope when 'should not contain' is used` {
+    it("should take specified normalization in scope when 'should not contain' is used") {
       (List(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))) (after being incremented)
       (Set(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))) (after being incremented)
       (Array(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))) (after being incremented)
@@ -237,7 +237,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (after being javaMapIncremented)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization in scope") {
       
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
@@ -283,7 +283,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
       
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization in scope") {
       
       val left1 = List("1 ", "2", " 3")
       val right1 = List("1", " 2", "3")
@@ -328,7 +328,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       checkShouldNotContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
     
-    def `should take passed in custom explicit equality when 'should contain' is used` {
+    it("should take passed in custom explicit equality when 'should contain' is used") {
       
       (List("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
       (Set("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
@@ -339,7 +339,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       (javaMap(Entry(1, "ONE "), Entry(2, "TWO"), Entry(3, " THREE")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
     }
       
-    def `should take specified explicit equality and normalization when 'should not contain' is used` {
+    it("should take specified explicit equality and normalization when 'should not contain' is used") {
       
       (List("one ", " two", "three ") should not contain theSameElementsAs (List(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
       (Set("one ", " two", "three ") should not contain theSameElementsAs (List(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
@@ -350,7 +350,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should not contain theSameElementsAs (List(Entry(1, " one"), Entry(2, "two "), Entry(3, " three")))) (javaMapReverseEquality)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization") {
       
       val left1 = List("one ", " two", "three ")
       val right1 = List(" one", "two ", " three")
@@ -395,7 +395,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Explicitly {
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
       
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization") {
       
       val left1 = List("ONE ", " TWO", "THREE ")
       val right1 = List(" one", "two ", " three")

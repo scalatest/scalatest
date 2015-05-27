@@ -19,18 +19,18 @@ import org.scalatest._
 import SharedHelpers.createTempDirectory
 import java.io.File
 
-class ExistWordSpec extends Spec with Matchers {
+class ExistWordSpec extends FunSpec with Matchers {
   
-  object `ExistWord ` {
+  describe("ExistWord ") {
     
     val existWord = new ExistWord
     
-    object `matcherFactory produces Matcher that` {
+    describe("matcherFactory produces Matcher that") {
       
       val mtf = existWord.matcherFactory
       val mt = mtf.matcher[File]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("exist")
         mt.toString should be ("exist")
       }
@@ -39,7 +39,7 @@ class ExistWordSpec extends Spec with Matchers {
       val lhs = File.createTempFile("delete", "me", tempDir)
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage (lhs + " does not exist"),
@@ -59,7 +59,7 @@ class ExistWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage (lhs + " exists"),

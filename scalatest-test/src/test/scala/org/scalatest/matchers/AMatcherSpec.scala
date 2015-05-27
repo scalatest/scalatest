@@ -19,17 +19,17 @@ import org.scalatest._
 import Matchers._
 import java.io.File
 
-class AMatcherSpec extends Spec {
+class AMatcherSpec extends FunSpec {
   
-  object `AMatcher ` {
+  describe("AMatcher ") {
     
-    object `instance created by AMatcher apply method` {
+    describe("instance created by AMatcher apply method") {
       
       val aMatcher = AMatcher[File]("file") { file => 
         true 
       }
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         aMatcher.toString should be ("AMatcher[java.io.File](\"file\", java.io.File => Boolean)")
       }
       
