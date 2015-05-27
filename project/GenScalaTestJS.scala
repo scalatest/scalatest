@@ -168,7 +168,8 @@ object GenScalaTestJS {
               "PartialFunctionValues.scala",
               "RandomTestOrder.scala",
               "SequentialNestedSuiteExecution.scala",
-              "StepwiseNestedSuiteExecution.scala"
+              "StepwiseNestedSuiteExecution.scala",
+              "StopOnFailure.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -765,6 +766,7 @@ object GenScalaTestJS {
         //"StatusProp.scala",        // skipped because uses VirtualMachineError
         "StatusSpec.scala",
         "StepwiseNestedSuiteExecutionSpec.scala",
+        "StopOnFailureProp.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"

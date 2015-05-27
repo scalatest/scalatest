@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 package org.scalatest
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+// SKIP-SCALATESTJS-END
 import SharedHelpers._
 
 class StopOnFailureProp extends AllSuiteProp {
 
   type FixtureServices = StopOnFailureFixtureServices
-  
+
+  // SKIP-SCALATESTJS-START
   def spec = new ExampleStopOnFailureSpec
   def fixtureSpec = new ExampleStopOnFailureFixtureSpec
   def junit3Suite = new ExampleStopOnFailureJUnit3Suite
   def junitSuite = new ExampleStopOnFailureJUnitSuite
   def testngSuite = new ExampleStopOnFailureTestNGSuite
+  // SKIP-SCALATESTJS-END
   def funSuite = new ExampleStopOnFailureFunSuite
   def fixtureFunSuite = new ExampleStopOnFailureFixtureFunSuite
   def funSpec = new ExampleStopOnFailureFunSpec
@@ -92,6 +96,7 @@ trait StopOnFailureFixtureServices {
   val supportStopTest: Boolean = true
 }
 
+// SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleStopOnFailureSpec extends Spec with StopOnFailure with StopOnFailureFixtureServices {
   def `test 1` {}
@@ -160,9 +165,10 @@ class ExampleStopOnFailureTestNGSuite extends TestNGSuite with StopOnFailure wit
   
   override val supportStopTest: Boolean = false
 }
+// SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleStopOnFailureFunSuite extends FunSuite with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureFunSuite extends FunSuite with StopOnFailure with StopOnFailureFixtureServices {
   test("Test 1") {}
   test("Test 2") { pending }
   test("Test 3") { cancel }
@@ -172,7 +178,7 @@ class ExampleStopOnFailureFunSuite extends FunSuite with StopOnFailure with Stop
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureFunSuite extends fixture.FunSuite with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureFunSuite extends fixture.FunSuite with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   test("Test 1") { s => }
   test("Test 2") { s => pending }
   test("Test 3") { s => cancel }
@@ -182,7 +188,7 @@ class ExampleStopOnFailureFixtureFunSuite extends fixture.FunSuite with StopOnFa
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFunSpec extends FunSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureFunSpec extends FunSpec with StopOnFailure with StopOnFailureFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") { pending }
@@ -194,7 +200,7 @@ class ExampleStopOnFailureFunSpec extends FunSpec with StopOnFailure with StopOn
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureFunSpec extends fixture.FunSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureFunSpec extends fixture.FunSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   describe("Scope 1") {
     it("Test 1") { s => }
     it("Test 2") { s => pending }
@@ -206,7 +212,7 @@ class ExampleStopOnFailureFixtureFunSpec extends fixture.FunSpec with StopOnFail
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFeatureSpec extends FeatureSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureFeatureSpec extends FeatureSpec with StopOnFailure with StopOnFailureFixtureServices {
   feature("Feature 1") {
     scenario("Scenario 1") {}
     scenario("Scenario 2") { pending }
@@ -218,7 +224,7 @@ class ExampleStopOnFailureFeatureSpec extends FeatureSpec with StopOnFailure wit
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureFeatureSpec extends fixture.FeatureSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureFeatureSpec extends fixture.FeatureSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   feature("Feature 1") {
     scenario("Scenario 1") { s => }
     scenario("Scenario 2") { s => pending }
@@ -230,7 +236,7 @@ class ExampleStopOnFailureFixtureFeatureSpec extends fixture.FeatureSpec with St
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFlatSpec extends FlatSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureFlatSpec extends FlatSpec with StopOnFailure with StopOnFailureFixtureServices {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in { pending }
   it should "do thing 3" in { cancel }
@@ -240,7 +246,7 @@ class ExampleStopOnFailureFlatSpec extends FlatSpec with StopOnFailure with Stop
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureFlatSpec extends fixture.FlatSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureFlatSpec extends fixture.FlatSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   "Scope 1" should "do thing 1" in { s => }
   it should "do thing 2" in { s => pending }
   it should "do thing 3" in { s => cancel }
@@ -250,7 +256,7 @@ class ExampleStopOnFailureFixtureFlatSpec extends fixture.FlatSpec with StopOnFa
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFreeSpec extends FreeSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureFreeSpec extends FreeSpec with StopOnFailure with StopOnFailureFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in { pending }
@@ -262,7 +268,7 @@ class ExampleStopOnFailureFreeSpec extends FreeSpec with StopOnFailure with Stop
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureFreeSpec extends fixture.FreeSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureFreeSpec extends fixture.FreeSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   "Scope 1" - {
     "Test 1" in { s => }
     "Test 2" in { s => pending }
@@ -274,7 +280,7 @@ class ExampleStopOnFailureFixtureFreeSpec extends fixture.FreeSpec with StopOnFa
 }
 
 @DoNotDiscover
-class ExampleStopOnFailurePropSpec extends PropSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailurePropSpec extends PropSpec with StopOnFailure with StopOnFailureFixtureServices {
   property("Test 1") {}
   property("Test 2") { pending }
   property("Test 3") { cancel }
@@ -284,7 +290,7 @@ class ExampleStopOnFailurePropSpec extends PropSpec with StopOnFailure with Stop
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixturePropSpec extends fixture.PropSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixturePropSpec extends fixture.PropSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   property("Test 1") { s => }
   property("Test 2") { s => pending }
   property("Test 3") { s => cancel }
@@ -294,7 +300,7 @@ class ExampleStopOnFailureFixturePropSpec extends fixture.PropSpec with StopOnFa
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureWordSpec extends WordSpec with StopOnFailure with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailureWordSpec extends WordSpec with StopOnFailure with StopOnFailureFixtureServices {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in { pending }
@@ -306,7 +312,7 @@ class ExampleStopOnFailureWordSpec extends WordSpec with StopOnFailure with Stop
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureWordSpec extends fixture.WordSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+protected[scalatest] class ExampleStopOnFailureFixtureWordSpec extends fixture.WordSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   "Scope 1" should {
     "Test 1" in { s => }
     "Test 2" in { s => pending }
@@ -319,12 +325,12 @@ class ExampleStopOnFailureFixtureWordSpec extends fixture.WordSpec with StopOnFa
 
 // Not supported as run is final.
 @DoNotDiscover
-class ExampleStopOnFailurePathFreeSpec extends path.FreeSpec with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailurePathFreeSpec extends path.FreeSpec with StopOnFailureFixtureServices {
   override val supported = false
 }
 
 // Not supported as run is final.
 @DoNotDiscover
-class ExampleStopOnFailurePathFunSpec extends path.FunSpec with StopOnFailureFixtureServices {
+protected[scalatest] class ExampleStopOnFailurePathFunSpec extends path.FunSpec with StopOnFailureFixtureServices {
   override val supported = false
 }
