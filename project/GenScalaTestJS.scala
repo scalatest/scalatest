@@ -169,7 +169,9 @@ object GenScalaTestJS {
               "RandomTestOrder.scala",
               "SequentialNestedSuiteExecution.scala",
               "StepwiseNestedSuiteExecution.scala",
-              "StopOnFailure.scala"
+              "StopOnFailure.scala",
+              "Sequential.scala",
+              "Stepwise.scala"
             ), targetDir) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -767,9 +769,17 @@ object GenScalaTestJS {
         "StatusSpec.scala",
         "StepwiseNestedSuiteExecutionSpec.scala",
         "StopOnFailureProp.scala",
+        "StopOnFailureSpec.scala",
+        //"StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
+        //"StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
+        //"StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "StringFixture.scala",
+        "StringLoneElementSpec.scala",
+        "SuiteCompletedStatusReporter.scala",
         "SuiteExamples.scala",
-        "SuiteProp.scala"
+        "SuiteProp.scala",
+        "SuiteSpec.scala",
+        "SuitesSpec.scala"
       ), targetDir) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(

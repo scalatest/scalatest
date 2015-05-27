@@ -50,7 +50,10 @@ package org.scalatest
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-class Suites(suitesToNest: Suite*) extends Suite { thisSuite => 
+class Suites(suitesToNest: Suite*) extends Suite { thisSuite =>
+
+  if (suitesToNest == null)
+    throw new IllegalArgumentException("Passed suitesToNest was null")
 
   for (s <- suitesToNest) {
     if (s == null)
