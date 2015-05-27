@@ -38,7 +38,11 @@ private[scalatest] class CountDownLatch(count: Int) {
   private var currentCount: Long = count
 
   def countDown(): Unit = {
-    currentCount = currentCount - 1
+    currentCount =
+      if (currentCount > 0)
+        currentCount - 1
+      else
+        0
   }
 
   def getCount: Long = currentCount

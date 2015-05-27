@@ -759,6 +759,8 @@ object GenScalaTestJS {
         "ShouldTripleEqualsToleranceSpec.scala",
         "ShouldTypeCheckedTripleEqualsEqualitySpec.scala",
         "SlowpokeDetectorSpec.scala",
+        //"SpecSpec.scala",          // skipped because depends on java reflections.
+        "StatefulStatusSpec.scala",
         "StringFixture.scala",
         "SuiteExamples.scala",
         "SuiteProp.scala"
