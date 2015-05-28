@@ -359,13 +359,17 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * </p>
    */
   protected def describe(description: String)(fun: => Unit) {
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 11
     try {
-      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", 4, -2, None)
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => 4)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => 4)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => stackDepth)
       case other: Throwable => throw other
     }
   }

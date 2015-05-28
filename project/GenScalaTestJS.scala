@@ -459,32 +459,12 @@ object GenScalaTestJS {
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "SuiteSuite.scala"         // skipped because it depends on java reflection
       )) ++
-    /*copyFiles("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
+    copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "ConfigMapFixtureSpec.scala",
-        "FeatureSpecSpec.scala",
-        "FlatSpecImportedMatchersSpec.scala",
-        "FlatSpecMixedInMatchersSpec.scala",
-        "FlatSpecSpec.scala",
-        "FreeSpecSpec.scala",
-        "FunSpecSpec.scala",
-        "FunSuiteSpec.scala",
-        "NoArgAlternativeSpec.scala",
-        "NoArgSpec.scala",
-        "PropSpecSpec.scala",
-        //"SpecSpec.scala",     // skipped because depends on java reflections
-        //"SuiteSpec.scala",    // skipped because depends on java reflections
-        "TestDataFixtureSpec.scala",
-        "UnitFixtureSpec.scala",
-        "WordSpecImportedMatchersSpec.scala",
-        "WordSpecMixedInMatchersSpec.scala",
-        "WordSpecSpec.scala"
-      ), targetDir) ++*/
-      copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
-        List(
-          "SpecSpec.scala",     // skipped because depends on java reflections
-          "SuiteSpec.scala"    // skipped because depends on java reflections
-        )) ++
+        "SpecSpec.scala",     // skipped because depends on java reflections
+        "SuiteSpec.scala"    // skipped because depends on java reflections
+      )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "ResultOfAllElementsOfApplicationSpec.scala",
