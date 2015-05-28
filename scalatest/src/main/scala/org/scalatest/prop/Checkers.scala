@@ -399,7 +399,7 @@ object Checkers extends Checkers {
           )
 
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-              
+
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 

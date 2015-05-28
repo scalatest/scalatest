@@ -465,6 +465,10 @@ object GenScalaTestJS {
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop",
+      List(
+        "CheckersSuite.scala"
+      ), targetDir) ++
     copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "ResultOfAllElementsOfApplicationSpec.scala",
