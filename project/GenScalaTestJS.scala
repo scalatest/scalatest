@@ -207,7 +207,8 @@ object GenScalaTestJS {
               "PropSpecLike.scala",
               "PropSpec.scala",
               "FeatureSpecLike.scala",
-              "FeatureSpec.scala"
+              "FeatureSpec.scala",
+              "ConfigMapFixture.scala"
             ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
@@ -458,16 +459,32 @@ object GenScalaTestJS {
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "SuiteSuite.scala"         // skipped because it depends on java reflection
       )) ++
-    copyFiles("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
+    /*copyFiles("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
-        "FunSuiteSpec.scala",
+        "ConfigMapFixtureSpec.scala",
+        "FeatureSpecSpec.scala",
+        "FlatSpecImportedMatchersSpec.scala",
+        "FlatSpecMixedInMatchersSpec.scala",
+        "FlatSpecSpec.scala",
+        "FreeSpecSpec.scala",
         "FunSpecSpec.scala",
-        "FeatureSpecSpec.scala", 
-        "FlatSpecSpec.scala", 
-        "FreeSpecSpec.scala", 
-        "PropSpecSpec.scala", 
+        "FunSuiteSpec.scala",
+        "NoArgAlternativeSpec.scala",
+        "NoArgSpec.scala",
+        "PropSpecSpec.scala",
+        //"SpecSpec.scala",     // skipped because depends on java reflections
+        //"SuiteSpec.scala",    // skipped because depends on java reflections
+        "TestDataFixtureSpec.scala",
+        "UnitFixtureSpec.scala",
+        "WordSpecImportedMatchersSpec.scala",
+        "WordSpecMixedInMatchersSpec.scala",
         "WordSpecSpec.scala"
-      ), targetDir) ++
+      ), targetDir) ++*/
+      copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+        List(
+          "SpecSpec.scala",     // skipped because depends on java reflections
+          "SuiteSpec.scala"    // skipped because depends on java reflections
+        )) ++
     copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "ResultOfAllElementsOfApplicationSpec.scala",
