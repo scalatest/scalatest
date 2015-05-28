@@ -75,7 +75,9 @@ object GenCommonTestJS {
         "ReturnsNormallyThrowsAssertion.scala",
         "BookPropertyMatchers.scala",
         "EmptyMocks.scala"
-      ), targetDir)
+      ), targetDir) ++
+    copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      List("ExampleLikeSpecs.scala"), targetDir)
   }
 
 }

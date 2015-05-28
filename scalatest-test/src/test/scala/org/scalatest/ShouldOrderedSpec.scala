@@ -23,21 +23,21 @@ import Integer.{MAX_VALUE, MIN_VALUE}
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
-  object `The 'be >/</>=/<= (x)' syntax` {
+  describe("The 'be >/</>=/<= (x)' syntax") {
 
-    object `on Int` {
+    describe("on Int") {
 
-      def `should do nothing if the comparison holds true` {
+      it("should do nothing if the comparison holds true") {
         check((left: Int, right: Int) => left < right ==> returnsNormally(left should be < (right)))
         check((left: Int, right: Int) => left <= right ==> returnsNormally(left should be <= (right)))
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should be > (right)))
         check((left: Int, right: Int) => left >= right ==> returnsNormally(left should be >= (right)))
       }
 
-      def `should do nothing if the comparison fails and used with not` {
+      it("should do nothing if the comparison fails and used with not") {
 
         check((left: Int, right: Int) => left >= right ==> returnsNormally(left should not be < (right)))
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should not be <= (right)))
@@ -50,7 +50,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => left < right ==> returnsNormally(left should not (be >= (right))))
       }
 
-      def `should do nothing when comparison succeeds and used in a logical-and expression` {
+      it("should do nothing when comparison succeeds and used in a logical-and expression") {
 
         check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be < (right)) and (be < (right + 1)))))
         check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right) and (be < (right + 1)))))
@@ -69,7 +69,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => ((left >= right) && (right > MIN_VALUE)) ==> returnsNormally(left should (be >= (right) and be >= (right - 1))))
       }
 
-      def `should do nothing when array size matches and used in a logical-or expression` {
+      it("should do nothing when array size matches and used in a logical-or expression") {
 
         check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should ((be < (right - 1)) or (be < (right + 1)))))
         check((left: Int, right: Int) => ((left < right) && (right < MAX_VALUE)) ==> returnsNormally(left should (be < (right - 1) or (be < (right + 1)))))
@@ -91,7 +91,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => returnsNormally(left should (be > (right) or be <= (right))))
       }
 
-      def `should do nothing when comparison fails and used in a logical-and expression with not` {
+      it("should do nothing when comparison fails and used in a logical-and expression with not") {
 
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not (be < (right)) and not (be < (right + 1)))))
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should ((not be < (right)) and (not be < (right + 1)))))
@@ -110,7 +110,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => left < right ==> returnsNormally(left should (not be >= (right) and not be >= (right))))
       }
 
-      def `should do nothing when comparison fails and used in a logical-or expression with not` {
+      it("should do nothing when comparison fails and used in a logical-or expression with not") {
 
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should (not (be >= (right)) or not (be < (right)))))
         check((left: Int, right: Int) => left > right ==> returnsNormally(left should ((not be >= (right)) or (not be < (right)))))
@@ -129,7 +129,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => left <= right ==> returnsNormally(left should (not be < (right) or not be >= (right))))
       }
 
-      def `should throw TestFailedException if comparison does not succeed` {
+      it("should throw TestFailedException if comparison does not succeed") {
 
         val caught1 = intercept[TestFailedException] {
           1 should be < (1)
@@ -156,7 +156,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: Int, right: Int) => left < right ==> throwsTestFailedException(left should be >= (right)))
       }
 
-      def `should throw TestFailedException if comparison succeeds but used with not` {
+      it("should throw TestFailedException if comparison succeeds but used with not") {
 
         val caught1 = intercept[TestFailedException] {
           1 should not be < (2)
@@ -184,7 +184,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with and
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           2 should { be < (5) and (be < (2)) }
@@ -202,7 +202,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "2 was less than 5, but 2 was not less than 2")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           7 should { be > (5) and (be > (12)) }
@@ -220,7 +220,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "7 was greater than 5, but 7 was not greater than 12")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           2 should { be <= (2) and (be <= (1)) }
@@ -238,7 +238,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "2 was less than or equal to 2, but 2 was not less than or equal to 1")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           7 should { be >= (7) and (be >= (8)) }
@@ -257,7 +257,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with or
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           2 should { be < (2) or (be < (1)) }
@@ -275,7 +275,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "2 was not less than 2, and 2 was not less than 1")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           1 should { be > (5) or (be > (12)) }
@@ -293,7 +293,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "1 was not greater than 5, and 1 was not greater than 12")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           3 should { be <= (2) or (be <= (1)) }
@@ -311,7 +311,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "3 was not less than or equal to 2, and 3 was not less than or equal to 1")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           6 should { be >= (7) or (be >= (8)) }
@@ -330,7 +330,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with and not
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           5 should { not { be < (2) } and not { be < (6) }}
@@ -348,7 +348,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "5 was not less than 2, but 5 was less than 6")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           7 should { not { be > (8) } and not (be > (6)) }
@@ -366,7 +366,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "7 was not greater than 8, but 7 was greater than 6")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           2 should { not { be <= (1) } and (not be <= (2)) }
@@ -384,7 +384,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "2 was not less than or equal to 1, but 2 was less than or equal to 2")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           7 should { not { be >= (8) } and not (be >= (6)) }
@@ -403,7 +403,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with or not
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           5 should { not { be < (7) } or not { be < (8) }}
@@ -421,7 +421,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "5 was less than 7, and 5 was less than 8")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           7 should { not { be > (5) } or not (be > (6)) }
@@ -439,7 +439,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "7 was greater than 5, and 7 was greater than 6")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           2 should { not { be <= (3) } or (not be <= (2)) }
@@ -457,7 +457,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "2 was less than or equal to 3, and 2 was less than or equal to 2")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           8 should { not { be >= (7) } or not (be >= (6)) }
@@ -476,16 +476,16 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
     }
 
-    object `on String` {
+    describe("on String") {
 
-      def `should do nothing if the comparison holds true` {
+      it("should do nothing if the comparison holds true") {
         check((left: String, right: String) => left < right ==> returnsNormally(left should be < (right)))
         check((left: String, right: String) => left <= right ==> returnsNormally(left should be <= (right)))
         check((left: String, right: String) => left > right ==> returnsNormally(left should be > (right)))
         check((left: String, right: String) => left >= right ==> returnsNormally(left should be >= (right)))
       }
 
-      def `should do nothing if the comparison fails and used with not` {
+      it("should do nothing if the comparison fails and used with not") {
 
         check((left: String, right: String) => left >= right ==> returnsNormally(left should not be < (right)))
         check((left: String, right: String) => left > right ==> returnsNormally(left should not be <= (right)))
@@ -498,7 +498,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => left < right ==> returnsNormally(left should not (be >= (right))))
       }
 
-      def `should do nothing when comparison succeeds and used in a logical-and expression` {
+      it("should do nothing when comparison succeeds and used in a logical-and expression") {
 
         check((left: String, right: String) => left < right ==> returnsNormally(left should ((be < (right)) and (be < (right)))))
         check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) and (be < (right)))))
@@ -517,7 +517,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => left >= right ==> returnsNormally(left should (be >= (right) and be >= (right))))
       }
 
-      def `should do nothing when array size matches and used in a logical-or expression` {
+      it("should do nothing when array size matches and used in a logical-or expression") {
 
         check((left: String, right: String) => left < right ==> returnsNormally(left should ((be < (right)) or (be < (right)))))
         check((left: String, right: String) => left < right ==> returnsNormally(left should (be < (right) or (be < (right)))))
@@ -539,7 +539,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => returnsNormally(left should (be > (right) or be <= (right))))
       }
 
-      def `should do nothing when comparison fails and used in a logical-and expression with not` {
+      it("should do nothing when comparison fails and used in a logical-and expression with not") {
 
         check((left: String, right: String) => left >= right ==> returnsNormally(left should (not (be < (right)) and not (be < (right)))))
         check((left: String, right: String) => left >= right ==> returnsNormally(left should ((not be < (right)) and (not be < (right)))))
@@ -558,7 +558,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => left < right ==> returnsNormally(left should (not be >= (right) and not be >= (right))))
       }
 
-      def `should do nothing when comparison fails and used in a logical-or expression with not` {
+      it("should do nothing when comparison fails and used in a logical-or expression with not") {
 
         check((left: String, right: String) => left > right ==> returnsNormally(left should (not (be >= (right)) or not (be < (right)))))
         check((left: String, right: String) => left > right ==> returnsNormally(left should ((not be >= (right)) or (not be < (right)))))
@@ -577,7 +577,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => left <= right ==> returnsNormally(left should (not be < (right) or not be >= (right))))
       }
 
-      def `should throw TestFailedException if comparison does not succeed` {
+      it("should throw TestFailedException if comparison does not succeed") {
 
         val caught1 = intercept[TestFailedException] {
           "aaa" should be < ("aaa")
@@ -604,7 +604,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         check((left: String, right: String) => left < right ==> throwsTestFailedException(left should be >= (right)))
       }
 
-      def `should throw TestFailedException if comparison succeeds but used with not` {
+      it("should throw TestFailedException if comparison succeeds but used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "aaa" should not be < ("bbb")
@@ -632,7 +632,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with and
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           "2" should { be < ("5") and (be < ("2")) }
@@ -650,7 +650,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"2\" was less than \"5\", but \"2\" was not less than \"2\"")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           "7" should { be > ("5") and (be > ("9")) }
@@ -668,7 +668,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"7\" was greater than \"5\", but \"7\" was not greater than \"9\"")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           "2" should { be <= ("2") and (be <= ("1")) }
@@ -686,7 +686,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"2\" was less than or equal to \"2\", but \"2\" was not less than or equal to \"1\"")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           "7" should { be >= ("7") and (be >= ("8")) }
@@ -705,7 +705,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with or
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           "2" should { be < ("2") or (be < ("1")) }
@@ -723,7 +723,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"2\" was not less than \"2\", and \"2\" was not less than \"1\"")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           "1" should { be > ("5") or (be > ("9")) }
@@ -741,7 +741,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"1\" was not greater than \"5\", and \"1\" was not greater than \"9\"")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           "3" should { be <= ("2") or (be <= ("1")) }
@@ -759,7 +759,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"3\" was not less than or equal to \"2\", and \"3\" was not less than or equal to \"1\"")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           "6" should { be >= ("7") or (be >= ("8")) }
@@ -778,7 +778,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with and not
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "5" should { not { be < ("2") } and not { be < ("6") }}
@@ -796,7 +796,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"5\" was not less than \"2\", but \"5\" was less than \"6\"")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "7" should { not { be > ("8") } and not (be > ("6")) }
@@ -814,7 +814,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"7\" was not greater than \"8\", but \"7\" was greater than \"6\"")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "2" should { not { be <= ("1") } and (not be <= ("2")) }
@@ -832,7 +832,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"2\" was not less than or equal to \"1\", but \"2\" was less than or equal to \"2\"")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression used with not` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "7" should { not { be >= ("8") } and not (be >= ("6")) }
@@ -851,7 +851,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
       }
 
       // Comparison with or not
-      def `should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when less than comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "5" should { not { be < ("7") } or not { be < ("8") }}
@@ -869,7 +869,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"5\" was less than \"7\", and \"5\" was less than \"8\"")
       }
 
-      def `should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when greater than comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "7" should { not { be > ("5") } or not (be > ("6")) }
@@ -887,7 +887,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"7\" was greater than \"5\", and \"7\" was greater than \"6\"")
       }
 
-      def `should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when less than or equal to comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "2" should { not { be <= ("3") } or (not be <= ("2")) }
@@ -905,7 +905,7 @@ class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAss
         assert(caught3.getMessage === "\"2\" was less than or equal to \"3\", and \"2\" was less than or equal to \"2\"")
       }
 
-      def `should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression used with not` {
+      it("should throw an assertion error when greater than or equal to comparison doesn't succeed and used in a logical-or expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "8" should { not { be >= ("7") } or not (be >= ("6")) }

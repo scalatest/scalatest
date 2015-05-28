@@ -25,12 +25,12 @@ class AnMatcherSpec extends FunSpec {
     
     describe("instance created by AnMatcher apply method") {
       
-      val anMatcher = AnMatcher[File]("file") { file => 
+      val anMatcher = AnMatcher[List[Int]]("list") { list =>
         true 
       }
       
       it("should have pretty toString") {
-        anMatcher.toString should be ("AnMatcher[java.io.File](\"file\", java.io.File => Boolean)")
+        anMatcher.toString should be ("AnMatcher[scala.collection.immutable.List](\"list\", scala.collection.immutable.List => Boolean)")
       }
       
     }

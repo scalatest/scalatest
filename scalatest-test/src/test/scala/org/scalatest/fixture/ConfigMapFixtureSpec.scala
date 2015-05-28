@@ -22,9 +22,9 @@ class ConfigMapFixtureSpec extends org.scalatest.FunSpec {
   describe("A ConfigMapFixture") {
     it("should pass the config map to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")
-      class MySpec extends fixture.Spec with ConfigMapFixture {
+      class MySpec extends fixture.FunSuite with ConfigMapFixture {
         var configMapPassed = false
-        def `test something`(configMap: FixtureParam) {
+        test("test something") { configMap =>
           if (configMap == myConfigMap)
             configMapPassed = true
         }

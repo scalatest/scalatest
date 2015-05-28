@@ -17,7 +17,6 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
-import java.io.File
 
 class AMatcherSpec extends FunSpec {
   
@@ -25,12 +24,12 @@ class AMatcherSpec extends FunSpec {
     
     describe("instance created by AMatcher apply method") {
       
-      val aMatcher = AMatcher[File]("file") { file => 
+      val aMatcher = AMatcher[List[Int]]("list") { list =>
         true 
       }
       
       it("should have pretty toString") {
-        aMatcher.toString should be ("AMatcher[java.io.File](\"file\", java.io.File => Boolean)")
+        aMatcher.toString should be ("AMatcher[scala.collection.immutable.List](\"list\", scala.collection.immutable.List => Boolean)")
       }
       
     }

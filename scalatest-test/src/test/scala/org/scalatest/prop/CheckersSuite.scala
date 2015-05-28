@@ -27,7 +27,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 class CheckersSpec extends FunSpec with Checkers {
 
-  def `test check prop` = {
+  it("test check prop") {
 
     // Ensure a success does not fail in an exception
     val propConcatLists = forAll((a: List[Int], b: List[Int]) => a.size + b.size == (a ::: b).size)
@@ -100,7 +100,7 @@ class CheckersSpec extends FunSpec with Checkers {
     }
   }
 
-  def `test check prop with success of` = {
+  it("test check prop with success of") {
 
     // Ensure a success does not fail in an exception
     val propConcatLists = forAll { (a: List[Int], b: List[Int]) =>
@@ -204,7 +204,7 @@ class CheckersSpec extends FunSpec with Checkers {
       assertResult(expectedLineNumber)(ex.failedCodeLineNumber.getOrElse(-1))
   }
   
-  def `test check prop stack depth` = {
+  it("test check prop stack depth") {
     val ex1 = intercept[GeneratorDrivenPropertyCheckFailedException] { check((a: List[Int]) => a.size == a.size + 1) }
     expectFileNameLineNumber(ex1, "CheckersSuite.scala", thisLineNumber - 1)
     val ex2 = intercept[GeneratorDrivenPropertyCheckFailedException] { check((a: List[Int], b: List[Int]) => a.size + b.size == (a ::: b).size + 1) }
@@ -237,7 +237,7 @@ class CheckersSpec extends FunSpec with Checkers {
   // argument that the Pretty function is used to display the argument
   // when a failure occurs.
   //
-  def `test arg b pretty` = {
+  it("test arg b pretty") {
     class Thingie(val whatzit: Int)
 
     val g = new Thingie(23)
