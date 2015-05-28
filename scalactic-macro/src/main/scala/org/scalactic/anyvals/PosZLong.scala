@@ -510,11 +510,21 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def toOctalString: String = java.lang.Long.toOctalString(value)
 
   // No point to call abs on a PosZLong.
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosZLong): PosZLong = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosZLong): PosZLong = if (math.min(value, that.value) == value) this else that
 
   // adapted from RichInt:
   /**
+  * Create a <code>Range</code> from this <code>PosZLong</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
   * not including `end`.
@@ -522,6 +532,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def until(end: Long): NumericRange.Exclusive[Long] = value.until(end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosZLong</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
@@ -531,6 +544,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
     value.until(end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZLong</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
   * and including `end`.
@@ -538,6 +554,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def to(end: Long): NumericRange.Inclusive[Long] = value.to(end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZLong</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to

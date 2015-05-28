@@ -23,7 +23,108 @@ import scala.collection.immutable.Range
 //
 
 /**
- * TODO
+ * An <code>AnyVal</code> for positive <code>Int</code>s.
+ *
+ * Note: a <code>PosInt</code> may not equal 0. If you want positive
+ * number or 0, use [[PosZInt]].
+ *
+ * <p>
+ * Because <code>PosInt</code> is an <code>AnyVal</code> it will usually be
+ * as efficient as an <code>Int</code>, being boxed only when an <code>Int</code>
+ * would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosInt.apply</code> factory method is implemented in terms of a macro that
+ * checks literals for validity at compile time. Calling <code>PosInt.apply</code> with
+ * a literal <code>Int</code> value will either produce a valid <code>PosInt</code> instance
+ * at run time or an error at compile time. Here's an example:
+ * <p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosInt(1)
+ * res0: org.scalactic.anyvals.PosInt = PosInt(1)
+ *
+ * scala&gt; PosInt(0)
+ * &lt;console&gt;:14: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               PosInt(0)
+ *                     ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosInt.apply</code> cannot be used if the value being passed is a variable (<em>i.e.</em>, not a literal), because
+ * the macro cannot determine the validity of variables at compile time (just literals). If you try to pass a variable
+ * to <code>PosInt.apply</code>, you'll get a compiler error that suggests you use a different factor method,
+ * <code>PosInt.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1
+ * x: Int = 1
+ *
+ * scala&gt; PosInt(x)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on an integer literal, like PosInt(42). Please use PosInt.from instead.
+ *               PosInt(x)
+ *                     ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosInt.from</code> factory method will inspect the value at runtime and return an <code>Option[PosInt]</code>. If
+ * the value is valid, <code>PosInt.from</code> will return a <code>Some[PosInt]</code>, else it will return a <code>None</code>.
+ * Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosInt.from(x)
+ * res3: Option[org.scalactic.anyvals.PosInt] = Some(PosInt(1))
+ *
+ * scala&gt; val y = 0
+ * y: Int = 0
+ *
+ * scala&gt; PosInt.from(y)
+ * res4: Option[org.scalactic.anyvals.PosInt] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosInt.apply</code> factory method is marked implicit, so that you can pass literal <code>Int</code>s
+ * into methods that require <code>PosInt</code>, and get the same compile-time checking you get when calling
+ * <code>PosInt.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosInt): Int = Int.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosInt)Int
+ *
+ * scala&gt; invert(1)
+ * res0: Int = 2147483646
+ *
+ * scala&gt; invert(Int.MaxValue)
+ * res1: Int = 0
+ *
+ * scala&gt; invert(0)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               invert(0)
+ *                      ^
+ *
+ * scala&gt; invert(-1)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               invert(-1)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>PosInt</code> companion object also defines implicit widening conversions
+ * when either no loss of precision will occur or a similar conversion is provided in Scala. (For example, the implicit
+ * conversion from <code>Int</code> to </code>Float</code> in Scala can lose precision.) This makes it convenient to
+ * use a <code>PosInt</code> where an <code>Int</code> or wider type is needed. An example is the subtraction in the body
+ * of the <code>invert</code> method defined above, <code>Int.MaxValue - pos</code>. Although <code>Int.MaxValue</code> is
+ * an <code>Int</code>, which has no <code>-</code> method that takes a <code>PosInt</code> (the type of <code>pos</code>),
+ * you can still subtract <code>pos</code>, because the <code>PosInt</code> will be implicitly widened to <code>Int</code>.
+ * </p>
  *
  * @param value The <code>Int</code> value underlying this <code>PosInt</code>.
  */ 
@@ -518,6 +619,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**
+  * Create a <code>Range</code> from this <code>PosInt</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
   * not including `end`.
@@ -525,6 +629,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def until(end: Int): Range = Range(value, end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosInt</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
@@ -533,6 +640,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def until(end: Int, step: Int): Range = Range(value, end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosInt</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
   * and including `end`.
@@ -540,6 +650,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosInt</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
@@ -548,7 +661,14 @@ final class PosInt private (val value: Int) extends AnyVal {
   def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
 
   // No point to call abs on a PosInt.
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosInt): PosInt = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosInt): PosInt = if (math.min(value, that.value) == value) this else that
 }
 

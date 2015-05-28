@@ -218,7 +218,14 @@ final class PosZDouble private (val value: Double) extends AnyVal {
   // Stuff from RichDouble
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosZDouble): PosZDouble = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosZDouble): PosZDouble = if (math.min(value, that.value) == value) this else that
 
   def isWhole = {
@@ -245,6 +252,9 @@ final class PosZDouble private (val value: Double) extends AnyVal {
 
   // adapted from RichInt:
   /**
+  * Create a <code>Range</code> from this <code>PosZDouble</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `this` up to but
   * not including `end`.
@@ -253,6 +263,10 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     value.until(end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosZDouble</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
+  * @param end The final bound of the range to make.
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Double]]] from `this` up to but
@@ -262,6 +276,9 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     value.until(end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZDouble</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `'''this'''` up to
   * and including `end`.
@@ -270,6 +287,9 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     value.to(end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZDouble</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Double]]] from `'''this'''` up to

@@ -519,6 +519,9 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**
+  * Create a <code>Range</code> from this <code>PosZInt</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
   * not including `end`.
@@ -526,6 +529,9 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def until(end: Int): Range = Range(value, end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosZInt</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
@@ -534,6 +540,9 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def until(end: Int, step: Int): Range = Range(value, end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
   * and including `end`.
@@ -541,6 +550,9 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
@@ -549,7 +561,14 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
 
   // No point to call abs on a PosZInt.
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosZInt): PosZInt = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosZInt): PosZInt = if (math.min(value, that.value) == value) this else that
 }
 
