@@ -716,7 +716,7 @@ object PosInt {
    *     in a <code>Some[PosInt]</code>, if it is positive, else <code>None</code>.
    */
   def from(value: Int): Option[PosInt] =
-    if (value > 0) Some(new PosInt(value)) else None
+    if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
 
   import language.experimental.macros
 
