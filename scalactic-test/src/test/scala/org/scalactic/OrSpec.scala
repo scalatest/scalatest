@@ -570,5 +570,16 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Bad("no evens")
   }
+  "The Or companion" should "offer a concise type lambda syntax" in {
+    trait Functor[Context[_]] {
+      def map[A, B](ca: Context[A])(f: A => B): Context[B]
+    }
+    class OrFunctor[BAD] extends Functor[Or.B[BAD]#G] {
+      override def map[G, H](ca: G Or BAD)(f: G => H): H Or BAD = ca.map(f)
+    }
+    class BadOrFunctor[GOOD] extends Functor[Or.G[GOOD]#B] {
+      override def map[B, C](ca: GOOD Or B)(f: B => C): GOOD Or C = ca.badMap(f)
+    }
+  }
 }
 
