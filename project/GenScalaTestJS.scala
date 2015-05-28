@@ -52,7 +52,7 @@ object GenScalaTestJS {
     }
   }
 
-  def copyDir(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -63,8 +63,18 @@ object GenScalaTestJS {
     }
   }
 
+  def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      copyFile(sourceFile, destFile)
+    }
+  }
+
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/java/org/scalatest", "org/scalatest",
+    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
             List(
               "Finders.java",
               "TagAnnotation.java",
@@ -76,7 +86,7 @@ object GenScalaTestJS {
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
 
-    copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest",
+    copyFiles("scalatest/src/main/scala/org/scalatest", "org/scalatest",
             List(
               "Suite.scala",
               "OutcomeOf.scala",
@@ -174,7 +184,7 @@ object GenScalaTestJS {
               "Stepwise.scala",
               "TryValues.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
+    copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
               "Suite.scala",
               "TestDataFixture.scala",
@@ -199,7 +209,7 @@ object GenScalaTestJS {
               "FeatureSpecLike.scala",
               "FeatureSpec.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
+    copyFiles("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
               "Event.scala",
               "Ordinal.scala",
@@ -208,7 +218,7 @@ object GenScalaTestJS {
               "Summary.scala",
               "NameInfo.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers",
+    copyFiles("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers",
             List(
               "MatchResult.scala",
               "AMatcher.scala",
@@ -229,7 +239,7 @@ object GenScalaTestJS {
               "MatchSucceeded.scala",
               "TypeMatcherHelper.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
+    copyFiles("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
         "SuiteDiscoveryHelper.scala",
         "StringReporter.scala",
@@ -256,7 +266,7 @@ object GenScalaTestJS {
         "SbtDispatchReporter.scala",
         "FriendlyParamsTranslator.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
+    copyFiles("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
       List(
         "StackDepthException.scala",
         "NotAllowedException.scala",
@@ -276,14 +286,14 @@ object GenScalaTestJS {
         "TimeoutField.scala",
         "TestFailedDueToTimeoutException.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
+    copyFiles("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
         "Now.scala",
         "Span.scala",
         "SpanSugar.scala",
         "Units.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words",
+    copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "TypeCheckWord.scala",
         "CompileWord.scala",
@@ -361,7 +371,7 @@ object GenScalaTestJS {
         "ResultOfAtLeastOneElementOfApplication.scala",
         "ResultOfNoElementsOfApplication.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
+    copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
         "Containing.scala",
         "Aggregating.scala",
@@ -379,7 +389,7 @@ object GenScalaTestJS {
         "Messaging.scala",
         "Collecting.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
+    copyFiles("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
       List(
         //"Configuration.scala",
         "Checkers.scala",
@@ -391,7 +401,7 @@ object GenScalaTestJS {
         "Edges.scala", 
         "Whenever.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
+    copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
       List(
         "ScalaFutures.scala",
         "Futures.scala",
@@ -400,14 +410,14 @@ object GenScalaTestJS {
         //"Eventually.scala",      // not supported because js is single thread and does not share memory.
         "ScaledTimeSpans.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
+    copyFiles("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List(
         "FreeSpec.scala",
         "FreeSpecLike.scala",
         "FunSpec.scala",
         "FunSpecLike.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects",
+    copyFiles("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects",
       List(
         "Retryable.scala",
         "CPU.scala",
@@ -418,394 +428,37 @@ object GenScalaTestJS {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest",
+    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "AlerterSpec.scala",
-        "AllElementsOfContainMatcherDeciderSpec.scala",
-        "AllElementsOfContainMatcherEqualitySpec.scala",
-        "AllElementsOfContainMatcherSpec.scala",
-        "AllOfContainMatcherDeciderSpec.scala",
-        "AllOfContainMatcherEqualitySpec.scala",
-        "AllOfContainMatcherSpec.scala",
-        "AllSuiteProp.scala",
-        "AMatcherSpec.scala",
-        "AnMatcherSpec.scala",
-        "AnyValMatchersSpec.scala",
-        "AppendedCluesSpec.scala",
-        "ArgsSpec.scala",
-        "AssertionsSpec.scala",
-        "BeforeAndAfterAllConfigMapSpec.scala",
-        "BeforeAndAfterAllProp.scala",
-        "BeforeAndAfterAllSpec.scala",
-        "BeforeAndAfterConfigSuite.scala",
-        "BeforeAndAfterEachTestDataSuite.scala",
-        "BeforeAndAfterSuite.scala",
-        "BeforeNAfterSuite.scala",
-        "BigSuite.scala",
-        //"BigSuiteSuite.scala",
-        "CancelAfterFailureSpec.scala",
-        //"CatchReporterProp.scala",   // skipped because heavily depends on java reflection
-        "CatchReporterSpec.scala",
-        "CheckpointsSpec.scala",
-        //"ClassTaggingProp.scala",    // skipped because annotation not supported
-        "ClueSpec.scala",
-        "ConfigMapSpec.scala",
-        //"ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
-        "ContainMatcherAndOrDeciderSpec.scala",
-        "ContainMatcherAndOrEqualitySpec.scala",
-        "ContainMatcherAndOrExplicitEqualitySpec.scala",
-        "ContainMatcherAndOrSpec.scala",
-        "ConversionCheckedAssertionsSpec.scala",
-        "CustomMatcherSpec.scala",
-        "DiagrammedAssertionsSpec.scala",
-        //"DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
-        //"DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
-        "EasySuite.scala",
-        "EitherValuesSpec.scala",
-        //"EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
-        "EngineSpec.scala",
-        //"EntrySpec.scala",    // skipped because Entry extends java.util.Map
-        "EventHelpers.scala",
-        "EveryLoneElementSpec.scala",
-        "EveryShouldContainAllElementsOfLogicalAndSpec.scala",
-        "EveryShouldContainAllElementsOfLogicalOrSpec.scala",
-        "EveryShouldContainAllElementsOfSpec.scala",
-        "EveryShouldContainAllOfLogicalAndSpec.scala",
-        "EveryShouldContainAllOfLogicalOrSpec.scala",
-        "EveryShouldContainAllOfSpec.scala",
-        "EveryShouldContainAtLeastOneElementOfLogicalAndSpec.scala",
-        "EveryShouldContainAtLeastOneElementOfLogicalOrSpec.scala",
-        "EveryShouldContainAtLeastOneElementOfSpec.scala",
-        "EveryShouldContainAtLeastOneOfLogicalAndSpec.scala",
-        "EveryShouldContainAtLeastOneOfLogicalOrSpec.scala",
-        "EveryShouldContainAtLeastOneOfSpec.scala",
-        "EveryShouldContainAtMostOneOfLogicalAndSpec.scala",
-        "EveryShouldContainAtMostOneOfLogicalOrSpec.scala",
-        "EveryShouldContainAtMostOneOfSpec.scala",
-        "EveryShouldContainInOrderLogicalAndSpec.scala",
-        "EveryShouldContainInOrderLogicalOrSpec.scala",
-        "EveryShouldContainInOrderOnlyLogicalAndSpec.scala",
-        "EveryShouldContainInOrderOnlyLogicalOrSpec.scala",
-        "EveryShouldContainInOrderOnlySpec.scala",
-        "EveryShouldContainInOrderSpec.scala",
-        "EveryShouldContainNoElementsOfLogicalAndSpec.scala",
-        "EveryShouldContainNoElementsOfLogicalOrSpec.scala",
-        "EveryShouldContainNoElementsOfSpec.scala",
-        "EveryShouldContainNoneOfLogicalAndSpec.scala",
-        "EveryShouldContainNoneOfLogicalOrSpec.scala",
-        "EveryShouldContainNoneOfSpec.scala",
-        "EveryShouldContainOneElementOfLogicalAndSpec.scala",
-        "EveryShouldContainOneElementOfLogicalOrSpec.scala",
-        "EveryShouldContainOneElementOfSpec.scala",
-        "EveryShouldContainOneOfLogicalAndSpec.scala",
-        "EveryShouldContainOneOfLogicalOrSpec.scala",
-        "EveryShouldContainOneOfSpec.scala",
-        "EveryShouldContainOnlyLogicalAndSpec.scala",
-        "EveryShouldContainOnlyLogicalOrSpec.scala",
-        "EveryShouldContainOnlySpec.scala",
-        "EveryShouldContainSpec.scala",
-        "EveryShouldContainTheSameElementsAsLogicalAndSpec.scala",
-        "EveryShouldContainTheSameElementsAsLogicalOrSpec.scala",
-        "EveryShouldContainTheSameElementsAsSpec.scala",
-        "EveryShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala",
-        "EveryShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala",
-        "EveryShouldContainTheSameElementsInOrderAsSpec.scala",
-        "ExampleBeforeAfterParallelSpec.scala",
-        "ExampleParallelSpec.scala",
-        "ExamplesSuite.scala",
-        "ExampleStackSpec.scala",
-        "ExampleSuiteTimeoutSpec.scala",
-        "ExampleTimeoutParallelSpec.scala",
-        "FailureMessagesSuite.scala",
-        "FeatureSpecSpec.scala",
-        "FilterProp.scala",
-        "FilterSpec.scala",
-        "FlatSpecImportedMatchersSpec.scala",
-        "FlatSpecMixedInMatchersSpec.scala",
-        "FlatSpecSpec.scala",
-        "FreeSpecSpec.scala",
-        "FunctionSuiteProp.scala",
-        "FunctionSuiteExamples.scala",
-        "FunSpecSpec.scala",
-        "FunSuiteSpec.scala",
-        //"FunSuiteSuite.scala",          // skipped because depends on java reflection
-        "GivenWhenThenSpec.scala",
-        "InformerSpec.scala",
-        //"InheritedTagProp.scala",         // skipped because depends on java reflection
-        "InOrderContainMatcherDeciderSpec.scala",
-        "InOrderContainMatcherEqualitySpec.scala",
-        "InOrderContainMatcherSpec.scala",
-        "InOrderOnlyContainMatcherDeciderSpec.scala",
-        "InOrderOnlyContainMatcherEqualitySpec.scala",
-        "InOrderOnlyContainMatcherSpec.scala",
-        "InsideMixinSpec.scala",
-        "InsideSpec.scala",
-        "InspectorsForMapSpec.scala",
-        "InspectorShorthandsRegexWithGroupsSpec.scala",
-        "InspectorShorthandsSpec.scala",
-        "InspectorsSpec.scala",
-        "ListLoneElementSpec.scala",
-        "ListShouldBeEmptyLogicalAndSpec.scala",
-        "ListShouldBeEmptyLogicalOrSpec.scala",
-        "ListShouldBeEmptySpec.scala",
-        "ListShouldContainAllElementsOfLogicalAndSpec.scala",
-        "ListShouldContainAllElementsOfLogicalOrSpec.scala",
-        "ListShouldContainAllElementsOfSpec.scala",
-        "ListShouldContainAllOfLogicalAndSpec.scala",
-        "ListShouldContainAllOfLogicalOrSpec.scala",
-        "ListShouldContainAllOfSpec.scala",
-        "ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala",
-        "ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala",
-        "ListShouldContainAtLeastOneElementOfSpec.scala",
-        "ListShouldContainAtLeastOneOfLogicalAndSpec.scala",
-        "ListShouldContainAtLeastOneOfLogicalOrSpec.scala",
-        "ListShouldContainAtLeastOneOfSpec.scala",
-        "ListShouldContainAtMostOneOfLogicalAndSpec.scala",
-        "ListShouldContainAtMostOneOfLogicalOrSpec.scala",
-        "ListShouldContainAtMostOneOfSpec.scala",
-        "ListShouldContainInOrderLogicalAndSpec.scala",
-        "ListShouldContainInOrderLogicalOrSpec.scala",
-        "ListShouldContainInOrderOnlyLogicalAndSpec.scala",
-        "ListShouldContainInOrderOnlyLogicalOrSpec.scala",
-        "ListShouldContainInOrderOnlySpec.scala",
-        "ListShouldContainInOrderSpec.scala",
-        "ListShouldContainNoElementsOfLogicalAndSpec.scala",
-        "ListShouldContainNoElementsOfLogicalOrSpec.scala",
-        "ListShouldContainNoElementsOfSpec.scala",
-        "ListShouldContainNoneOfLogicalAndSpec.scala",
-        "ListShouldContainNoneOfLogicalOrSpec.scala",
-        "ListShouldContainNoneOfSpec.scala",
-        "ListShouldContainOneElementOfLogicalAndSpec.scala",
-        "ListShouldContainOneElementOfLogicalOrSpec.scala",
-        "ListShouldContainOneElementOfSpec.scala",
-        "ListShouldContainOneOfLogicalAndSpec.scala",
-        "ListShouldContainOneOfLogicalOrSpec.scala",
-        "ListShouldContainOneOfSpec.scala",
-        "ListShouldContainOnlyLogicalAndSpec.scala",
-        "ListShouldContainOnlyLogicalOrSpec.scala",
-        "ListShouldContainOnlySpec.scala",
-        "ListShouldContainSpec.scala",
-        "ListShouldContainTheSameElementsAsLogicalAndSpec.scala",
-        "ListShouldContainTheSameElementsAsLogicalOrSpec.scala",
-        "ListShouldContainTheSameElementsAsSpec.scala",
-        "ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala",
-        "ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala",
-        "ListShouldContainTheSameElementsInOrderAsSpec.scala",
-        "MapShouldBeDefinedAtSpec.scala",
-        "MatcherGenSpec.scala",
-        "MatchersSpec.scala",
-        "MethodSuiteProp.scala",
-        "MethodSuiteExamples.scala",
-        "NoElementsOfContainMatcherDeciderSpec.scala",
-        "NoElementsOfContainMatcherEqualitySpec.scala",
-        "NoElementsOfContainMatcherSpec.scala",
-        "NoneOfContainMatcherDeciderSpec.scala",
-        "NoneOfContainMatcherEqualitySpec.scala",
-        "NoneOfContainMatcherSpec.scala",
-        "NonImplicitAssertionsSuite.scala",
-        "NotifierSpec.scala",
-        //"OldDocSpec.scala",             // Do we still need this?
-        "OneElementOfContainMatcherDeciderSpec.scala",
-        "OneElementOfContainMatcherEqualitySpec.scala",
-        "OneElementOfContainMatcherSpec.scala",
-        "OneInstancePerTestSpec.scala",
-        "OneOfContainMatcherDeciderSpec.scala",
-        "OneOfContainMatcherEqualitySpec.scala",
-        "OneOfContainMatcherSpec.scala",
-        "OnlyContainMatcherDeciderSpec.scala",
-        "OnlyContainMatcherEqualitySpec.scala",
-        "OnlyContainMatcherSpec.scala",
-        "OptionShouldContainOneElementOfLogicalAndSpec.scala",
-        "OptionShouldContainOneElementOfLogicalOrSpec.scala",
-        "OptionShouldContainOneElementOfSpec.scala",
-        "OptionShouldContainOneOfLogicalAndSpec.scala",
-        "OptionShouldContainOneOfLogicalOrSpec.scala",
-        "OptionShouldContainOneOfSpec.scala",
-        "OptionShouldContainSpec.scala",
-        "OptionValuesSpec.scala",
-        "OutcomeSpec.scala",
-        "ParallelTestExecutionInfoExamples.scala",
-        "ParallelTestExecutionOrderExamples.scala",
-        "ParallelTestExecutionParallelSuiteExamples.scala",
-        "ParallelTestExecutionProp.scala",
-        "ParallelTestExecutionSuiteTimeoutExamples.scala",
-        "ParallelTestExecutionTestTimeoutExamples.scala",
-        "ParallelTestExecutionSpec.scala",
-        "PartialFunctionValuesSpec.scala",
-        "PrettyAstSpec.scala",
-        //"PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
-        //"PropertyFunSuite.scala",   // skipped because depends on java reflection
-        "PropSpecSpec.scala",
-        "RandomTestOrderSpec.scala",
-        "RetriesSpec.scala",
-        "RunInSpurtsSpec1.scala",
-        "RunInSpurtsSpec2.scala",
-        "RunningTestSpec.scala",
-        //"SavesConfigMapSuite.scala",    // skipped because depends on java reflection
-        "SequentialNestedSuiteExecutionSpec.scala",
-        "SeveredStackTracesFailureSpec.scala",
-        "SeveredStackTracesSpec.scala",
-        //"ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
-        "ShorthandShouldBeThrownBySpec.scala",
-        "ShorthandShouldNotBeThrownBySpec.scala",
-        "ShouldBeAMatcherAndOrSpec.scala",
-        "ShouldBeAnMatcherAndOrSpec.scala",
-        //"ShouldBeAnSymbolSpec".scala,    // skipped because depends on java reflections
-        "ShouldBeAnTypeSpec.scala",
-        "ShouldBeAnySpec.scala",
-        //"ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldBeATypeSpec.scala",
-        "ShouldBeDefinedAtForAllSpec.scala",
-        "ShouldBeDefinedAtSpec.scala",
-        "ShouldBeDefinedExplicitSpec.scala",
-        "ShouldBeDefinedImplicitSpec.scala",
-        "ShouldBeDefinedLogicalAndExplicitSpec.scala",
-        "ShouldBeDefinedLogicalAndImplicitSpec.scala",
-        "ShouldBeDefinedLogicalAndSpec.scala",
-        "ShouldBeDefinedLogicalOrExplicitSpec.scala",
-        "ShouldBeDefinedLogicalOrImplicitSpec.scala",
-        "ShouldBeDefinedLogicalOrSpec.scala",
-        "ShouldBeDefinedSpec.scala",
-        "ShouldBeDefinedStructuralLogicalAndSpec.scala",
-        "ShouldBeDefinedStructuralLogicalOrSpec.scala",
-        "ShouldBeDefinedStructuralSpec.scala",
-        "ShouldBeEmptyExplicitSpec.scala",
-        "ShouldBeEmptyImplicitSpec.scala",
-        "ShouldBeEmptyLogicalAndExplicitSpec.scala",
-        "ShouldBeEmptyLogicalAndImplicitSpec.scala",
-        "ShouldBeEmptyLogicalOrExplicitSpec.scala",
-        "ShouldBeEmptyLogicalOrImplicitSpec.scala",
-        "ShouldBeEmptyStructuralLogicalAndSpec.scala",
-        "ShouldBeEmptyStructuralLogicalOrSpec.scala",
-        "ShouldBeEmptyStructuralSpec.scala",
-        "ShouldBehaveLikeSpec.scala",
-        "ShouldBeMatcherSpec.scala",
-        "ShouldBeNullSpec.scala",
-        "ShouldBePropertyMatcherSpec.scala",
-        "ShouldBeReadableExplicitSpec.scala",
-        "ShouldBeReadableImplicitSpec.scala",
-        "ShouldBeReadableLogicalAndExplicitSpec.scala",
-        "ShouldBeReadableLogicalAndImplicitSpec.scala",
-        "ShouldBeReadableLogicalAndSpec.scala",
-        "ShouldBeReadableLogicalOrExplicitSpec.scala",
-        "ShouldBeReadableLogicalOrImplicitSpec.scala",
-        "ShouldBeReadableLogicalOrSpec.scala",
-        "ShouldBeReadableSpec.scala",
-        "ShouldBeReadableStructuralLogicalAndSpec.scala",
-        "ShouldBeReadableStructuralLogicalOrSpec.scala",
-        "ShouldBeReadableStructuralSpec.scala",
-        "ShouldBeShorthandForAllSpec.scala",
-        "ShouldBeShorthandSpec.scala",
-        "ShouldBeSortedLogicalAndSpec.scala",
-        "ShouldBeSortedLogicalOrSpec.scala",
-        "ShouldBeSortedSpec.scala",
-        //"ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
-        "ShouldBeThrownBySpec.scala",
-        "ShouldBeWritableExplicitSpec.scala",
-        "ShouldBeWritableImplicitSpec.scala",
-        "ShouldBeWritableLogicalAndExplicitSpec.scala",
-        "ShouldBeWritableLogicalAndImplicitSpec.scala",
-        "ShouldBeWritableLogicalAndSpec.scala",
-        "ShouldBeWritableLogicalOrExplicitSpec.scala",
-        "ShouldBeWritableLogicalOrImplicitSpec.scala",
-        "ShouldBeWritableLogicalOrSpec.scala",
-        "ShouldBeWritableSpec.scala",
-        "ShouldBeWritableStructuralLogicalAndSpec.scala",
-        "ShouldBeWritableStructuralLogicalOrSpec.scala",
-        "ShouldBeWritableStructuralSpec.scala",
-        "ShouldCollectedTripleEqualsSpec.scala",
-        "ShouldCollectedTripleEqualsToleranceSpec.scala",
-        "ShouldCompileSpec.scala",
-        "ShouldContainElementNewSpec.scala",
-        "ShouldContainElementSpec.scala",
-        "ShouldContainKeySpec.scala",
-        "ShouldContainValueSpec.scala",
-        "ShouldConversionCheckedTripleEqualsEqualitySpec.scala",
-        "ShouldEndWithRegexSpec.scala",
-        "ShouldEndWithSubstringSpec.scala",
-        "ShouldEqualEqualitySpec.scala",
-        "ShouldEqualExplicitlySpec.scala",
-        "ShouldEqualNullSpec.scala",
-        "ShouldEqualSpec.scala",
-        "ShouldEqualTokenToleranceSpec.scala",
-        "ShouldEqualToleranceSpec.scala",
-        "ShouldExistExplicitSpec.scala",
-        "ShouldExistImplicitSpec.scala",
-        "ShouldExistLogicalAndExplicitSpec.scala",
-        "ShouldExistLogicalAndImplicitSpec.scala",
-        "ShouldExistLogicalAndSpec.scala",
-        "ShouldExistLogicalOrExplicitSpec.scala",
-        "ShouldExistLogicalOrImplicitSpec.scala",
-        "ShouldExistLogicalOrSpec.scala",
-        "ShouldExistSpec.scala",
-        //"ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
-        "ShouldFullyMatchSpec.scala",
-        "ShouldHavePropertiesSpec.scala",
-        "ShouldIncludeRegexSpec.scala",
-        "ShouldIncludeSubstringSpec.scala",
-        "ShouldLengthSizeSpec.scala",
-        "ShouldLengthSpec.scala",
-        //"ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
-        "ShouldMatcherSpec.scala",
-        "ShouldMatchPatternSpec.scala",
-        "ShouldMessageSpec.scala",
-        "ShouldNotBeThrownBySpec.scala",
-        "ShouldNotCompileSpec.scala",
-        "ShouldNotShorthandForAllSpec.scala",
-        "ShouldNotShorthandSpec.scala",
-        "ShouldNotTypeCheckSpec.scala",
-        "ShouldPlusOrMinusSpec.scala",
-        //"ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
-        "ShouldSizeSpec.scala",
-        "ShouldStartWithRegexSpec.scala",
-        "ShouldStartWithSubstringSpec.scala",
-        "ShouldStructuralLengthSpec.scala",
-        "ShouldStructuralSizeSpec.scala",
-        "ShouldThrowSpec.scala",
-        "ShouldTripleEqualsEqualitySpec.scala",
-        "ShouldTripleEqualsSpec.scala",
-        "ShouldTripleEqualsToleranceSpec.scala",
-        "ShouldTypeCheckedTripleEqualsEqualitySpec.scala",
-        "SlowpokeDetectorSpec.scala",
-        //"SpecSpec.scala",          // skipped because depends on java reflections.
-        "StatefulStatusSpec.scala",
-        //"StatusProp.scala",        // skipped because uses VirtualMachineError
-        "StatusSpec.scala",
-        "StepwiseNestedSuiteExecutionSpec.scala",
-        "StopOnFailureProp.scala",
-        "StopOnFailureSpec.scala",
-        //"StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
-        //"StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
-        //"StreamlinedXmlSpec.scala",            // skipped because use scala.xml
-        "StringFixture.scala",
-        "StringLoneElementSpec.scala",
-        "SuiteCompletedStatusReporter.scala",
-        "SuiteExamples.scala",
-        "SuiteProp.scala",
-        "SuiteSpec.scala",
-        "SuitesSpec.scala",
-        //"SuiteSuite.scala",         // skipped because it depends on java reflection
-        "TaggingScopesSpec.scala",
-        "TagGroupsSpec.scala",
-        "TestColonEscapeProp.scala",
-        "TestDataProp.scala",
-        "TestNameProp.scala",
-        "TheSameElementsAsContainMatcherDeciderSpec.scala",
-        "TheSameElementsAsContainMatcherEqualitySpec.scala",
-        "TheSameElementsAsContainMatcherSpec.scala",
-        "TheSameElementsInOrderAsContainMatcherDeciderSpec.scala",
-        "TheSameElementsInOrderAsContainMatcherEqualitySpec.scala",
-        "TheSameElementsInOrderAsContainMatcherSpec.scala",
-        "ThreadNameSpec.scala",
-        "TryValuesSpec.scala",
-        "TypeCheckedAssertionsSpec.scala",
-        "UnitSpec.scala",
-        "VariousWordSpec.scala",
-        "WordSpecImportedMatchersSpec.scala",
-        "WordSpecMixedInMatchersSpec.scala",
-        "WordSpecSpec.scala"
-      ), targetDir) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
+        "BigSuiteSuite.scala",
+        "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
+        "ClassTaggingProp.scala",    // skipped because annotation not supported
+        "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
+        "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
+        "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
+        "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
+        "EntrySpec.scala",    // skipped because Entry extends java.util.Map
+        "FunSuiteSuite.scala",          // skipped because depends on java reflection
+        "InheritedTagProp.scala",         // skipped because depends on java reflection
+        "OldDocSpec.scala",             // Do we still need this?
+        "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
+        "PropertyFunSuite.scala",   // skipped because depends on java reflection
+        "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
+        "ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
+        "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
+        "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
+        "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
+        "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+        "SpecSpec.scala",          // skipped because depends on java reflections.
+        "StatusProp.scala",        // skipped because uses VirtualMachineError
+        "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
+        "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
+        "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
+        "SuiteSuite.scala"         // skipped because it depends on java reflection
+      )) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture",
       List(
         "FunSuiteSpec.scala",
         "FunSpecSpec.scala",
@@ -815,7 +468,7 @@ object GenScalaTestJS {
         "PropSpecSpec.scala", 
         "WordSpecSpec.scala"
       ), targetDir) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "ResultOfAllElementsOfApplicationSpec.scala",
         "ResultOfAtLeastOneElementOfApplicationSpec.scala",
