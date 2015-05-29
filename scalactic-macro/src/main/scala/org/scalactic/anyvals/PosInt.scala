@@ -18,10 +18,6 @@ package org.scalactic.anyvals
 import scala.language.implicitConversions
 import scala.collection.immutable.Range
 
-//
-// Numbers greater than zero.
-//
-
 /**
  * An <code>AnyVal</code> for positive <code>Int</code>s.
  *
@@ -39,7 +35,7 @@ import scala.collection.immutable.Range
  * checks literals for validity at compile time. Calling <code>PosInt.apply</code> with
  * a literal <code>Int</code> value will either produce a valid <code>PosInt</code> instance
  * at run time or an error at compile time. Here's an example:
- * <p>
+ * </p>
  * 
  * <pre>
  * scala&gt; import anyvals._

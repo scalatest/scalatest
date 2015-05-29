@@ -18,12 +18,127 @@ package org.scalactic.anyvals
 import scala.language.implicitConversions
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than zero.
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for positive <code>Long</code>s.
+ *
+ * Note: a <code>PosLong</code> may not equal 0. If you want positive
+ * number or 0, use [[PosZLong]].
+ *
+ * <p>
+ * Because <code>PosLong</code> is an <code>AnyVal</code> it
+ * will usually be as efficient as an <code>Long</code>, being
+ * boxed only when an <code>Long</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosLong.apply</code> factory method is implemented
+ * in terms of a macro that checks literals for validity at
+ * compile time. Calling <code>PosLong.apply</code> with a
+ * literal <code>Long</code> value will either produce a valid
+ * <code>PosLong</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosLong(1L)
+ * res0: org.scalactic.anyvals.PosLong = PosLong(1)
+ *
+ * scala&gt; PosLong(0L)
+ * &lt;console&gt;:14: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
+ *               PosLong(0L)
+ *                      ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosLong.apply</code> cannot be used if the value being
+ * passed is a variable (<em>i.e.</em>, not a literal), because
+ * the macro cannot determine the validity of variables at
+ * compile time (just literals). If you try to pass a variable
+ * to <code>PosLong.apply</code>, you'll get a compiler error
+ * that suggests you use a different factor method,
+ * <code>PosLong.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1L
+ * x: Long = 1
+ *
+ * scala&gt; PosLong(x)
+ * &lt;console&gt;:15: error: PosLong.apply can only be invoked on an integer literal, like PosLong(42L). Please use PosLong.from instead.
+ *               PosLong(x)
+ *                      ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosLong.from</code> factory method will inspect the
+ * value at runtime and return an
+ * <code>Option[PosLong]</code>. If the value is valid,
+ * <code>PosLong.from</code> will return a
+ * <code>Some[PosLong]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosLong.from(x)
+ * res3: Option[org.scalactic.anyvals.PosLong] = Some(PosLong(1))
+ *
+ * scala&gt; val y = 0L
+ * y: Long = 0
+ *
+ * scala&gt; PosLong.from(y)
+ * res4: Option[org.scalactic.anyvals.PosLong] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosLong.apply</code> factory method is marked
+ * implicit, so that you can pass literal <code>Long</code>s
+ * into methods that require <code>PosLong</code>, and get the
+ * same compile-time checking you get when calling
+ * <code>PosLong.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosLong): Long = Long.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosLong)Long
+ *
+ * scala&gt; invert(1L)
+ * res5: Long = 9223372036854775806
+ *
+ * scala&gt; invert(Long.MaxValue)
+ * res6: Long = 0
+ *
+ * scala&gt; invert(0L)
+ * &lt;console&gt;:15: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
+ *               invert(0L)
+ *                      ^
+ *
+ * scala&gt; invert(-1L)
+ * &lt;console&gt;:15: error: PosLong.apply can only be invoked on a positive (i &gt; 0L) integer literal, like PosLong(42L).
+ *               invert(-1L)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>PosLong</code>
+ * companion object also defines implicit widening conversions
+ * when either no loss of precision will occur or a similar
+ * conversion is provided in Scala. (For example, the implicit
+ * conversion from <code>Long</code> to </code>Double</code> in
+ * Scala can lose precision.) This makes it convenient to use a
+ * <code>PosLong</code> where a <code>Long</code> or wider type
+ * is needed. An example is the subtraction in the body of the
+ * <code>invert</code> method defined above, <code>Long.MaxValue
+ * - pos</code>. Although <code>Long.MaxValue</code> is a
+ * <code>Long</code>, which has no <code>-</code> method that
+ * takes a <code>PosLong</code> (the type of <code>pos</code>),
+ * you can still subtract <code>pos</code>, because the
+ * <code>PosLong</code> will be implicitly widened to
+ * <code>Long</code>.
+ * </p>
  *
  * @param value The <code>Long</code> value underlying this <code>PosLong</code>.
  */ 

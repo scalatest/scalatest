@@ -17,16 +17,123 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for non-negative <code>Double</code>s.
  *
- * @param value The <code>Double</code> value underlying this <code>PosZDouble</code>.
+ * <p>
+ * Because <code>PosZDouble</code> is an <code>AnyVal</code> it will usually be
+ * as efficient as an <code>Double</code>, being boxed only when a
+ * <code>Double</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosZDouble.apply</code> factory method is
+ * implemented in terms of a macro that checks literals for
+ * validity at compile time. Calling
+ * <code>PosZDouble.apply</code> with a literal
+ * <code>Double</code> value will either produce a valid
+ * <code>PosZDouble</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosZDouble(1.1)
+ * res0: org.scalactic.anyvals.PosZDouble = PosZDouble(1.1)
+ *
+ * scala&gt; PosZDouble(0.0)
+ * res1: org.scalactic.anyvals.PosZDouble = PosZDouble(0.0)
+ *
+ * scala&gt; PosZDouble(-1.1)
+ * &lt;console&gt;:14: error: PosZDouble.apply can only be invoked on a non-negative (i &gt;= 0.0) floating point literal, like PosZDouble(42.0).
+ *               PosZDouble(-1.1)
+ *                         ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosZDouble.apply</code> cannot be used if the value
+ * being passed is a variable (<em>i.e.</em>, not a literal),
+ * because the macro cannot determine the validity of variables
+ * at compile time (just literals). If you try to pass a
+ * variable to <code>PosZDouble.apply</code>, you'll get a
+ * compiler error that suggests you use a different factor
+ * method, <code>PosZDouble.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1.1
+ * x: Double = 1.1
+ *
+ * scala&gt; PosZDouble(x)
+ * &lt;console&gt;:15: error: PosZDouble.apply can only be invoked on a floating point literal, like PosZDouble(42.0). Please use PosZDouble.from instead.
+ *               PosZDouble(x)
+ *                         ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosZDouble.from</code> factory method will inspect
+ * the value at runtime and return an
+ * <code>Option[PosZDouble]</code>. If the value is valid,
+ * <code>PosZDouble.from</code> will return a
+ * <code>Some[PosZDouble]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosZDouble.from(x)
+ * res4: Option[org.scalactic.anyvals.PosZDouble] = Some(PosZDouble(1.1))
+ *
+ * scala&gt; val y = -1.1
+ * y: Double = -1.1
+ *
+ * scala&gt; PosZDouble.from(y)
+ * res5: Option[org.scalactic.anyvals.PosZDouble] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosZDouble.apply</code> factory method is marked implicit, so that
+ * you can pass literal <code>Double</code>s into methods that require
+ * <code>PosZDouble</code>, and get the same compile-time checking you get when
+ * calling <code>PosZDouble.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosZDouble): Double = Double.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosZDouble)Double
+ *
+ * scala&gt; invert(0.0)
+ * res6: Double = 1.7976931348623157E308
+ *
+ * scala&gt; invert(Double.MaxValue)
+ * res7: Double = 0.0
+ *
+ * scala&gt; invert(-1.1)
+ * &lt;console&gt;:15: error: PosZDouble.apply can only be invoked on a non-negative (i &gt;= 0.0) floating point literal, like PosZDouble(42.0).
+ *               invert(-1.1)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the
+ * <code>PosZDouble</code> companion object also defines
+ * implicit widening conversions when a similar conversion is
+ * provided in Scala. This makes it convenient to use a
+ * <code>PosZDouble</code> where a <code>Double</code> or wider
+ * type is needed. An example is the subtraction in the body of
+ * the <code>invert</code> method defined above,
+ * <code>Double.MaxValue - pos</code>. Although
+ * <code>Double.MaxValue</code> is a <code>Double</code>, which
+ * has no <code>-</code> method that takes a
+ * <code>PosZDouble</code> (the type of <code>pos</code>), you
+ * can still subtract <code>pos</code>, because the
+ * <code>PosZDouble</code> will be implicitly widened to
+ * <code>Double</code>.
+ * </p>
+ *
+ * @param value The <code>Double</code> value underlying this
+ *              <code>PosZDouble</code>.
  */ 
 final class PosZDouble private (val value: Double) extends AnyVal {
 

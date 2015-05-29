@@ -17,14 +17,120 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for non-negative <code>Float</code>s.
+ *
+ * <p>
+ * Because <code>PosZFloat</code> is an <code>AnyVal</code> it will usually be
+ * as efficient as an <code>Float</code>, being boxed only when a
+ * <code>Float</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosZFloat.apply</code> factory method is
+ * implemented in terms of a macro that checks literals for
+ * validity at compile time. Calling
+ * <code>PosZFloat.apply</code> with a literal
+ * <code>Float</code> value will either produce a valid
+ * <code>PosZFloat</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosZFloat(1.1F)
+ * res0: org.scalactic.anyvals.PosZFloat = PosZFloat(1.1)
+ *
+ * scala&gt; PosZFloat(0.0F)
+ * res1: org.scalactic.anyvals.PosZFloat = PosZFloat(0.0)
+ *
+ * scala&gt; PosZFloat(-1.1F)
+ * &lt;console&gt;:14: error: PosZFloat.apply can only be invoked on a non-negative (i &gt;= 0.0F) floating point literal, like PosZFloat(42.0F).
+ *               PosZFloat(-1.1F)
+ *                        ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosZFloat.apply</code> cannot be used if the value
+ * being passed is a variable (<em>i.e.</em>, not a literal),
+ * because the macro cannot determine the validity of variables
+ * at compile time (just literals). If you try to pass a
+ * variable to <code>PosZFloat.apply</code>, you'll get a
+ * compiler error that suggests you use a different factor
+ * method, <code>PosZFloat.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1.1F
+ * x: Float = 1.1
+ *
+ * scala&gt; PosZFloat(x)
+ * &lt;console&gt;:15: error: PosZFloat.apply can only be invoked on a floating point literal, like PosZFloat(42.0F). Please use PosZFloat.from instead.
+ *               PosZFloat(x)
+ *                        ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosZFloat.from</code> factory method will inspect
+ * the value at runtime and return an
+ * <code>Option[PosZFloat]</code>. If the value is valid,
+ * <code>PosZFloat.from</code> will return a
+ * <code>Some[PosZFloat]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosZFloat.from(x)
+ * res4: Option[org.scalactic.anyvals.PosZFloat] = Some(PosZFloat(1.1))
+ *
+ * scala&gt; val y = -1.1F
+ * y: Float = -1.1
+ *
+ * scala&gt; PosZFloat.from(y)
+ * res5: Option[org.scalactic.anyvals.PosZFloat] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosZFloat.apply</code> factory method is marked implicit, so that
+ * you can pass literal <code>Float</code>s into methods that require
+ * <code>PosZFloat</code>, and get the same compile-time checking you get when
+ * calling <code>PosZFloat.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosZFloat): Float = Float.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosZFloat)Float
+ *
+ * scala&gt; invert(0.0F)
+ * res6: Float = 3.4028235E38
+ *
+ * scala&gt; invert(Float.MaxValue)
+ * res7: Float = 0.0
+ *
+ * scala&gt; invert(-1.1F)
+ * &lt;console&gt;:15: error: PosZFloat.apply can only be invoked on a non-negative (i &gt;= 0.0F) floating point literal, like PosZFloat(42.0F).
+   *             invert(-1.1F)
+   *                     ^
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the
+ * <code>PosZFloat</code> companion object also defines
+ * implicit widening conversions when a similar conversion is
+ * provided in Scala. This makes it convenient to use a
+ * <code>PosZFloat</code> where a <code>Float</code> or wider
+ * type is needed. An example is the subtraction in the body of
+ * the <code>invert</code> method defined above,
+ * <code>Float.MaxValue - pos</code>. Although
+ * <code>Float.MaxValue</code> is an <code>Float</code>, which
+ * has no <code>-</code> method that takes a
+ * <code>PosZFloat</code> (the type of <code>pos</code>), you
+ * can still subtract <code>pos</code>, because the
+ * <code>PosZFloat</code> will be implicitly widened to
+ * <code>Float</code>.
+ * </p>
  *
  * @param value The <code>Float</code> value underlying this <code>PosZFloat</code>.
  */ 

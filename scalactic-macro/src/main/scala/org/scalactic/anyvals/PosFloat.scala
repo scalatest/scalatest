@@ -18,12 +18,125 @@ package org.scalactic.anyvals
 import scala.language.implicitConversions
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than zero.
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for positive <code>Float</code>s.
+ *
+ * Note: a <code>PosFloat</code> may not equal 0. If you want positive
+ * number or 0, use [[PosZFloat]].
+ *
+ * <p>
+ * Because <code>PosFloat</code> is an <code>AnyVal</code> it
+ * will usually be as efficient as an <code>Float</code>, being
+ * boxed only when an <code>Float</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosFloat.apply</code> factory method is implemented
+ * in terms of a macro that checks literals for validity at
+ * compile time. Calling <code>PosFloat.apply</code> with a
+ * literal <code>Float</code> value will either produce a valid
+ * <code>PosFloat</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosFloat(1.0F)
+ * res0: org.scalactic.anyvals.PosFloat = PosFloat(1.0)
+ *
+ * scala&gt; PosFloat(0.0F)
+ * &lt;console&gt;:14: error: PosFloat.apply can only be invoked on a positive (i &gt; 0.0F) floating point literal, like PosFloat(42.0F).
+ *               PosFloat(0.0F)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosFloat.apply</code> cannot be used if the value being
+ * passed is a variable (<em>i.e.</em>, not a literal), because
+ * the macro cannot determine the validity of variables at
+ * compile time (just literals). If you try to pass a variable
+ * to <code>PosFloat.apply</code>, you'll get a compiler error
+ * that suggests you use a different factor method,
+ * <code>PosFloat.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1.0F
+ * x: Float = 1.0
+ *
+ * scala&gt; PosFloat(x)
+ * &lt;console&gt;:15: error: PosFloat.apply can only be invoked on a floating point literal, like PosFloat(42.0F). Please use PosFloat.from instead.
+ *               PosFloat(x)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosFloat.from</code> factory method will inspect
+ * the value at runtime and return an
+ * <code>Option[PosFloat]</code>. If the value is valid,
+ * <code>PosFloat.from</code> will return a
+ * <code>Some[PosFloat]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosFloat.from(x)
+ * res3: Option[org.scalactic.anyvals.PosFloat] = Some(PosFloat(1.0))
+ *
+ * scala&gt; val y = 0.0F
+ * y: Float = 0.0
+ *
+ * scala&gt; PosFloat.from(y)
+ * res4: Option[org.scalactic.anyvals.PosFloat] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosFloat.apply</code> factory method is marked
+ * implicit, so that you can pass literal <code>Float</code>s
+ * into methods that require <code>PosFloat</code>, and get the
+ * same compile-time checking you get when calling
+ * <code>PosFloat.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosFloat): Float = Float.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosFloat)Float
+ *
+ * scala&gt; invert(1.1F)
+ * res5: Float = 3.4028235E38
+ *
+ * scala&gt; invert(Float.MaxValue)
+ * res6: Float = 0.0
+ *
+ * scala&gt; invert(0.0F)
+ * &lt;console&gt;:15: error: PosFloat.apply can only be invoked on a positive (i &gt; 0.0F) floating point literal, like PosFloat(42.0F).
+ *               invert(0.0F)
+ *                      ^
+ *
+ * scala&gt; invert(-1.1F)
+ * &lt;console&gt;:15: error: PosFloat.apply can only be invoked on a positive (i &gt; 0.0F) floating point literal, like PosFloat(42.0F).
+ *               invert(-1.1F)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>PosFloat</code>
+ * companion object also defines implicit widening conversions
+ * when no loss of precision will occur. This makes it convenient to use a
+ * <code>PosFloat</code> where a <code>Float</code> or wider
+ * type is needed. An example is the subtraction in the body of
+ * the <code>invert</code> method defined above,
+ * <code>Float.MaxValue - pos</code>. Although
+ * <code>Float.MaxValue</code> is a <code>Float</code>, which
+ * has no <code>-</code> method that takes a
+ * <code>PosFloat</code> (the type of <code>pos</code>), you can
+ * still subtract <code>pos</code>, because the
+ * <code>PosFloat</code> will be implicitly widened to
+ * <code>Float</code>.
+ * </p>
  *
  * @param value The <code>Float</code> value underlying this <code>PosFloat</code>.
  */ 
