@@ -28,6 +28,7 @@ class CollectingSpec extends FunSpec with Matchers {
 
       Collecting.collectingNatureOfArray[Int].genTraversableFrom(Array(1, 2, 3)) shouldEqual List(1, 2, 3)
 
+      // SKIP-SCALATESTJS-START
       import collection.JavaConverters._
       val jList: java.util.List[Int] = List(1, 2, 3).asJava
       Collecting.collectingNatureOfJavaCollection[Int, java.util.List].genTraversableFrom(jList) shouldEqual List(1, 2, 3)
@@ -37,6 +38,7 @@ class CollectingSpec extends FunSpec with Matchers {
       val jMap: java.util.Map[String, Int] = Map("one" -> 1, "two" -> 2, "three" -> 3).asJava
       Collecting.collectingNatureOfJavaMap[String, Int, java.util.Map].genTraversableFrom(jMap) shouldEqual
         List(Entry("one", 1), Entry("two", 2), Entry("three", 3))
+      // SKIP-SCALATESTJS-END
     }
   }
 }
