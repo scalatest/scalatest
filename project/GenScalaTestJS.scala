@@ -488,6 +488,20 @@ object GenScalaTestJS {
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+      List(
+        "LocationFunctionSuiteProp.scala",   // temporary skip for now
+        "LocationSpec.scala",   // temporary skip for now
+        "LocationSuiteProp.scala",   // temporary skip for now
+        "TestLocationJUnit3Suite.scala",
+        "TestLocationJUnitSuite.scala",
+        "TestLocationTestNGSuite.scala",
+        "TestLocationMethodJUnit3Suite.scala",
+        "TestLocationMethodJUnitSuite.scala",
+        "TestLocationMethodTestNGSuite.scala",
+        "LocationMethodSuiteProp.scala"
+      )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
