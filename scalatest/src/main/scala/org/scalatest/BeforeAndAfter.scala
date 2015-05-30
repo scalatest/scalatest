@@ -193,7 +193,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
     var thrownException: Option[Throwable] = None
 
     beforeFunctionAtomic.get match {
-      case Some(fun) => fun()
+      case Some(fun) => if (!args.runTestInNewInstance) fun()
       case None =>
     }
 
@@ -208,7 +208,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
       try {
         // Make sure that afterEach is called even if runTest completes abruptly.
         afterFunctionAtomic.get match {
-          case Some(fun) => fun()
+          case Some(fun) => if (!args.runTestInNewInstance) fun()
           case None =>
         }
 

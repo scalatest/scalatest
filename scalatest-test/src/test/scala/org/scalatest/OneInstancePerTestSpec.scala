@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import events._
 import SharedHelpers._
 
@@ -208,6 +210,118 @@ class OneInstancePerTestSpec extends FunSpec {
             fail("Unexpected TestSucceeded event: " + other)
         }
       }
+    }
+
+    it("should only run before / after once per test regardless of order of mix-ins") {
+      val beforeCountFoo = new AtomicInteger(0)
+      val testCountFoo = new AtomicInteger(0)
+      val afterCountFoo = new AtomicInteger(0)
+
+      class FooSuite extends FunSuite with BeforeAndAfter with OneInstancePerTest {
+        before {
+          beforeCountFoo.incrementAndGet()
+        }
+        test("foo") {
+          testCountFoo.incrementAndGet()
+        }
+        after {
+          afterCountFoo.incrementAndGet()
+        }
+        override def newInstance = new FooSuite
+      }
+
+
+      val repFoo = new EventRecordingReporter
+      val outerFoo = new FooSuite
+      outerFoo.run(None, Args(repFoo))
+
+      assert(repFoo.testSucceededEventsReceived.size === 1)
+      assert(beforeCountFoo.get === 1)
+      assert(testCountFoo.get === 1)
+      assert(afterCountFoo.get === 1)
+
+      // make sure we get the same behavior when the order of the mix-ins is swapped
+
+      val beforeCountBar = new AtomicInteger(0)
+      val testCountBar = new AtomicInteger(0)
+      val afterCountBar = new AtomicInteger(0)
+
+      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfter {
+        before {
+          beforeCountBar.incrementAndGet()
+        }
+        test("bar") {
+          testCountBar.incrementAndGet()
+        }
+        after {
+          afterCountBar.incrementAndGet()
+        }
+        override def newInstance = new BarSuite
+      }
+
+      val repBar = new EventRecordingReporter
+      val outerBar = new BarSuite
+      outerBar.run(None, Args(repBar))
+      assert(repBar.testSucceededEventsReceived.size === 1)
+      assert(beforeCountBar.get === 1)
+      assert(testCountBar.get === 1)
+      assert(afterCountBar.get === 1)
+    }
+
+    it("should only run beforeAll / afterAll once per instance regardless of order of mix-ins") {
+      val beforeCountFoo = new AtomicInteger(0)
+      val testCountFoo = new AtomicInteger(0)
+      val afterCountFoo = new AtomicInteger(0)
+
+      class FooSuite extends FunSuite with BeforeAndAfterAll with OneInstancePerTest {
+        override def beforeAll() = {
+          beforeCountFoo.incrementAndGet()
+        }
+        test("foo") {
+          testCountFoo.incrementAndGet()
+        }
+        override def afterAll() = {
+          afterCountFoo.incrementAndGet()
+        }
+        override def newInstance = new FooSuite
+      }
+
+
+      val repFoo = new EventRecordingReporter
+      val outerFoo = new FooSuite
+      outerFoo.run(None, Args(repFoo))
+
+      assert(repFoo.testSucceededEventsReceived.size === 1)
+      assert(beforeCountFoo.get === 1)
+      assert(testCountFoo.get === 1)
+      assert(afterCountFoo.get === 1)
+
+      // make sure we get the same behavior when the order of the mix-ins is swapped
+
+      val beforeCountBar = new AtomicInteger(0)
+      val testCountBar = new AtomicInteger(0)
+      val afterCountBar = new AtomicInteger(0)
+
+      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterAll {
+        override def beforeAll() = {
+          beforeCountBar.incrementAndGet()
+        }
+        test("bar") {
+          testCountBar.incrementAndGet()
+        }
+        override def afterAll() {
+          afterCountBar.incrementAndGet()
+        }
+        override def newInstance = new BarSuite
+      }
+
+      val repBar = new EventRecordingReporter
+      val outerBar = new BarSuite
+      outerBar.run(None, Args(repBar))
+      assert(repBar.testSucceededEventsReceived.size === 1)
+      assert(beforeCountBar.get === 1)
+      assert(testCountBar.get === 1)
+      assert(afterCountBar.get === 1)
     }
   }
 }
