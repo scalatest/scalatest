@@ -22,7 +22,7 @@ import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FunSuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
+class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
 
   describe("A fixture.FunSuite") {
     it("should return the test names in order of registration from testNames") {
@@ -922,6 +922,7 @@ class FunSuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
+    // SKIP-SCALATESTJS-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FunSuite {
@@ -936,6 +937,7 @@ class FunSuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.run(None, Args(SilentReporter))
       }
     }
+    // SKIP-SCALATESTJS-END
     it("should allow both tests that take fixtures and tests that don't") {
       val a = new FunSuite {
 

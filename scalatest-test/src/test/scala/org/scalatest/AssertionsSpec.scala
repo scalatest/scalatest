@@ -175,9 +175,11 @@ class AssertionsSpec extends FunSpec {
       val trappedString = trap { "12" }
       assert(trappedString == NormalResult("12"))
       assert(trappedString.toString == Resources.resultWas("\"12\""))
+      // SKIP-SCALATESTJS-START
       intercept[OutOfMemoryError] {
         trap { throw new OutOfMemoryError }
       }
+      // SKIP-SCALATESTJS-END
     }
   }
 
@@ -346,7 +348,7 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check 5 == b") {
       assert(5 == b)
     }
@@ -5857,6 +5859,7 @@ class AssertionsSpec extends FunSpec {
       assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
     }
   }
+
   describe("The assertResult method that 'gets a clue'") {
     it("should be usable when the left expression results in null") {
       val npe = new NullPointerException

@@ -18,7 +18,7 @@ package org.scalatest
 import java.util.concurrent.CountDownLatch
 import java.io.PrintStream
 import org.scalatest.events._
-import DispatchReporter.propagateDispose
+import Reporter.propagateDispose
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.TimerTask
 import java.util.Timer
@@ -298,19 +298,4 @@ private[scalatest] class DispatchReporter(
   }
 
   def isDisposed = latch.getCount == 0
-}
-
-// TODO: Not a real problem, but if a DispatchReporter ever got itself in
-// its list of reporters, this would end up being an infinite loop. But
-// That first part, a DispatchReporter getting itself in there would be the real
-// bug.
-private[scalatest] object DispatchReporter {
-
-  def propagateDispose(reporter: Reporter) {
-    reporter match {
-      case dispatchReporter: DispatchReporter => dispatchReporter.dispatchDisposeAndWaitUntilDone()
-      case resourcefulReporter: ResourcefulReporter => resourcefulReporter.dispose()
-      case _ =>
-    }
-  }
 }

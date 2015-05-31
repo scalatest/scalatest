@@ -20,7 +20,7 @@ import enablers.Readability
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
+class ShouldBeReadableLogicalAndImplicitSpec extends FunSpec {
   
   val fileName: String = "ShouldBeReadableLogicalAndImplicitSpec.scala"
   
@@ -64,11 +64,11 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       def isReadable(thing: T): Boolean = thing.canRead
     }
   
-  object `Readability matcher` {
+  describe("Readability matcher") {
     
-    object `when work with 'file should be (readable)'` {
+    describe("when work with 'file should be (readable)'") {
       
-      def `should do nothing when file is readable` {
+      it("should do nothing when file is readable") {
         book should (equal (book) and be (readable))
         book should (be (readable) and equal (book))
         
@@ -76,7 +76,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         book should (be (readable) and be (book))
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not readable` {
+      it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
           stone should (equal (stone) and be (readable))
         }
@@ -107,9 +107,9 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'file should not be sorted'` {
+    describe("when work with 'file should not be sorted'") {
       
-      def `should do nothing when file is not readable` {
+      it("should do nothing when file is not readable") {
         stone should (not equal book and not be readable)
         stone should (not be readable and not equal book)
         
@@ -117,7 +117,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         stone should (not be readable and not be book)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val caught1 = intercept[TestFailedException] {
           book should (not equal stone and not be readable)
         }
@@ -148,9 +148,9 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (readable)'` {
+    describe("when work with 'all(xs) should be (readable)'") {
       
-      def `should do nothing when all(xs) is readable` {
+      it("should do nothing when all(xs) is readable") {
         all(List(book)) should (be (book) and be (readable))
         all(List(book)) should (be (readable) and be (book))
         
@@ -158,7 +158,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         all(List(book)) should (be (readable) and equal (book))
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is not readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (stone) and be (readable))
@@ -193,8 +193,8 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be readable'` {
-      def `should do nothing when all(xs) is not readable` {
+    describe("when work with 'all(xs) should not be readable'") {
+      it("should do nothing when all(xs) is not readable") {
         all(List(stone)) should (not be readable and not be book)
         all(List(stone)) should (not be book and not be readable)
         
@@ -202,7 +202,7 @@ class ShouldBeReadableLogicalAndImplicitSpec extends Spec {
         all(List(stone)) should (not equal book and not be readable)
       }
       
-      def `should throw TestFailedException with correct stack depth when all(xs) is readable` {
+      it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be stone and not be readable)

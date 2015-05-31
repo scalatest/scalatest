@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
@@ -23,19 +23,19 @@ import matchers.{MatchResult,
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
 
-class MatcherFactorySpec extends Spec {
+class MatcherFactorySpec extends FunSpec {
   
-  object `MatcherFactory1 ` {
+  describe("MatcherFactory1 ") {
     
-    object `AndNotWord ` {
+    describe("AndNotWord ") {
       
-      object `equal(Null) method returns Matcher` {
+      describe("equal(Null) method returns Matcher") {
         
         val aNullRef: String = null
         val mtf = not equal ("hi") and not equal (null)
         val mt = mtf.matcher[String]
       
-        def `should have pretty toString` {
+        it("should have pretty toString") {
           mtf.toString should be ("(not (equal (\"hi\"))) and (not equal null)")
         }
         
@@ -61,57 +61,53 @@ class MatcherFactorySpec extends Spec {
             Vector("Bob")
           )
           
-        def `should have correct MatcherResult` {
-          mr should have (
-            'matches (true),
-            'failureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
-            'negatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
-            'midSentenceFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
-            'midSentenceNegatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
-            'rawFailureMessage ("{0}, but {1}"),
-            'rawNegatedFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceFailureMessage ("{0}, but {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0}, and {1}"),
-            'failureMessageArgs(Vector(NegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'negatedFailureMessageArgs(Vector(NegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'midSentenceFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'midSentenceNegatedFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))    
-          )
+        it("should have correct MatcherResult") {
+          mr.matches shouldBe (true)
+          mr.failureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null")
+          mr.negatedFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null")
+          mr.midSentenceFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null")
+          mr.midSentenceNegatedFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null")
+          mr.rawFailureMessage shouldBe ("{0}, but {1}")
+          mr.rawNegatedFailureMessage shouldBe ("{0}, and {1}")
+          mr.rawMidSentenceFailureMessage shouldBe ("{0}, but {1}")
+          mr.rawMidSentenceNegatedFailureMessage shouldBe ("{0}, and {1}")
+          mr.failureMessageArgs shouldBe (Vector(NegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          mr.negatedFailureMessageArgs shouldBe (Vector(NegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          mr.midSentenceFailureMessageArgs shouldBe (Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
         }
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
-          nmr should have (
-            'matches (false),
-            'failureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
-            'negatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
-            'midSentenceFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
-            'midSentenceNegatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
-            'rawFailureMessage ("{0}, and {1}"),
-            'rawNegatedFailureMessage ("{0}, but {1}"),
-            'rawMidSentenceFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0}, but {1}"),
-            'failureMessageArgs(Vector(NegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'negatedFailureMessageArgs(Vector(NegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'midSentenceFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'midSentenceNegatedFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))    
-          )
+        it("should have correct negated MatcherResult") {
+          nmr.matches shouldBe (false)
+          nmr.failureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null")
+          nmr.negatedFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null")
+          nmr.midSentenceFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null")
+          nmr.midSentenceNegatedFailureMessage shouldBe ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null")
+          nmr.rawFailureMessage shouldBe ("{0}, and {1}")
+          nmr.rawNegatedFailureMessage shouldBe ("{0}, but {1}")
+          nmr.rawMidSentenceFailureMessage shouldBe ("{0}, and {1}")
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe ("{0}, but {1}")
+          nmr.failureMessageArgs shouldBe (Vector(NegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          nmr.negatedFailureMessageArgs shouldBe (Vector(NegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          nmr.midSentenceFailureMessageArgs shouldBe (Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(MidSentenceNegatedFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
         }
         
       }
       
     }
     
-    object `OrNotWord ` {
+    describe("OrNotWord ") {
       
-      object `equal(Null) method returns Matcher` {
+      describe("equal(Null) method returns Matcher") {
         
         val aNullRef: String = null
         val mtf = not equal ("Bob") or not equal (null)
         val mt = mtf.matcher[String]
       
-        def `should have pretty toString` {
+        it("should have pretty toString") {
           mt.toString should be ("(not (equal (\"Bob\"))) or (not equal null)")
         }
         
@@ -137,66 +133,62 @@ class MatcherFactorySpec extends Spec {
             Vector("Bob")
           )
         
-        def `should have correct MatcherResult` {
-          mr should have (
-            'matches (true),
-            'failureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
-            'negatedFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
-            'midSentenceFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
-            'midSentenceNegatedFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
-            'rawFailureMessage ("{0}, and {1}"),
-            'rawNegatedFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0}, and {1}"),
-            'failureMessageArgs(Vector(FailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'negatedFailureMessageArgs(Vector(FailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'midSentenceFailureMessageArgs(Vector(MidSentenceFailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'midSentenceNegatedFailureMessageArgs(Vector(MidSentenceFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))    
-          )
+        it("should have correct MatcherResult") {
+          mr.matches shouldBe (true)
+          mr.failureMessage shouldBe ("\"Bob\" equaled \"Bob\", and the reference equaled null")
+          mr.negatedFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null")
+          mr.midSentenceFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and the reference equaled null")
+          mr.midSentenceNegatedFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null")
+          mr.rawFailureMessage shouldBe ("{0}, and {1}")
+          mr.rawNegatedFailureMessage shouldBe ("{0}, and {1}")
+          mr.rawMidSentenceFailureMessage shouldBe ("{0}, and {1}")
+          mr.rawMidSentenceNegatedFailureMessage shouldBe ("{0}, and {1}")
+          mr.failureMessageArgs shouldBe (Vector(FailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          mr.negatedFailureMessageArgs shouldBe (Vector(FailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          mr.midSentenceFailureMessageArgs shouldBe (Vector(MidSentenceFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(MidSentenceFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
         }
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
-          nmr should have (
-            'matches (false),
-            'failureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
-            'negatedFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
-            'midSentenceFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
-            'midSentenceNegatedFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
-            'rawFailureMessage ("{0}, and {1}"),
-            'rawNegatedFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceFailureMessage ("{0}, and {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0}, and {1}"),
-            'failureMessageArgs(Vector(FailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'negatedFailureMessageArgs(Vector(FailureMessage(leftResult), MidSentenceFailureMessage(rightResult))),
-            'midSentenceFailureMessageArgs(Vector(MidSentenceFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult))),
-            'midSentenceNegatedFailureMessageArgs(Vector(MidSentenceFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))    
-          )
+        it("should have correct negated MatcherResult") {
+          nmr.matches shouldBe (false)
+          nmr.failureMessage shouldBe ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null")
+          nmr.negatedFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and the reference equaled null")
+          nmr.midSentenceFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null")
+          nmr.midSentenceNegatedFailureMessage shouldBe ("\"Bob\" equaled \"Bob\", and the reference equaled null")
+          nmr.rawFailureMessage shouldBe ("{0}, and {1}")
+          nmr.rawNegatedFailureMessage shouldBe ("{0}, and {1}")
+          nmr.rawMidSentenceFailureMessage shouldBe ("{0}, and {1}")
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe ("{0}, and {1}")
+          nmr.failureMessageArgs shouldBe (Vector(FailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          nmr.negatedFailureMessageArgs shouldBe (Vector(FailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
+          nmr.midSentenceFailureMessageArgs shouldBe (Vector(MidSentenceFailureMessage(leftResult), MidSentenceNegatedFailureMessage(rightResult)))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(MidSentenceFailureMessage(leftResult), MidSentenceFailureMessage(rightResult)))
         }
         
       }
       
     }
     
-    object `and(MatcherFactory1) method returns MatcherFactory1` {
+    describe("and(MatcherFactory1) method returns MatcherFactory1") {
       
       val mtf1 = equal ("Bob")
       val mtf = mtf1 and (equal ("Alice"))
       val mt = mtf.matcher[String]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("(equal (\"Bob\")) and (equal (\"Alice\"))")
       }
     }
     
-    object `or(MatcherFactory1) method returns MatcherFactory1` {
+    describe("or(MatcherFactory1) method returns MatcherFactory1") {
       
       val mtf1 = equal ("Bob")
       val mtf = mtf1 or (equal ("Alice"))
       val mt = mtf.matcher[String]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("(equal (\"Bob\")) or (equal (\"Alice\"))")
       }
     }

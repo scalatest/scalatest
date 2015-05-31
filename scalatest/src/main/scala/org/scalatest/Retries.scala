@@ -15,6 +15,9 @@
  */
 package org.scalatest
 
+import org.scalatest.concurrent.SleepHelper
+import org.scalatest.concurrent.SleepHelper
+import org.scalatest.concurrent.SleepHelper
 import time.Span
 
 /**
@@ -564,7 +567,7 @@ trait Retries {
     firstOutcome match {
       case Failed(ex) =>
         if (delay != Span.Zero)
-          Thread.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart)
         blk match {
           case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
@@ -779,8 +782,8 @@ trait Retries {
     firstOutcome match {
       case Canceled(ex) =>
         if (delay != Span.Zero)
-          Thread.sleep(delay.millisPart)
-        Thread.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart)
+        SleepHelper.sleep(delay.millisPart)
         blk match {
           case Succeeded => Succeeded
           case failed: Failed => failed // Never hide a failure.

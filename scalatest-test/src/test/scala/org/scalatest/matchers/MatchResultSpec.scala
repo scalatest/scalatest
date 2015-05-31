@@ -27,38 +27,35 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr should equal (MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
       mr.negated should equal (MatchResult(true, "1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
       val mr2 = MatchResult(false, "{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
-      mr2 should have (
-        'matches (false),
-        'failureMessage ("\"howdy\" did not equal null"),
-        'negatedFailureMessage ("The reference equaled null"),
-        'midSentenceFailureMessage ("\"howdy\" did not equal null"),
-        'midSentenceNegatedFailureMessage ("the reference equaled null"),
-        'rawFailureMessage ("{0} did not equal null"),
-        'rawNegatedFailureMessage ("The reference equaled null"),
-        'rawMidSentenceFailureMessage ("{0} did not equal null"),
-        'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
-        'failureMessageArgs(Vector("howdy")),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector("howdy")),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty)
-      )
+      mr2.matches shouldBe (false)
+      mr2.failureMessage shouldBe ("\"howdy\" did not equal null")
+      mr2.negatedFailureMessage shouldBe ("The reference equaled null")
+      mr2.midSentenceFailureMessage shouldBe ("\"howdy\" did not equal null")
+      mr2.midSentenceNegatedFailureMessage shouldBe ("the reference equaled null")
+      mr2.rawFailureMessage shouldBe ("{0} did not equal null")
+      mr2.rawNegatedFailureMessage shouldBe ("The reference equaled null")
+      mr2.rawMidSentenceFailureMessage shouldBe ("{0} did not equal null")
+      mr2.rawMidSentenceNegatedFailureMessage shouldBe ("the reference equaled null")
+      mr2.failureMessageArgs shouldBe (Vector("howdy"))
+      mr2.negatedFailureMessageArgs shouldBe (Vector.empty)
+      mr2.midSentenceFailureMessageArgs shouldBe (Vector("howdy"))
+      mr2.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
+
       val mr2Negated = mr2.negated
-       mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
-      mr2Negated should have (
-        'matches (true),
-        'failureMessage ("The reference equaled null"),
-        'negatedFailureMessage ("\"howdy\" did not equal null"),
-        'midSentenceFailureMessage ("the reference equaled null"),
-        'midSentenceNegatedFailureMessage ("\"howdy\" did not equal null"),
-        'rawFailureMessage ("The reference equaled null"),
-        'rawNegatedFailureMessage ("{0} did not equal null"),
-        'rawMidSentenceFailureMessage ("the reference equaled null"),
-        'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector("howdy")),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector("howdy"))
-      )
+      mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+      mr2Negated.matches shouldBe (true)
+      mr2Negated.failureMessage shouldBe ("The reference equaled null")
+      mr2Negated.negatedFailureMessage shouldBe ("\"howdy\" did not equal null")
+      mr2Negated.midSentenceFailureMessage shouldBe ("the reference equaled null")
+      mr2Negated.midSentenceNegatedFailureMessage shouldBe ("\"howdy\" did not equal null")
+      mr2Negated.rawFailureMessage shouldBe ("The reference equaled null")
+      mr2Negated.rawNegatedFailureMessage shouldBe ("{0} did not equal null")
+      mr2Negated.rawMidSentenceFailureMessage shouldBe ("the reference equaled null")
+      mr2Negated.rawMidSentenceNegatedFailureMessage shouldBe ("{0} did not equal null")
+      mr2Negated.failureMessageArgs shouldBe (Vector.empty)
+      mr2Negated.negatedFailureMessageArgs shouldBe (Vector("howdy"))
+      mr2Negated.midSentenceFailureMessageArgs shouldBe (Vector.empty)
+      mr2Negated.midSentenceNegatedFailureMessageArgs shouldBe (Vector("howdy"))
     }
     "can be pattern matched via an extractor for the failureMessage if it doesn't match" in {
       inside (mr) { case MatchFailed(failureMessage) => 
@@ -72,21 +69,19 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
     }
     "should construct localized strings from the raw strings and args" in {
       val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
-      mr should have (
-        'matches (false),
-        'failureMessage ("1 did not equal 2"),
-        'negatedFailureMessage ("1 equaled 2"),
-        'midSentenceFailureMessage ("1 did not equal 2"),
-        'midSentenceNegatedFailureMessage ("1 equaled 2"),
-        'rawFailureMessage ("{0} did not equal {1}"),
-        'rawNegatedFailureMessage ("{0} equaled {1}"),
-        'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-        'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-        'failureMessageArgs(Vector(1, 2)),
-        'negatedFailureMessageArgs(Vector(1, 2)),
-        'midSentenceFailureMessageArgs(Vector(1, 2)),
-        'midSentenceNegatedFailureMessageArgs(Vector(1, 2))
-      )
+      mr.matches shouldBe (false)
+      mr.failureMessage shouldBe ("1 did not equal 2")
+      mr.negatedFailureMessage shouldBe ("1 equaled 2")
+      mr.midSentenceFailureMessage shouldBe ("1 did not equal 2")
+      mr.midSentenceNegatedFailureMessage shouldBe ("1 equaled 2")
+      mr.rawFailureMessage shouldBe ("{0} did not equal {1}")
+      mr.rawNegatedFailureMessage shouldBe ("{0} equaled {1}")
+      mr.rawMidSentenceFailureMessage shouldBe ("{0} did not equal {1}")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("{0} equaled {1}")
+      mr.failureMessageArgs shouldBe (Vector(1, 2))
+      mr.negatedFailureMessageArgs shouldBe (Vector(1, 2))
+      mr.midSentenceFailureMessageArgs shouldBe (Vector(1, 2))
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(1, 2))
     }
 
     "should use midSentenceFailureMessageArgs to construct midSentenceFailureMessage" in {
@@ -103,234 +98,214 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
   "The MatchResult companion object factory method" - {
     "that takes two strings should work correctly" in {
       val mr = MatchResult(true, "one", "two")
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty)
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("one")
+      mr.midSentenceNegatedFailureMessage shouldBe ("two")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("one")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("two")
+      mr.failureMessageArgs shouldBe (Vector.empty)
+      mr.negatedFailureMessageArgs shouldBe (Vector.empty)
+      mr.midSentenceFailureMessageArgs shouldBe (Vector.empty)
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
+
       val ms = MatchResult(false, "aaa", "bbb")
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty)
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("aaa")
+      ms.midSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("aaa")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.failureMessageArgs shouldBe (Vector.empty)
+      ms.negatedFailureMessageArgs shouldBe (Vector.empty)
+      ms.midSentenceFailureMessageArgs shouldBe (Vector.empty)
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
     }
     "that takes four strings should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four")
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty)
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("three")
+      mr.midSentenceNegatedFailureMessage shouldBe ("four")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("three")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("four")
+      mr.failureMessageArgs shouldBe (Vector.empty)
+      mr.negatedFailureMessageArgs shouldBe (Vector.empty)
+      mr.midSentenceFailureMessageArgs shouldBe (Vector.empty)
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
+
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd")
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty)
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("ccc")
+      ms.midSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("ccc")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.failureMessageArgs shouldBe (Vector.empty)
+      ms.negatedFailureMessageArgs shouldBe (Vector.empty)
+      ms.midSentenceFailureMessageArgs shouldBe (Vector.empty)
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0))
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42.0))
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("three")
+      mr.midSentenceNegatedFailureMessage shouldBe ("four")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("three")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("four")
+      mr.failureMessageArgs shouldBe (Vector(42))
+      mr.negatedFailureMessageArgs shouldBe (Vector(42.0))
+      mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42.0))
+
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie"))
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("ccc")
+      ms.midSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("ccc")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.failureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.negatedFailureMessageArgs shouldBe (Vector("foo", "fie"))
+      ms.midSentenceFailureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector("foo", "fie"))
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
       val mr = MatchResult(true, "one", "two", Vector(42))
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42))
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("one")
+      mr.midSentenceNegatedFailureMessage shouldBe ("two")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("one")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("two")
+      mr.failureMessageArgs shouldBe (Vector(42))
+      mr.negatedFailureMessageArgs shouldBe (Vector(42))
+      mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42))
+
       val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"))
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("ho", "he"))
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("aaa")
+      ms.midSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("aaa")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.failureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.negatedFailureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.midSentenceFailureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector("ho", "he"))
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
       val mr = MatchResult(true, "one", "two", Vector(42), Vector(42.0))
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42.0))
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("one")
+      mr.midSentenceNegatedFailureMessage shouldBe ("two")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("one")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("two")
+      mr.failureMessageArgs shouldBe (Vector(42))
+      mr.negatedFailureMessageArgs shouldBe (Vector(42.0))
+      mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42.0))
+
       val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie"))
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("aaa")
+      ms.midSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("aaa")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("bbb")
+      ms.failureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.negatedFailureMessageArgs shouldBe (Vector("foo", "fie"))
+      ms.midSentenceFailureMessageArgs shouldBe (Vector("ho", "he"))
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector("foo", "fie"))
+
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
-      mr should have (
-        'matches (true),
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector(1)),
-        'negatedFailureMessageArgs(Vector(2)),
-        'midSentenceFailureMessageArgs(Vector(3)),
-        'midSentenceNegatedFailureMessageArgs(Vector(4))
-      )
+      mr.matches shouldBe (true)
+      mr.failureMessage shouldBe ("one")
+      mr.negatedFailureMessage shouldBe ("two")
+      mr.midSentenceFailureMessage shouldBe ("three")
+      mr.midSentenceNegatedFailureMessage shouldBe ("four")
+      mr.rawFailureMessage shouldBe ("one")
+      mr.rawNegatedFailureMessage shouldBe ("two")
+      mr.rawMidSentenceFailureMessage shouldBe ("three")
+      mr.rawMidSentenceNegatedFailureMessage shouldBe ("four")
+      mr.failureMessageArgs shouldBe (Vector(1))
+      mr.negatedFailureMessageArgs shouldBe (Vector(2))
+      mr.midSentenceFailureMessageArgs shouldBe (Vector(3))
+      mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(4))
+
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
-      ms should have (
-        'matches (false),
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector('A')),
-        'negatedFailureMessageArgs(Vector('B')),
-        'midSentenceFailureMessageArgs(Vector('C')),
-        'midSentenceNegatedFailureMessageArgs(Vector('D'))
-      )
+      ms.matches shouldBe (false)
+      ms.failureMessage shouldBe ("aaa")
+      ms.negatedFailureMessage shouldBe ("bbb")
+      ms.midSentenceFailureMessage shouldBe ("ccc")
+      ms.midSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.rawFailureMessage shouldBe ("aaa")
+      ms.rawNegatedFailureMessage shouldBe ("bbb")
+      ms.rawMidSentenceFailureMessage shouldBe ("ccc")
+      ms.rawMidSentenceNegatedFailureMessage shouldBe ("ddd")
+      ms.failureMessageArgs shouldBe (Vector('A'))
+      ms.negatedFailureMessageArgs shouldBe (Vector('B'))
+      ms.midSentenceFailureMessageArgs shouldBe (Vector('C'))
+      ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector('D'))
+
     }
   }
 
   "The MatchResult obtained from ScalaTest matchers should have localized raw strings and args" - {
     "for be > 'b'" in {
       val m = be > 'b'
-      m('a') should have (
-        'matches (false),
-        'rawFailureMessage (Resources.rawWasNotGreaterThan),
-        'rawNegatedFailureMessage (Resources.rawWasGreaterThan),
-        'rawMidSentenceFailureMessage (Resources.rawWasNotGreaterThan),
-        'rawMidSentenceNegatedFailureMessage (Resources.rawWasGreaterThan),
-        'failureMessageArgs(Vector('a', 'b')),
-        'negatedFailureMessageArgs(Vector('a', 'b'))
-      )
+      m('a').matches shouldBe (false)
+      m('a').rawFailureMessage shouldBe (Resources.rawWasNotGreaterThan)
+      m('a').rawNegatedFailureMessage shouldBe (Resources.rawWasGreaterThan)
+      m('a').rawMidSentenceFailureMessage shouldBe (Resources.rawWasNotGreaterThan)
+      m('a').rawMidSentenceNegatedFailureMessage shouldBe (Resources.rawWasGreaterThan)
+      m('a').failureMessageArgs shouldBe (Vector('a', 'b'))
+      m('a').negatedFailureMessageArgs shouldBe (Vector('a', 'b'))
     }
     "for be < 'b'" in {
       val m = be < 'b'
-      m('c') should have (
-        'matches (false),
-        'rawFailureMessage (Resources.rawWasNotLessThan),
-        'rawNegatedFailureMessage (Resources.rawWasLessThan),
-        'rawMidSentenceFailureMessage (Resources.rawWasNotLessThan),
-        'rawMidSentenceNegatedFailureMessage (Resources.rawWasLessThan),
-        'failureMessageArgs(Vector('c', 'b')),
-        'negatedFailureMessageArgs(Vector('c', 'b'))
-      )
+      m('c').matches shouldBe (false)
+      m('c').rawFailureMessage shouldBe (Resources.rawWasNotLessThan)
+      m('c').rawNegatedFailureMessage shouldBe (Resources.rawWasLessThan)
+      m('c').rawMidSentenceFailureMessage shouldBe (Resources.rawWasNotLessThan)
+      m('c').rawMidSentenceNegatedFailureMessage shouldBe (Resources.rawWasLessThan)
+      m('c').failureMessageArgs shouldBe (Vector('c', 'b'))
+      m('c').negatedFailureMessageArgs shouldBe (Vector('c', 'b'))
     }
   }
 

@@ -20,7 +20,6 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import scala.reflect.Manifest
 import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.TestFailedException
@@ -49,6 +48,7 @@ import words.RegexWithGroups
 
 private[scalatest] object MatchersHelper {
 
+  // SKIP-SCALATESTJS-START
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a
   // method named "getTitle". The method must take no parameters.
   //
@@ -110,6 +110,7 @@ private[scalatest] object MatchersHelper {
       case (None, None, None) => None
     }
   }
+  // SKIP-SCALATESTJS-END
 
   def transformOperatorChars(s: String): String = {
     val builder = new StringBuilder
@@ -146,7 +147,10 @@ private[scalatest] object MatchersHelper {
     builder.toString
   }
 
+  // SKIP-SCALATESTJS-START
   def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 9): Throwable = {
     val temp = new RuntimeException
     // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
     // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
@@ -199,6 +203,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
@@ -246,6 +251,7 @@ private[scalatest] object MatchersHelper {
         )
     }
   }
+  // SKIP-SCALATESTJS-END
 
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,

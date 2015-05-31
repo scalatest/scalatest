@@ -25,6 +25,11 @@ import org.scalatest.Assertions.checkExpectedException
  * @author Bill Venners
  */
 final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
+
+  // SKIP-SCALATESTJS-START
+  private val stackDepth = 4
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private val stackDepth = 13
   
   /**
    * This method enables the following syntax: 
@@ -35,7 +40,7 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
    * </pre>
    */
   def thrownBy(fun: => Any): T = {
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, 4)
+    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
   }
   
   override def toString: String = "the [" + clazz.getName + "]"

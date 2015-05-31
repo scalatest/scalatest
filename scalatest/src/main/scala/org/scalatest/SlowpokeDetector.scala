@@ -23,7 +23,10 @@ import java.io.PrintStream
 
 private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
 
+  // SKIP-SCALATESTJS-START
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private final val runningTests = new scala.collection.mutable.TreeSet[RunningTest]
 
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
     if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
@@ -55,7 +58,10 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   }
 
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {
+    // SKIP-SCALATESTJS-START
     val rts = runningTests.iterator.asScala.toVector
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val rts = runningTests.iterator.toVector
     val slowTests = rts.filter(currentTimeStamp - _.startTimeStamp > timeout)
     slowTests.sortBy(_.startTimeStamp).map(_.toSlowpoke(currentTimeStamp))
   }

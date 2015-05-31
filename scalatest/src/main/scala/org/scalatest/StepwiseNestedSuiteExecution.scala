@@ -53,10 +53,6 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
     def callExecuteOnSuite(nestedSuite: Suite): Status = {
 
       if (!stopper.stopRequested) {
-
-        // Create a Rerunner if the Suite has a no-arg constructor 
-        val hasPublicNoArgConstructor = Suite.checkForPublicNoArgConstructor(nestedSuite.getClass)
-
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
 

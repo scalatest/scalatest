@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfRegexWordApplicationSpec extends Spec {
+class ResultOfRegexWordApplicationSpec extends FunSpec {
   
-  object `ResultOfRegexWordApplication ` {
+  describe("ResultOfRegexWordApplication ") {
     
-    def `should have pretty toString when no group is specified` {
+    it("should have pretty toString when no group is specified") {
       val result = new ResultOfRegexWordApplication("a(b*)c", Vector.empty)
       result.toString should be ("regex (\"a(b*)c\")")
     }
     
-    def `should have pretty toString when 1 group is specified` {
+    it("should have pretty toString when 1 group is specified") {
       val result = new ResultOfRegexWordApplication("a(b*)c", Vector("bb"))
       result.toString should be ("regex (\"a(b*)c\" withGroup (\"bb\"))")
     }
     
-    def `should have pretty toString when > 1 group is specified` {
+    it("should have pretty toString when > 1 group is specified") {
       val result = new ResultOfRegexWordApplication("a(b*)(c*)", Vector("bb", "cc"))
       result.toString should be ("regex (\"a(b*)(c*)\" withGroups (\"bb\", \"cc\"))")
     }

@@ -180,38 +180,9 @@ object Aggregating {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
   
-  private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
-    @tailrec
-    def findNext(value: T, rightItr: Iterator[Any], processedSet: Set[Any]): Set[Any] = 
-      if (rightItr.hasNext) {
-        val nextRight = rightItr.next
-        if (tryEquality(nextRight, value, equality))
-          processedSet + nextRight
-        else
-          findNext(value, rightItr, processedSet + nextRight)
-      }
-      else
-        processedSet
-
-    @tailrec
-    def checkEqual(leftItr: Iterator[T], rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
-      if (leftItr.hasNext) {
-        val nextLeft = leftItr.next
-        if (processedSet.find(tryEquality(_, nextLeft, equality)).isDefined) // The nextLeft is contained in right, let's continue next
-          checkEqual(leftItr, rightItr, processedSet)
-        else {
-          val newProcessedSet = findNext(nextLeft, rightItr, processedSet)
-          if (newProcessedSet.find(tryEquality(_, nextLeft, equality)).isDefined) // The nextLeft is contained in right, let's continue next
-            checkEqual(leftItr, rightItr, newProcessedSet)
-          else // The nextLeft is not in right, let's fail early
-            false
-        }
-      }
-      else 
-        !rightItr.hasNext // No more lefts remaining, so we're good so long as no more rights remaining either.
-    }
-    checkEqual(left.toIterator, right.toIterator, Set.empty)
-  }
+  private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean =
+    left.forall(l => right.find(r => tryEquality(l, r, equality)).isDefined) &&
+    right.forall(r => left.find(l => tryEquality(l, r, equality)).isDefined)
   
   private[scalatest] def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec

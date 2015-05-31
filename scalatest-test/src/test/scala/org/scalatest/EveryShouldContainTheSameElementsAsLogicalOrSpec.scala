@@ -22,7 +22,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
+class EveryShouldContainTheSameElementsAsLogicalOrSpec extends FunSpec {
 
   val invertedStringEquality =
     new Equality[String] {
@@ -57,14 +57,14 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
 
   val fileName: String = "EveryShouldContainTheSameElementsAsLogicalOrSpec.scala"
 
-  object `an Every` {
+  describe("an Every") {
 
     val fumList: Every[String] = Every("fum", "foe", "fie", "fee")
     val toList: Every[String] = Every("you", "to", "birthday", "happy")
 
-    object `when used with (contain theSameElementsAs (..) or contain theSameElementsAs (..))` {
+    describe("when used with (contain theSameElementsAs (..) or contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fum") or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fam") or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fum") or contain theSameElementsAs Set("fie", "fee", "fam", "foe"))
@@ -74,7 +74,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fam"))) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
         fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM") or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
@@ -85,7 +85,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FEE", "FIE", "FOE", "FAM"))) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM") or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") or contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -97,9 +97,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (equal (..) and contain theSameElementsAs (..))` {
+    describe("when used with (equal (..) and contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (equal (fumList) or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (equal (toList) or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (equal (fumList) or contain theSameElementsAs Set("fie", "fee", "fam", "foe"))
@@ -109,7 +109,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (equal (fumList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
         fumList should (equal (toList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
@@ -120,7 +120,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (equal (toList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (equal (fumList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (equal (toList) or contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -132,9 +132,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (be (..) and contain theSameElementsAs (..))` {
+    describe("when used with (be (..) and contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (be (fumList) or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (be (toList) or contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         fumList should (be (fumList) or contain theSameElementsAs Set("fie", "fee", "fam", "foe"))
@@ -144,7 +144,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fie", "fee", "fam", "foe"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (be (fumList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
         fumList should (be (toList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))
@@ -155,7 +155,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (be (fumList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
         (fumList should (be (toList) or contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
         (fumList should (be (fumList) or contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
@@ -167,9 +167,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (contain theSameElementsAs (..) and be (..))` {
+    describe("when used with (contain theSameElementsAs (..) and be (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (contain theSameElementsAs Set("fie", "fee", "fum", "foe") or be (fumList))
         fumList should (contain theSameElementsAs Set("fie", "fee", "fam", "foe") or be (fumList))
         fumList should (contain theSameElementsAs Set("fie", "fee", "fum", "foe") or be (toList))
@@ -179,7 +179,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fam"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") or be (fumList))
         fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") or be (fumList))
@@ -190,7 +190,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FEE", "FIE", "FOE", "FAM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
         (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
         (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") or be (toList))) (decided by upperCaseStringEquality)
@@ -202,9 +202,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (not contain theSameElementsAs (..) and not contain theSameElementsAs (..))` {
+    describe("when used with (not contain theSameElementsAs (..) and not contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not contain theSameElementsAs (Set("fee", "fie", "foe", "fuu")) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not contain theSameElementsAs (Set("fee", "fie", "foe", "fum")) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not contain theSameElementsAs (Set("fee", "fie", "foe", "fuu")) or not contain theSameElementsAs (Set("fie", "fee", "fum", "foe")))
@@ -214,7 +214,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fum"))) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fie", "fee", "fum", "foe"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUU")) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
         fumList should (not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
@@ -225,7 +225,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FUM", "FOE"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUU")) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUU")) or not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -237,9 +237,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (not equal (..) and not contain theSameElementsAs (..))` {
+    describe("when used with (not equal (..) and not contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not equal (toList) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not equal (fumList) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not equal (toList) or not contain theSameElementsAs (Set("fie", "fee", "fum", "foe")))
@@ -249,7 +249,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not equal (toList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
         fumList should (not equal (fumList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
@@ -260,7 +260,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not equal (fumList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (not equal (toList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (not equal (fumList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -272,9 +272,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (not be (..) and not contain theSameElementsAs (..))` {
+    describe("when used with (not be (..) and not contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should (not be (toList) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not be (fumList) or not contain theSameElementsAs (Set("fie", "fee", "fuu", "foe")))
         fumList should (not be (toList) or not contain theSameElementsAs (Set("fee", "fie", "foe", "fum")))
@@ -284,7 +284,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not be (toList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
         fumList should (not be (fumList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))
@@ -295,7 +295,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (not be (toList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality)
         (fumList should (not be (fumList) or not contain theSameElementsAs (Set("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality)
         (fumList should (not be (toList) or not contain theSameElementsAs (Set("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
@@ -309,7 +309,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
 
   }
 
-  object `every of Everys` {
+  describe("every of Everys") {
 
     val list1s: Every[Every[Int]] = Every(Every(3, 2, 1), Every(3, 2, 1), Every(3, 2, 1))
     val lists: Every[Every[Int]] = Every(Every(3, 2, 1), Every(3, 2, 1), Every(4, 3, 2))
@@ -321,9 +321,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
         "in " + decorateToStringValue(left)
 
-    object `when used with (contain theSameElementsAs (..) and contain theSameElementsAs (..))` {
+    describe("when used with (contain theSameElementsAs (..) and contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain theSameElementsAs Set(3, 2, 1) or contain theSameElementsAs Set(1, 3, 2))
         all (list1s) should (contain theSameElementsAs Set(3, 2, 5) or contain theSameElementsAs Set(1, 3, 2))
         all (list1s) should (contain theSameElementsAs Set(3, 2, 1) or contain theSameElementsAs Set(2, 3, 4))
@@ -338,7 +338,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(3, 1, 2)) + ", and " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 3, 2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") or contain theSameElementsAs Set("hello", "hi"))
@@ -351,7 +351,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(Set("HELLO", "HO")) + ", and " + decorateToStringValue(Many("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(Set("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") or contain theSameElementsAs Set("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HO") or contain theSameElementsAs Set("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") or contain theSameElementsAs Set("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -363,9 +363,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (be (..) and contain theSameElementsAs (..))` {
+    describe("when used with (be (..) and contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (be (Many(3, 2, 1)) or contain theSameElementsAs Set(1, 2, 3))
         all (list1s) should (be (Many(2, 3, 4)) or contain theSameElementsAs Set(1, 2, 3))
         all (list1s) should (be (Many(3, 2, 1)) or contain theSameElementsAs Set(2, 3, 4))
@@ -376,7 +376,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many(3, 2, 1)) + " was not equal to " + decorateToStringValue(Many(2, 3, 4)) + ", and " + decorateToStringValue(Many(3, 2, 1)) + " did not contain the same elements as " + decorateToStringValue(Set(2, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsAs Set("HELLO", "HI"))
@@ -389,7 +389,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was not equal to " + decorateToStringValue(Many("ho", "hello")) + ", and " + decorateToStringValue(Many("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(Set("HELLO", "HO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsAs Set("HELLO", "HI"))) (decided by upperCaseStringEquality)
         (all (hiLists) should (be (Many("ho", "hello")) or contain theSameElementsAs Set("HELLO", "HI"))) (decided by upperCaseStringEquality)
         (all (hiLists) should (be (Many("hi", "hello")) or contain theSameElementsAs Set("HELLO", "HO"))) (decided by upperCaseStringEquality)
@@ -401,9 +401,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (not contain theSameElementsAs xx and not contain theSameElementsAs xx)` {
+    describe("when used with (not contain theSameElementsAs xx and not contain theSameElementsAs xx)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not contain theSameElementsAs (Set(3, 2, 8)) or not contain theSameElementsAs (Set(8, 3, 4)))
         all (list1s) should (not contain theSameElementsAs (Set(1, 2, 3)) or not contain theSameElementsAs (Set(8, 3, 4)))
         all (list1s) should (not contain theSameElementsAs (Set(3, 2, 8)) or not contain theSameElementsAs (Set(2, 3, 1)))
@@ -414,7 +414,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(4, 3, 2)) + " contained the same elements as " + decorateToStringValue(Set(4, 2, 3)) + ", and " + decorateToStringValue(Many(4, 3, 2)) + " contained the same elements as " + decorateToStringValue(Set(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HO")) or not contain theSameElementsAs (Set("hello", "ho")))
@@ -427,7 +427,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " contained the same elements as " + decorateToStringValue(Set("HELLO", "HI")) + ", and " + decorateToStringValue(Many("hi", "hello")) + " contained the same elements as " + decorateToStringValue(Set("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HO")) or not contain theSameElementsAs (Set("hello", "ho")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HI")) or not contain theSameElementsAs (Set("hello", "ho")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HO")) or not contain theSameElementsAs (Set("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -439,9 +439,9 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
       }
     }
 
-    object `when used with (not be (...) and not contain theSameElementsAs (...))` {
+    describe("when used with (not be (...) and not contain theSameElementsAs (...))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (not be (One(2)) or not contain theSameElementsAs (Set(8, 3, 4)))
         all (list1s) should (not be (Many(3, 2, 1)) or not contain theSameElementsAs (Set(8, 3, 4)))
         all (list1s) should (not be (One(2)) or not contain theSameElementsAs (Set(1, 2, 3)))
@@ -452,7 +452,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many(3, 2, 1)) + " was equal to " + decorateToStringValue(Many(3, 2, 1)) + ", and " + decorateToStringValue(Many(3, 2, 1)) + " contained the same elements as " + decorateToStringValue(Set(2, 3, 1)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
 
         all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsAs (Set("HELLO", "HO")))
@@ -465,7 +465,7 @@ class EveryShouldContainTheSameElementsAsLogicalOrSpec extends Spec {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("hi", "hello")) + " was equal to " + decorateToStringValue(Many("hi", "hello")) + ", and " + decorateToStringValue(Many("hi", "hello")) + " contained the same elements as " + decorateToStringValue(Set("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsAs (Set("HELLO", "HO")))) (decided by upperCaseStringEquality)
         (all (hiLists) should (not be (Many("hello", "hi")) or not contain theSameElementsAs (Set("HELLO", "HO")))) (decided by upperCaseStringEquality)
         (all (hiLists) should (not be (Many("hello", "ho")) or not contain theSameElementsAs (Set("HELLO", "HI")))) (decided by upperCaseStringEquality)

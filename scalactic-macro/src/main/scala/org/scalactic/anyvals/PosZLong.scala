@@ -17,14 +17,115 @@ package org.scalactic.anyvals
 
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than or equal to zero.
-//
-// (Pronounced like "posey".)
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for non-negative <code>Long</code>s.
+ *
+ * <p>
+ * Because <code>PosZLong</code> is an <code>AnyVal</code> it will usually be
+ * as efficient as an <code>Long</code>, being boxed only when an
+ * <code>Long</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosZLong.apply</code> factory method is implemented in terms of a
+ * macro that checks literals for validity at compile time. Calling
+ * <code>PosZLong.apply</code> with a literal <code>Long</code> value will
+ * either produce a valid <code>PosZLong</code> instance at run time or an
+ * error at compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosZLong(1L)
+ * res0: org.scalactic.anyvals.PosZLong = PosZLong(1)
+ *
+ * scala&gt; PosZLong(0L)
+ * res1: org.scalactic.anyvals.PosZLong = PosZLong(0)
+ *
+ * scala&gt; PosZLong(-1L)
+ * &lt;console&gt;:14: error: PosZLong.apply can only be invoked on a non-negative (i &gt;= 0L) integer literal, like PosZLong(42L).
+ *               PosZLong(-1L)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosZLong.apply</code> cannot be used if the value being passed is a
+ * variable (<em>i.e.</em>, not a literal), because the macro cannot determine
+ * the validity of variables at compile time (just literals). If you try to
+ * pass a variable to <code>PosZLong.apply</code>, you'll get a compiler error
+ * that suggests you use a different factor method, <code>PosZLong.from</code>,
+ * instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1L
+ * x: Long = 1
+ *
+ * scala&gt; PosZLong(x)
+ * &lt;console&gt;:15: error: PosZLong.apply can only be invoked on an integer literal, like PosZLong(42L). Please use PosZLong.from instead.
+ *               PosZLong(x)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosZLong.from</code> factory method will inspect the value at runtime and return an <code>Option[PosZLong]</code>. If
+ * the value is valid, <code>PosZLong.from</code> will return a <code>Some[PosZLong]</code>, else it will return a <code>None</code>.
+ * Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosZLong.from(x)
+ * res4: Option[org.scalactic.anyvals.PosZLong] = Some(PosZLong(1))
+ *
+ * scala&gt; val y = -1L
+ * y: Long = -1
+ *
+ * scala&gt; PosZLong.from(y)
+ * res5: Option[org.scalactic.anyvals.PosZLong] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosZLong.apply</code> factory method is marked implicit, so that
+ * you can pass literal <code>Long</code>s into methods that require
+ * <code>PosZLong</code>, and get the same compile-time checking you get when
+ * calling <code>PosZLong.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosZLong): Long = Long.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosZLong)Long
+ *
+ * scala&gt; invert(0L)
+ * res6: Long = 9223372036854775807
+ *
+ * scala&gt; invert(Long.MaxValue)
+ * res7: Long = 0
+ *
+ * scala&gt; invert(-1L)
+ * &lt;console&gt;:15: error: PosZLong.apply can only be invoked on a non-negative (i &gt;= 0L) integer literal, like PosZLong(42L).
+ *               invert(-1L)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>PosZLong</code>
+ * companion object also defines implicit widening conversions
+ * when either no loss of precision will occur or a similar
+ * conversion is provided in Scala. (For example, the implicit
+ * conversion from <code>Long</code> to </code>Double</code> in
+ * Scala can lose precision.) This makes it convenient to use a
+ * <code>PosZLong</code> where a <code>Long</code> or wider type
+ * is needed. An example is the subtraction in the body of the
+ * <code>invert</code> method defined above, <code>Long.MaxValue
+ * - pos</code>. Although <code>Long.MaxValue</code> is a
+ * <code>Long</code>, which has no <code>-</code> method that
+ * takes a <code>PosZLong</code> (the type of <code>pos</code>),
+ * you can still subtract <code>pos</code>, because the
+ * <code>PosZLong</code> will be implicitly widened to
+ * <code>Long</code>.
+ * </p>
  *
  * @param value The <code>Long</code> value underlying this <code>PosZLong</code>.
  */ 
@@ -510,11 +611,21 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def toOctalString: String = java.lang.Long.toOctalString(value)
 
   // No point to call abs on a PosZLong.
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosZLong): PosZLong = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosZLong): PosZLong = if (math.min(value, that.value) == value) this else that
 
   // adapted from RichInt:
   /**
+  * Create a <code>Range</code> from this <code>PosZLong</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
   * not including `end`.
@@ -522,6 +633,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def until(end: Long): NumericRange.Exclusive[Long] = value.until(end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosZLong</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Long]]] from `this` up to but
@@ -531,6 +645,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
     value.until(end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZLong</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
   * and including `end`.
@@ -538,6 +655,9 @@ final class PosZLong private (val value: Long) extends AnyVal {
   def to(end: Long): NumericRange.Inclusive[Long] = value.to(end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosZLong</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Long]]] from `'''this'''` up to
@@ -548,6 +668,8 @@ final class PosZLong private (val value: Long) extends AnyVal {
 }
 
 object PosZLong {
+  final val MaxValue: PosZLong = PosZLong.from(Long.MaxValue).get
+  final val MinValue: PosZLong = PosZLong.from(0L).get // Can't use the macro here
   def from(value: Long): Option[PosZLong] =
     if (value >= 0L) Some(new PosZLong(value)) else None
   import language.experimental.macros

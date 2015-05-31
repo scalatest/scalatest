@@ -25,9 +25,9 @@ class StringReporterAlertSpec extends UnitSpec {
   val AlertText = "a suite name: a test name: some alert"
   val NoteText = "a suite name: a test name: some update"
 
-  object `A StringReporter` {
-    object `when presentUnformatted is false but no formatter is supplied` {
-      def `should display AlertProvided messages in yellow and unformatted` {
+  describe("A StringReporter") {
+    describe("when presentUnformatted is false but no formatter is supplied") {
+      it("should display AlertProvided messages in yellow and unformatted") {
       
         fragmentsForEvent(
           event = AlertProvided(new Ordinal(0), "some alert", Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name")))),
@@ -42,7 +42,7 @@ class StringReporterAlertSpec extends UnitSpec {
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
-      def `should display NoteProvided messages in green and unformatted` {
+      it("should display NoteProvided messages in green and unformatted") {
       
         fragmentsForEvent(
           event = NoteProvided(new Ordinal(0), "some update", Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name")))),
@@ -58,8 +58,8 @@ class StringReporterAlertSpec extends UnitSpec {
         ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
     }
-    object `when a formatter is supplied but presentUnformatted is true` {
-      def `should display AlertProvided messages in yellow and unformatted` {
+    describe("when a formatter is supplied but presentUnformatted is true") {
+      it("should display AlertProvided messages in yellow and unformatted") {
       
         fragmentsForEvent(
           event =
@@ -81,7 +81,7 @@ class StringReporterAlertSpec extends UnitSpec {
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertProvided(AlertText), AnsiYellow))
       }
-      def `should display NoteProvided messages in green and unformatted` {
+      it("should display NoteProvided messages in green and unformatted") {
       
         fragmentsForEvent(
           event =
@@ -104,8 +104,8 @@ class StringReporterAlertSpec extends UnitSpec {
         ) shouldEqual Vector(Fragment(Resources.noteProvided(NoteText), AnsiGreen))
       }
     }
-    object `when a formatter is supplied and presentUnformatted is false` {
-      def `should display AlertProvided messages formatted in yellow ` {
+    describe("when a formatter is supplied and presentUnformatted is false") {
+      it("should display AlertProvided messages formatted in yellow ") {
       
         fragmentsForEvent(
           event =
@@ -127,7 +127,7 @@ class StringReporterAlertSpec extends UnitSpec {
           reminderEvents = Seq.empty
         ) shouldEqual Vector(Fragment(Resources.alertFormattedText("some alert "), AnsiYellow)) // TODO: I'm not sure where the extra space is coming from. Be nice to zap it.
       }
-      def `should display NoteProvided messages formatted in green` {
+      it("should display NoteProvided messages formatted in green") {
 
         fragmentsForEvent(
           event =

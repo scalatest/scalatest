@@ -16,6 +16,8 @@
 package org.scalatest
 package prop
 
+import Checkers.getParams
+
 class HelperSuite extends FunSuite with Matchers {
 
   import Configuration._

@@ -17,26 +17,26 @@ package org.scalatest
 
 import Matchers._
 
-class ThreadNameSpec extends Spec {
+class ThreadNameSpec extends FunSpec {
 
-  object `The Thread name augmenter` {
-    def `should add "running X" onto bare thread names` {
+  describe("The Thread name augmenter") {
+    it("""should add "running X" onto bare thread names""") {
       SuiteHelpers.augmentedThreadName("ScalaTest-main", "SomeSpec") shouldBe "ScalaTest-main-running-SomeSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-run", "SomeSpec") shouldBe "ScalaTest-run-running-SomeSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-3", "SomeSpec") shouldBe "ScalaTest-3-running-SomeSpec"
     }
-    def `should replace "...-running-X" with "...-running-Y"` {
+    it("""should replace "...-running-X" with "...-running-Y"""") {
       SuiteHelpers.augmentedThreadName("ScalaTest-main-running-SomeSpec", "OtherSpec") shouldBe "ScalaTest-main-running-OtherSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-run-running-SomeSpec", "GopherSuite") shouldBe "ScalaTest-run-running-GopherSuite"
       SuiteHelpers.augmentedThreadName("ScalaTest-3-running-SomeSpec", "OtherSpec") shouldBe "ScalaTest-3-running-OtherSpec"
     }
-    def `should replace "...-running-X-running-Y" with "...-running-Z"` {
+    it("""should replace "...-running-X-running-Y" with "...-running-Z"""") {
       SuiteHelpers.augmentedThreadName("ScalaTest-main-running-Some-running-Spec", "OtherSpec") shouldBe "ScalaTest-main-running-OtherSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-run-running-Some-running-Spec", "OtherSpec") shouldBe "ScalaTest-run-running-OtherSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-3-running-Some-running-Spec", "BunnySpec") shouldBe "ScalaTest-3-running-BunnySpec"
     }
     // This could happen if calling run directly, such as from sbt.
-    def `should replace a string that does not include "ScalaTest-" with "<exising thread name>-ScalaTest-running-Z"` {
+    it("""should replace a string that does not include "ScalaTest-" with "<exising thread name>-ScalaTest-running-Z"""") {
       SuiteHelpers.augmentedThreadName("pool-3-thread-5", "OtherSpec") shouldBe "pool-3-thread-5-ScalaTest-running-OtherSpec"
       SuiteHelpers.augmentedThreadName("", "AntherSpec") shouldBe "-ScalaTest-running-AntherSpec"
       SuiteHelpers.augmentedThreadName("something else", "Elephant") shouldBe "something else-ScalaTest-running-Elephant"

@@ -19,7 +19,7 @@ import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeDefinedLogicalOrSpec extends Spec {
+class ShouldBeDefinedLogicalOrSpec extends FunSpec {
   
   val fileName: String = "ShouldBeDefinedLogicalOrSpec.scala"
   
@@ -49,11 +49,11 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
   val something = Some("Something")
   val nothing = None
   
-  object `Defined matcher` {
+  describe("Defined matcher") {
     
-    object `when work with 'opt should be (defined)'` {
+    describe("when work with 'opt should be (defined)'") {
       
-      def `should do nothing when opt is defined` {
+      it("should do nothing when opt is defined") {
         
         something should (be (defined) or be (something))
         nothing should (be (defined) or be (nothing))
@@ -72,7 +72,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         nothing should (equal (nothing) or be (defined))
       }
       
-      def `should throw TestFailedException with correct stack depth when opt is not defined` {
+      it("should throw TestFailedException with correct stack depth when opt is not defined") {
         val caught1 = intercept[TestFailedException] {
           nothing should (be (defined) or be (something))
         }
@@ -103,9 +103,9 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'opt should not be defined'` {
+    describe("when work with 'opt should not be defined'") {
       
-      def `should do nothing when opt is not defined` {
+      it("should do nothing when opt is not defined") {
         nothing should (not be defined or not be something)
         something should (not be defined or not be nothing)
         nothing should (not be defined or not be nothing)
@@ -123,7 +123,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         something should (not equal nothing or not be defined)
       }
       
-      def `should throw TestFailedException with correct stack depth when opt is defined` {
+      it("should throw TestFailedException with correct stack depth when opt is defined") {
         val caught1 = intercept[TestFailedException] {
           something should (not be defined or not be something)
         }
@@ -154,9 +154,9 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (defined)'` {
+    describe("when work with 'all(xs) should be (defined)'") {
       
-      def `should do nothing when all(xs) is defined` {
+      it("should do nothing when all(xs) is defined") {
         all(List(something)) should (be (defined) or be (something))
         all(List(nothing)) should (be (defined) or be (nothing))
         all(List(something)) should (be (defined) or be (nothing))
@@ -174,7 +174,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         all(List(nothing)) should (equal (nothing) or be (defined))
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(nothing)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (something) or be (defined))
@@ -209,8 +209,8 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be sorted'` {
-      def `should do nothing when xs is not sorted` {
+    describe("when work with 'all(xs) should not be sorted'") {
+      it("should do nothing when xs is not sorted") {
         all(List(nothing)) should (not be defined or not be something)
         all(List(something)) should (not be defined or not be nothing)
         all(List(nothing)) should (not be defined or not be nothing)
@@ -228,7 +228,7 @@ class ShouldBeDefinedLogicalOrSpec extends Spec {
         all(List(something)) should (not equal nothing or not be defined)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(something)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be something or not be defined)

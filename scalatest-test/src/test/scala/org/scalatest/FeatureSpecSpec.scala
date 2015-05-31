@@ -772,6 +772,7 @@ class FeatureSpecSpec extends FunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
+    // SKIP-SCALATESTJS-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
       val a = new FeatureSpec {
@@ -781,6 +782,7 @@ class FeatureSpecSpec extends FunSpec {
         a.run(None, Args(SilentReporter))
       }
     }
+    // SKIP-SCALATESTJS-END
 /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
             "calls made from a test that is pending") {
@@ -1414,6 +1416,7 @@ class FeatureSpecSpec extends FunSpec {
         assert(cause.getMessage == "on purpose")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should propagate AnnotationFormatError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
           feature("a feature") {
@@ -1509,6 +1512,8 @@ class FeatureSpecSpec extends FunSpec {
         }
         assert(e.getMessage == "on purpose")
       }
+
+      // SKIP-SCALATESTJS-END
 
     }
   }

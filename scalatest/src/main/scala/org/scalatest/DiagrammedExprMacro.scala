@@ -366,11 +366,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case _ => false
     }
 
+  def isJavaStatic(apply: Apply): Boolean = apply.symbol.isJava && apply.symbol.isStatic
+
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def transformAst(tree: Tree): Tree = {
     tree match {
       case Apply(Select(New(_), _), _) => simpleExpr(tree)  // delegate to simpleExpr if it is a New expression
       case apply: Apply if isXmlSugar(apply) => simpleExpr(tree)
+      case apply: Apply if isJavaStatic(apply) => simpleExpr(tree)
       case apply: GenericApply => applyExpr(apply) // delegate to applyExpr if it is Apply
       case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
       case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages

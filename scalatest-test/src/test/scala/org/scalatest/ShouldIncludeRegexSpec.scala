@@ -23,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldIncludeRegexSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeRegexSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t
@@ -35,14 +35,14 @@ s should endWith regex t
 s should fullyMatch regex t
 */
 
-  object `The include regex syntax` {
+  describe("The include regex syntax") {
 
     val decimal = """(-)?(\d+)(\.\d*)?"""
     val decimalRegex = """(-)?(\d+)(\.\d*)?""".r
 
-    object `(when the regex is specified by a string)` {
+    describe("(when the regex is specified by a string)") {
 
-      def `should do nothing if the string includes substring that matched regex specified as a string` {
+      it("should do nothing if the string includes substring that matched regex specified as a string") {
 
         "1.78" should include regex ("1.7")
         "21.7" should include regex ("1.7")
@@ -63,7 +63,7 @@ s should fullyMatch regex t
         "1." should include regex (decimal)
       }
       
-      def `should do nothing if the string includes substring that matched regex specified as a string and withGroup` {
+      it("should do nothing if the string includes substring that matched regex specified as a string and withGroup") {
 
         "abccde" should include regex("b(c*)d" withGroup "cc")
         "bccde" should include regex("b(c*)d" withGroup "cc")
@@ -72,7 +72,7 @@ s should fullyMatch regex t
         "bccd" should include regex("b(c*)d" withGroup "cc")
       }
       
-      def `should do nothing if the string includes substring that matched regex specified as a string and withGroups` {
+      it("should do nothing if the string includes substring that matched regex specified as a string and withGroups") {
 
         "abccdde" should include regex("b(c*)(d*)" withGroups ("cc", "dd"))
         "bccdde" should include regex("b(c*)(d*)" withGroups ("cc", "dd"))
@@ -81,7 +81,7 @@ s should fullyMatch regex t
         "bccdd" should include regex("b(c*)(d*)" withGroups ("cc", "dd"))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used with not") {
 
         "eight" should not { include regex (decimal) }
         "one.eight" should not { include regex (decimal) }
@@ -90,7 +90,7 @@ s should fullyMatch regex t
         "one.eight" should not include regex (decimal)
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used with not") {
 
         "bccde" should not { include regex ("b(c*)d" withGroup "c") }
         "abccde" should not { include regex ("b(c*)d" withGroup "c") }
@@ -99,7 +99,7 @@ s should fullyMatch regex t
         "abccde" should not include regex ("b(c*)d" withGroup "c")
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used with not") {
 
         "bccdde" should not { include regex ("b(c*)(d*)" withGroups ("cc", "d")) }
         "abccdde" should not { include regex ("b(c*)(d*)" withGroups ("cc", "d")) }
@@ -108,7 +108,7 @@ s should fullyMatch regex t
         "abccdde" should not include regex ("b(c*)(d*)" withGroups ("cc", "d"))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression") {
 
         "a1.7" should (include regex (decimal) and (include regex (decimal)))
         "a1.7" should (include regex (decimal) and (include regex (decimal)))
@@ -127,7 +127,7 @@ s should fullyMatch regex t
         "1.7" should (include regex (decimal) and include regex (decimal))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression") {
 
         "abccd" should (include regex ("b(c*)d" withGroup "cc") and (include regex ("b(c*)d" withGroup "cc")))
         "abccd" should (include regex ("b(c*)d" withGroup "cc") and (include regex ("b(c*)d" withGroup "cc")))
@@ -162,7 +162,7 @@ s should fullyMatch regex t
         "bccd" should (equal ("bccd") and include regex ("b(c*)d" withGroup "cc"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression") {
 
         "abccdd" should (include regex ("b(c*)(d*)" withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         "abccdd" should (include regex ("b(c*)(d*)" withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
@@ -197,7 +197,7 @@ s should fullyMatch regex t
         "bccdd" should (equal ("bccdd") and include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression") {
 
         "a1.7" should (include regex ("hello") or (include regex (decimal)))
         "a1.7" should (include regex ("hello") or (include regex (decimal)))
@@ -216,7 +216,7 @@ s should fullyMatch regex t
         "1.7" should (include regex ("hello") or include regex (decimal))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression") {
 
         "abccd" should (include regex ("b(c*)d" withGroup "c") or (include regex ("b(c*)d" withGroup "cc")))
         "abccd" should ((include regex ("b(c*)d" withGroup "c")) or (include regex ("b(c*)d" withGroup "cc")))
@@ -251,7 +251,7 @@ s should fullyMatch regex t
         "bccd" should (equal ("bcd") or include regex ("b(c*)d" withGroup "cc"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression") {
 
         "abccdd" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) or (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
 
@@ -276,13 +276,13 @@ s should fullyMatch regex t
         "bccdd" should (equal ("bccd") or include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression with not") {
         "fred" should (not (include regex ("bob")) and not (include regex (decimal)))
         "fred" should ((not include regex ("bob")) and (not include regex (decimal)))
         "fred" should (not include regex ("bob") and not include regex (decimal))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression with not") {
         "abccde" should (not (include regex ("b(c*)d" withGroup "c")) and not (include regex ("b(c*)d" withGroup "c")))
         "abccde" should ((not include regex ("b(c*)d" withGroup "c")) and (not include regex ("b(c*)d" withGroup "c")))
         "abccde" should (not include regex ("b(c*)d" withGroup "c") and not include regex ("b(c*)d" withGroup "c"))
@@ -292,7 +292,7 @@ s should fullyMatch regex t
         "abccde" should (not equal ("abcde") and not include regex ("b(c*)d" withGroup "c"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression with not") {
         "abccdde" should (not (include regex ("b(c*)(d*)" withGroups ("cc", "d"))) and not (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         "abccdde" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         "abccdde" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and not include regex ("b(c*)(d*)" withGroups ("cc", "d")))
@@ -302,13 +302,13 @@ s should fullyMatch regex t
         "abccdde" should (not equal ("abccde") and not include regex ("b(c*)(d*)" withGroups ("cc", "d")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression with not") {
         "fred" should (not (include regex ("fred")) or not (include regex (decimal)))
         "fred" should ((not include regex ("fred")) or (not include regex (decimal)))
         "fred" should (not include regex ("fred") or not include regex (decimal))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression with not") {
         "abccde" should (not (include regex ("b(c*)d" withGroup "cc")) or not (include regex ("b(c*)d" withGroup "c")))
         "abccde" should ((not include regex ("b(c*)d" withGroup "cc")) or (not include regex ("b(c*)d" withGroup "c")))
         "abccde" should (not include regex ("b(c*)d" withGroup "cc") or not include regex ("b(c*)d" withGroup "c"))
@@ -318,7 +318,7 @@ s should fullyMatch regex t
         "abccde" should (not equal ("abccde") or not include regex ("b(c*)d" withGroup "c"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression with not") {
         "abccdde" should (not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         "abccdde" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         "abccdde" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)" withGroups ("cc", "d")))
@@ -328,7 +328,7 @@ s should fullyMatch regex t
         "abccdde" should (not equal ("abccdde") or not include regex ("b(c*)(d*)" withGroups ("cc", "d")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should include regex ("1.78")
@@ -366,7 +366,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should include regex ("b(c*)d" withGroup "c")
@@ -376,7 +376,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should include regex ("b(c*)(d*)" withGroups ("cc", "d"))
@@ -386,7 +386,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { include regex ("1.7") }
@@ -455,7 +455,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"a-1.8b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should not { include regex ("b(c*)d" withGroup "cc") }
@@ -472,7 +472,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should not { include regex ("b(c*)(d*)" withGroups ("cc", "dd")) }
@@ -489,7 +489,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (include regex (decimal) and (include regex ("1.8")))
@@ -523,7 +523,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"one.eight\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "cc") and (include regex ("b(c*)d" withGroup "c")))
@@ -612,7 +612,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
@@ -701,7 +701,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "one.seven" should (include regex (decimal) or (include regex ("1.8")))
@@ -719,7 +719,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"one.seven\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?, and \"one.seven\" did not include substring that matched regex 1.8")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "c") or (include regex ("b(c*)d" withGroup "c")))
@@ -764,7 +764,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) or (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
@@ -809,7 +809,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not include regex ("1.8") and (not include regex (decimal)))
@@ -842,7 +842,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"a1.7b\" did not include substring that matched regex 1.8, but \"a1.7b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "c") and (not include regex ("b(c*)d" withGroup "cc")))
@@ -929,7 +929,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
@@ -1016,7 +1016,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not include regex (decimal) or (not include regex ("1.7")))
@@ -1075,7 +1075,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "cc") or (not include regex ("b(c*)d" withGroup "cc")))
@@ -1190,7 +1190,7 @@ s should fullyMatch regex t
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
@@ -1306,9 +1306,9 @@ s should fullyMatch regex t
       }
     }
 
-    object `(when the regex is specified by an actual Regex)` {
+    describe("(when the regex is specified by an actual Regex)") {
 
-      def `should do nothing if the string includes substring that matched regex specified as a string` {
+      it("should do nothing if the string includes substring that matched regex specified as a string") {
 
         "1.78" should include regex ("1.7")
         "21.7" should include regex ("1.7")
@@ -1329,7 +1329,7 @@ s should fullyMatch regex t
         "1." should include regex (decimalRegex)
       }
       
-      def `should do nothing if the string includes substring that matched regex specified as a string and withGroup` {
+      it("should do nothing if the string includes substring that matched regex specified as a string and withGroup") {
 
         "abccde" should include regex("b(c*)d".r withGroup "cc")
         "bccde" should include regex("b(c*)d".r withGroup "cc")
@@ -1338,7 +1338,7 @@ s should fullyMatch regex t
         "bccd" should include regex("b(c*)d".r withGroup "cc")
       }
       
-      def `should do nothing if the string includes substring that matched regex specified as a string and withGroups` {
+      it("should do nothing if the string includes substring that matched regex specified as a string and withGroups") {
 
         "abccdde" should include regex("b(c*)(d*)".r withGroups ("cc", "dd"))
         "bccdde" should include regex("b(c*)(d*)".r withGroups ("cc", "dd"))
@@ -1347,7 +1347,7 @@ s should fullyMatch regex t
         "bccdd" should include regex("b(c*)(d*)".r withGroups ("cc", "dd"))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used with not") {
 
         "eight" should not { include regex (decimalRegex) }
         "one.eight" should not { include regex (decimalRegex) }
@@ -1356,7 +1356,7 @@ s should fullyMatch regex t
         "one.eight" should not include regex (decimalRegex)
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used with not") {
 
         "bccde" should not { include regex ("b(c*)d".r withGroup "c") }
         "abccde" should not { include regex ("b(c*)d".r withGroup "c") }
@@ -1365,7 +1365,7 @@ s should fullyMatch regex t
         "abccde" should not include regex ("b(c*)d".r withGroup "c")
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used with not") {
 
         "bccdde" should not { include regex ("b(c*)(d*)".r withGroups ("cc", "d")) }
         "abccdde" should not { include regex ("b(c*)(d*)".r withGroups ("cc", "d")) }
@@ -1374,7 +1374,7 @@ s should fullyMatch regex t
         "abccdde" should not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression") {
 
         "a1.7" should (include regex (decimalRegex) and (include regex (decimalRegex)))
         "1.7b" should (include regex (decimalRegex) and (include regex (decimalRegex)))
@@ -1393,7 +1393,7 @@ s should fullyMatch regex t
         "1.7" should (include regex (decimalRegex) and include regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression") {
 
         "abccd" should (include regex ("b(c*)d".r withGroup "cc") and (include regex ("b(c*)d".r withGroup "cc")))
         "bccde" should ((include regex ("b(c*)d".r withGroup "cc")) and (include regex ("b(c*)d".r withGroup "cc")))
@@ -1412,7 +1412,7 @@ s should fullyMatch regex t
         "bccd" should (equal ("bccd") and include regex ("b(c*)d".r withGroup "cc"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression") {
 
         "abccdd" should (include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         "bccdde" should ((include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) and (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
@@ -1431,7 +1431,7 @@ s should fullyMatch regex t
         "bccdd" should (equal ("bccdd") and include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression") {
 
         "a1.7" should (include regex ("hello") or (include regex (decimalRegex)))
         "1.7b" should (include regex ("hello") or (include regex (decimalRegex)))
@@ -1450,7 +1450,7 @@ s should fullyMatch regex t
         "1.7" should (include regex ("hello") or include regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression") {
 
         "abccd" should (include regex ("b(c*)d".r withGroup "c") or (include regex ("b(c*)d".r withGroup "cc")))
         "bccde" should ((include regex ("b(c*)d".r withGroup "c")) or (include regex ("b(c*)d".r withGroup "cc")))
@@ -1471,7 +1471,7 @@ s should fullyMatch regex t
         "bccd" should (equal ("bcd") or include regex ("b(c*)d".r withGroup "cc"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression") {
 
         "abccdd" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) or (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         "bccdde" should ((include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) or (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
@@ -1492,13 +1492,13 @@ s should fullyMatch regex t
         "bccdd" should (equal ("bccd") or include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression with not") {
         "fred" should (not (include regex ("bob")) and not (include regex (decimalRegex)))
         "fred" should ((not include regex ("bob")) and (not include regex (decimalRegex)))
         "fred" should (not include regex ("bob") and not include regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-and expression with not") {
         "abccde" should (not (include regex ("b(c*)d".r withGroup "c")) and not (include regex ("b(c*)d".r withGroup "c")))
         "abccde" should ((not include regex ("b(c*)d".r withGroup "c")) and (not include regex ("b(c*)d".r withGroup "c")))
         "abccde" should (not include regex ("b(c*)d".r withGroup "c") and not include regex ("b(c*)d".r withGroup "c"))
@@ -1508,7 +1508,7 @@ s should fullyMatch regex t
         "abccde" should (not equal ("abcde") and not include regex ("b(c*)d".r withGroup "c"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-and expression with not") {
         "abccdde" should (not (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) and not (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         "abccdde" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         "abccdde" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and not include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
@@ -1518,13 +1518,13 @@ s should fullyMatch regex t
         "abccdde" should (not equal ("abccde") and not include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression with not") {
         "fred" should (not (include regex ("fred")) or not (include regex (decimalRegex)))
         "fred" should ((not include regex ("fred")) or (not include regex (decimalRegex)))
         "fred" should (not include regex ("fred") or not include regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroup when used in a logical-or expression with not") {
         "abccde" should (not (include regex ("b(c*)d".r withGroup "cc")) or not (include regex ("b(c*)d".r withGroup "c")))
         "abccde" should ((not include regex ("b(c*)d".r withGroup "cc")) or (not include regex ("b(c*)d".r withGroup "c")))
         "abccde" should (not include regex ("b(c*)d".r withGroup "cc") or not include regex ("b(c*)d".r withGroup "c"))
@@ -1534,7 +1534,7 @@ s should fullyMatch regex t
         "abccde" should (not equal ("abccde") or not include regex ("b(c*)d".r withGroup "c"))
       }
       
-      def `should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string and withGroups when used in a logical-or expression with not") {
         "abccdde" should (not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         "abccdde" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         "abccdde" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
@@ -1544,7 +1544,7 @@ s should fullyMatch regex t
         "abccdde" should (not equal ("abccdde") or not include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should include regex ("1.78")
@@ -1582,7 +1582,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should include regex ("b(c*)d".r withGroup "c")
@@ -1592,7 +1592,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched regex specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should include regex ("b(c*)(d*)".r withGroups ("cc", "d"))
@@ -1602,7 +1602,7 @@ s should fullyMatch regex t
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { include regex ("1.7") }
@@ -1671,7 +1671,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"a-1.8b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should not { include regex ("b(c*)d".r withGroup "cc") }
@@ -1688,7 +1688,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should not { include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) }
@@ -1705,7 +1705,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (include regex (decimalRegex) and (include regex ("1.8")))
@@ -1739,7 +1739,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"one.eight\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "cc") and (include regex ("b(c*)d".r withGroup "c")))
@@ -1828,7 +1828,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
@@ -1917,7 +1917,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "one.seven" should (include regex (decimalRegex) or (include regex ("1.8")))
@@ -1935,7 +1935,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"one.seven\" did not include substring that matched regex (-)?(\\d+)(\\.\\d*)?, and \"one.seven\" did not include substring that matched regex 1.8")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "c") or (include regex ("b(c*)d".r withGroup "c")))
@@ -1980,7 +1980,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) or (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
@@ -2025,7 +2025,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not include regex ("1.8") and (not include regex (decimalRegex)))
@@ -2058,7 +2058,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"a1.7b\" did not include substring that matched regex 1.8, but \"a1.7b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "c") and (not include regex ("b(c*)d".r withGroup "cc")))
@@ -2145,7 +2145,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
@@ -2232,7 +2232,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not include regex (decimalRegex) or (not include regex ("1.7")))
@@ -2275,7 +2275,7 @@ s should fullyMatch regex t
         assert(caught8.getMessage === "\"a1.7b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?, and \"a1.7b\" included substring that matched regex 1.7")
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "cc") or (not include regex ("b(c*)d".r withGroup "cc")))
@@ -2390,7 +2390,7 @@ s should fullyMatch regex t
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
@@ -2511,7 +2511,7 @@ s should fullyMatch regex t
 
 
 /*
-      def `should do nothing if the string includes substring that matched regex specified as a string` {
+      it("should do nothing if the string includes substring that matched regex specified as a string") {
         "1.78" should include regex ("1.7")
         "21.7" should include regex ("1.7")
         "21.78" should include regex ("1.7")
@@ -2524,7 +2524,7 @@ s should fullyMatch regex t
         "1.x" should include regex (decimalRegex)
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-and expression") {
 
         "a1.7" should (include regex (decimalRegex) and (include regex (decimalRegex)))
         "1.7b" should (include regex (decimalRegex) and (include regex (decimalRegex)))
@@ -2539,7 +2539,7 @@ s should fullyMatch regex t
         "a1.7b" should (include regex (decimalRegex) and include regex (decimalRegex))
       }
   
-      def `should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not include substring that matched regex specified as a string when used in a logical-or expression") {
 
         "a1.7" should (include regex ("hello") or (include regex (decimalRegex)))
         "1.7b" should (include regex ("hello") or (include regex (decimalRegex)))
@@ -2554,7 +2554,7 @@ s should fullyMatch regex t
         "a1.7b" should (include regex ("hello") or include regex (decimalRegex))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched regex specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "a1.7" should not { include regex ("1.7") }
@@ -2572,7 +2572,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"a-1.8b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "a1.7" should (not include regex ("1.8") and (not include regex (decimalRegex)))
@@ -2590,7 +2590,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"a1.7b\" did not include substring that matched regex 1.8, but \"a1.7b\" included substring that matched regex (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string includes substring that matched regex specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "a1.7" should (not include regex (decimalRegex) or (not include regex ("1.7")))

@@ -21,16 +21,16 @@ import org.scalactic.Explicitly
 import org.scalactic.Equality
 import Matchers._
 
-class ShouldEqualExplicitlySpec extends Spec with Explicitly {
+class ShouldEqualExplicitlySpec extends FunSpec with Explicitly {
 
   implicit val e = new Equality[Int] {
     def areEqual(a: Int, b: Any): Boolean = a != b
   }
 
   // Checking for equality with "equal"
-  object `The equal token` {
+  describe("The equal token") {
 
-    def `should do nothing when equal` {
+    it("should do nothing when equal") {
       intercept[TestFailedException] { 1 should equal (1) }
       1 should equal (1) (defaultEquality)
       1 should equal (1) (decided by defaultEquality)
@@ -43,7 +43,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       (1).shouldEqual(1)(decided by defaultEquality)
     }
 
-    def `should do nothing when not equal and used with not` {
+    it("should do nothing when not equal and used with not") {
       intercept[TestFailedException] { 1 should not { equal (2) } }
       intercept[TestFailedException] { 1 should not equal (2) }
       1 should not { equal (2) } (defaultEquality)
@@ -58,13 +58,13 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
 */
     }
 
-    def `should do nothing when equal and used in a logical-and expression` {
+    it("should do nothing when equal and used in a logical-and expression") {
       intercept[TestFailedException] { 1 should (equal (1) and equal (2 - 1)) }
       1 should (equal (1) and equal (2 - 1)) (decided by defaultEquality)
       1 should (equal (1) (decided by defaultEquality) and equal (2 - 1) (decided by defaultEquality)) 
     }
 
-    def `should do nothing when equal and used in multi-part logical expressions` {
+    it("should do nothing when equal and used in multi-part logical expressions") {
 
         // Just to make sure these work strung together
         intercept[TestFailedException] { 1 should (equal (1) and equal (1) and equal (1) and equal (1)) }
@@ -96,13 +96,13 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
         )
     }
 
-    def `should do nothing when equal and used in a logical-or expression` {
+    it("should do nothing when equal and used in a logical-or expression") {
       intercept[TestFailedException] { 1 should { equal (1) or equal (2 - 1) } }
       1 should (equal (1) or equal (2 - 1)) (decided by defaultEquality)
       1 should { equal (1) (decided by defaultEquality) or equal (2 - 1) (decided by defaultEquality) }
     }
 
-    def `should do nothing when not equal and used in a logical-and expression with not` {
+    it("should do nothing when not equal and used in a logical-and expression with not") {
       intercept[TestFailedException] { 1 should (not (equal (2)) and not (equal (3 - 1))) }
       intercept[TestFailedException] { 1 should (not equal (2) and (not equal (3 - 1))) }
       // Will back up on these MatcherGen1 and not ones, and do simpler MatcherGen1 and MatcherGen1 ones first
@@ -117,13 +117,13 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
     }
 
 /*
-    def `should do nothing when not equal and used in a logical-or expression with not` {
+    it("should do nothing when not equal and used in a logical-or expression with not") {
       1 should { not { equal (2) } or not { equal (3 - 1) }}
       1 should { not equal (2) or (not equal (3 - 1)) }
       1 should (not equal (2) or not equal (3 - 1))
     }
 
-    def `should throw a TFE when not equal` {
+    it("should throw a TFE when not equal") {
       val caught1 = intercept[TestFailedException] {
         1 should equal (2)
       }
@@ -140,7 +140,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       assert(caught3.getMessage === "1 did not equal 2")
     }
 
-    def `should throw a TFE when equal but used with should not` {
+    it("should throw a TFE when equal but used with should not") {
       val caught1 = intercept[TestFailedException] {
         1 should not { equal (1) }
       }
@@ -157,21 +157,21 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       assert(caught3.getMessage === "1 equaled 1")
     }
 
-    def `should throw a TFE when not equal and used in a logical-and expression` {
+    it("should throw a TFE when not equal and used in a logical-and expression") {
       val caught = intercept[TestFailedException] {
         1 should { equal (5) and equal (2 - 1) }
       }
       assert(caught.getMessage === "1 did not equal 5")
     }
 
-    def `should throw a TFE when not equal and used in a logical-or expression` {
+    it("should throw a TFE when not equal and used in a logical-or expression") {
       val caught = intercept[TestFailedException] {
         1 should { equal (5) or equal (5 - 1) }
       }
       assert(caught.getMessage === "1 did not equal 5, and 1 did not equal 4")
     }
 
-    def `should throw a TFE when equal and used in a logical-and expression with not` {
+    it("should throw a TFE when equal and used in a logical-and expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         1 should { not { equal (1) } and not { equal (3 - 1) }}
@@ -204,7 +204,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       assert(caught6.getMessage === "1 did not equal 2, but 1 equaled 1")
     }
 
-    def `should throw a TFE when equal and used in a logical-or expression with not` {
+    it("should throw a TFE when equal and used in a logical-or expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         1 should { not { equal (1) } or not { equal (2 - 1) }}
@@ -222,7 +222,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       assert(caught3.getMessage === "1 equaled 1, and 1 equaled 1")
     }
     
-    def `should put string differences in square bracket` {
+    it("should put string differences in square bracket") {
       val caught1 = intercept[TestFailedException] { "dummy" should equal ("dunny") }
       caught1.getMessage should equal ("\"du[mm]y\" did not equal \"du[nn]y\"")
       
@@ -233,7 +233,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       caught3.getMessage should be ("\"hi[] there mom\" was not equal to \"hi[gh] there mom\"")
     }
     
-    def `should not put string differences in square bracket` {
+    it("should not put string differences in square bracket") {
       val caught1 = intercept[TestFailedException] { "dummy" should not equal "dummy" }
       caught1.getMessage should equal ("\"dummy\" equaled \"dummy\"")
       
@@ -241,12 +241,12 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       caught2.getMessage should equal ("\"dummy\" was equal to \"dummy\"")
     }
 
-    def `should be usable when the left expression results in null` {
+    it("should be usable when the left expression results in null") {
       val npe = new NullPointerException
       npe.getMessage should equal (null)
     }
 
-    def `should compare arrays structurally` {
+    it("should compare arrays structurally") {
       val a1 = Array(1, 2, 3)
       val a2 = Array(1, 2, 3)
       val a3 = Array(4, 5, 6)
@@ -257,7 +257,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       }
     }
 
-    def `should compare arrays deeply` {
+    it("should compare arrays deeply") {
       val a1 = Array(1, Array("a", "b"), 3)
       val a2 = Array(1, Array("a", "b"), 3)
       val a3 = Array(1, Array("c", "d"), 3)
@@ -268,7 +268,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       }
     }
 
-    def `should compare arrays containing nulls fine` {
+    it("should compare arrays containing nulls fine") {
       val a1 = Array(1, Array("a", null), 3)
       val a2 = Array(1, Array("a", null), 3)
       val a3 = Array(1, Array("c", "d"), 3)
@@ -282,7 +282,7 @@ class ShouldEqualExplicitlySpec extends Spec with Explicitly {
       }
     }
 
-    def `should compare nulls in a satisfying manner` {
+    it("should compare nulls in a satisfying manner") {
       val n1: String = null
       val n2: String = null
       n1 should equal (n2)

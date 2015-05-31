@@ -25,7 +25,7 @@ grouping tags. I probably won't put this into ScalaTest proper to keep tagging
 simple, but I'll leave this in the repo as an example for folks who want to do
 something like this. - bv
 */
-class TagGroupsSpec extends Spec {
+class TagGroupsSpec extends FunSpec {
 
   trait TagGroups extends SuiteMixin { this: Suite =>
 
@@ -72,51 +72,51 @@ class TagGroupsSpec extends Spec {
     }
   }
 
-  object `A Suite with TagGroups` {
+  describe("A Suite with TagGroups") {
 
-    def `should run all tests if default Filter is used` {
+    it("should run all tests if default Filter is used") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("slow", "disk", "network", "cpu")
     }
 
-    def `should run non-excluded tests if Filter containing tags-to-exclude is passed in` {
+    it("should run non-excluded tests if Filter containing tags-to-exclude is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToExclude = Set("org.scalatest.tags.Disk"))))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("slow", "network", "cpu")
     }
 
-    def `should run included tests if Filter containing tags-to-include is passed in` {
+    it("should run included tests if Filter containing tags-to-include is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToInclude = Some(Set("org.scalatest.tags.Disk")))))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("disk")
     }
 
-    def `should run non-excluded tests if Filter containing NonUnit grouped tags-to-exclude is passed in` {
+    it("should run non-excluded tests if Filter containing NonUnit grouped tags-to-exclude is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToExclude = Set("NonUnit"))))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("slow", "cpu")
     }
 
-    def `should run included tests if Filter containing NonUnit grouped tags-to-include is passed in` {
+    it("should run included tests if Filter containing NonUnit grouped tags-to-include is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToInclude = Some(Set("NonUnit")))))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("disk", "network")
     }
 
-    def `should run non-excluded tests if Filter containing Sluggish grouped tags-to-exclude is passed in` {
+    it("should run non-excluded tests if Filter containing Sluggish grouped tags-to-exclude is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToExclude = Set("Sluggish"))))
       rep.testSucceededEventsReceived.map(_.testName) shouldEqual Vector("disk", "cpu")
     }
 
-    def `should run included tests if Filter containing Sluggish grouped tags-to-include is passed in` {
+    it("should run included tests if Filter containing Sluggish grouped tags-to-include is passed in") {
       val es = new ExampleSpec
       val rep = new EventRecordingReporter
       es.run(None, Args(rep, filter = Filter(tagsToInclude = Some(Set("Sluggish")))))

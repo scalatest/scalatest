@@ -19,11 +19,11 @@ import org.scalatest._
 import SharedHelpers._
 import org.scalatest.events._
 
-class HtmlReporterSpec extends Spec {
+class HtmlReporterSpec extends FunSpec {
 
-  object `HtmlReporter ` {
+  describe("HtmlReporter ") {
     
-    def `should throw IllegalStateException when SuiteCompleted is received without any suite events` {
+    it("should throw IllegalStateException when SuiteCompleted is received without any suite events") {
       val tempDir = createTempDirectory()
       val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
       val suiteCompleted = SuiteCompleted(new Ordinal(99), "TestSuite", "TestSuite", Some("TestSuite"))
@@ -33,7 +33,7 @@ class HtmlReporterSpec extends Spec {
       assert(e.getMessage === "Expected SuiteStarting for completion event: " + suiteCompleted + " in the head of suite events, but we got no suite event at all") 
     }
     
-    def `should throw IllegalStateException when SuiteCompleted is received without a SuiteStarting` {
+    it("should throw IllegalStateException when SuiteCompleted is received without a SuiteStarting") {
       val tempDir = createTempDirectory()
       val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
       val testStarting = TestStarting(new Ordinal(99), "TestSuite", "TestSuite", Some("TestSuite"), "A Test", "A Test")
@@ -45,7 +45,7 @@ class HtmlReporterSpec extends Spec {
       assert(e.getMessage === "Expected SuiteStarting for completion event: " + suiteCompleted + " in the head of suite events, but we got: " + testStarting) 
     }
     
-    def `should throw IllegalStateException when SuiteAborted is received without any suite events` {
+    it("should throw IllegalStateException when SuiteAborted is received without any suite events") {
       val tempDir = createTempDirectory()
       val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
       val suiteAborted = SuiteAborted(new Ordinal(99), "Error", "TestSuite", "TestSuite", Some("TestSuite"))
@@ -55,7 +55,7 @@ class HtmlReporterSpec extends Spec {
       assert(e.getMessage === "Expected SuiteStarting for completion event: " + suiteAborted + " in the head of suite events, but we got no suite event at all") 
     }
     
-    def `should throw IllegalStateException when SuiteAborted is received without a SuiteStarting` {
+    it("should throw IllegalStateException when SuiteAborted is received without a SuiteStarting") {
       val tempDir = createTempDirectory()
       val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
       val testStarting = TestStarting(new Ordinal(99), "TestSuite", "TestSuite", Some("TestSuite"), "A Test", "A Test")
@@ -67,7 +67,7 @@ class HtmlReporterSpec extends Spec {
       assert(e.getMessage === "Expected SuiteStarting for completion event: " + suiteAborted + " in the head of suite events, but we got: " + testStarting) 
     }
 
-    def `should take MarkupProvided with '&' in it without problem` {
+    it("should take MarkupProvided with '&' in it without problem") {
       val tempDir = createTempDirectory()
       val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
       val suiteStarting =
@@ -98,13 +98,13 @@ class HtmlReporterSpec extends Spec {
       htmlRep.dispose()
     }
   }
-  object `HtmlReporter's convertSingleParaToDefinition method` {
-    def `should leave strings that contain no <p> alone` {
+  describe("HtmlReporter's convertSingleParaToDefinition method") {
+    it("should leave strings that contain no <p> alone") {
       assert(HtmlReporter.convertSingleParaToDefinition("") === "")
       assert(HtmlReporter.convertSingleParaToDefinition("hello") === "hello")
       assert(HtmlReporter.convertSingleParaToDefinition("  hello") === "  hello")
     }
-    def `should transform something that is a single HTML paragraph to a definition` {
+    it("should transform something that is a single HTML paragraph to a definition") {
       val actual = HtmlReporter.convertSingleParaToDefinition("<p>This test finished with a <strong>bold</strong> statement!</p>")
       val expected = "<dl>\n<dt>This test finished with a <strong>bold</strong> statement!</dt>\n</dl>"
       assert(actual === expected)
@@ -112,17 +112,17 @@ class HtmlReporterSpec extends Spec {
       val expected2 = "<dl>\n<dt>Whereas this test finished with an <em>emphatic</em> statement!</dt>\n</dl>"
       assert(actual2 === expected2)
     }
-    def `should return unchanged strings with more than one <p>` {
+    it("should return unchanged strings with more than one <p>") {
       val original = "<p>This test finished with a <strong>bold</strong> statement!</p><p>second</p>"
       val actual = HtmlReporter.convertSingleParaToDefinition(original)
       assert(actual === original)
     }
-    def `should return unchanged strings that have just one <p>, but which is not first` {
+    it("should return unchanged strings that have just one <p>, but which is not first") {
       val original = "other stuff<p>This test finished with a <strong>bold</strong> statement!</p>"
       val actual = HtmlReporter.convertSingleParaToDefinition(original)
       assert(actual === original)
     }
-    def `should return unchanged strings that start with <p>, but don't end with </p>` {
+    it("should return unchanged strings that start with <p>, but don't end with </p>") {
       val original = "<p>This test finished with a <strong>bold</strong> statement!</p>extra"
       val actual = HtmlReporter.convertSingleParaToDefinition(original)
       assert(actual === original)

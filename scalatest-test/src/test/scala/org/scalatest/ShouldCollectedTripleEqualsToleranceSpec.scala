@@ -21,7 +21,7 @@ import Matchers._
 import TripleEquals._
 import exceptions.TestFailedException
 
-class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Tolerance {
+class ShouldCollectedTripleEqualsToleranceSpec extends FunSpec /* with NonImplicitAssertions */ with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0
@@ -47,9 +47,9 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
       (7.1 +- 0.2) should === (sevenDotOh)
       (7.5 +- 0.2) should !== (sevenDotOh)
  */
-  object `The should === syntax` {
+  describe("The should === syntax") {
 
-    def `should be true if the number is within the given interval` {
+    it("should be true if the number is within the given interval") {
 
       // Double +- Double
       all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.1 +- 0.2)
@@ -304,13 +304,13 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
       all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should === ((-5).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is outside the given interval` {
+    it("should throw TFE if the number is outside the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.5 +- 0.2) }
       caught.message should be (Some("'all' inspection failed, because: \n" +
-                                "  at index 0, 7.0 did not equal 7.5 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
-                                "in List(7.0, 7.0, 7.0)"))
+                                "  at index 0, " + sevenDotOh + " did not equal 7.5 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
+                                "in List(" + sevenDotOh + ", " + sevenDotOh + ", " + sevenDotOh + ")"))
       intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (6.5 +- 0.2) }
       intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-7.5 +- 0.2) }
       intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-6.5 +- 0.2) }
@@ -437,9 +437,9 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
     }
   }
 
-  object `The !== syntax` {
+  describe("The !== syntax") {
 
-    def `should succeed if the number is outside the given interval` {
+    it("should succeed if the number is outside the given interval") {
 
       // Double +- Double
       all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.5 +- 0.2)
@@ -568,13 +568,13 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
       all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-10).toByte +- 2.toByte)
     }
 
-    def `should throw TFE if the number is within the given interval` {
+    it("should throw TFE if the number is within the given interval") {
 
       // Double +- Double
       val caught = intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 0.2) }
       caught.message should be (Some("'all' inspection failed, because: \n" +
-                                "  at index 0, 7.0 equaled 7.1 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
-                                "in List(7.0, 7.0, 7.0)"))
+                                "  at index 0, " + sevenDotOh + " equaled 7.1 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
+                                "in List(" + sevenDotOh + ", " + sevenDotOh + ", " + sevenDotOh + ")"))
       intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 0.2) }
       intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 0.2) }
       intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 0.2) }
@@ -827,9 +827,9 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
     }
   }
 
-  object `The X +- Y syntax` {
+  describe("The X +- Y syntax") {
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative") {
 
       // Double +- Double
       val caught1 = intercept[IllegalArgumentException] {
@@ -847,55 +847,79 @@ class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitA
       val caught3 = intercept[IllegalArgumentException] {
         all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.1 +- -2L)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught3.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught3.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Int
       val caught4 = intercept[IllegalArgumentException] {
         all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.1 +- -2)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught4.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught4.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Short
       val caught5 = intercept[IllegalArgumentException] {
         all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.1 +- (-2).toShort)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught5.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught5.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Double +- Byte
       val caught6 = intercept[IllegalArgumentException] {
         all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.1 +- (-2).toByte)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught6.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught6.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Float
       val caught7 = intercept[IllegalArgumentException] {
         all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.1f +- -0.2f)
       }
-      assert(caught7.getMessage === "-0.2 passed to +- was zero or negative. Must be a positive non-zero number.")
+      assert(caught7.getMessage === -0.2f + " passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Long
       val caught8 = intercept[IllegalArgumentException] {
         all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.1f +- -2L)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught8.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught8.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Int
       val caught9 = intercept[IllegalArgumentException] {
         all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.1f +- -2)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught9.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught9.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Short
       val caught10 = intercept[IllegalArgumentException] {
         all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.1f +- (-2).toShort)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught10.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught10.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Float +- Byte
       val caught11 = intercept[IllegalArgumentException] {
         all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.1f +- (-2).toByte)
       }
+      // SKIP-SCALATESTJS-START
       assert(caught11.getMessage === "-2.0 passed to +- was zero or negative. Must be a positive non-zero number.")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(caught11.getMessage === "-2 passed to +- was zero or negative. Must be a positive non-zero number.")
 
       // Long +- Long
       val caught12 = intercept[IllegalArgumentException] {

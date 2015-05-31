@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import StringNormalizations._
 
-class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
+class ContainMatcherAndOrDeciderSpec extends FunSpec with Explicitly {
 
   val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -33,11 +33,11 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
       })
   }
   
-  object `ContainMatcher ` {
+  describe("ContainMatcher ") {
     
-    object `when use with 'and'` {
+    describe("when use with 'and'") {
       
-      def `should pass when both contain passes` {
+      it("should pass when both contain passes") {
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" three", " one", "two ")
         val right2 = List(" one", "two ", " three")
@@ -62,7 +62,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first contain failed but second contain passed` {
+      it("should failed with correctly stack depth and message when first contain failed but second contain passed") {
         val left = List("ONE ", " TWO", "THREE ")
         val right = List(" three", "two ", " one")
         
@@ -75,7 +75,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first contain passed but second contain failed` {
+      it("should failed with correctly stack depth and message when first contain passed but second contain failed") {
         val left = List("ONE ", " TWO", "THREE ")
         val right = List(" three", "two ", " one")
         
@@ -88,7 +88,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should pass when not contain and contain passes` {
+      it("should pass when not contain and contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List("eight ", " one", "two ")
@@ -104,7 +104,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
-      def `should pass when contain and not contain passes` {
+      it("should pass when contain and not contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" eight", "one ", " two")
@@ -120,7 +120,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         (left should (contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
-      def `should pass when not contain and not contain passes` {
+      it("should pass when not contain and not contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" eight", "one ", " two")
@@ -136,7 +136,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         (left should (not contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed but second contain passed` {
+      it("should failed with correctly stack depth and message when first not contain failed but second contain passed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" one", "two ", " three")
@@ -151,7 +151,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first contain passed but second not contain failed` {
+      it("should failed with correctly stack depth and message when first contain passed but second not contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" three", "two ", " one")
@@ -166,7 +166,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second not contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" one", "two ", " three")
@@ -183,9 +183,9 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
       
     }
     
-    object `when use with 'or'` {
+    describe("when use with 'or'") {
       
-      def `should pass when one of contain passes` {
+      it("should pass when one of contain passes") {
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List("five ", " one", "two ")
         val right2 = List(" one", "two ", " three")
@@ -210,7 +210,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when both of contain failed` {
+      it("should failed with correctly stack depth and message when both of contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" three", "eight ", " one")
@@ -225,7 +225,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should pass when not contain and contain passes` {
+      it("should pass when not contain and contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List("eight ", " one", "two ")
@@ -241,7 +241,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         (left should (not contain noneOf (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
-      def `should pass when contain and not contain passes` {
+      it("should pass when contain and not contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List("eight ", " one", "two ")
@@ -258,7 +258,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should pass when not contain and not contain passes` {
+      it("should pass when not contain and not contain passes") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List("eight ", " one", "two ")
@@ -274,7 +274,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         (left should (not contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" one", "two ", " three")
@@ -289,7 +289,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first contain failed and second not contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right = List(" three", "two ", " one")
@@ -303,7 +303,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
         
       }
       
-      def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
+      it("should failed with correctly stack depth and message when first not contain failed and second not contain failed") {
         
         val left = List("ONE ", " TWO", "THREE ")
         val right1 = List(" one", "two ", " three")

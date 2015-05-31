@@ -16,7 +16,7 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
 import org.scalactic.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -434,6 +434,11 @@ trait Assertions extends TripleEquals {
    */
   class AssertionsHelper {
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepthAdjustment = 2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
+
     private def append(currentMessage: Option[String], clue: Any) = {
       val clueStr = clue.toString
       if (clueStr.isEmpty)
@@ -463,7 +468,7 @@ trait Assertions extends TripleEquals {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
+        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
       }
     }
 
@@ -478,7 +483,7 @@ trait Assertions extends TripleEquals {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", 2)
+        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
       }
     }
   }
@@ -508,7 +513,7 @@ trait Assertions extends TripleEquals {
     }
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -826,6 +831,11 @@ trait Assertions extends TripleEquals {
 THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR JUST LEAVE IT OUT. FOR NOW I'LL LEAVE IT OUT.
    */
 
+  // SKIP-SCALATESTJS-START
+  private[scalatest] val failStackDepth = 4
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
+
   /**
    * Intercept and return an exception that's expected to
    * be thrown by the passed function value. The thrown exception must be an instance of the
@@ -844,15 +854,15 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * </p>
    *
    * @param f the function value that should throw the expected exception
-   * @param manifest an implicit <code>Manifest</code> representing the type of the specified
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
    * type parameter.
    * @return the intercepted exception, if it is of the expected type
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type
    *     passed <code>expected</code> value.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit manifest: Manifest[T]): T = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
+    val clazz = classTag.runtimeClass
     val caught = try {
       f
       None
@@ -861,7 +871,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
+          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
         }
         else {
           Some(u)
@@ -871,7 +881,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
+        throw newAssertionFailedException(Some(message), None, failStackDepth)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
@@ -1028,7 +1038,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
-      throw newAssertionFailedException(Some(fullMsg), None, 4)
+      throw newAssertionFailedException(Some(fullMsg), None, failStackDepth)
     }
   }
 
@@ -1047,7 +1057,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
-      throw newAssertionFailedException(Some(s), None, 4)
+      throw newAssertionFailedException(Some(s), None, failStackDepth)
     }
   }
   
@@ -1098,7 +1108,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail(): Nothing = { throw newAssertionFailedException(None, None, 4) }
+  def fail(): Nothing = { throw newAssertionFailedException(None, None, failStackDepth) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1113,7 +1123,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (message == null)
         throw new NullPointerException("message is null")
      
-    throw newAssertionFailedException(Some(message),  None, 4)
+    throw newAssertionFailedException(Some(message),  None, failStackDepth)
   }
 
   /**
@@ -1133,7 +1143,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
 
-    throw newAssertionFailedException(Some(message), Some(cause), 4)
+    throw newAssertionFailedException(Some(message), Some(cause), failStackDepth)
   }
 
   /**
@@ -1150,7 +1160,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
         
-    throw newAssertionFailedException(None, Some(cause), 4)
+    throw newAssertionFailedException(None, Some(cause), failStackDepth)
   }
   
   /**
@@ -1378,12 +1388,16 @@ object Assertions extends Assertions {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), 4)
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 4
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 13
+        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
       }
     }
   }
-  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit manifest: Manifest[T]) {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedMessageFun: String => String)(implicit classTag: ClassTag[T]) {
+    val clazz = classTag.runtimeClass
     try {
       f
     }

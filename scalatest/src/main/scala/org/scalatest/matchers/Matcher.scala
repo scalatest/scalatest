@@ -18,8 +18,9 @@ package org.scalatest.matchers
 import org.scalatest.enablers._
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.words.MatcherWords
+import org.scalatest.words._
 import scala.collection.GenTraversable
+import scala.reflect.ClassTag
 import scala.util.matching.Regex
 import org.scalactic.Equality
 import org.scalactic.TripleEqualsSupport.Spread
@@ -27,52 +28,6 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalactic.Prettifier
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
-import org.scalatest.words.FullyMatchWord
-import org.scalatest.words.StartWithWord
-import org.scalatest.words.EndWithWord
-import org.scalatest.words.IncludeWord
-import org.scalatest.words.HaveWord
-import org.scalatest.words.BeWord
-import org.scalatest.words.NotWord
-import org.scalatest.words.ContainWord
-import org.scalatest.words.ResultOfLengthWordApplication
-import org.scalatest.words.ResultOfSizeWordApplication
-import org.scalatest.words.ResultOfMessageWordApplication
-import org.scalatest.words.ResultOfLessThanComparison
-import org.scalatest.words.ResultOfGreaterThanComparison
-import org.scalatest.words.ResultOfLessThanOrEqualToComparison
-import org.scalatest.words.ResultOfGreaterThanOrEqualToComparison
-import org.scalatest.words.ResultOfAWordToSymbolApplication
-import org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication
-import org.scalatest.words.ResultOfAWordToAMatcherApplication
-import org.scalatest.words.ResultOfAnWordToSymbolApplication
-import org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication
-import org.scalatest.words.ResultOfAnWordToAnMatcherApplication
-import org.scalatest.words.ResultOfTheSameInstanceAsApplication
-import org.scalatest.words.ResultOfRegexWordApplication
-import org.scalatest.words.RegexWithGroups
-import org.scalatest.words.ResultOfDefinedAt
-import org.scalatest.words.ResultOfOneOfApplication
-import org.scalatest.words.ResultOfAtLeastOneOfApplication
-import org.scalatest.words.ResultOfNoneOfApplication
-import org.scalatest.words.ResultOfTheSameElementsAsApplication
-import org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication
-import org.scalatest.words.ResultOfOnlyApplication
-import org.scalatest.words.ResultOfAllOfApplication
-import org.scalatest.words.ResultOfInOrderOnlyApplication
-import org.scalatest.words.ResultOfInOrderApplication
-import org.scalatest.words.ResultOfKeyWordApplication
-import org.scalatest.words.ResultOfValueWordApplication
-import org.scalatest.words.ResultOfAtMostOneOfApplication
-import org.scalatest.words.SortedWord
-import org.scalatest.words.ResultOfATypeInvocation
-import org.scalatest.words.ResultOfAnTypeInvocation
-import org.scalatest.words.ExistWord
-import org.scalatest.words.ResultOfNotExist
-import org.scalatest.words.ReadableWord
-import org.scalatest.words.WritableWord
-import org.scalatest.words.EmptyWord
-import org.scalatest.words.DefinedWord
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -776,6 +731,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain allElementsOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.contain.allElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -798,6 +764,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain oneElementOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.contain.oneElementOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -809,6 +786,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain atLeastOneElementOf (1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.contain.atLeastOneElementOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -831,6 +819,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain noElementsOf (1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.contain.noElementsOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -862,6 +861,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class AndBeWord {
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -871,6 +871,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.a(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -891,7 +892,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = and(MatcherWords.be.a(aMatcher))
-    
+
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -901,6 +903,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.an(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -1626,6 +1629,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain oneElementOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfOneElementOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -1637,6 +1651,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain atLeastOneElementOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -1647,6 +1672,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain noElementsOf (List(8, 1, 2))
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfNoElementsOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1702,6 +1738,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain allElementsOf (8, 1, 2)
+     *                  ^
+     * </pre>
+     */
+    def contain(right: ResultOfAllElementsOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1911,6 +1958,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain allElementsOf List(1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.contain.allElementsOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -1933,6 +1991,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain oneElementOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.contain.oneElementOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -1944,6 +2013,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain atLeastOneElementOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.contain.atLeastOneElementOf(elements))
     
     /**
      * This method enables the following syntax:
@@ -1977,6 +2057,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain noElementsOf (1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.contain.noElementsOf(elements))
       
     /**
      * This method enables the following syntax:
@@ -2008,6 +2099,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   final class OrBeWord {
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2017,6 +2109,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.a(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2038,6 +2131,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = or(MatcherWords.be.a(aMatcher))
 
+    // SKIP-SCALATESTJS-START
     /**
      * This method enables the following syntax:
      *
@@ -2047,6 +2141,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.an(symbol))
+    // SKIP-SCALATESTJS-END
 
     /**
      * This method enables the following syntax, where <code>orange</code> and <code>apple</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
@@ -2772,6 +2867,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain oneElementOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfOneElementOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -2783,6 +2889,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain atLeastOneElementOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.not.contain(right))
       
     /**
      * This method enables the following syntax:
@@ -2793,6 +2910,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain noElementsOf (8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfNoElementsOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**
@@ -2848,6 +2976,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or not contain allElementsOf List(8, 1, 2)
+     *                 ^
+     * </pre>
+     */
+    def contain(right: ResultOfAllElementsOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.not.contain(right))
       
     /**
@@ -2990,10 +3129,10 @@ object Matcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): Matcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: ClassTag[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T) = fun(left)
-      override def toString: String = "Matcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
+      override def toString: String = "Matcher[" + ev.runtimeClass.getName + "](" + ev.runtimeClass.getName + " => MatchResult)"
     }
 }
 

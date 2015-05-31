@@ -19,9 +19,9 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events._
 
-class CatchReporterSpec extends Spec {
+class CatchReporterSpec extends FunSpec {
 
-  def `the CatchReporter should catch exceptions` {
+  it("the CatchReporter should catch exceptions") {
 
     val buggyReporter = new ResourcefulReporter {
       override def apply(event: Event) {

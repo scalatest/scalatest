@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-class StatusSpec extends fixture.Spec {
+class StatusSpec extends fixture.FunSpec {
   
   protected type FixtureParam = { 
     def setCompleted()
@@ -35,38 +35,38 @@ class StatusSpec extends fixture.Spec {
      }
    }
   
-  object `StatefulStatus ` {
-    def `should by default return false for isCompleted`(status: FixtureParam) {
+  describe("StatefulStatus ") {
+    it("should by default return false for isCompleted") { status =>
       import scala.language.reflectiveCalls
       assert(!status.isCompleted)
     }
     
-    def `should return true for isCompleted after completes() is called`(status: FixtureParam) {
+    it("should return true for isCompleted after completes() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.isCompleted)
     }
     
-    def `should return true for succeeds() after completes() is called without fails()`(status: FixtureParam) {
+    it("should return true for succeeds() after completes() is called without fails()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.succeeds)
     }
     
-    def `should return false for succeeds() after completes is called after fails()`(status: FixtureParam) {
+    it("should return false for succeeds() after completes is called after fails()") { status =>
       import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
       assert(!status.succeeds)
     }
     
-    def `waitUntilCompleted should not block after completes() is called`(status: FixtureParam) {
+    it("waitUntilCompleted should not block after completes() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
     }
     
-    def `should throw IllegalStateException when setFailed() is called after setCompleted() is set`(status: FixtureParam) {
+    it("should throw IllegalStateException when setFailed() is called after setCompleted() is set") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       intercept[IllegalStateException] {
@@ -74,7 +74,7 @@ class StatusSpec extends fixture.Spec {
       }
     }
     
-    def `should allow setCompleted() to be called multiple times`(status: FixtureParam) {
+    it("should allow setCompleted() to be called multiple times") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.isCompleted)
@@ -84,14 +84,16 @@ class StatusSpec extends fixture.Spec {
       assert(status.isCompleted)
     }
 
-    def `should be serializable`(status: FixtureParam) {
+    // SKIP-SCALATESTJS-START
+    it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
     }
+    // SKIP-SCALATESTJS-END
   }
 
-  object `SucceededStatus ` {
+  describe("SucceededStatus ") {
 
-    def `should invoke a function registered with whenCompleted, passing a succeeded value` {
+    it("should invoke a function registered with whenCompleted, passing a succeeded value") { status =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = false
@@ -109,7 +111,7 @@ class StatusSpec extends fixture.Spec {
       assert(succeeded === true)
     }
 
-    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value` {
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { status =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -143,9 +145,9 @@ class StatusSpec extends fixture.Spec {
     }
   }
 
-  object `FailedStatus ` {
+  describe("FailedStatus ") {
 
-    def `should invoke a function registered with whenCompleted, passing a failed value` {
+    it("should invoke a function registered with whenCompleted, passing a failed value") { status =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = true
@@ -163,7 +165,7 @@ class StatusSpec extends fixture.Spec {
       assert(succeeded === false)
     }
 
-    def `should invoke multiple functions registered with whenCompleted, passing a failed value` {
+    it("should invoke multiple functions registered with whenCompleted, passing a failed value") { status =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -197,8 +199,8 @@ class StatusSpec extends fixture.Spec {
     }
   }
 
-  object `CompositeStatus ` {
-    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully` {
+  describe("CompositeStatus ") {
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { status =>
 
       @volatile var firstCallbackInvoked = false
       @volatile var secondCallbackInvoked = false

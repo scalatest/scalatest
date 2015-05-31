@@ -23,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldFullyMatchSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldFullyMatchSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t
@@ -35,14 +35,14 @@ s should endWith regex t
 s should fullyMatch regex t
 */
 
-  object `The fullyMatch regex syntax` {
+  describe("The fullyMatch regex syntax") {
 
     val decimal = """(-)?(\d+)(\.\d*)?"""
     val decimalRegex = """(-)?(\d+)(\.\d*)?""".r
 
-    object `(when the regex is specified by a string)` {
+    describe("(when the regex is specified by a string)") {
 
-      def `should do nothing if the string fully matches the regular expression specified as a string` {
+      it("should do nothing if the string fully matches the regular expression specified as a string") {
         "1.7" should fullyMatch regex ("1.7")
         "1.7" should fullyMatch regex (decimal)
         "-1.8" should fullyMatch regex (decimal)
@@ -50,7 +50,7 @@ s should fullyMatch regex t
         "1." should fullyMatch regex (decimal)
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used with not") {
   
         "eight" should not { fullyMatch regex (decimal) }
         "1.eight" should not { fullyMatch regex (decimal) }
@@ -62,31 +62,31 @@ s should fullyMatch regex t
         "1.8-" should not fullyMatch regex (decimal)
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression") {
         "1.7" should (fullyMatch regex (decimal) and (fullyMatch regex (decimal)))
         "1.7" should ((fullyMatch regex (decimal)) and (fullyMatch regex (decimal)))
         "1.7" should (fullyMatch regex (decimal) and fullyMatch regex (decimal))
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression") {
         "1.7" should (fullyMatch regex ("hello") or (fullyMatch regex (decimal)))
         "1.7" should ((fullyMatch regex ("hello")) or (fullyMatch regex (decimal)))
         "1.7" should (fullyMatch regex ("hello") or fullyMatch regex (decimal))
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (fullyMatch regex ("bob")) and not (fullyMatch regex (decimal)))
         "fred" should ((not fullyMatch regex ("bob")) and (not fullyMatch regex (decimal)))
         "fred" should (not fullyMatch regex ("bob") and not fullyMatch regex (decimal))
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (fullyMatch regex ("fred")) or not (fullyMatch regex (decimal)))
         "fred" should ((not fullyMatch regex ("fred")) or (not fullyMatch regex (decimal)))
         "fred" should (not fullyMatch regex ("fred") or not fullyMatch regex (decimal))
       }
   
-      def `should throw TestFailedException if the string does not match the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should fullyMatch regex ("1.78")
@@ -124,7 +124,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"1.8-\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string does matches the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { fullyMatch regex ("1.7") }
@@ -177,7 +177,7 @@ s should fullyMatch regex t
         assert(caught15.getMessage === "\"1.\" fully matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (fullyMatch regex (decimal) and (fullyMatch regex ("1.8")))
@@ -211,7 +211,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"1.eight\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.seven" should (fullyMatch regex (decimal) or (fullyMatch regex ("1.8")))
@@ -229,7 +229,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.seven\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.seven\" did not fully match the regular expression 1.8")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not fullyMatch regex ("1.8") and (not fullyMatch regex (decimal)))
@@ -247,7 +247,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.7\" did not fully match the regular expression 1.8, but \"1.7\" fully matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not fullyMatch regex (decimal) or (not fullyMatch regex ("1.7")))
@@ -271,11 +271,11 @@ s should fullyMatch regex t
       }
     }
 
-    object `(when the regex is specifed by a string and with group)` {
+    describe("(when the regex is specifed by a string and with group)") {
       
-      object `(when used with should)` {
+      describe("(when used with should)") {
       
-        def `should do nothing if the string fully matches the regular expression and with group as specified` {
+        it("should do nothing if the string fully matches the regular expression and with group as specified") {
           "abbc" should fullyMatch regex ("a(b*)c" withGroup "bb") 
           "abbcc" should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")) 
           
@@ -312,7 +312,7 @@ s should fullyMatch regex t
           "abbcc" should (equal ("abbc") or fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
       
-        def `should throw TestFailedException if the string fully matches the regular expression but does not match specified group` {
+        it("should throw TestFailedException if the string fully matches the regular expression but does not match specified group") {
           val caught1 = intercept[TestFailedException] {
             "abbbc" should fullyMatch regex ("a(b*)c" withGroup "bb")
           }
@@ -541,8 +541,8 @@ s should fullyMatch regex t
         }
       }
       
-      object `(when used with should not)` {
-        def `should do nothing if the string does not fully match the regular expression and with group as specified` {
+      describe("(when used with should not)") {
+        it("should do nothing if the string does not fully match the regular expression and with group as specified") {
           "abbbc" should not { fullyMatch regex ("a(b*)c" withGroup "bb") } 
           "abbbc" should not fullyMatch regex ("a(b*)c" withGroup "bb") 
         
@@ -574,7 +574,7 @@ s should fullyMatch regex t
           "abbbc" should (not equal ("abbbc") or not fullyMatch regex ("a(b*)c" withGroup "bb"))
         }
       
-        def `should throw TestFailedException if the string fully matches the regular expression and with group as specified` {
+        it("should throw TestFailedException if the string fully matches the regular expression and with group as specified") {
           val caught1 = intercept[TestFailedException] {
             "abbc" should not { fullyMatch regex ("a(b*)c" withGroup "bb") }
           }
@@ -690,9 +690,9 @@ s should fullyMatch regex t
       }
     }
     
-    object `(when the regex is specified by an actual Regex)` {
+    describe("(when the regex is specified by an actual Regex)") {
 
-      def `should do nothing if the string fully matches the regular expression specified as a string` {
+      it("should do nothing if the string fully matches the regular expression specified as a string") {
         "1.7" should fullyMatch regex ("1.7")
         "1.7" should fullyMatch regex (decimalRegex)
         "-1.8" should fullyMatch regex (decimalRegex)
@@ -700,7 +700,7 @@ s should fullyMatch regex t
         "1." should fullyMatch regex (decimalRegex)
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used with not") {
   
         "eight" should not { fullyMatch regex (decimalRegex) }
         "1.eight" should not { fullyMatch regex (decimalRegex) }
@@ -712,31 +712,31 @@ s should fullyMatch regex t
         "1.8-" should not fullyMatch regex (decimalRegex)
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression") {
         "1.7" should (fullyMatch regex (decimalRegex) and (fullyMatch regex (decimalRegex)))
         "1.7" should ((fullyMatch regex (decimalRegex)) and (fullyMatch regex (decimalRegex)))
         "1.7" should (fullyMatch regex (decimalRegex) and fullyMatch regex (decimalRegex))
       }
 
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression") {
         "1.7" should (fullyMatch regex ("hello") or (fullyMatch regex (decimalRegex)))
         "1.7" should ((fullyMatch regex ("hello")) or (fullyMatch regex (decimalRegex)))
         "1.7" should (fullyMatch regex ("hello") or fullyMatch regex (decimalRegex))
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (fullyMatch regex ("bob")) and not (fullyMatch regex (decimalRegex)))
         "fred" should ((not fullyMatch regex ("bob")) and (not fullyMatch regex (decimalRegex)))
         "fred" should (not fullyMatch regex ("bob") and not fullyMatch regex (decimalRegex))
       }
   
-      def `should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not fully match the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (fullyMatch regex ("fred")) or not (fullyMatch regex (decimalRegex)))
         "fred" should ((not fullyMatch regex ("fred")) or (not fullyMatch regex (decimalRegex)))
         "fred" should (not fullyMatch regex ("fred") or not fullyMatch regex (decimalRegex))
       }
   
-      def `should throw TestFailedException if the string does not match the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should fullyMatch regex ("1.78")
@@ -774,7 +774,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"1.8-\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string does matches the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { fullyMatch regex ("1.7") }
@@ -827,7 +827,7 @@ s should fullyMatch regex t
         assert(caught15.getMessage === "\"1.\" fully matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (fullyMatch regex (decimalRegex) and (fullyMatch regex ("1.8")))
@@ -861,7 +861,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"1.eight\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.seven" should (fullyMatch regex (decimalRegex) or (fullyMatch regex ("1.8")))
@@ -879,7 +879,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.seven\" did not fully match the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.seven\" did not fully match the regular expression 1.8")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-and expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not fullyMatch regex ("1.8") and (not fullyMatch regex (decimalRegex)))
@@ -897,7 +897,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.7\" did not fully match the regular expression 1.8, but \"1.7\" fully matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
   
-      def `should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string fully matches the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not fullyMatch regex (decimalRegex) or (not fullyMatch regex ("1.7")))
@@ -921,11 +921,11 @@ s should fullyMatch regex t
       }
     }
     
-    object `(when the regex is specifed by a actual Regex and with group)` {
+    describe("(when the regex is specifed by a actual Regex and with group)") {
       
-      object `(when used with should)` {
+      describe("(when used with should)") {
       
-        def `should do nothing if the string fully matches the regular expression and with group as specified` {
+        it("should do nothing if the string fully matches the regular expression and with group as specified") {
           "abbc" should fullyMatch regex ("a(b*)c".r withGroup "bb") 
           "abbcc" should fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")) 
           
@@ -962,7 +962,7 @@ s should fullyMatch regex t
           "abbcc" should (equal ("abbbcc") or fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
         }
       
-        def `should throw TestFailedException if the string fully matches the regular expression but does not match specified group` {
+        it("should throw TestFailedException if the string fully matches the regular expression but does not match specified group") {
           val caught1 = intercept[TestFailedException] {
             "abbbc" should fullyMatch regex ("a(b*)c".r withGroup "bb")
           }
@@ -1235,8 +1235,8 @@ s should fullyMatch regex t
         }
       }
       
-      object `(when used with should not)` {
-        def `should do nothing if the string does not fully match the regular expression and with group as specified` {
+      describe("(when used with should not)") {
+        it("should do nothing if the string does not fully match the regular expression and with group as specified") {
           "abbbc" should not { fullyMatch regex ("a(b*)c".r withGroup "bb") } 
           "abbbc" should not fullyMatch regex ("a(b*)c".r withGroup "bb") 
         
@@ -1268,7 +1268,7 @@ s should fullyMatch regex t
           "abbbc" should (not equal ("abbbc") or not fullyMatch regex ("a(b*)c".r withGroup "bb"))
         }
       
-        def `should throw TestFailedException if the string fully matches the regular expression and with group as specified` {
+        it("should throw TestFailedException if the string fully matches the regular expression and with group as specified") {
           val caught1 = intercept[TestFailedException] {
             "abbc" should not { fullyMatch regex ("a(b*)c".r withGroup "bb") }
           }

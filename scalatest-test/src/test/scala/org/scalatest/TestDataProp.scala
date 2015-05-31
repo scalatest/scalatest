@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 package org.scalatest
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+// SKIP-SCALATESTJS-END
 import SharedHelpers._
 
 class TestDataProp extends AllSuiteProp {
 
   type FixtureServices = TestDataFixtureServices
-  
+
+  // SKIP-SCALATESTJS-START
   def spec = new ExampleTestDataSpec
   def fixtureSpec = new ExampleTestDataFixtureSpec
   def junit3Suite = new ExampleTestDataJUnit3Suite
   def junitSuite = new ExampleTestDataJUnitSuite
   def testngSuite = new ExampleTestDataTestNGSuite
+  // SKIP-SCALATESTJS-END
   def funSuite = new ExampleTestDataFunSuite
   def fixtureFunSuite = new ExampleTestDataFixtureFunSuite
   def funSpec = new ExampleTestDataFunSpec
@@ -70,6 +74,7 @@ trait TestDataFixtureServices {
 
 object TestDataTag extends Tag("org.scalatest.tags.TestDataTag")
 
+// SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleTestDataSpec extends Spec with TestDataFixtureServices {
   val expectedTestData = new TestData {
@@ -161,15 +166,19 @@ class ExampleTestDataTestNGSuite extends TestNGSuite with TestDataFixtureService
   @Ignore
   def testMethod1() {}
 }
+// SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleTestDataFunSuite extends FunSuite with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataFunSuite extends FunSuite with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -180,13 +189,16 @@ class ExampleTestDataFunSuite extends FunSuite with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureFunSuite extends fixture.FunSuite with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureFunSuite extends fixture.FunSuite with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -197,13 +209,16 @@ class ExampleTestDataFixtureFunSuite extends fixture.FunSuite with TestDataFixtu
 }
 
 @DoNotDiscover
-class ExampleTestDataFunSpec extends FunSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataFunSpec extends FunSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -218,13 +233,16 @@ class ExampleTestDataFunSpec extends FunSpec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureFunSpec extends fixture.FunSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureFunSpec extends fixture.FunSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -239,13 +257,16 @@ class ExampleTestDataFixtureFunSpec extends fixture.FunSpec with TestDataFixture
 }
 
 @DoNotDiscover
-class ExampleTestDataFeatureSpec extends FeatureSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataFeatureSpec extends FeatureSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Feature: Feature 1 Scenario: Scenario 1"
     val scopes = Vector("Feature: Feature 1")
     val text = "Scenario: Scenario 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -258,13 +279,16 @@ class ExampleTestDataFeatureSpec extends FeatureSpec with TestDataFixtureService
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureFeatureSpec extends fixture.FeatureSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureFeatureSpec extends fixture.FeatureSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Feature: Feature 1 Scenario: Scenario 1"
     val scopes = Vector("Feature: Feature 1")
     val text = "Scenario: Scenario 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -277,13 +301,16 @@ class ExampleTestDataFixtureFeatureSpec extends fixture.FeatureSpec with TestDat
 }
 
 @DoNotDiscover
-class ExampleTestDataFlatSpec extends FlatSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataFlatSpec extends FlatSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 should test 1"
     val scopes = Vector("Scope 1")
     val text = "should test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -294,13 +321,16 @@ class ExampleTestDataFlatSpec extends FlatSpec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureFlatSpec extends fixture.FlatSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureFlatSpec extends fixture.FlatSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 should test 1"
     val scopes = Vector("Scope 1")
     val text = "should test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -311,13 +341,16 @@ class ExampleTestDataFixtureFlatSpec extends fixture.FlatSpec with TestDataFixtu
 }
 
 @DoNotDiscover
-class ExampleTestDataFreeSpec extends FreeSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataFreeSpec extends FreeSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -332,13 +365,16 @@ class ExampleTestDataFreeSpec extends FreeSpec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureFreeSpec extends fixture.FreeSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureFreeSpec extends fixture.FreeSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -353,13 +389,16 @@ class ExampleTestDataFixtureFreeSpec extends fixture.FreeSpec with TestDataFixtu
 }
 
 @DoNotDiscover
-class ExampleTestDataPropSpec extends PropSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataPropSpec extends PropSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -370,13 +409,16 @@ class ExampleTestDataPropSpec extends PropSpec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixturePropSpec extends fixture.PropSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixturePropSpec extends fixture.PropSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Test 1"
     val scopes = Vector.empty
     val text = "Test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -387,13 +429,16 @@ class ExampleTestDataFixturePropSpec extends fixture.PropSpec with TestDataFixtu
 }
 
 @DoNotDiscover
-class ExampleTestDataWordSpec extends WordSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataWordSpec extends WordSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 should Scope 2 should test 1"
     val scopes = Vector("Scope 1 should", "Scope 2 should")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: NoArgTest): Outcome = {
@@ -408,13 +453,16 @@ class ExampleTestDataWordSpec extends WordSpec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureWordSpec extends fixture.WordSpec with TestDataFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestDataFixtureWordSpec extends fixture.WordSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 should Scope 2 should test 1"
     val scopes = Vector("Scope 1 should", "Scope 2 should")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   var testData: TestData = null
   override def withFixture(test: OneArgTest): Outcome = {
@@ -429,13 +477,16 @@ class ExampleTestDataFixtureWordSpec extends fixture.WordSpec with TestDataFixtu
 }
 
 @DoNotDiscover
-class ExampleTestDataPathFreeSpec extends path.FreeSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataPathFreeSpec extends path.FreeSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))
   "Scope 1" - {
@@ -443,16 +494,20 @@ class ExampleTestDataPathFreeSpec extends path.FreeSpec with TestDataFixtureServ
       "test 1" taggedAs(TestDataTag) in {}
     }
   }
+  override def newInstance: path.FreeSpecLike = new ExampleTestDataPathFreeSpec
 }
 
 @DoNotDiscover
-class ExampleTestDataPathFunSpec extends path.FunSpec with TestDataFixtureServices {
+protected[scalatest] class ExampleTestDataPathFunSpec extends path.FunSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
     val scopes = Vector("Scope 1", "Scope 2")
     val text = "test 1"
+    // SKIP-SCALATESTJS-START
     val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.tags.TestDataTag")
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val tags = Set("org.scalatest.tags.TestDataTag")
   }
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))
   describe("Scope 1") {
@@ -460,4 +515,5 @@ class ExampleTestDataPathFunSpec extends path.FunSpec with TestDataFixtureServic
       it("test 1", TestDataTag) {}
     }
   }
+  override def newInstance: path.FunSpecLike = new ExampleTestDataPathFunSpec
 }

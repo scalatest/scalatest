@@ -20,7 +20,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class MapShouldBeDefinedAtSpec extends Spec {
+class MapShouldBeDefinedAtSpec extends FunSpec {
   
   def wasDefinedAt(left: Any, right: Any): String =
     decorateToStringValue(left) + " was defined at " + decorateToStringValue(right)
@@ -34,19 +34,19 @@ class MapShouldBeDefinedAtSpec extends Spec {
   def didNotEqual(left: Any, right: Any): String =
     decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
   
-  object `PartialFunction ` {
+  describe("PartialFunction ") {
     
     val map = Map(6 -> "six", 8 -> "eight")
     
     val map2 = Map(6 -> "enam", 8 -> "lapan")
     
-    object `should be definedAt` {
+    describe("should be definedAt") {
       
-      def `should do nothing when PartialFunction is defined at the specified value` {
+      it("should do nothing when PartialFunction is defined at the specified value") {
         map should be definedAt (6)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is not defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is not defined at the specified value") {
         val caught = intercept[TestFailedException] {
           map should be definedAt (0)
         }
@@ -55,7 +55,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-and expression passed` {
+      it("should do nothing when both expressions in logical-and expression passed") {
         map should (be definedAt (6) and be definedAt (8))
         map should (be definedAt (6) and (be definedAt (8)))
         map should (be (definedAt (6)) and be (definedAt (8)))
@@ -69,7 +69,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (be (definedAt (6)) and (equal (map)))
       }
       
-      def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when first expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) and be definedAt (8))
         }
@@ -113,7 +113,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when second expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (8) and be definedAt (0))
         }
@@ -157,7 +157,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) and be definedAt (0))
         }
@@ -180,7 +180,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-or expression passed` {
+      it("should do nothing when both expressions in logical-or expression passed") {
         map should (be definedAt (6) or be definedAt (8))
         map should (be definedAt (6) or (be definedAt (8)))
         map should (be (definedAt (6)) or be (definedAt (8)))
@@ -194,7 +194,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (be (definedAt (6)) or (equal (map)))
       }
       
-      def `should do nothing when first expression in logical-or expression failed` {
+      it("should do nothing when first expression in logical-or expression failed") {
         map should (be definedAt (0) or be definedAt (8))
         map should (be definedAt (0) or (be definedAt (8)))
         map should (be (definedAt (0)) or be (definedAt (8)))
@@ -208,7 +208,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (be (definedAt (0)) or (equal (map)))
       }
       
-      def `should do nothing when second expressions in logical-or expression failed` {
+      it("should do nothing when second expressions in logical-or expression failed") {
         map should (be definedAt (6) or be definedAt (0))
         map should (be definedAt (6) or (be definedAt (0)))
         map should (be (definedAt (6)) or be (definedAt (0)))
@@ -222,7 +222,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (be (definedAt (6)) or (equal (map2)))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-or expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) or be definedAt (0))
         }
@@ -260,13 +260,13 @@ class MapShouldBeDefinedAtSpec extends Spec {
       }
     }
     
-    object `should not be definedAt` {
+    describe("should not be definedAt") {
       
-      def `should do nothing when PartialFunction is not defined at the specified value` {
+      it("should do nothing when PartialFunction is not defined at the specified value") {
         map should not be definedAt (0)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value") {
         val caught = intercept[TestFailedException] {
           map should not be definedAt (8)
         }
@@ -275,7 +275,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-and expression passed` {
+      it("should do nothing when both expressions in logical-and expression passed") {
         map should (not be definedAt (0) and not be definedAt (0))
         map should (not be definedAt (0) and (not be definedAt (0)))
         map should (not be (definedAt (0)) and not be (definedAt (0)))
@@ -289,7 +289,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (not be (definedAt (0)) and (not equal (map2)))
       }
       
-      def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when first expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) and not be definedAt (0))
         }
@@ -333,7 +333,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when second expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (0) and not be definedAt (8))
         }
@@ -377,7 +377,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-and expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) and not be definedAt (8))
         }
@@ -400,7 +400,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should do nothing when both expressions in logical-or expression passed` {
+      it("should do nothing when both expressions in logical-or expression passed") {
         map should (not be definedAt (0) or not be definedAt (0))
         map should (not be definedAt (0) or (not be definedAt (0)))
         map should (not be (definedAt (0)) or not be (definedAt (0)))
@@ -414,7 +414,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (not be (definedAt (0)) or (not equal (map2)))
       }
       
-      def `should do nothing when first expression in logical-or expression failed` {
+      it("should do nothing when first expression in logical-or expression failed") {
         map should (not be definedAt (8) or not be definedAt (0))
         map should (not be definedAt (8) or (not be definedAt (0)))
         map should (not be (definedAt (8)) or not be (definedAt (0)))
@@ -428,7 +428,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (not be (definedAt (8)) or (not equal (map2)))
       }
       
-      def `should do nothing when second expressions in logical-or expression failed` {
+      it("should do nothing when second expressions in logical-or expression failed") {
         map should (not be definedAt (0) or not be definedAt (8))
         map should (not be definedAt (0) or (not be definedAt (8)))
         map should (not be (definedAt (0)) or not be (definedAt (8)))
@@ -442,7 +442,7 @@ class MapShouldBeDefinedAtSpec extends Spec {
         map should (not be (definedAt (0)) or (not equal (map)))
       }
       
-      def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
+      it("should throw TestFailedException with correct stack depth when both expression in logical-or expression failed") {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) or not be definedAt (8))
         }
@@ -481,13 +481,13 @@ class MapShouldBeDefinedAtSpec extends Spec {
       
     }
     
-    object `shouldNot be definedAt` {
+    describe("shouldNot be definedAt") {
       
-      def `should do nothing when PartialFunction is not defined at the specified value` {
+      it("should do nothing when PartialFunction is not defined at the specified value") {
         map shouldNot be definedAt (0)
       }
       
-      def `should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value` {
+      it("should throw TestFailedException with correct stack depth when PartialFunction is defined at the specified value") {
         val caught = intercept[TestFailedException] {
           map shouldNot be definedAt (8)
         }

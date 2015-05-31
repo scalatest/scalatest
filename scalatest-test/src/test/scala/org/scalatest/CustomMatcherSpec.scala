@@ -23,9 +23,15 @@ import matchers.MatchResult
 
 trait CustomMatchers {
 
-  class FileExistsMatcher extends Matcher[java.io.File] {
+  trait File {
+    val getName: String
+    val isFile: Boolean
+    val exists: Boolean
+  }
 
-    def apply(left: java.io.File) = {
+  class FileExistsMatcher extends Matcher[File] {
+
+    def apply(left: File) = {
 
       val fileOrDir = if (left.isFile) "file" else "directory"
 
@@ -54,9 +60,21 @@ class CustomMatcherSpec extends FunSpec with CustomMatchers {
 
   describe("A customer matcher") {
 
-    it("should work when used in various combinations of and, or, and not, when the file does not exist") {
+    val imaginaryFile = new File {
+      val getName: String = "imaginary.txt"
+      val isFile: Boolean = false
+      val exists: Boolean = false
+      override def toString: String = getName
+    }
 
-      val imaginaryFile = new java.io.File("imaginary.txt")
+    val tempFile = new File {
+      val getName: String = "delete"
+      val isFile: Boolean = true
+      val exists: Boolean = true
+      override def toString: String = getName
+    }
+
+    it("should work when used in various combinations of and, or, and not, when the file does not exist") {
 
       imaginaryFile should not (beFound)
 
@@ -65,38 +83,30 @@ class CustomMatcherSpec extends FunSpec with CustomMatchers {
       }
       assert(caught1.getMessage === "The directory named imaginary.txt did not exist")
 
-      imaginaryFile should (not be a ('file) and not (beFound))
+      imaginaryFile should (not be tempFile and not (beFound))
 
       val caught2 = intercept[TestFailedException] {
-        imaginaryFile should (not be a ('file) and beFound)
+        imaginaryFile should (not be tempFile and beFound)
       }
-      assert(caught2.getMessage === "imaginary.txt was not a file, but the directory named imaginary.txt did not exist")
+      assert(caught2.getMessage === "imaginary.txt was not equal to delete, but the directory named imaginary.txt did not exist")
     }
 
     it("should work when used in various combinations of and, or, and not, when the file does exist") {
 
-      val tempFile = java.io.File.createTempFile("delete", "me")
+      tempFile should beFound
 
-      try {
-        tempFile should beFound
-
-        val caught1 = intercept[TestFailedException] {
-          tempFile should not (beFound)
-        }
-        assert(caught1.getMessage === "The file named " + tempFile.getName + " existed")
-        caught1.getMessage should startWith ("The file named delete")
-        caught1.getMessage should endWith ("me existed")
-
-        tempFile should (be a ('file) and beFound)
-
-        val caught2 = intercept[TestFailedException] {
-          tempFile should (be a ('file) and not (beFound))
-        }
-        caught2.getMessage should endWith (", but the file named " + tempFile.getName + " existed")
+      val caught1 = intercept[TestFailedException] {
+        tempFile should not (beFound)
       }
-      finally {
-        tempFile.delete()
+      assert(caught1.getMessage === "The file named " + tempFile.getName + " existed")
+      caught1.getMessage should be ("The file named delete existed")
+
+      tempFile should (be (tempFile) and beFound)
+
+      val caught2 = intercept[TestFailedException] {
+        tempFile should (be (tempFile) and not (beFound))
       }
+      caught2.getMessage should be ("delete was equal to delete, but the file named delete existed")
     }
   }
 

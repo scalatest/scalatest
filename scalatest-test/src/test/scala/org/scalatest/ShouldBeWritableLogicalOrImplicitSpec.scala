@@ -20,7 +20,7 @@ import enablers.Writability
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
+class ShouldBeWritableLogicalOrImplicitSpec extends FunSpec {
   
   val fileName: String = "ShouldBeWritableLogicalOrImplicitSpec.scala"
   
@@ -64,11 +64,11 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
       def isWritable(thing: T): Boolean = thing.canRead
     }
   
-  object `Sorted matcher` {
+  describe("Sorted matcher") {
     
-    object `when work with 'file should be (writable)'` {
+    describe("when work with 'file should be (writable)'") {
       
-      def `should do nothing when file is writable` {
+      it("should do nothing when file is writable") {
         
         book should (be (writable) or be (book))
         stone should (be (writable) or be (stone))
@@ -87,7 +87,7 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
         stone should (equal (stone) or be (writable))
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not writable` {
+      it("should throw TestFailedException with correct stack depth when file is not writable") {
         val caught1 = intercept[TestFailedException] {
           stone should (be (writable) or be (book))
         }
@@ -118,9 +118,9 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'file should not be writable'` {
+    describe("when work with 'file should not be writable'") {
       
-      def `should do nothing when file is not writable` {
+      it("should do nothing when file is not writable") {
         stone should (not be writable or not be book)
         book should (not be writable or not be stone)
         stone should (not be writable or not be stone)
@@ -138,7 +138,7 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
         book should (not equal stone or not be writable)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is writable` {
+      it("should throw TestFailedException with correct stack depth when file is writable") {
         val caught1 = intercept[TestFailedException] {
           book should (not be writable or not be book)
         }
@@ -169,9 +169,9 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (writable)'` {
+    describe("when work with 'all(xs) should be (writable)'") {
       
-      def `should do nothing when all(xs) is writable` {
+      it("should do nothing when all(xs) is writable") {
         all(List(book)) should (be (writable) or be (book))
         all(List(stone)) should (be (writable) or be (stone))
         all(List(book)) should (be (writable) or be (stone))
@@ -189,7 +189,7 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
         all(List(stone)) should (equal (stone) or be (writable))
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (be (book) or be (writable))
@@ -224,8 +224,8 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be sorted'` {
-      def `should do nothing when xs is not sorted` {
+    describe("when work with 'all(xs) should not be sorted'") {
+      it("should do nothing when xs is not sorted") {
         all(List(stone)) should (not be writable or not be book)
         all(List(book)) should (not be writable or not be stone)
         all(List(stone)) should (not be writable or not be stone)
@@ -243,7 +243,7 @@ class ShouldBeWritableLogicalOrImplicitSpec extends Spec {
         all(List(book)) should (not equal stone or not be writable)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
           all(left1) should (not be book or not be writable)

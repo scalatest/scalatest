@@ -19,18 +19,18 @@ import org.scalatest._
 import Matchers._
 import java.io.File
 
-class AnMatcherSpec extends Spec {
+class AnMatcherSpec extends FunSpec {
   
-  object `AnMatcher ` {
+  describe("AnMatcher ") {
     
-    object `instance created by AnMatcher apply method` {
+    describe("instance created by AnMatcher apply method") {
       
-      val anMatcher = AnMatcher[File]("file") { file => 
+      val anMatcher = AnMatcher[List[Int]]("list") { list =>
         true 
       }
       
-      def `should have pretty toString` {
-        anMatcher.toString should be ("AnMatcher[java.io.File](\"file\", java.io.File => Boolean)")
+      it("should have pretty toString") {
+        anMatcher.toString should be ("AnMatcher[scala.collection.immutable.List](\"list\", scala.collection.immutable.List => Boolean)")
       }
       
     }

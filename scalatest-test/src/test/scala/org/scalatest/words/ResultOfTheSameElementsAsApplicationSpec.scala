@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfTheSameElementsAsApplicationSpec extends Spec {
+class ResultOfTheSameElementsAsApplicationSpec extends FunSpec {
   
-  object `ResultOfTheSameElementsAsApplication ` {
+  describe("ResultOfTheSameElementsAsApplication ") {
     
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfTheSameElementsAsApplication(Vector.empty)
       result.toString should be ("theSameElementsAs (Vector())")
     }
     
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfTheSameElementsAsApplication(Vector("Bob"))
       result.toString should be ("theSameElementsAs (Vector(\"Bob\"))")
     }
     
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfTheSameElementsAsApplication(Vector("Bob", "Alice"))
       result.toString should be ("theSameElementsAs (Vector(\"Bob\", \"Alice\"))")
     }

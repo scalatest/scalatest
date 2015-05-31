@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
 import Matchers._
+import org.scalatest.concurrent.SleepHelper
 
 class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   
@@ -30,9 +31,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       beforeAllTime = System.currentTimeMillis
     }
     
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     
     override def newInstance: Suite with ParallelTestExecution = new ExampleSuite
     
@@ -42,17 +43,17 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   }
   
   class ExampleNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
   @Ignore
   class ExampleIgnoreNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
@@ -96,9 +97,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       counter.incrementAfterAllCount()
     }
     
-    test("test 1") { Thread.sleep(100) }
-    test("test 2") { Thread.sleep(100) }
-    test("test 3") { Thread.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100) }
+    test("test 2") { SleepHelper.sleep(100) }
+    test("test 3") { SleepHelper.sleep(100) }
     
     override def newInstance: Suite with OneInstancePerTest = new ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter)
   }
@@ -274,6 +275,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
+    // SKIP-SCALATESTJS-START
     it("should not invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       @Ignore
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
@@ -295,6 +297,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
+    // SKIP-SCALATESTJS-END
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
@@ -319,6 +322,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (1)
       spec.afterAllCount.get should be (1)
     }
+    // SKIP-SCALATESTJS-START
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
@@ -342,5 +346,6 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.beforeAllCount.get should be (0)
       spec.afterAllCount.get should be (0)
     }
+    // SKIP-SCALATESTJS-END
   }
 }

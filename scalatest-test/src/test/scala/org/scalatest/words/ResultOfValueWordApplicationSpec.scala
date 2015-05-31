@@ -18,16 +18,16 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfValueWordApplicationSpec extends Spec {
+class ResultOfValueWordApplicationSpec extends FunSpec {
   
-  object `ResultOfValueWordApplication ` {
+  describe("ResultOfValueWordApplication ") {
     
-    def `should have pretty toString when expectedKey is null` {
+    it("should have pretty toString when expectedKey is null") {
       val result = new ResultOfValueWordApplication(null)
       result.toString should be ("value (null)")
     }
     
-    def `should have pretty toString when expectedKey is not null` {
+    it("should have pretty toString when expectedKey is not null") {
       val result = new ResultOfValueWordApplication("Bob")
       result.toString should be ("value (\"Bob\")")
     }

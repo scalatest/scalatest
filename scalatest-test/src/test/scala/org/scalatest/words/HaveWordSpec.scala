@@ -18,20 +18,20 @@ package org.scalatest.words
 import org.scalatest._
 import matchers.{HavePropertyMatcher, HavePropertyMatchResult}
 
-class HaveWordSpec extends Spec with Matchers {
+class HaveWordSpec extends FunSpec with Matchers {
   
-  object `HaveWord ` {
+  describe("HaveWord ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       have.toString should be ("have")
     }
     
-    object `length(Long) method returns MatcherFactory1` {
+    describe("length(Long) method returns MatcherFactory1") {
       
       val mtf = have length 3
       val mt = mtf.matcher[Array[Int]]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("have length 3")
         mt.toString should be ("have length 3")
       }
@@ -39,7 +39,7 @@ class HaveWordSpec extends Spec with Matchers {
       val lhs = Array(1, 2, 3)
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
@@ -59,7 +59,7 @@ class HaveWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage ("Array(1, 2, 3) had length 3"),
@@ -78,12 +78,12 @@ class HaveWordSpec extends Spec with Matchers {
       }
     }
     
-    object `size(Long) method returns MatcherFactory1` {
+    describe("size(Long) method returns MatcherFactory1") {
       
       val mtf = have size 3
       val mt = mtf.matcher[Array[Int]]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("have size 3")
         mt.toString should be ("have size 3")
       }
@@ -91,7 +91,7 @@ class HaveWordSpec extends Spec with Matchers {
       val lhs = Array(1, 2, 3)
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
@@ -111,7 +111,7 @@ class HaveWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage ("Array(1, 2, 3) had size 3"),
@@ -130,12 +130,12 @@ class HaveWordSpec extends Spec with Matchers {
       }
     }
     
-    object `message(String) method returns MatcherFactory1` {
+    describe("message(String) method returns MatcherFactory1") {
       
       val mtf = have message "Message from Mars!"
       val mt = mtf.matcher[RuntimeException]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("have message \"Message from Mars!\"")
         mt.toString should be ("have message \"Message from Mars!\"")
       }
@@ -143,7 +143,7 @@ class HaveWordSpec extends Spec with Matchers {
       val lhs = new RuntimeException("Message from Mars!")
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage (lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""),
@@ -163,7 +163,7 @@ class HaveWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage (lhs + " had message \"Message from Mars!\""),
@@ -182,12 +182,12 @@ class HaveWordSpec extends Spec with Matchers {
       }
     }
     
-    object `apply(ResultOfLengthWordApplication) method returns MatcherFactory1` {
+    describe("apply(ResultOfLengthWordApplication) method returns MatcherFactory1") {
       
       val mtf = have (new ResultOfLengthWordApplication(3))
       val mt = mtf.matcher[Array[Int]]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("have length 3")
         mt.toString should be ("have length 3")
       }
@@ -195,7 +195,7 @@ class HaveWordSpec extends Spec with Matchers {
       val lhs = Array(1, 2, 3)
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
@@ -215,7 +215,7 @@ class HaveWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage ("Array(1, 2, 3) had length 3"),
@@ -234,12 +234,12 @@ class HaveWordSpec extends Spec with Matchers {
       }
     }
     
-    object `size(ResultOfSizeWordApplication) method returns MatcherFactory1` {
+    describe("size(ResultOfSizeWordApplication) method returns MatcherFactory1") {
       
       val mtf = have (new ResultOfSizeWordApplication(3))
       val mt = mtf.matcher[Array[Int]]
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mtf.toString should be ("have size 3")
         mt.toString should be ("have size 3")
       }
@@ -247,7 +247,7 @@ class HaveWordSpec extends Spec with Matchers {
       val lhs = Array(1, 2, 3)
       val mr = mt(lhs)
       
-      def `should have correct MatcherResult` {
+      it("should have correct MatcherResult") {
         mr should have (
           'matches (true),
           'failureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
@@ -267,7 +267,7 @@ class HaveWordSpec extends Spec with Matchers {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      it("should have correct negated MatcherResult") {
         nmr should have (
           'matches (false),
           'failureMessage ("Array(1, 2, 3) had size 3"),
@@ -286,7 +286,7 @@ class HaveWordSpec extends Spec with Matchers {
       }
     }
     
-    object `apply(HavePropertyMatcher) method returns MatcherFactory1` {
+    describe("apply(HavePropertyMatcher) method returns MatcherFactory1") {
       
       def name(expectedName: String) = {
         HavePropertyMatcher {
@@ -304,16 +304,16 @@ class HaveWordSpec extends Spec with Matchers {
       
       case class Person(name: String)
       
-      def `should have pretty toString` {
+      it("should have pretty toString") {
         mt.toString should be ("have (" + nameBob + ")")
       }
       
-      object `when evaluate to true` {
+      describe("when evaluate to true") {
         
         val lhs = Person("Bob")
         val mr = mt(lhs)
       
-        def `should have correct MatcherResult` {
+        it("should have correct MatcherResult") {
           mr should have (
             'matches (true),
             'failureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
@@ -333,7 +333,7 @@ class HaveWordSpec extends Spec with Matchers {
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
+        it("should have correct negated MatcherResult") {
           nmr should have (
             'matches (false),
             'failureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
@@ -353,12 +353,12 @@ class HaveWordSpec extends Spec with Matchers {
         
       }
       
-      object `when evaluate to false` {
+      describe("when evaluate to false") {
         
         val lhs = Person("Alice")
         val mr = mt(lhs)
       
-        def `should have correct MatcherResult` {
+        it("should have correct MatcherResult") {
           mr should have (
             'matches (false),
             'failureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
@@ -378,7 +378,7 @@ class HaveWordSpec extends Spec with Matchers {
       
         val nmr = mr.negated
       
-        def `should have correct negated MatcherResult` {
+        it("should have correct negated MatcherResult") {
           nmr should have (
             'matches (true),
             'failureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),

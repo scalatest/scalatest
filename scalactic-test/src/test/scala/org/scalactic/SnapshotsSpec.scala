@@ -17,19 +17,19 @@ package org.scalactic
 
 import org.scalatest._
 
-class SnapshotsSpec extends Spec {
+class SnapshotsSpec extends FunSpec {
 
-  object `Snapshot ` {
+  describe("Snapshot ") {
 
-    def `should have a nice toString` {
+    it("should have a nice toString") {
       val snapshot = Snapshot("aName", "ScalaTest")
       assert(snapshot.toString == "aName was \"ScalaTest\"")
     }
   }
 
-  object `Snapshots should ` {
+  describe("Snapshots should ") {
 
-    def `snap variable names and values and put them in IndexedSeq of Snapshot` {
+    it("snap variable names and values and put them in IndexedSeq of Snapshot") {
 
       val a = 3
       val b = 4
@@ -41,7 +41,7 @@ class SnapshotsSpec extends Spec {
       assert(snapshots.toString == "a was 3, b was 4, a.+(b) was 7")
     }
 
-    def `snap variable names and values and user can transform them using map` {
+    it("snap variable names and values and user can transform them using map") {
       val a = 3
       val b = 4
       val snapshots = Snapshots.snap(a, b)
@@ -50,7 +50,7 @@ class SnapshotsSpec extends Spec {
                        "b was equal, not surprisingly, to 4")
     }
 
-    def `allow people to call .lines to get multiple line output` {
+    it("allow people to call .lines to get multiple line output") {
       val a = 3
       val b = 4
       val snapshots = Snapshots.snap(a, b, a + b)

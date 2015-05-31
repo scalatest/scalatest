@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfDefinedAtSpec extends Spec {
+class ResultOfDefinedAtSpec extends FunSpec {
   
-  object `ResultOfDefinedAt ` {
+  describe("ResultOfDefinedAt ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfDefinedAt("Bob")
       result.toString should be ("definedAt (\"Bob\")")
     }

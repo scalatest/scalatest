@@ -26,7 +26,7 @@ import scala.collection.SortedMap
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
 
-object SharedHelpers extends Assertions {
+object SharedHelpers extends Assertions with LineNumberHelper {
 
   object SilentReporter extends Reporter {
     def apply(event: Event) = ()
@@ -363,15 +363,6 @@ object SharedHelpers extends Assertions {
     assert(testFailedEvent.get.asInstanceOf[TestFailed].message == expectedMessage)
   }
 
-  def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNumber"))
-      st(2).getLineNumber
-    else
-      st(3).getLineNumber
-  }
-
   class TestIgnoredTrackingReporter extends Reporter {
     var testIgnoredReceived = false
     var lastEvent: Option[TestIgnored] = None
@@ -383,12 +374,6 @@ object SharedHelpers extends Assertions {
         case _ =>
       }
     }
-  }
-
-  class TestConcurrentDistributor(poolSize: Int) extends tools.ConcurrentDistributor(Args(reporter = SilentReporter), Executors.newFixedThreadPool(poolSize)) {
-     override def apply(suite: Suite, tracker: Tracker) {
-       throw new UnsupportedOperationException("Please use apply with args.")
-     }
   }
 
   def getIndex[T](xs: GenTraversable[T], value: T): Int = {
@@ -971,7 +956,9 @@ object SharedHelpers extends Assertions {
 
   //##################################
 
+  // SKIP-SCALATESTJS-START
   def javaMapEntry[K, V](key: K, value: V): java.util.Map.Entry[K, V] = org.scalatest.Entry(key, value)
+  // SKIP-SCALATESTJS-END
 
   def indexElementEqual[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): Array[String] =
     indexElementForJavaIterator[K, V](itr, xs, (e: java.util.Map.Entry[K, V]) => e.getKey == right.getKey && e.getValue == right.getValue)
@@ -1166,6 +1153,7 @@ object SharedHelpers extends Assertions {
       ""
   }
 
+  // SKIP-SCALATESTJS-START
   private def succeededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).toList.map(_._1)
@@ -1176,6 +1164,7 @@ object SharedHelpers extends Assertions {
     else
       ""
   }
+  // SKIP-SCALATESTJS-END
 
   private def failEarlySucceededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
     xs match {
@@ -1209,6 +1198,7 @@ object SharedHelpers extends Assertions {
       ""
   }
 
+  // SKIP-SCALATESTJS-START
   private def failEarlySucceededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean, maxSucceed: Int): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
@@ -1219,6 +1209,7 @@ object SharedHelpers extends Assertions {
     else
       ""
   }
+  // SKIP-SCALATESTJS-END
 
   def succeededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String =
     succeededIndexes(xs, (e: T) => value)
@@ -1232,11 +1223,13 @@ object SharedHelpers extends Assertions {
   def succeededIndexesNotEqual[T](xs: GenTraversable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e != value)
 
+  // SKIP-SCALATESTJS-START
   def succeededIndexesEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey == value.getKey && e.getValue == value.getValue)
 
   def succeededIndexesNotEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey != value.getKey || e.getValue != value.getValue)
+  // SKIP-SCALATESTJS-END
 
   def succeededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e <= value)
@@ -1514,6 +1507,7 @@ object SharedHelpers extends Assertions {
 
   //################################################
 
+  // SKIP-SCALATESTJS-START
   def failEarlySucceededIndexesEqualBoolean[T](xs: java.util.Collection[T], value: Boolean, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: T) => value, maxSucceed)
 
@@ -1579,6 +1573,8 @@ object SharedHelpers extends Assertions {
 
   def failEarlySucceededIndexesNotInclude(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
+
+  // SKIP-SCALATESTJS-END
 
   //################################################
 

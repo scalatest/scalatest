@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfTheSameInstanceAsApplicationSpec extends Spec {
+class ResultOfTheSameInstanceAsApplicationSpec extends FunSpec {
   
-  object `ResultOfTheSameInstanceAsApplication ` {
+  describe("ResultOfTheSameInstanceAsApplication ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val bob = "Bob"
       val result = new ResultOfTheSameInstanceAsApplication(bob)
       result.toString should be ("theSameInstanceAs (\"Bob\")")

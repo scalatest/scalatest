@@ -20,45 +20,45 @@ import SharedHelpers.thisLineNumber
 import Matchers._
 import OptionValues._
 
-class ShouldThrowSpec extends Spec {
+class ShouldThrowSpec extends FunSpec {
 
-  object `The a [ExceptionType] should be thrownBy { ... } syntax` {
+  describe("The a [ExceptionType] should be thrownBy { ... } syntax") {
 
-    def `fail if a different exception is thrown` {
+    it("fail if a different exception is thrown") {
       val caught1 = intercept[TestFailedException] {
-        an [IllegalArgumentException] should be thrownBy { "hi".charAt(-1) }
+        an [UnsupportedOperationException] should be thrownBy { "hi".toInt }
       }
-      assert(caught1.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but java.lang.StringIndexOutOfBoundsException was thrown.")
+      assert(caught1.getMessage === "Expected exception java.lang.UnsupportedOperationException to be thrown, but java.lang.NumberFormatException was thrown.")
     }
 
-    def `fail if no exception is thrown` {
+    it("fail if no exception is thrown") {
       val caught2 = intercept[TestFailedException] {
         an [IllegalArgumentException] should be thrownBy { "hi" }
       }
       assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown.")
     }
 
-    def `succeed if the expected exception is thrown` {
-      a [StringIndexOutOfBoundsException] should be thrownBy { "hi".charAt(-1) }
-    }
-    
-    def `succeed if a subtype of the expected exception is thrown, where the expected type is a class` {
-      a [Exception] should be thrownBy { "hi".charAt(-1) }
+    it("succeed if the expected exception is thrown") {
+      a [NumberFormatException] should be thrownBy { "hi".toInt }
     }
 
-    def `succeed if a subtype of the expected exception is thrown, where the expected type is a trait` {
+    it("succeed if a subtype of the expected exception is thrown, where the expected type is a class") {
+      a [Exception] should be thrownBy { "hi".toInt }
+    }
+
+    it("succeed if a subtype of the expected exception is thrown, where the expected type is a trait") {
       trait Excitement
       def kaboom() { throw new Exception with Excitement }
       a [Excitement] should be thrownBy { kaboom() }
     }
     
-    def `return the caught exception` {
+    it("return the caught exception") {
       def kaboom() { throw new Exception("howdy") }
       val thrown = the [Exception] thrownBy { kaboom() }
       thrown.getMessage should === ("howdy")
     }  
     
-    def `include that wrong exception as the TFE's cause` {
+    it("include that wrong exception as the TFE's cause") {
       val wrongException = new RuntimeException("oops!")
       val caught =
         intercept[TestFailedException] {

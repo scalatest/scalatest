@@ -23,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldEndWithRegexSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithRegexSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t
@@ -35,14 +35,14 @@ s should endWith regex t
 s should fullyMatch regex t
 */
 
-  object `The endWith regex syntax` {
+  describe("The endWith regex syntax") {
 
     val decimal = """(-)?(\d+)(\.\d*)?"""
     val decimalRegex = """(-)?(\d+)(\.\d*)?""".r
 
-    object `(when the regex is specified by a string)` {
+    describe("(when the regex is specified by a string)") {
 
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string") {
 
         "1.78" should endWith regex (".78")
         "1.7" should endWith regex (decimal)
@@ -59,19 +59,19 @@ s should fullyMatch regex t
         "1." should endWith regex (decimal)
       }
       
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroup` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroup") {
         "abcdeef" should endWith regex ("d(e*)f" withGroup "ee")
         // full matches, which should also work with "endWith"
         "deef" should endWith regex ("d(e*)f" withGroup "ee")
       }
       
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroups` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroups") {
         "abcdeeff" should endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))
         // full matches, which should also work with "endWith"
         "deeff" should endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used with not") {
 
         "eight" should not { endWith regex (decimal) }
         "one.eight" should not { endWith regex (decimal) }
@@ -80,7 +80,7 @@ s should fullyMatch regex t
         "one.eight" should not endWith regex (decimal)
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used with not") {
 
         "abc" should not { endWith regex ("d(e*)f" withGroup "ee") }
         "abcdeeef" should not { endWith regex ("d(e*)f" withGroup "ee") }
@@ -89,7 +89,7 @@ s should fullyMatch regex t
         "abcdeeef" should not endWith regex ("d(e*)f" withGroup "ee")
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used with not") {
 
         "abc" should not { endWith regex ("d(e*)f" withGroups ("ee", "fff")) }
         "abcdeeff" should not { endWith regex ("d(e*)f" withGroups ("ee", "fff")) }
@@ -98,7 +98,7 @@ s should fullyMatch regex t
         "abcdeeff" should not endWith regex ("d(e*)f" withGroups ("ee", "fff"))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression") {
 
         "b1.7" should (endWith regex (decimal) and (endWith regex (decimal)))
         "b1.7" should ((endWith regex (decimal)) and (endWith regex (decimal)))
@@ -109,7 +109,7 @@ s should fullyMatch regex t
         "1.7" should (endWith regex (decimal) and endWith regex (decimal))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
 
         "abcdeef" should (endWith regex ("d(e*)f" withGroup "ee") and (endWith regex ("d(e*)f" withGroup "ee")))
         "abcdeef" should ((endWith regex ("d(e*)f" withGroup "ee")) and (endWith regex ("d(e*)f" withGroup "ee")))
@@ -128,7 +128,7 @@ s should fullyMatch regex t
         "deef" should (equal ("deef") and endWith regex ("d(e*)f" withGroup "ee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
 
         "abcdeeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "abcdeeff" should ((endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
@@ -147,7 +147,7 @@ s should fullyMatch regex t
         "deeff" should (equal ("deeff") and endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression") {
 
         "b1.7" should (endWith regex ("hello") or (endWith regex (decimal)))
         "b1.7" should ((endWith regex ("hello")) or (endWith regex (decimal)))
@@ -158,7 +158,7 @@ s should fullyMatch regex t
         "1.7" should (endWith regex ("hello") or endWith regex (decimal))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
 
         "abcdeef" should (endWith regex ("d(e*)f" withGroup "eee") or (endWith regex ("d(e*)f" withGroup "ee")))
         "abcdeef" should ((endWith regex ("d(e*)f" withGroup "eee")) or (endWith regex ("d(e*)f" withGroup "ee")))
@@ -177,7 +177,7 @@ s should fullyMatch regex t
         "deef" should (equal ("deef") or endWith regex ("d(e*)f" withGroup "ee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
 
         "abcdeeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "abcdeeff" should ((endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
@@ -196,13 +196,13 @@ s should fullyMatch regex t
         "deeff" should (equal ("deeff") or endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (endWith regex ("bob")) and not (endWith regex (decimal)))
         "fred" should ((not endWith regex ("bob")) and (not endWith regex (decimal)))
         "fred" should (not endWith regex ("bob") and not endWith regex (decimal))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not") {
         "abcdeef" should (not (endWith regex ("d(e*)f" withGroup "e")) and not (endWith regex ("d(e*)f" withGroup "eee")))
         "abcdeef" should ((not endWith regex ("d(e*)f" withGroup "e")) and (not endWith regex ("d(e*)f" withGroup "eee")))
         "abcdeef" should (not endWith regex ("d(e*)f" withGroup "e") and not endWith regex ("d(e*)f" withGroup "eee"))
@@ -212,7 +212,7 @@ s should fullyMatch regex t
         "abcdeef" should (not equal ("abcdef") and not endWith regex ("d(e*)f" withGroup "eee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not") {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) and not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")) and not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
@@ -222,13 +222,13 @@ s should fullyMatch regex t
         "abcdeeff" should (not equal ("abcdeefff") and not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (endWith regex ("fred")) or not (endWith regex (decimal)))
         "fred" should ((not endWith regex ("fred")) or (not endWith regex (decimal)))
         "fred" should (not endWith regex ("fred") or not endWith regex (decimal))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not") {
         "deef" should (not (endWith regex ("d(e*)f" withGroup "ee")) or not (endWith regex ("d(e*)f" withGroup "eee")))
         "deef" should ((not endWith regex ("d(e*)f" withGroup "ee")) or (not endWith regex ("d(e*)f" withGroup "eee")))
         "deef" should (not endWith regex ("d(e*)f" withGroup "ee") or not endWith regex ("d(e*)f" withGroup "eee"))
@@ -238,7 +238,7 @@ s should fullyMatch regex t
         "deef" should (not equal ("deef") or not endWith regex ("d(e*)f" withGroup "eee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not") {
         "deeff" should (not (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) or not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "deeff" should ((not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "deeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) or not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
@@ -248,7 +248,7 @@ s should fullyMatch regex t
         "deeff" should (not equal ("deeff") or not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should endWith regex ("1.78")
@@ -286,7 +286,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeef" should endWith regex ("d(e*)f" withGroup "eee")
@@ -297,7 +297,7 @@ s should fullyMatch regex t
   
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeeff" should endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))
@@ -308,7 +308,7 @@ s should fullyMatch regex t
   
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { endWith regex ("1.7") }
@@ -377,7 +377,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"b-1.8\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deef" should not { endWith regex ("d(e*)f" withGroup "ee") }
@@ -410,7 +410,7 @@ s should fullyMatch regex t
         
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deeff" should not { endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) }
@@ -443,7 +443,7 @@ s should fullyMatch regex t
         
       }
 
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (endWith regex (decimal) and (endWith regex ("1.8")))
@@ -477,7 +477,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"1.eight\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeef" should (endWith regex ("d(e*)f" withGroup "ee") and (endWith regex ("d(e*)f" withGroup "eee")))
@@ -566,7 +566,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
@@ -655,7 +655,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.seven" should (endWith regex (decimal) or (endWith regex ("1.8")))
@@ -673,7 +673,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.seven\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.seven\" did not end with a substring that matched the regular expression 1.8")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeef" should (endWith regex ("d(e*)f" withGroup "e") or (endWith regex ("d(e*)f" withGroup "eee")))
@@ -718,7 +718,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "f")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
@@ -763,7 +763,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not endWith regex ("1.8") and (not endWith regex (decimal)))
@@ -791,7 +791,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7\" did not end with a substring that matched the regular expression 1.8, but \"1.7\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "deef" should (not endWith regex ("d(e*)f" withGroup "e") and (not endWith regex ("d(e*)f" withGroup "ee")))
@@ -850,7 +850,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "deeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "f")) and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
@@ -909,7 +909,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not endWith regex (decimal) or (not endWith regex ("1.7")))
@@ -937,7 +937,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"a1.7\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"a1.7\" ended with a substring that matched the regular expression 1.7")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deef" should (not endWith regex ("d(e*)f" withGroup "ee") or (not endWith regex ("d(e*)f" withGroup "ee")))
@@ -1010,7 +1010,7 @@ s should fullyMatch regex t
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
@@ -1084,9 +1084,9 @@ s should fullyMatch regex t
       }
     }
 
-    object `(when the regex is specified by an actual Regex)` {
+    describe("(when the regex is specified by an actual Regex)") {
 
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string") {
 
         "1.78" should endWith regex (".78")
         "1.7" should endWith regex (decimalRegex)
@@ -1103,21 +1103,21 @@ s should fullyMatch regex t
         "1." should endWith regex (decimalRegex)
       }
       
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroup` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroup") {
 
         "abcdeef" should endWith regex ("d(e*)f".r withGroup "ee")
         "deef" should endWith regex ("d(e*)f".r withGroup "ee")
         
       }
       
-      def `should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroups` {
+      it("should do nothing if the string ends with substring that matched the regular expression specified as a string and withGroups") {
 
         "abcdeeff" should endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))
         "deeff" should endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))
         
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used with not") {
 
         "eight" should not { endWith regex (decimalRegex) }
         "one.eight" should not { endWith regex (decimalRegex) }
@@ -1126,7 +1126,7 @@ s should fullyMatch regex t
         "one.eight" should not endWith regex (decimalRegex)
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used with not") {
 
         "deef" should not { endWith regex ("d(e*)f".r withGroup "e") }
         "abcdeef" should not { endWith regex ("d(e*)f".r withGroup "e") }
@@ -1135,7 +1135,7 @@ s should fullyMatch regex t
         "abcdeef" should not endWith regex ("d(e*)f".r withGroup "e")
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used with not") {
 
         "deeff" should not { endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) }
         "abcdeeff" should not { endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) }
@@ -1144,7 +1144,7 @@ s should fullyMatch regex t
         "abcdeeff" should not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression") {
 
         "b1.7" should (endWith regex (decimalRegex) and (endWith regex (decimalRegex)))
         "b1.7" should ((endWith regex (decimalRegex)) and (endWith regex (decimalRegex)))
@@ -1155,7 +1155,7 @@ s should fullyMatch regex t
         "1.7" should (endWith regex (decimalRegex) and endWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
 
         "abcdeef" should (endWith regex ("d(e*)f".r withGroup "ee") and (endWith regex ("d(e*)f".r withGroup "ee")))
         "abcdeef" should ((endWith regex ("d(e*)f".r withGroup "ee")) and (endWith regex ("d(e*)f".r withGroup "ee")))
@@ -1174,7 +1174,7 @@ s should fullyMatch regex t
         "deef" should (equal ("deef") and endWith regex ("d(e*)f".r withGroup "ee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
 
         "abcdeeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "abcdeeff" should ((endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
@@ -1193,7 +1193,7 @@ s should fullyMatch regex t
         "deeff" should (equal ("deeff") and endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression") {
 
         "b1.7" should (endWith regex ("hello") or (endWith regex (decimalRegex)))
         "b1.7" should ((endWith regex ("hello")) or (endWith regex (decimalRegex)))
@@ -1204,7 +1204,7 @@ s should fullyMatch regex t
         "1.7" should (endWith regex ("hello") or endWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
 
         "abcdeef" should (endWith regex ("d(e*)f".r withGroup "e") or (endWith regex ("d(e*)f".r withGroup "ee")))
         "abcdeef" should ((endWith regex ("d(e*)f".r withGroup "e")) or (endWith regex ("d(e*)f".r withGroup "ee")))
@@ -1223,7 +1223,7 @@ s should fullyMatch regex t
         "deef" should (equal ("def") or endWith regex ("d(e*)f".r withGroup "ee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
 
         "abcdeeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "abcdeeff" should ((endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
@@ -1242,13 +1242,13 @@ s should fullyMatch regex t
         "deeff" should (equal ("deef") or endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not") {
         "fred" should (not (endWith regex ("bob")) and not (endWith regex (decimalRegex)))
         "fred" should ((not endWith regex ("bob")) and (not endWith regex (decimalRegex)))
         "fred" should (not endWith regex ("bob") and not endWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression with not") {
         "abcdeef" should (not (endWith regex ("d(e*)f".r withGroup "e")) and not (endWith regex ("d(e*)f".r withGroup "eee")))
         "abcdeef" should ((not endWith regex ("d(e*)f".r withGroup "e")) and (not endWith regex ("d(e*)f".r withGroup "eee")))
         "abcdeef" should (not endWith regex ("d(e*)f".r withGroup "e") and not endWith regex ("d(e*)f".r withGroup "eee"))
@@ -1258,7 +1258,7 @@ s should fullyMatch regex t
         "abcdeef" should (not equal ("abcdef") and not endWith regex ("d(e*)f".r withGroup "eee"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not") {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) and not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) and not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff")))
@@ -1268,13 +1268,13 @@ s should fullyMatch regex t
         "abcdeeff" should (not equal ("abcdeef") and not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff")))
       }
   
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not") {
         "fred" should (not (endWith regex ("fred")) or not (endWith regex (decimalRegex)))
         "fred" should ((not endWith regex ("fred")) or (not endWith regex (decimalRegex)))
         "fred" should (not endWith regex ("fred") or not endWith regex (decimalRegex))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression with not") {
         "abcdeef" should (not (endWith regex ("d(e*)f".r withGroup "ee")) or not (endWith regex ("d(e*)f".r withGroup "e")))
         "abcdeef" should ((not endWith regex ("d(e*)f".r withGroup "ee")) or (not endWith regex ("d(e*)f".r withGroup "e")))
         "abcdeef" should (not endWith regex ("d(e*)f".r withGroup "ee") or not endWith regex ("d(e*)f".r withGroup "e"))
@@ -1284,7 +1284,7 @@ s should fullyMatch regex t
         "abcdeef" should (not equal ("abcdeef") or not endWith regex ("d(e*)f".r withGroup "e"))
       }
       
-      def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
+      it("should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not") {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) or not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) or not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")))
@@ -1294,7 +1294,7 @@ s should fullyMatch regex t
         "abcdeeff" should (not equal ("abcdeeff") or not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")))
       }
   
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should endWith regex ("1.78")
@@ -1332,7 +1332,7 @@ s should fullyMatch regex t
         assert(caught9.getMessage === "\"***\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroup") {
   
         val caught1 = intercept[TestFailedException] {
           "deef" should endWith regex ("d(e*)f".r withGroup "e")
@@ -1349,7 +1349,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups` {
+      it("should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string and withGroups") {
   
         val caught1 = intercept[TestFailedException] {
           "deeff" should endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))
@@ -1366,7 +1366,7 @@ s should fullyMatch regex t
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should not { endWith regex ("1.7") }
@@ -1435,7 +1435,7 @@ s should fullyMatch regex t
         assert(caught23.getMessage === "\"b-1.8\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroup when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deef" should not { endWith regex ("d(e*)f".r withGroup "ee") }
@@ -1468,7 +1468,7 @@ s should fullyMatch regex t
         
       }
       
-      def `should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not` {
+      it("should throw TestFailedException if the string does matches substring that matched the regular expression specified as a string and withGroups when used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deeff" should not { endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) }
@@ -1501,7 +1501,7 @@ s should fullyMatch regex t
         
       }
 
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (endWith regex (decimalRegex) and (endWith regex ("1.8")))
@@ -1535,7 +1535,7 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"1.eight\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeef" should (endWith regex ("d(e*)f".r withGroup "ee") and (endWith regex ("d(e*)f".r withGroup "e")))
@@ -1624,7 +1624,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
@@ -1713,7 +1713,7 @@ s should fullyMatch regex t
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "1.seven" should (endWith regex (decimalRegex) or (endWith regex ("1.8")))
@@ -1731,7 +1731,7 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"1.seven\" did not end with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"1.seven\" did not end with a substring that matched the regular expression 1.8")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeef" should (endWith regex ("d(e*)f".r withGroup "e") or (endWith regex ("d(e*)f".r withGroup "eee")))
@@ -1776,7 +1776,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression") {
   
         val caught1 = intercept[TestFailedException] {
           "abcdeeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
@@ -1821,7 +1821,7 @@ s should fullyMatch regex t
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not endWith regex ("1.8") and (not endWith regex (decimalRegex)))
@@ -1849,7 +1849,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"1.7\" did not end with a substring that matched the regular expression 1.8, but \"1.7\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "deef" should (not endWith regex ("d(e*)f".r withGroup "e") and (not endWith regex ("d(e*)f".r withGroup "ee")))
@@ -1908,7 +1908,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression used with not") {
 
         val caught1 = intercept[TestFailedException] {
           "deeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
@@ -1967,7 +1967,7 @@ s should fullyMatch regex t
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "1.7" should (not endWith regex (decimalRegex) or (not endWith regex ("1.7")))
@@ -1995,7 +1995,7 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"a1.7\" ended with a substring that matched the regular expression (-)?(\\d+)(\\.\\d*)?, and \"a1.7\" ended with a substring that matched the regular expression 1.7")
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroup when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deef" should (not endWith regex ("d(e*)f".r withGroup "ee") or (not endWith regex ("d(e*)f".r withGroup "ee")))
@@ -2068,7 +2068,7 @@ s should fullyMatch regex t
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
+      it("should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not") {
   
         val caught1 = intercept[TestFailedException] {
           "deeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))

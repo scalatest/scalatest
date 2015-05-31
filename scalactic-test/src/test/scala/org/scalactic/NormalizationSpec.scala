@@ -17,21 +17,21 @@ package org.scalactic
 
 import org.scalatest._
 
-class NormalizationSpec extends Spec with StringNormalizations {
+class NormalizationSpec extends FunSpec with StringNormalizations {
 
-  object `A Uniformity` {
-    object `when anded with another Uniformity` {
-      def `should produce a Uniformity` { 
+  describe("A Uniformity") {
+    describe("when anded with another Uniformity") {
+      it("should produce a Uniformity") { 
         assert(lowerCased.isInstanceOf[Uniformity[_]])
         assert((lowerCased and trimmed).isInstanceOf[Uniformity[_]])
       }
     }
-    object `when anded with a regular Normalization (on left or right)` {
+    describe("when anded with a regular Normalization (on left or right)") {
       val shouted: Normalization[String] = 
         new Normalization[String] {
           def normalized(s: String): String = s.toUpperCase
         }
-      def `should produce a Normalization that is not also a Uniformity` { 
+      it("should produce a Normalization that is not also a Uniformity") { 
         assert(!shouted.isInstanceOf[Uniformity[_]])
         assert(trimmed.isInstanceOf[Uniformity[_]])
         val tAndS: Normalization[String] = trimmed and shouted
@@ -40,7 +40,7 @@ class NormalizationSpec extends Spec with StringNormalizations {
         assert(!sAndT.isInstanceOf[Uniformity[_]])
       }
     }
-    def `can be converted to a NormalizingEquality that delegates to implicit Equality without using the Explicitly DSL` {
+    it("can be converted to a NormalizingEquality that delegates to implicit Equality without using the Explicitly DSL") {
       assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
       assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
       assert(!lowerCased.toEquality.areEqual("howdy", "HOWDX"))
@@ -63,8 +63,8 @@ class NormalizationSpec extends Spec with StringNormalizations {
       assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
     }
   }
-  object `A Normalization` {
-    def `can be converted to a NormalizingEquivalence that delegates to implicit Equivalence without using the Explicitly DSL` {
+  describe("A Normalization") {
+    it("can be converted to a NormalizingEquivalence that delegates to implicit Equivalence without using the Explicitly DSL") {
       assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
       assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
       assert(!lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))

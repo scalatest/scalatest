@@ -23,11 +23,11 @@ private[scalatest] final case class RunningTest(
   suiteId: String,
   testName: String,
   startTimeStamp: Long
-) extends Comparable[RunningTest] {
+) extends Ordered[RunningTest] {
 
   // Orders them first by suiteId then by testName. When I initially made this depend on timestamp, the
   // silly ConcurrentSkipListSet couldn't find it. 
-  def compareTo(other: RunningTest): Int = {
+  def compare(other: RunningTest): Int = {
     val suiteIdComp: Int = suiteId.compareTo(other.suiteId)
     if (suiteIdComp == 0) {
       testName.compareTo(other.testName)

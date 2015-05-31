@@ -20,12 +20,12 @@ import Inside._
 import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
 
-class MatcherProducersSpec extends Spec with Matchers {
+class MatcherProducersSpec extends FunSpec with Matchers {
 
   val f = be > (_: Int)
   val g = (_: String).toInt
-  object `A Matcher (without MatcherProducers)` {
-    def `can be composed via compose ... andThen ... compose` {
+  describe("A Matcher (without MatcherProducers)") {
+    it("can be composed via compose ... andThen ... compose") {
       // (f compose g)(x) === f(g(x))
       val beAsIntsGreaterThan = (f compose g) andThen (_ compose g)
       "8" should beAsIntsGreaterThan ("7")
@@ -35,9 +35,9 @@ class MatcherProducersSpec extends Spec with Matchers {
       tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8")))
     }
   }
-  object `The MatcherProducers trait` {
+  describe("The MatcherProducers trait") {
     import MatcherProducers._
-    def `should enable compose ... andThen ... compose behavior via composeTwice` {
+    it("should enable compose ... andThen ... compose behavior via composeTwice") {
       // (f compose g)(x) === f(g(x))
       val beAsIntsGreaterThan = f composeTwice g
       "8" should beAsIntsGreaterThan ("7")
@@ -46,7 +46,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       }
       tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8")))
     }
-    def `should enable failure messages to be modified via mapResult` {
+    it("should enable failure messages to be modified via mapResult") {
       val beAsIntsGreaterThan = f composeTwice g mapResult { mr => MatchResult(mr.matches, mr.failureMessage.toUpperCase, mr.negatedFailureMessage.toUpperCase) }
       "8" should beAsIntsGreaterThan ("7")
       val tfe = the [TestFailedException] thrownBy {
@@ -54,7 +54,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       }
       tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8").toUpperCase))
     }
-    def `should be able to modify failure message args via mapResult` {
+    it("should be able to modify failure message args via mapResult") {
       val beAsIntsGreaterThan = f composeTwice g mapResult { mr =>
         mr.copy(
           failureMessageArgs = mr.failureMessageArgs.map((LazyArg(_) { _.toString + ".toInt"})),
@@ -69,7 +69,7 @@ class MatcherProducersSpec extends Spec with Matchers {
       }
       tfe.message should be (Some(Resources.wasNotGreaterThan("7.toInt", "8.toInt")))
     }
-    def `should be able to modify failure message args via mapArgs` {
+    it("should be able to modify failure message args via mapArgs") {
       val beAsIntsGreaterThan = f composeTwice g mapArgs { _ + ".toInt" }
       "8" should beAsIntsGreaterThan ("7")
       val tfe = the [TestFailedException] thrownBy {

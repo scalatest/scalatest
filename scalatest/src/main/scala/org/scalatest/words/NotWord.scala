@@ -24,7 +24,9 @@ import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+// SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+// SKIP-SCALATESTJS-END
 import scala.annotation.tailrec
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
@@ -426,6 +428,7 @@ final class NotWord {
                                   getStackDepthFun("NotWord.scala", "be")) 
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -449,6 +452,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(symbol)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>tempFile</code>, for example, refers to a <code>java.io.File</code>
@@ -474,6 +478,7 @@ final class NotWord {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -497,6 +502,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>notSoSecretFile</code>, for example, refers to a <code>java.io.File</code>
@@ -546,6 +552,7 @@ final class NotWord {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   /**
    * This method enables the following syntax: 
    *
@@ -569,6 +576,7 @@ final class NotWord {
       override def toString: String = "not be " + Prettifier.default(resultOfAnWordApplication)
     }
   }
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax: 
@@ -1023,6 +1031,36 @@ final class NotWord {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain oneElementOf (List(5, 6, 7)))
+   *                         ^
+   * </pre>
+   */
+  def contain[T](oneElementOf: ResultOfOneElementOfApplication): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = oneElementOf.right
+
+            MatchResult(
+              !containing.containsOneOf(left, right.distinct),
+              Resources.rawContainedOneElementOf,
+              Resources.rawDidNotContainOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(oneElementOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(oneElementOf)
+    }
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -1049,6 +1087,36 @@ final class NotWord {
         }
       }
       override def toString: String = "not contain " + Prettifier.default(atLeastOneOf)
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain atLeastOneElementOf List(1, 2, 3))
+   *                         ^
+   * </pre>
+   */
+  def contain[T](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = atLeastOneElementOf.right
+
+            MatchResult(
+              !aggregating.containsAtLeastOneOf(left, right),
+              Resources.rawContainedAtLeastOneElementOf,
+              Resources.rawDidNotContainAtLeastOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(atLeastOneElementOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(atLeastOneElementOf)
     }
   }
   
@@ -1079,6 +1147,36 @@ final class NotWord {
         }
       }
       override def toString: String = "not contain " + Prettifier.default(noneOf)
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain noElementsOf (5, 6, 7))
+   *                         ^
+   * </pre>
+   */
+  def contain[T](noElementsOf: ResultOfNoElementsOfApplication): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = noElementsOf.right
+
+            MatchResult(
+              !containing.containsNoneOf(left, right.distinct),
+              Resources.rawDidNotContainAtLeastOneOf,
+              Resources.rawContainedAtLeastOneOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(noElementsOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(noElementsOf)
     }
   }
   
@@ -1231,6 +1329,36 @@ final class NotWord {
         }
       }
       override def toString: String = "not contain " + Prettifier.default(allOf)
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain allOf (1, 2, 3) and not contain (3))
+   *                                 ^
+   * </pre>
+   */
+  def contain[R](allElementsOf: ResultOfAllElementsOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = allElementsOf.right
+
+            MatchResult(
+              !aggregating.containsAllOf(left, right.distinct),
+              Resources.rawContainedAllElementsOf,
+              Resources.rawDidNotContainAllElementsOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(allElementsOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(allElementsOf)
     }
   }
   

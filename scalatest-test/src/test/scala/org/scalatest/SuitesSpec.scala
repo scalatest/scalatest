@@ -36,7 +36,7 @@ class SuitesSpec extends FunSpec {
       intercept[NullPointerException] {
         new Suites(a, b, null, d, e)
       }
-      intercept[NullPointerException] {
+      intercept[IllegalArgumentException] {
         val aNull: Array[Suite] = null
         new Suites(aNull: _*)
       }
@@ -49,16 +49,16 @@ class SuitesSpec extends FunSpec {
 
     it("should care about chosenStyles if it contains tests directly") {
 
-      class SuitesWithSpecStyleTests(suitesToNest: Suite*) extends Suites(suitesToNest.toList: _*) with SpecLike {
-        def `test method 1` = {}
-        def `test method 2` = {}
+      class SuitesWithSpecStyleTests(suitesToNest: Suite*) extends Suites(suitesToNest.toList: _*) with FunSpecLike {
+        it("test method 1") {}
+        it("test method 2") {}
       }
 
       val g = new SuitesWithSpecStyleTests(a, b, c, d, e)
       // OK if no chosen styles specified
       g.run(None, Args(SilentReporter))
       // OK if chosen styles is Suite, because that's the style of *tests* written in this Suites
-      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Spec")), None, new Tracker, Set.empty))
+      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
       intercept[NotAllowedException] {
         // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Suites
         g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))

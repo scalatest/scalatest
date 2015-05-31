@@ -19,18 +19,18 @@ import org.scalatest._
 import Matchers._
 import java.io.File
 
-class HavePropertyMatcherSpec extends Spec {
+class HavePropertyMatcherSpec extends FunSpec {
   
-  object `HavePropertyMatcher ` {
+  describe("HavePropertyMatcher ") {
     
-    object `instance created by HavePropertyMatcher apply method` {
+    describe("instance created by HavePropertyMatcher apply method") {
       
-      val havePropertyMatcher = HavePropertyMatcher[File, String] { file => 
-        HavePropertyMatchResult(true, "name", "test", "test")
+      val havePropertyMatcher = HavePropertyMatcher[String, Int] { str =>
+        HavePropertyMatchResult(true, "name", 8, 9)
       }
       
-      def `should have pretty toString` {
-        havePropertyMatcher.toString should be ("HavePropertyMatcher[java.io.File, java.lang.String](java.io.File => HavePropertyMatchResult[java.lang.String])")
+      it("should have pretty toString") {
+        havePropertyMatcher.toString should be ("HavePropertyMatcher[java.lang.String, int](java.lang.String => HavePropertyMatchResult[int])")
       }
       
     }

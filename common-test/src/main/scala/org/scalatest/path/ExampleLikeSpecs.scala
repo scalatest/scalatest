@@ -20,7 +20,11 @@ import org.scalatest.DoNotDiscover
 class ExampleBaseClass
 
 @DoNotDiscover
-class ExampleFreeSpecLike extends ExampleBaseClass with FreeSpecLike
+protected class ExampleFreeSpecLike extends ExampleBaseClass with FreeSpecLike {
+  //SCALATESTJS-ONLY override def newInstance: FreeSpecLike = new ExampleFreeSpecLike
+}
 
 @DoNotDiscover
-class ExampleFunSpecLike extends ExampleBaseClass with FunSpecLike
+protected class ExampleFunSpecLike extends ExampleBaseClass with FunSpecLike {
+  //SCALATESTJS-ONLY override def newInstance: FunSpecLike = new ExampleFunSpecLike
+}

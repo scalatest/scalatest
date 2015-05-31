@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfThrownByApplicationSpec extends Spec {
+class ResultOfThrownByApplicationSpec extends FunSpec {
   
-  object `ResultOfThrownByApplication ` {
+  describe("ResultOfThrownByApplication ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       def fun = {}
       val result = new ResultOfThrownByApplication(fun)
       result.toString should be ("thrownBy { ... }")

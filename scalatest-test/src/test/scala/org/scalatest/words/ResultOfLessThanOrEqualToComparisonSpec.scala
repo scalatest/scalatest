@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfLessThanOrEqualToComparisonSpec extends Spec {
+class ResultOfLessThanOrEqualToComparisonSpec extends FunSpec {
   
-  object `ResultOfLessThanOrEqualToComparison ` {
+  describe("ResultOfLessThanOrEqualToComparison ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfLessThanOrEqualToComparison(8)
       result.toString should be ("<= (8)")
     }

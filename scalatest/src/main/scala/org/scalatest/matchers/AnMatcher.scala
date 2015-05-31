@@ -18,6 +18,8 @@ package org.scalatest.matchers
 import org.scalatest._
 import org.scalactic.Prettifier
 
+import scala.reflect.ClassTag
+
 /**
  * Trait extended by matcher objects that can match a value of the specified type.
  * <code>AnMatcher</code> represents a noun that appears after the word <code>an</code>, thus a nounName is required.
@@ -146,7 +148,7 @@ private[scalatest] object AnMatcher {
    * @author Bill Venners
    * @author Chee Seng
    */
-  def apply[T](name: String)(fun: T => Boolean)(implicit ev: Manifest[T]) = 
+  def apply[T](name: String)(fun: T => Boolean)(implicit ev: ClassTag[T]) =
     new AnMatcher[T] {
       val nounName = name
       def apply(left: T): MatchResult = 
@@ -156,7 +158,7 @@ private[scalatest] object AnMatcher {
           Resources.rawWasAn,
           Vector(left, UnquotedString(nounName))
         )
-      override def toString: String = "AnMatcher[" + ev.erasure.getName + "](" + Prettifier.default(name) + ", " + ev.erasure.getName + " => Boolean)"
+      override def toString: String = "AnMatcher[" + ev.runtimeClass.getName + "](" + Prettifier.default(name) + ", " + ev.runtimeClass.getName + " => Boolean)"
     }
   
 }

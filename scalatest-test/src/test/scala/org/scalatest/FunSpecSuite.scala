@@ -38,7 +38,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.example1WasInvoked)
     assert(a.example2WasInvokedAfterExample1)
     assert(a.example3WasInvokedAfterExample2)
@@ -64,7 +64,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.example1WasInvoked)
     assert(a.example2WasInvokedAfterExample1)
     assert(a.example3WasInvokedAfterExample2)
@@ -83,7 +83,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.testNames.size === 2)
     assert(a.testNames.iterator.toList(0) === "should get invoked")
     assert(a.testNames.iterator.toList(1) === "should also get invoked")
@@ -131,7 +131,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
   }
   
   // Test for good strings in report for top-level examples  
@@ -775,7 +775,7 @@ class FunSpecSuite extends FunSuite {
       describe("this will be empty") {}
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
   }  
   
   test("Only a passed test name should be invoked.") {
@@ -1122,7 +1122,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.sharedExampleInvoked)
   }
   
@@ -1149,7 +1149,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.sharedExampleInvoked)
     assert(a.sharedExampleAlsoInvoked)
   }
@@ -1175,7 +1175,7 @@ class FunSpecSuite extends FunSuite {
       it should behave like invocationVerifier(1)
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(a.example1WasInvoked)
     assert(a.example2WasInvokedAfterExample1)
     assert(a.example3WasInvokedAfterExample2)
@@ -1202,7 +1202,7 @@ class FunSpecSuite extends FunSuite {
       // don't use it: behaves like (an InvocationVerifier())
     }
     val a = new MySpec
-    a.execute()
+    a.run(None, Args(SilentReporter))
     assert(!a.example1WasInvoked)
     assert(!a.example2WasInvokedAfterExample1)
     assert(!a.example3WasInvokedAfterExample2)

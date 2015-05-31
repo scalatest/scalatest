@@ -19,9 +19,9 @@ import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
 
-class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
+class TheSameElementsInOrderAsContainMatcherSpec extends FunSpec {
 
-  object `theSameElementsInOrderAs ` {
+  describe("theSameElementsInOrderAs ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -31,29 +31,33 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeeded when left List contains same elements in same order as right List` {
+    it("should succeeded when left List contains same elements in same order as right List") {
       List(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
       Array(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain theSameElementsInOrderAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain theSameElementsInOrderAs Map(1 -> "one", 2 -> "two", 3 -> "three")
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List contains same elements in different order as right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List contains same elements in different order as right List") {
       val left1 = List(1, 2, 3)
       val right1 = List(2, 1, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val right2 = List(2, 1, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
@@ -79,21 +83,23 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 8)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 8)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -118,21 +124,23 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is shorter than right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3, 4)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 3, 4)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -157,21 +165,23 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List is longer than right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List is longer than right List") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two")
       val e3 = intercept[exceptions.TestFailedException] {
@@ -197,7 +207,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
     }
   }
   
-  object `not theSameElementsInOrderAs ` {
+  describe("not theSameElementsInOrderAs ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -207,57 +217,67 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeeded when left List contains different elements as right List` {
+    it("should succeeded when left List contains different elements as right List") {
       List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
     }
     
-    def `should succeeded when left List contains less elements than right List` {
+    it("should succeeded when left List contains less elements than right List") {
       List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
     }
     
-    def `should succeeded when left List contains more elements than right List` {
+    it("should succeeded when left List contains more elements than right List") {
       List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
     }
     
-    def `should succeeded when left List contains same elements as right List but in different order` {
+    it("should succeeded when left List contains same elements as right List but in different order") {
       List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in same order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in same order") {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain theSameElementsInOrderAs (right1)
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain theSameElementsInOrderAs (right2)
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {

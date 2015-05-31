@@ -18,12 +18,109 @@ package org.scalactic.anyvals
 import scala.language.implicitConversions
 import scala.collection.immutable.Range
 
-//
-// Numbers greater than zero.
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for positive <code>Int</code>s.
+ *
+ * Note: a <code>PosInt</code> may not equal 0. If you want positive
+ * number or 0, use [[PosZInt]].
+ *
+ * <p>
+ * Because <code>PosInt</code> is an <code>AnyVal</code> it will usually be
+ * as efficient as an <code>Int</code>, being boxed only when an <code>Int</code>
+ * would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosInt.apply</code> factory method is implemented in terms of a macro that
+ * checks literals for validity at compile time. Calling <code>PosInt.apply</code> with
+ * a literal <code>Int</code> value will either produce a valid <code>PosInt</code> instance
+ * at run time or an error at compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosInt(1)
+ * res0: org.scalactic.anyvals.PosInt = PosInt(1)
+ *
+ * scala&gt; PosInt(0)
+ * &lt;console&gt;:14: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               PosInt(0)
+ *                     ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosInt.apply</code> cannot be used if the value being passed is a variable (<em>i.e.</em>, not a literal), because
+ * the macro cannot determine the validity of variables at compile time (just literals). If you try to pass a variable
+ * to <code>PosInt.apply</code>, you'll get a compiler error that suggests you use a different factor method,
+ * <code>PosInt.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1
+ * x: Int = 1
+ *
+ * scala&gt; PosInt(x)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on an integer literal, like PosInt(42). Please use PosInt.from instead.
+ *               PosInt(x)
+ *                     ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosInt.from</code> factory method will inspect the value at runtime and return an <code>Option[PosInt]</code>. If
+ * the value is valid, <code>PosInt.from</code> will return a <code>Some[PosInt]</code>, else it will return a <code>None</code>.
+ * Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosInt.from(x)
+ * res3: Option[org.scalactic.anyvals.PosInt] = Some(PosInt(1))
+ *
+ * scala&gt; val y = 0
+ * y: Int = 0
+ *
+ * scala&gt; PosInt.from(y)
+ * res4: Option[org.scalactic.anyvals.PosInt] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosInt.apply</code> factory method is marked implicit, so that you can pass literal <code>Int</code>s
+ * into methods that require <code>PosInt</code>, and get the same compile-time checking you get when calling
+ * <code>PosInt.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosInt): Int = Int.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosInt)Int
+ *
+ * scala&gt; invert(1)
+ * res0: Int = 2147483646
+ *
+ * scala&gt; invert(Int.MaxValue)
+ * res1: Int = 0
+ *
+ * scala&gt; invert(0)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               invert(0)
+ *                      ^
+ *
+ * scala&gt; invert(-1)
+ * &lt;console&gt;:15: error: PosInt.apply can only be invoked on a positive (i &gt; 0) integer literal, like PosInt(42).
+ *               invert(-1)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the <code>PosInt</code> companion object also defines implicit widening conversions
+ * when either no loss of precision will occur or a similar conversion is provided in Scala. (For example, the implicit
+ * conversion from <code>Int</code> to </code>Float</code> in Scala can lose precision.) This makes it convenient to
+ * use a <code>PosInt</code> where an <code>Int</code> or wider type is needed. An example is the subtraction in the body
+ * of the <code>invert</code> method defined above, <code>Int.MaxValue - pos</code>. Although <code>Int.MaxValue</code> is
+ * an <code>Int</code>, which has no <code>-</code> method that takes a <code>PosInt</code> (the type of <code>pos</code>),
+ * you can still subtract <code>pos</code>, because the <code>PosInt</code> will be implicitly widened to <code>Int</code>.
+ * </p>
  *
  * @param value The <code>Int</code> value underlying this <code>PosInt</code>.
  */ 
@@ -518,6 +615,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**
+  * Create a <code>Range</code> from this <code>PosInt</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
   * not including `end`.
@@ -525,6 +625,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def until(end: Int): Range = Range(value, end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosInt</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `this` up to but
@@ -533,6 +636,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def until(end: Int, step: Int): Range = Range(value, end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosInt</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
   * and including `end`.
@@ -540,6 +646,9 @@ final class PosInt private (val value: Int) extends AnyVal {
   def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosInt</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
@@ -548,28 +657,190 @@ final class PosInt private (val value: Int) extends AnyVal {
   def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
 
   // No point to call abs on a PosInt.
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosInt): PosInt = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosInt): PosInt = if (math.min(value, that.value) == value) this else that
 }
 
+/**
+ * The companion object for <code>PosInt</code> that offers factory methods that
+ * produce <code>PosInt</code>s, implicit widening conversions from <code>PosInt</code>
+ * to other numeric types, and maximum and minimum constant values for <code>PosInt</code>.
+ */
 object PosInt {
+  /**
+   * The largest value representable as a positive <code>Int</code>, which is <code>PosInt(2147483647)</code>.
+   */
+  final val MaxValue: PosInt = PosInt.from(Int.MaxValue).get
+  /**
+   * The smallest value representable as a positive <code>Int</code>, which is <code>PosInt(1)</code>.
+   */
+  final val MinValue: PosInt = PosInt.from(1).get // Can't use the macro here
+
+  // TODO: Use one method for validation, as suggested in I think the UK.
+
+  /**
+   * A factory method that produces an <code>Option[PosInt]</code> given an
+   * <code>Int</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive <code>Int</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosInt</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed <code>Int</code>
+   * value is 0 or negative, so this method will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if positive, return
+   *     wrapped in a <code>Some[PosInt]</code>.
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Long</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Some[PosInt]</code>, if it is positive, else <code>None</code>.
+   */
   def from(value: Int): Option[PosInt] =
-    if (value > 0) Some(new PosInt(value)) else None
+    if (PosIntMacro.isValid(value)) Some(new PosInt(value)) else None
 
   import language.experimental.macros
+
+  /**
+   * A factory method, implemented via a macro, that produces a <code>PosInt</code>
+   * if passed a valid <code>Int</code> literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the specified <code>Int</code>
+   * expression at compile time. If
+   * the expression is a positive <code>Int</code> literal, <em>i.e.</em>, with a
+   * value greater than 0, it will return a <code>PosInt</code> representing that value.
+   * Otherwise, the passed <code>Int</code> 
+   * expression is either a literal that is 0 or negative, or is not a literal, so
+   * this method will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code> factory method
+   * in that this method is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time. 
+   * </p>
+   *
+   * @param value the <code>Int</code> literal expression to inspect at compile time,
+   *     and if positive, to return wrapped in a <code>PosInt</code> at run time.
+   * @return the specified, valid <code>Int</code> literal value wrapped
+   *     in a <code>PosInt</code>. (If the specified expression is not a valid
+   *     <code>Int</code> literal, the invocation of this method will not
+   *     compile.)
+   */
   implicit def apply(value: Int): PosInt = macro PosIntMacro.apply
 
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>Int</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>.
+   */
   implicit def widenToInt(pos: PosInt): Int = pos.value
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>Long</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Long</code>.
+   */
   implicit def widenToLong(pos: PosInt): Long = pos.value
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>Float</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Float</code>.
+   */
   implicit def widenToFloat(pos: PosInt): Float = pos.value
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>Double</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Double</code>.
+   */
   implicit def widenToDouble(pos: PosInt): Double = pos.value
 
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosLong</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Long</code> and wrapped in a <code>PosLong</code>.
+   */
   implicit def widenToPosLong(pos: PosInt): PosLong = PosLong.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosFloat</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Float</code> and wrapped in a <code>PosFloat</code>.
+   */
   implicit def widenToPosFloat(pos: PosInt): PosFloat = PosFloat.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosDouble</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Double</code> and wrapped in a <code>PosDouble</code>.
+   */
   implicit def widenToPosDouble(pos: PosInt): PosDouble = PosDouble.from(pos.value).get
 
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosZInt</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   wrapped in a <code>PosZInt</code>.
+   */
   implicit def widenToPosZInt(pos: PosInt): PosZInt = PosZInt.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosZLong</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Long</code> and wrapped in a <code>PosZLong</code>.
+   */
   implicit def widenToPosZLong(pos: PosInt): PosZLong = PosZLong.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosZFloat</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Float</code> and wrapped in a <code>PosZFloat</code>.
+   */
   implicit def widenToPosZFloat(pos: PosInt): PosZFloat = PosZFloat.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosInt</code> to <code>PosZDouble</code>.
+   *
+   * @param pos the <code>PosInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
+   *     widened to <code>Double</code> and wrapped in a <code>PosZDouble</code>.
+   */
   implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.from(pos.value).get
 }

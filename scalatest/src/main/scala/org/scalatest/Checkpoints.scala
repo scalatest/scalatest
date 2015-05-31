@@ -151,11 +151,15 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll() {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 1
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 10
       if (!failures.isEmpty) {
         val failMessages =
           for (failure <- failures.asScala)
           yield failure.getMessage + " " + Resources.atCheckpointAt + " " + getFailLine(failure)
-        throw new TestFailedException(failMessages.mkString("\n"), 1)
+        throw new TestFailedException(failMessages.mkString("\n"), stackDepth)
       }
     }
   }

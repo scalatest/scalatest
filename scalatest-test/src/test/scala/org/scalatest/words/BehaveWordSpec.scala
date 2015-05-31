@@ -18,13 +18,13 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class BehaveWordSpec extends Spec {
+class BehaveWordSpec extends FunSpec {
   
-  object `BehaveWord ` {
+  describe("BehaveWord ") {
     
     val behave = new BehaveWord
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       behave.toString should be ("behave")
     }
     

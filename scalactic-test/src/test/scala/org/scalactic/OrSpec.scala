@@ -30,8 +30,8 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
   "An Or" can "be either Good or Bad" in {
-    Good(7) shouldBe 'good
-    Bad("oops") shouldBe 'bad
+    Good(7).isGood shouldBe true
+    Bad("oops").isBad shouldBe true
 
     Good(7) shouldBe an [Or[_, _]]
     Good(7) shouldBe an [Good[_]]
@@ -93,11 +93,15 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     def div(a: Int, b: Int): Int Or ArithmeticException = {
       try Good(a / b)
       catch { case ae: ArithmeticException => Bad(ae) }
+      if (b == 0)
+        Bad(new ArithmeticException("/ by zero"))
+      else
+        Good(a / b)
     }
     div(1, 1) shouldEqual Good(1)
     div(6, 2) shouldEqual Good(3)
     div(6, 2) shouldEqual Good(3)
-    div(1, 0) should be a 'bad
+    div(1, 0).isBad shouldBe true
     val ae = div(1, 0) match {
       case Bad(ae) => ae
       case result => fail("didn't get an Bad" + result)
@@ -296,15 +300,15 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
   }
   it can "be created with the attempt helper method" in {
     attempt { 2 / 1 } should === (Good(2))
-    val divByZero = attempt { 1 / 0 }
-    divByZero should be a 'bad
+    val divByZero = attempt { throw new ArithmeticException("/ by zero") }
+    divByZero.isBad shouldBe true
     divByZero match {
       case Bad(ex) =>
         ex shouldBe an [ArithmeticException]
         ex.getMessage shouldBe "/ by zero"
       case _ => fail()
     }
-    divByZero should be a 'bad
+    divByZero.isBad shouldBe true
     intercept[VirtualMachineError] {
       attempt { throw new VirtualMachineError {} }
     }
@@ -565,6 +569,17 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     ys.foldLeft(Good[Int].orBad("no evens").asOr) { (acc, x) =>
       acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Bad("no evens")
+  }
+  "The Or companion" should "offer a concise type lambda syntax" in {
+    trait Functor[Context[_]] {
+      def map[A, B](ca: Context[A])(f: A => B): Context[B]
+    }
+    class OrFunctor[BAD] extends Functor[Or.B[BAD]#G] {
+      override def map[G, H](ca: G Or BAD)(f: G => H): H Or BAD = ca.map(f)
+    }
+    class BadOrFunctor[GOOD] extends Functor[Or.G[GOOD]#B] {
+      override def map[B, C](ca: GOOD Or B)(f: B => C): GOOD Or C = ca.badMap(f)
+    }
   }
 }
 

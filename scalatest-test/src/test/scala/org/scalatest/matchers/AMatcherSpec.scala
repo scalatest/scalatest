@@ -17,20 +17,19 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
-import java.io.File
 
-class AMatcherSpec extends Spec {
+class AMatcherSpec extends FunSpec {
   
-  object `AMatcher ` {
+  describe("AMatcher ") {
     
-    object `instance created by AMatcher apply method` {
+    describe("instance created by AMatcher apply method") {
       
-      val aMatcher = AMatcher[File]("file") { file => 
+      val aMatcher = AMatcher[List[Int]]("list") { list =>
         true 
       }
       
-      def `should have pretty toString` {
-        aMatcher.toString should be ("AMatcher[java.io.File](\"file\", java.io.File => Boolean)")
+      it("should have pretty toString") {
+        aMatcher.toString should be ("AMatcher[scala.collection.immutable.List](\"list\", scala.collection.immutable.List => Boolean)")
       }
       
     }

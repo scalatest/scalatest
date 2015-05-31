@@ -19,9 +19,9 @@ import org.scalatest._
 import Matchers._
 import java.io.File
 
-class ResultOfAnWordToSymbolApplicationSpec extends Spec {
+class ResultOfAnWordToSymbolApplicationSpec extends FunSpec {
   
-  object `ResultOfAnWordToSymbolApplication ` {
+  describe("ResultOfAnWordToSymbolApplication ") {
     
     case class MyFile(
       val name: String,
@@ -29,7 +29,7 @@ class ResultOfAnWordToSymbolApplicationSpec extends Spec {
       val isDirectory: Boolean
     )
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfAnWordToSymbolApplication('file)
       result.toString should be ("an ('file)")
     }

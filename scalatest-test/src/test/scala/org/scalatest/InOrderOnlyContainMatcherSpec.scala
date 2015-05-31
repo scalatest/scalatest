@@ -21,9 +21,9 @@ import SharedHelpers._
 import Matchers._
 import org.scalatest.exceptions.TestFailedException
 
-class InOrderOnlyContainMatcherSpec extends Spec {
+class InOrderOnlyContainMatcherSpec extends FunSpec {
 
-  object `inOrderOnly ` {
+  describe("inOrderOnly ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -32,25 +32,29 @@ class InOrderOnlyContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeed when left List contains elements available in right List` {
+    it("should succeed when left List contains elements available in right List") {
       List(4, 4, 4, 5, 5, 6, 6) should contain inOrderOnly (4, 5, 6)
       Array(4, 4, 4, 5, 5, 6, 6) should contain inOrderOnly (4, 5, 6)
+      // SKIP-SCALATESTJS-START
       javaList(4, 4, 4, 5, 5, 6, 6) should contain inOrderOnly (4, 5, 6)
+      // SKIP-SCALATESTJS-END
       
       LinkedHashMap(4 -> "four", 5 -> "five", 6 -> "six").iterator.toStream should contain inOrderOnly (4 -> "four", 5 -> "five", 6 -> "six")
       // javaMap(Entry(4, "four"), Entry(5, "five"), Entry(6, "six")) should contain inOrderOnly (4 -> "four", 5 -> "five", 6 -> "six")
     }
     
-    def `should fail when left list contains part of right list` {
+    it("should fail when left list contains part of right list") {
       intercept[TestFailedException] {
         List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
       intercept[TestFailedException] {
         Array(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
+      // SKIP-SCALATESTJS-START
       intercept[TestFailedException] {
         javaList(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
+      // SKIP-SCALATESTJS-END
       
       intercept[TestFailedException] {
         LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain inOrderOnly (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
@@ -61,9 +65,9 @@ class InOrderOnlyContainMatcherSpec extends Spec {
       }
 */
     }
-    
-    @Ignore // TODO: Chee Seng, let's make this do a NotAllowedException with good stack depth.
-    def `should throw IllegalArgumentException when inOrderOnly contains duplicate element` {
+
+    // TODO: Chee Seng, let's make this do a NotAllowedException with good stack depth.
+    ignore("should throw IllegalArgumentException when inOrderOnly contains duplicate element") {
       val e1 = intercept[IllegalArgumentException] {
         List(1, 2, 3) should contain inOrderOnly (1, 2, 1)
       }
@@ -74,20 +78,22 @@ class InOrderOnlyContainMatcherSpec extends Spec {
       }
       e2.getMessage() should be ("inOrderOnly must not contained duplicated value, but 1 is duplicated")
     }
-    
-    def `should throw TestFailedException with correct stack depth and message when left List contains element not in right List` {
+
+    it("should throw TestFailedException with correct stack depth and message when left List contains element not in right List") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderOnly (1, 2)
       }
       checkStackDepth(e1, left1, Array(1, 2).deep, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrderOnly (1, 2)
       }
       checkStackDepth(e2, left2, Array(1, 2).deep, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrderOnly (1 -> "one", 2 -> "two")
@@ -109,19 +115,21 @@ class InOrderOnlyContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, Array(1, 2).deep, thisLineNumber - 2)
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List, but in different order` {
+    it("should throw TestFailedException with correct stack depth and message when left List contains only element in right List, but in different order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderOnly (3, 2, 1)
       }
       checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should contain inOrderOnly (3, 2, 1)
       }
       checkStackDepth(e2, left2, Array(3, 2, 1).deep, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrderOnly (3 -> "three", 2 -> "two", 1 -> "one")
@@ -144,7 +152,7 @@ class InOrderOnlyContainMatcherSpec extends Spec {
     }
   }
   
-  object `not inOrderOnly ` {
+  describe("not inOrderOnly ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -153,37 +161,43 @@ class InOrderOnlyContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should succeed when left List contains element not in right List` {
+    it("should succeed when left List contains element not in right List") {
       List(1, 2, 3) should not contain inOrderOnly (1, 2)
       Array(1, 2, 3) should not contain inOrderOnly (1, 2)
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain inOrderOnly (1, 2)
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrderOnly (1 -> "one", 2 -> "two")
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderOnly (1 -> "one", 2 -> "two")
     }
     
-    def `should succeed when left List contains element in right List but in different order` {
+    it("should succeed when left List contains element in right List but in different order") {
       List(1, 2, 3) should not contain inOrderOnly (3, 2, 1)
       Array(1, 2, 3) should not contain inOrderOnly (3, 2, 1)
+      // SKIP-SCALATESTJS-START
       javaList(1, 2, 3) should not contain inOrderOnly (3, 2, 1)
-      
+      // SKIP-SCALATESTJS-END
+
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrderOnly (3 -> "three", 2 -> "two", 1 -> "one")
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderOnly (3 -> "three", 2 -> "two", 1 -> "one")
     }
     
-    def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order` {
+    it("should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain inOrderOnly (1, 2, 3)
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
+
+      // SKIP-SCALATESTJS-START
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
         left2 should not contain inOrderOnly (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
+      // SKIP-SCALATESTJS-END
+
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain inOrderOnly (1 -> "one", 2 -> "two", 3 -> "three")

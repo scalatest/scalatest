@@ -17,15 +17,15 @@ package org.scalatest
 
 import scala.xml.{Node, Text, NodeSeq}
 
-class StreamlinedXmlNormMethodsSpec extends Spec with Matchers with StreamlinedXmlNormMethods {
+class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with StreamlinedXmlNormMethods {
 
-  object `Xml Normalization of Elems` {
+  describe("Xml Normalization of Elems") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
       <summer></summer>.norm == <summer></summer> shouldBe true
     }
 
-    def `should zap text that is only whitespace` {
+    it("should zap text that is only whitespace") {
       <summer> </summer>.norm == <summer></summer> shouldBe true
       <summer>
        </summer>.norm == <summer></summer> shouldBe true
@@ -46,14 +46,14 @@ class StreamlinedXmlNormMethodsSpec extends Spec with Matchers with StreamlinedX
     }
   }
 
-  object `Xml Normalization of Nodes` {
+  describe("Xml Normalization of Nodes") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
       (<summer></summer>: Node).norm == <summer></summer> shouldBe true
       (Text("Bla"): Node).norm shouldBe Text("Bla")
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
       (<summer> </summer>.norm: Node) == <summer></summer> shouldBe true
       (<summer>
       </summer>.norm: Node) == <summer></summer> shouldBe true
@@ -75,14 +75,14 @@ class StreamlinedXmlNormMethodsSpec extends Spec with Matchers with StreamlinedX
     }
   }
 
-  object `Xml Normalization of NodeSeq` {
+  describe("Xml Normalization of NodeSeq") {
 
-    def `should leave already-normalized XML alone` {
+    it("should leave already-normalized XML alone") {
       (<summer></summer>: NodeSeq).norm == <summer></summer> shouldBe true
       (Text("Bla"): NodeSeq).norm shouldBe Text("Bla")
     }
 
-    def `should zap text that is only whitespace, unless it is already a Text` {
+    it("should zap text that is only whitespace, unless it is already a Text") {
       (<summer> </summer>.norm: NodeSeq) == <summer></summer> shouldBe true
       (<summer>
       </summer>.norm: NodeSeq) == <summer></summer> shouldBe true

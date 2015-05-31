@@ -19,10 +19,10 @@ import org.scalatest._
 import Inside._
 import org.scalactic.PrettyMethods
 
-class MatcherToStringSpec extends Spec with Matchers with PrettyMethods {
+class MatcherToStringSpec extends FunSpec with Matchers with PrettyMethods {
 
-  object `The MatchResult obtained from ScalaTest matcher syntax` {
-    def `should have pretty toStrings` {
+  describe("The MatchResult obtained from ScalaTest matcher syntax") {
+    it("should have pretty toStrings") {
       (be > 'b').toString should be ("be > 'b'")
       (be < 'b').toString should be ("be < 'b'")
     }

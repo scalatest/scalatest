@@ -21,7 +21,7 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
-class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
+class InOrderContainMatcherEqualitySpec extends FunSpec with Explicitly {
   
   class CustomEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -31,7 +31,7 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
       })
   }
   
-  object `inOrder ` {
+  describe("inOrder ") {
     
     implicit val equality = new CustomEquality
     
@@ -49,19 +49,23 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take custom implicit equality in scope when 'should contain' is used` {
+    it("should take custom implicit equality in scope when 'should contain' is used") {
       List("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")
       Array("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")
+      // SKIP-SCALATESTJS-START
       javaList("1", "2 ", "3") should contain inOrder ("1", "2 ", "3")
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take custom implicit equality in scope when 'should not contain' is used` {
+    it("should take custom implicit equality in scope when 'should not contain' is used") {
       List("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
       Array("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
+      // SKIP-SCALATESTJS-START
       javaList("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope") {
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -74,15 +78,17 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
         left2 should contain inOrder ("3", "2 ", "1")
       }
         checkShouldContainStackDepth(e2, left2, Array("3", "2 ", "1").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder ("3", "2 ", "1")
       }
       checkShouldContainStackDepth(e3, left3, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope") {
 
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -95,27 +101,33 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
         left2 should not contain inOrder ("1", "2 ", "3")
       }
       checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain inOrder ("1", "2 ", "3")
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take passed in custom explicit equality when 'should contain' is used` {
+    it("should take passed in custom explicit equality when 'should contain' is used") {
       (List("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (equality)
       (Array("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (equality)
+      // SKIP-SCALATESTJS-START
       (javaList("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (equality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take passed in custom explicit equality when 'should not contain' is used` {
+    it("should take passed in custom explicit equality when 'should not contain' is used") {
       (List("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")) (equality)
       (Array("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")) (equality)
+      // SKIP-SCALATESTJS-START
       (javaList("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")) (equality)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality") {
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -128,15 +140,17 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
         (left2 should contain inOrder ("3", "2 ", "1")) (equality)
       }
       checkShouldContainStackDepth(e2, left2, Array("3", "2 ", "1").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain inOrder ("3", "2 ", "1")) (equality)
       }
       checkShouldContainStackDepth(e3, left3, Array("3", "2 ", "1").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality") {
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -149,12 +163,14 @@ class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
         (left2 should not contain inOrder ("1", "2 ", "3")) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain inOrder ("1", "2 ", "3")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
 }

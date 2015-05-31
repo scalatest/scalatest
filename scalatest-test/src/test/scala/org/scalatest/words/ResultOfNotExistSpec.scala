@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfNotExistSpec extends Spec {
+class ResultOfNotExistSpec extends FunSpec {
   
-  object `ResultOfNotExist ` {
+  describe("ResultOfNotExist ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfNotExist(not)
       result.toString should be ("not (exist)")
     }

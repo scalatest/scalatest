@@ -36,7 +36,11 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
    * </pre>
    */
   def thrownBy(fun: => Unit) {
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, 5)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 5
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 14
+    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
   }
   
   /**

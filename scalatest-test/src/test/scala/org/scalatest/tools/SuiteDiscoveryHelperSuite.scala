@@ -76,7 +76,7 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
   }
 }
 
-class SuiteDiscoveryHelperSpec extends Spec {
+class SuiteDiscoveryHelperSpec extends FunSpec {
 
   val sdtf = new SuiteDiscoveryHelperFriend(SuiteDiscoveryHelper)
   val loader = getClass.getClassLoader
@@ -374,7 +374,7 @@ class SuiteDiscoveryHelperSpec extends Spec {
 // This class is just used by tests in SuiteDiscoveryHelperSpec
 // for testing Suite discovery by test name.
 //
-class SuiteDiscoveryHelperSpec2 extends Spec {
+class SuiteDiscoveryHelperSpec2 extends FunSpec {
 
   def `test discover tests 4` = {
   }

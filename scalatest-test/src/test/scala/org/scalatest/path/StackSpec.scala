@@ -95,6 +95,8 @@ trait StackBehaviors { this: FunSpec =>
 
 class StackSpec extends org.scalatest.path.FunSpec with StackBehaviors {
 
+  //SCALATESTJS-ONLY override def newInstance = new StackSpec
+
   val lastValuePushed = 9
 
   describe("A Stack") {

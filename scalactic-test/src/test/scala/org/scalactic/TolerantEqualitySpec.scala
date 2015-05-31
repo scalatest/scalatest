@@ -19,7 +19,7 @@ import org.scalatest._
 
 // 1,$s/tolerantEquality\[Byte\](/tolerantByteEquality(tolerance = /
 
-class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics {
+class TolerantEqualitySpec extends FunSpec with TripleEquals with TolerantNumerics {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0
@@ -34,9 +34,9 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
   val sevenByte: Byte = 7
   val minusSevenByte: Byte = -7
 
-  object `The === syntax` {
+  describe("The === syntax") {
 
-    def `should be true if the number is within the given interval for Double` {
+    it("should be true if the number is within the given interval for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -52,7 +52,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenDotOh === -6.8)
     }
 
-    def `should be true if the number is within the given interval for Float` {
+    it("should be true if the number is within the given interval for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -68,7 +68,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenDotOhFloat === -6.8f)
     }
 
-    def `should be true if the number is within the given interval for Long` {
+    it("should be true if the number is within the given interval for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -84,7 +84,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenLong === -5L)
     }
 
-    def `should be true if the number is within the given interval for Int` {
+    it("should be true if the number is within the given interval for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -100,7 +100,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenInt === -5)
     }
 
-    def `should be true if the number is within the given interval for Short` {
+    it("should be true if the number is within the given interval for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -116,7 +116,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenShort === (-5).toShort)
     }
 
-    def `should be true if the number is within the given interval for Byte` {
+    it("should be true if the number is within the given interval for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -132,7 +132,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenByte === (-5).toByte)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Double` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -148,7 +148,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-6.8 === minusSevenDotOh)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Float` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -164,7 +164,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-6.8f === minusSevenDotOhFloat)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Long` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -180,7 +180,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-5L === minusSevenLong)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Int` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -196,7 +196,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-5 === minusSevenInt)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Short` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Short") {
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
       assert(9.toShort === sevenShort)
@@ -211,7 +211,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert((-5).toShort === minusSevenShort)
     }
 
-    def `should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Byte` {
+    it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -227,7 +227,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert((-5).toByte === minusSevenByte)
     }
 
-    def `should be false if the number is outside the given interval for Double` {
+    it("should be false if the number is outside the given interval for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -237,7 +237,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenDotOh === -6.5))
     }
 
-    def `should be false if the number is outside the given interval for Float` {
+    it("should be false if the number is outside the given interval for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -247,7 +247,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenDotOhFloat === -6.5f))
     }
 
-    def `should be false if the number is outside the given interval for Long` {
+    it("should be false if the number is outside the given interval for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -257,7 +257,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenLong === -10L))
     }
 
-    def `should be false if the number is outside the given interval for Int` {
+    it("should be false if the number is outside the given interval for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -267,7 +267,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenInt === -10))
     }
 
-    def `should be false if the number is outside the given interval for Short` {
+    it("should be false if the number is outside the given interval for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -277,7 +277,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenShort === (-10).toShort))
     }
 
-    def `should be false if the number is outside the given interval for Byte` {
+    it("should be false if the number is outside the given interval for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -287,7 +287,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenByte === (-10).toByte))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Double` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -297,7 +297,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-6.5 === minusSevenDotOh))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Float` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -307,7 +307,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-6.5f === minusSevenDotOhFloat))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Long` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -317,7 +317,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-10L === minusSevenLong))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Int` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -327,7 +327,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-10 === minusSevenInt))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Short` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -337,7 +337,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!((-10).toShort === minusSevenShort))
     }
 
-    def `should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Byte` {
+    it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -348,9 +348,9 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
     }
   }
 
-  object `The !== syntax` {
+  describe("The !== syntax") {
 
-    def `should be true if the number is outside the given interval for Double` {
+    it("should be true if the number is outside the given interval for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -360,7 +360,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenDotOh !== -6.5)
     }
 
-    def `should be true if the number is outside the given interval for Float` {
+    it("should be true if the number is outside the given interval for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -370,7 +370,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenDotOhFloat !== -6.5f)
     }
 
-    def `should be true if the number is outside the given interval for Long` {
+    it("should be true if the number is outside the given interval for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -380,7 +380,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenLong !== -10L)
     }
 
-    def `should be true if the number is outside the given interval for Int` {
+    it("should be true if the number is outside the given interval for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -390,7 +390,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenInt !== -10)
     }
 
-    def `should be true if the number is outside the given interval for Short` {
+    it("should be true if the number is outside the given interval for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -400,7 +400,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenShort !== (-10).toShort)
     }
 
-    def `should be true if the number is outside the given interval for Byte` {
+    it("should be true if the number is outside the given interval for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -410,7 +410,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(minusSevenByte !== (-10).toByte)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Double` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -420,7 +420,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-6.5 !== minusSevenDotOh)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Float` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -430,7 +430,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-6.5f !== minusSevenDotOhFloat)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Long` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -440,7 +440,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-10L !== minusSevenLong)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Int` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -450,7 +450,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(-10 !== minusSevenInt)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Short` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -460,7 +460,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert((-10).toShort !== minusSevenShort)
     }
 
-    def `should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Byte` {
+    it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -470,7 +470,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert((-10).toByte !== minusSevenByte)
     }
 
-    def `should be false if the number is within the given interval for Double` {
+    it("should be false if the number is within the given interval for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -486,7 +486,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenDotOh !== -6.8))
     }
 
-    def `should be false if the number is within the given interval for Float` {
+    it("should be false if the number is within the given interval for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -502,7 +502,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenDotOhFloat !== -6.8f))
     }
 
-    def `should be false if the number is within the given interval for Long` {
+    it("should be false if the number is within the given interval for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -518,7 +518,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenLong !== -5L))
     }
 
-    def `should be false if the number is within the given interval for Int` {
+    it("should be false if the number is within the given interval for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -534,7 +534,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenInt !== -5))
     }
 
-    def `should be false if the number is within the given interval for Short` {
+    it("should be false if the number is within the given interval for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -550,7 +550,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenShort !== (-5).toShort))
     }
 
-    def `should be false if the number is within the given interval for Byte` {
+    it("should be false if the number is within the given interval for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -566,7 +566,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(minusSevenByte !== (-5).toByte))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Double` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
       implicit val eq = tolerantDoubleEquality(tolerance = 0.2)
@@ -582,7 +582,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-6.8 !== minusSevenDotOh))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Float` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
       implicit val eq = tolerantFloatEquality(tolerance = 0.2f)
@@ -598,7 +598,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-6.8f !== minusSevenDotOhFloat))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Long` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
       implicit val eq = tolerantLongEquality(tolerance = 2L)
@@ -614,7 +614,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-5L !== minusSevenLong))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Int` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
       implicit val eq = tolerantIntEquality(tolerance = 2)
@@ -630,7 +630,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!(-5 !== minusSevenInt))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Short` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Short") {
 
       // Short +- Short
       implicit val eq = tolerantShortEquality(tolerance = 2.toShort)
@@ -646,7 +646,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(!((-5).toShort !== minusSevenShort))
     }
 
-    def `should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Byte` {
+    it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
       implicit val eq = tolerantByteEquality(tolerance = 2.toByte)
@@ -663,9 +663,9 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
     }
   }
 
-  object `The X +- Y syntax` {
+  describe("The X +- Y syntax") {
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Double` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Double") {
 
       // Double +- Double
       val caught1 = intercept[IllegalArgumentException] {
@@ -674,16 +674,16 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(caught1.getMessage === "-0.2 passed to tolerantDoubleEquality was zero or negative. Must be a positive non-zero number.", caught1.getMessage)
     }
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Float` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Float") {
 
       // Float +- Float
       val caught7 = intercept[IllegalArgumentException] {
         tolerantFloatEquality(tolerance = -0.2f)
       }
-      assert(caught7.getMessage === "-0.2 passed to tolerantFloatEquality was zero or negative. Must be a positive non-zero number.")
+      assert(caught7.getMessage === (-0.2f).toString + " passed to tolerantFloatEquality was zero or negative. Must be a positive non-zero number.")
     }
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Long` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Long") {
 
       // Long +- Long
       val caught12 = intercept[IllegalArgumentException] {
@@ -692,7 +692,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(caught12.getMessage === "-2 passed to tolerantLongEquality was zero or negative. Must be a positive non-zero number.")
     }
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Int` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Int") {
 
       // Int +- Int
       val caught16 = intercept[IllegalArgumentException] {
@@ -701,7 +701,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(caught16.getMessage === "-2 passed to tolerantIntEquality was zero or negative. Must be a positive non-zero number.")
     }
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Short` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Short") {
 
       // Short +- Short
       val caught19 = intercept[IllegalArgumentException] {
@@ -710,7 +710,7 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(caught19.getMessage === "-2 passed to tolerantShortEquality was zero or negative. Must be a positive non-zero number.")
     }
 
-    def `should throw IllegalArgumentException if the number passed to the right is 0 or negative for Byte` {
+    it("should throw IllegalArgumentException if the number passed to the right is 0 or negative for Byte") {
 
       // Byte +- Byte
       val caught21 = intercept[IllegalArgumentException] {
@@ -720,14 +720,25 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
     }
   }
 
-  object `TolerantNumeric's methods` {
-    def `should return Equalitys with a pretty toString` {
+  describe("TolerantNumeric's methods") {
+    it("should return Equalitys with a pretty toString") {
 
+      // SKIP-SCALATESTJS-START
       assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1.0)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1)")
+
       assert(tolerantDoubleEquality(2.2).toString === "TolerantDoubleEquality(2.2)")
 
+      // SKIP-SCALATESTJS-START
       assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1.0)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1)")
+
+      // SKIP-SCALATESTJS-START
       assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.2)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.200000047683716)")
 
       assert(tolerantLongEquality(1L).toString === "TolerantLongEquality(1)")
       assert(tolerantLongEquality(2L).toString === "TolerantLongEquality(2)")

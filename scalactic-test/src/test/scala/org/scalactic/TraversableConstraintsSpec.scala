@@ -51,5 +51,5 @@ trait CollectionConstraints extends TraversableConstraints with ArrayConstraints
 // like GeneralContraints.
 
 */
-class TraversableConstraintsSpec extends Spec with NonImplicitAssertions with TypeCheckedTripleEquals {
+class TraversableConstraintsSpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals {
 }

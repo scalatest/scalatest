@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
+class NormalizedEqualitySpec extends FunSpec with NonImplicitAssertions {
 
   final case class StringWrapper(var value: String, var isNormalized: Boolean = false, var equalsWasCalled: Boolean = false) {
     override def equals(other: Any): Boolean = {
@@ -53,9 +53,9 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
       }
   }
 
-  object `A NormalizingEquality type class` {
+  describe("A NormalizingEquality type class") {
 
-    def `should call .equals on the left hand object (and not on the right hand object)` {
+    it("should call .equals on the left hand object (and not on the right hand object)") {
 
       val a = StringWrapper("HowDy")
       val b = StringWrapper("hoWdY")
@@ -66,7 +66,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
       assert(!b.equalsWasCalled)
     }
 
-    def `should normalize both sides when areEqual is called` {
+    it("should normalize both sides when areEqual is called") {
 
       val a = StringWrapper("HowDy")
       val b = StringWrapper("hoWdY")
@@ -77,7 +77,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
       assert(b.isNormalized)
     }
 
-    def `should call .deep first if left side, right side, or both are Arrays` {
+    it("should call .deep first if left side, right side, or both are Arrays") {
 
       class NormalizedArrayOfStringEquality extends NormalizingEquality[Array[String]] {
         def normalized(arr: Array[String]): Array[String] = arr.map(_.trim.toLowerCase)
@@ -108,8 +108,8 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
       assert((new NormalizedArrayOfStringEquality).areEqual(a, b))
     }
   }
-  object `Normalizations` {
-    def `should be composable with and` {
+  describe("Normalizations") {
+    it("should be composable with and") {
       import StringNormalizations._
       assert(lowerCased.normalized("HowdY") == "howdy")
       assert(lowerCased.normalized("HowdY") != "howdy padna!")

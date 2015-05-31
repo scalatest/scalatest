@@ -20,13 +20,15 @@ import org.scalactic.Resources
 
 private[scalactic] object PosIntMacro extends CompileTimeAssertions {
 
+  def isValid(i: Int): Boolean = i > 0
+
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[PosInt] = {
     val notValidMsg = Resources.notValidPosInt
     val notLiteralMsg = Resources.notLiteralPosInt
 
     import c.universe._
 
-    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg) { i => i > 0 }
+    ensureValidIntLiteral(c)(value, notValidMsg, notLiteralMsg)(isValid)
     reify { PosInt.from(value.splice).get }
   }
 }

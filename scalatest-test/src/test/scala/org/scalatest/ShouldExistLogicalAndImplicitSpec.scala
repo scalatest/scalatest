@@ -20,7 +20,7 @@ import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Existence
 import Matchers._
 
-class ShouldExistLogicalAndImplicitSpec extends Spec {
+class ShouldExistLogicalAndImplicitSpec extends FunSpec {
   
   trait Thing {
     def exist: Boolean
@@ -64,16 +64,16 @@ class ShouldExistLogicalAndImplicitSpec extends Spec {
     FailureMessages.allShorthandFailed(messageWithIndex, left)
   }
     
-  object `The exist syntax when used with File` {
+  describe("The exist syntax when used with File") {
     
-    def `should do nothing when the file exists` {
+    it("should do nothing when the file exists") {
       something should (equal (something) and exist)
       something should (exist and equal (something))
       something should (be (something) and exist)
       something should (exist and be (something))
     }
     
-    def `should throw TFE with correct stack depth and message when the file does not exist` {
+    it("should throw TFE with correct stack depth and message when the file does not exist") {
       val e1 = intercept[exceptions.TestFailedException] {
         nothing should (equal (nothing) and exist)
       }
@@ -103,14 +103,14 @@ class ShouldExistLogicalAndImplicitSpec extends Spec {
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with not and the file does not exists` {
+    it("should do nothing when it is used with not and the file does not exists") {
       nothing should (equal (nothing) and not (exist))
       nothing should (not (exist) and equal (nothing))
       nothing should (be (nothing) and not (exist))
       nothing should (not (exist) and be (nothing))
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val e1 = intercept[exceptions.TestFailedException] {
         something should (equal (something) and not (exist))
       }
@@ -141,16 +141,16 @@ class ShouldExistLogicalAndImplicitSpec extends Spec {
     }
   }
   
-  object `The exist syntax when used with all(xs)` {
+  describe("The exist syntax when used with all(xs)") {
     
-    def `should do nothing when the file exists` {
+    it("should do nothing when the file exists") {
       all(List(something)) should (equal (something) and exist)
       all(List(something)) should (exist and equal (something))
       all(List(something)) should (be (something) and exist)
       all(List(something)) should (exist and be (something))
     }
     
-    def `should throw TFE with correct stack depth and message when the file does not exist` {
+    it("should throw TFE with correct stack depth and message when the file does not exist") {
       val left1 = List(nothing)
       val e1 = intercept[exceptions.TestFailedException] {
         all(left1) should (equal (nothing) and exist)
@@ -184,14 +184,14 @@ class ShouldExistLogicalAndImplicitSpec extends Spec {
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
-    def `should do nothing when it is used with not and the file does not exists` {
+    it("should do nothing when it is used with not and the file does not exists") {
       all(List(nothing)) should (equal (nothing) and not (exist))
       all(List(nothing)) should (not (exist) and equal (nothing))
       all(List(nothing)) should (be (nothing) and not (exist))
       all(List(nothing)) should (not (exist) and be (nothing))
     }
     
-    def `should throw TFE with correct stack depth and message when it is used with not and  the file exists` {
+    it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val left1 = List(something)
       val e1 = intercept[exceptions.TestFailedException] {
         all(left1) should (equal (something) and not (exist))

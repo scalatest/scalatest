@@ -63,7 +63,7 @@ class LocationSpec extends FunSpec with Checkers {
     }
   }
   
-  class TestLocationSpec extends Spec {
+  class TestLocationSpec extends FunSpec {
     def `test succeed` = {
     }
     

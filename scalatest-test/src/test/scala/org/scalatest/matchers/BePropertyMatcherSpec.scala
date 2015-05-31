@@ -17,20 +17,19 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
-import java.io.File
 
-class BePropertyMatcherSpec extends Spec {
+class BePropertyMatcherSpec extends FunSpec {
   
-  object `BePropertyMatcherMatcher ` {
+  describe("BePropertyMatcherMatcher ") {
     
-    object `instance created by BePropertyMatcher apply method` {
+    describe("instance created by BePropertyMatcher apply method") {
       
-      val bePropertyMatcher = BePropertyMatcher[File] { file => 
+      val bePropertyMatcher = BePropertyMatcher[List[Int]] { list =>
         BePropertyMatchResult(true, "test")
       }
       
-      def `should have pretty toString` {
-        bePropertyMatcher.toString should be ("BePropertyMatcher[java.io.File](java.io.File => BePropertyMatchResult)")
+      it("should have pretty toString") {
+        bePropertyMatcher.toString should be ("BePropertyMatcher[scala.collection.immutable.List](scala.collection.immutable.List => BePropertyMatchResult)")
       }
       
     }

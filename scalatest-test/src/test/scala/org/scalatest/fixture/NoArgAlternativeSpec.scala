@@ -19,7 +19,7 @@ import org.scalatest._
 import SharedHelpers._
 import NoArgAlternativeSpec.invokedCount
 
-class NoArgAlternativeSpec extends org.scalatest.Spec with Matchers {
+class NoArgAlternativeSpec extends org.scalatest.FunSpec with Matchers {
 
   trait NoArgAlt extends (() => Unit) {
     def body(): Unit
@@ -28,8 +28,8 @@ class NoArgAlternativeSpec extends org.scalatest.Spec with Matchers {
       finally println("the finally")
     }
   }
-  object `A NoArg alternative` {
-    def `should use the init function as the implementation of its apply method` {
+  describe("A NoArg alternative") {
+    it("should use the init function as the implementation of its apply method") {
       invokedCount = 0
       class ActorSys extends NoArgAlt {
         def body(): Unit = {

@@ -22,7 +22,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class OptionShouldContainOneOfSpec extends Spec {
+class OptionShouldContainOneOfSpec extends FunSpec {
 
   val invertedStringEquality =
     new Equality[String] {
@@ -34,14 +34,14 @@ class OptionShouldContainOneOfSpec extends Spec {
       def areEqual(a: String, b: Any): Boolean = a.toUpperCase == b
     }
 
-  object `an Option` {
+  describe("an Option") {
 
     val fumSome: Option[String] = Some("fum")
     val toSome: Option[String] = Some("to")
 
-    object `when used with contain oneOf (...) syntax` {
+    describe("when used with contain oneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumSome should contain oneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           fumSome should contain oneOf ("happy", "birthday", "to", "you")
@@ -50,14 +50,14 @@ class OptionShouldContainOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainOneOfElements(decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
           fumSome should contain oneOf ("fee", "fie", "foe", "fum")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (fumSome should contain oneOf ("fee", "fie", "foe", "fum")) (decided by upperCaseEquality)
@@ -67,7 +67,7 @@ class OptionShouldContainOneOfSpec extends Spec {
         }
         (fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumSome should contain oneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -77,9 +77,9 @@ class OptionShouldContainOneOfSpec extends Spec {
       }
     }
 
-    object `when used with (contain oneOf (...)) syntax` {
+    describe("when used with (contain oneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
@@ -89,14 +89,14 @@ class OptionShouldContainOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainOneOfElements(decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
           fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseEquality)
@@ -106,7 +106,7 @@ class OptionShouldContainOneOfSpec extends Spec {
         }
         (fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumSome should (contain oneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -124,9 +124,9 @@ class OptionShouldContainOneOfSpec extends Spec {
 
  Reason is that I don't want people putting parentheses between contain and oneOf, etc. This will not compile.
 */
-    object `when used with not contain oneOf (...) syntax` {
+    describe("when used with not contain oneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toSome should not contain oneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           toSome should not contain oneOf ("happy", "birthday", "to", "you")
@@ -135,14 +135,14 @@ class OptionShouldContainOneOfSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedOneOfElements(decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should not contain oneOf ("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
           toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toSome should not contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
@@ -152,7 +152,7 @@ class OptionShouldContainOneOfSpec extends Spec {
           (toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           toSome should not contain oneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -171,9 +171,9 @@ Interesting, of these three, the top one does happen to compile and run:
 
 The bottom two don't, but still I don't want to support that in general.
 */
-    object `when used with (not contain oneOf (...)) syntax` {
+    describe("when used with (not contain oneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toSome should (not contain oneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           toSome should (not contain oneOf ("happy", "birthday", "to", "you"))
@@ -182,14 +182,14 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedOneOfElements(decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should (not contain oneOf ("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toSome should (not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -199,7 +199,7 @@ The bottom two don't, but still I don't want to support that in general.
           (toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           toSome should (not contain oneOf ("fee", "fie", "foe", "fie", "fum"))
         }
@@ -210,7 +210,7 @@ The bottom two don't, but still I don't want to support that in general.
     }
   }
 
-  object `a collection of Options` {
+  describe("a collection of Options") {
 
     val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
     val somes: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(2))
@@ -219,9 +219,9 @@ The bottom two don't, but still I don't want to support that in general.
     val hiSomes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
     val toSomes: Vector[Option[String]] = Vector(Some("to"), Some("to"), Some("to"))
 
-    object `when used with contain oneOf (...) syntax` {
+    describe("when used with contain oneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (some1s) should contain oneOf (1, 3, 4)
         atLeast (2, somes) should contain oneOf (1, 3, 4)
         atMost (2, somes) should contain oneOf (2, 3, 4)
@@ -257,7 +257,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in Vector(Some(1), Some(1), None)"))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiSomes) should contain oneOf ("hi", "he")
         intercept[TestFailedException] {
           all (hiSomes) should contain oneOf ("ho", "he")
@@ -268,7 +268,7 @@ The bottom two don't, but still I don't want to support that in general.
           all (hiSomes) should contain oneOf ("hi", "he")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiSomes) should contain oneOf ("HI", "HE")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (hiSomes) should contain oneOf ("hi", "he")) (decided by upperCaseEquality)
@@ -279,7 +279,7 @@ The bottom two don't, but still I don't want to support that in general.
           (all (hiSomes) should contain oneOf ("HI", "HE")) (decided by defaultEquality[String])
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (some1s) should contain oneOf (1, 2, 2, 3)
         }
@@ -289,9 +289,9 @@ The bottom two don't, but still I don't want to support that in general.
       }
     }
 
-    object `when used with (contain oneOf (...)) syntax` {
+    describe("when used with (contain oneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (some1s) should (contain oneOf (1, 3, 4))
         atLeast (2, somes) should (contain oneOf (1, 3, 4))
         atMost (2, somes) should (contain oneOf (2, 3, 4))
@@ -327,7 +327,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in Vector(Some(1), Some(1), None)"))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiSomes) should (contain oneOf ("hi", "he"))
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneOf ("HI", "HE"))
@@ -338,7 +338,7 @@ The bottom two don't, but still I don't want to support that in general.
           all (hiSomes) should (contain oneOf ("hi", "he"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (hiSomes) should (contain oneOf ("hi", "he"))) (decided by upperCaseEquality)
@@ -349,7 +349,7 @@ The bottom two don't, but still I don't want to support that in general.
           (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (some1s) should (contain oneOf (1, 2, 2, 3))
         }
@@ -374,9 +374,9 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
 
  Reason is that I don't want people putting parentheses between contain and oneOf, etc. This will not compile.
 */
-    object `when used with not contain oneOf (...) syntax` {
+    describe("when used with not contain oneOf (...) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toSomes) should not contain oneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")
@@ -387,14 +387,14 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
                                    "  at index 0, " + FailureMessages.containedOneOfElements(toSomes(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
           all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
@@ -404,7 +404,7 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
           (all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")) (after being lowerCased and trimmed)
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toSomes) should not contain oneOf ("fee", "fie", "foe", "fie", "fum")
         }
@@ -431,9 +431,9 @@ scala> all (toSomes) should not contain (oneOf ("fee", "fie", "foe", "fum"))
 
 The top two don't, but still I don't want to support that in general.
 */
-    object `when used with (not contain oneOf (...)) syntax` {
+    describe("when used with (not contain oneOf (...)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toSomes) should (not contain oneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))
@@ -444,14 +444,14 @@ The top two don't, but still I don't want to support that in general.
                                    "  at index 0, " + FailureMessages.containedOneOfElements(toSomes(0), UnquotedString("\"happy\", \"birthday\", \"to\", \"you\"")) + " (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
           (all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
@@ -461,7 +461,7 @@ The top two don't, but still I don't want to support that in general.
           (all (toSomes) should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toSomes) should (not contain oneOf ("fee", "fie", "foe", "fie", "fum"))
         }

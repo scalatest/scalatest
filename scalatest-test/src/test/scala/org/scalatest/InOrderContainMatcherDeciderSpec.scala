@@ -24,7 +24,7 @@ import SharedHelpers._
 import Matchers._
 import StringNormalizations._
 
-class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
+class InOrderContainMatcherDeciderSpec extends FunSpec with Explicitly {
 
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {
@@ -130,7 +130,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
         })
     }
   
-  object `inOrder ` {
+  describe("inOrder ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -146,19 +146,23 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
-    def `should take specified equality when 'should contain' is used` {
+    it("should take specified equality when 'should contain' is used") {
       (List("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
       (Array("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
+      // SKIP-SCALATESTJS-START
       (javaList("1", "2 ", "3") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take specified equality when 'should not contain' is used` {
+    it("should take specified equality when 'should not contain' is used") {
       (List("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
       (Array("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
+      // SKIP-SCALATESTJS-START
       (javaList("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization") {
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -171,15 +175,17 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
         (left2 should contain inOrder ("1", "2 ", "3")) (after being appended)
       }
         checkShouldContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain inOrder ("1", "2 ", "3")) (after being appended)
       }
       checkShouldContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified normalization") {
       val translated = new Translated(Map("eno" -> "one"))
       
       val left1 = List("one", "two", "three")
@@ -193,27 +199,33 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
         (left2 should not contain inOrder ("eno", "two", "three")) (after being translated)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("eno", "two", "three").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("one", "two", "three")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain inOrder ("eno", "two", "three")) (after being translated)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("eno", "two", "three").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take specified equality and normalization when 'should contain' is used` {
+    it("should take specified equality and normalization when 'should contain' is used") {
       (List("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
       (Array("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
+      // SKIP-SCALATESTJS-START
       (javaList("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should take specified equality and normalization when 'should not contain' is used` {
+    it("should take specified equality and normalization when 'should not contain' is used") {
       (List("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
       (Array("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      // SKIP-SCALATESTJS-START
       (javaList("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization") {
       
       val left1 = List("one ", "two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -226,15 +238,17 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
         (left2 should contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e2, left2, Array("one", "two ", "three").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("one ", "two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e3, left3, Array("one", "two ", "three").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
     
-    def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization` {
+    it("should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with specified equality and normalization") {
       
       val left1 = List("one ", "two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
@@ -247,12 +261,14 @@ class InOrderContainMatcherDeciderSpec extends Spec with Explicitly {
         (left2 should not contain inOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("eno ", "owt", "eerht ").deep, thisLineNumber - 2)
-        
+
+      // SKIP-SCALATESTJS-START
       val left3 = javaList("one ", "two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
         (left3 should not contain inOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("eno ", "owt", "eerht ").deep, thisLineNumber - 2)
+      // SKIP-SCALATESTJS-END
     }
   }
 }

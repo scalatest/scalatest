@@ -22,15 +22,15 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import exceptions.TestFailedException
 
-class OptionShouldContainSpec extends Spec with Matchers {
+class OptionShouldContainSpec extends FunSpec with Matchers {
 
-  object `an Option` {
+  describe("an Option") {
 
     val some: Option[String] = Some("hi")
     val none: Option[String] = None
 
-    object `when used with contain (value) syntax` {
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+    describe("when used with contain (value) syntax") {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         some should contain ("hi")
         Some("hi") should contain ("hi")
 
@@ -55,7 +55,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         some should contain ("hi")
         intercept[TestFailedException] {
           some should contain ("ho")
@@ -68,7 +68,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           some should contain ("HI")
         }
@@ -88,8 +88,8 @@ class OptionShouldContainSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with not contain value syntax` {
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+    describe("when used with not contain value syntax") {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         some should not contain "ho"
         Some("hi") should not contain "ho"
         none should not contain "hi"
@@ -108,7 +108,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         some should not contain "ho"
         intercept[TestFailedException] {
           some should not contain "hi"
@@ -121,7 +121,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         some should not contain "HI"
         some should not contain "HI "
         (some should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
@@ -135,9 +135,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         some should not (contain ("ho"))
         Some("hi") should not (contain ("ho"))
@@ -158,7 +158,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         some should not (contain ("ho"))
         intercept[TestFailedException] {
           some should not (contain ("hi"))
@@ -171,7 +171,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         some should not (contain ("HI"))
         some should not (contain ("HI "))
         (some should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
@@ -185,9 +185,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         some should (not contain "ho")
         Some("hi") should (not contain ("ho"))
         none should (not contain "hi")
@@ -207,7 +207,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         some should (not contain "ho")
         intercept[TestFailedException] {
           some should (not contain "hi")
@@ -220,7 +220,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         some should (not contain "HI")
         some should (not contain "HI ")
         (some should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
@@ -235,7 +235,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
     }
   }
 
-  object `a collection of Options` {
+  describe("a collection of Options") {
 
     val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
     val somes: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(2))
@@ -243,9 +243,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
     val somesNone: Vector[Option[Int]] = Vector(Some(1), Some(1), None)
     val hiSomes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
 
-    object `when used with contain (value) syntax` {
+    describe("when used with contain (value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (some1s) should contain (1)
         atLeast (2, somes) should contain (1)
@@ -281,7 +281,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
                                    "  at index 2, Some(2) did not contain element 1 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(Some(1), Some(1), Some(2))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         intercept[TestFailedException] {
           all (hiSomes) should contain ("ho")
         }
@@ -293,7 +293,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           all (hiSomes) should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           all (somes) should contain ("HI")
         }
@@ -304,9 +304,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
         (all (hiSomes) should contain ("HI ")) (after being trimmed and lowerCased)
       }
     }
-    object `when used with not contain value syntax` {
+    describe("when used with not contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (some1s) should not contain 2
         atLeast (2, somes) should not contain 2
@@ -331,7 +331,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiSomes) should not contain "ho"
         intercept[TestFailedException] {
           all (hiSomes) should not contain "hi"
@@ -344,7 +344,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           all (hiSomes) should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiSomes) should not contain "HI"
         all (hiSomes) should not contain "HI "
         intercept[TestFailedException] {
@@ -355,9 +355,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
         }
       }
     }
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (some1s) should not (contain (2))
         atLeast (2, somes) should not (contain (2))
@@ -382,7 +382,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiSomes) should not (contain ("ho"))
         intercept[TestFailedException] {
           all (hiSomes) should not (contain ("hi"))
@@ -395,7 +395,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           all (hiSomes) should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiSomes) should not (contain ("HI"))
         all (hiSomes) should not (contain ("HI "))
         intercept[TestFailedException] {
@@ -406,9 +406,9 @@ class OptionShouldContainSpec extends Spec with Matchers {
         }
       }
     }
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (some1s) should (not contain 2)
         atLeast (2, somes) should (not contain 2)
@@ -433,7 +433,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiSomes) should (not contain "ho")
         intercept[TestFailedException] {
           all (hiSomes) should (not contain "hi")
@@ -446,7 +446,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
           all (hiSomes) should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiSomes) should (not contain "HI")
         all (hiSomes) should (not contain "HI ")
         intercept[TestFailedException] {

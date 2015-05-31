@@ -19,7 +19,7 @@ import org.scalactic._
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldEqualNullSpec extends Spec {
+class ShouldEqualNullSpec extends FunSpec {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -30,9 +30,9 @@ class ShouldEqualNullSpec extends Spec {
   val sub2: Sub = new Sub(2)
   val nullSuper: Super = null
 
-  object `The should equal syntax` {
+  describe("The should equal syntax") {
 
-    def `should work sensibly if null is passed on the left or right hand side` {
+    it("should work sensibly if null is passed on the left or right hand side") {
 
       val caught1 = intercept[TestFailedException] { super1 should equal (null) }
       caught1.getMessage should be ("Super(1) did not equal null")
@@ -68,7 +68,7 @@ class ShouldEqualNullSpec extends Spec {
       caught8.getMessage should be ("null did not equal Super(1)")
     }
 
-    def `should work sensibly if null is passed on the left or right hand side, when used with logical and` {
+    it("should work sensibly if null is passed on the left or right hand side, when used with logical and") {
 
       val caught1 = intercept[TestFailedException] { super1 should (equal (null) and equal (null)) }
       caught1.getMessage should be ("Super(1) did not equal null")
@@ -83,7 +83,7 @@ class ShouldEqualNullSpec extends Spec {
       caught5.getMessage should be ("The reference equaled null, but the reference equaled null")
     }
 
-    def `should work sensibly if null is passed on the left or right hand side, when used with logical or` {
+    it("should work sensibly if null is passed on the left or right hand side, when used with logical or") {
 
       val caught1 = intercept[TestFailedException] { super1 should (equal (null) or equal (null)) }
       caught1.getMessage should be ("Super(1) did not equal null, and Super(1) did not equal null")

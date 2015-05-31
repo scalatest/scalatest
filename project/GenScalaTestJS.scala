@@ -20,9 +20,7 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenScalaTestJS {
 
   private def uncommentJsExport(line: String): String =
-    if (line.startsWith("//@scala.scalajs.js.annotation.JSExport"))
-      line.substring(2)
-    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+    if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
     else
       line
@@ -54,7 +52,7 @@ object GenScalaTestJS {
     }
   }
 
-  def copyDir(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -65,19 +63,30 @@ object GenScalaTestJS {
     }
   }
 
+  def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      copyFile(sourceFile, destFile)
+    }
+  }
+
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/java/org/scalatest", "org/scalatest",
+    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
             List(
               "Finders.java",
               "TagAnnotation.java",
               "WrapWith.java",
-              "DoNotDiscover.java"
+              "DoNotDiscover.java",
+              "Ignore.java"
             ), targetDir)
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
 
-    copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest",
+    copyFiles("scalatest/src/main/scala/org/scalatest", "org/scalatest",
             List(
               "Suite.scala",
               "OutcomeOf.scala",
@@ -86,8 +95,9 @@ object GenScalaTestJS {
               "TestData.scala",
               "ConfigMap.scala",
               "Reporter.scala",
-              "DispatchReporter.scala",
+              //"DispatchReporter.scala",
               "CatchReporter.scala",
+              //"ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
               "ResourcefulReporter.scala",
               "Tracker.scala",
               "Filter.scala",
@@ -129,9 +139,78 @@ object GenScalaTestJS {
               "Suites.scala",
               "FunSpecLike.scala",
               "FunSpec.scala",
-              "UnquotedString.scala"
+              "UnquotedString.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala",
+              "WordSpecLike.scala",
+              "WordSpec.scala",
+              "FreeSpecLike.scala",
+              "FreeSpec.scala",
+              "PropSpecLike.scala",
+              "PropSpec.scala",
+              "FeatureSpecLike.scala",
+              "FeatureSpec.scala",
+              "MatchersHelper.scala",
+              "Matchers.scala",
+              "Entry.scala",
+              "Inspectors.scala",
+              "OptionValues.scala",
+              "Inside.scala",
+              "NonImplicitAssertions.scala",
+              "BeforeAndAfterAll.scala",
+              "BeforeAndAfterEachTestData.scala",
+              "BeforeAndAfterAllConfigMap.scala",
+              "BeforeAndAfterEach.scala", 
+              "GivenWhenThen.scala",
+              "SeveredStackTraces.scala",
+              "BeforeAndAfter.scala",
+              "CancelAfterFailure.scala",
+              "StopOnFailureReporter.scala",
+              //"ConfigMapWrapperSuite.scala",     // skipped because depends on java reflection
+              "Checkpoints.scala",
+              "DiagrammedAssertions.scala",
+              "DiagrammedExpr.scala",
+              "DiagrammedAssertionsMacro.scala",
+              "DiagrammedExprMacro.scala",
+              "EitherValues.scala",
+              "LoneElement.scala",
+              "Retries.scala",
+              "PartialFunctionValues.scala",
+              "RandomTestOrder.scala",
+              "SequentialNestedSuiteExecution.scala",
+              "StepwiseNestedSuiteExecution.scala",
+              "StopOnFailure.scala",
+              "Sequential.scala",
+              "Stepwise.scala",
+              "TryValues.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
+    copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
+            List(
+              "Suite.scala",
+              "TestDataFixture.scala",
+              "TestRegistration.scala",
+              "Transformer.scala",
+              "UnitFixture.scala",
+              "NoArg.scala",
+              "NoArgTestWrapper.scala",
+              "FixtureNodeFamily.scala",
+              "FunSuiteLike.scala",
+              "FunSuite.scala",
+              "FlatSpecLike.scala",
+              "FlatSpec.scala",
+              "FunSpecLike.scala",
+              "FunSpec.scala",
+              "WordSpecLike.scala",
+              "WordSpec.scala",
+              "FreeSpecLike.scala",
+              "FreeSpec.scala",
+              "PropSpecLike.scala",
+              "PropSpec.scala",
+              "FeatureSpecLike.scala",
+              "FeatureSpec.scala",
+              "ConfigMapFixture.scala"
+            ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events",
             List(
               "Event.scala",
               "Ordinal.scala",
@@ -140,7 +219,28 @@ object GenScalaTestJS {
               "Summary.scala",
               "NameInfo.scala"
             ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
+    copyFiles("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers",
+            List(
+              "MatchResult.scala",
+              "AMatcher.scala",
+              "AnMatcher.scala",
+              "BeMatcher.scala",
+              "BePropertyMatchResult.scala",
+              "BePropertyMatcher.scala",
+              "HavePropertyMatchResult.scala",
+              "HavePropertyMatcher.scala",
+              "LazyArg.scala",
+              "LazyMessage.scala",
+              "Matcher.scala",
+              "TypeMatcherMacro.scala",
+              "MatchPatternMacro.scala",
+              "MatcherProducers.scala",
+              "MatchFailed.scala",
+              "MatchPatternHelper.scala",
+              "MatchSucceeded.scala",
+              "TypeMatcherHelper.scala"
+            ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
         "SuiteDiscoveryHelper.scala",
         "StringReporter.scala",
@@ -153,7 +253,7 @@ object GenScalaTestJS {
         "EventToPresent.scala",
         "DiscoverySuite.scala",
         "SuiteSortingReporter.scala",
-        "ConcurrentDistributor.scala",
+        //"ConcurrentDistributor.scala",
         "FilterReporter.scala",
         "SuiteResult.scala",
         "SuiteParam.scala",
@@ -167,7 +267,7 @@ object GenScalaTestJS {
         "SbtDispatchReporter.scala",
         "FriendlyParamsTranslator.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
+    copyFiles("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions",
       List(
         "StackDepthException.scala",
         "NotAllowedException.scala",
@@ -181,28 +281,198 @@ object GenScalaTestJS {
         "PropertyCheckFailedException.scala",
         "TableDrivenPropertyCheckFailedException.scala",
         "DuplicateTestNameException.scala",
-        "TestRegistrationClosedException.scala"
+        "TestRegistrationClosedException.scala",
+        "GeneratorDrivenPropertyCheckFailedException.scala",
+        "DiscardedEvaluationException.scala",
+        "TimeoutField.scala",
+        "TestFailedDueToTimeoutException.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
+    copyFiles("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time",
       List(
         "Now.scala",
         "Span.scala",
         "SpanSugar.scala",
         "Units.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words",
+    copyFiles("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words",
       List(
         "TypeCheckWord.scala",
         "CompileWord.scala",
         "ArrayWrapper.scala",
-        "BehaveWord.scala"
+        "BehaveWord.scala",
+        "ResultOfTaggedAsInvocation.scala",
+        "ResultOfStringPassedToVerb.scala",
+        "ShouldVerb.scala",
+        "MustVerb.scala",
+        "CanVerb.scala",
+        "StringVerbBlockRegistration.scala",
+        "ResultOfAfterWordApplication.scala",
+        "RegexWithGroups.scala",
+        "DefinedWord.scala",
+        "ResultOfOnlyApplication.scala",
+        "ResultOfTheSameInstanceAsApplication.scala",
+        "EmptyWord.scala",
+        "ReadableWord.scala",
+        "WritableWord.scala",
+        "ResultOfNotExist.scala",
+        "ExistWord.scala",
+        "ResultOfATypeInvocation.scala",
+        "ResultOfAnTypeInvocation.scala",
+        "SortedWord.scala",
+        "ResultOfAtMostOneOfApplication.scala",
+        "ResultOfValueWordApplication.scala",
+        "ResultOfKeyWordApplication.scala",
+        "ResultOfInOrderApplication.scala",
+        "ResultOfInOrderOnlyApplication.scala",
+        "ResultOfAllOfApplication.scala",
+        "ResultOfTheSameElementsInOrderAsApplication.scala",
+        "ResultOfTheSameElementsAsApplication.scala",
+        "ResultOfNoneOfApplication.scala",
+        "ResultOfAtLeastOneOfApplication.scala",
+        "ResultOfOneOfApplication.scala",
+        "ResultOfDefinedAt.scala",
+        "ResultOfRegexWordApplication.scala",
+        "ResultOfAnWordToAnMatcherApplication.scala",
+        "ResultOfAnWordToBePropertyMatcherApplication.scala",
+        "ResultOfAWordToAMatcherApplication.scala",
+        "ResultOfAnWordToSymbolApplication.scala",
+        "ResultOfAWordToBePropertyMatcherApplication.scala",
+        "ResultOfAWordToSymbolApplication.scala",
+        "ResultOfGreaterThanOrEqualToComparison.scala",
+        "ResultOfLessThanOrEqualToComparison.scala",
+        "ResultOfGreaterThanComparison.scala",
+        "ResultOfLessThanComparison.scala",
+        "ResultOfMessageWordApplication.scala",
+        "ResultOfSizeWordApplication.scala",
+        "ResultOfLengthWordApplication.scala",
+        "ContainWord.scala",
+        "NotWord.scala",
+        "BeWord.scala",
+        "HaveWord.scala",
+        "IncludeWord.scala",
+        "EndWithWord.scala",
+        "StartWithWord.scala",
+        "FullyMatchWord.scala",
+        "MatcherWords.scala",
+        "PleaseUseNoExceptionShouldSyntaxInstead.scala",
+        "ResultOfOfTypeInvocation.scala",
+        "ResultOfThrownByApplication.scala",
+        "ResultOfBeWordForAnType.scala",
+        "ResultOfBeWordForAType.scala",
+        "MatchPatternWord.scala",
+        "NoExceptionWord.scala",
+        "SizeWord.scala",
+        "LengthWord.scala",
+        "ResultOfBeWordForNoException.scala",
+        "ResultOfContainWord.scala",
+        "ResultOfNotWordForAny.scala",
+        "ResultOfTheTypeInvocation.scala",
+        "ResultOfAllElementsOfApplication.scala",
+        "ResultOfOneElementOfApplication.scala",
+        "ResultOfAtLeastOneElementOfApplication.scala",
+        "ResultOfNoElementsOfApplication.scala"
       ), targetDir) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
+    copyFiles("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers",
       List(
         "Containing.scala",
         "Aggregating.scala",
         "KeyMapping.scala",
-        "ValueMapping.scala"
+        "ValueMapping.scala",
+        "Sequencing.scala",
+        "Sortable.scala",
+        "Readability.scala",
+        "Writability.scala",
+        "Emptiness.scala",
+        "Definition.scala",
+        "Length.scala",
+        "Existence.scala",
+        "Size.scala",
+        "Messaging.scala",
+        "Collecting.scala"
+      ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop",
+      List(
+        //"Configuration.scala",
+        "Checkers.scala",
+        //"PropertyChecks.scala",
+        "GenDrivenPropertyChecks.scala", 
+        "Generator.scala", 
+        "Configuration.scala", 
+        "Randomizer.scala",
+        "Edges.scala", 
+        "Whenever.scala"
+      ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
+      List(
+        "ScalaFutures.scala",
+        "Futures.scala",
+        "PatienceConfiguration.scala",
+        "AbstractPatienceConfiguration.scala",
+        //"Eventually.scala",      // not supported because js is single thread and does not share memory.
+        "ScaledTimeSpans.scala"
+      ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      List(
+        "FreeSpec.scala",
+        "FreeSpecLike.scala",
+        "FunSpec.scala",
+        "FunSpecLike.scala"
+      ), targetDir) ++
+    copyFiles("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects",
+      List(
+        "Retryable.scala",
+        "CPU.scala",
+        "Disk.scala",
+        "Network.scala",
+        "Slow.scala"
+      ), targetDir)
+  }
+
+  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
+      List(
+        "BigSuiteSuite.scala",
+        "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
+        "ClassTaggingProp.scala",    // skipped because annotation not supported
+        "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
+        "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
+        "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
+        "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
+        "EntrySpec.scala",    // skipped because Entry extends java.util.Map
+        "FunSuiteSuite.scala",          // skipped because depends on java reflection
+        "InheritedTagProp.scala",         // skipped because depends on java reflection
+        "OldDocSpec.scala",             // Do we still need this?
+        "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
+        "PropertyFunSuite.scala",   // skipped because depends on java reflection
+        "SavesConfigMapSuite.scala",    // skipped because depends on java reflection
+        "ShellSuite.scala",             // skipped because execute is not supported for now, as it depends on Suite.execute, which in turns depends on StandardOutReporter, PrintReporter that depends on java classes.
+        "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
+        "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
+        "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
+        "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+        "SpecSpec.scala",          // skipped because depends on java reflections.
+        "StatusProp.scala",        // skipped because uses VirtualMachineError
+        "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml
+        "StreamlinedXmlNormMethodsSpec.scala", // skipped because use scala.xml
+        "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
+        "SuiteSuite.scala"         // skipped because it depends on java reflection
+      )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+      List(
+        "SpecSpec.scala",     // skipped because depends on java reflections
+        "SuiteSpec.scala"    // skipped because depends on java reflections
+      )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
+      List(
+        "ResultOfAllElementsOfApplicationSpec.scala",
+        "ResultOfAtLeastOneElementOfApplicationSpec.scala",
+        "ResultOfNoElementsOfApplicationSpec.scala",
+        "ResultOfOneElementOfApplicationSpec.scala"
       ), targetDir)
   }
 

@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
-class EveryShouldContainTheSameElementsAsSpec extends Spec {
+class EveryShouldContainTheSameElementsAsSpec extends FunSpec {
 
   private def upperCase(value: Any): Any =
     value match {
@@ -46,14 +46,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
 
   //ADDITIONAL//
 
-  object `an Every` {
+  describe("an Every") {
 
     val fumList: Every[String] = Every("fum", "foe", "fie", "fee")
     val toList: Every[String] = Every("you", "to", "birthday", "happy")
 
-    object `when used with contain theSameElementsAs (..)` {
+    describe("when used with contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         fumList should contain theSameElementsAs Set("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
           fumList should contain theSameElementsAs Set("happy", "birthday", "to", "you")
@@ -62,14 +62,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
           fumList should contain theSameElementsAs Set("fee", "fie", "foe")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should contain theSameElementsAs Set("fee", "fie", "foe")) (decided by upperCaseStringEquality)
@@ -81,9 +81,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with (contain theSameElementsAs (..))` {
+    describe("when used with (contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
@@ -93,14 +93,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainSameElements(decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
           fumList should (contain theSameElementsAs Set("fee", "fie", "foe"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (fumList should (contain theSameElementsAs Set("fee", "fie", "foe"))) (decided by upperCaseStringEquality)
@@ -112,9 +112,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with not contain theSameElementsAs (..)` {
+    describe("when used with not contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList should not contain theSameElementsAs (Set("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           toList should not contain theSameElementsAs (Set("happy", "birthday", "to", "you"))
@@ -123,14 +123,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should not contain theSameElementsAs (Set("happy", "birthday", "to"))
         intercept[TestFailedException] {
           toList should not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList should not contain theSameElementsAs (Set("happy", "birthday", "to"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (toList should not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
@@ -142,9 +142,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with (not contain theSameElementsAs (..))` {
+    describe("when used with (not contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList should (not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         val e1 = intercept[TestFailedException] {
           toList should (not contain theSameElementsAs (Set("happy", "birthday", "to", "you")))
@@ -153,14 +153,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
         intercept[TestFailedException] {
           toList should (not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (toList should (not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
@@ -172,9 +172,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain theSameElementsAs (..)` {
+    describe("when used with shouldNot contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList shouldNot contain theSameElementsAs (Set("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           toList shouldNot contain theSameElementsAs (Set("happy", "birthday", "to", "you"))
@@ -183,14 +183,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot contain theSameElementsAs (Set("happy", "birthday", "to"))
         intercept[TestFailedException] {
           toList shouldNot contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList shouldNot contain theSameElementsAs (Set("happy", "birthday", "to"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (toList shouldNot contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
@@ -202,9 +202,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot (contain theSameElementsAs (..))` {
+    describe("when used with shouldNot (contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         toList shouldNot (contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         val e1 = intercept[TestFailedException] {
           toList shouldNot (contain theSameElementsAs (Set("happy", "birthday", "to", "you")))
@@ -213,14 +213,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.containedSameElements(decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
         intercept[TestFailedException] {
           toList shouldNot (contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (toList shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (toList shouldNot (contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
@@ -233,16 +233,16 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
     }
   }
 
-  object `an every of Everys` {
+  describe("an every of Everys") {
 
     val list1s: Every[Every[Int]] = Every(Every(3, 2, 1), Every(3, 2, 1), Every(3, 2, 1))
     val lists: Every[Every[Int]] = Every(Every(3, 2, 1), Every(3, 2, 1), Every(4, 3, 2))
     val hiLists: Every[Every[String]] = Every(Every("hi", "he"), Every("hi", "he"), Every("hi", "he"))
     val toLists: Every[Every[String]] = Every(Every("to", "you"), Every("to", "you"), Every("to", "you"))
 
-    object `when used with contain theSameElementsAs (..)` {
+    describe("when used with contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should contain theSameElementsAs Set(1, 2, 3)
         atLeast (2, lists) should contain theSameElementsAs Set(1, 2, 3)
         atMost (2, lists) should contain theSameElementsAs Set(1, 2, 3)
@@ -252,13 +252,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
           all (lists) should contain theSameElementsAs Set(1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should contain theSameElementsAs Set("he", "hi")
         intercept[TestFailedException] {
           all (hiLists) should contain theSameElementsAs Set("ho", "hi")
@@ -269,7 +270,7 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
           all (hiLists) should contain theSameElementsAs Set("HO", "HI")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should contain theSameElementsAs Set("HE", "HI")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (hiLists) should contain theSameElementsAs Set("HO", "HI")) (decided by upperCaseStringEquality)
@@ -282,9 +283,9 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with (contain theSameElementsAs (..))` {
+    describe("when used with (contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain theSameElementsAs Set(1, 2, 3))
         atLeast (2, lists) should (contain theSameElementsAs Set(1, 2, 3))
         atMost (2, lists) should (contain theSameElementsAs Set(1, 2, 3))
@@ -294,13 +295,14 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
           all (lists) should (contain theSameElementsAs Set(1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(Many(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should (contain theSameElementsAs Set("he", "hi"))
         intercept[TestFailedException] {
           all (hiLists) should (contain theSameElementsAs Set("ho", "hi"))
@@ -311,7 +313,7 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
           all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain theSameElementsAs Set("HE", "HI"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))) (decided by upperCaseStringEquality)
@@ -324,27 +326,28 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with not contain theSameElementsAs (..)` {
+    describe("when used with not contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should not contain theSameElementsAs (Set("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           all (toLists) should not contain theSameElementsAs (Set("you", "to"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))
         intercept[TestFailedException] {
           all (toLists) should not contain theSameElementsAs (Set("YOU", "TO"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) should not contain theSameElementsAs (Set("YOU", "TO"))) (decided by upperCaseStringEquality)
@@ -356,27 +359,28 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with (not contain theSameElementsAs (..))` {
+    describe("when used with (not contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) should (not contain theSameElementsAs (Set("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           all (toLists) should (not contain theSameElementsAs (Set("you", "to")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
         intercept[TestFailedException] {
           all (toLists) should (not contain theSameElementsAs (Set("YOU", "TO")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) should (not contain theSameElementsAs (Set("YOU", "TO")))) (decided by upperCaseStringEquality)
@@ -388,27 +392,28 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot contain theSameElementsAs (..)` {
+    describe("when used with shouldNot contain theSameElementsAs (..)") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot contain theSameElementsAs (Set("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot contain theSameElementsAs (Set("you", "to"))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) +  " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))
         intercept[TestFailedException] {
           all (toLists) shouldNot contain theSameElementsAs (Set("YOU", "TO"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot contain theSameElementsAs (Set("YOU", "TO"))) (decided by upperCaseStringEquality)
@@ -420,27 +425,28 @@ class EveryShouldContainTheSameElementsAsSpec extends Spec {
       }
     }
 
-    object `when used with shouldNot (contain theSameElementsAs (..))` {
+    describe("when used with shouldNot (contain theSameElementsAs (..))") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (toLists) shouldNot (contain theSameElementsAs (Set("fee", "fie", "foe", "fum")))
         val e1 = intercept[TestFailedException] {
           all (toLists) shouldNot (contain theSameElementsAs (Set("you", "to")))
         }
         e1.failedCodeFileName.get should be ("EveryShouldContainTheSameElementsAsSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        val offendingLine = thisLineNumber - 3
+        e1.failedCodeLineNumber.get should be (offendingLine)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Many("to", "you")) + " contained the same elements as " + decorateToStringValue(Set("you", "to")) + " (EveryShouldContainTheSameElementsAsSpec.scala:" + offendingLine + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain theSameElementsAs (Set("YOU", "TO")))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
           (all (toLists) shouldNot (contain theSameElementsAs (Set("YOU", "TO")))) (decided by upperCaseStringEquality)

@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfAnTypeInvocationSpec extends Spec {
+class ResultOfAnTypeInvocationSpec extends FunSpec {
   
-  object `ResultOfAnTypeInvocation ` {
+  describe("ResultOfAnTypeInvocation ") {
     
-    def `should have pretty toString` {
+    it("should have pretty toString") {
       val result = new ResultOfAnTypeInvocation(classOf[Inspectors])
       result.toString should be ("an [org.scalatest.Inspectors]")
     }

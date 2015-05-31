@@ -23,7 +23,7 @@ import org.scalatest.exceptions.NotAllowedException
 
 class BeforeNAfterSuite extends FunSuite {
 
-  class TheSuper extends Spec {
+  class TheSuper extends FunSpec {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -45,7 +45,7 @@ class BeforeNAfterSuite extends FunSuite {
       if (!runTestWasCalled)
         beforeCalledBeforeRunTest = true
     }
-    def `test something` = ()
+    it("test something") {}
     after {
       if (runTestWasCalled)
         afterCalledAfterRunTest = true
@@ -133,9 +133,9 @@ class BeforeNAfterSuite extends FunSuite {
   test("If super.runTest returns normally, but after completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
 
-    class MySuite extends Spec with BeforeAndAfter {
+    class MySuite extends FunSpec with BeforeAndAfter {
       after { throw new NumberFormatException }
-      def `test July` = ()
+      it("test July") {}
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -233,7 +233,7 @@ class BeforeNAfterSuite extends FunSuite {
   }
 }
 
-class BeforeNAfterExtendingSuite extends Spec with BeforeAndAfter {
+class BeforeNAfterExtendingSuite extends FunSpec with BeforeAndAfter {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
@@ -243,14 +243,14 @@ class BeforeNAfterExtendingSuite extends Spec with BeforeAndAfter {
     lb.clear()
   }
 
-  def `test easy` = {
+  it("test easy") {
     sb.append("easy!")
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
   }
 
-  def `test fun` = {
+  it("test fun") {
     sb.append("fun!")
     assert(sb.toString === "ScalaTest is fun!")
     assert(lb.isEmpty)

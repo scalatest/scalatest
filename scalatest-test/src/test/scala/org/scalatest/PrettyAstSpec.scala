@@ -17,109 +17,109 @@ package org.scalatest
 
 import Matchers._
 
-class PrettyAstSpec extends Spec {
+class PrettyAstSpec extends FunSpec {
 
-  object `SharedHelpers.prettifyAst `
+  describe("SharedHelpers.prettifyAst ") {
+    it("should print pretty AST") {
+      val original =
+        "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\"))))) " +
+          "Expr(Apply(Select(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")))), newTermName(\"$amp$amp\")), " +
+          "List(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")), newTermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"c\")))))))"
 
-  def `should print pretty AST` {
-    val original =
-      "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
-        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\"))))) " +
-        "Expr(Apply(Select(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
-        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")))), newTermName(\"$amp$amp\")), " +
-        "List(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")), newTermName(\"$eq$eq\")), " +
-        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"c\")))))))"
-
-    SharedHelpers.prettifyAst(original) should be (
-      "Expr(\n" +
-        "  Apply(\n" +
-        "    Select(\n" +
-        "      Select(\n" +
-        "        This(\n" +
-        "          newTypeName(\"TryIt\")\n" +
-        "        ),\n" +
-        "        newTermName(\"a\")\n" +
-        "      ),\n" +
-        "      newTermName(\"$eq$eq\")\n" +
-        "    ),\n" +
-        "    List(\n" +
-        "      Select(\n" +
-        "        This(\n" +
-        "          newTypeName(\"TryIt\")\n" +
-        "        ),\n" +
-        "        newTermName(\"b\")\n" +
-        "      )\n" +
-        "    )\n" +
-        "  )\n" +
-        ")\n" +
+      SharedHelpers.prettifyAst(original) should be (
         "Expr(\n" +
-        "  Apply(\n" +
-        "    Select(\n" +
-        "      Apply(\n" +
-        "        Select(\n" +
-        "          Select(\n" +
-        "            This(\n" +
-        "              newTypeName(\"TryIt\")\n" +
-        "            ),\n" +
-        "            newTermName(\"a\")\n" +
-        "          ),\n" +
-        "          newTermName(\"$eq$eq\")\n" +
-        "        ),\n" +
-        "        List(\n" +
-        "          Select(\n" +
-        "            This(\n" +
-        "              newTypeName(\"TryIt\")\n" +
-        "            ),\n" +
-        "            newTermName(\"b\")\n" +
-        "          )\n" +
-        "        )\n" +
-        "      ),\n" +
-        "      newTermName(\"$amp$amp\")\n" +
-        "    ),\n" +
-        "    List(\n" +
-        "      Apply(\n" +
-        "        Select(\n" +
-        "          Select(\n" +
-        "            This(\n" +
-        "              newTypeName(\"TryIt\")\n" +
-        "            ),\n" +
-        "            newTermName(\"b\")\n" +
-        "          ),\n" +
-        "          newTermName(\"$eq$eq\")\n" +
-        "        ),\n" +
-        "        List(\n" +
-        "          Select(\n" +
-        "            This(\n" +
-        "              newTypeName(\"TryIt\")\n" +
-        "            ),\n" +
-        "            newTermName(\"c\")\n" +
-        "          )\n" +
-        "        )\n" +
-        "      )\n" +
-        "    )\n" +
-        "  )\n" +
-        ")\n"
-    )
-  }
+          "  Apply(\n" +
+          "    Select(\n" +
+          "      Select(\n" +
+          "        This(\n" +
+          "          newTypeName(\"TryIt\")\n" +
+          "        ),\n" +
+          "        newTermName(\"a\")\n" +
+          "      ),\n" +
+          "      newTermName(\"$eq$eq\")\n" +
+          "    ),\n" +
+          "    List(\n" +
+          "      Select(\n" +
+          "        This(\n" +
+          "          newTypeName(\"TryIt\")\n" +
+          "        ),\n" +
+          "        newTermName(\"b\")\n" +
+          "      )\n" +
+          "    )\n" +
+          "  )\n" +
+          ")\n" +
+          "Expr(\n" +
+          "  Apply(\n" +
+          "    Select(\n" +
+          "      Apply(\n" +
+          "        Select(\n" +
+          "          Select(\n" +
+          "            This(\n" +
+          "              newTypeName(\"TryIt\")\n" +
+          "            ),\n" +
+          "            newTermName(\"a\")\n" +
+          "          ),\n" +
+          "          newTermName(\"$eq$eq\")\n" +
+          "        ),\n" +
+          "        List(\n" +
+          "          Select(\n" +
+          "            This(\n" +
+          "              newTypeName(\"TryIt\")\n" +
+          "            ),\n" +
+          "            newTermName(\"b\")\n" +
+          "          )\n" +
+          "        )\n" +
+          "      ),\n" +
+          "      newTermName(\"$amp$amp\")\n" +
+          "    ),\n" +
+          "    List(\n" +
+          "      Apply(\n" +
+          "        Select(\n" +
+          "          Select(\n" +
+          "            This(\n" +
+          "              newTypeName(\"TryIt\")\n" +
+          "            ),\n" +
+          "            newTermName(\"b\")\n" +
+          "          ),\n" +
+          "          newTermName(\"$eq$eq\")\n" +
+          "        ),\n" +
+          "        List(\n" +
+          "          Select(\n" +
+          "            This(\n" +
+          "              newTypeName(\"TryIt\")\n" +
+          "            ),\n" +
+          "            newTermName(\"c\")\n" +
+          "          )\n" +
+          "        )\n" +
+          "      )\n" +
+          "    )\n" +
+          "  )\n" +
+          ")\n"
+      )
+    }
 
-  def `should print pretty AST correctly also when '(' or ')' is in strings` {
-    val original =
-      "Expr(Apply(Select(Ident(scala.Predef), newTermName(\"println\")), List(Literal(Constant(\"Hello (chua\")))))"
-    SharedHelpers.prettifyAst(original) should be (
-      "Expr(\n" +
-      "  Apply(\n" +
-      "    Select(\n" +
-      "      Ident(scala.Predef),\n" +
-      "      newTermName(\"println\")\n" +
-      "    ),\n" +
-      "    List(\n" +
-      "      Literal(\n" +
-      "        Constant(\"Hello (chua\")\n" +
-      "      )\n" +
-      "    )\n" +
-      "  )\n" +
-      ")\n"
-    )
+    it("should print pretty AST correctly also when '(' or ')' is in strings") {
+      val original =
+        "Expr(Apply(Select(Ident(scala.Predef), newTermName(\"println\")), List(Literal(Constant(\"Hello (chua\")))))"
+      SharedHelpers.prettifyAst(original) should be (
+        "Expr(\n" +
+          "  Apply(\n" +
+          "    Select(\n" +
+          "      Ident(scala.Predef),\n" +
+          "      newTermName(\"println\")\n" +
+          "    ),\n" +
+          "    List(\n" +
+          "      Literal(\n" +
+          "        Constant(\"Hello (chua\")\n" +
+          "      )\n" +
+          "    )\n" +
+          "  )\n" +
+          ")\n"
+      )
+    }
   }
 
 }

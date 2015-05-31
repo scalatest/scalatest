@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 package org.scalatest
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+// SKIP-SCALATESTJS-END
 
 class TestNameProp  extends AllSuiteProp {
 
   type FixtureServices = TestNameFixtureServices
-  
+
+  // SKIP-SCALATESTJS-START
   def spec = new ExampleTestNameSpec
   def fixtureSpec = new ExampleTestNameFixtureSpec
   def junit3Suite = new ExampleTestNameJUnit3Suite
   def junitSuite = new ExampleTestNameJUnitSuite
   def testngSuite = new ExampleTestNameTestNGSuite
+  // SKIP-SCALATESTJS-END
   def funSuite = new ExampleTestNameFunSuite
   def fixtureFunSuite = new ExampleTestNameFixtureFunSuite
   def funSpec = new ExampleTestNameFunSpec
@@ -65,6 +69,7 @@ trait TestNameFixtureServices { suite: Suite =>
   }
 }
 
+// SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleTestNameSpec extends Spec with TestNameFixtureServices {
   val expectedTestNames = 
@@ -240,9 +245,10 @@ class ExampleTestNameTestNGSuite extends TestNGSuite with TestNameFixtureService
   @TestNG
   def testingShouldBeFun() {}
 }
+// SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleTestNameFunSuite extends FunSuite with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameFunSuite extends FunSuite with TestNameFixtureServices {
   
   val expectedTestNames = 
     Set(
@@ -261,7 +267,7 @@ class ExampleTestNameFunSuite extends FunSuite with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureFunSuite extends fixture.FunSuite with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureFunSuite extends fixture.FunSuite with TestNameFixtureServices with StringFixture {
   
   val expectedTestNames = 
     Set(
@@ -280,7 +286,7 @@ class ExampleTestNameFixtureFunSuite extends fixture.FunSuite with TestNameFixtu
 }
 
 @DoNotDiscover
-class ExampleTestNameFunSpec extends FunSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameFunSpec extends FunSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -350,7 +356,7 @@ class ExampleTestNameFunSpec extends FunSpec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureFunSpec extends fixture.FunSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureFunSpec extends fixture.FunSpec with TestNameFixtureServices with StringFixture {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -420,7 +426,7 @@ class ExampleTestNameFixtureFunSpec extends fixture.FunSpec with TestNameFixture
 }
 
 @DoNotDiscover
-class ExampleTestNameFeatureSpec extends FeatureSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameFeatureSpec extends FeatureSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Feature: Testing 1 Scenario: Scala code should be fun", 
@@ -462,7 +468,7 @@ class ExampleTestNameFeatureSpec extends FeatureSpec with TestNameFixtureService
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureFeatureSpec extends fixture.FeatureSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureFeatureSpec extends fixture.FeatureSpec with TestNameFixtureServices with StringFixture {
   val expectedTestNames = 
     Set(
      "Feature: Testing 1 Scenario: Scala code should be fun", 
@@ -504,7 +510,7 @@ class ExampleTestNameFixtureFeatureSpec extends fixture.FeatureSpec with TestNam
 }
 
 @DoNotDiscover
-class ExampleTestNameFlatSpec extends FlatSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameFlatSpec extends FlatSpec with TestNameFixtureServices {
   
   val expectedTestNames = 
     Set(
@@ -540,7 +546,7 @@ class ExampleTestNameFlatSpec extends FlatSpec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureFlatSpec extends fixture.FlatSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureFlatSpec extends fixture.FlatSpec with TestNameFixtureServices with StringFixture {
   val expectedTestNames = 
     Set(
      "Testing 1 should be fun to code in Scala", 
@@ -575,7 +581,7 @@ class ExampleTestNameFixtureFlatSpec extends fixture.FlatSpec with TestNameFixtu
 }
 
 @DoNotDiscover
-class ExampleTestNameFreeSpec extends FreeSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameFreeSpec extends FreeSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -645,7 +651,7 @@ class ExampleTestNameFreeSpec extends FreeSpec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureFreeSpec extends fixture.FreeSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureFreeSpec extends fixture.FreeSpec with TestNameFixtureServices with StringFixture {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -715,7 +721,7 @@ class ExampleTestNameFixtureFreeSpec extends fixture.FreeSpec with TestNameFixtu
 }
 
 @DoNotDiscover
-class ExampleTestNamePropSpec extends PropSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNamePropSpec extends PropSpec with TestNameFixtureServices {
   
   val expectedTestNames = 
     Set(
@@ -736,7 +742,7 @@ class ExampleTestNamePropSpec extends PropSpec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixturePropSpec extends fixture.PropSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixturePropSpec extends fixture.PropSpec with TestNameFixtureServices with StringFixture {
   
   val expectedTestNames = 
     Set(
@@ -757,7 +763,7 @@ class ExampleTestNameFixturePropSpec extends fixture.PropSpec with TestNameFixtu
 }
 
 @DoNotDiscover
-class ExampleTestNameWordSpec extends WordSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNameWordSpec extends WordSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 should test Scala code should be fun", 
@@ -827,7 +833,7 @@ class ExampleTestNameWordSpec extends WordSpec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureWordSpec extends fixture.WordSpec with TestNameFixtureServices with StringFixture {
+protected[scalatest] class ExampleTestNameFixtureWordSpec extends fixture.WordSpec with TestNameFixtureServices with StringFixture {
   val expectedTestNames = 
     Set(
      "Testing 1 should test Scala code should be fun", 
@@ -897,7 +903,7 @@ class ExampleTestNameFixtureWordSpec extends fixture.WordSpec with TestNameFixtu
 }
 
 @DoNotDiscover
-class ExampleTestNamePathFreeSpec extends path.FreeSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNamePathFreeSpec extends path.FreeSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -964,10 +970,12 @@ class ExampleTestNamePathFreeSpec extends path.FreeSpec with TestNameFixtureServ
       "should be fun" in {}
     }
   }
+
+  override def newInstance: path.FreeSpecLike = new ExampleTestNamePathFreeSpec
 }
 
 @DoNotDiscover
-class ExampleTestNamePathFunSpec extends path.FunSpec with TestNameFixtureServices {
+protected[scalatest] class ExampleTestNamePathFunSpec extends path.FunSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -1034,4 +1042,6 @@ class ExampleTestNamePathFunSpec extends path.FunSpec with TestNameFixtureServic
       it("should be fun") {}
     }
   }
+
+  override def newInstance: path.FunSpecLike = new ExampleTestNamePathFunSpec
 }

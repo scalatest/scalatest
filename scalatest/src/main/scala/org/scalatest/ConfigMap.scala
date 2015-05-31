@@ -16,7 +16,7 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
-import reflect.ClassManifest
+import reflect.ClassTag
 import collection.immutable.MapLike
 import org.scalactic.Equality
 import enablers.Containing
@@ -118,9 +118,9 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
    * </pre>
    *
    * @param key the key with which the desired value should be associated
-   * @param manifest an implicit <code>ClassManifest</code> specifying the expected type for the desired value
+   * @param classTag an implicit <code>ClassTag</code> specifying the expected type for the desired value
    */
-  def getOptional[V](key: String)(implicit manifest: ClassManifest[V]): Option[V] = {
+  def getOptional[V](key: String)(implicit classTag: ClassTag[V]): Option[V] = {
     if (underlying.contains(key)) Some(getRequired[V](key))
     else None
   }
@@ -138,9 +138,9 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
    *
    * @param key the key with which the desired value should be associated
    * @param default a default value to return if the key is not found
-   * @param manifest an implicit <code>ClassManifest</code> specifying the expected type for the desired value
+   * @param classTag an implicit <code>ClassTag</code> specifying the expected type for the desired value
    */
-  def getWithDefault[V](key: String, default: => V)(implicit manifest: ClassManifest[V]): V = {
+  def getWithDefault[V](key: String, default: => V)(implicit classTag: ClassTag[V]): V = {
     if (underlying.contains(key)) getRequired[V](key)
     else default
   }
@@ -156,12 +156,12 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
    * </pre>
    *
    * @param key the key with which the desired value should be associated
-   * @param manifest an implicit <code>ClassManifest</code> specifying the expected type for the desired value
+   * @param classTag an implicit <code>ClassTag</code> specifying the expected type for the desired value
    */
-  def getRequired[V](key: String)(implicit manifest: ClassManifest[V]): V = {
+  def getRequired[V](key: String)(implicit classTag: ClassTag[V]): V = {
     underlying.get(key) match {
       case Some(value) =>
-        val expectedClass = manifest.erasure
+        val expectedClass = classTag.runtimeClass
         val boxedExpectedClass =
           expectedClass match {
             case java.lang.Boolean.TYPE => classOf[java.lang.Boolean]
@@ -175,8 +175,7 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
             case _ => expectedClass
           }
         val actualClass = value.asInstanceOf[AnyRef].getClass
-        // if (actualClass.isAssignableFrom(boxedExpectedClass))
-        if (boxedExpectedClass.isAssignableFrom(actualClass))
+        if (actualClass.isAssignableFrom(boxedExpectedClass))
           value.asInstanceOf[V]
         else
             throw new TestCanceledException(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef]), 1) // TODO: Fix stack depth

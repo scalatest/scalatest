@@ -18,11 +18,11 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfBeWordForNoExceptionSpec extends Spec {
+class ResultOfBeWordForNoExceptionSpec extends FunSpec {
   
-  object `ResultOfBeWordForNoException ` {
+  describe("ResultOfBeWordForNoException ") {
     
-    def `should have pretty toString when used` {
+    it("should have pretty toString when used") {
       val result = noException should be
       result.toString should be ("ResultOfBeWordForNoException")
     }

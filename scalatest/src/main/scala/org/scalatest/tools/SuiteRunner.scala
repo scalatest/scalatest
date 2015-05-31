@@ -31,16 +31,6 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
   def run() {
 
     if (!stopper.stopRequested) {
-      // Create a Rerunner if the Suite has a no-arg constructor
-      val hasPublicNoArgConstructor: Boolean =
-        try {
-          val constructor: Constructor[_] = suite.getClass.getConstructor(Array[java.lang.Class[_]](): _*)
-          Modifier.isPublic(constructor.getModifiers())
-        }
-        catch {
-          case nsme: NoSuchMethodException => false
-        }
-  
       val rawString = Resources.suiteExecutionStarting
       val formatter = formatterForSuiteStarting(suite)
       val dispatch = args.reporter

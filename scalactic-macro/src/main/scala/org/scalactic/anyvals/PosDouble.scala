@@ -18,12 +18,127 @@ package org.scalactic.anyvals
 import scala.language.implicitConversions
 import scala.collection.immutable.NumericRange
 
-//
-// Numbers greater than zero.
-//
-
 /**
- * TODO
+ * An <code>AnyVal</code> for positive <code>Double</code>s.
+ *
+ * Note: a <code>PosDouble</code> may not equal 0. If you want positive
+ * number or 0, use [[PosZDouble]].
+ *
+ * <p>
+ * Because <code>PosDouble</code> is an <code>AnyVal</code> it
+ * will usually be as efficient as an <code>Double</code>, being
+ * boxed only when a <code>Double</code> would have been boxed.
+ * </p>
+ * 
+ * <p>
+ * The <code>PosDouble.apply</code> factory method is
+ * implemented in terms of a macro that checks literals for
+ * validity at compile time. Calling
+ * <code>PosDouble.apply</code> with a literal
+ * <code>Double</code> value will either produce a valid
+ * <code>PosDouble</code> instance at run time or an error at
+ * compile time. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * scala&gt; import anyvals._
+ * import anyvals._
+ *
+ * scala&gt; PosDouble(1.0)
+ * res1: org.scalactic.anyvals.PosDouble = PosDouble(1.0)
+ *
+ * scala&gt; PosDouble(0.0)
+ * &lt;console&gt;:14: error: PosDouble.apply can only be invoked on a positive (i &gt; 0.0) floating point literal, like PosDouble(42.0).
+ *               PosDouble(0.0)
+ *                        ^
+ * </pre>
+ *
+ * <p>
+ * <code>PosDouble.apply</code> cannot be used if the value
+ * being passed is a variable (<em>i.e.</em>, not a literal),
+ * because the macro cannot determine the validity of variables
+ * at compile time (just literals). If you try to pass a
+ * variable to <code>PosDouble.apply</code>, you'll get a
+ * compiler error that suggests you use a different factor
+ * method, <code>PosDouble.from</code>, instead:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; val x = 1.0
+ * x: Double = 1.0
+ *
+ * scala&gt; PosDouble(x)
+ * &lt;console&gt;:15: error: PosDouble.apply can only be invoked on a floating point literal, like PosDouble(42.0). Please use PosDouble.from instead.
+ *               PosDouble(x)
+ *                        ^
+ * </pre>
+ *
+ * <p>
+ * The <code>PosDouble.from</code> factory method will inspect
+ * the value at runtime and return an
+ * <code>Option[PosDouble]</code>. If the value is valid,
+ * <code>PosDouble.from</code> will return a
+ * <code>Some[PosDouble]</code>, else it will return a
+ * <code>None</code>.  Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; PosDouble.from(x)
+ * res4: Option[org.scalactic.anyvals.PosDouble] = Some(PosDouble(1.0))
+ *
+ * scala&gt; val y = 0.0
+ * y: Double = 0.0
+ *
+ * scala&gt; PosDouble.from(y)
+ * res5: Option[org.scalactic.anyvals.PosDouble] = None
+ * </pre>
+ * 
+ * <p>
+ * The <code>PosDouble.apply</code> factory method is marked
+ * implicit, so that you can pass literal <code>Double</code>s
+ * into methods that require <code>PosDouble</code>, and get the
+ * same compile-time checking you get when calling
+ * <code>PosDouble.apply</code> explicitly. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; def invert(pos: PosDouble): Double = Double.MaxValue - pos
+ * invert: (pos: org.scalactic.anyvals.PosDouble)Double
+ *
+ * scala&gt; invert(1.1)
+ * res6: Double = 1.7976931348623157E308
+ *
+ * scala&gt; invert(Double.MaxValue)
+ * res8: Double = 0.0
+ *
+ * scala&gt; invert(0.0)
+ * &lt;console&gt;:15: error: PosDouble.apply can only be invoked on a positive (i &gt; 0.0) floating point literal, like PosDouble(42.0).
+ *               invert(0.0)
+ *                      ^
+ *
+ * scala&gt; invert(-1.0)
+ * &lt;console&gt;:15: error: PosDouble.apply can only be invoked on a positive (i &gt; 0.0) floating point literal, like PosDouble(42.0).
+ *               invert(-1.0)
+ *                       ^
+ *
+ * </pre>
+ *
+ * <p>
+ * This example also demonstrates that the
+ * <code>PosDouble</code> companion object also defines implicit
+ * widening conversions when a similar conversion is provided in
+ * Scala. This makes it convenient to use a
+ * <code>PosDouble</code> where a <code>Double</code> is
+ * needed. An example is the subtraction in the body of the
+ * <code>invert</code> method defined above,
+ * <code>Double.MaxValue - pos</code>. Although
+ * <code>Double.MaxValue</code> is a <code>Double</code>, which
+ * has no <code>-</code> method that takes a
+ * <code>PosDouble</code> (the type of <code>pos</code>), you
+ * can still subtract <code>pos</code>, because the
+ * <code>PosDouble</code> will be implicitly widened to
+ * <code>Double</code>.
+ * </p>
  *
  * @param value The <code>Double</code> value underlying this <code>PosDouble</code>.
  */ 
@@ -217,7 +332,14 @@ final class PosDouble private (val value: Double) extends AnyVal {
   // Stuff from RichDouble
   def isPosInfinity: Boolean = Double.PositiveInfinity == value
 
+  /**
+  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+  */
   def max(that: PosDouble): PosDouble = if (math.max(value, that.value) == value) this else that
+
+  /**
+  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+  */
   def min(that: PosDouble): PosDouble = if (math.min(value, that.value) == value) this else that
 
   def isWhole = {
@@ -244,6 +366,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
 
   // adapted from RichInt:
   /**
+  * Create a <code>Range</code> from this <code>PosDouble</code> value
+  * until the specified <code>end</code> (exclusive) with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `this` up to but
   * not including `end`.
@@ -252,6 +377,10 @@ final class PosDouble private (val value: Double) extends AnyVal {
     value.until(end)
 
   /**
+  * Create a <code>Range</code> from this <code>PosDouble</code> value
+  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+  *
+  * @param end The final bound of the range to make.
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Exclusive[Double]]] from `this` up to but
@@ -261,6 +390,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
     value.until(end, step)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosDouble</code> value
+  * to the specified <code>end</code> with step value 1.
+  *
   * @param end The final bound of the range to make.
   * @return A [[scala.collection.immutable.Range.Partial[Double, NumericRange[Double]]]] from `'''this'''` up to
   * and including `end`.
@@ -269,6 +401,9 @@ final class PosDouble private (val value: Double) extends AnyVal {
     value.to(end)
 
   /**
+  * Create an inclusive <code>Range</code> from this <code>PosDouble</code> value
+  * to the specified <code>end</code> with the specified <code>step</code> value.
+  *
   * @param end The final bound of the range to make.
   * @param step The number to increase by for each step of the range.
   * @return A [[scala.collection.immutable.NumericRange.Inclusive[Double]]] from `'''this'''` up to
@@ -279,6 +414,8 @@ final class PosDouble private (val value: Double) extends AnyVal {
 }
 
 object PosDouble {
+  final val MaxValue: PosDouble = PosDouble.from(Double.MaxValue).get
+  final val MinValue: PosDouble = PosDouble.from(1.0).get // Can't use the macro here
   def from(value: Double): Option[PosDouble] =
     if (value > 0.0) Some(new PosDouble(value)) else None
   import language.experimental.macros

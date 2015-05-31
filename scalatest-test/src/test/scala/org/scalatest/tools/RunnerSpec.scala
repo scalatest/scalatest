@@ -25,9 +25,9 @@ import java.net.URL
 import java.io.File
 import org.scalatest.tools.Runner.deglobSuiteParams
 
-class RunnerSpec extends Spec with PrivateMethodTester {
+class RunnerSpec extends FunSpec with PrivateMethodTester {
 
-  def `parseArgsIntoLists should throw IllegalArgumentException using long-deprecated args` {
+  it("parseArgsIntoLists should throw IllegalArgumentException using long-deprecated args") {
 
     // this is how i solved the problem of wanting to reuse these val names, runpathList, reportersList, etc.
     // by putting them in a little verify method, it gets reused each time i call that method
@@ -490,7 +490,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
   
-  def `parseArgsIntoLists should work correctly using non-deprecated args` {
+  it("parseArgsIntoLists should work correctly using non-deprecated args") {
 
     // this is how i solved the problem of wanting to reuse these val names, runpathList, reportersList, etc.
     // by putting them in a little verify method, it gets reused each time i call that method
@@ -1034,36 +1034,36 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     )
   }
 
-  object `parseCompoundArgIntoSet should` {
-    def `work correctly` {
+  describe("parseCompoundArgIntoSet should") {
+    it("work correctly") {
       assertResult(Set("Cat", "Dog")) {
         Runner.parseCompoundArgIntoSet(List("-n", "Cat Dog"), "-n")
       }
     }
-    def `merge overlapping values` {
+    it("merge overlapping values") {
       assertResult(Set("tag", "tag2", "tag3")) {
         Runner.parseCompoundArgIntoSet(List("-l", "tag tag2", "-l", "tag2 tag3"),"-l")
       }
     }
   }
 
-  object `parseCompoundArgIntoList should parse` {
-    def `single` {
+  describe("parseCompoundArgIntoList should parse") {
+    it("single") {
       assertResult(List("tag")) {
         Runner.parseCompoundArgIntoList(List("-l", "tag"),"-l")
       }
     }
-    def `multi` {
+    it("multi") {
       assertResult(List("tag","tag2")) {
         Runner.parseCompoundArgIntoList(List("-l", "tag tag2"),"-l")
       }
     }
-    def `different pairs` {
+    it("different pairs") {
       assertResult(List("tag", "tag2", "tag3", "tag4")) {
         Runner.parseCompoundArgIntoList(List("-l", "tag tag2", "-l", "tag3 tag4"),"-l")
       }
     }
-    def `overlapping pairs` {
+    it("overlapping pairs") {
       assertResult(List("tag", "tag2", "tag2", "tag3")) {
         Runner.parseCompoundArgIntoList(List("-l", "tag tag2", "-l", "tag2 tag3"),"-l")
       }
@@ -1072,10 +1072,10 @@ class RunnerSpec extends Spec with PrivateMethodTester {
 
   val parseConfigSet = PrivateMethod[Set[ReporterConfigParam]]('parseConfigSet)
 
-  object `parseConfigSet should` {
-    object `handle string reporter options for reminders` {
-      object `with full stack traces (G)` {
-        def `including canceled tests` {
+  describe("parseConfigSet should") {
+    describe("handle string reporter options for reminders") {
+      describe("with full stack traces (G)") {
+        it("including canceled tests") {
           assertResult(Set(PresentReminderWithFullStackTraces)) {
             Runner invokePrivate parseConfigSet("-oG")
           }
@@ -1086,7 +1086,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
             Runner invokePrivate parseConfigSet("-fG")
           }
         }
-        def `excluding canceled tests` {
+        it("excluding canceled tests") {
           assertResult(Set(PresentReminderWithFullStackTraces, PresentReminderWithoutCanceledTests)) {
             Runner invokePrivate parseConfigSet("-oGK")
           }
@@ -1098,8 +1098,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
           }
         }
       }
-      object `with short stack traces (T)` {
-        def `including canceled tests` {
+      describe("with short stack traces (T)") {
+        it("including canceled tests") {
           assertResult(Set(PresentReminderWithShortStackTraces)) {
             Runner invokePrivate parseConfigSet("-oT")
           }
@@ -1110,7 +1110,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
             Runner invokePrivate parseConfigSet("-fT")
           }
         }
-        def `excluding canceled tests` {
+        it("excluding canceled tests") {
           assertResult(Set(PresentReminderWithShortStackTraces, PresentReminderWithoutCanceledTests)) {
             Runner invokePrivate parseConfigSet("-oTK")
           }
@@ -1122,8 +1122,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
           }
         }
       }
-      object `with no stack traces (I)` {
-        def `including canceled tests` {
+      describe("with no stack traces (I)") {
+        it("including canceled tests") {
           assertResult(Set(PresentReminderWithoutStackTraces)) {
             Runner invokePrivate parseConfigSet("-oI")
           }
@@ -1134,7 +1134,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
             Runner invokePrivate parseConfigSet("-fI")
           }
         }
-        def `excluding canceled tests` {
+        it("excluding canceled tests") {
           assertResult(Set(PresentReminderWithoutStackTraces, PresentReminderWithoutCanceledTests)) {
             Runner invokePrivate parseConfigSet("-oIK")
           }
@@ -1149,7 +1149,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
 
-  def `parseConfigSet should work correctly` {
+  it("parseConfigSet should work correctly") {
 
     intercept[NullPointerException] {
       Runner invokePrivate parseConfigSet(null)
@@ -1224,7 +1224,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
                                          
-  def `parseReporterArgsIntoSpecs should work correctly` {
+  it("parseReporterArgsIntoSpecs should work correctly") {
     intercept[NullPointerException] {
       Runner.parseReporterArgsIntoConfigurations(null)
     }
@@ -1356,7 +1356,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
 
-  def `parseSuiteArgsIntoClassNameStrings should work correctly` {
+  it("parseSuiteArgsIntoClassNameStrings should work correctly") {
     intercept[NullPointerException] {
       Runner.parseSuiteArgsIntoNameStrings(null, "-j")
     }
@@ -1377,7 +1377,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
 
-  def `parseRunpathArgIntoList should work correctly` {
+  it("parseRunpathArgIntoList should work correctly") {
     intercept[NullPointerException] {
       Runner.parseRunpathArgIntoList(null)
     }
@@ -1416,7 +1416,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
 
-  def `parsePropertiesArgsIntoMap should work correctly` {
+  it("parsePropertiesArgsIntoMap should work correctly") {
     intercept[NullPointerException] {
       Runner.parsePropertiesArgsIntoMap(null)
     }
@@ -1440,7 +1440,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
 
-  def `deprecatedCheckArgsForValidity should work correctly` {
+  it("deprecatedCheckArgsForValidity should work correctly") {
     intercept[NullPointerException] {
       Runner.checkArgsForValidity(null)
     }
@@ -1461,7 +1461,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
   
-  def `parseSuiteArgs should work correctly` {
+  it("parseSuiteArgs should work correctly") {
     intercept[NullPointerException] {
       Runner.parseSuiteArgs(null)
     }
@@ -1631,7 +1631,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(tests12(4).isSubstring === true)
   }
   
-  def `checkArgsForValidity should work correctly` {
+  it("checkArgsForValidity should work correctly") {
     intercept[NullPointerException] {
       Runner.checkArgsForValidity(null)
     }
@@ -1645,7 +1645,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Runner.checkArgsForValidity(Array("-Ddbname=testdb", "-Dserver=192.168.1.188", "-R", "serviceuitest-1.1beta4.jar", "-g", "-eFBA", "-s", "MySuite", "-P"))
     }
   }
-  def `checkArgsForValidity should recognize -W (for slowpoke detector)` {
+  it("checkArgsForValidity should recognize -W (for slowpoke detector)") {
     assertResult(None) {
       Runner.checkArgsForValidity(Array("-W", "60", "60"))
     }
@@ -1654,7 +1654,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
   }
   
-  def `parseChosenStylesIntoChosenStyleSet should work correctly` {
+  it("parseChosenStylesIntoChosenStyleSet should work correctly") {
     intercept[IllegalArgumentException] {
       Runner.parseChosenStylesIntoChosenStyleSet(List("-a", "aStyle"), "-y")
     }
@@ -1674,7 +1674,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(multiStyle.contains("cStyle"))
   }
   
-  def `parseDoubleArgument should work correctly` {
+  it("parseDoubleArgument should work correctly") {
     intercept[IllegalArgumentException] {
       Runner.parseDoubleArgument(List("-a", "123"), "-F", 1.0)
     }
@@ -1712,7 +1712,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(spanScaleFactor === 888)
   }
   
-  def `parseConcurrentConfig should work correctly` {
+  it("parseConcurrentConfig should work correctly") {
     val emptyConcurrentConfig = Runner.parseConcurrentConfig(List.empty)
     assert(emptyConcurrentConfig.numThreads === 0)
     assert(emptyConcurrentConfig.enableSuiteSortingReporter === false)
@@ -1750,7 +1750,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(multipDashPSThreadNum.enableSuiteSortingReporter === true)
   }
 
-  def `deglobSuiteParams should work correctly` {
+  it("deglobSuiteParams should work correctly") {
     val suiteParam =
       SuiteParam("", Array.empty[String], Array.empty[String],
                  Array.empty[NestedSuiteParam])
@@ -1791,7 +1791,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
                    "foo.events.EventsFooSuite"))
   }
 
-  def `readMemoryFiles should issue alert if a Memento isn't runnable` {
+  it("readMemoryFiles should issue alert if a Memento isn't runnable") {
     val events = mutable.Set.empty[Event]
 
     var tracker = new Tracker(new Ordinal(12))
@@ -1809,147 +1809,147 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(1 === events.filter(_.isInstanceOf[AlertProvided]).size)
   }
 
-  def `parseArgs should disallow -t"something` {
+  it("""parseArgs should disallow -t"something""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-t\"something", " to test\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -t\"something")
   }
 
-  def `parseArgs should disallow -z"something` {
+  it("""parseArgs should disallow -z"something""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-z\"something", " to test\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -z\"something")
   }
 
-  def `parseArgs should disallow -M"aFile` {
+  it("""parseArgs should disallow -M"aFile""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-M\"aFile", ".txt\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -M\"aFile")
   }
 
-  def `parseArgs should disallow -u"aDirectory` {
+  it("""parseArgs should disallow -u"aDirectory""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-u\"aDirectory", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -u\"aDirectory")
   }
 
-  def `parseArgs should disallow -n"tag` {
+  it("""parseArgs should disallow -n"tag""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-n\"tag", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -n\"tag")
   }
 
-  def `parseArgs should disallow -l"tag` {
+  it("""parseArgs should disallow -l"tag""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-l\"tag", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -l\"tag")
   }
 
-  def `parseArgs should disallow -s"suite` {
+  it("""parseArgs should disallow -s"suite""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-s\"suite", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -s\"suite")
   }
 
-  def `parseArgs should disallow -A"aFile` {
+  it("""parseArgs should disallow -A"aFile""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-A\"aFile", ".txt\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -A\"aFile")
   }
 
-  def `parseArgs should disallow -i"nested` {
+  it("""parseArgs should disallow -i"nested""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-i\"nested", "suite", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -i\"nested")
   }
 
-  def `parseArgs should disallow -j"junit` {
+  it("""parseArgs should disallow -j"junit""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-j\"junit", "class", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -j\"junit")
   }
 
-  def `parseArgs should disallow -m"package` {
+  it("""parseArgs should disallow -m"package""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-m\"package", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -m\"package")
   }
 
-  def `parseArgs should disallow -w"package` {
+  it("""parseArgs should disallow -w"package""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-w\"package", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -w\"package")
   }
 
-  def `parseArgs should disallow -b"aFile` {
+  it("""parseArgs should disallow -b"aFile""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-b\"aFile", ".txt\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -b\"aFile")
   }
 
-  def `parseArgs should disallow -q"suffix` {
+  it("""parseArgs should disallow -q"suffix""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-q\"suffix", "name\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -q\"suffix")
   }
 
-  def `parseArgs should disallow -Q"wrong` {
+  it("""parseArgs should disallow -Q"wrong""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-Q\"wrong", "thing\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -Q\"wrong")
   }
 
-  def `parseArgs should disallow -k"super` {
+  it("""parseArgs should disallow -k"super""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-k\"super", "host\"", "9000"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -k\"super")
   }
 
-  def `parseArgs should disallow -K"super` {
+  it("""parseArgs should disallow -K"super""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-K\"super", "host\"", "9000"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -K\"super")
   }
 
-  def `parseArgs should disallow -y"chosen` {
+  it("""parseArgs should disallow -y"chosen""") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-y\"chosen", "style\""))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -y\"chosen")
   }
 
-  def `parseArgs should disallow -F2` {
+  it("parseArgs should disallow -F2") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-F2"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -F2")
   }
 
-  def `parseArgs should disallow -T20` {
+  it("parseArgs should disallow -T20") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-T20"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -T20")
   }
 
-  def `parseArgs should disallow -W1` {
+  it("parseArgs should disallow -W1") {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-W1", "2"))
     }

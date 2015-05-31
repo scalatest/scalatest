@@ -22,14 +22,14 @@ import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeNullSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
   val nullMap: Map[Int, String] = null
   val map = Map(1 -> "one", 2 -> "two")
 
-  object `the be (null) syntax` {
+  describe("the be (null) syntax") {
 
-    def `should work in its basic for with or without not` {
+    it("should work in its basic for with or without not") {
 
       map should not be (null)
       map should not (be (null))
@@ -78,7 +78,7 @@ class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAsse
       assert(caught6.getMessage === "null was not equal to Map(1 -> \"one\", 2 -> \"two\")")
     }
 
-    def `should throw a NullPointerException if they try to short circuit with a null check first` {
+    it("should throw a NullPointerException if they try to short circuit with a null check first") {
       // The reason I check this is I warn that this will happen in the ShouldMatcher scaladoc
       intercept[NullPointerException] {
         nullMap should (not be (null) and contain key (7))
@@ -88,7 +88,7 @@ class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAsse
       }
     }
 
-    def `should compile and run when used with and (with or without not)` {
+    it("should compile and run when used with and (with or without not)") {
 
       val caught1 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) and not be (null))
@@ -153,7 +153,7 @@ class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAsse
       assert(caught11.getMessage === "The reference was null, but the reference was null")
     }
 
-    def `should compile and run when used with or (with or without not)` {
+    it("should compile and run when used with or (with or without not)") {
 
       Map(1 -> "one") should (contain key (7) or not be (null))
       Map(1 -> "one") should (contain key (7) or not (be (null)))
@@ -194,9 +194,9 @@ class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAsse
   }
 
 /*
-  object `the shouldBe null syntax` {
+  describe("the shouldBe null syntax") {
 
-    def `should work in its basic` {
+    it("should work in its basic") {
       nullMap shouldBe null
 
       val caught1 = intercept[TestFailedException] {

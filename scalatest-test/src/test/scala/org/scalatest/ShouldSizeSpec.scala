@@ -25,50 +25,50 @@ import org.scalatest.enablers.Size
 import FailureMessages._
 import Matchers._
 
-class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
-  object `The 'have size (Int)' syntax` {
+  describe("The 'have size (Int)' syntax") {
 
-    object `on Array` {
+    describe("on Array") {
 
-      def `should do nothing if array size matches specified size` {
+      it("should do nothing if array size matches specified size") {
         Array(1, 2) should have size (2)
         // check((arr: Array[Int]) => returnsNormally(arr should have size (arr.size)))
       }
 
-      def `should do nothing if array size does not match and used with should not` {
+      it("should do nothing if array size does not match and used with should not") {
         Array(1, 2) should not { have size (3) }
         Array(1, 2) should not have size (3)
         // check((arr: Array[Int], i: Int) => i != arr.size ==> returnsNormally(arr should not { have size (i) }))
         // check((arr: Array[Int], i: Int) => i != arr.size ==> returnsNormally(arr should not have size (i)))
       }
 
-      def `should do nothing when array size matches and used in a logical-and expression` {
+      it("should do nothing when array size matches and used in a logical-and expression") {
         Array(1, 2) should { have size (2) and (have size (3 - 1)) }
         Array(1, 2) should ((have size (2)) and (have size (3 - 1)))
         Array(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when array size matches and used in a logical-or expression` {
+      it("should do nothing when array size matches and used in a logical-or expression") {
         Array(1, 2) should { have size (77) or (have size (3 - 1)) }
         Array(1, 2) should ((have size (77)) or (have size (3 - 1)))
         Array(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when array size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when array size doesn't match and used in a logical-and expression with not") {
         Array(1, 2) should { not { have size (5) } and not { have size (3) }}
         Array(1, 2) should ((not have size (5)) and (not have size (3)))
         Array(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when array size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when array size doesn't match and used in a logical-or expression with not") {
         Array(1, 2) should { not { have size (2) } or not { have size (3) }}
         Array(1, 2) should ((not have size (2)) or (not have size (3)))
         Array(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if array size does not match specified size` {
+      it("should throw TestFailedException if array size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should have size (3)
         }
@@ -76,7 +76,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((arr: Array[String]) => throwsTestFailedException(arr should have size (arr.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should have size (-2)
         }
@@ -84,7 +84,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((arr: Array[Int]) => throwsTestFailedException(arr should have size (if (arr.size == 0) -1 else -arr.size)))
       }
 
-      def `should throw an assertion error when array size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when array size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { have size (5) and (have size (2 - 1)) }
@@ -102,7 +102,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Array(1, 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when array size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when array size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { have size (55) or (have size (22)) }
@@ -120,7 +120,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Array(1, 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Array(1, 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when array size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when array size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { not { have size (3) } and not { have size (2) }}
@@ -138,7 +138,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Array(1, 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Array(1, 2)"), 2))))
       }
 
-      def `should throw an assertion error when array size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when array size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { not { have size (2) } or not { have size (2) }}
@@ -156,50 +156,52 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Array(1, 2) had size 2, and Array(1, 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         Array(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.immutable.Set` {
+    describe("on scala.collection.immutable.Set") {
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         Set(1, 2) should have size (2)
         Set("one", "two") should have size (2)
         // check((set: Set[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         Set(1, 2) should not { have size (3) }
         Set(1, 2) should not have size (3)
         // check((set: Set[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         Set(1, 2) should { have size (2) and (have size (3 - 1)) }
         Set(1, 2) should ((have size (2)) and (have size (3 - 1)))
         Set(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         Set(1, 2) should { have size (77) or (have size (3 - 1)) }
         Set(1, 2) should ((have size (77)) or (have size (3 - 1)))
         Set(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         Set(1, 2) should { not { have size (5) } and not { have size (3) }}
         Set(1, 2) should ((not have size (5)) and (not have size (3)))
         Set(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         Set(1, 2) should { not { have size (2) } or not { have size (3) }}
         Set(1, 2) should ((not have size (2)) or (not have size (3)))
         Set(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should have size (3)
         }
@@ -207,7 +209,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should have size (-2)
         }
@@ -215,7 +217,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { have size (5) and (have size (2 - 1)) }
@@ -233,7 +235,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { have size (55) or (have size (22)) }
@@ -251,7 +253,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { not { have size (3) } and not { have size (2) }}
@@ -269,7 +271,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Set(1, 2)"), 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { not { have size (2) } or not { have size (2) }}
@@ -287,52 +289,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         Set(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.mutable.Set` {
+    describe("on scala.collection.mutable.Set") {
 
       import scala.collection.mutable
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         mutable.Set(1, 2) should have size (2)
         mutable.Set("one", "two") should have size (2)
         // check((set: Set[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         mutable.Set(1, 2) should not { have size (3) }
         mutable.Set(1, 2) should not have size (3)
         // check((set: Set[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         mutable.Set(1, 2) should { have size (2) and (have size (3 - 1)) }
         mutable.Set(1, 2) should ((have size (2)) and (have size (3 - 1)))
         mutable.Set(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         mutable.Set(1, 2) should { have size (77) or (have size (3 - 1)) }
         mutable.Set(1, 2) should ((have size (77)) or (have size (3 - 1)))
         mutable.Set(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         mutable.Set(1, 2) should { not { have size (5) } and not { have size (3) }}
         mutable.Set(1, 2) should ((not have size (5)) and (not have size (3)))
         mutable.Set(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         mutable.Set(1, 2) should { not { have size (2) } or not { have size (3) }}
         mutable.Set(1, 2) should ((not have size (2)) or (not have size (3)))
         mutable.Set(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val set = mutable.Set(1, 2)
         val caught1 = intercept[TestFailedException] {
           set should have size (3)
@@ -342,7 +346,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val set = mutable.Set(1, 2) 
         val caught1 = intercept[TestFailedException] {(
           set should have size (-2))
@@ -351,7 +355,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
         val set1 = mutable.Set(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (5) and (have size (2 - 1)) }
@@ -371,7 +375,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
         val set1 = mutable.Set(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (55) or (have size (22)) }
@@ -391,7 +395,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
         val set1 = mutable.Set(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (3) } and not { have size (2) }}
@@ -411,7 +415,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 3)), UnquotedString(FailureMessages.hadSize(set3, 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
         val set1 = mutable.Set(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (2) } or not { have size (2) }}
@@ -431,52 +435,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         mutable.Set(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.Set` {
+    describe("on scala.collection.Set") {
 
       val set: scala.collection.Set[Int] = Set(1, 2)
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         set should have size (2)
         Set("one", "two") should have size (2)
         // check((set: Set[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         set should not { have size (3) }
         set should not have size (3)
         // check((set: Set[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         set should { have size (2) and (have size (3 - 1)) }
         set should ((have size (2)) and (have size (3 - 1)))
         set should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         set should { have size (77) or (have size (3 - 1)) }
         set should ((have size (77)) or (have size (3 - 1)))
         set should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         set should { not { have size (5) } and not { have size (3) }}
         set should ((not have size (5)) and (not have size (3)))
         set should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         set should { not { have size (2) } or not { have size (3) }}
         set should ((not have size (2)) or (not have size (3)))
         set should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           set should have size (3)
         }
@@ -484,7 +490,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           set should have size (-2)
         }
@@ -492,7 +498,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           set should { have size (5) and (have size (2 - 1)) }
@@ -510,7 +516,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           set should { have size (55) or (have size (22)) }
@@ -528,7 +534,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           set should { not { have size (3) } and not { have size (2) }}
@@ -546,7 +552,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Set(1, 2)"), 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           set should { not { have size (2) } or not { have size (2) }}
@@ -564,52 +570,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         set.par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.immutable.HashSet` {
+    describe("on scala.collection.immutable.HashSet") {
 
       import scala.collection.immutable.HashSet
         
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         HashSet(1, 2) should have size (2)
         HashSet("one", "two") should have size (2)
         // check((set: Set[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         HashSet(1, 2) should not { have size (3) }
         HashSet(1, 2) should not have size (3)
         // check((set: Set[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         HashSet(1, 2) should { have size (2) and (have size (3 - 1)) }
         HashSet(1, 2) should ((have size (2)) and (have size (3 - 1)))
         HashSet(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         HashSet(1, 2) should { have size (77) or (have size (3 - 1)) }
         HashSet(1, 2) should ((have size (77)) or (have size (3 - 1)))
         HashSet(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         HashSet(1, 2) should { not { have size (5) } and not { have size (3) }}
         HashSet(1, 2) should ((not have size (5)) and (not have size (3)))
         HashSet(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         HashSet(1, 2) should { not { have size (2) } or not { have size (3) }}
         HashSet(1, 2) should ((not have size (2)) or (not have size (3)))
         HashSet(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should have size (3)
         }
@@ -617,7 +625,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should have size (-2)
         }
@@ -625,7 +633,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { have size (5) and (have size (2 - 1)) }
@@ -643,7 +651,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { have size (55) or (have size (22)) }
@@ -661,7 +669,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { have size (3) } and not { have size (2) }}
@@ -679,7 +687,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Set(1, 2)"), 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { have size (2) } or not { have size (2) }}
@@ -697,52 +705,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Set(1, 2) had size 2, and Set(1, 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         HashSet(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.mutable.HashSet` {
+    describe("on scala.collection.mutable.HashSet") {
 
       import scala.collection.mutable
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         mutable.HashSet(1, 2) should have size (2)
         mutable.HashSet("one", "two") should have size (2)
         // check((set: Set[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         mutable.HashSet(1, 2) should not { have size (3) }
         mutable.HashSet(1, 2) should not have size (3)
         // check((set: Set[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         mutable.HashSet(1, 2) should { have size (2) and (have size (3 - 1)) }
         mutable.HashSet(1, 2) should ((have size (2)) and (have size (3 - 1)))
         mutable.HashSet(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         mutable.HashSet(1, 2) should { have size (77) or (have size (3 - 1)) }
         mutable.HashSet(1, 2) should ((have size (77)) or (have size (3 - 1)))
         mutable.HashSet(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         mutable.HashSet(1, 2) should { not { have size (5) } and not { have size (3) }}
         mutable.HashSet(1, 2) should ((not have size (5)) and (not have size (3)))
         mutable.HashSet(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         mutable.HashSet(1, 2) should { not { have size (2) } or not { have size (3) }}
         mutable.HashSet(1, 2) should ((not have size (2)) or (not have size (3)))
         mutable.HashSet(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val set1 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should have size (3)
@@ -751,7 +761,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negativedef ` {
+      it("should throw TestFailedException with normal error message if specified size is negativeit(") {
         val set2 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
           set2 should have size (-2)
@@ -760,7 +770,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
         val set1 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (5) and (have size (2 - 1)) }
@@ -780,7 +790,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
         val set1 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (55) or (have size (22)) }
@@ -800,7 +810,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
         val set1 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (3) } and not { have size (2) }}
@@ -820,7 +830,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(set3, 2, 3)), UnquotedString(FailureMessages.hadSize(set3, 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val set1 = mutable.HashSet(1, 2)
         val caught1 = intercept[TestFailedException] {
@@ -841,49 +851,51 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         mutable.HashSet(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.List` {
+    describe("on scala.List") {
 
-      def `should do nothing if list size matches specified size` {
+      it("should do nothing if list size matches specified size") {
         List(1, 2) should have size (2)
         check((lst: List[Int]) => returnsNormally(lst should have size (lst.size)))
       }
 
-      def `should do nothing if list size does not match and used with should not` {
+      it("should do nothing if list size does not match and used with should not") {
         List(1, 2) should not { have size (3) }
         List(1, 2) should not have size (3)
         check((lst: List[Int], i: Int) => i != lst.size ==> returnsNormally(lst should not { have size (i) }))
       }
 
-      def `should do nothing when list size matches and used in a logical-and expression` {
+      it("should do nothing when list size matches and used in a logical-and expression") {
         List(1, 2) should { have size (2) and (have size (3 - 1)) }
         List(1, 2) should ((have size (2)) and (have size (3 - 1)))
         List(1, 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when list size matches and used in a logical-or expression` {
+      it("should do nothing when list size matches and used in a logical-or expression") {
         List(1, 2) should { have size (77) or (have size (3 - 1)) }
         List(1, 2) should ((have size (77)) or (have size (3 - 1)))
         List(1, 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-and expression with not") {
         List(1, 2) should { not { have size (5) } and not { have size (3) }}
         List(1, 2) should ((not have size (5)) and (not have size (3)))
         List(1, 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-or expression with not") {
         List(1, 2) should { not { have size (2) } or not { have size (3) }}
         List(1, 2) should ((not have size (2)) or (not have size (3)))
         List(1, 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if list size does not match specified size` {
+      it("should throw TestFailedException if list size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should have size (3)
         }
@@ -891,7 +903,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((lst: List[String]) => throwsTestFailedException(lst should have size (lst.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should have size (-2)
         }
@@ -899,7 +911,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((lst: List[Int]) => throwsTestFailedException(lst should have size (if (lst.size == 0) -1 else -lst.size)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { have size (5) and (have size (2 - 1)) }
@@ -917,7 +929,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("List(1, 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { have size (55) or (have size (22)) }
@@ -935,7 +947,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("List(1, 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("List(1, 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { not { have size (3) } and not { have size (2) }}
@@ -953,7 +965,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("List(1, 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("List(1, 2)"), 2))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { not { have size (2) } or not { have size (2) }}
@@ -971,53 +983,56 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "List(1, 2) had size 2, and List(1, 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         List(1, 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on java.util.List` {
+    // SKIP-SCALATESTJS-START
+    describe("on java.util.List") {
 
       val javaList: java.util.List[Int] = new java.util.ArrayList
       javaList.add(1)
       javaList.add(2)
       
-      def `should do nothing if list size matches specified size` {
+      it("should do nothing if list size matches specified size") {
         javaList should have size (2)
         // check((lst: java.util.List[Int]) => returnsNormally(lst should have size (lst.size)))
       }
 
-      def `should do nothing if list size does not match and used with should not` {
+      it("should do nothing if list size does not match and used with should not") {
         javaList should not { have size (3) }
         javaList should not have size (3)
         // check((lst: List[Int], i: Int) => i != lst.size ==> returnsNormally(lst should not { have size (i) }))
       }
 
-      def `should do nothing when list size matches and used in a logical-and expression` {
+      it("should do nothing when list size matches and used in a logical-and expression") {
         javaList should { have size (2) and (have size (3 - 1)) }
         javaList should ((have size (2)) and (have size (3 - 1)))
         javaList should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when list size matches and used in a logical-or expression` {
+      it("should do nothing when list size matches and used in a logical-or expression") {
         javaList should { have size (77) or (have size (3 - 1)) }
         javaList should ((have size (77)) or (have size (3 - 1)))
         javaList should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-and expression with not") {
         javaList should { not { have size (5) } and not { have size (3) }}
         javaList should ((not have size (5)) and (not have size (3)))
         javaList should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-or expression with not") {
         javaList should { not { have size (2) } or not { have size (3) }}
         javaList should ((not have size (2)) or (not have size (3)))
         javaList should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if list size does not match specified size` {
+      it("should throw TestFailedException if list size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           javaList should have size (3)
         }
@@ -1025,7 +1040,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((lst: List[String]) => throwsTestFailedException(lst should have size (lst.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           javaList should have size (-2)
         }
@@ -1033,7 +1048,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((lst: List[Int]) => throwsTestFailedException(lst should have size (if (lst.size == 0) -1 else -lst.size)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaList should { have size (5) and (have size (2 - 1)) }
@@ -1051,7 +1066,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 5))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaList should { have size (55) or (have size (22)) }
@@ -1069,7 +1084,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 22))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaList should { not { have size (3) } and not { have size (2) }}
@@ -1087,7 +1102,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("[1, 2]"), 2))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaList should { not { have size (2) } or not { have size (2) }}
@@ -1105,46 +1120,47 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "[1, 2] had size 2, and [1, 2] had size 2")
       }
     }
+    // SKIP-SCALATESTJS-END
 
-    object `on scala.collection.immutable.Map` {
+    describe("on scala.collection.immutable.Map") {
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         Map("one" -> 1, "two" -> 2) should have size (2)
         Map(1 -> "one", 2 -> "two") should have size (2)
         // check((set: Map[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         Map("one" -> 1, "two" -> 2) should not { have size (3) }
         Map("one" -> 1, "two" -> 2) should not have size (3)
         // check((set: Map[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         Map("one" -> 1, "two" -> 2) should { have size (2) and (have size (3 - 1)) }
         Map("one" -> 1, "two" -> 2) should ((have size (2)) and (have size (3 - 1)))
         Map("one" -> 1, "two" -> 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         Map("one" -> 1, "two" -> 2) should { have size (77) or (have size (3 - 1)) }
         Map("one" -> 1, "two" -> 2) should ((have size (77)) or (have size (3 - 1)))
         Map("one" -> 1, "two" -> 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         Map("one" -> 1, "two" -> 2) should { not { have size (5) } and not { have size (3) }}
         Map("one" -> 1, "two" -> 2) should ((not have size (5)) and (not have size (3)))
         Map("one" -> 1, "two" -> 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         Map("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (3) }}
         Map("one" -> 1, "two" -> 2) should ((not have size (2)) or (not have size (3)))
         Map("one" -> 1, "two" -> 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should have size (3)
         }
@@ -1152,7 +1168,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should have size (-2)
         }
@@ -1160,7 +1176,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { have size (5) and (have size (2 - 1)) }
@@ -1178,7 +1194,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { have size (55) or (have size (22)) }
@@ -1196,7 +1212,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { have size (3) } and not { have size (2) }}
@@ -1214,7 +1230,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (2) }}
@@ -1232,52 +1248,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) had size 2, and Map(\"one\" -> 1, \"two\" -> 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         Map("one" -> 1, "two" -> 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.mutable.Map` {
+    describe("on scala.collection.mutable.Map") {
 
       import scala.collection.mutable
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         mutable.Map("one" -> 1, "two" -> 2) should have size (2)
         mutable.Map(1 -> "one", 2 -> "two") should have size (2)
         // check((set: Map[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         mutable.Map("one" -> 1, "two" -> 2) should not { have size (3) }
         mutable.Map("one" -> 1, "two" -> 2) should not have size (3)
         // check((set: Map[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         mutable.Map("one" -> 1, "two" -> 2) should { have size (2) and (have size (3 - 1)) }
         mutable.Map("one" -> 1, "two" -> 2) should ((have size (2)) and (have size (3 - 1)))
         mutable.Map("one" -> 1, "two" -> 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         mutable.Map("one" -> 1, "two" -> 2) should { have size (77) or (have size (3 - 1)) }
         mutable.Map("one" -> 1, "two" -> 2) should ((have size (77)) or (have size (3 - 1)))
         mutable.Map("one" -> 1, "two" -> 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         mutable.Map("one" -> 1, "two" -> 2) should { not { have size (5) } and not { have size (3) }}
         mutable.Map("one" -> 1, "two" -> 2) should ((not have size (5)) and (not have size (3)))
         mutable.Map("one" -> 1, "two" -> 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         mutable.Map("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (3) }}
         mutable.Map("one" -> 1, "two" -> 2) should ((not have size (2)) or (not have size (3)))
         mutable.Map("one" -> 1, "two" -> 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val map = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
            map should have size (3)
@@ -1286,7 +1304,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val map = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
@@ -1295,7 +1313,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
         val map1 = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (5) and (have size (2 - 1)) }
@@ -1315,7 +1333,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
         val map1 = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (55) or (have size (22)) }
@@ -1335,7 +1353,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
         val map1 = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
            map1 should { not { have size (3) } and not { have size (2) }}
@@ -1355,7 +1373,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 3)), UnquotedString(FailureMessages.hadSize(map3, 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
         val map1 = mutable.Map("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { not { have size (2) } or not { have size (2) }}
@@ -1375,52 +1393,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === decorateToStringValue(map3) + " had size 2, and " + decorateToStringValue(map3) + " had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         mutable.Map("one" -> 1, "two" -> 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.Map` {
+    describe("on scala.collection.Map") {
 
       val map: scala.collection.Map[String, Int] = Map("one" -> 1, "two" -> 2)
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         map should have size (2)
         Map(1 -> "one", 2 -> "two") should have size (2)
         // check((set: Map[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         map should not { have size (3) }
         map should not have size (3)
         // check((set: Map[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         map should { have size (2) and (have size (3 - 1)) }
         map should ((have size (2)) and (have size (3 - 1)))
         map should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         map should { have size (77) or (have size (3 - 1)) }
         map should ((have size (77)) or (have size (3 - 1)))
         map should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         map should { not { have size (5) } and not { have size (3) }}
         map should ((not have size (5)) and (not have size (3)))
         map should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         map should { not { have size (2) } or not { have size (3) }}
         map should ((not have size (2)) or (not have size (3)))
         map should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           map should have size (3)
         }
@@ -1428,7 +1448,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
         }
@@ -1436,7 +1456,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           map should { have size (5) and (have size (2 - 1)) }
@@ -1454,7 +1474,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           map should { have size (55) or (have size (22)) }
@@ -1472,7 +1492,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           map should { not { have size (3) } and not { have size (2) }}
@@ -1490,7 +1510,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("Map(\"one\" -> 1, \"two\" -> 2)"), 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           map should { not { have size (2) } or not { have size (2) }}
@@ -1508,52 +1528,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) had size 2, and Map(\"one\" -> 1, \"two\" -> 2) had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         map.par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.immutable.HashMap` {
+    describe("on scala.collection.immutable.HashMap") {
 
       import scala.collection.immutable.HashMap
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         HashMap("one" -> 1, "two" -> 2) should have size (2)
         HashMap(1 -> "one", 2 -> "two") should have size (2)
         // check((set: Map[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         HashMap("one" -> 1, "two" -> 2) should not { have size (3) }
         HashMap("one" -> 1, "two" -> 2) should not have size (3)
         // check((set: Map[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         HashMap("one" -> 1, "two" -> 2) should { have size (2) and (have size (3 - 1)) }
         HashMap("one" -> 1, "two" -> 2) should ((have size (2)) and (have size (3 - 1)))
         HashMap("one" -> 1, "two" -> 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         HashMap("one" -> 1, "two" -> 2) should { have size (77) or (have size (3 - 1)) }
         HashMap("one" -> 1, "two" -> 2) should ((have size (77)) or (have size (3 - 1)))
         HashMap("one" -> 1, "two" -> 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         HashMap("one" -> 1, "two" -> 2) should { not { have size (5) } and not { have size (3) }}
         HashMap("one" -> 1, "two" -> 2) should ((not have size (5)) and (not have size (3)))
         HashMap("one" -> 1, "two" -> 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         HashMap("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (3) }}
         HashMap("one" -> 1, "two" -> 2) should ((not have size (2)) or (not have size (3)))
         HashMap("one" -> 1, "two" -> 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should have size (3)
@@ -1562,7 +1584,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
@@ -1571,7 +1593,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
         val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should { have size (5) and (have size (2 - 1)) }
@@ -1589,7 +1611,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught1.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(map, 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
         val map = HashMap("one" -> 1, "two" -> 2)
         
         val caught1 = intercept[TestFailedException] {
@@ -1608,7 +1630,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught1.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map, 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map, 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
         val map = HashMap("one" -> 1, "two" -> 2)
         
         val caught1 = intercept[TestFailedException] {
@@ -1627,7 +1649,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught1.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map, 2, 3)), UnquotedString(FailureMessages.hadSize(map, 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (2) }}
@@ -1651,52 +1673,54 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage endsWith ") had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         HashMap("one" -> 1, "two" -> 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on scala.collection.mutable.HashMap` {
+    describe("on scala.collection.mutable.HashMap") {
 
       import scala.collection.mutable
 
-      def `should do nothing if set size matches specified size` {
+      it("should do nothing if set size matches specified size") {
         mutable.HashMap("one" -> 1, "two" -> 2) should have size (2)
         mutable.HashMap(1 -> "one", 2 -> "two") should have size (2)
         // check((set: Map[Int]) => returnsNormally(set should have size (set.size)))
       }
 
-      def `should do nothing if set size does not match and used with should not` {
+      it("should do nothing if set size does not match and used with should not") {
         mutable.HashMap("one" -> 1, "two" -> 2) should not { have size (3) }
         mutable.HashMap("one" -> 1, "two" -> 2) should not have size (3)
         // check((set: Map[Int], i: Int) => i != set.size ==> returnsNormally(set should not { have size (i) }))
       }
 
-      def `should do nothing when set size matches and used in a logical-and expression` {
+      it("should do nothing when set size matches and used in a logical-and expression") {
         mutable.HashMap("one" -> 1, "two" -> 2) should { have size (2) and (have size (3 - 1)) }
         mutable.HashMap("one" -> 1, "two" -> 2) should ((have size (2)) and (have size (3 - 1)))
         mutable.HashMap("one" -> 1, "two" -> 2) should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when set size matches and used in a logical-or expression` {
+      it("should do nothing when set size matches and used in a logical-or expression") {
         mutable.HashMap("one" -> 1, "two" -> 2) should { have size (77) or (have size (3 - 1)) }
         mutable.HashMap("one" -> 1, "two" -> 2) should ((have size (77)) or (have size (3 - 1)))
         mutable.HashMap("one" -> 1, "two" -> 2) should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-and expression with not") {
         mutable.HashMap("one" -> 1, "two" -> 2) should { not { have size (5) } and not { have size (3) }}
         mutable.HashMap("one" -> 1, "two" -> 2) should ((not have size (5)) and (not have size (3)))
         mutable.HashMap("one" -> 1, "two" -> 2) should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when set size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when set size doesn't match and used in a logical-or expression with not") {
         mutable.HashMap("one" -> 1, "two" -> 2) should { not { have size (2) } or not { have size (3) }}
         mutable.HashMap("one" -> 1, "two" -> 2) should ((not have size (2)) or (not have size (3)))
         mutable.HashMap("one" -> 1, "two" -> 2) should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if set size does not match specified size` {
+      it("should throw TestFailedException if set size does not match specified size") {
         val map = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should have size (3)
@@ -1705,7 +1729,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val map = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
@@ -1714,7 +1738,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-and expression") {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
            map1 should { have size (5) and (have size (2 - 1)) }
@@ -1734,7 +1758,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 5))
       }
 
-      def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when set size doesn't match and used in a logical-or expression") {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (55) or (have size (22)) }
@@ -1754,7 +1778,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 22))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-and expression with not") {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { not { have size (3) } and not { have size (2) }}
@@ -1774,7 +1798,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(map3, 2, 3)), UnquotedString(FailureMessages.hadSize(map3, 2))))
       }
 
-      def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when set size matches and used in a logical-or expression with not") {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
           map1 should { not { have size (2) } or not { have size (2) }}
@@ -1794,53 +1818,56 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === decorateToStringValue(map3) + " had size 2, and " + decorateToStringValue(map3) + " had size 2")
       }
 
-      def `should work on parallel form` {
+      // SKIP-SCALATESTJS-START
+      it("should work on parallel form") {
         mutable.HashMap("one" -> 1, "two" -> 2).par should have size (2)
       }
+      // SKIP-SCALATESTJS-END
     }
 
-    object `on java.util.Set` {
+    // SKIP-SCALATESTJS-START
+    describe("on java.util.Set") {
 
       val javaSet: java.util.Set[Int] = new java.util.HashSet
       javaSet.add(1)
       javaSet.add(2)
 
-      def `should do nothing if list size matches specified size` {
+      it("should do nothing if list size matches specified size") {
         javaSet should have size (2)
         // check((lst: java.util.List[Int]) => returnsNormally(lst should have size (lst.size)))
       }
 
-      def `should do nothing if list size does not match and used with should not` {
+      it("should do nothing if list size does not match and used with should not") {
         javaSet should not { have size (3) }
         javaSet should not have size (3)
         // check((lst: List[Int], i: Int) => i != lst.size ==> returnsNormally(lst should not { have size (i) }))
       }
 
-      def `should do nothing when list size matches and used in a logical-and expression` {
+      it("should do nothing when list size matches and used in a logical-and expression") {
         javaSet should { have size (2) and (have size (3 - 1)) }
         javaSet should ((have size (2)) and (have size (3 - 1)))
         javaSet should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when list size matches and used in a logical-or expression` {
+      it("should do nothing when list size matches and used in a logical-or expression") {
         javaSet should { have size (77) or (have size (3 - 1)) }
         javaSet should ((have size (77)) or (have size (3 - 1)))
         javaSet should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-and expression with not") {
         javaSet should { not { have size (5) } and not { have size (3) }}
         javaSet should ((not have size (5)) and (not have size (3)))
         javaSet should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-or expression with not") {
         javaSet should { not { have size (2) } or not { have size (3) }}
         javaSet should ((not have size (2)) or (not have size (3)))
         javaSet should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if list size does not match specified size` {
+      it("should throw TestFailedException if list size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           javaSet should have size (3)
         }
@@ -1848,7 +1875,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 3)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           javaSet should have size (-2)
         }
@@ -1856,7 +1883,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, -2)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaSet should { have size (5) and (have size (2 - 1)) }
@@ -1877,7 +1904,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 5)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaSet should { have size (55) or (have size (22)) }
@@ -1898,7 +1925,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 22)))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaSet should { not { have size (3) } and not { have size (2) }}
@@ -1919,7 +1946,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("[1, 2]"), 2)))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaSet should { not { have size (2) } or not { have size (2) }}
@@ -1941,47 +1968,47 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on java.util.Map` {
+    describe("on java.util.Map") {
 
       val javaMap: java.util.Map[String, Int] = new java.util.HashMap
       javaMap.put("one",1)
       javaMap.put("two", 2)
 
-      def `should do nothing if list size matches specified size` {
+      it("should do nothing if list size matches specified size") {
         javaMap should have size (2)
         // check((lst: java.util.List[Int]) => returnsNormally(lst should have size (lst.size)))
       }
 
-      def `should do nothing if list size does not match and used with should not` {
+      it("should do nothing if list size does not match and used with should not") {
         javaMap should not { have size (3) }
         // check((lst: List[Int], i: Int) => i != lst.size ==> returnsNormally(lst should not { have size (i) }))
       }
 
-      def `should do nothing when list size matches and used in a logical-and expression` {
+      it("should do nothing when list size matches and used in a logical-and expression") {
         javaMap should { have size (2) and (have size (3 - 1)) }
         javaMap should ((have size (2)) and (have size (3 - 1)))
         javaMap should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when list size matches and used in a logical-or expression` {
+      it("should do nothing when list size matches and used in a logical-or expression") {
         javaMap should { have size (77) or (have size (3 - 1)) }
         javaMap should ((have size (77)) or (have size (3 - 1)))
         javaMap should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-and expression with not") {
         javaMap should { not { have size (5) } and not { have size (3) }}
         javaMap should ((not have size (5)) and (not have size (3)))
         javaMap should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when list size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when list size doesn't match and used in a logical-or expression with not") {
         javaMap should { not { have size (2) } or not { have size (3) }}
         javaMap should ((not have size (2)) or (not have size (3)))
         javaMap should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if list size does not match specified size` {
+      it("should throw TestFailedException if list size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           javaMap should have size (3)
         }
@@ -1989,7 +2016,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, 3)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           javaMap should have size (-2)
         }
@@ -1997,7 +2024,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, -2)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaMap should { have size (5) and (have size (2 - 1)) }
@@ -2018,7 +2045,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, 5)))
       }
 
-      def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when list size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           javaMap should { have size (55) or (have size (22)) }
@@ -2039,7 +2066,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, 22)))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { have size (3) } and not { have size (2) }}
@@ -2060,7 +2087,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal (FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("{\"two\"=2, \"one\"=1}"), 2)))))
       }
 
-      def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when list size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { have size (2) } or not { have size (2) }}
@@ -2081,10 +2108,11 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           equal ("{\"two\"=2, \"one\"=1} had size 2, and {\"two\"=2, \"one\"=1} had size 2"))
       }
     }
+    // SKIP-SCALATESTJS-END
 
     // I repeat these with copy and paste, becuase I need to test that each static structural type works, and
     // that makes it hard to pass them to a common "behaves like" method
-    object `on an arbitrary object that has an empty-paren Int size method` {
+    describe("on an arbitrary object that has an empty-paren Int size method") {
   
       class Sizey(len: Int) {
         def size(): Int = len
@@ -2097,41 +2125,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size()
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
   
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
   
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
   
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
   
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
   
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
   
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2139,7 +2167,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
   
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2147,7 +2175,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
   
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2165,7 +2193,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
   
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2183,7 +2211,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
   
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2201,7 +2229,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
   
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2220,7 +2248,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a parameterless Int size method` {
+    describe("on an arbitrary object that has a parameterless Int size method") {
 
       class Sizey(len: Int) {
         def size: Int = len  // The only difference between the previous is the structure of this member
@@ -2233,41 +2261,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2275,7 +2303,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2283,7 +2311,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2301,7 +2329,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2319,7 +2347,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2337,7 +2365,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2356,7 +2384,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a Int size field` {
+    describe("on an arbitrary object that has a Int size field") {
 
       class Sizey(len: Int) {
         val size: Int = len // The only difference between the previous is the structure of this member
@@ -2369,41 +2397,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2411,7 +2439,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2419,7 +2447,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2437,7 +2465,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2455,7 +2483,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2473,7 +2501,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2492,7 +2520,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has an empty-paren Int getSize method` {
+    describe("on an arbitrary object that has an empty-paren Int getSize method") {
 
       class Sizey(len: Int) {
         def getSize(): Int = len  // The only difference between the previous is the structure of this member
@@ -2505,41 +2533,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize()
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2547,7 +2575,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2555,7 +2583,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2573,7 +2601,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2591,7 +2619,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2609,7 +2637,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2628,7 +2656,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a parameterless Int getSize method` {
+    describe("on an arbitrary object that has a parameterless Int getSize method") {
 
       class Sizey(len: Int) {
         def getSize: Int = len  // The only difference between the previous is the structure of this member
@@ -2641,41 +2669,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2683,7 +2711,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2691,7 +2719,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2709,7 +2737,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2727,7 +2755,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2745,7 +2773,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2764,7 +2792,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has an Int getSize field` {
+    describe("on an arbitrary object that has an Int getSize field") {
 
       class Sizey(len: Int) {
         val getSize: Int = len // The only difference between the previous is the structure of this member
@@ -2777,41 +2805,41 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2819,7 +2847,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2827,7 +2855,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2845,7 +2873,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -2863,7 +2891,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -2881,7 +2909,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -2900,7 +2928,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has an empty-paren Long size method` {
+    describe("on an arbitrary object that has an empty-paren Long size method") {
 
       class Sizey(len: Long) {
         def size(): Long = len
@@ -2913,21 +2941,21 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size()
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should { have size (2L) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
@@ -2936,24 +2964,24 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         obj should (have size (2L) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (2L)) }
         obj should { have size (77L) or (have size (2)) }
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -2961,7 +2989,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -2969,7 +2997,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -2987,7 +3015,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3005,7 +3033,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3023,7 +3051,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -3042,7 +3070,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a parameterless Long size method` {
+    describe("on an arbitrary object that has a parameterless Long size method") {
 
       class Sizey(len: Long) {
         def size: Long = len  // The only difference between the previous is the structure of this member
@@ -3055,45 +3083,45 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -3101,7 +3129,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -3109,7 +3137,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -3127,7 +3155,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3145,7 +3173,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3163,7 +3191,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -3182,7 +3210,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a Long size field` {
+    describe("on an arbitrary object that has a Long size field") {
 
       class Sizey(len: Long) {
         val size: Long = len // The only difference between the previous is the structure of this member
@@ -3195,43 +3223,43 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.size
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -3239,7 +3267,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -3247,7 +3275,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -3265,7 +3293,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3283,7 +3311,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3301,7 +3329,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -3320,7 +3348,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has an empty-paren Long getSize method` {
+    describe("on an arbitrary object that has an empty-paren Long getSize method") {
 
       class Sizey(len: Long) {
         def getSize(): Long = len  // The only difference between the previous is the structure of this member
@@ -3333,45 +3361,45 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize()
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -3379,7 +3407,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -3387,7 +3415,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -3405,7 +3433,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3423,7 +3451,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3441,7 +3469,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -3460,7 +3488,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a parameterless Long getSize method` {
+    describe("on an arbitrary object that has a parameterless Long getSize method") {
 
       class Sizey(len: Long) {
         def getSize: Long = len  // The only difference between the previous is the structure of this member
@@ -3473,45 +3501,45 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not { have size (3L) }
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -3519,7 +3547,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -3527,7 +3555,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -3545,7 +3573,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3563,7 +3591,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3581,7 +3609,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
@@ -3600,7 +3628,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
       }
     }
 
-    object `on an arbitrary object that has a Long getSize field` {
+    describe("on an arbitrary object that has a Long getSize field") {
 
       class Sizey(len: Long) {
         val getSize: Long = len // The only difference between the previous is the structure of this member
@@ -3613,45 +3641,45 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
           def sizeOf(o: Sizey): Long = o.getSize
         }
 
-      def `should do nothing if object size matches specified size` {
+      it("should do nothing if object size matches specified size") {
         obj should have size (2)
         obj should have size (2L)
         check((len: Int) => returnsNormally(new Sizey(len) should have size (len)))
         check((len: Long) => returnsNormally(new Sizey(len) should have size (len)))
       }
 
-      def `should do nothing if object size does not match and used with should not` {
+      it("should do nothing if object size does not match and used with should not") {
         obj should not { have size (3) }
         obj should not have size (3L)
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Sizey(len) should not { have size (wrongLen) }))
       }
 
-      def `should do nothing when object size matches and used in a logical-and expression` {
+      it("should do nothing when object size matches and used in a logical-and expression") {
         obj should { have size (2) and (have size (3 - 1)) }
         obj should ((have size (2)) and (have size (3 - 1)))
         obj should (have size (2) and have size (3 - 1))
       }
 
-      def `should do nothing when object size matches and used in a logical-or expression` {
+      it("should do nothing when object size matches and used in a logical-or expression") {
         obj should { have size (77) or (have size (3 - 1)) }
         obj should ((have size (77)) or (have size (3 - 1)))
         obj should (have size (77) or have size (3 - 1))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-and expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-and expression with not") {
         obj should { not { have size (5) } and not { have size (3) }}
         obj should ((not have size (5)) and (not have size (3)))
         obj should (not have size (5) and not have size (3))
       }
 
-      def `should do nothing when object size doesn't match and used in a logical-or expression with not` {
+      it("should do nothing when object size doesn't match and used in a logical-or expression with not") {
         obj should { not { have size (2) } or not { have size (3) }}
         obj should ((not have size (2)) or (not have size (3)))
         obj should (not have size (2) or not have size (3))
       }
 
-      def `should throw TestFailedException if object size does not match specified size` {
+      it("should throw TestFailedException if object size does not match specified size") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
@@ -3659,7 +3687,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
-      def `should throw TestFailedException with normal error message if specified size is negative` {
+      it("should throw TestFailedException with normal error message if specified size is negative") {
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
@@ -3667,7 +3695,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-and expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-and expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
@@ -3685,7 +3713,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 5))
       }
 
-      def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
+      it("should throw an assertion error when object size doesn't match and used in a logical-or expression") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
@@ -3703,7 +3731,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaAnd(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 22))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-and expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
@@ -3721,7 +3749,7 @@ class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssert
         assert(caught3.getMessage === FailureMessages.commaBut(UnquotedString(FailureMessages.hadSizeInsteadOfExpectedSize(UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages.hadSize(UnquotedString("sizey"), 2))))
       }
 
-      def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
+      it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}

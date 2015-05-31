@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class ResultOfOnlyApplicationSpec extends Spec {
+class ResultOfOnlyApplicationSpec extends FunSpec {
   
-  object `ResultOfOnlyApplication ` {
+  describe("ResultOfOnlyApplication ") {
     
-    def `should have pretty toString when right is empty` {
+    it("should have pretty toString when right is empty") {
       val result = new ResultOfOnlyApplication(Vector.empty)
       result.toString should be ("only ()")
     }
     
-    def `should have pretty toString when right contains 1 element` {
+    it("should have pretty toString when right contains 1 element") {
       val result = new ResultOfOnlyApplication(Vector("Bob"))
       result.toString should be ("only (\"Bob\")")
     }
     
-    def `should have pretty toString when right contains > 1 elements` {
+    it("should have pretty toString when right contains > 1 elements") {
       val result = new ResultOfOnlyApplication(Vector("Bob", "Alice"))
       result.toString should be ("only (\"Bob\", \"Alice\")")
     }

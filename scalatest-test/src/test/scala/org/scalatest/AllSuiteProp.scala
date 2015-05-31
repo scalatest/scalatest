@@ -20,11 +20,13 @@ trait AllSuiteProp extends MethodSuiteProp with FunctionSuiteProp {
   override def examples =
     Table[Suite with FixtureServices](
       "suite",
+      // SKIP-SCALATESTJS-START
       spec,
       fixtureSpec, 
       junit3Suite, 
       junitSuite,
-      testngSuite, 
+      testngSuite,
+      // SKIP-SCALATESTJS-END
       funSuite,
       fixtureFunSuite,
       funSpec,

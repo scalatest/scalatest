@@ -150,7 +150,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * @tparam T the type of elements contained in this <code>Chain</code>
  */
-final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int, T] {
+final class Chain[+T] private (val toList: List[T]) extends AnyVal {
 
   /**
    * Returns a new <code>Chain</code> containing the elements of this <code>Chain</code> followed by the elements of the passed <code>Chain</code>.
@@ -160,7 +160,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param other the <code>Chain</code> to append
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
-  def ++[U >: T](other: Chain[U]): Chain[U] = new Chain(underlying ++ other.toList)
+  def ++[U >: T](other: Chain[U]): Chain[U] = new Chain(toList ++ other.toList)
 
   /**
    * Returns a new <code>Chain</code> containing the elements of this <code>Chain</code> followed by the elements of the passed <code>Every</code>.
@@ -170,7 +170,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param other the <code>Every</code> to append
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
-  def ++[U >: T](other: Every[U]): Chain[U] = new Chain(underlying ++ other.toVector)
+  def ++[U >: T](other: Every[U]): Chain[U] = new Chain(toList ++ other.toVector)
 
   // TODO: Have I added these extra ++, etc. methods to Every that take a Chain?
 
@@ -184,7 +184,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
   def ++[U >: T](other: GenTraversableOnce[U]): Chain[U] =
-    if (other.isEmpty) this else new Chain(underlying ++ other)
+    if (other.isEmpty) this else new Chain(toList ++ other)
 
   /**
    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>Chain</code>, going left to right.
@@ -208,7 +208,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */
-  final def /:[B](z: B)(op: (B, T) => B): B = underlying./:(z)(op)
+  final def /:[B](z: B)(op: (B, T) => B): B = toList./:(z)(op)
 
   /**
    * Fold right: applies a binary operator to all elements of this <code>Chain</code> and a start value, going right to left.
@@ -232,7 +232,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */
-  final def :\[B](z: B)(op: (T, B) => B): B = underlying.:\(z)(op)
+  final def :\[B](z: B)(op: (T, B) => B): B = toList.:\(z)(op)
 
   /**
    * Returns a new <code>Chain</code> with the given element prepended.
@@ -244,7 +244,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param element the element to prepend to this <code>Chain</code>
    * @return a new <code>Chain</code> consisting of <code>element</code> followed by all elements of this <code>Chain</code>.
    */
-  final def +:[U >: T](element: U): Chain[U] = new Chain(element +: underlying)
+  final def +:[U >: T](element: U): Chain[U] = new Chain(element +: toList)
 
   /**
    * Adds an element to the beginning of this <code>Chain</code>.
@@ -256,7 +256,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param element the element to prepend to this <code>Chain</code>
    * @return a <code>Chain</code> that contains <code>element</code> as first element and that continues with this <code>Chain</code>.
    */
-  final def ::[U >: T](element: U): Chain[U] = new Chain(element +: underlying)
+  final def ::[U >: T](element: U): Chain[U] = new Chain(element +: toList)
 
   /**
    * Returns a new <code>Chain</code> containing the elements of this <code>Chain</code> followed by the elements of the passed <code>Chain</code>.
@@ -266,7 +266,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param other the <code>Chain</code> to append
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
-  def :::[U >: T](other: Chain[U]): Chain[U] = new Chain(other.toList ::: underlying)
+  def :::[U >: T](other: Chain[U]): Chain[U] = new Chain(other.toList ::: toList)
 
   /**
    * Returns a new <code>Chain</code> containing the elements of this <code>Chain</code> followed by the elements of the passed <code>Every</code>.
@@ -276,7 +276,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param other the <code>Every</code> to append
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
-  def :::[U >: T](other: Every[U]): Chain[U] = new Chain(other.toList ::: underlying)
+  def :::[U >: T](other: Every[U]): Chain[U] = new Chain(other.toList ::: toList)
 
   /**
    * Returns a new <code>Chain</code> containing the elements of this <code>Chain</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
@@ -288,7 +288,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> that contains all the elements of this <code>Chain</code> followed by all elements of <code>other</code>.
    */
   def :::[U >: T](other: GenTraversableOnce[U]): Chain[U] =
-    if (other.isEmpty) this else new Chain(other.toList ::: underlying)
+    if (other.isEmpty) this else new Chain(other.toList ::: toList)
 
   /**
    * Returns a new <code>Chain</code> with the given element appended.
@@ -300,7 +300,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param element the element to append to this <code>Chain</code>
    * @return a new <code>Chain</code> consisting of all elements of this <code>Chain</code> followed by <code>element</code>.
    */
-  def :+[U >: T](element: U): Chain[U] = new Chain(underlying :+ element)
+  def :+[U >: T](element: U): Chain[U] = new Chain(toList :+ element)
 
   /**
    * Appends all elements of this <code>Chain</code> to a string builder. The written text will consist of a concatenation of the result of invoking <code>toString</code>
@@ -309,7 +309,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param sb the string builder to which elements will be appended
    * @return the string builder, <code>sb</code>, to which elements were appended.
    */
-  final def addString(sb: StringBuilder): StringBuilder = underlying.addString(sb)
+  final def addString(sb: StringBuilder): StringBuilder = toList.addString(sb)
 
   /**
    * Appends all elements of this <code>Chain</code> to a string builder using a separator string. The written text will consist of a concatenation of the
@@ -320,7 +320,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param sep the separator string
    * @return the string builder, <code>sb</code>, to which elements were appended.
    */
-  final def addString(sb: StringBuilder, sep: String): StringBuilder = underlying.addString(sb, sep)
+  final def addString(sb: StringBuilder, sep: String): StringBuilder = toList.addString(sb, sep)
 
   /**
    * Appends all elements of this <code>Chain</code> to a string builder using start, end, and separator strings. The written text will consist of a concatenation of
@@ -333,14 +333,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param start the ending string
    * @return the string builder, <code>sb</code>, to which elements were appended.
    */
-  final def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = underlying.addString(sb, start, sep, end)
+  final def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = toList.addString(sb, start, sep, end)
 
   /**
    * Selects an element by its index in the <code>Chain</code>.
    *
    * @return the element of this <code>Chain</code> at index <code>idx</code>, where 0 indicates the first element.
    */
-  final def apply(idx: Int): T = underlying(idx)
+  final def apply(idx: Int): T = toList(idx)
 
   /**
    * Finds the first element of this <code>Chain</code> for which the given partial function is defined, if any, and applies the partial function to it.
@@ -349,7 +349,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return an <code>Option</code> containing <code>pf</code> applied to the first element for which it is defined, or <code>None</code> if
    *    the partial function was not defined for any element.
    */
-  final def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = underlying.collectFirst(pf)
+  final def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = toList.collectFirst(pf)
 
   /**
    * Indicates whether this <code>Chain</code> contains a given value as an element.
@@ -357,7 +357,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param elem the element to look for
    * @return true if this <code>Chain</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
    */ 
-  final def contains(elem: Any): Boolean = underlying.contains(elem)
+  final def contains(elem: Any): Boolean = toList.contains(elem)
 
   /**
    * Indicates whether this <code>Chain</code> contains a given <code>GenSeq</code> as a slice.
@@ -365,7 +365,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>GenSeq</code> slice to look for
    * @return true if this <code>Chain</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
    */
-  final def containsSlice[B](that: GenSeq[B]): Boolean = underlying.containsSlice(that)
+  final def containsSlice[B](that: GenSeq[B]): Boolean = toList.containsSlice(that)
 
   /**
    * Indicates whether this <code>Chain</code> contains a given <code>Every</code> as a slice.
@@ -373,7 +373,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Every</code> slice to look for
    * @return true if this <code>Chain</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
    */
-  final def containsSlice[B](that: Every[B]): Boolean = underlying.containsSlice(that.toVector)
+  final def containsSlice[B](that: Every[B]): Boolean = toList.containsSlice(that.toVector)
 
   /**
    * Indicates whether this <code>Chain</code> contains a given <code>Chain</code> as a slice.
@@ -381,7 +381,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Chain</code> slice to look for
    * @return true if this <code>Chain</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
    */
-  final def containsSlice[B](that: Chain[B]): Boolean = underlying.containsSlice(that.toList)
+  final def containsSlice[B](that: Chain[B]): Boolean = toList.containsSlice(that.toList)
 
   /**
    * Copies values of this <code>Chain</code> to an array. Fills the given array <code>arr</code> with values of this <code>Chain</code>. Copying
@@ -389,7 +389,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @param arr the array to fill
    */
-  final def copyToArray[U >: T](arr: Array[U]): Unit = underlying.copyToArray(arr)
+  final def copyToArray[U >: T](arr: Array[U]): Unit = toList.copyToArray(arr)
 
   /**
    * Copies values of this <code>Chain</code> to an array. Fills the given array <code>arr</code> with values of this <code>Chain</code>, beginning at
@@ -398,7 +398,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param arr the array to fill
    * @param start the starting index
    */
-  final def copyToArray[U >: T](arr: Array[U], start: Int): Unit = underlying.copyToArray(arr, start)
+  final def copyToArray[U >: T](arr: Array[U], start: Int): Unit = toList.copyToArray(arr, start)
 
   /**
    * Copies values of this <code>Chain</code> to an array. Fills the given array <code>arr</code> with at most <code>len</code> elements of this <code>Chain</code>, beginning at
@@ -409,14 +409,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param start the starting index
    * @param len the maximum number of elements to copy
    */
-  final def copyToArray[U >: T](arr: Array[U], start: Int, len: Int): Unit = underlying.copyToArray(arr, start, len)
+  final def copyToArray[U >: T](arr: Array[U], start: Int, len: Int): Unit = toList.copyToArray(arr, start, len)
 
   /**
    * Copies all elements of this <code>Chain</code> to a buffer. 
    *
    * @param buf the buffer to which elements are copied
    */
-  final def copyToBuffer[U >: T](buf: Buffer[U]): Unit = underlying.copyToBuffer(buf)
+  final def copyToBuffer[U >: T](buf: Buffer[U]): Unit = toList.copyToBuffer(buf)
 
   /**
    * Indicates whether every element of this <code>Chain</code> relates to the corresponding element of a given <code>GenSeq</code> by satisfying a given predicate. 
@@ -427,7 +427,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return true if this <code>Chain</code> and the passed <code>GenSeq</code> have the same length and <code>p(x, y)</code> is <code>true</code>
    *     for all corresponding elements <code>x</code> of this <code>Chain</code> and <code>y</code> of that, otherwise <code>false</code>.
    */
-  final def corresponds[B](that: GenSeq[B])(p: (T, B) => Boolean): Boolean = underlying.corresponds(that)(p)
+  final def corresponds[B](that: GenSeq[B])(p: (T, B) => Boolean): Boolean = toList.corresponds(that)(p)
 
   /**
    * Indicates whether every element of this <code>Chain</code> relates to the corresponding element of a given <code>Every</code> by satisfying a given predicate. 
@@ -438,7 +438,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return true if this <code>Chain</code> and the passed <code>Every</code> have the same length and <code>p(x, y)</code> is <code>true</code>
    *     for all corresponding elements <code>x</code> of this <code>Chain</code> and <code>y</code> of that, otherwise <code>false</code>.
    */
-  final def corresponds[B](that: Every[B])(p: (T, B) => Boolean): Boolean = underlying.corresponds(that.toVector)(p)
+  final def corresponds[B](that: Every[B])(p: (T, B) => Boolean): Boolean = toList.corresponds(that.toVector)(p)
 
   /**
    * Indicates whether every element of this <code>Chain</code> relates to the corresponding element of a given <code>Chain</code> by satisfying a given predicate. 
@@ -449,7 +449,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return true if this and the passed <code>Chain</code> have the same length and <code>p(x, y)</code> is <code>true</code>
    *     for all corresponding elements <code>x</code> of this <code>Chain</code> and <code>y</code> of that, otherwise <code>false</code>.
    */
-  final def corresponds[B](that: Chain[B])(p: (T, B) => Boolean): Boolean = underlying.corresponds(that.toList)(p)
+  final def corresponds[B](that: Chain[B])(p: (T, B) => Boolean): Boolean = toList.corresponds(that.toList)(p)
 
   /**
    * Counts the number of elements in this <code>Chain</code> that satisfy a predicate. 
@@ -457,14 +457,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param p the predicate used to test elements.
    * @return the number of elements satisfying the predicate <code>p</code>. 
    */
-  final def count(p: T => Boolean): Int = underlying.count(p)
+  final def count(p: T => Boolean): Int = toList.count(p)
 
   /**
    * Builds a new <code>Chain</code> from this <code>Chain</code> without any duplicate elements.
    *
    * @return A new <code>Chain</code> that contains the first occurrence of every element of this <code>Chain</code>. 
    */
-  final def distinct: Chain[T] = new Chain(underlying.distinct)
+  final def distinct: Chain[T] = new Chain(toList.distinct)
 
   /**
    * Indicates whether this <code>Chain</code> ends with the given <code>GenSeq</code>.
@@ -472,7 +472,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the sequence to test
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
    */
-  final def endsWith[B](that: GenSeq[B]): Boolean = underlying.endsWith(that)
+  final def endsWith[B](that: GenSeq[B]): Boolean = toList.endsWith(that)
 
   /**
    * Indicates whether this <code>Chain</code> ends with the given <code>Every</code>.
@@ -480,7 +480,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Every</code> to test
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
    */
-  final def endsWith[B](that: Every[B]): Boolean = underlying.endsWith(that.toVector)
+  final def endsWith[B](that: Every[B]): Boolean = toList.endsWith(that.toVector)
 
   // TODO: Search for that: Every in here and add a that: Chain in Every.
   /**
@@ -489,13 +489,15 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Chain</code> to test
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
    */
-  final def endsWith[B](that: Chain[B]): Boolean = underlying.endsWith(that.toList)
+  final def endsWith[B](that: Chain[B]): Boolean = toList.endsWith(that.toList)
 
+/*
   override def equals(o: Any): Boolean =
     o match {
-      case chain: Chain[_] => underlying == chain.toList
+      case chain: Chain[_] => toList == chain.toList
       case _ => false
     }
+*/
 
   /**
    * Indicates whether a predicate holds for at least one of the elements of this <code>Chain</code>.
@@ -503,7 +505,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param the predicate used to test elements.
    * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>Chain</code>, otherwise <code>false</code>. 
    */
-  final def exists(p: T => Boolean): Boolean = underlying.exists(p)
+  final def exists(p: T => Boolean): Boolean = toList.exists(p)
 
   /**
    * Finds the first element of this <code>Chain</code> that satisfies the given predicate, if any.
@@ -511,7 +513,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param p the predicate used to test elements
    * @return an <code>Some</code> containing the first element in this <code>Chain</code> that satisfies <code>p</code>, or <code>None</code> if none exists. 
    */
-  final def find(p: T => Boolean): Option[T] = underlying.find(p)
+  final def find(p: T => Boolean): Option[T] = toList.find(p)
 
   /**
    * Builds a new <code>Chain</code> by applying a function to all elements of this <code>Chain</code> and using the elements of the resulting <code>Chain</code>s.
@@ -523,7 +525,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    */
   final def flatMap[U](f: T => Chain[U]): Chain[U] = {
     val buf = new ArrayBuffer[U]
-    for (ele <- underlying)
+    for (ele <- toList)
       buf ++= f(ele).toList
     new Chain(buf.toList)
   }
@@ -556,7 +558,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param op a binary operator that must be associative
    * @return the result of applying fold operator <code>op</code> between all the elements and <code>z</code>
    */
-  final def fold[U >: T](z: U)(op: (U, U) => U): U = underlying.fold(z)(op)
+  final def fold[U >: T](z: U)(op: (U, U) => U): U = toList.fold(z)(op)
 
   /**
    * Applies a binary operator to a start value and all elements of this <code>Chain</code>, going left to right.
@@ -575,7 +577,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */ 
-  final def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.foldLeft(z)(op)
+  final def foldLeft[B](z: B)(op: (B, T) => B): B = toList.foldLeft(z)(op)
 
   /**
    * Applies a binary operator to all elements of this <code>Chain</code> and a start value, going right to left.
@@ -594,7 +596,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */
-  final def foldRight[B](z: B)(op: (T, B) => B): B = underlying.foldRight(z)(op)
+  final def foldRight[B](z: B)(op: (T, B) => B): B = toList.foldRight(z)(op)
 
   /**
    * Indicates whether a predicate holds for all elements of this <code>Chain</code>.
@@ -602,14 +604,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param p the predicate used to test elements.
    * @return <code>true</code> if the given predicate <code>p</code> holds for all elements of this <code>Chain</code>, otherwise <code>false</code>. 
    */
-  final def forall(p: T => Boolean): Boolean = underlying.forall(p)
+  final def forall(p: T => Boolean): Boolean = toList.forall(p)
 
   /**
    * Applies a function <code>f</code> to all elements of this <code>Chain</code>.
    *
    * @param f the function that is applied for its side-effect to every element. The result of function <code>f</code> is discarded.
    */ 
-  final def foreach(f: T => Unit): Unit = underlying.foreach(f)
+  final def foreach(f: T => Unit): Unit = toList.foreach(f)
 
   /**
    * Partitions this <code>Chain</code> into a map of <code>Chain</code>s according to some discriminator function.
@@ -627,7 +629,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * </p>
    */
   final def groupBy[K](f: T => K): Map[K, Chain[T]] = {
-    val mapKToList = underlying.groupBy(f)
+    val mapKToList = toList.groupBy(f)
     mapKToList.mapValues { list => new Chain(list) }
   }
 
@@ -638,7 +640,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return An iterator producing <code>Chain</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
    */
   final def grouped(size: Int): Iterator[Chain[T]] = {
-    val itOfList = underlying.grouped(size)
+    val itOfList = toList.grouped(size)
     itOfList.map { list => new Chain(list) }
   }
 
@@ -647,14 +649,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    */
   final def hasDefiniteSize: Boolean = true
 
-  override def hashCode: Int = underlying.hashCode
+  // override def hashCode: Int = toList.hashCode
 
   /**
    * Selects the first element of this <code>Chain</code>. 
    *
    * @return the first element of this <code>Chain</code>.
    */
-  final def head: T = underlying.head
+  final def head: T = toList.head
 
   // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
   // Users can call any of the methods I've left out on a Chain, and get whatever List would return
@@ -665,7 +667,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the first element of this <code>Chain</code>, wrapped in a <code>Some</code>.
    */
-  final def headOption: Option[T] = underlying.headOption
+  final def headOption: Option[T] = toList.headOption
 
   /**
    * Finds index of first occurrence of some value in this <code>Chain</code>.
@@ -674,7 +676,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index of the first element of this <code>Chain</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def indexOf[U >: T](elem: U): Int = underlying.indexOf(elem, 0)
+  final def indexOf[U >: T](elem: U): Int = toList.indexOf(elem, 0)
 
   /**
    * Finds index of first occurrence of some value in this <code>Chain</code> after or at some start index.
@@ -684,7 +686,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>Chain</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def indexOf[U >: T](elem: U, from: Int): Int = underlying.indexOf(elem, from)
+  final def indexOf[U >: T](elem: U, from: Int): Int = toList.indexOf(elem, from)
 
 
   /**
@@ -694,7 +696,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index at which the elements of this <code>Chain</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: GenSeq[U]): Int = underlying.indexOfSlice(that)
+  final def indexOfSlice[U >: T](that: GenSeq[U]): Int = toList.indexOfSlice(that)
 
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>GenSeq</code> as a slice.
@@ -704,7 +706,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>Chain</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: GenSeq[U], from: Int): Int = underlying.indexOfSlice(that, from)
+  final def indexOfSlice[U >: T](that: GenSeq[U], from: Int): Int = toList.indexOfSlice(that, from)
 
   /**
    * Finds first index where this <code>Chain</code> contains a given <code>Every</code> as a slice.
@@ -713,7 +715,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: Every[U]): Int = underlying.indexOfSlice(that.toVector)
+  final def indexOfSlice[U >: T](that: Every[U]): Int = toList.indexOfSlice(that.toVector)
 
   /**
    * Finds first index where this <code>Chain</code> contains a given <code>Chain</code> as a slice.
@@ -722,7 +724,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: Chain[U]): Int = underlying.indexOfSlice(that.toList)
+  final def indexOfSlice[U >: T](that: Chain[U]): Int = toList.indexOfSlice(that.toList)
 
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>Every</code> as a slice.
@@ -732,7 +734,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: Every[U], from: Int): Int = underlying.indexOfSlice(that.toVector, from)
+  final def indexOfSlice[U >: T](that: Every[U], from: Int): Int = toList.indexOfSlice(that.toVector, from)
 
   /**
    * Finds first index after or at a start index where this <code>Chain</code> contains a given <code>Chain</code> as a slice.
@@ -742,7 +744,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Chain</code> starting at this index match the elements of
    *     <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def indexOfSlice[U >: T](that: Chain[U], from: Int): Int = underlying.indexOfSlice(that.toList, from)
+  final def indexOfSlice[U >: T](that: Chain[U], from: Int): Int = toList.indexOfSlice(that.toList, from)
 
   /**
    * Finds index of the first element satisfying some predicate.
@@ -751,7 +753,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index of the first element of this <code>Chain</code> that satisfies the predicate <code>p</code>,
    *     or <code>-1</code>, if none exists.
    */ 
-  final def indexWhere(p: T => Boolean): Int = underlying.indexWhere(p)
+  final def indexWhere(p: T => Boolean): Int = toList.indexWhere(p)
 
   /**
    * Finds index of the first element satisfying some predicate after or at some start index.
@@ -761,14 +763,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>Chain</code> that satisfies the predicate <code>p</code>,
    *     or <code>-1</code>, if none exists.
    */ 
-  final def indexWhere(p: T => Boolean, from: Int): Int = underlying.indexWhere(p, from)
+  final def indexWhere(p: T => Boolean, from: Int): Int = toList.indexWhere(p, from)
 
   /**
    * Produces the range of all indices of this <code>Chain</code>. 
    *
    * @return a <code>Range</code> value from <code>0</code> to one less than the length of this <code>Chain</code>. 
    */
-  final def indices: Range = underlying.indices
+  final def indices: Range = toList.indices
 
   /**
    * Tests whether this <code>Chain</code> contains given index.
@@ -776,7 +778,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param idx the index to test
    * @return true if this <code>Chain</code> contains an element at position <code>idx</code>, <code>false</code> otherwise. 
    */
-  final def isDefinedAt(idx: Int): Boolean = underlying.isDefinedAt(idx)
+  final def isDefinedAt(idx: Int): Boolean = toList.isDefinedAt(idx)
 
   /**
    * Returns <code>false</code> to indicate this <code>Chain</code>, like all <code>Chain<code>s, is non-empty.
@@ -797,14 +799,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the new iterator
    */
-  final def iterator: Iterator[T] = underlying.iterator
+  final def iterator: Iterator[T] = toList.iterator
 
   /**
    * Selects the last element of this <code>Chain</code>. 
    *
    * @return the last element of this <code>Chain</code>.
    */
-  final def last: T = underlying.last
+  final def last: T = toList.last
 
   /**
    * Finds the index of the last occurrence of some value in this <code>Chain</code>.
@@ -813,7 +815,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index of the last element of this <code>Chain</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
-  final def lastIndexOf[U >: T](elem: U): Int = underlying.lastIndexOf(elem)
+  final def lastIndexOf[U >: T](elem: U): Int = toList.lastIndexOf(elem)
 
   /**
    * Finds the index of the last occurrence of some value in this <code>Chain</code> before or at a given <code>end</code> index.
@@ -823,7 +825,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>Chain</code> that is equal (as determined by <code>==</code>)
    *     to <code>elem</code>, or <code>-1</code>, if none exists.
    */
-  final def lastIndexOf[U >: T](elem: U, end: Int): Int = underlying.lastIndexOf(elem, end)
+  final def lastIndexOf[U >: T](elem: U, end: Int): Int = toList.lastIndexOf(elem, end)
 
   /**
    * Finds the last index where this <code>Chain</code> contains a given <code>GenSeq</code> as a slice. 
@@ -832,7 +834,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: GenSeq[U]): Int = underlying.lastIndexOfSlice(that)
+  final def lastIndexOfSlice[U >: T](that: GenSeq[U]): Int = toList.lastIndexOfSlice(that)
 
   /**
    * Finds the last index before or at a given end index where this <code>Chain</code> contains a given <code>GenSeq</code> as a slice. 
@@ -842,7 +844,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: GenSeq[U], end: Int): Int = underlying.lastIndexOfSlice(that, end)
+  final def lastIndexOfSlice[U >: T](that: GenSeq[U], end: Int): Int = toList.lastIndexOfSlice(that, end)
 
   /**
    * Finds the last index where this <code>Chain</code> contains a given <code>Every</code> as a slice. 
@@ -851,7 +853,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: Every[U]): Int = underlying.lastIndexOfSlice(that.toVector)
+  final def lastIndexOfSlice[U >: T](that: Every[U]): Int = toList.lastIndexOfSlice(that.toVector)
 
   /**
    * Finds the last index where this <code>Chain</code> contains a given <code>Chain</code> as a slice. 
@@ -860,7 +862,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: Chain[U]): Int = underlying.lastIndexOfSlice(that.toList)
+  final def lastIndexOfSlice[U >: T](that: Chain[U]): Int = toList.lastIndexOfSlice(that.toList)
 
   /**
    * Finds the last index before or at a given end index where this <code>Chain</code> contains a given <code>Every</code> as a slice. 
@@ -870,7 +872,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: Every[U], end: Int): Int = underlying.lastIndexOfSlice(that.toVector, end)
+  final def lastIndexOfSlice[U >: T](that: Every[U], end: Int): Int = toList.lastIndexOfSlice(that.toVector, end)
 
   /**
    * Finds the last index before or at a given end index where this <code>Chain</code> contains a given <code>Chain</code> as a slice. 
@@ -880,7 +882,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>Chain</code> starting at that index match the elements of
    *    <code>Chain</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
    */
-  final def lastIndexOfSlice[U >: T](that: Chain[U], end: Int): Int = underlying.lastIndexOfSlice(that.toList, end)
+  final def lastIndexOfSlice[U >: T](that: Chain[U], end: Int): Int = toList.lastIndexOfSlice(that.toList, end)
 
   /**
    * Finds index of last element satisfying some predicate.
@@ -888,7 +890,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param p the predicate used to test elements.
    * @return the index of the last element of this <code>Chain</code> that satisfies the predicate <code>p</code>, or <code>-1</code>, if none exists. 
    */
-  final def lastIndexWhere(p: T => Boolean): Int = underlying.lastIndexWhere(p)
+  final def lastIndexWhere(p: T => Boolean): Int = toList.lastIndexWhere(p)
 
   /**
    * Finds index of last element satisfying some predicate before or at given end index.
@@ -898,14 +900,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>Chain</code> that satisfies the predicate <code>p</code>,
    *     or <code>-1</code>, if none exists. 
    */
-  final def lastIndexWhere(p: T => Boolean, end: Int): Int = underlying.lastIndexWhere(p, end)
+  final def lastIndexWhere(p: T => Boolean, end: Int): Int = toList.lastIndexWhere(p, end)
 
   /**
    * Returns the last element of this <code>Chain</code>, wrapped in a <code>Some</code>. 
    *
    * @return the last element, wrapped in a <code>Some</code>. 
    */
-  final def lastOption: Option[T] = underlying.lastOption // Will always return a Some
+  final def lastOption: Option[T] = toList.lastOption // Will always return a Some
 
   /**
    * The length of this <code>Chain</code>.
@@ -916,7 +918,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the number of elements in this <code>Chain</code>. 
    */
-  final def length: Int = underlying.length
+  final def length: Int = toList.length
 
   /**
    * Compares the length of this <code>Chain</code> to a test value. 
@@ -930,7 +932,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * x &gt; 0 if this.length &gt; len
    * </pre>
    */
-  final def lengthCompare(len: Int): Int = underlying.lengthCompare(len)
+  final def lengthCompare(len: Int): Int = toList.lengthCompare(len)
 
   /**
    * Builds a new <code>Chain</code> by applying a function to all elements of this <code>Chain</code>.
@@ -940,35 +942,35 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> resulting from applying the given function <code>f</code> to each element of this <code>Chain</code> and collecting the results. 
    */
   final def map[U](f: T => U): Chain[U] =
-    new Chain(underlying.map(f))
+    new Chain(toList.map(f))
 
   /**
    * Finds the largest element.
    *
    * @return the largest element of this <code>Chain</code>. 
    */
-  final def max[U >: T](implicit cmp: Ordering[U]): T = underlying.max(cmp)
+  final def max[U >: T](implicit cmp: Ordering[U]): T = toList.max(cmp)
 
   /**
    * Finds the largest result after applying the given function to every element.
    *
    * @return the largest result of applying the given function to every element of this <code>Chain</code>. 
    */
-  final def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = underlying.maxBy(f)(cmp)
+  final def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toList.maxBy(f)(cmp)
 
   /**
    * Finds the smallest element.
    *
    * @return the smallest element of this <code>Chain</code>. 
    */
-  final def min[U >: T](implicit cmp: Ordering[U]): T = underlying.min(cmp)
+  final def min[U >: T](implicit cmp: Ordering[U]): T = toList.min(cmp)
 
   /**
    * Finds the smallest result after applying the given function to every element.
    *
    * @return the smallest result of applying the given function to every element of this <code>Chain</code>. 
    */
-  final def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = underlying.minBy(f)(cmp)
+  final def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toList.minBy(f)(cmp)
 
   /**
    * Displays all elements of this <code>Chain</code> in a string. 
@@ -976,7 +978,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a string representation of this <code>Chain</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
    *     <code>Chain</code> follow each other without any separator string. 
    */
-  final def mkString: String = underlying.mkString
+  final def mkString: String = toList.mkString
 
   /**
    * Displays all elements of this <code>Chain</code> in a string using a separator string. 
@@ -985,7 +987,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a string representation of this <code>Chain</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
    *     <code>Chain</code> are separated by the string <code>sep</code>. 
    */
-  final def mkString(sep: String): String = underlying.mkString(sep)
+  final def mkString(sep: String): String = toList.mkString(sep)
 
   /**
    * Displays all elements of this <code>Chain</code> in a string using start, end, and separator strings. 
@@ -997,7 +999,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *     <code>end</code>. Inside, In the resulting string, the result of invoking <code>toString</code> on all elements of this <code>Chain</code> are
    *     separated by the string <code>sep</code>. 
    */
-  final def mkString(start: String, sep: String, end: String): String = underlying.mkString(start, sep, end)
+  final def mkString(start: String, sep: String, end: String): String = toList.mkString(start, sep, end)
 
   /**
    * Returns <code>true</code> to indicate this <code>Chain</code>, like all <code>Chain</code>s, is non-empty.
@@ -1015,7 +1017,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *     of <code>elem</code> so that the resulting <code>Chain</code> has a length of at least <code>len</code>. 
    */
   final def padTo[U >: T](len: Int, elem: U): Chain[U] =
-    new Chain(underlying.padTo(len, elem))
+    new Chain(toList.padTo(len, elem))
 
   /**
    * Produces a new <code>Chain</code> where a slice of elements in this <code>Chain</code> is replaced by another <code>Chain</code>
@@ -1025,7 +1027,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param replaced the number of elements to drop in the original <code>Chain</code>
    */
   final def patch[U >: T](from: Int, that: Chain[U], replaced: Int): Chain[U] =
-    new Chain(underlying.patch(from, that.toVector, replaced))
+    new Chain(toList.patch(from, that.toVector, replaced))
 
   /**
    * Iterates over distinct permutations. 
@@ -1041,7 +1043,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return an iterator that traverses the distinct permutations of this <code>Chain</code>.
    */
   final def permutations: Iterator[Chain[T]] = {
-    val it = underlying.permutations
+    val it = toList.permutations
     it map { list => new Chain(list) }
   }
 
@@ -1052,7 +1054,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return the length of the longest prefix of this <code>Chain</code> such that every element
    *     of the segment satisfies the predicate <code>p</code>. 
    */
-  final def prefixLength(p: T => Boolean): Int = underlying.prefixLength(p)
+  final def prefixLength(p: T => Boolean): Int = toList.prefixLength(p)
 
   /**
    * The result of multiplying all the elements of this <code>Chain</code>.
@@ -1063,7 +1065,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the product of all elements
    */
-  final def product[U >: T](implicit num: Numeric[U]): U = underlying.product(num)
+  final def product[U >: T](implicit num: Numeric[U]): U = toList.product(num)
 
   /**
    * Reduces the elements of this <code>Chain</code> using the specified associative binary operator.
@@ -1076,7 +1078,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param op a binary operator that must be associative.
    * @return the result of applying reduce operator <code>op</code> between all the elements of this <code>Chain</code>.
    */
-  final def reduce[U >: T](op: (U, U) => U): U = underlying.reduce(op)
+  final def reduce[U >: T](op: (U, U) => U): U = toList.reduce(op)
 
   /**
    * Applies a binary operator to all elements of this <code>Chain</code>, going left to right.
@@ -1093,7 +1095,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */
-  final def reduceLeft[U >: T](op: (U, T) => U): U = underlying.reduceLeft(op)
+  final def reduceLeft[U >: T](op: (U, T) => U): U = toList.reduceLeft(op)
 
   /**
    * Applies a binary operator to all elements of this <code>Chain</code>, going left to right, returning the result in a <code>Some</code>.
@@ -1103,9 +1105,9 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
    * </p>
    */
-  final def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = underlying.reduceLeftOption(op)
+  final def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = toList.reduceLeftOption(op)
 
-  final def reduceOption[U >: T](op: (U, U) => U): Option[U] = underlying.reduceOption(op)
+  final def reduceOption[U >: T](op: (U, U) => U): Option[U] = toList.reduceOption(op)
 
   /**
    * Applies a binary operator to all elements of this <code>Chain</code>, going right to left.
@@ -1122,7 +1124,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Chain</code>. 
    * </p>
    */
-  final def reduceRight[U >: T](op: (T, U) => U): U = underlying.reduceRight(op)
+  final def reduceRight[U >: T](op: (T, U) => U): U = toList.reduceRight(op)
 
   /**
    * Applies a binary operator to all elements of this <code>Chain</code>, going right to left, returning the result in a <code>Some</code>.
@@ -1131,7 +1133,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param op the binary operator
    * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
    */
-  final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = underlying.reduceRightOption(op)
+  final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = toList.reduceRightOption(op)
 
   /**
    * Returns new <code>Chain</code> with elements in reverse order.
@@ -1139,7 +1141,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> with all elements of this <code>Chain</code> in reversed order. 
    */
   final def reverse: Chain[T] =
-    new Chain(underlying.reverse)
+    new Chain(toList.reverse)
 
   /**
    * An iterator yielding elements in reverse order.
@@ -1150,7 +1152,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return an iterator yielding the elements of this <code>Chain</code> in reversed order 
    */
-  final def reverseIterator: Iterator[T] = underlying.reverseIterator
+  final def reverseIterator: Iterator[T] = toList.reverseIterator
 
   /**
    * Builds a new <code>Chain</code> by applying a function to all elements of this <code>Chain</code> and collecting the results in reverse order.
@@ -1165,7 +1167,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *     and collecting the results in reverse order. 
    */
   final def reverseMap[U](f: T => U): Chain[U] =
-    new Chain(underlying.reverseMap(f))
+    new Chain(toList.reverseMap(f))
 
   /**
    * Checks if the given <code>GenIterable</code> contains the same elements in the same order as this <code>Chain</code>.
@@ -1174,7 +1176,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return <code>true</code>, if both this <code>Chain</code> and the given <code>GenIterable</code> contain the same elements
    *     in the same order, <code>false</code> otherwise. 
    */
-  final def sameElements[U >: T](that: GenIterable[U]): Boolean = underlying.sameElements(that)
+  final def sameElements[U >: T](that: GenIterable[U]): Boolean = toList.sameElements(that)
 
   /**
    * Checks if the given <code>Every</code> contains the same elements in the same order as this <code>Chain</code>.
@@ -1183,7 +1185,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return <code>true</code>, if both this and the given <code>Every</code> contain the same elements
    *     in the same order, <code>false</code> otherwise. 
    */
-  final def sameElements[U >: T](that: Every[U]): Boolean = underlying.sameElements(that.toVector)
+  final def sameElements[U >: T](that: Every[U]): Boolean = toList.sameElements(that.toVector)
 
   /**
    * Checks if the given <code>Chain</code> contains the same elements in the same order as this <code>Chain</code>.
@@ -1192,7 +1194,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return <code>true</code>, if both this and the given <code>Chain</code> contain the same elements
    *     in the same order, <code>false</code> otherwise. 
    */
-  final def sameElements[U >: T](that: Chain[U]): Boolean = underlying.sameElements(that.toList)
+  final def sameElements[U >: T](that: Chain[U]): Boolean = toList.sameElements(that.toList)
 
   /**
    * Computes a prefix scan of the elements of this <code>Chain</code>.
@@ -1217,7 +1219,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param op a binary operator that must be associative
    * @return a new <code>Chain</code> containing the prefix scan of the elements in this <code>Chain</code> 
    */
-  final def scan[U >: T](z: U)(op: (U, U) => U): Chain[U] = new Chain(underlying.scan(z)(op))
+  final def scan[U >: T](z: U)(op: (U, U) => U): Chain[U] = new Chain(toList.scan(z)(op))
 
   /**
    * Produces a <code>Chain</code> containing cumulative results of applying the operator going left to right.
@@ -1237,7 +1239,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>Chain</code>,
    *     going left to right, with the start value, <code>z</code>, on the left.
    */ 
-  final def scanLeft[B](z: B)(op: (B, T) => B): Chain[B] = new Chain(underlying.scanLeft(z)(op))
+  final def scanLeft[B](z: B)(op: (B, T) => B): Chain[B] = new Chain(toList.scanLeft(z)(op))
 
   /**
    * Produces a <code>Chain</code> containing cumulative results of applying the operator going right to left.
@@ -1257,7 +1259,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a new <code>Chain</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>Chain</code>,
    *     going right to left, with the start value, <code>z</code>, on the right.
    */
-  final def scanRight[B](z: B)(op: (T, B) => B): Chain[B] = new Chain(underlying.scanRight(z)(op))
+  final def scanRight[B](z: B)(op: (T, B) => B): Chain[B] = new Chain(toList.scanRight(z)(op))
 
   /**
    * Computes length of longest segment whose elements all satisfy some predicate.
@@ -1267,7 +1269,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param the length of the longest segment of this <code>Chain</code> starting from index <code>from</code> such that every element of the
    *     segment satisfies the predicate <code>p</code>. 
    */
-  final def segmentLength(p: T => Boolean, from: Int): Int = underlying.segmentLength(p, from)
+  final def segmentLength(p: T => Boolean, from: Int): Int = toList.segmentLength(p, from)
 
   /**
    * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
@@ -1276,7 +1278,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return an iterator producing <code>Chain</code>s of size <code>size</code>, except the last and the only element will be truncated
    *     if there are fewer elements than <code>size</code>.
    */
-  final def sliding(size: Int): Iterator[Chain[T]] = underlying.sliding(size).map(new Chain(_))
+  final def sliding(size: Int): Iterator[Chain[T]] = toList.sliding(size).map(new Chain(_))
 
   /**
    * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
@@ -1287,7 +1289,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return an iterator producing <code>Chain</code>s of size <code>size</code>, except the last and the only element will be truncated
    *     if there are fewer elements than <code>size</code>.
    */
-  final def sliding(size: Int, step: Int): Iterator[Chain[T]] = underlying.sliding(size, step).map(new Chain(_))
+  final def sliding(size: Int, step: Int): Iterator[Chain[T]] = toList.sliding(size, step).map(new Chain(_))
 
   /**
    * The size of this <code>Chain</code>.
@@ -1298,7 +1300,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the number of elements in this <code>Chain</code>. 
    */
-  final def size: Int = underlying.size
+  final def size: Int = toList.size
 
   /**
    * Sorts this <code>Chain</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
@@ -1309,7 +1311,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a <code>Chain</code> consisting of the elements of this <code>Chain</code> sorted according to the <code>Ordering</code> where
    *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
    */
-  final def sortBy[U](f: T => U)(implicit ord: Ordering[U]): Chain[T] = new Chain(underlying.sortBy(f))
+  final def sortBy[U](f: T => U)(implicit ord: Ordering[U]): Chain[T] = new Chain(toList.sortBy(f))
 
   /**
    * Sorts this <code>Chain</code> according to a comparison function.
@@ -1322,7 +1324,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
    * @return a <code>Chain</code> consisting of the elements of this <code>Chain</code> sorted according to the comparison function <code>lt</code>.
    */
-  final def sortWith(lt: (T, T) => Boolean): Chain[T] = new Chain(underlying.sortWith(lt))
+  final def sortWith(lt: (T, T) => Boolean): Chain[T] = new Chain(toList.sortWith(lt))
 
   /**
    * Sorts this <code>Chain</code> according to an <code>Ordering</code>.
@@ -1336,7 +1338,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
    * @return a <code>Chain</code> consisting of the elements of this <code>Chain</code> sorted according to the comparison function <code>lt</code>.
    */
-  final def sorted[U >: T](implicit ord: Ordering[U]): Chain[U] = new Chain(underlying.sorted(ord))
+  final def sorted[U >: T](implicit ord: Ordering[U]): Chain[U] = new Chain(toList.sorted(ord))
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>GenSeq</code>. 
@@ -1344,7 +1346,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>GenSeq</code> slice to look for in this <code>Chain</code>
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: GenSeq[B]): Boolean = underlying.startsWith(that)
+  final def startsWith[B](that: GenSeq[B]): Boolean = toList.startsWith(that)
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>GenSeq</code> at the given index. 
@@ -1353,7 +1355,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param offset the index at which this <code>Chain</code> is searched.
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: GenSeq[B], offset: Int): Boolean = underlying.startsWith(that, offset)
+  final def startsWith[B](that: GenSeq[B], offset: Int): Boolean = toList.startsWith(that, offset)
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>Every</code>. 
@@ -1361,7 +1363,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Every</code> to test
    * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: Every[B]): Boolean = underlying.startsWith(that.toVector)
+  final def startsWith[B](that: Every[B]): Boolean = toList.startsWith(that.toVector)
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>Chain</code>. 
@@ -1369,7 +1371,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Chain</code> to test
    * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: Chain[B]): Boolean = underlying.startsWith(that.toList)
+  final def startsWith[B](that: Chain[B]): Boolean = toList.startsWith(that.toList)
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>Every</code> at the given index. 
@@ -1378,7 +1380,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param offset the index at which this <code>Chain</code> is searched.
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: Every[B], offset: Int): Boolean = underlying.startsWith(that.toVector, offset)
+  final def startsWith[B](that: Every[B], offset: Int): Boolean = toList.startsWith(that.toVector, offset)
 
   /**
    * Indicates whether this <code>Chain</code> starts with the given <code>Chain</code> at the given index. 
@@ -1387,7 +1389,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param offset the index at which this <code>Chain</code> is searched.
    * @return <code>true</code> if this <code>Chain</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
    */
-  final def startsWith[B](that: Chain[B], offset: Int): Boolean = underlying.startsWith(that.toList, offset)
+  final def startsWith[B](that: Chain[B], offset: Int): Boolean = toList.startsWith(that.toList, offset)
 
   /**
    * Returns <code>"Chain"</code>, the prefix of this object's <code>toString</code> representation.
@@ -1405,7 +1407,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return the sum of all elements
    */
-  final def sum[U >: T](implicit num: Numeric[U]): U = underlying.sum(num)
+  final def sum[U >: T](implicit num: Numeric[U]): U = toList.sum(num)
 
   import scala.language.higherKinds
 
@@ -1415,56 +1417,56 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @tparam Col the collection type to build.
    * @return a new collection containing all elements of this <code>Chain</code>. 
    */
-  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = underlying.to[Col](cbf)
+  final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = toList.to[Col](cbf)
 
   /**
    * Converts this <code>Chain</code> to an array.
    *
    * @return an array containing all elements of this <code>Chain</code>. A <code>ClassTag</code> must be available for the element type of this <code>Chain</code>. 
    */ 
-  final def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = underlying.toArray
+  final def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = toList.toArray
 
   /**
    * Converts this <code>Chain</code> to a <code>Vector</code>.
    *
    * @return a <code>Vector</code> containing all elements of this <code>Chain</code>. 
    */ 
-  final def toVector: Vector[T] = underlying.toVector
+  final def toVector: Vector[T] = toList.toVector
 
   /**
    * Converts this <code>Chain</code> to a mutable buffer.
    *
    * @return a buffer containing all elements of this <code>Chain</code>. 
    */ 
-  final def toBuffer[U >: T]: Buffer[U] = underlying.toBuffer
+  final def toBuffer[U >: T]: Buffer[U] = toList.toBuffer
 
   /**
    * Converts this <code>Chain</code> to an immutable <code>IndexedSeq</code>.
    *
    * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>Chain</code>. 
    */ 
-  final def toIndexedSeq: collection.immutable.IndexedSeq[T] = underlying.toVector
+  final def toIndexedSeq: collection.immutable.IndexedSeq[T] = toList.toVector
 
   /**
    * Converts this <code>Chain</code> to an iterable collection.
    *
    * @return an <code>Iterable</code> containing all elements of this <code>Chain</code>. 
    */ 
-  final def toIterable: Iterable[T] = underlying.toIterable
+  final def toIterable: Iterable[T] = toList.toIterable
 
   /**
    * Returns an <code>Iterator</code> over the elements in this <code>Chain</code>.
    *
    * @return an <code>Iterator</code> containing all elements of this <code>Chain</code>. 
    */ 
-  final def toIterator: Iterator[T] = underlying.toIterator
+  final def toIterator: Iterator[T] = toList.toIterator
 
   /**
    * Converts this <code>Chain</code> to a list.
    *
    * @return a list containing all elements of this <code>Chain</code>. 
    */ 
-  final def toList: List[T] = underlying
+  // final def toList: List[T] = toList
 
   /**
    * Converts this <code>Chain</code> to a map.
@@ -1476,28 +1478,28 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>Chain</code>. 
    */ 
-  final def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.toMap
+  final def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = toList.toMap
 
   /**
    * Converts this <code>Chain</code> to an immutable <code>IndexedSeq</code>.
    *
    * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>Chain</code>.
    */ 
-  final def toSeq: collection.immutable.Seq[T] = underlying
+  final def toSeq: collection.immutable.Seq[T] = toList
 
   /**
    * Converts this <code>Chain</code> to a set.
    *
    * @return a set containing all elements of this <code>Chain</code>. 
    */ 
-  final def toSet[U >: T]: Set[U] = underlying.toSet
+  final def toSet[U >: T]: Set[U] = toList.toSet
 
   /**
    * Converts this <code>Chain</code> to a stream.
    *
    * @return a stream containing all elements of this <code>Chain</code>. 
    */ 
-  final def toStream: Stream[T] = underlying.toStream
+  final def toStream: Stream[T] = toList.toStream
 
   /**
    * Returns a string representation of this <code>Chain</code>.
@@ -1512,10 +1514,10 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *
    * @return a <code>Traversable</code> containing all elements of this <code>Chain</code>. 
    */ 
-  final def toTraversable: Traversable[T] = underlying.toTraversable
+  final def toTraversable: Traversable[T] = toList.toTraversable
 
   final def transpose[U](implicit ev: T <:< Chain[U]): Chain[Chain[U]] = {
-    val asLists = underlying.map(ev)
+    val asLists = toList.map(ev)
     val list = asLists.transpose
     new Chain(list.map(new Chain(_)))
   }
@@ -1536,7 +1538,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Every</code> to add.
    * @return a new <code>Chain</code> that contains all elements of this <code>Chain</code> followed by all elements of <code>that</code> <code>Every</code>.
    */
-  final def union[U >: T](that: Every[U]): Chain[U] = new Chain(underlying union that.toVector)
+  final def union[U >: T](that: Every[U]): Chain[U] = new Chain(toList union that.toVector)
 
   /**
    * Produces a new <code>Chain</code> that contains all elements of this <code>Chain</code> and also all elements of a given <code>Chain</code>.
@@ -1554,7 +1556,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>Chain</code> to add.
    * @return a new <code>Chain</code> that contains all elements of this <code>Chain</code> followed by all elements of <code>that</code>.
    */
-  final def union[U >: T](that: Chain[U]): Chain[U] = new Chain(underlying union that.toList)
+  final def union[U >: T](that: Chain[U]): Chain[U] = new Chain(toList union that.toList)
 
   /**
    * Produces a new <code>Chain</code> that contains all elements of this <code>Chain</code> and also all elements of a given <code>GenSeq</code>.
@@ -1572,7 +1574,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @param that the <code>GenSeq</code> to add.
    * @return a new <code>Chain</code> that contains all elements of this <code>Chain</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
    */
-  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[List[T], U, List[U]]): Chain[U] = new Chain(underlying.union(that)(cbf))
+  final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[List[T], U, List[U]]): Chain[U] = new Chain(toList.union(that)(cbf))
 
   /**
    * Converts this <code>Chain</code> of pairs into two <code>Chain</code>s of the first and second half of each pair. 
@@ -1583,7 +1585,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a pair of <code>Chain</code>s, containing the first and second half, respectively, of each element pair of this <code>Chain</code>. 
    */
   final def unzip[L, R](implicit asPair: T => (L, R)): (Chain[L], Chain[R]) = {
-    val unzipped = underlying.unzip
+    val unzipped = toList.unzip
     (new Chain(unzipped._1), new Chain(unzipped._2))
   }
 
@@ -1597,7 +1599,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a triple of <code>Chain</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>Chain</code>. 
    */
   final def unzip3[L, M, R](implicit asTriple: T => (L, M, R)): (Chain[L], Chain[M], Chain[R]) = {
-    val unzipped = underlying.unzip3
+    val unzipped = toList.unzip3
     (new Chain(unzipped._1), new Chain(unzipped._2), new Chain(unzipped._3))
   }
 
@@ -1610,7 +1612,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * @return a copy of this <code>Chain</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
    */
   final def updated[U >: T](idx: Int, elem: U): Chain[U] =
-    try new Chain(underlying.updated(idx, elem))
+    try new Chain(toList.updated(idx, elem))
     catch { case _: UnsupportedOperationException => throw new IndexOutOfBoundsException(idx.toString) } // This is needed for 2.10 support. Can drop after.
                                                                                                          // Because 2.11 throws IndexOutOfBoundsException.
 
@@ -1630,14 +1632,14 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    *     <code>Chain</code>, <code>thatElem</code> values are used to pad the result. 
    */
   final def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): Chain[(U, O)] =
-    new Chain(underlying.zipAll(other, thisElem, otherElem))
+    new Chain(toList.zipAll(other, thisElem, otherElem))
 
   /**
    * Zips this <code>Chain</code>  with its indices.
    *
    * @return A new <code>Chain</code> containing pairs consisting of all elements of this <code>Chain</code> paired with their index. Indices start at 0.
    */
-  final def zipWithIndex: Chain[(T, Int)] = new Chain(underlying.zipWithIndex)
+  final def zipWithIndex: Chain[(T, Int)] = new Chain(toList.zipWithIndex)
 }
 
 /**

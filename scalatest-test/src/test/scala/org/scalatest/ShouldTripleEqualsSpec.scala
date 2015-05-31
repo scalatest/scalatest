@@ -27,7 +27,7 @@ import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
+class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)
@@ -38,6 +38,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
   val sub2: Sub = new Sub(2)
   val nullSuper: Super = null
 
+  // SKIP-SCALATESTJS-START
   val javaList: java.util.List[Int] = new java.util.ArrayList
   javaList.add(1)
   javaList.add(2)
@@ -58,12 +59,13 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
   val javaHashSet: java.util.HashSet[Int] = new java.util.HashSet
   javaHashSet.add(1)
   javaHashSet.add(2)
+  // SKIP-SCALATESTJS-END
 
-  object `the custom equality should === (operator` {
+  describe("the custom equality should === (operator") {
 
-    object `with TripleEquals` {
+    describe("with TripleEquals") {
 
-      def `should compare anything with anything` {
+      it("should compare anything with anything") {
 
         new TripleEquals {
 
@@ -124,6 +126,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Seq(1, 2, 3))
           Array(1, 2, 3) should !== (Seq(2, 3, 4))
 
+          // SKIP-SCALATESTJS-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -150,13 +153,14 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           intercept[TestFailedException] { javaSet should === (7) }
           javaSet should !== (7)
+          // SKIP-SCALATESTJS-END
 
           () should === (())
           () should !== (7)
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported` {
+      it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported") {
 
         object O extends TripleEquals
         import O._
@@ -202,7 +206,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when TripleEquals mixed in` {
+      it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals mixed in") {
 
         object O extends TripleEquals {
 
@@ -248,7 +252,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported") {
 
         object O extends TripleEquals
         import O._
@@ -295,7 +299,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TripleEquals mixed in` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals mixed in") {
 
         object O extends TripleEquals {
 
@@ -343,9 +347,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
       }
     }
 
-    object `with TypeCheckedTripleEquals` {
+    describe("with TypeCheckedTripleEquals") {
 
-      def `should compare supertypes with subtypes on either side` {
+      it("should compare supertypes with subtypes on either side") {
 
         new TypeCheckedTripleEquals {
 
@@ -395,6 +399,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Array(1, 2, 3))
           Array(1, 2, 3) should !== (Array(2, 3, 4))
 
+          // SKIP-SCALATESTJS-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -412,6 +417,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           javaHashSet should === (javaSet)
           intercept[TestFailedException] { javaHashSet should !== (javaSet) }
+          // SKIP-SCALATESTJS-END
 
           () should === (())
 
@@ -454,7 +460,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported` {
+      it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
         import O._
@@ -485,7 +491,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when TypeCheckedTripleEquals mixed in` {
+      it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals mixed in") {
 
         object O extends TypeCheckedTripleEquals {
 
@@ -516,7 +522,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
         import O._
@@ -563,7 +569,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in` {
+      it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in") {
 
         object O extends TypeCheckedTripleEquals {
 
@@ -611,9 +617,9 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
       }
     }
 
-    object `with ConversionCheckedTripleEquals` {
+    describe("with ConversionCheckedTripleEquals") {
 
-      def `should compare supertypes with subtypes on either side as well as types with implicit conversions in either direction` {
+      it("should compare supertypes with subtypes on either side as well as types with implicit conversions in either direction") {
 
         new ConversionCheckedTripleEquals {
 
@@ -676,6 +682,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
           Array(1, 2, 3) should === (Seq(1, 2, 3))
           Array(1, 2, 3) should !== (Seq(2, 3, 4))
 
+          // SKIP-SCALATESTJS-START
           javaList should === (javaArrayList)
           intercept[TestFailedException] { javaList should !== (javaArrayList) }
 
@@ -693,6 +700,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
 
           javaHashSet should === (javaSet)
           intercept[TestFailedException] { javaHashSet should !== (javaSet) }
+          // SKIP-SCALATESTJS-END
 
           () should === (())
 
@@ -724,7 +732,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported` {
+      it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
         import O._
@@ -755,7 +763,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TripleEquals locally when ConversionCheckedTripleEquals mixed in` {
+      it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals mixed in") {
 
         object O extends ConversionCheckedTripleEquals {
 
@@ -786,7 +794,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported` {
+      it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
         import O._
@@ -832,7 +840,7 @@ class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {
         }
       }
 
-      def `should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in` {
+      it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in") {
 
         object O extends ConversionCheckedTripleEquals {
 

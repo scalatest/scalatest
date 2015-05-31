@@ -17,14 +17,14 @@ package org.scalatest.matchers
 
 import org.scalatest._
 
-class LazyArgSpec extends Spec with Matchers {
+class LazyArgSpec extends FunSpec with Matchers {
 
-  object `A LazyArg` {
-    def `should offer a nested args IndexedSeq` {
-      new FailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))) should have ('nestedArgs(Vector("hi", 1)))
-      new NegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))) should have ('nestedArgs(Vector("hi", 2)))
-      new MidSentenceFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))) should have ('nestedArgs(Vector("hi", 1)))
-      new MidSentenceNegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))) should have ('nestedArgs(Vector("hi", 2)))
+  describe("A LazyArg") {
+    it("should offer a nested args IndexedSeq") {
+      new FailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 1))
+      new NegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 2))
+      new MidSentenceFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 1))
+      new MidSentenceNegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 2))
     }
   }
 }

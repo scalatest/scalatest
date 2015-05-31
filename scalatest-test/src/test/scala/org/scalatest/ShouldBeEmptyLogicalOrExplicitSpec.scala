@@ -20,7 +20,7 @@ import enablers.Emptiness
 import Matchers._
 import exceptions.TestFailedException
 
-class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
+class ShouldBeEmptyLogicalOrExplicitSpec extends FunSpec {
   
   val fileName: String = "ShouldBeEmptyLogicalOrExplicitSpec.scala"
   
@@ -63,11 +63,11 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
       def isEmpty(thing: Thing): Boolean = thing.isEmpty
     }
   
-  object `Sorted matcher` {
+  describe("Sorted matcher") {
     
-    object `when work with 'list should be (empty)'` {
+    describe("when work with 'list should be (empty)'") {
       
-      def `should do nothing when list is empty` {
+      it("should do nothing when list is empty") {
         
         (emptyThing should (be (empty) or be (emptyThing))) (emptiness)
         (nonEmptyThing should (be (empty) or be (nonEmptyThing))) (emptiness)
@@ -86,7 +86,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (nonEmptyThing should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is not empty` {
+      it("should throw TestFailedException with correct stack depth when file is not empty") {
         val caught1 = intercept[TestFailedException] {
           (nonEmptyThing should (be (empty) or be (emptyThing))) (emptiness)
         }
@@ -117,9 +117,9 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'file should not be empty'` {
+    describe("when work with 'file should not be empty'") {
       
-      def `should do nothing when file is not empty` {
+      it("should do nothing when file is not empty") {
         (nonEmptyThing should (not be empty or not be emptyThing)) (emptiness)
         (emptyThing should (not be empty or not be nonEmptyThing)) (emptiness)
         (nonEmptyThing should (not be empty or not be nonEmptyThing)) (emptiness)
@@ -137,7 +137,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (emptyThing should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when file is empty` {
+      it("should throw TestFailedException with correct stack depth when file is empty") {
         val caught1 = intercept[TestFailedException] {
           (emptyThing should (not be empty or not be emptyThing)) (emptiness)
         }
@@ -168,9 +168,9 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should be (empty)'` {
+    describe("when work with 'all(xs) should be (empty)'") {
       
-      def `should do nothing when all(xs) is empty` {
+      it("should do nothing when all(xs) is empty") {
         (all(List(emptyThing)) should (be (empty) or be (emptyThing))) (emptiness)
         (all(List(nonEmptyThing)) should (be (empty) or be (nonEmptyThing))) (emptiness)
         (all(List(emptyThing)) should (be (empty) or be (nonEmptyThing))) (emptiness)
@@ -188,7 +188,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (all(List(nonEmptyThing)) should (equal (nonEmptyThing) or be (empty))) (defaultEquality, emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(nonEmptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should (be (emptyThing) or be (empty))) (emptiness)
@@ -223,8 +223,8 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
       }
     }
     
-    object `when work with 'all(xs) should not be sorted'` {
-      def `should do nothing when xs is not sorted` {
+    describe("when work with 'all(xs) should not be sorted'") {
+      it("should do nothing when xs is not sorted") {
         (all(List(nonEmptyThing)) should (not be empty or not be emptyThing)) (emptiness)
         (all(List(emptyThing)) should (not be empty or not be nonEmptyThing)) (emptiness)
         (all(List(nonEmptyThing)) should (not be empty or not be nonEmptyThing)) (emptiness)
@@ -242,7 +242,7 @@ class ShouldBeEmptyLogicalOrExplicitSpec extends Spec {
         (all(List(emptyThing)) should (not equal nonEmptyThing or not be empty)) (defaultEquality, emptiness)
       }
       
-      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+      it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(emptyThing)
         val caught1 = intercept[TestFailedException] {
           (all(left1) should (not be emptyThing or not be empty)) (emptiness)

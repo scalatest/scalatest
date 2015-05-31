@@ -20,9 +20,9 @@ import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
 
-class ScalaTestAntTaskSpec extends Spec {
+class ScalaTestAntTaskSpec extends FunSpec {
 
-  def `command line args should get generated for <test> elements` {
+  it("command line args should get generated for <test> elements") {
     val task = new ScalaTestAntTask
 
     def addTestName(name: String) {
@@ -48,7 +48,7 @@ class ScalaTestAntTaskSpec extends Spec {
     assert(argsList containsSlice List("-t", "this is another test"))
   }
 
-  def `command line arg should get generated for testsfile attribute` {
+  it("command line arg should get generated for testsfile attribute") {
     val task = new ScalaTestAntTask
 
     task.setTestsfile("target/testsfile.dat")
@@ -58,7 +58,7 @@ class ScalaTestAntTaskSpec extends Spec {
     assert(argsList containsSlice List("-A", "target/testsfile.dat"))
   }
 
-  def `command line args should get generated for testsfile elements` {
+  it("command line args should get generated for testsfile elements") {
     val task = new ScalaTestAntTask
 
     val elem = new TestsfileElement
@@ -75,7 +75,7 @@ class ScalaTestAntTaskSpec extends Spec {
     assert(argsList containsSlice List("-A", "target/testsfile2.dat"))
   }
 
-  def `command line arg should get generated for memory reporter` {
+  it("command line arg should get generated for memory reporter") {
     val task = new ScalaTestAntTask
 
     val elem = new ReporterElement
