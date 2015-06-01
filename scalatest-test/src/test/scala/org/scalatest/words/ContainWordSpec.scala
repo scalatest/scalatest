@@ -43,41 +43,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'negatedFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'rawFailureMessage ("{0} did not contain element {1}"),
-          'rawNegatedFailureMessage ("{0} contained element {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain element {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained element {1}"),
-          'failureMessageArgs(Vector(lhs, 2)),
-          'negatedFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 2))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        mr.rawFailureMessage shouldBe "{0} did not contain element {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained element {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain element {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained element {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 2)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 2)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 2)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 2)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) contained element 2"),
-          'negatedFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'rawFailureMessage ("{0} contained element {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain element {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained element {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain element {1}"),
-          'failureMessageArgs(Vector(lhs, 2)),
-          'negatedFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 2))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        nmr.rawFailureMessage shouldBe "{0} contained element {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain element {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained element {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain element {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 2)
+
       }
     }
     
@@ -94,41 +92,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'rawFailureMessage ("{0} did not contain key {1}"),
-          'rawNegatedFailureMessage ("{0} contained key {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain key {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained key {1}"),
-          'failureMessageArgs(Vector(lhs, "2")),
-          'negatedFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "2"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        mr.rawFailureMessage shouldBe "{0} did not contain key {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained key {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain key {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained key {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, "2")
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, "2")
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "2")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "2")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'rawFailureMessage ("{0} contained key {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain key {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained key {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain key {1}"),
-          'failureMessageArgs(Vector(lhs, "2")),
-          'negatedFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "2"))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        nmr.rawFailureMessage shouldBe "{0} contained key {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain key {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained key {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain key {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "2")
+
       }
     }
     
@@ -145,41 +141,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'rawFailureMessage ("{0} did not contain value {1}"),
-          'rawNegatedFailureMessage ("{0} contained value {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain value {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained value {1}"),
-          'failureMessageArgs(Vector(lhs, "two")),
-          'negatedFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "two"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        mr.rawFailureMessage shouldBe "{0} did not contain value {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained value {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain value {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained value {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, "two")
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, "two")
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "two")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "two")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'rawFailureMessage ("{0} contained value {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain value {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained value {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain value {1}"),
-          'failureMessageArgs(Vector(lhs, "two")),
-          'negatedFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "two"))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        nmr.rawFailureMessage shouldBe "{0} contained value {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain value {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained value {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain value {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "two")
+
       }
     }
     
@@ -203,41 +197,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (leftList + " did not contain a file"),
-          'negatedFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'midSentenceFailureMessage (leftList + " did not contain a file"),
-          'midSentenceNegatedFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'rawFailureMessage ("{0} did not contain a {1}"),
-          'rawNegatedFailureMessage ("{0} contained a {1}: {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained a {1}: {2}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe leftList + " did not contain a file"
+        mr.negatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        mr.midSentenceFailureMessage shouldBe leftList + " did not contain a file"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        mr.rawFailureMessage shouldBe "{0} did not contain a {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain a {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'negatedFailureMessage (leftList + " did not contain a file"),
-          'midSentenceFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'midSentenceNegatedFailureMessage (leftList + " did not contain a file"),
-          'rawFailureMessage ("{0} contained a {1}: {2}"),
-          'rawNegatedFailureMessage ("{0} did not contain a {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained a {1}: {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain a {1}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        nmr.negatedFailureMessage shouldBe leftList + " did not contain a file"
+        nmr.midSentenceFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain a file"
+        nmr.rawFailureMessage shouldBe "{0} contained a {1}: {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain a {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained a {1}: {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain a {1}"
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+
       }
     }
     
@@ -261,41 +253,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (leftList + " did not contain an file"),
-          'negatedFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'midSentenceFailureMessage (leftList + " did not contain an file"),
-          'midSentenceNegatedFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'rawFailureMessage ("{0} did not contain an {1}"),
-          'rawNegatedFailureMessage ("{0} contained an {1}: {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained an {1}: {2}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe leftList + " did not contain an file"
+        mr.negatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        mr.midSentenceFailureMessage shouldBe leftList + " did not contain an file"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        mr.rawFailureMessage shouldBe "{0} did not contain an {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain an {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'negatedFailureMessage (leftList + " did not contain an file"),
-          'midSentenceFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'midSentenceNegatedFailureMessage (leftList + " did not contain an file"),
-          'rawFailureMessage ("{0} contained an {1}: {2}"),
-          'rawNegatedFailureMessage ("{0} did not contain an {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained an {1}: {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain an {1}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        nmr.negatedFailureMessage shouldBe leftList + " did not contain an file"
+        nmr.midSentenceFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain an file"
+        nmr.rawFailureMessage shouldBe "{0} contained an {1}: {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain an {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained an {1}: {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain an {1}"
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+
       }
     }
     
@@ -313,41 +303,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'rawFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawNegatedFailureMessage (Resources.rawContainedOneOfElements),
-          'rawMidSentenceFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawContainedOneOfElements),
-          'failureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8")))
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.negatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.rawFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        mr.rawNegatedFailureMessage shouldBe Resources.rawContainedOneOfElements
+        mr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        mr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawContainedOneOfElements
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'rawFailureMessage (Resources.rawContainedOneOfElements),
-          'rawNegatedFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawMidSentenceFailureMessage (Resources.rawContainedOneOfElements),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'failureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.rawFailureMessage shouldBe Resources.rawContainedOneOfElements
+        nmr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        nmr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedOneOfElements
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+
       }
     }
     
@@ -365,41 +353,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained at least one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained at least one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained at least one of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained at least one of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained at least one of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'rawFailureMessage ("{0} contained at least one of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained at least one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain at least one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} contained at least one of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained at least one of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -417,41 +403,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'rawFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawNegatedFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawMidSentenceFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.rawFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        mr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        mr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        mr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'rawFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawNegatedFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawMidSentenceFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.rawFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        nmr.rawNegatedFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        nmr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -470,41 +454,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain the same elements as " + rhs),
-          'negatedFailureMessage (lhs + " contained the same elements as " + rhs),
-          'midSentenceFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " contained the same elements as " + rhs),
-          'rawFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawNegatedFailureMessage ("{0} contained the same elements as {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained the same elements as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        mr.negatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        mr.rawFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained the same elements as {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained the same elements as {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained the same elements as " + rhs),
-          'negatedFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'midSentenceFailureMessage (lhs + " contained the same elements as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'rawFailureMessage ("{0} contained the same elements as {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained the same elements as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain the same elements as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained the same elements as " + rhs
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        nmr.rawFailureMessage shouldBe "{0} contained the same elements as {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements as {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
     }
     
@@ -523,41 +505,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'negatedFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'midSentenceFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'rawFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawNegatedFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        mr.negatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        mr.rawFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'negatedFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'midSentenceFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'rawFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.rawFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
     }
     
@@ -575,41 +555,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain only (1, 2)"),
-          'negatedFailureMessage (lhs + " contained only (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain only (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained only (1, 2)"),
-          'rawFailureMessage ("{0} did not contain only ({1})"),
-          'rawNegatedFailureMessage ("{0} contained only ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain only ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained only ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain only (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " contained only (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} did not contain only ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained only ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained only ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained only (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain only (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained only (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain only (1, 2)"),
-          'rawFailureMessage ("{0} contained only ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain only ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained only ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain only ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained only (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} contained only ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain only ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -627,41 +605,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain only (1, 2) in order"),
-          'negatedFailureMessage (lhs + " contained only (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " contained only (1, 2) in order"),
-          'rawFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} contained only ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained only ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        mr.negatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        mr.rawFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained only ({1}) in order"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained only ({1}) in order"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained only (1, 2) in order"),
-          'negatedFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " contained only (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'rawFailureMessage ("{0} contained only ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} contained only ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain only ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained only (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        nmr.rawFailureMessage shouldBe "{0} contained only ({1}) in order"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1}) in order"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -679,41 +655,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain all of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained all of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained all of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain all of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained all of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain all of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained all of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} did not contain all of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained all of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained all of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained all of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'rawFailureMessage ("{0} contained all of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain all of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained all of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained all of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} contained all of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain all of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -731,41 +705,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'negatedFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'rawFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained all of ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        mr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        mr.rawFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained all of (1, 2) in order"),
-          'negatedFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'rawFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        nmr.rawFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -783,41 +755,39 @@ class ContainWordSpec extends FunSpec {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained at most one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained at most one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} contained at most one of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained at most one of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained at most one of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'rawFailureMessage ("{0} contained at most one of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained at most one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain at most one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} contained at most one of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} contained at most one of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
