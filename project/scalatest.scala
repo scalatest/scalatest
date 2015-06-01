@@ -470,7 +470,7 @@ object ScalatestBuild extends Build {
       /*sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),*/
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,

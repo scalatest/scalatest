@@ -1281,7 +1281,7 @@ $columnsOfIndexes$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genTableForNs(targetDir: File) {
+  def genTableForNs(targetDir: File, scalaJS: Boolean) {
 
     val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableFor1.scala")))
  
@@ -1321,7 +1321,10 @@ $columnsOfIndexes$
         st.setAttribute("sumOfArgs", sumOfArgs)
         st.setAttribute("argNames", argNames)
         st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        bw.write(transform(st.toString))
+        if (scalaJS)
+          bw.write(transform(st.toString))
+        else
+          bw.write(st.toString)
       }
     }
     finally {
@@ -1494,7 +1497,14 @@ $columnsOfIndexes$
   
   def genMain(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
-    genTableForNs(dir)
+    genTableForNs(dir, false)
+    genPropertyChecks(dir)
+    genTables(dir)
+  }
+
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+    dir.mkdirs()
+    genTableForNs(dir, true)
     genPropertyChecks(dir)
     genTables(dir)
   }
