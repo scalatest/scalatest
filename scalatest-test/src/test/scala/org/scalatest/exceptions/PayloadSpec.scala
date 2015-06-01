@@ -19,7 +19,9 @@ package exceptions
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.SharedHelpers._
 import time.{Span, Second}
+// SKIP-SCALATESTJS-START
 import junit.JUnitTestFailedError
+// SKIP-SCALATESTJS-END
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
@@ -31,7 +33,9 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
     Table(
       "exception",
       new TestFailedException("message", 3),
+      // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", 3),
+      // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty), 

@@ -182,7 +182,8 @@ object GenScalaTestJS {
               "StopOnFailure.scala",
               "Sequential.scala",
               "Stepwise.scala",
-              "TryValues.scala"
+              "TryValues.scala",
+              "Payloads.scala"
             ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -500,6 +501,7 @@ object GenScalaTestJS {
         "TestLocationMethodTestNGSuite.scala",
         "LocationMethodSuiteProp.scala"
       )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections

@@ -833,8 +833,10 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
 
   // SKIP-SCALATESTJS-START
   private[scalatest] val failStackDepth = 4
+  private[scalatest] val cancelStackDepth = 3
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
+  //SCALATESTJS-ONLY private[scalatest] val cancelStackDepth = 12
 
   /**
    * Intercept and return an exception that's expected to
@@ -1166,7 +1168,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  def cancel(): Nothing = { throw newTestCanceledException(None, None, 3) }
+  def cancel(): Nothing = { throw newTestCanceledException(None, None, cancelStackDepth) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1181,7 +1183,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (message == null)
         throw new NullPointerException("message is null")
      
-    throw newTestCanceledException(Some(message),  None, 3)
+    throw newTestCanceledException(Some(message),  None, cancelStackDepth)
   }
 
   /**
@@ -1201,7 +1203,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
 
-    throw newTestCanceledException(Some(message), Some(cause), 3)
+    throw newTestCanceledException(Some(message), Some(cause), cancelStackDepth)
   }
 
   /**
@@ -1218,7 +1220,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     if (cause == null)
       throw new NullPointerException("cause is null")
         
-    throw newTestCanceledException(None, Some(cause), 3)
+    throw newTestCanceledException(None, Some(cause), cancelStackDepth)
   }
   
   /**
