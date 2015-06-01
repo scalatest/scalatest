@@ -129,7 +129,11 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", stackDepth, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -152,10 +156,12 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
   
   /**
@@ -169,7 +175,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 11
+    //SCALATESTJS-ONLY val stackDepth = 6
 
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecLike.scala", "feature"))

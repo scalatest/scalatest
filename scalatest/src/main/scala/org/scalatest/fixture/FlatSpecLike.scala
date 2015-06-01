@@ -135,8 +135,10 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
 
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
 
     // TODO: This is what was being used before but it is wrong
@@ -145,7 +147,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -189,7 +191,11 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * @param description the description text
      */
     def of(description: String) {
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", 3, 0)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 5
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", stackDepth, 0)
     }
   }
 
@@ -1990,7 +1996,11 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
     (subject, verb, rest) => {
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 6, 0)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 6
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 8
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
         def is(testFun: => PendingNothing) {
           registerTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)
@@ -2059,10 +2069,12 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

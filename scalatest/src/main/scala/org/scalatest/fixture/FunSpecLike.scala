@@ -158,10 +158,12 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      */
     def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
       // SKIP-SCALATESTJS-START
+      val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-      engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
 
     /**
@@ -367,7 +369,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 6, -2, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 6
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 8
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, -2, None, testTags: _*)
   }
 
   /**
@@ -406,7 +412,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 11
+    //SCALATESTJS-ONLY val stackDepth = 6
     try {
       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None)
     }

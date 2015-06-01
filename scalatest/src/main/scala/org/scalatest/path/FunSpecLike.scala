@@ -144,7 +144,11 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 5
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, -2, None, testTags: _*)
     }
     
     /**
@@ -341,8 +345,12 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, -2, None, testTags: _*)
   }
   
   /**
@@ -362,7 +370,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 11
+    //SCALATESTJS-ONLY val stackDepth = 6
     try {
       handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
     }

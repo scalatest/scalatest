@@ -491,9 +491,7 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
-        "LocationFunctionSuiteProp.scala",   // temporary skip for now
-        "LocationSpec.scala",   // temporary skip for now
-        "LocationSuiteProp.scala",   // temporary skip for now
+        //"LocationFunctionSuiteProp.scala",   // temporary skip for now
         "TestLocationJUnit3Suite.scala",
         "TestLocationJUnitSuite.scala",
         "TestLocationTestNGSuite.scala",

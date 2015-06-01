@@ -133,10 +133,12 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -159,10 +161,12 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -178,7 +182,7 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 11
+    //SCALATESTJS-ONLY val stackDepth = 6
 
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceFileName, "feature"))

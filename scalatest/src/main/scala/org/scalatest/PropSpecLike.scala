@@ -118,7 +118,11 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def property(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", stackDepth, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -138,10 +142,12 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

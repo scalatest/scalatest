@@ -114,7 +114,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuite.scala", "test", stackDepth, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -133,7 +137,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuite.scala", "ignore", stackDepth, -3, None, testTags: _*)
   }
 
   /**

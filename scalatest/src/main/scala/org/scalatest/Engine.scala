@@ -664,7 +664,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
     if (atomic.get.testsMap.keySet.contains(testName))
       throw new DuplicateTestNameException(testName, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
-    
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)

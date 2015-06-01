@@ -123,10 +123,12 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -146,10 +148,12 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
