@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import scala.util.Try
+
 /**
  * Wrapper <code>Suite</code> that passes an instance of the config map to the constructor of the
  * wrapped <code>Suite</code> when <code>run</code> is invoked.
@@ -81,8 +83,16 @@ package org.scalatest
 final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
 
   private lazy val wrappedSuite = {
-    val constructor = clazz.getConstructor(classOf[Map[_, _]])
-    constructor.newInstance(Map.empty)
+    configMapConstructor.newInstance(ConfigMap.empty)
+  }
+
+  private lazy val configMapConstructor = {
+    Try {
+      clazz.getConstructor(classOf[ConfigMap])
+    } getOrElse {
+      // For backwards compatibility
+      clazz.getConstructor(classOf[Map[_, _]])
+    }
   }
 
   override def suiteId = clazz.getName
@@ -136,8 +146,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
    *     exists in the <code>Suite</code>
    */
   override def run(testName: Option[String], args: Args): Status = {
-    val constructor = clazz.getConstructor(classOf[Map[_, _]])
-    val suite = constructor.newInstance(args.configMap)
+    val suite = configMapConstructor.newInstance(args.configMap)
     suite.run(testName, args)
   }
 }
