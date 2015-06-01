@@ -129,9 +129,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, -3, None, None, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -156,9 +158,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, -3, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {

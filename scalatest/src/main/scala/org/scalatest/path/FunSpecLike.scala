@@ -146,9 +146,11 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
+      val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, -2, None, testTags: _*)
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     
     /**
@@ -347,10 +349,12 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, -2, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
   
   /**
@@ -369,15 +373,17 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   protected def describe(description: String)(fun: => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val errorStackDepth = 4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val errorStackDepth = 11
     try {
       handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => stackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
       case other: Throwable => throw other
     }
   }

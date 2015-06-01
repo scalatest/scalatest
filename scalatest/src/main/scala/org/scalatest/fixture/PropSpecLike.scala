@@ -127,7 +127,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
@@ -152,7 +152,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
     engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 

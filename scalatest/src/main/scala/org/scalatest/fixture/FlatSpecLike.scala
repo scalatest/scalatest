@@ -139,7 +139,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
 
     // TODO: This is what was being used before but it is wrong
     def testRegistrationClosedMessageFun: String =
@@ -2073,7 +2073,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 

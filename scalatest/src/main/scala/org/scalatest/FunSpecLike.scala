@@ -158,9 +158,11 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     def apply(specText: String, testTags: Tag*)(testFun: => Unit) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
+      val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
-      engine.registerTest(specText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, -2, None, None, None, testTags: _*)
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+      engine.registerTest(specText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
 
     /**
@@ -361,7 +363,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
@@ -374,15 +376,17 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def describe(description: String)(fun: => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val errorStackDepth = 4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val errorStackDepth = 11
     try {
       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => stackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => stackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
       case other: Throwable => throw other
     }
   }

@@ -120,9 +120,11 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
   protected def property(testName: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", stackDepth, -2, None, None, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -146,7 +148,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
