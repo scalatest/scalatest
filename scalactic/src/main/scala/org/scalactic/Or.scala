@@ -859,9 +859,9 @@ object Or {
    * <p>
    * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
    * into a type (this trait) which takes one parameter, and another (its type member) which
-   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
-   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.B[BAD]#G[GOOD]</code>.
-   * Leaving off the final <code>GOOD</code> type parameter yields a "type lambda," such as <code>Or.B[ErrorMessage]#G</code>.
+   * takes the other. For example, type <code>Or[G, B]</code> (which can be written in infix form
+   * as <code>G Or B</code>) can be expressed in curried form as <code>Or.BAD[B]#GOOD[G]</code>.
+   * Leaving off the final <code>G</code> type parameter yields a "type lambda," such as <code>Or.BAD[ErrorMessage]#GOOD</code>.
    * </p>
    *
    * <p>
@@ -875,8 +875,8 @@ object Or {
    * </pre>
    *
    * <p>
-   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>
-   * and can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>,
+   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
    * </p>
    *
    * <pre>
@@ -920,27 +920,25 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[Or.B[String]#G, Int](Good(3))
+   * scala&gt; example[Or.BAD[String]#GOOD, Int](Good(3))
    * res2: org.scalactic.Or[Int,String] = Good(3)
    * </pre>
    * 
    * <p>
-   * You can read <code>Or.B[String]#G</code> as: an <code>Or</code> with its "bad" type, <code>B</code>,
-   * fixed to <code>String</code> and its "good" type, <code>G</code>, left unspecified. The type constructors
-   * are named <code>G</code> and <code>B</code> after the names of the type parameters to <code>Or</code>,
-   * which is declared as <code>class Or[+G, +B]</code>.
+   * You can read <code>Or.BAD[String]#GOOD</code> as: an <code>Or</code> with its "bad" type
+   * fixed to <code>String</code> and its "good" type left unspecified.
    * </p>
    */
-  trait B[BAD] {
+  trait BAD[B] {
 
     /**
-     * Type member that provides a curried alias to  <code>GOOD</code><code>Or</code> <code>BAD</code>.
+     * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
      *
      * <p>
-     * See the main documentation for trait <code>B</code> for more detail.
+     * See the main documentation for trait <code>BAD</code> for more detail.
      * </p>
      */
-    type G[GOOD] = GOOD Or BAD
+    type GOOD[G] = G Or B
   }
 
   /**
@@ -949,9 +947,9 @@ object Or {
    * <p>
    * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
    * into a type (this trait) which takes one parameter, and another (its type member) which
-   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
-   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.G[GOOD]#B[BAD]</code>.
-   * Leaving off the final <code>BAD</code> type parameter yields a "type lambda," such as <code>Or.G[Int]#B</code>.
+   * takes the other. For example, type <code>Or[G, B]</code> (which can be written in infix form
+   * as <code>G Or B</code>) can be expressed in curried form as <code>Or.GOOD[G]#BAD[B]</code>.
+   * Leaving off the final <code>BAD</code> type parameter yields a "type lambda," such as <code>Or.GOOD[Int]#BAD</code>.
    * </p>
    *
    * <p>
@@ -965,8 +963,8 @@ object Or {
    * </pre>
    *
    * <p>
-   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>
-   * and can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
+   * Because <code>List</code> takes a single type parameter, it fits the shape of <code>Context</code>,
+   * it can be simply passed to <code>example</code>--<em>i.e.</em>, the compiler will infer <code>Context</code> as <code>List</code>:
    * </p>
    *
    * <pre>
@@ -1010,27 +1008,25 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[Or.G[Int]#B, String](Good(3))
+   * scala&gt; example[Or.GOOD[Int]#BAD, String](Good(3))
    * res15: org.scalactic.Or[Int,String] = Good(3)
    * </pre>
    * 
    * <p>
-   * You can read <code>Or.G[Int]#B</code> as: an <code>Or</code> with its "good" type, <code>G</code>,
-   * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified. The type constructors
-   * are named <code>G</code> and <code>B</code> after the names of the type parameters to <code>Or</code>,
-   * which is declared as <code>class Or[+G, +B]</code>.
+   * You can read <code>Or.GOOD[Int]#BAD</code> as: an <code>Or</code> with its "good" type 
+   * fixed to <code>Int</code> and its "bad" type left unspecified.
    * </p>
    */
-  trait G[GOOD] {
+  trait GOOD[G] {
 
     /**
-     * Type member that provides a curried alias to  <code>GOOD</code><code>Or</code> <code>BAD</code>.
+     * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
      *
      * <p>
-     * See the main documentation for trait <code>B</code> for more detail.
+     * See the main documentation for trait <code>GOOD</code> for more detail.
      * </p>
      */
-    type B[BAD] = GOOD Or BAD
+    type BAD[B] = G Or B
   }
 
   /**
