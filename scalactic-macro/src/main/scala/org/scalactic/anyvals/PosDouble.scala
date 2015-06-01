@@ -413,16 +413,104 @@ final class PosDouble private (val value: Double) extends AnyVal {
     value.to(end, step)
 }
 
+/** The companion object for <code>PosDouble</code> that offers
+  * factory methods that produce <code>PosDouble</code>s,
+  * implicit widening conversions from <code>PosDouble</code> to
+  * other numeric types, and maximum and minimum constant values
+  * for <code>PosDouble</code>.
+  */
 object PosDouble {
+  /** The largest value representable as a positive <code>Double</code>,
+    * which is <code>PosDouble(1.7976931348623157E308)</code>.
+    */
   final val MaxValue: PosDouble = PosDouble.from(Double.MaxValue).get
-  final val MinValue: PosDouble = PosDouble.from(1.0).get // Can't use the macro here
+
+  /** The smallest value representable as a positive
+    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
+    */
+  final val MinValue: PosDouble = PosDouble.from(Math.nextAfter(0.0, 1.0)).get // Can't use the macro here
+
+  /** A factory method that produces an <code>Option[PosDouble]</code> given a
+    * <code>Double</code> value.
+    *
+    * <p>
+    * This method will inspect the passed <code>Double</code> value and if
+    * it is a positive <code>Double</code>, <em>i.e.</em>, a value greater
+    * than 0.0, it will return a <code>PosDouble</code> representing that value,
+    * wrapped in a <code>Some</code>. Otherwise, the passed <code>Double</code>
+    * value is 0.0 or negative, so this method will return <code>None</code>.
+    * </p>
+    *
+    * <p>
+    * This factory method differs from the <code>apply</code>
+    * factory method in that <code>apply</code> is implemented
+    * via a macro that inspects <code>Double</code> literals at
+    * compile time, whereas <code>from</code> inspects
+    * <code>Double</code> values at run time.
+    * </p>
+    *
+    * @param value the <code>Double</code> to inspect, and if positive, return
+    *     wrapped in a <code>Some[PosDouble]</code>.
+    * @return the specified <code>Double</code> value wrapped in a
+    *     <code>Some[PosDouble]</code>, if it is positive, else
+    *     <code>None</code>.
+    */
   def from(value: Double): Option[PosDouble] =
     if (value > 0.0) Some(new PosDouble(value)) else None
+
   import language.experimental.macros
   import scala.language.implicitConversions
+
+  /** A factory method, implemented via a macro, that produces a
+    * <code>PosDouble</code> if passed a valid <code>Double</code>
+    * literal, otherwise a compile time error.
+    *
+    * <p>
+    * The macro that implements this method will inspect the
+    * specified <code>Double</code> expression at compile time. If
+    * the expression is a positive <code>Double</code> literal,
+    * <em>i.e.</em>, with a value greater than 0.0, it will return
+    * a <code>PosDouble</code> representing that value.  Otherwise,
+    * the passed <code>Double</code> expression is either a literal
+    * that is 0.0 or negative, or is not a literal, so this method
+    * will give a compiler error.
+    * </p>
+    *
+    * <p>
+    * This factory method differs from the <code>from</code>
+    * factory method in that this method is implemented via a
+    * macro that inspects <code>Double</code> literals at compile
+    * time, whereas <code>from</code> inspects <code>Double</code>
+    * values at run time.
+    * </p>
+    *
+    * @param value the <code>Double</code> literal expression to
+    *     inspect at compile time, and if positive, to return
+    *     wrapped in a <code>PosDouble</code> at run time.
+    * @return the specified, valid <code>Double</code> literal
+    *     value wrapped in a <code>PosDouble</code>. (If the
+    *     specified expression is not a valid <code>Double</code>
+    *     literal, the invocation of this method will not
+    *     compile.)
+    */
   implicit def apply(value: Double): PosDouble = macro PosDoubleMacro.apply
 
+  /** Implicit widening conversion from <code>PosDouble</code> to
+    * <code>Double</code>.
+    *
+    * @param pos the <code>PosDouble</code> to widen
+    * @return the <code>Double</code> value underlying the specified
+    *     <code>PosDouble</code>
+    */
   implicit def widenToDouble(pos: PosDouble): Double = pos.value
+
+  /** Implicit widening conversion from <code>PosDouble</code> to
+    * <code>PosZDouble</code>.
+    *
+    * @param pos the <code>PosDouble</code> to widen
+    * @return the <code>Double</code> value underlying the specified
+    *     <code>PosDouble</code> wrapped in a <code>PosZDouble</code>.
+    */
   implicit def widenToPosZDouble(pos: PosDouble): PosZDouble = PosZDouble.from(pos.value).get
 }
 
