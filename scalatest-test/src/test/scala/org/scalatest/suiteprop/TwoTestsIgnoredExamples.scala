@@ -49,6 +49,7 @@ class TwoTestsIgnoredExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
+  // SKIP-SCALATESTJS-START
   class SpecExample extends Spec with Services {
     @Ignore def `test first` = {}
     @Ignore def `test second` = {}
@@ -60,6 +61,7 @@ class TwoTestsIgnoredExamples extends SuiteExamples {
     @Ignore def `test second`(s: String) = {}
     override val theTestNames = Vector("test first", "test second")
   }
+  // SKIP-SCALATESTJS-END
 
   class FunSuiteExample extends FunSuite with Services {
     ignore("first test") {}
@@ -449,8 +451,10 @@ class TwoTestsIgnoredExamples extends SuiteExamples {
     ignore("second test") { s => }
   }
 
+  // SKIP-SCALATESTJS-START
   lazy val spec = new SpecExample
   lazy val fixtureSpec = new FixtureSpecExample
+  // SKIP-SCALATESTJS-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample
