@@ -481,7 +481,6 @@ object GenScalaTestJS {
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
-        "FuturesSpec.scala",      // temporary skipped, should refactor Futures.futureValue method and re-enable this.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors

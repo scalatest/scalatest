@@ -125,6 +125,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         caught.cause.value.getMessage should be ("oops")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture =
@@ -138,6 +139,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           vmeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
+      // SKIP-SCALATESTJS-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
@@ -307,6 +309,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
         caught.cause.value.getMessage should be ("oops")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture =
@@ -320,6 +323,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
           vmeFuture.futureValue
         }
       }
+      // SKIP-SCALATESTJS-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
