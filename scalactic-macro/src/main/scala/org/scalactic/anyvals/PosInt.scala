@@ -706,8 +706,6 @@ object PosInt {
    *
    * @param value the <code>Int</code> to inspect, and if positive, return
    *     wrapped in a <code>Some[PosInt]</code>.
-   * @return the <code>Int</code> value underlying the specified <code>PosInt</code>,
-   *     widened to <code>Long</code>.
    * @return the specified <code>Int</code> value wrapped
    *     in a <code>Some[PosInt]</code>, if it is positive, else <code>None</code>.
    */

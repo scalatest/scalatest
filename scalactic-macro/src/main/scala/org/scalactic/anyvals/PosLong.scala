@@ -715,22 +715,173 @@ final class PosLong private (val value: Long) extends AnyVal {
     value.to(end, step)
 }
 
+/**
+ * The companion object for <code>PosLong</code> that offers
+ * factory methods that produce <code>PosLong</code>s, implicit
+ * widening conversions from <code>PosLong</code> to other
+ * numeric types, and maximum and minimum constant values for
+ * <code>PosLong</code>.
+ */
 object PosLong {
+  /**
+   * The largest value representable as a positive
+   * <code>Long</code>, which is <code>PosLong(9223372036854775807)</code>.
+   */
   final val MaxValue: PosLong = PosLong.from(Long.MaxValue).get
+
+  /**
+   * The smallest value representable as a positive
+   * <code>Long</code>, which is <code>PosLong(1L)</code>.
+   */
   final val MinValue: PosLong = PosLong.from(1L).get // Can't use the macro here
+
+  /**
+   * A factory method that produces an <code>Option[PosLong]</code> given a
+   * <code>Long</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Long</code> value and if
+   * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+   * than 0, it will return a <code>PosLong</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed <code>Long</code>
+   * value is 0 or negative, so this method will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Long</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Long</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Long</code> to inspect, and if positive, return
+   *     wrapped in a <code>Some[PosLong]</code>.
+   * @return the specified <code>Long</code> value wrapped in a
+   *     <code>Some[PosLong]</code>, if it is positive, else
+   *     <code>None</code>.
+   */
   def from(value: Long): Option[PosLong] =
     if (value > 0L) Some(new PosLong(value)) else None
+
   import language.experimental.macros
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>PosLong</code> if passed a valid <code>Long</code>
+   * literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the
+   * specified <code>Long</code> expression at compile time. If
+   * the expression is a positive <code>Long</code> literal,
+   * <em>i.e.</em>, with a value greater than 0, it will return
+   * a <code>PosLong</code> representing that value.  Otherwise,
+   * the passed <code>Long</code> expression is either a literal
+   * that is 0 or negative, or is not a literal, so this method
+   * will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code>
+   * factory method in that this method is implemented via a
+   * macro that inspects <code>Long</code> literals at compile
+   * time, whereas <code>from</code> inspects <code>Long</code>
+   * values at run time.
+   * </p>
+   *
+   * @param value the <code>Long</code> literal expression to
+   *     inspect at compile time, and if positive, to return
+   *     wrapped in a <code>PosLong</code> at run time.
+   * @return the specified, valid <code>Long</code> literal
+   *     value wrapped in a <code>PosLong</code>. (If the
+   *     specified expression is not a valid <code>Long</code>
+   *     literal, the invocation of this method will not
+   *     compile.)
+   */
   implicit def apply(value: Long): PosLong = macro PosLongMacro.apply
 
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>Long</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>.
+   */
   implicit def widenToLong(pos: PosLong): Long = pos.value
+
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>Float</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Float</code>.
+   */
   implicit def widenToFloat(pos: PosLong): Float = pos.value
+
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>Double</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Double</code>.
+   */
   implicit def widenToDouble(pos: PosLong): Double = pos.value
 
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>PosFloat</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Float</code> and
+   *     wrapped in a <code>PosFloat</code>.
+   */
   implicit def widenToPosFloat(pos: PosLong): PosFloat = PosFloat.from(pos.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>PosDouble</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Double</code> and
+   *     wrapped in a <code>PosDouble</code>.
+   */
   implicit def widenToPosDouble(pos: PosLong): PosDouble = PosDouble.from(pos.value).get
 
+  /**
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>PosZLong</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code> wrapped in a <code>PosZLong</code>.
+   */
   implicit def widenToPosZLong(pos: PosLong): PosZLong = PosZLong.from(pos.value).get
+
+  /** 
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>PosZFloat</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Float</code> and
+   *     wrapped in a <code>PosZFloat</code>.
+   */
   implicit def widenToPosZFloat(pos: PosLong): PosZFloat = PosZFloat.from(pos.value).get
+
+  /** 
+   * Implicit widening conversion from <code>PosLong</code> to
+   * <code>PosZDouble</code>.
+   *
+   * @param pos the <code>PosLong</code> to widen
+   * @return the <code>Long</code> value underlying the specified
+   *     <code>PosLong</code>, widened to <code>Double</code> and
+   *     wrapped in a <code>PosZDouble</code>.
+   */
   implicit def widenToPosZDouble(pos: PosLong): PosZDouble = PosZDouble.from(pos.value).get
 }

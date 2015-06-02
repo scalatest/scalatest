@@ -673,21 +673,164 @@ final class PosZInt private (val value: Int) extends AnyVal {
   def min(that: PosZInt): PosZInt = if (math.min(value, that.value) == value) this else that
 }
 
+/**
+ * The companion object for <code>PosZInt</code> that offers
+ * factory methods that produce <code>PosZInt</code>s, implicit
+ * widening conversions from <code>PosZInt</code> to other
+ * numeric types, and maximum and minimum constant values for
+ * <code>PosZInt</code>.
+ */
 object PosZInt {
+  /**
+   * The largest value representable as a non-negative <code>Int</code>,
+   * which is <code>PosZInt(2147483647)</code>.
+   */
   final val MaxValue: PosZInt = PosZInt.from(Int.MaxValue).get
+
+  /**
+   * The smallest value representable as a non-negative <code>Int</code>,
+   * which is <code>PosZInt(0)</code>.
+   */
   final val MinValue: PosZInt = PosZInt.from(0).get // Can't use the macro here
+
+  /**
+   * A factory method that produces an <code>Option[PosZInt]</code> given an
+   * <code>Int</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value
+   * and if it is a non-negative <code>Int</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZInt</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed
+   * <code>Int</code> value is negative, so this method
+   * will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Int</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if non-negative, return
+   *     wrapped in a <code>Some[PosZInt]</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Some[PosZInt]</code>, if it is positive, else
+   *     <code>None</code>.
+   */
   def from(value: Int): Option[PosZInt] =
     if (value >= 0) Some(new PosZInt(value)) else None
+
   import language.experimental.macros
   import scala.language.implicitConversions
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>PosZInt</code> if passed a valid <code>Int</code>
+   * literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the
+   * specified <code>Int</code> expression at compile time. If
+   * the expression is a non-negative <code>Int</code> literal,
+   * <em>i.e.</em>, with a value greater than or equal to 0, it will return
+   * a <code>PosZInt</code> representing that value.  Otherwise,
+   * the passed <code>Int</code> expression is either a literal
+   * that is negative, or is not a literal, so this method
+   * will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code>
+   * factory method in that this method is implemented via a
+   * macro that inspects <code>Int</code> literals at compile
+   * time, whereas <code>from</code> inspects <code>Int</code>
+   * values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> literal expression to inspect at
+   *     compile time, and if non-negative, to return wrapped in a
+   *     <code>PosZInt</code> at run time.
+   * @return the specified, valid <code>Int</code> literal value wrapped
+   *     in a <code>PosZInt</code>. (If the specified expression is not a valid
+   *     <code>Int</code> literal, the invocation of this method will not
+   *     compile.)
+   */
   implicit def apply(value: Int): PosZInt = macro PosZIntMacro.apply
 
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>Int</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>.
+   */
   implicit def widenToInt(poz: PosZInt): Int = poz.value
+
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>Long</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Long</code>.
+   */
   implicit def widenToLong(poz: PosZInt): Long = poz.value
+
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>Float</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Float</code>.
+   */
   implicit def widenToFloat(poz: PosZInt): Float = poz.value
+
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>Double</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Double</code>.
+   */
   implicit def widenToDouble(poz: PosZInt): Double = poz.value
 
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>PosZLong</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Long</code> and
+   *     wrapped in a <code>PosZLong</code>.
+   */
   implicit def widenToPosZLong(poz: PosZInt): PosZLong = PosZLong.from(poz.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>PosZFloat</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Float</code> and
+   *     wrapped in a <code>PosZFloat</code>.
+   */
   implicit def widenToPosZFloat(poz: PosZInt): PosZFloat = PosZFloat.from(poz.value).get
+
+  /**
+   * Implicit widening conversion from <code>PosZInt</code> to
+   * <code>PosZDouble</code>.
+   *
+   * @param pos the <code>PosZInt</code> to widen
+   * @return the <code>Int</code> value underlying the specified
+   *     <code>PosZInt</code>, widened to <code>Double</code>
+   *     and wrapped in a <code>PosZDouble</code>.
+   */
   implicit def widenToPosZDouble(poz: PosZInt): PosZDouble = PosZDouble.from(poz.value).get
 }
