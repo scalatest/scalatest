@@ -511,7 +511,12 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty)
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools",
+      List(
+        "SuiteSortingReporterSpec.scala",
+        "TestSortingReporterSpec.scala"
+      ), targetDir)
   }
 
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
