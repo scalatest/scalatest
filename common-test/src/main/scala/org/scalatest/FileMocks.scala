@@ -20,6 +20,7 @@ trait FileMocks {
   class FileMock {
     def file: Boolean = true
     def directory: Boolean = false
+    def exists: Boolean = true
     override def toString = "FileMock"
   }
   val fileMock = new FileMock
@@ -27,6 +28,7 @@ trait FileMocks {
   class NotFileMock {
     def file: Boolean = false
     def directory: Boolean = true
+    def exists: Boolean = true
     override def toString = "NotFileMock"
   }
   val notFileMock = new NotFileMock
@@ -34,6 +36,7 @@ trait FileMocks {
   class IsFileMock {
     def isFile: Boolean = true
     def isDirectory: Boolean = false
+    def exists: Boolean = true
     override def toString = "IsFileMock"
   }
   val isFileMock = new IsFileMock
@@ -41,6 +44,7 @@ trait FileMocks {
   class IsNotFileMock {
     def isFile: Boolean = false
     def isDirectory: Boolean = true
+    def exists: Boolean = true
     override def toString = "IsNotFileMock"
   }
   val isNotFileMock = new IsNotFileMock
@@ -49,4 +53,11 @@ trait FileMocks {
     override def toString = "NoPredicateMock"
   }
   val noPredicateMock = new NoPredicateMock
+
+  class NotExistFile {
+    def isFile: Boolean = false
+    def isDirectory: Boolean = false
+    def exists: Boolean = false
+    override def toString = "NotExistFile"
+  }
 }

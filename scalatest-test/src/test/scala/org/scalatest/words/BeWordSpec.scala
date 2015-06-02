@@ -224,7 +224,8 @@ class BeWordSpec extends FunSpec with FileMocks {
     describe("=== method fails") {
       intercept[NotAllowedException] { val mt = be === "cheese" }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("a(Symbol) method returns Matcher") {
       val mt = be a ('file)
       
@@ -270,6 +271,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("a(BePropertyMatcher) method returns Matcher") {
       
@@ -387,7 +389,8 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("an(Symbol) method returns Matcher") {
       val mt = be an ('file)
       
@@ -433,6 +436,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("an(BePropertyMatcher) method returns Matcher") {
       
@@ -563,10 +567,10 @@ class BeWordSpec extends FunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe "7.0 was not 7.1 plus or minus 0.2"
-        mr.negatedFailureMessage shouldBe "7.0 was 7.1 plus or minus 0.2"
-        mr.midSentenceFailureMessage shouldBe "7.0 was not 7.1 plus or minus 0.2"
-        mr.midSentenceNegatedFailureMessage shouldBe "7.0 was 7.1 plus or minus 0.2"
+        mr.failureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        mr.negatedFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        mr.midSentenceFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        mr.midSentenceNegatedFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
         mr.rawFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
         mr.rawNegatedFailureMessage shouldBe "{0} was {1} plus or minus {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
@@ -582,10 +586,10 @@ class BeWordSpec extends FunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe "7.0 was 7.1 plus or minus 0.2"
-        nmr.negatedFailureMessage shouldBe "7.0 was not 7.1 plus or minus 0.2"
-        nmr.midSentenceFailureMessage shouldBe "7.0 was 7.1 plus or minus 0.2"
-        nmr.midSentenceNegatedFailureMessage shouldBe "7.0 was not 7.1 plus or minus 0.2"
+        nmr.failureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        nmr.negatedFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        nmr.midSentenceFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        nmr.midSentenceNegatedFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
         nmr.rawFailureMessage shouldBe "{0} was {1} plus or minus {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was {1} plus or minus {2}"
@@ -746,7 +750,8 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("apply(Symbol) method returns Matcher") {
       val mt = be ('file)
       
@@ -792,6 +797,7 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("apply(BeMatcher) method returns Matcher") {
       class OddMatcher extends BeMatcher[Int] {

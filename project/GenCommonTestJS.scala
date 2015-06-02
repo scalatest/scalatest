@@ -74,7 +74,8 @@ object GenCommonTestJS {
         "LineNumberHelper.scala",
         "ReturnsNormallyThrowsAssertion.scala",
         "BookPropertyMatchers.scala",
-        "EmptyMocks.scala"
+        "EmptyMocks.scala",
+        "FileMocks.scala"
       ), targetDir) ++
     copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List("ExampleLikeSpecs.scala"), targetDir)

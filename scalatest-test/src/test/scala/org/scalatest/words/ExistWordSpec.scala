@@ -17,26 +17,30 @@ package org.scalatest.words
 
 import org.scalatest._
 import SharedHelpers.createTempDirectory
-import java.io.File
 
-class ExistWordSpec extends FunSpec with Matchers {
+import org.scalatest.enablers.Existence
+
+class ExistWordSpec extends FunSpec with Matchers with FileMocks {
   
   describe("ExistWord ") {
     
     val existWord = new ExistWord
     
     describe("matcherFactory produces Matcher that") {
-      
+
+      implicit val fileMockExistence: Existence[FileMock] = new Existence[FileMock] {
+        def exists(thing: FileMock): Boolean = thing.exists
+      }
+
       val mtf = existWord.matcherFactory
-      val mt = mtf.matcher[File]
+      val mt = mtf.matcher[FileMock]
       
       it("should have pretty toString") {
         mtf.toString should be ("exist")
         mt.toString should be ("exist")
       }
-      
-      val tempDir = createTempDirectory()
-      val lhs = File.createTempFile("delete", "me", tempDir)
+
+      val lhs = new FileMock
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
