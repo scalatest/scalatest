@@ -325,7 +325,8 @@ class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
       checkScopeClosed(recordedEvents(114), "Thing 2")
       checkSuiteCompleted(recordedEvents(115), "org.scalatest.RunInSpurtsSpec2")
     }
-    
+
+    // SKIP-SCALATESTJS-START
     it("should fire blocking suite's events when timeout, and just fire the missing event directly without waiting when received later.") {
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new SuiteSortingReporter(recordingReporter, Span(1, Second), new PrintStream(new ByteArrayOutputStream))
@@ -356,5 +357,6 @@ class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
       // Now this guy finally arrive
       checkSuiteCompleted(recordedEvents(7), "suite1")
     }
+    // SKIP-SCALATESTJS-END
   }
 }

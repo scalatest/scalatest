@@ -481,7 +481,6 @@ object GenScalaTestJS {
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
-        "FuturesSpec.scala",      // temporary skipped, should refactor Futures.futureValue method and re-enable this.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
@@ -492,7 +491,6 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
-        //"LocationFunctionSuiteProp.scala",   // temporary skip for now
         "TestLocationJUnit3Suite.scala",
         "TestLocationJUnitSuite.scala",
         "TestLocationTestNGSuite.scala",
@@ -509,16 +507,15 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty)/* ++
-    copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
-        "ResultOfAllElementsOfApplicationSpec.scala",
-        "ResultOfAtLeastOneElementOfApplicationSpec.scala",
-        "ResultOfNoElementsOfApplicationSpec.scala",
-        "ResultOfOneElementOfApplicationSpec.scala"
-      ), targetDir)*/
+        "SuiteSortingReporterSpec.scala",
+        "TestSortingReporterSpec.scala"
+      ), targetDir)
   }
 
   def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {

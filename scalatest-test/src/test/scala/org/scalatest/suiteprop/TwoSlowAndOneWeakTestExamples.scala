@@ -49,6 +49,7 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
+  // SKIP-SCALATESTJS-START
   class SpecExample extends Spec with Services {
     @SlowAsMolasses @WeakAsAKitten def `test first` = {}
     @SlowAsMolasses def `test second` = {}
@@ -60,6 +61,7 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
     @SlowAsMolasses def `test second`(s: String) = {}
     override val theTestNames = Vector("test first", "test second")
   }
+  // SKIP-SCALATESTJS-END
 
   class FunSuiteExample extends FunSuite with Services {
     test("first test", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
@@ -449,8 +451,10 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
     property("second test", mytags.SlowAsMolasses) { s => }
   }
 
+  // SKIP-SCALATESTJS-START
   lazy val spec = new SpecExample
   lazy val fixtureSpec = new FixtureSpecExample
+  // SKIP-SCALATESTJS-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample
