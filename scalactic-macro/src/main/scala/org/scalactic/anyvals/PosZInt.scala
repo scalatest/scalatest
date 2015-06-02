@@ -686,6 +686,7 @@ object PosZInt {
    * which is <code>PosZInt(2147483647)</code>.
    */
   final val MaxValue: PosZInt = PosZInt.from(Int.MaxValue).get
+
   /**
    * The smallest value representable as a non-negative <code>Int</code>,
    * which is <code>PosZInt(0)</code>.

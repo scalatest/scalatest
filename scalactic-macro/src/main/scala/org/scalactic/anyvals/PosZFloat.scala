@@ -405,18 +405,124 @@ final class PosZFloat private (val value: Float) extends AnyVal {
     value.to(end, step)
 }
 
+/**
+ * The companion object for <code>PosZFloat</code> that offers
+ * factory methods that produce <code>PosZFloat</code>s, implicit
+ * widening conversions from <code>PosZFloat</code> to other
+ * numeric types, and maximum and minimum constant values for
+ * <code>PosZFloat</code>.
+ */
 object PosZFloat {
+  /**
+   * The largest value representable as a non-negative <code>Float</code>,
+   * which is <code>PosZFloat(3.4028235E38)</code>.
+   */
   final val MaxValue: PosZFloat = PosZFloat.from(Float.MaxValue).get
+
+  /**
+   * The smallest value representable as a non-negative <code>Float</code>,
+   * which is <code>PosZFloat(0.0F)</code>.
+   */
   final val MinValue: PosZFloat = PosZFloat.from(0.0f).get // Can't use the macro here
+
+  /**
+   * A factory method that produces an <code>Option[PosZFloat]</code> given a
+   * <code>Float</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Float</code> value
+   * and if it is a non-negative <code>Float</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZFloat</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed
+   * <code>Float</code> value is negative, so this method
+   * will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Float</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Float</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> to inspect, and if non-negative, return
+   *     wrapped in a <code>Some[PosZFloat]</code>.
+   * @return the specified <code>Float</code> value wrapped
+   *     in a <code>Some[PosZFloat]</code>, if it is positive, else
+   *     <code>None</code>.
+   */
   def from(value: Float): Option[PosZFloat] =
     if (value >= 0.0F) Some(new PosZFloat(value)) else None
+
   import language.experimental.macros
   import scala.language.implicitConversions
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>PosZFloat</code> if passed a valid <code>Float</code>
+   * literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the
+   * specified <code>Float</code> expression at compile time. If
+   * the expression is a non-negative <code>Float</code> literal,
+   * <em>i.e.</em>, with a value greater than or equal to 0, it will return
+   * a <code>PosZFloat</code> representing that value.  Otherwise,
+   * the passed <code>Float</code> expression is either a literal
+   * that is negative, or is not a literal, so this method
+   * will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code>
+   * factory method in that this method is implemented via a
+   * macro that inspects <code>Float</code> literals at compile
+   * time, whereas <code>from</code> inspects <code>Float</code>
+   * values at run time.
+   * </p>
+   *
+   * @param value the <code>Float</code> literal expression to inspect at
+   *     compile time, and if non-negative, to return wrapped in a
+   *     <code>PosZFloat</code> at run time.
+   * @return the specified, valid <code>Float</code> literal
+   *     value wrapped in a <code>PosZFloat</code>. (If the
+   *     specified expression is not a valid <code>Float</code>
+   *     literal, the invocation of this method will not
+   *     compile.)
+   */
   implicit def apply(value: Float): PosZFloat = macro PosZFloatMacro.apply
 
+  /**
+   * Implicit widening conversion from <code>PosZFloat</code> to
+   * <code>Float</code>.
+   *
+   * @param pos the <code>PosZFloat</code> to widen
+   * @return the <code>Float</code> value underlying the specified
+   *     <code>PosZFloat</code>.
+   */
   implicit def widenToFloat(poz: PosZFloat): Float = poz.value
+
+  /**
+   * Implicit widening conversion from <code>PosZFloat</code> to
+   * <code>Double</code>.
+   *
+   * @param pos the <code>PosZFloat</code> to widen
+   * @return the <code>Float</code> value underlying the specified
+   *     <code>PosZFloat</code>, widened to <code>Double</code>.
+   */
   implicit def widenToDouble(poz: PosZFloat): Double = poz.value
 
+  /**
+   * Implicit widening conversion from <code>PosZFloat</code> to
+   * <code>PosZDouble</code>.
+   *
+   * @param pos the <code>PosZFloat</code> to widen
+   * @return the <code>Float</code> value underlying the specified
+   *     <code>PosZFloat</code>, widened to <code>Double</code>
+   *     and wrapped in a <code>PosZDouble</code>.
+   */
   implicit def widenToPosZDouble(poz: PosZFloat): PosZDouble = PosZDouble.from(poz.value).get
 }
 
