@@ -39,7 +39,18 @@ trait GenMustMatchersTestsBase {
     temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
-  def genTest(targetBaseDir: File, version: String, scalaVersion: String) {
+  def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean) {
+
+    val scalaJSSkipList =
+      List(
+        "ShouldBeAnSymbolSpec.scala",    // skipped because depends on java reflections
+        "ShouldBeASymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldBeSymbolSpec.scala",       // skipped because depends on java reflections.
+        "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
+        "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
+        "ShouldSameInstanceAsSpec.scala"     // skipped because identical string in js env is always the same instance.
+      )
+
     val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
     val matchersDir = new File(targetBaseDir, "matchers")
     matchersDir.mkdirs()
@@ -48,8 +59,30 @@ trait GenMustMatchersTestsBase {
       val writer = new BufferedWriter(new FileWriter(mustFile))
       try {
         val shouldLines = Source.fromFile(shouldFile).getLines().toList // for 2.8
+        var skipMode = false
         for (shouldLine <- shouldLines) {
-          val mustLine = translateShouldToMustInTests(shouldLine)
+          val mustLine: String =
+            if (scalaJS) {
+              if (shouldLine.trim == "// SKIP-SCALATESTJS-START") {
+                skipMode = true
+                ""
+              }
+              else if (shouldLine.trim == "// SKIP-SCALATESTJS-END") {
+                skipMode = false
+                ""
+              }
+              else if (!skipMode) {
+                if (shouldLine.trim.startsWith("//SCALATESTJS-ONLY "))
+                  translateShouldToMustInTests(shouldLine.substring(shouldLine.indexOf("//SCALATESTJS-ONLY ") + 19))
+                else
+                  translateShouldToMustInTests(shouldLine)
+              }
+              else
+                ""
+            }
+            else
+              translateShouldToMustInTests(shouldLine)
+
           writer.write(mustLine.toString)
           writer.newLine() // add for 2.8
         }
@@ -65,10 +98,12 @@ trait GenMustMatchersTestsBase {
       if (includeFile(shouldFile)) {
         val shouldFileName = shouldFile.getName
 
-        val mustFileName = shouldFileName.replace("Should", "Must")
+        if (!scalaJS || !scalaJSSkipList.contains(shouldFileName)) {
+          val mustFileName = shouldFileName.replace("Should", "Must")
 
-        val mustFile = new File(targetBaseDir, mustFileName)
-        transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+          val mustFile = new File(targetBaseDir, mustFileName)
+          transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+        }
       }
     }
 
@@ -78,15 +113,33 @@ trait GenMustMatchersTestsBase {
       if (includeFile(shouldFile)) {
         val shouldFileName = shouldFile.getName
 
-        val mustFileName = shouldFileName.replace("Should", "Must")
+        if (!scalaJS || !scalaJSSkipList.contains(shouldFileName)) {
+          val mustFileName = shouldFileName.replace("Should", "Must")
 
-        val mustMatchersFile = new File(matchersDir, mustFileName)
-        transformFile(new File(matchersSourceDir, shouldFileName), mustMatchersFile)
+          val mustMatchersFile = new File(matchersDir, mustFileName)
+          transformFile(new File(matchersSourceDir, shouldFileName), mustMatchersFile)
+        }
       }
     }
   }
 
+  def genTest(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
+    genTestImpl(targetBaseDir, version, scalaVersion, false)
+  }
+
+  def genTestForScalaJS(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
+    genTestImpl(targetBaseDir, version, scalaVersion, true)
+  }
+
   def includeFile(file: File): Boolean
+
+}
+
+object GenMustMatchersTests extends GenMustMatchersTestsBase {
+
+  def includeFile(file: File): Boolean =
+    file.isFile &&
+    (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould"))
 
 }
 
