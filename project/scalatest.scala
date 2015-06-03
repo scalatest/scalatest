@@ -305,6 +305,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
+      moduleName := "scalactic",
       sourceGenerators in Compile += {
         Def.task {
           GenScalacticJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
@@ -354,6 +355,7 @@ object ScalatestBuild extends Build {
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
+     moduleName := "scalatest",
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -610,6 +612,7 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest All",
       name := "scalatest-all",
       organization := "org.scalatest",
+      moduleName := "scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
