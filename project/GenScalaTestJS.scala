@@ -401,7 +401,8 @@ object GenScalaTestJS {
         "Configuration.scala", 
         "Randomizer.scala",
         "Edges.scala", 
-        "Whenever.scala"
+        "Whenever.scala",
+        "PropertyChecks.scala"
       ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
       List(
