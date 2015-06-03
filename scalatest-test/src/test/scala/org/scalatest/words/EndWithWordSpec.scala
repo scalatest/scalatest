@@ -37,41 +37,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       val mr = mt("Programmer")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"Programmer\" did not end with substring \"er\""),
-          'negatedFailureMessage ("\"Programmer\" ended with substring \"er\""),
-          'midSentenceFailureMessage ("\"Programmer\" did not end with substring \"er\""),
-          'midSentenceNegatedFailureMessage ("\"Programmer\" ended with substring \"er\""),
-          'rawFailureMessage ("{0} did not end with substring {1}"),
-          'rawNegatedFailureMessage ("{0} ended with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not end with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with substring {1}"),
-          'failureMessageArgs(Vector("Programmer", "er")),
-          'negatedFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "\"Programmer\" did not end with substring \"er\""
+        mr.negatedFailureMessage shouldBe "\"Programmer\" ended with substring \"er\""
+        mr.midSentenceFailureMessage shouldBe "\"Programmer\" did not end with substring \"er\""
+        mr.midSentenceNegatedFailureMessage shouldBe "\"Programmer\" ended with substring \"er\""
+        mr.rawFailureMessage shouldBe "{0} did not end with substring {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} ended with substring {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not end with substring {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with substring {1}"
+        mr.failureMessageArgs shouldBe Vector("Programmer", "er")
+        mr.negatedFailureMessageArgs shouldBe Vector("Programmer", "er")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("Programmer", "er")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("Programmer", "er")
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"Programmer\" ended with substring \"er\""),
-          'negatedFailureMessage ("\"Programmer\" did not end with substring \"er\""),
-          'midSentenceFailureMessage ("\"Programmer\" ended with substring \"er\""),
-          'midSentenceNegatedFailureMessage ("\"Programmer\" did not end with substring \"er\""),
-          'rawFailureMessage ("{0} ended with substring {1}"),
-          'rawNegatedFailureMessage ("{0} did not end with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} ended with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not end with substring {1}"),
-          'failureMessageArgs(Vector("Programmer", "er")),
-          'negatedFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"Programmer\" ended with substring \"er\""
+        nmr.negatedFailureMessage shouldBe "\"Programmer\" did not end with substring \"er\""
+        nmr.midSentenceFailureMessage shouldBe "\"Programmer\" ended with substring \"er\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"Programmer\" did not end with substring \"er\""
+        nmr.rawFailureMessage shouldBe "{0} ended with substring {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not end with substring {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with substring {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with substring {1}"
+        nmr.failureMessageArgs shouldBe Vector("Programmer", "er")
+        nmr.negatedFailureMessageArgs shouldBe Vector("Programmer", "er")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("Programmer", "er")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("Programmer", "er")
+
       }
     }
     
@@ -87,41 +85,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       val mr = mt("b2.7")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
     }
     
@@ -137,41 +133,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       val mr = mt("b2.7")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
     }
     
@@ -190,41 +184,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       "when apply with \"abbc\"" - {
       
         "should have correct MatcherResult" in {
-          mr1 should have (
-            'matches (true),
-            'failureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'negatedFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'midSentenceFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
-          )
+          mr1.matches shouldBe true
+          mr1.failureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          mr1.negatedFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          mr1.midSentenceFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          mr1.midSentenceNegatedFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          mr1.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          mr1.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          mr1.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          mr1.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          mr1.failureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          mr1.negatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          mr1.midSentenceFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          mr1.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+
         }
       
         val nmr = mr1.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (false),
-            'failureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'negatedFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'midSentenceFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb")))    
-          )
+          nmr.matches shouldBe false
+          nmr.failureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          nmr.negatedFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          nmr.midSentenceFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.failureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+
         }
         
       }
@@ -235,42 +227,52 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           
         "should have correct MatcherResult" in {
             
-          mr2 should have (
-            'matches (false),
-            'failureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'negatedFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'midSentenceFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
-          )
+          mr2.matches shouldBe false
+            
+          mr2.failureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+            
+          mr2.negatedFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+            
+          mr2.midSentenceFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+            
+          mr2.midSentenceNegatedFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+            
+          mr2.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+            
+          mr2.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+            
+          mr2.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+            
+          mr2.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+            
+          mr2.failureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+            
+          mr2.negatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+            
+          mr2.midSentenceFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+            
+          mr2.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+
             
         }
           
         val nmr = mr2.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (true),
-            'failureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'negatedFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'midSentenceFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"),
-            'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb")))    
-          )
+          nmr.matches shouldBe true
+          nmr.failureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          nmr.negatedFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+          nmr.midSentenceFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+          nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.failureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+
         }
           
       }
@@ -280,41 +282,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       "when apply with \"ABBC\"" - {
         
         "should have correct MatcherResult" in {
-          mr3 should have (
-            'matches (false),
-            'failureMessage ("\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"),
-            'negatedFailureMessage ("\"ABBC\" ended with a substring that matched the regular expression a(b*)c"),
-            'midSentenceFailureMessage ("\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"),
-            'midSentenceNegatedFailureMessage ("\"ABBC\" ended with a substring that matched the regular expression a(b*)c"),
-            'rawFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-            'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-            'rawMidSentenceFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-            'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
-          )
+          mr3.matches shouldBe false
+          mr3.failureMessage shouldBe "\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"
+          mr3.negatedFailureMessage shouldBe "\"ABBC\" ended with a substring that matched the regular expression a(b*)c"
+          mr3.midSentenceFailureMessage shouldBe "\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"
+          mr3.midSentenceNegatedFailureMessage shouldBe "\"ABBC\" ended with a substring that matched the regular expression a(b*)c"
+          mr3.rawFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+          mr3.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+          mr3.rawMidSentenceFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+          mr3.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+          mr3.failureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.negatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.midSentenceFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.midSentenceNegatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+
         }
         
         val nmr = mr3.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (true),
-            'failureMessage ("\"ABBC\" ended with a substring that matched the regular expression a(b*)c"),
-            'negatedFailureMessage ("\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"),
-            'midSentenceFailureMessage ("\"ABBC\" ended with a substring that matched the regular expression a(b*)c"),
-            'midSentenceNegatedFailureMessage ("\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"),
-            'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-            'rawNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-            'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-            'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
-          )
+          nmr.matches shouldBe true
+          nmr.failureMessage shouldBe "\"ABBC\" ended with a substring that matched the regular expression a(b*)c"
+          nmr.negatedFailureMessage shouldBe "\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"
+          nmr.midSentenceFailureMessage shouldBe "\"ABBC\" ended with a substring that matched the regular expression a(b*)c"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"
+          nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+          nmr.failureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+
         }
       }
     }
@@ -332,41 +332,39 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
       val mr = mt("abbccc")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'negatedFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"),
-          'midSentenceFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'midSentenceNegatedFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"),
-          'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-          'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-          'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        mr.negatedFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"
+        mr.midSentenceFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        mr.midSentenceNegatedFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"
+        mr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        mr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+        mr.failureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        mr.negatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"),
-          'negatedFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'midSentenceFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"),
-          'midSentenceNegatedFailureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-          'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1} and group {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"
+        nmr.negatedFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        nmr.midSentenceFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        nmr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1} and group {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        nmr.failureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        nmr.negatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+
       }
     }
   }

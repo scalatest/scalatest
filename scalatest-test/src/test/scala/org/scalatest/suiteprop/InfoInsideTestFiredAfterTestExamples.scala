@@ -51,6 +51,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
   type FixtureServices = Services
 
+  // SKIP-SCALATESTJS-START
   class SpecExample extends Spec with Services  {
     def `test method` = {
       info(msg)
@@ -64,6 +65,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     }
     override val theTestName = "testMethod(FixtureParam, Informer)"
   }
+  // SKIP-SCALATESTJS-END
 
   class FunSuiteExample extends FunSuite with Services {
     test(theTestName) {
@@ -129,6 +131,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     it(theTestName) {
       info(msg)
     }
+    //SCALATESTJS-ONLY override def newInstance = new PathFunSpecExample
   }
     
   class NestedPathFunSpecExample extends path.FunSpec with NestedTestName {
@@ -137,6 +140,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         info(msg)
       }
     }
+    //SCALATESTJS-ONLY override def newInstance = new NestedPathFunSpecExample
   }
 
   class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestName {
@@ -147,6 +151,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         }
       }
     }
+    //SCALATESTJS-ONLY override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
   class WordSpecExample extends WordSpec with Services {
@@ -438,6 +443,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "test name" in {
       info(msg)
     }
+    //SCALATESTJS-ONLY override def newInstance = new PathFreeSpecExample
   }
     
   class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestName {
@@ -446,6 +452,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         info(msg)
       }
     }
+    //SCALATESTJS-ONLY override def newInstance = new NestedPathFreeSpecExample
   }
 
   class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestName {
@@ -456,6 +463,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
         }
       }
     }
+    //SCALATESTJS-ONLY override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
@@ -502,8 +510,10 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     }
   }
 
+  // SKIP-SCALATESTJS-START
   lazy val spec = new SpecExample
   lazy val fixtureSpec = new FixtureSpecExample
+  // SKIP-SCALATESTJS-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample
   lazy val funSpec = new FunSpecExample

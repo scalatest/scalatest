@@ -16,6 +16,8 @@
 package org.scalatest
 package exceptions
 
+import SharedHelpers.thisLineNumber
+
 class TestFailedExceptionSpec extends FunSpec with Matchers {
 
   describe("The TestFailedException") {
@@ -269,22 +271,6 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       val tfe = new TestFailedException(Some("doody"), None, 3)
       assert(tfe equals tfe)
     }
-  }
-  
-  //
-  // Returns the line number from which this method was called.
-  //
-  // Found that on some machines it was in the third element in the stack
-  // trace, and on others it was the fourth, so here we check the method
-  // name of the third element to decide which of the two to return.
-  //
-  private def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNum"))
-      st(2).getLineNumber
-    else
-      st(3).getLineNumber
   }
 }
  

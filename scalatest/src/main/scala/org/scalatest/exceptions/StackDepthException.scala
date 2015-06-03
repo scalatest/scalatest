@@ -34,17 +34,17 @@ abstract class StackDepthException(
   val messageFun: StackDepthException => Option[String],
   val cause: Option[Throwable],
   val failedCodeStackDepthFun: StackDepthException => Int
-) extends RuntimeException(if (cause.isDefined) cause.get else null) with StackDepth {
+) extends RuntimeException(if (cause != null && cause.isDefined) cause.get else null) with StackDepth {
 
-  if (messageFun == null) throw new NullPointerException("messageFun was null")
+  if (messageFun == null) throw new IllegalArgumentException("messageFun was null")
 
-  if (cause == null) throw new NullPointerException("cause was null")
+  if (cause == null) throw new IllegalArgumentException("cause was null")
   cause match {
-    case Some(null) => throw new NullPointerException("cause was a Some(null)")
+    case Some(null) => throw new IllegalArgumentException("cause was a Some(null)")
     case _ =>
   }
 
-  if (failedCodeStackDepthFun == null) throw new NullPointerException("failedCodeStackDepthFun was null")
+  if (failedCodeStackDepthFun == null) throw new IllegalArgumentException("failedCodeStackDepthFun was null")
 
   /**
    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
@@ -59,8 +59,8 @@ abstract class StackDepthException(
   def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
     this(
       message match {
-        case null => throw new NullPointerException("message was null")
-        case Some(null) => throw new NullPointerException("message was a Some(null)")
+        case null => throw new IllegalArgumentException("message was null")
+        case Some(null) => throw new IllegalArgumentException("message was a Some(null)")
         case _ => (e: StackDepthException) => message
       },
       cause,
@@ -81,8 +81,8 @@ abstract class StackDepthException(
   def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepth: Int) =
     this(
       message match {
-        case null => throw new NullPointerException("message was null")
-        case Some(null) => throw new NullPointerException("message was a Some(null)")
+        case null => throw new IllegalArgumentException("message was null")
+        case Some(null) => throw new IllegalArgumentException("message was a Some(null)")
         case _ => (e: StackDepthException) => message
       },
       cause,
@@ -173,8 +173,8 @@ private[scalatest] object StackDepthException {
    */
   def toExceptionFunction(message: Option[String]): StackDepthException => Option[String] = {
     message match {
-        case null => throw new NullPointerException("message was null")
-        case Some(null) => throw new NullPointerException("message was a Some(null)")
+        case null => throw new IllegalArgumentException("message was null")
+        case Some(null) => throw new IllegalArgumentException("message was a Some(null)")
         case _ => { e => message }
     }
   }

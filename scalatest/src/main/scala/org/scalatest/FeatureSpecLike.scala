@@ -129,7 +129,13 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun _), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -152,10 +158,12 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
+    val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun _), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
   
   /**
@@ -168,20 +176,24 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
+    val stackDepthAdjustment = -2
+    val scopeErrorStackDepth = 4
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 11
+    //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val scopeErrorStackDepth = 11
 
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecLike.scala", "feature"))
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, -2, None)
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, stackDepthAdjustment, None)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => stackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => stackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => stackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => scopeErrorStackDepth)
       case other: Throwable => throw other
     }
   }

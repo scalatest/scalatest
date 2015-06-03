@@ -88,6 +88,7 @@ trait ScalaFutures extends Futures {
       }
 */
     }
+  //SCALATESTJS-ONLY override private[concurrent] val jsAdjustment: Int = -1
 }
 
 /**

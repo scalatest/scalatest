@@ -127,7 +127,13 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -150,7 +156,13 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
@@ -421,7 +433,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def when(f: => Unit) {
-      registerBranch(string, Some("when"), "when", "when", 4, -2, f _)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, f _)
     }
 
     /**
@@ -463,7 +479,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def that(f: => Unit) {
-      registerBranch(string.trim + " that", None, "that", "that", 4, -2, f _)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, f _)
     }
 
     /**
@@ -483,7 +503,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def which(f: => Unit) {
-      registerBranch(string.trim + " which", None, "which", "which", 4, -2, f _)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, f _)
     }
 
     /**
@@ -1000,9 +1024,17 @@ one error found
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", 10, -2, resultOfAfterWordApplication.f)
+          // SKIP-SCALATESTJS-START
+          val stackDepth = 10
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY val stackDepth = 15
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, resultOfAfterWordApplication.f)
         }
-      registerBranch(left, Some(verb), verb, "apply", 7, -2, afterWordFunction)
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 7
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 9
+      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, afterWordFunction)
     }
   }
 

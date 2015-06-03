@@ -21,8 +21,8 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.4
   val buildScalaVersion = "2.11.6"
 
-  val releaseVersion = "2.3.0-SNAP2"
-  val githubTag = "release-2.3.0-SNAP2-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "3.0.0-SNAP5"
+  val githubTag = "release-3.0.0-SNAP5-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -467,17 +467,18 @@ object ScalatestBuild extends Build {
       genFactoriesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
-      /*sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),*/
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS),
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
       genCodeTask,
       genCompatibleClassesTask,
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
+
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
       sourceGenerators in Compile <+=
@@ -539,7 +540,11 @@ object ScalatestBuild extends Build {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
-      }
+      },
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestAll = Project("scalatest-all", file("."))
@@ -672,7 +677,7 @@ object ScalatestBuild extends Build {
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     libraryDependencies ++= gentestsLibraryDependencies,
-    testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
+    testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
   lazy val genRegularTests1 = Project("genRegularTests1", file("gentests/GenRegular1"))

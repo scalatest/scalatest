@@ -322,6 +322,11 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
         case ex: Throwable =>
           val ($alphaName$) = heading
 
+          // SKIP-SCALATESTJS-START
+          val stackDepth = 2
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY val stackDepth = 0
+
           throw new TableDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
@@ -337,7 +342,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
 $namesAndValues$
               "  )",
             Some(ex),
-            getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", 2),
+            getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
             None, // Payload
             FailureMessages.undecoratedPropertyCheckFailureMessage,
             List($alphaLower$),
@@ -1256,9 +1261,27 @@ $columnsOfIndexes$
 // For some reason that I don't understand, I need to leave off the stars before the <pre> when 
 // they are next to ST commands. So I say  "   <pre>" sometimes instead of " * <pre>".
 
+  def transform(content: String): String = {
+    var skipMode = false
+    content.split("\n").map { line =>
+      if (line.trim == "// SKIP-SCALATESTJS-START")
+        skipMode = true
+      else if (line.trim == "// SKIP-SCALATESTJS-END")
+        skipMode = false
+      else if (!skipMode) {
+        if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+          line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)
+        else
+          line
+      }
+      else
+        ""
+    }.mkString("\n")
+  }
+
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genTableForNs(targetDir: File) {
+  def genTableForNs(targetDir: File, scalaJS: Boolean) {
 
     val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableFor1.scala")))
  
@@ -1298,7 +1321,10 @@ $columnsOfIndexes$
         st.setAttribute("sumOfArgs", sumOfArgs)
         st.setAttribute("argNames", argNames)
         st.setAttribute("columnsOfIndexes", columnsOfIndexes)
-        bw.write(st.toString)
+        if (scalaJS)
+          bw.write(transform(st.toString))
+        else
+          bw.write(st.toString)
       }
     }
     finally {
@@ -1471,7 +1497,14 @@ $columnsOfIndexes$
   
   def genMain(dir: File, version: String, scalaVersion: String) {
     dir.mkdirs()
-    genTableForNs(dir)
+    genTableForNs(dir, false)
+    genPropertyChecks(dir)
+    genTables(dir)
+  }
+
+  def genMainForScalaJS(dir: File, version: String, scalaVersion: String) {
+    dir.mkdirs()
+    genTableForNs(dir, true)
     genPropertyChecks(dir)
     genTables(dir)
   }

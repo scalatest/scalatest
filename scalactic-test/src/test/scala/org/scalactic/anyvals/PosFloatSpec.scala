@@ -41,7 +41,8 @@ class PosFloatSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
     } 
     it("should offer MaxValue and MinValue factory methods") {
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
-      PosFloat.MinValue shouldEqual PosFloat(1.0f)
+      PosFloat.MinValue shouldEqual
+        PosFloat.from(Float.MinPositiveValue).get
     }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START

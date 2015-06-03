@@ -40,7 +40,7 @@ class PathListBufferExamples extends PathSuiteExamples {
    describe("A ListBuffer") {
       val buf = ListBuffer.empty[Int]
       it("should be empty when created") {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -81,7 +81,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -98,7 +98,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       describe("A subject") {
       }
       it("should be empty when created") {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -139,7 +139,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -158,7 +158,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       describe("Another subject") {
       }
       it("should be empty when created") {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -199,7 +199,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -221,7 +221,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       it("should be empty when created") {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -262,7 +262,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -286,7 +286,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       it("should be empty when created") {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -327,7 +327,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -343,7 +343,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     describe("A Vector") {
       var vec = Vector.empty[Int]
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -384,7 +384,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -403,7 +403,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         it("should second test") { vec ++= Vector(4, 5, 6) }
       }
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -444,7 +444,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -465,7 +465,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         it("should second test") { vec ++= Vector(4, 5, 6) }
       }
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -506,7 +506,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -527,7 +527,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -568,7 +568,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -593,7 +593,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -634,7 +634,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -655,7 +655,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         it("should second test") { vec ++= Vector(4, 5, 6) }
       }
       it("should be empty when created") {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       describe("when 1 is appended") {
@@ -696,7 +696,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       it("should again be empty") {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -712,7 +712,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     "A ListBuffer" - {
       val buf = ListBuffer.empty[Int]
       "should be empty when created" in {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -753,7 +753,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -770,7 +770,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       "A subject" - {
       }
       "should be empty when created" in {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -811,7 +811,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -830,7 +830,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       "Another subject" - {
       }
       "should be empty when created" in {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -871,7 +871,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -894,7 +894,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -935,7 +935,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -959,7 +959,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        buf should be ('empty)
+        buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1000,7 +1000,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        buf should be ('empty)
+        buf should be (empty)
       }
     }
 
@@ -1016,7 +1016,7 @@ class PathListBufferExamples extends PathSuiteExamples {
     "A Vector" - {
       var vec = Vector.empty[Int]
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1057,7 +1057,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -1080,7 +1080,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1121,7 +1121,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -1146,7 +1146,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1187,7 +1187,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -1212,7 +1212,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1253,7 +1253,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -1282,7 +1282,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1323,7 +1323,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
@@ -1348,7 +1348,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         }
       }
       "should be empty when created" in {
-        vec should be ('empty)
+        vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
       }
       "when 1 is appended" - {
@@ -1389,7 +1389,7 @@ class PathListBufferExamples extends PathSuiteExamples {
       // At end of previous describe, buf equaled List(1). Now doing it again to make
       // sure that it is empty
       "should again be empty" in {
-        vec should be ('empty)
+        vec should be (empty)
       }
     }
 
