@@ -443,7 +443,7 @@ object PosFloat {
    * The smallest value representable as a positive
    * <code>Float</code>, which is <code>PosFloat(1.4E-45)</code>.
    */
-  final val MinValue: PosFloat = PosFloat.from(Math.nextAfter(0.0F, 1.0F)).get // Can't use the macro here
+  final val MinValue: PosFloat = PosFloat.from(Float.MinPositiveValue).get // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosFloat]</code> given a

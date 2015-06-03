@@ -431,7 +431,7 @@ object PosDouble {
    * The smallest value representable as a positive
    * <code>Double</code>, which is <code>PosDouble(4.9E-324)</code>.
    */
-  final val MinValue: PosDouble = PosDouble.from(Math.nextAfter(0.0, 1.0)).get // Can't use the macro here
+  final val MinValue: PosDouble = PosDouble.from(Double.MinPositiveValue).get // Can't use the macro here
 
   /**
    * A factory method that produces an <code>Option[PosDouble]</code> given a

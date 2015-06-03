@@ -58,7 +58,7 @@ class PosDoubleSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
     it("should offer MaxValue and MinValue factory methods") {
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual
-        PosDouble.from(Math.nextAfter(0.0, 1.0)).get
+        PosDouble.from(Double.MinPositiveValue).get
     }
     it("should have a pretty toString") {
       // SKIP-SCALATESTJS-START
