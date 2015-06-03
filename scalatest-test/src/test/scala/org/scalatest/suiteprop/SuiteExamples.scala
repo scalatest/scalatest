@@ -22,8 +22,10 @@ trait SuiteExamples extends Tables {
 
   type FixtureServices
 
+  // SKIP-SCALATESTJS-START
   val spec: Spec with FixtureServices
   val fixtureSpec: fixture.Spec with FixtureServices
+  // SKIP-SCALATESTJS-END
 
   val funSuite: FunSuite with FixtureServices
   val fixtureFunSuite: fixture.FunSuite with FixtureServices
@@ -99,8 +101,10 @@ trait SuiteExamples extends Tables {
   def examples =
     Table(
       "suite",
+      // SKIP-SCALATESTJS-START
       spec,
       fixtureSpec, // TODO: Need nested ones
+      // SKIP-SCALATESTJS-END
       
       funSuite,
       fixtureFunSuite,

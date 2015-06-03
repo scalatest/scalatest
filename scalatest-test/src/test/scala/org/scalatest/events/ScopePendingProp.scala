@@ -22,7 +22,8 @@ import SharedHelpers._
 class ScopePendingProp extends AllSuiteProp {
 
   type FixtureServices = ScopePendingFixtureServices
-  
+
+  // SKIP-SCALATESTJS-START
   def suite = new ExampleScopePendingSuite
   def fixtureSuite = new ExampleScopePendingFixtureSuite
   def spec = new ExampleScopePendingSpec
@@ -30,6 +31,7 @@ class ScopePendingProp extends AllSuiteProp {
   def junit3Suite = new ExampleScopePendingJUnit3Suite
   def junitSuite = new ExampleScopePendingJUnitSuite
   def testngSuite = new ExampleScopePendingTestNGSuite
+  // SKIP-SCALATESTJS-END
   def funSuite = new ExampleScopePendingFunSuite
   def fixtureFunSuite = new ExampleScopePendingFixtureFunSuite
   def funSpec = new ExampleScopePendingFunSpec
@@ -76,6 +78,7 @@ trait ScopePendingFixtureServices {
   val expectedTestNames: Set[String] = Set.empty
 }
 
+// SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleScopePendingSuite extends Suite with ScopePendingFixtureServices {
   override val supportScope = false
@@ -140,19 +143,20 @@ class ExampleScopePendingJUnitSuite extends junit.JUnitSuite with ScopePendingFi
 class ExampleScopePendingTestNGSuite extends testng.TestNGSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
+// SKIP-SCALATESTJS-END
 
 @DoNotDiscover
-class ExampleScopePendingFunSuite extends FunSuite with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingFunSuite extends FunSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureFunSuite extends fixture.FunSuite with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureFunSuite extends fixture.FunSuite with ScopePendingFixtureServices with StringFixture {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingFunSpec extends FunSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingFunSpec extends FunSpec with ScopePendingFixtureServices {
   describe("scope 1") {
     it("test 1") {}
     it("test 2") {}
@@ -172,7 +176,7 @@ class ExampleScopePendingFunSpec extends FunSpec with ScopePendingFixtureService
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureFunSpec extends fixture.FunSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureFunSpec extends fixture.FunSpec with ScopePendingFixtureServices with StringFixture {
   describe("scope 1") {
     it("test 1") {s =>}
     it("test 2") {s =>}
@@ -192,7 +196,7 @@ class ExampleScopePendingFixtureFunSpec extends fixture.FunSpec with ScopePendin
 }
 
 @DoNotDiscover
-class ExampleScopePendingFeatureSpec extends FeatureSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingFeatureSpec extends FeatureSpec with ScopePendingFixtureServices {
   feature("scope 1") {
     scenario("test 1") {}
     scenario("test 2") {}
@@ -212,7 +216,7 @@ class ExampleScopePendingFeatureSpec extends FeatureSpec with ScopePendingFixtur
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureFeatureSpec extends fixture.FeatureSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureFeatureSpec extends fixture.FeatureSpec with ScopePendingFixtureServices with StringFixture {
   feature("scope 1") {
     scenario("test 1") {s =>}
     scenario("test 2") {s =>}
@@ -232,17 +236,17 @@ class ExampleScopePendingFixtureFeatureSpec extends fixture.FeatureSpec with Sco
 }
 
 @DoNotDiscover
-class ExampleScopePendingFlatSpec extends FlatSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingFlatSpec extends FlatSpec with ScopePendingFixtureServices {
   override val supportScope = false
 } 
 
 @DoNotDiscover
-class ExampleScopePendingFixtureFlatSpec extends fixture.FlatSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureFlatSpec extends fixture.FlatSpec with ScopePendingFixtureServices with StringFixture {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingFreeSpec extends FreeSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingFreeSpec extends FreeSpec with ScopePendingFixtureServices {
   "scope 1" - {
     "test 1" in {}
     "test 2" in {}
@@ -262,7 +266,7 @@ class ExampleScopePendingFreeSpec extends FreeSpec with ScopePendingFixtureServi
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureFreeSpec extends fixture.FreeSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureFreeSpec extends fixture.FreeSpec with ScopePendingFixtureServices with StringFixture {
   "scope 1" - {
     "test 1" in {s =>}
     "test 2" in {s =>}
@@ -282,17 +286,17 @@ class ExampleScopePendingFixtureFreeSpec extends fixture.FreeSpec with ScopePend
 }
 
 @DoNotDiscover
-class ExampleScopePendingPropSpec extends PropSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingPropSpec extends PropSpec with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixturePropSpec extends fixture.PropSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixturePropSpec extends fixture.PropSpec with ScopePendingFixtureServices with StringFixture {
   override val supportScope = false
 } 
 
 @DoNotDiscover
-class ExampleScopePendingWordSpec extends WordSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingWordSpec extends WordSpec with ScopePendingFixtureServices {
   "scope 1" should {
     "test 1" in {}
     "test 2" in {}
@@ -312,7 +316,7 @@ class ExampleScopePendingWordSpec extends WordSpec with ScopePendingFixtureServi
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureWordSpec extends fixture.WordSpec with ScopePendingFixtureServices with StringFixture {
+protected[events] class ExampleScopePendingFixtureWordSpec extends fixture.WordSpec with ScopePendingFixtureServices with StringFixture {
   "scope 1" should {
     "test 1" in {s =>}
     "test 2" in {s =>}
@@ -332,7 +336,8 @@ class ExampleScopePendingFixtureWordSpec extends fixture.WordSpec with ScopePend
 }
 
 @DoNotDiscover
-class ExampleScopePendingPathFreeSpec extends path.FreeSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingPathFreeSpec extends path.FreeSpec with ScopePendingFixtureServices {
+  //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFreeSpec
   "scope 1" - {
     "test 1" in {}
     "test 2" in {}
@@ -352,7 +357,8 @@ class ExampleScopePendingPathFreeSpec extends path.FreeSpec with ScopePendingFix
 }
 
 @DoNotDiscover
-class ExampleScopePendingPathFunSpec extends path.FunSpec with ScopePendingFixtureServices {
+protected[events] class ExampleScopePendingPathFunSpec extends path.FunSpec with ScopePendingFixtureServices {
+  //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFunSpec
   describe("scope 1") {
     it("test 1") {}
     it("test 2") {}

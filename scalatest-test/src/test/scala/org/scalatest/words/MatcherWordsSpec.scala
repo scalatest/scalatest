@@ -35,41 +35,39 @@ class MatcherWordsSpec extends FunSpec with MatcherWords {
       val mr = mt("tomy")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'negatedFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'midSentenceFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'midSentenceNegatedFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'rawFailureMessage ("{0} did not equal {1}"),
-          'rawNegatedFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-          'failureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'negatedFailureMessageArgs(Vector("tomy", "tommy")),
-          'midSentenceFailureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'midSentenceNegatedFailureMessageArgs(Vector("tomy", "tommy"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"tom[]y\" did not equal \"tom[m]y\""
+        mr.negatedFailureMessage shouldBe "\"tomy\" equaled \"tommy\""
+        mr.midSentenceFailureMessage shouldBe "\"tom[]y\" did not equal \"tom[m]y\""
+        mr.midSentenceNegatedFailureMessage shouldBe "\"tomy\" equaled \"tommy\""
+        mr.rawFailureMessage shouldBe "{0} did not equal {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} equaled {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1}"
+        mr.failureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        mr.negatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("tomy", "tommy")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"tomy\" equaled \"tommy\""),
-          'negatedFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'midSentenceFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'midSentenceNegatedFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'rawFailureMessage ("{0} equaled {1}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1}"),
-          'failureMessageArgs(Vector("tomy", "tommy")),
-          'negatedFailureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'midSentenceFailureMessageArgs(Vector("tomy", "tommy")),
-          'midSentenceNegatedFailureMessageArgs(Vector("tom[]y", "tom[m]y"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"tomy\" equaled \"tommy\""
+        nmr.negatedFailureMessage shouldBe "\"tom[]y\" did not equal \"tom[m]y\""
+        nmr.midSentenceFailureMessage shouldBe "\"tomy\" equaled \"tommy\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"tom[]y\" did not equal \"tom[m]y\""
+        nmr.rawFailureMessage shouldBe "{0} equaled {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.failureMessageArgs shouldBe Vector("tomy", "tommy")
+        nmr.negatedFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("tomy", "tommy")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("tom[]y", "tom[m]y")
+
       }
       
     }

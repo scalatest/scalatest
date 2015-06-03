@@ -15,12 +15,16 @@
  */
 package org.scalatest.events
 import org.scalatest.prop.Checkers
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
+// SKIP-SCALATESTJS-START
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+// SKIP-SCALATESTJS-END
 import org.scalatest._
 
+// SKIP-SCALATESTJS-START
 @RunWith(classOf[JUnitRunner])
+// SKIP-SCALATESTJS-END
 class LocationSpec extends FunSpec with Checkers {
   
   class TestLocationFunSuite extends FunSuite {
@@ -62,21 +66,22 @@ class LocationSpec extends FunSpec with Checkers {
       }
     }
   }
-  
-  class TestLocationSpec extends FunSpec {
-    def `test succeed` = {
+
+  // SKIP-SCALATESTJS-START
+  class TestLocationSpec extends Spec {
+    def `test succeed` {
     }
-    
-    def `test fail` = {
+
+    def `test fail` {
       fail
     }
-    
-    def `test pending`: Unit = {
+
+    def `test pending` {
       pending
     }
-    
+
     @Ignore
-    def `test ignore` = {
+    def `test ignore` {
     }
   }
   
@@ -91,12 +96,12 @@ class LocationSpec extends FunSpec with Checkers {
           case testSucceed:TestSucceeded => 
             assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testSucceed.location.get.asInstanceOf[TopOfMethod].className }
             assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020succeed()") { testSucceed.location.get.asInstanceOf[TopOfMethod].methodId }
-          case testFail:TestFailed => 
+          case testFail:TestFailed =>
             assertResult(SeeStackDepthException.getClass) { testFail.location.get.getClass }
-          case testPending:TestPending => 
+          case testPending:TestPending =>
             assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testPending.location.get.asInstanceOf[TopOfMethod].className }
             assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020pending()") { testPending.location.get.asInstanceOf[TopOfMethod].methodId }
-          case testIgnore:TestIgnored => 
+          case testIgnore:TestIgnored =>
             assertResult("org.scalatest.events.LocationSpec$TestLocationSpec$") { testIgnore.location.get.asInstanceOf[TopOfMethod].className }
             assertResult("public void org.scalatest.events.LocationSpec$TestLocationSpec.test$u0020ignore()") { testIgnore.location.get.asInstanceOf[TopOfMethod].methodId }
           case _ =>
@@ -104,20 +109,5 @@ class LocationSpec extends FunSpec with Checkers {
       }
     }
   }
-  
-  //
-  // Returns the line number from which this method was called.
-  //
-  // Found that on some machines it was in the third element in the stack
-  // trace, and on others it was the fourth, so here we check the method
-  // name of the third element to decide which of the two to return.
-  //
-  private def thisLineNumber = {
-    val st = Thread.currentThread.getStackTrace
-
-    if (!st(2).getMethodName.contains("thisLineNum"))
-      st(2).getLineNumber
-    else
-      st(3).getLineNumber
-  }
+  // SKIP-SCALATESTJS-END
 }

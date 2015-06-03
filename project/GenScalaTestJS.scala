@@ -182,7 +182,8 @@ object GenScalaTestJS {
               "StopOnFailure.scala",
               "Sequential.scala",
               "Stepwise.scala",
-              "TryValues.scala"
+              "TryValues.scala",
+              "Payloads.scala"
             ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture",
             List(
@@ -400,7 +401,8 @@ object GenScalaTestJS {
         "Configuration.scala", 
         "Randomizer.scala",
         "Edges.scala", 
-        "Whenever.scala"
+        "Whenever.scala",
+        "PropertyChecks.scala"
       ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent",
       List(
@@ -410,6 +412,20 @@ object GenScalaTestJS {
         "AbstractPatienceConfiguration.scala",
         //"Eventually.scala",      // not supported because js is single thread and does not share memory.
         "ScaledTimeSpans.scala"
+        //"PimpedReadWriteLock.scala",    // skipped because use java concurrent classes
+        //"TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
+        //"PimpedThreadGroup.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
+        //"Conductors.scala",             // skipped because depends on PimpedReadWriteLock
+        //"ConductorFixture.scala",       // skipped because depends on Conductors
+        //"ConductorMethods.scala",       // skipped because depends on Conductors
+        //"AsyncAssertions.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
+        //"TimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
+        //"Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
+        //"TimeoutTask.scala",             // skipped because timeout is not supported.
+        //"Interruptor.scala",             // skipped because no practical way to interrupt in js.
+        //"SelectorInterruptor.scala",     // skipped because it is for java selector
+        //"SocketInterruptor.scala",       // skipped because it is for java socket.
+        //"ThreadInterrupt.scala"          // skipped because no interrupt in js.
       ), targetDir) ++
     copyFiles("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List(
@@ -459,6 +475,32 @@ object GenScalaTestJS {
         "StreamlinedXmlSpec.scala",            // skipped because use scala.xml
         "SuiteSuite.scala"         // skipped because it depends on java reflection
       )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+      List(
+        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions not supported.
+        "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
+        "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
+        "ConductorSuite.scala",   // skipped because Conductors not supported.
+        "EventuallySpec.scala",   // skipped because Eventually not supported.
+        "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
+        "JavaFuturesSpec.scala",      // skipped because depends on java futures
+        "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
+        "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
+        "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
+      )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+      List(
+        "TestLocationJUnit3Suite.scala",
+        "TestLocationJUnitSuite.scala",
+        "TestLocationTestNGSuite.scala",
+        "TestLocationMethodJUnit3Suite.scala",
+        "TestLocationMethodJUnitSuite.scala",
+        "TestLocationMethodTestNGSuite.scala",
+        "LocationMethodSuiteProp.scala"
+      )) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
@@ -466,13 +508,14 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyFiles("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words",
+    copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
+    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+    copyFiles("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools",
       List(
-        "ResultOfAllElementsOfApplicationSpec.scala",
-        "ResultOfAtLeastOneElementOfApplicationSpec.scala",
-        "ResultOfNoElementsOfApplicationSpec.scala",
-        "ResultOfOneElementOfApplicationSpec.scala"
+        "SuiteSortingReporterSpec.scala",
+        "TestSortingReporterSpec.scala"
       ), targetDir)
   }
 

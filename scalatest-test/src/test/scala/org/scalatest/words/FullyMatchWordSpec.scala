@@ -38,41 +38,39 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mr = mt("2.7")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'rawFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
       
     }
@@ -92,41 +90,39 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       "when apply with \"abbc\"" - {
       
         "should have correct MatcherResult" in {
-          mr1 should have (
-            'matches (true),
-            'failureMessage ("\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'negatedFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c and group bb"),
-            'midSentenceFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c and group bb"),
-            'rawFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
-          )
+          mr1.matches shouldBe true
+          mr1.failureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          mr1.negatedFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c and group bb"
+          mr1.midSentenceFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          mr1.midSentenceNegatedFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c and group bb"
+          mr1.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          mr1.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          mr1.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          mr1.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          mr1.failureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          mr1.negatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          mr1.midSentenceFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          mr1.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+
         }
       
         val nmr = mr1.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (false),
-            'failureMessage ("\"abbc\" fully matched the regular expression a(b*)c and group bb"),
-            'negatedFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'midSentenceFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c and group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
-            'rawFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb")))    
-          )
+          nmr.matches shouldBe false
+          nmr.failureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c and group bb"
+          nmr.negatedFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          nmr.midSentenceFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c and group bb"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group bb"
+          nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.failureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))
+
         }
         
       }
@@ -137,42 +133,52 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
           
         "should have correct MatcherResult" in {
             
-          mr2 should have (
-            'matches (false),
-            'failureMessage ("\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'negatedFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c and group bb"),
-            'midSentenceFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c and group bb"),
-            'rawFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
-          )
+          mr2.matches shouldBe false
+            
+          mr2.failureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+            
+          mr2.negatedFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c and group bb"
+            
+          mr2.midSentenceFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+            
+          mr2.midSentenceNegatedFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c and group bb"
+            
+          mr2.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+            
+          mr2.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+            
+          mr2.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+            
+          mr2.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+            
+          mr2.failureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+            
+          mr2.negatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+            
+          mr2.midSentenceFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+            
+          mr2.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+
             
         }
           
         val nmr = mr2.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (true),
-            'failureMessage ("\"abbbc\" fully matched the regular expression a(b*)c and group bb"),
-            'negatedFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'midSentenceFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c and group bb"),
-            'midSentenceNegatedFailureMessage ("\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
-            'rawFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3}"),
-            'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb")))    
-          )
+          nmr.matches shouldBe true
+          nmr.failureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c and group bb"
+          nmr.negatedFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+          nmr.midSentenceFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c and group bb"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group bb"
+          nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3}"
+          nmr.failureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))
+
         }
           
       }
@@ -182,41 +188,39 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       "when apply with \"ABBC\"" - {
         
         "should have correct MatcherResult" in {
-          mr3 should have (
-            'matches (false),
-            'failureMessage ("\"ABBC\" did not fully match the regular expression a(b*)c"),
-            'negatedFailureMessage ("\"ABBC\" fully matched the regular expression a(b*)c"),
-            'midSentenceFailureMessage ("\"ABBC\" did not fully match the regular expression a(b*)c"),
-            'midSentenceNegatedFailureMessage ("\"ABBC\" fully matched the regular expression a(b*)c"),
-            'rawFailureMessage ("{0} did not fully match the regular expression {1}"),
-            'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-            'rawMidSentenceFailureMessage ("{0} did not fully match the regular expression {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-            'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
-          )
+          mr3.matches shouldBe false
+          mr3.failureMessage shouldBe "\"ABBC\" did not fully match the regular expression a(b*)c"
+          mr3.negatedFailureMessage shouldBe "\"ABBC\" fully matched the regular expression a(b*)c"
+          mr3.midSentenceFailureMessage shouldBe "\"ABBC\" did not fully match the regular expression a(b*)c"
+          mr3.midSentenceNegatedFailureMessage shouldBe "\"ABBC\" fully matched the regular expression a(b*)c"
+          mr3.rawFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+          mr3.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+          mr3.rawMidSentenceFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+          mr3.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+          mr3.failureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.negatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.midSentenceFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          mr3.midSentenceNegatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+
         }
         
         val nmr = mr3.negated
       
         "should have correct negated MatcherResult" in {
-          nmr should have (
-            'matches (true),
-            'failureMessage ("\"ABBC\" fully matched the regular expression a(b*)c"),
-            'negatedFailureMessage ("\"ABBC\" did not fully match the regular expression a(b*)c"),
-            'midSentenceFailureMessage ("\"ABBC\" fully matched the regular expression a(b*)c"),
-            'midSentenceNegatedFailureMessage ("\"ABBC\" did not fully match the regular expression a(b*)c"),
-            'rawFailureMessage ("{0} fully matched the regular expression {1}"),
-            'rawNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-            'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-            'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
-          )
+          nmr.matches shouldBe true
+          nmr.failureMessage shouldBe "\"ABBC\" fully matched the regular expression a(b*)c"
+          nmr.negatedFailureMessage shouldBe "\"ABBC\" did not fully match the regular expression a(b*)c"
+          nmr.midSentenceFailureMessage shouldBe "\"ABBC\" fully matched the regular expression a(b*)c"
+          nmr.midSentenceNegatedFailureMessage shouldBe "\"ABBC\" did not fully match the regular expression a(b*)c"
+          nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+          nmr.failureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.negatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.midSentenceFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("ABBC", UnquotedString("a(b*)c"))
+
         }
       }
     }
@@ -234,41 +238,39 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mr = mt("abbccc")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'negatedFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"),
-          'midSentenceFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'midSentenceNegatedFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"),
-          'rawFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-          'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-          'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        mr.negatedFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"
+        mr.midSentenceFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        mr.midSentenceNegatedFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"
+        mr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        mr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+        mr.failureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        mr.negatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"),
-          'negatedFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'midSentenceFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"),
-          'midSentenceNegatedFailureMessage ("\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
-          'rawFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-          'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1} and group {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"),
-          'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"
+        nmr.negatedFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        nmr.midSentenceFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*) and group bb, cc"
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"abbccc\" fully matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"
+        nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1} and group {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}, but {2} did not match group {3} at index {4}"
+        nmr.failureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        nmr.negatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)
+
       }
     }
     
@@ -284,41 +286,39 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mr = mt("2.7")
       
       "should have correct MatcherResult" in {
-        mr should have (
-          'matches (true),
-          'failureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       "should have correct negated MatcherResult" in {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'rawFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
     }
     

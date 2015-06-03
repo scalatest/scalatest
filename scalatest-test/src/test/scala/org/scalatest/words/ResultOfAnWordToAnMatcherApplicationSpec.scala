@@ -18,15 +18,14 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 import matchers.AnMatcher
-import java.io.File
 
-class ResultOfAnWordToAnMatcherApplicationSpec extends FunSpec {
+class ResultOfAnWordToAnMatcherApplicationSpec extends FunSpec with FileMocks {
   
   describe("ResultOfAnWordToAnMatcherApplication ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfAnWordToAnMatcherApplication(AnMatcher[File]("file") { _.isFile  })
-      result.toString should be ("an (AnMatcher[java.io.File](\"file\", java.io.File => Boolean))")
+      val result = new ResultOfAnWordToAnMatcherApplication(AnMatcher[FileMock]("file") { _.file  })
+      result.toString should be ("an (AnMatcher[org.scalatest.FileMocks$FileMock](\"file\", org.scalatest.FileMocks$FileMock => Boolean))")
     }
   }
   

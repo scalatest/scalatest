@@ -27,7 +27,9 @@ import matchers.{BePropertyMatcher,
 import matchers.{NegatedFailureMessage, 
                  MidSentenceFailureMessage, 
                  MidSentenceNegatedFailureMessage}
+// SKIP-SCALATESTJS-START
 import java.io.File
+// SKIP-SCALATESTJS-END
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
 
@@ -50,41 +52,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("0 was less than 3"),
-          'negatedFailureMessage ("0 was not less than 3"),
-          'midSentenceFailureMessage ("0 was less than 3"),
-          'midSentenceNegatedFailureMessage ("0 was not less than 3"),
-          'rawFailureMessage ("{0} was less than {1}"),
-          'rawNegatedFailureMessage ("{0} was not less than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was less than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not less than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "0 was less than 3"
+        mr.negatedFailureMessage shouldBe "0 was not less than 3"
+        mr.midSentenceFailureMessage shouldBe "0 was less than 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "0 was not less than 3"
+        mr.rawFailureMessage shouldBe "{0} was less than {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not less than {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was less than {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not less than {1}"
+        mr.failureMessageArgs shouldBe Vector(0, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("0 was not less than 3"),
-          'negatedFailureMessage ("0 was less than 3"),
-          'midSentenceFailureMessage ("0 was not less than 3"),
-          'midSentenceNegatedFailureMessage ("0 was less than 3"),
-          'rawFailureMessage ("{0} was not less than {1}"),
-          'rawNegatedFailureMessage ("{0} was less than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not less than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was less than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "0 was not less than 3"
+        nmr.negatedFailureMessage shouldBe "0 was less than 3"
+        nmr.midSentenceFailureMessage shouldBe "0 was not less than 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "0 was less than 3"
+        nmr.rawFailureMessage shouldBe "{0} was not less than {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was less than {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not less than {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was less than {1}"
+        nmr.failureMessageArgs shouldBe Vector(0, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
     }
     
@@ -100,41 +100,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(3)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("3 equaled 3"),
-          'negatedFailureMessage ("3 did not equal 3"),
-          'midSentenceFailureMessage ("3 equaled 3"),
-          'midSentenceNegatedFailureMessage ("3 did not equal 3"),
-          'rawFailureMessage ("{0} equaled {1}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1}"),
-          'failureMessageArgs(Vector(3, 3)),
-          'negatedFailureMessageArgs(Vector(3, 3)),
-          'midSentenceFailureMessageArgs(Vector(3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "3 equaled 3"
+        mr.negatedFailureMessage shouldBe "3 did not equal 3"
+        mr.midSentenceFailureMessage shouldBe "3 equaled 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "3 did not equal 3"
+        mr.rawFailureMessage shouldBe "{0} equaled {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        mr.failureMessageArgs shouldBe Vector(3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(3, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("3 did not equal 3"),
-          'negatedFailureMessage ("3 equaled 3"),
-          'midSentenceFailureMessage ("3 did not equal 3"),
-          'midSentenceNegatedFailureMessage ("3 equaled 3"),
-          'rawFailureMessage ("{0} did not equal {1}"),
-          'rawNegatedFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-          'failureMessageArgs(Vector(3, 3)),
-          'negatedFailureMessageArgs(Vector(3, 3)),
-          'midSentenceFailureMessageArgs(Vector(3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "3 did not equal 3"
+        nmr.negatedFailureMessage shouldBe "3 equaled 3"
+        nmr.midSentenceFailureMessage shouldBe "3 did not equal 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "3 equaled 3"
+        nmr.rawFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} equaled {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1}"
+        nmr.failureMessageArgs shouldBe Vector(3, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(3, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3)
+
       }
     }
     
@@ -155,41 +153,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(3)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("3 equaled 3, and 3 did not equal \"3\""),
-          'negatedFailureMessage ("3 equaled 3, but 3 equaled \"3\""),
-          'midSentenceFailureMessage ("3 equaled 3, and 3 did not equal \"3\""),
-          'midSentenceNegatedFailureMessage ("3 equaled 3, but 3 equaled \"3\""),
-          'rawFailureMessage ("{0}, and {1}"),
-          'rawNegatedFailureMessage ("{0}, but {1}"),
-          'rawMidSentenceFailureMessage ("{0}, and {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0}, but {1}"),
-          'failureMessageArgs (Vector(NegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))),
-          'negatedFailureMessageArgs (Vector(NegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))),
-          'midSentenceFailureMessageArgs (Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))),
-          'midSentenceNegatedFailureMessageArgs (Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3))))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "3 equaled 3, and 3 did not equal \"3\""
+        mr.negatedFailureMessage shouldBe "3 equaled 3, but 3 equaled \"3\""
+        mr.midSentenceFailureMessage shouldBe "3 equaled 3, and 3 did not equal \"3\""
+        mr.midSentenceNegatedFailureMessage shouldBe "3 equaled 3, but 3 equaled \"3\""
+        mr.rawFailureMessage shouldBe "{0}, and {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0}, but {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0}, and {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0}, but {1}"
+        mr.failureMessageArgs shouldBe Vector(NegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))
+        mr.negatedFailureMessageArgs shouldBe Vector(NegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("3 equaled 3, but 3 equaled \"3\""),
-          'negatedFailureMessage ("3 equaled 3, and 3 did not equal \"3\""),
-          'midSentenceFailureMessage ("3 equaled 3, but 3 equaled \"3\""),
-          'midSentenceNegatedFailureMessage ("3 equaled 3, and 3 did not equal \"3\""),
-          'rawFailureMessage ("{0}, but {1}"),
-          'rawNegatedFailureMessage ("{0}, and {1}"),
-          'rawMidSentenceFailureMessage ("{0}, but {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0}, and {1}"),
-          'failureMessageArgs(Vector(NegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))),
-          'negatedFailureMessageArgs(Vector(NegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))),
-          'midSentenceFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))),
-          'midSentenceNegatedFailureMessageArgs(Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3))))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "3 equaled 3, but 3 equaled \"3\""
+        nmr.negatedFailureMessage shouldBe "3 equaled 3, and 3 did not equal \"3\""
+        nmr.midSentenceFailureMessage shouldBe "3 equaled 3, but 3 equaled \"3\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "3 equaled 3, and 3 did not equal \"3\""
+        nmr.rawFailureMessage shouldBe "{0}, but {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0}, and {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0}, but {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0}, and {1}"
+        nmr.failureMessageArgs shouldBe Vector(NegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))
+        nmr.negatedFailureMessageArgs shouldBe Vector(NegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceFailureMessage(mt2(3)))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(MidSentenceNegatedFailureMessage(mt1(3)), MidSentenceNegatedFailureMessage(mt2(3)))
+
       }
     }
     
@@ -215,41 +211,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(1)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("1 was odd"),
-          'negatedFailureMessage ("1 was even"),
-          'midSentenceFailureMessage ("1 was odd"),
-          'midSentenceNegatedFailureMessage ("1 was even"),
-          'rawFailureMessage ("1 was odd"),
-          'rawNegatedFailureMessage ("1 was even"),
-          'rawMidSentenceFailureMessage ("1 was odd"),
-          'rawMidSentenceNegatedFailureMessage ("1 was even"),
-          'failureMessageArgs(Vector(1)),
-          'negatedFailureMessageArgs(Vector(1)),
-          'midSentenceFailureMessageArgs(Vector(1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(1))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "1 was odd"
+        mr.negatedFailureMessage shouldBe "1 was even"
+        mr.midSentenceFailureMessage shouldBe "1 was odd"
+        mr.midSentenceNegatedFailureMessage shouldBe "1 was even"
+        mr.rawFailureMessage shouldBe "1 was odd"
+        mr.rawNegatedFailureMessage shouldBe "1 was even"
+        mr.rawMidSentenceFailureMessage shouldBe "1 was odd"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "1 was even"
+        mr.failureMessageArgs shouldBe Vector(1)
+        mr.negatedFailureMessageArgs shouldBe Vector(1)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(1)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("1 was even"),
-          'negatedFailureMessage ("1 was odd"),
-          'midSentenceFailureMessage ("1 was even"),
-          'midSentenceNegatedFailureMessage ("1 was odd"),
-          'rawFailureMessage ("1 was even"),
-          'rawNegatedFailureMessage ("1 was odd"),
-          'rawMidSentenceFailureMessage ("1 was even"),
-          'rawMidSentenceNegatedFailureMessage ("1 was odd"),
-          'failureMessageArgs(Vector(1)),
-          'negatedFailureMessageArgs(Vector(1)),
-          'midSentenceFailureMessageArgs(Vector(1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(1))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "1 was even"
+        nmr.negatedFailureMessage shouldBe "1 was odd"
+        nmr.midSentenceFailureMessage shouldBe "1 was even"
+        nmr.midSentenceNegatedFailureMessage shouldBe "1 was odd"
+        nmr.rawFailureMessage shouldBe "1 was even"
+        nmr.rawNegatedFailureMessage shouldBe "1 was odd"
+        nmr.rawMidSentenceFailureMessage shouldBe "1 was even"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "1 was odd"
+        nmr.failureMessageArgs shouldBe Vector(1)
+        nmr.negatedFailureMessageArgs shouldBe Vector(1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(1)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(1)
+
       }
     }
     
@@ -265,41 +259,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(3)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("3 equaled 3"),
-          'negatedFailureMessage ("3 did not equal 3"),
-          'midSentenceFailureMessage ("3 equaled 3"),
-          'midSentenceNegatedFailureMessage ("3 did not equal 3"),
-          'rawFailureMessage ("{0} equaled {1}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1}"),
-          'failureMessageArgs(Vector(3, 3)),
-          'negatedFailureMessageArgs(Vector(3, 3)),
-          'midSentenceFailureMessageArgs(Vector(3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "3 equaled 3"
+        mr.negatedFailureMessage shouldBe "3 did not equal 3"
+        mr.midSentenceFailureMessage shouldBe "3 equaled 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "3 did not equal 3"
+        mr.rawFailureMessage shouldBe "{0} equaled {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1}"
+        mr.failureMessageArgs shouldBe Vector(3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(3, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("3 did not equal 3"),
-          'negatedFailureMessage ("3 equaled 3"),
-          'midSentenceFailureMessage ("3 did not equal 3"),
-          'midSentenceNegatedFailureMessage ("3 equaled 3"),
-          'rawFailureMessage ("{0} did not equal {1}"),
-          'rawNegatedFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-          'failureMessageArgs(Vector(3, 3)),
-          'negatedFailureMessageArgs(Vector(3, 3)),
-          'midSentenceFailureMessageArgs(Vector(3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "3 did not equal 3"
+        nmr.negatedFailureMessage shouldBe "3 equaled 3"
+        nmr.midSentenceFailureMessage shouldBe "3 did not equal 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "3 equaled 3"
+        nmr.rawFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} equaled {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1}"
+        nmr.failureMessageArgs shouldBe Vector(3, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(3, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3)
+
       }
     }
     
@@ -314,44 +306,43 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(3)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("3 equaled 3 plus or minus 1"),
-          'negatedFailureMessage ("3 did not equal 3 plus or minus 1"),
-          'midSentenceFailureMessage ("3 equaled 3 plus or minus 1"),
-          'midSentenceNegatedFailureMessage ("3 did not equal 3 plus or minus 1"),
-          'rawFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(3, 3, 1)),
-          'negatedFailureMessageArgs(Vector(3, 3, 1)),
-          'midSentenceFailureMessageArgs(Vector(3, 3, 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3, 1))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "3 equaled 3 plus or minus 1"
+        mr.negatedFailureMessage shouldBe "3 did not equal 3 plus or minus 1"
+        mr.midSentenceFailureMessage shouldBe "3 equaled 3 plus or minus 1"
+        mr.midSentenceNegatedFailureMessage shouldBe "3 did not equal 3 plus or minus 1"
+        mr.rawFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        mr.failureMessageArgs shouldBe Vector(3, 3, 1)
+        mr.negatedFailureMessageArgs shouldBe Vector(3, 3, 1)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(3, 3, 1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3, 1)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("3 did not equal 3 plus or minus 1"),
-          'negatedFailureMessage ("3 equaled 3 plus or minus 1"),
-          'midSentenceFailureMessage ("3 did not equal 3 plus or minus 1"),
-          'midSentenceNegatedFailureMessage ("3 equaled 3 plus or minus 1"),
-          'rawFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(3, 3, 1)),
-          'negatedFailureMessageArgs(Vector(3, 3, 1)),
-          'midSentenceFailureMessageArgs(Vector(3, 3, 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(3, 3, 1))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "3 did not equal 3 plus or minus 1"
+        nmr.negatedFailureMessage shouldBe "3 equaled 3 plus or minus 1"
+        nmr.midSentenceFailureMessage shouldBe "3 did not equal 3 plus or minus 1"
+        nmr.midSentenceNegatedFailureMessage shouldBe "3 equaled 3 plus or minus 1"
+        nmr.rawFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not equal {1} plus or minus {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} equaled {1} plus or minus {2}"
+        nmr.failureMessageArgs shouldBe Vector(3, 3, 1)
+        nmr.negatedFailureMessageArgs shouldBe Vector(3, 3, 1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(3, 3, 1)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(3, 3, 1)
+
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("val exists of type MatcherFactory1") {
       
       val tempDir = createTempDirectory()
@@ -367,43 +358,42 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " exists"),
-          'negatedFailureMessage (lhs + " does not exist"),
-          'midSentenceFailureMessage (lhs + " exists"),
-          'midSentenceNegatedFailureMessage (lhs + " does not exist"),
-          'rawFailureMessage ("{0} exists"),
-          'rawNegatedFailureMessage ("{0} does not exist"),
-          'rawMidSentenceFailureMessage ("{0} exists"),
-          'rawMidSentenceNegatedFailureMessage ("{0} does not exist"),
-          'failureMessageArgs(Vector(lhs)),
-          'negatedFailureMessageArgs(Vector(lhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " exists"
+        mr.negatedFailureMessage shouldBe lhs + " does not exist"
+        mr.midSentenceFailureMessage shouldBe lhs + " exists"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " does not exist"
+        mr.rawFailureMessage shouldBe "{0} exists"
+        mr.rawNegatedFailureMessage shouldBe "{0} does not exist"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} exists"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} does not exist"
+        mr.failureMessageArgs shouldBe Vector(lhs)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " does not exist"),
-          'negatedFailureMessage (lhs + " exists"),
-          'midSentenceFailureMessage (lhs + " does not exist"),
-          'midSentenceNegatedFailureMessage (lhs + " exists"),
-          'rawFailureMessage ("{0} does not exist"),
-          'rawNegatedFailureMessage ("{0} exists"),
-          'rawMidSentenceFailureMessage ("{0} does not exist"),
-          'rawMidSentenceNegatedFailureMessage ("{0} exists"),
-          'failureMessageArgs(Vector(lhs)),
-          'negatedFailureMessageArgs(Vector(lhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " does not exist"
+        nmr.negatedFailureMessage shouldBe lhs + " exists"
+        nmr.midSentenceFailureMessage shouldBe lhs + " does not exist"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " exists"
+        nmr.rawFailureMessage shouldBe "{0} does not exist"
+        nmr.rawNegatedFailureMessage shouldBe "{0} exists"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} does not exist"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} exists"
+        nmr.failureMessageArgs shouldBe Vector(lhs)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs)
+
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("equal(null) method returns MatcherFactory1") {
       
@@ -416,41 +406,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("Bob")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("The reference equaled null"),
-          'negatedFailureMessage ("\"Bob\" did not equal null"),
-          'midSentenceFailureMessage ("the reference equaled null"),
-          'midSentenceNegatedFailureMessage ("\"Bob\" did not equal null"),
-          'rawFailureMessage ("The reference equaled null"),
-          'rawNegatedFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceFailureMessage ("the reference equaled null"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
-          'failureMessageArgs(Vector.empty),
-          'negatedFailureMessageArgs(Vector("Bob")),
-          'midSentenceFailureMessageArgs(Vector.empty),
-          'midSentenceNegatedFailureMessageArgs(Vector("Bob"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "The reference equaled null"
+        mr.negatedFailureMessage shouldBe "\"Bob\" did not equal null"
+        mr.midSentenceFailureMessage shouldBe "the reference equaled null"
+        mr.midSentenceNegatedFailureMessage shouldBe "\"Bob\" did not equal null"
+        mr.rawFailureMessage shouldBe "The reference equaled null"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not equal null"
+        mr.rawMidSentenceFailureMessage shouldBe "the reference equaled null"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not equal null"
+        mr.failureMessageArgs shouldBe Vector.empty
+        mr.negatedFailureMessageArgs shouldBe Vector("Bob")
+        mr.midSentenceFailureMessageArgs shouldBe Vector.empty
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("Bob")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"Bob\" did not equal null"),
-          'negatedFailureMessage ("The reference equaled null"),
-          'midSentenceFailureMessage ("\"Bob\" did not equal null"),
-          'midSentenceNegatedFailureMessage ("the reference equaled null"),
-          'rawFailureMessage ("{0} did not equal null"),
-          'rawNegatedFailureMessage ("The reference equaled null"),
-          'rawMidSentenceFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
-          'failureMessageArgs(Vector("Bob")),
-          'negatedFailureMessageArgs(Vector.empty),
-          'midSentenceFailureMessageArgs(Vector("Bob")),
-          'midSentenceNegatedFailureMessageArgs(Vector.empty)    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"Bob\" did not equal null"
+        nmr.negatedFailureMessage shouldBe "The reference equaled null"
+        nmr.midSentenceFailureMessage shouldBe "\"Bob\" did not equal null"
+        nmr.midSentenceNegatedFailureMessage shouldBe "the reference equaled null"
+        nmr.rawFailureMessage shouldBe "{0} did not equal null"
+        nmr.rawNegatedFailureMessage shouldBe "The reference equaled null"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not equal null"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "the reference equaled null"
+        nmr.failureMessageArgs shouldBe Vector("Bob")
+        nmr.negatedFailureMessageArgs shouldBe Vector.empty
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("Bob")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector.empty
+
       }
     }
     
@@ -476,41 +464,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(1)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("1 was odd"),
-          'negatedFailureMessage ("1 was even"),
-          'midSentenceFailureMessage ("1 was odd"),
-          'midSentenceNegatedFailureMessage ("1 was even"),
-          'rawFailureMessage ("1 was odd"),
-          'rawNegatedFailureMessage ("1 was even"),
-          'rawMidSentenceFailureMessage ("1 was odd"),
-          'rawMidSentenceNegatedFailureMessage ("1 was even"),
-          'failureMessageArgs(Vector(1)),
-          'negatedFailureMessageArgs(Vector(1)),
-          'midSentenceFailureMessageArgs(Vector(1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(1))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "1 was odd"
+        mr.negatedFailureMessage shouldBe "1 was even"
+        mr.midSentenceFailureMessage shouldBe "1 was odd"
+        mr.midSentenceNegatedFailureMessage shouldBe "1 was even"
+        mr.rawFailureMessage shouldBe "1 was odd"
+        mr.rawNegatedFailureMessage shouldBe "1 was even"
+        mr.rawMidSentenceFailureMessage shouldBe "1 was odd"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "1 was even"
+        mr.failureMessageArgs shouldBe Vector(1)
+        mr.negatedFailureMessageArgs shouldBe Vector(1)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(1)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(1)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("1 was even"),
-          'negatedFailureMessage ("1 was odd"),
-          'midSentenceFailureMessage ("1 was even"),
-          'midSentenceNegatedFailureMessage ("1 was odd"),
-          'rawFailureMessage ("1 was even"),
-          'rawNegatedFailureMessage ("1 was odd"),
-          'rawMidSentenceFailureMessage ("1 was even"),
-          'rawMidSentenceNegatedFailureMessage ("1 was odd"),
-          'failureMessageArgs(Vector(1)),
-          'negatedFailureMessageArgs(Vector(1)),
-          'midSentenceFailureMessageArgs(Vector(1)),
-          'midSentenceNegatedFailureMessageArgs(Vector(1))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "1 was even"
+        nmr.negatedFailureMessage shouldBe "1 was odd"
+        nmr.midSentenceFailureMessage shouldBe "1 was even"
+        nmr.midSentenceNegatedFailureMessage shouldBe "1 was odd"
+        nmr.rawFailureMessage shouldBe "1 was even"
+        nmr.rawNegatedFailureMessage shouldBe "1 was odd"
+        nmr.rawMidSentenceFailureMessage shouldBe "1 was even"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "1 was odd"
+        nmr.failureMessageArgs shouldBe Vector(1)
+        nmr.negatedFailureMessageArgs shouldBe Vector(1)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(1)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(1)
+
       }
     }
     
@@ -525,41 +511,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("Bob")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("The reference was null"),
-          'negatedFailureMessage ("\"Bob\" was not null"),
-          'midSentenceFailureMessage ("the reference was null"),
-          'midSentenceNegatedFailureMessage ("\"Bob\" was not null"),
-          'rawFailureMessage ("The reference was null"),
-          'rawNegatedFailureMessage ("{0} was not null"),
-          'rawMidSentenceFailureMessage ("the reference was null"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not null"),
-          'failureMessageArgs(Vector.empty),
-          'negatedFailureMessageArgs(Vector("Bob")),
-          'midSentenceFailureMessageArgs(Vector.empty),
-          'midSentenceNegatedFailureMessageArgs(Vector("Bob"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "The reference was null"
+        mr.negatedFailureMessage shouldBe "\"Bob\" was not null"
+        mr.midSentenceFailureMessage shouldBe "the reference was null"
+        mr.midSentenceNegatedFailureMessage shouldBe "\"Bob\" was not null"
+        mr.rawFailureMessage shouldBe "The reference was null"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not null"
+        mr.rawMidSentenceFailureMessage shouldBe "the reference was null"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not null"
+        mr.failureMessageArgs shouldBe Vector.empty
+        mr.negatedFailureMessageArgs shouldBe Vector("Bob")
+        mr.midSentenceFailureMessageArgs shouldBe Vector.empty
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("Bob")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("\"Bob\" was not null"),
-          'negatedFailureMessage ("The reference was null"),
-          'midSentenceFailureMessage ("\"Bob\" was not null"),
-          'midSentenceNegatedFailureMessage ("the reference was null"),
-          'rawFailureMessage ("{0} was not null"),
-          'rawNegatedFailureMessage ("The reference was null"),
-          'rawMidSentenceFailureMessage ("{0} was not null"),
-          'rawMidSentenceNegatedFailureMessage ("the reference was null"),
-          'failureMessageArgs(Vector("Bob")),
-          'negatedFailureMessageArgs(Vector.empty),
-          'midSentenceFailureMessageArgs(Vector("Bob")),
-          'midSentenceNegatedFailureMessageArgs(Vector.empty)    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "\"Bob\" was not null"
+        nmr.negatedFailureMessage shouldBe "The reference was null"
+        nmr.midSentenceFailureMessage shouldBe "\"Bob\" was not null"
+        nmr.midSentenceNegatedFailureMessage shouldBe "the reference was null"
+        nmr.rawFailureMessage shouldBe "{0} was not null"
+        nmr.rawNegatedFailureMessage shouldBe "The reference was null"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not null"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "the reference was null"
+        nmr.failureMessageArgs shouldBe Vector("Bob")
+        nmr.negatedFailureMessageArgs shouldBe Vector.empty
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("Bob")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector.empty
+
       }
     }
     
@@ -574,41 +558,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("0 was less than 3"),
-          'negatedFailureMessage ("0 was not less than 3"),
-          'midSentenceFailureMessage ("0 was less than 3"),
-          'midSentenceNegatedFailureMessage ("0 was not less than 3"),
-          'rawFailureMessage ("{0} was less than {1}"),
-          'rawNegatedFailureMessage ("{0} was not less than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was less than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not less than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "0 was less than 3"
+        mr.negatedFailureMessage shouldBe "0 was not less than 3"
+        mr.midSentenceFailureMessage shouldBe "0 was less than 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "0 was not less than 3"
+        mr.rawFailureMessage shouldBe "{0} was less than {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not less than {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was less than {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not less than {1}"
+        mr.failureMessageArgs shouldBe Vector(0, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("0 was not less than 3"),
-          'negatedFailureMessage ("0 was less than 3"),
-          'midSentenceFailureMessage ("0 was not less than 3"),
-          'midSentenceNegatedFailureMessage ("0 was less than 3"),
-          'rawFailureMessage ("{0} was not less than {1}"),
-          'rawNegatedFailureMessage ("{0} was less than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not less than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was less than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "0 was not less than 3"
+        nmr.negatedFailureMessage shouldBe "0 was less than 3"
+        nmr.midSentenceFailureMessage shouldBe "0 was not less than 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "0 was less than 3"
+        nmr.rawFailureMessage shouldBe "{0} was not less than {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was less than {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not less than {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was less than {1}"
+        nmr.failureMessageArgs shouldBe Vector(0, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
     }
     
@@ -623,41 +605,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("0 was greater than 3"),
-          'negatedFailureMessage ("0 was not greater than 3"),
-          'midSentenceFailureMessage ("0 was greater than 3"),
-          'midSentenceNegatedFailureMessage ("0 was not greater than 3"),
-          'rawFailureMessage ("{0} was greater than {1}"),
-          'rawNegatedFailureMessage ("{0} was not greater than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was greater than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not greater than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "0 was greater than 3"
+        mr.negatedFailureMessage shouldBe "0 was not greater than 3"
+        mr.midSentenceFailureMessage shouldBe "0 was greater than 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "0 was not greater than 3"
+        mr.rawFailureMessage shouldBe "{0} was greater than {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not greater than {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was greater than {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not greater than {1}"
+        mr.failureMessageArgs shouldBe Vector(0, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("0 was not greater than 3"),
-          'negatedFailureMessage ("0 was greater than 3"),
-          'midSentenceFailureMessage ("0 was not greater than 3"),
-          'midSentenceNegatedFailureMessage ("0 was greater than 3"),
-          'rawFailureMessage ("{0} was not greater than {1}"),
-          'rawNegatedFailureMessage ("{0} was greater than {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not greater than {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was greater than {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )        
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "0 was not greater than 3"
+        nmr.negatedFailureMessage shouldBe "0 was greater than 3"
+        nmr.midSentenceFailureMessage shouldBe "0 was not greater than 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "0 was greater than 3"
+        nmr.rawFailureMessage shouldBe "{0} was not greater than {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was greater than {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not greater than {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was greater than {1}"
+        nmr.failureMessageArgs shouldBe Vector(0, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+        
       }
     }
     
@@ -672,41 +652,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("0 was less than or equal to 3"),
-          'negatedFailureMessage ("0 was not less than or equal to 3"),
-          'midSentenceFailureMessage ("0 was less than or equal to 3"),
-          'midSentenceNegatedFailureMessage ("0 was not less than or equal to 3"),
-          'rawFailureMessage ("{0} was less than or equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was not less than or equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was less than or equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not less than or equal to {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "0 was less than or equal to 3"
+        mr.negatedFailureMessage shouldBe "0 was not less than or equal to 3"
+        mr.midSentenceFailureMessage shouldBe "0 was less than or equal to 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "0 was not less than or equal to 3"
+        mr.rawFailureMessage shouldBe "{0} was less than or equal to {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not less than or equal to {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was less than or equal to {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not less than or equal to {1}"
+        mr.failureMessageArgs shouldBe Vector(0, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("0 was not less than or equal to 3"),
-          'negatedFailureMessage ("0 was less than or equal to 3"),
-          'midSentenceFailureMessage ("0 was not less than or equal to 3"),
-          'midSentenceNegatedFailureMessage ("0 was less than or equal to 3"),
-          'rawFailureMessage ("{0} was not less than or equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was less than or equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not less than or equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was less than or equal to {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "0 was not less than or equal to 3"
+        nmr.negatedFailureMessage shouldBe "0 was less than or equal to 3"
+        nmr.midSentenceFailureMessage shouldBe "0 was not less than or equal to 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "0 was less than or equal to 3"
+        nmr.rawFailureMessage shouldBe "{0} was not less than or equal to {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was less than or equal to {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not less than or equal to {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was less than or equal to {1}"
+        nmr.failureMessageArgs shouldBe Vector(0, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
     }
     
@@ -721,48 +699,47 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("0 was greater than or equal to 3"),
-          'negatedFailureMessage ("0 was not greater than or equal to 3"),
-          'midSentenceFailureMessage ("0 was greater than or equal to 3"),
-          'midSentenceNegatedFailureMessage ("0 was not greater than or equal to 3"),
-          'rawFailureMessage ("{0} was greater than or equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was not greater than or equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was greater than or equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not greater than or equal to {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "0 was greater than or equal to 3"
+        mr.negatedFailureMessage shouldBe "0 was not greater than or equal to 3"
+        mr.midSentenceFailureMessage shouldBe "0 was greater than or equal to 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "0 was not greater than or equal to 3"
+        mr.rawFailureMessage shouldBe "{0} was greater than or equal to {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not greater than or equal to {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was greater than or equal to {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not greater than or equal to {1}"
+        mr.failureMessageArgs shouldBe Vector(0, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("0 was not greater than or equal to 3"),
-          'negatedFailureMessage ("0 was greater than or equal to 3"),
-          'midSentenceFailureMessage ("0 was not greater than or equal to 3"),
-          'midSentenceNegatedFailureMessage ("0 was greater than or equal to 3"),
-          'rawFailureMessage ("{0} was not greater than or equal to {1}"),
-          'rawNegatedFailureMessage ("{0} was greater than or equal to {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not greater than or equal to {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was greater than or equal to {1}"),
-          'failureMessageArgs(Vector(0, 3)),
-          'negatedFailureMessageArgs(Vector(0, 3)),
-          'midSentenceFailureMessageArgs(Vector(0, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(0, 3))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "0 was not greater than or equal to 3"
+        nmr.negatedFailureMessage shouldBe "0 was greater than or equal to 3"
+        nmr.midSentenceFailureMessage shouldBe "0 was not greater than or equal to 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "0 was greater than or equal to 3"
+        nmr.rawFailureMessage shouldBe "{0} was not greater than or equal to {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was greater than or equal to {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not greater than or equal to {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was greater than or equal to {1}"
+        nmr.failureMessageArgs shouldBe Vector(0, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(0, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(0, 3)
+
       }
     }
     
     describe("be(TripleEqualsInvocation) method fails") {
       intercept[NotAllowedException] { val mt = be === "cheese" }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("be(Symbol) method returns Matcher") {
       val mt = not be ('file)
       
@@ -773,43 +750,42 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(fileMock)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (fileMock + " was file"),
-          'negatedFailureMessage (fileMock + " was not file"),
-          'midSentenceFailureMessage (fileMock + " was file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was not file"),
-          'rawFailureMessage ("{0} was {1}"),
-          'rawNegatedFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceFailureMessage ("{0} was {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe fileMock + " was file"
+        mr.negatedFailureMessage shouldBe fileMock + " was not file"
+        mr.midSentenceFailureMessage shouldBe fileMock + " was file"
+        mr.midSentenceNegatedFailureMessage shouldBe fileMock + " was not file"
+        mr.rawFailureMessage shouldBe "{0} was {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not {1}"
+        mr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (fileMock + " was not file"),
-          'negatedFailureMessage (fileMock + " was file"),
-          'midSentenceFailureMessage (fileMock + " was not file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was file"),
-          'rawFailureMessage ("{0} was not {1}"),
-          'rawNegatedFailureMessage ("{0} was {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe fileMock + " was not file"
+        nmr.negatedFailureMessage shouldBe fileMock + " was file"
+        nmr.midSentenceFailureMessage shouldBe fileMock + " was not file"
+        nmr.midSentenceNegatedFailureMessage shouldBe fileMock + " was file"
+        nmr.rawFailureMessage shouldBe "{0} was not {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was {1}"
+        nmr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("be(BePropertyMatcher) method returns Matcher") {
       
@@ -837,44 +813,43 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was file"),
-          'negatedFailureMessage (myFile + " was not file"),
-          'midSentenceFailureMessage (myFile + " was file"),
-          'midSentenceNegatedFailureMessage (myFile + " was not file"),
-          'rawFailureMessage ("{0} was {1}"),
-          'rawNegatedFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceFailureMessage ("{0} was {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was file"
+        mr.negatedFailureMessage shouldBe myFile + " was not file"
+        mr.midSentenceFailureMessage shouldBe myFile + " was file"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not file"
+        mr.rawFailureMessage shouldBe "{0} was {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not {1}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not file"),
-          'negatedFailureMessage (myFile + " was file"),
-          'midSentenceFailureMessage (myFile + " was not file"),
-          'midSentenceNegatedFailureMessage (myFile + " was file"),
-          'rawFailureMessage ("{0} was not {1}"),
-          'rawNegatedFailureMessage ("{0} was {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not file"
+        nmr.negatedFailureMessage shouldBe myFile + " was file"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not file"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was file"
+        nmr.rawFailureMessage shouldBe "{0} was not {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("apply(ResultOfAWordToSymbolApplication) method returns Matcher") {
       val mt = not be a ('file)
       
@@ -885,43 +860,42 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(fileMock)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (fileMock + " was a file"),
-          'negatedFailureMessage (fileMock + " was not a file"),
-          'midSentenceFailureMessage (fileMock + " was a file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was not a file"),
-          'rawFailureMessage ("{0} was a {1}"),
-          'rawNegatedFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not a {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe fileMock + " was a file"
+        mr.negatedFailureMessage shouldBe fileMock + " was not a file"
+        mr.midSentenceFailureMessage shouldBe fileMock + " was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe fileMock + " was not a file"
+        mr.rawFailureMessage shouldBe "{0} was a {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was a {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (fileMock + " was not a file"),
-          'negatedFailureMessage (fileMock + " was a file"),
-          'midSentenceFailureMessage (fileMock + " was not a file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was a file"),
-          'rawFailureMessage ("{0} was not a {1}"),
-          'rawNegatedFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was a {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe fileMock + " was not a file"
+        nmr.negatedFailureMessage shouldBe fileMock + " was a file"
+        nmr.midSentenceFailureMessage shouldBe fileMock + " was not a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe fileMock + " was a file"
+        nmr.rawFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("be(ResultOfAWordToBePropertyMatcherApplication) method returns Matcher") {
       
@@ -949,41 +923,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was a file"),
-          'negatedFailureMessage (myFile + " was not a file"),
-          'midSentenceFailureMessage (myFile + " was a file"),
-          'midSentenceNegatedFailureMessage (myFile + " was not a file"),
-          'rawFailureMessage ("{0} was a {1}"),
-          'rawNegatedFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not a {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was a file"
+        mr.negatedFailureMessage shouldBe myFile + " was not a file"
+        mr.midSentenceFailureMessage shouldBe myFile + " was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not a file"
+        mr.rawFailureMessage shouldBe "{0} was a {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was a {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not a file"),
-          'negatedFailureMessage (myFile + " was a file"),
-          'midSentenceFailureMessage (myFile + " was not a file"),
-          'midSentenceNegatedFailureMessage (myFile + " was a file"),
-          'rawFailureMessage ("{0} was not a {1}"),
-          'rawNegatedFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was a {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not a file"
+        nmr.negatedFailureMessage shouldBe myFile + " was a file"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was a file"
+        nmr.rawFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
     }
     
@@ -1006,44 +978,43 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was a file"),
-          'negatedFailureMessage (myFile + " was not a file"),
-          'midSentenceFailureMessage (myFile + " was a file"),
-          'midSentenceNegatedFailureMessage (myFile + " was not a file"),
-          'rawFailureMessage ("{0} was a {1}"),
-          'rawNegatedFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not a {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was a file"
+        mr.negatedFailureMessage shouldBe myFile + " was not a file"
+        mr.midSentenceFailureMessage shouldBe myFile + " was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not a file"
+        mr.rawFailureMessage shouldBe "{0} was a {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was a {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not a {1}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not a file"),
-          'negatedFailureMessage (myFile + " was a file"),
-          'midSentenceFailureMessage (myFile + " was not a file"),
-          'midSentenceNegatedFailureMessage (myFile + " was a file"),
-          'rawFailureMessage ("{0} was not a {1}"),
-          'rawNegatedFailureMessage ("{0} was a {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was a {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not a file"
+        nmr.negatedFailureMessage shouldBe myFile + " was a file"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was a file"
+        nmr.rawFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not a {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was a {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
     }
-    
+
+    // SKIP-SCALATESTJS-START
     describe("be(ResultOfAnWordToSymbolApplication) method returns Matcher") {
       val mt = not be an ('file)
       
@@ -1054,43 +1025,42 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(fileMock)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (fileMock + " was an file"),
-          'negatedFailureMessage (fileMock + " was not an file"),
-          'midSentenceFailureMessage (fileMock + " was an file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was not an file"),
-          'rawFailureMessage ("{0} was an {1}"),
-          'rawNegatedFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe fileMock + " was an file"
+        mr.negatedFailureMessage shouldBe fileMock + " was not an file"
+        mr.midSentenceFailureMessage shouldBe fileMock + " was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe fileMock + " was not an file"
+        mr.rawFailureMessage shouldBe "{0} was an {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was an {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (fileMock + " was not an file"),
-          'negatedFailureMessage (fileMock + " was an file"),
-          'midSentenceFailureMessage (fileMock + " was not an file"),
-          'midSentenceNegatedFailureMessage (fileMock + " was an file"),
-          'rawFailureMessage ("{0} was not an {1}"),
-          'rawNegatedFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was an {1}"),
-          'failureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(fileMock, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(fileMock, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe fileMock + " was not an file"
+        nmr.negatedFailureMessage shouldBe fileMock + " was an file"
+        nmr.midSentenceFailureMessage shouldBe fileMock + " was not an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe fileMock + " was an file"
+        nmr.rawFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.failureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fileMock, UnquotedString("file"))
+
       }
     }
+    // SKIP-SCALATESTJS-END
     
     describe("be(ResultOfAnWordToBePropertyMatcherApplication) method returns Matcher") {
       
@@ -1118,41 +1088,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was an file"),
-          'negatedFailureMessage (myFile + " was not an file"),
-          'midSentenceFailureMessage (myFile + " was an file"),
-          'midSentenceNegatedFailureMessage (myFile + " was not an file"),
-          'rawFailureMessage ("{0} was an {1}"),
-          'rawNegatedFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was an file"
+        mr.negatedFailureMessage shouldBe myFile + " was not an file"
+        mr.midSentenceFailureMessage shouldBe myFile + " was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not an file"
+        mr.rawFailureMessage shouldBe "{0} was an {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was an {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not an file"),
-          'negatedFailureMessage (myFile + " was an file"),
-          'midSentenceFailureMessage (myFile + " was not an file"),
-          'midSentenceNegatedFailureMessage (myFile + " was an file"),
-          'rawFailureMessage ("{0} was not an {1}"),
-          'rawNegatedFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was an {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not an file"
+        nmr.negatedFailureMessage shouldBe myFile + " was an file"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was an file"
+        nmr.rawFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
     }
     
@@ -1175,41 +1143,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was an file"),
-          'negatedFailureMessage (myFile + " was not an file"),
-          'midSentenceFailureMessage (myFile + " was an file"),
-          'midSentenceNegatedFailureMessage (myFile + " was not an file"),
-          'rawFailureMessage ("{0} was an {1}"),
-          'rawNegatedFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was an file"
+        mr.negatedFailureMessage shouldBe myFile + " was not an file"
+        mr.midSentenceFailureMessage shouldBe myFile + " was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not an file"
+        mr.rawFailureMessage shouldBe "{0} was an {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was an {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not an {1}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not an file"),
-          'negatedFailureMessage (myFile + " was an file"),
-          'midSentenceFailureMessage (myFile + " was not an file"),
-          'midSentenceNegatedFailureMessage (myFile + " was an file"),
-          'rawFailureMessage ("{0} was not an {1}"),
-          'rawNegatedFailureMessage ("{0} was an {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was an {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString("file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not an file"
+        nmr.negatedFailureMessage shouldBe myFile + " was an file"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was an file"
+        nmr.rawFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was an {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString("file"))
+
       }
     }
     
@@ -1232,41 +1198,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFileLeft)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (myFileLeft + " was the same instance as " + myFileRight),
-          'negatedFailureMessage (myFileLeft + " was not the same instance as " + myFileRight),
-          'midSentenceFailureMessage (myFileLeft + " was the same instance as " + myFileRight),
-          'midSentenceNegatedFailureMessage (myFileLeft + " was not the same instance as " + myFileRight),
-          'rawFailureMessage ("{0} was the same instance as {1}"),
-          'rawNegatedFailureMessage ("{0} was not the same instance as {1}"),
-          'rawMidSentenceFailureMessage ("{0} was the same instance as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not the same instance as {1}"),
-          'failureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe myFileLeft + " was the same instance as " + myFileRight
+        mr.negatedFailureMessage shouldBe myFileLeft + " was not the same instance as " + myFileRight
+        mr.midSentenceFailureMessage shouldBe myFileLeft + " was the same instance as " + myFileRight
+        mr.midSentenceNegatedFailureMessage shouldBe myFileLeft + " was not the same instance as " + myFileRight
+        mr.rawFailureMessage shouldBe "{0} was the same instance as {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not the same instance as {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was the same instance as {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not the same instance as {1}"
+        mr.failureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        mr.negatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (myFileLeft + " was not the same instance as " + myFileRight),
-          'negatedFailureMessage (myFileLeft + " was the same instance as " + myFileRight),
-          'midSentenceFailureMessage (myFileLeft + " was not the same instance as " + myFileRight),
-          'midSentenceNegatedFailureMessage (myFileLeft + " was the same instance as " + myFileRight),
-          'rawFailureMessage ("{0} was not the same instance as {1}"),
-          'rawNegatedFailureMessage ("{0} was the same instance as {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not the same instance as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was the same instance as {1}"),
-          'failureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe myFileLeft + " was not the same instance as " + myFileRight
+        nmr.negatedFailureMessage shouldBe myFileLeft + " was the same instance as " + myFileRight
+        nmr.midSentenceFailureMessage shouldBe myFileLeft + " was not the same instance as " + myFileRight
+        nmr.midSentenceNegatedFailureMessage shouldBe myFileLeft + " was the same instance as " + myFileRight
+        nmr.rawFailureMessage shouldBe "{0} was not the same instance as {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was the same instance as {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not the same instance as {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was the same instance as {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+
       }
     }
     
@@ -1281,41 +1245,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(7.0)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("7.0 was 7.1 plus or minus 0.2"),
-          'negatedFailureMessage ("7.0 was not 7.1 plus or minus 0.2"),
-          'midSentenceFailureMessage ("7.0 was 7.1 plus or minus 0.2"),
-          'midSentenceNegatedFailureMessage ("7.0 was not 7.1 plus or minus 0.2"),
-          'rawFailureMessage ("{0} was {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} was not {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} was {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'negatedFailureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'midSentenceFailureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(7.0, 7.1, 0.2))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        mr.negatedFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        mr.midSentenceFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        mr.midSentenceNegatedFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        mr.rawFailureMessage shouldBe "{0} was {1} plus or minus {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was {1} plus or minus {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
+        mr.failureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        mr.negatedFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("7.0 was not 7.1 plus or minus 0.2"),
-          'negatedFailureMessage ("7.0 was 7.1 plus or minus 0.2"),
-          'midSentenceFailureMessage ("7.0 was not 7.1 plus or minus 0.2"),
-          'midSentenceNegatedFailureMessage ("7.0 was 7.1 plus or minus 0.2"),
-          'rawFailureMessage ("{0} was not {1} plus or minus {2}"),
-          'rawNegatedFailureMessage ("{0} was {1} plus or minus {2}"),
-          'rawMidSentenceFailureMessage ("{0} was not {1} plus or minus {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was {1} plus or minus {2}"),
-          'failureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'negatedFailureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'midSentenceFailureMessageArgs(Vector(7.0, 7.1, 0.2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(7.0, 7.1, 0.2))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        nmr.negatedFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        nmr.midSentenceFailureMessage shouldBe 7.0 + " was not 7.1 plus or minus 0.2"
+        nmr.midSentenceNegatedFailureMessage shouldBe 7.0 + " was 7.1 plus or minus 0.2"
+        nmr.rawFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was {1} plus or minus {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not {1} plus or minus {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was {1} plus or minus {2}"
+        nmr.failureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        nmr.negatedFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(7.0, 7.1, 0.2)
+
       }
     }
     
@@ -1335,41 +1297,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(fraction)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (fraction + " was defined at 8"),
-          'negatedFailureMessage (fraction + " was not defined at 8"),
-          'midSentenceFailureMessage (fraction + " was defined at 8"),
-          'midSentenceNegatedFailureMessage (fraction + " was not defined at 8"),
-          'rawFailureMessage ("{0} was defined at {1}"),
-          'rawNegatedFailureMessage ("{0} was not defined at {1}"),
-          'rawMidSentenceFailureMessage ("{0} was defined at {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not defined at {1}"),
-          'failureMessageArgs(Vector(fraction, 8)),
-          'negatedFailureMessageArgs(Vector(fraction, 8)),
-          'midSentenceFailureMessageArgs(Vector(fraction, 8)),
-          'midSentenceNegatedFailureMessageArgs(Vector(fraction, 8))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe fraction + " was defined at 8"
+        mr.negatedFailureMessage shouldBe fraction + " was not defined at 8"
+        mr.midSentenceFailureMessage shouldBe fraction + " was defined at 8"
+        mr.midSentenceNegatedFailureMessage shouldBe fraction + " was not defined at 8"
+        mr.rawFailureMessage shouldBe "{0} was defined at {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not defined at {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was defined at {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not defined at {1}"
+        mr.failureMessageArgs shouldBe Vector(fraction, 8)
+        mr.negatedFailureMessageArgs shouldBe Vector(fraction, 8)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(fraction, 8)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fraction, 8)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (fraction + " was not defined at 8"),
-          'negatedFailureMessage (fraction + " was defined at 8"),
-          'midSentenceFailureMessage (fraction + " was not defined at 8"),
-          'midSentenceNegatedFailureMessage (fraction + " was defined at 8"),
-          'rawFailureMessage ("{0} was not defined at {1}"),
-          'rawNegatedFailureMessage ("{0} was defined at {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not defined at {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was defined at {1}"),
-          'failureMessageArgs(Vector(fraction, 8)),
-          'negatedFailureMessageArgs(Vector(fraction, 8)),
-          'midSentenceFailureMessageArgs(Vector(fraction, 8)),
-          'midSentenceNegatedFailureMessageArgs(Vector(fraction, 8))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe fraction + " was not defined at 8"
+        nmr.negatedFailureMessage shouldBe fraction + " was defined at 8"
+        nmr.midSentenceFailureMessage shouldBe fraction + " was not defined at 8"
+        nmr.midSentenceNegatedFailureMessage shouldBe fraction + " was defined at 8"
+        nmr.rawFailureMessage shouldBe "{0} was not defined at {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was defined at {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not defined at {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was defined at {1}"
+        nmr.failureMessageArgs shouldBe Vector(fraction, 8)
+        nmr.negatedFailureMessageArgs shouldBe Vector(fraction, 8)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(fraction, 8)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(fraction, 8)
+
       }
     }
     
@@ -1395,41 +1355,39 @@ class NotWordSpec extends FunSpec with FileMocks {
         val mr = mt(myFileLeft)
       
         it("should have correct MatcherResult") {
-          mr should have (
-            'matches (true),
-            'failureMessage (myFileLeft + " was equal to " + myFileRight),
-            'negatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
-            'midSentenceFailureMessage (myFileLeft + " was equal to " + myFileRight),
-            'midSentenceNegatedFailureMessage (myFileLeft + " was not equal to " + myFileRight),
-            'rawFailureMessage ("{0} was equal to {1}"),
-            'rawNegatedFailureMessage ("{0} was not equal to {1}"),
-            'rawMidSentenceFailureMessage ("{0} was equal to {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} was not equal to {1}"),
-            'failureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
-          )
+          mr.matches shouldBe true
+          mr.failureMessage shouldBe myFileLeft + " was equal to " + myFileRight
+          mr.negatedFailureMessage shouldBe myFileLeft + " was not equal to " + myFileRight
+          mr.midSentenceFailureMessage shouldBe myFileLeft + " was equal to " + myFileRight
+          mr.midSentenceNegatedFailureMessage shouldBe myFileLeft + " was not equal to " + myFileRight
+          mr.rawFailureMessage shouldBe "{0} was equal to {1}"
+          mr.rawNegatedFailureMessage shouldBe "{0} was not equal to {1}"
+          mr.rawMidSentenceFailureMessage shouldBe "{0} was equal to {1}"
+          mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not equal to {1}"
+          mr.failureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          mr.negatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          mr.midSentenceFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+
         }
       
         val nmr = mr.negated
       
         it("should have correct negated MatcherResult") {
-          nmr should have (
-            'matches (false),
-            'failureMessage (myFileLeft + " was not equal to " + myFileRight),
-            'negatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
-            'midSentenceFailureMessage (myFileLeft + " was not equal to " + myFileRight),
-            'midSentenceNegatedFailureMessage (myFileLeft + " was equal to " + myFileRight),
-            'rawFailureMessage ("{0} was not equal to {1}"),
-            'rawNegatedFailureMessage ("{0} was equal to {1}"),
-            'rawMidSentenceFailureMessage ("{0} was not equal to {1}"),
-            'rawMidSentenceNegatedFailureMessage ("{0} was equal to {1}"),
-            'failureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'negatedFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'midSentenceFailureMessageArgs(Vector(myFileLeft, myFileRight)),
-            'midSentenceNegatedFailureMessageArgs(Vector(myFileLeft, myFileRight))    
-          )
+          nmr.matches shouldBe false
+          nmr.failureMessage shouldBe myFileLeft + " was not equal to " + myFileRight
+          nmr.negatedFailureMessage shouldBe myFileLeft + " was equal to " + myFileRight
+          nmr.midSentenceFailureMessage shouldBe myFileLeft + " was not equal to " + myFileRight
+          nmr.midSentenceNegatedFailureMessage shouldBe myFileLeft + " was equal to " + myFileRight
+          nmr.rawFailureMessage shouldBe "{0} was not equal to {1}"
+          nmr.rawNegatedFailureMessage shouldBe "{0} was equal to {1}"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} was not equal to {1}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was equal to {1}"
+          nmr.failureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          nmr.negatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          nmr.midSentenceFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFileLeft, myFileRight)
+
         }
       }
       
@@ -1439,41 +1397,39 @@ class NotWordSpec extends FunSpec with FileMocks {
         val mr = mt(myFileLeft)
       
         it("should have correct MatcherResult") {
-          mr should have (
-            'matches (true),
-            'failureMessage ("The reference was null"),
-            'negatedFailureMessage (myFileRight + " was not null"),
-            'midSentenceFailureMessage ("the reference was null"),
-            'midSentenceNegatedFailureMessage (myFileRight + " was not null"),
-            'rawFailureMessage ("The reference was null"),
-            'rawNegatedFailureMessage ("{0} was not null"),
-            'rawMidSentenceFailureMessage ("the reference was null"),
-            'rawMidSentenceNegatedFailureMessage ("{0} was not null"),
-            'failureMessageArgs(Vector.empty),
-            'negatedFailureMessageArgs(Vector(myFileRight)),
-            'midSentenceFailureMessageArgs(Vector.empty),
-            'midSentenceNegatedFailureMessageArgs(Vector(myFileRight))    
-          )
+          mr.matches shouldBe true
+          mr.failureMessage shouldBe "The reference was null"
+          mr.negatedFailureMessage shouldBe myFileRight + " was not null"
+          mr.midSentenceFailureMessage shouldBe "the reference was null"
+          mr.midSentenceNegatedFailureMessage shouldBe myFileRight + " was not null"
+          mr.rawFailureMessage shouldBe "The reference was null"
+          mr.rawNegatedFailureMessage shouldBe "{0} was not null"
+          mr.rawMidSentenceFailureMessage shouldBe "the reference was null"
+          mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not null"
+          mr.failureMessageArgs shouldBe Vector.empty
+          mr.negatedFailureMessageArgs shouldBe Vector(myFileRight)
+          mr.midSentenceFailureMessageArgs shouldBe Vector.empty
+          mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFileRight)
+
         }
       
         val nmr = mr.negated
       
         it("should have correct negated MatcherResult") {
-          nmr should have (
-            'matches (false),
-            'failureMessage (myFileRight + " was not null"),
-            'negatedFailureMessage ("The reference was null"),
-            'midSentenceFailureMessage (myFileRight + " was not null"),
-            'midSentenceNegatedFailureMessage ("the reference was null"),
-            'rawFailureMessage ("{0} was not null"),
-            'rawNegatedFailureMessage ("The reference was null"),
-            'rawMidSentenceFailureMessage ("{0} was not null"),
-            'rawMidSentenceNegatedFailureMessage ("the reference was null"),
-            'failureMessageArgs(Vector(myFileRight)),
-            'negatedFailureMessageArgs(Vector.empty),
-            'midSentenceFailureMessageArgs(Vector(myFileRight)),
-            'midSentenceNegatedFailureMessageArgs(Vector.empty)    
-          )
+          nmr.matches shouldBe false
+          nmr.failureMessage shouldBe myFileRight + " was not null"
+          nmr.negatedFailureMessage shouldBe "The reference was null"
+          nmr.midSentenceFailureMessage shouldBe myFileRight + " was not null"
+          nmr.midSentenceNegatedFailureMessage shouldBe "the reference was null"
+          nmr.rawFailureMessage shouldBe "{0} was not null"
+          nmr.rawNegatedFailureMessage shouldBe "The reference was null"
+          nmr.rawMidSentenceFailureMessage shouldBe "{0} was not null"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "the reference was null"
+          nmr.failureMessageArgs shouldBe Vector(myFileRight)
+          nmr.negatedFailureMessageArgs shouldBe Vector.empty
+          nmr.midSentenceFailureMessageArgs shouldBe Vector(myFileRight)
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector.empty
+
         }
       }
     }
@@ -1492,41 +1448,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (leftList + " was sorted"),
-          'negatedFailureMessage (leftList + " was not sorted"),
-          'midSentenceFailureMessage (leftList + " was sorted"),
-          'midSentenceNegatedFailureMessage (leftList + " was not sorted"),
-          'rawFailureMessage ("{0} was sorted"),
-          'rawNegatedFailureMessage ("{0} was not sorted"),
-          'rawMidSentenceFailureMessage ("{0} was sorted"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not sorted"),
-          'failureMessageArgs(Vector(leftList)),
-          'negatedFailureMessageArgs(Vector(leftList)),
-          'midSentenceFailureMessageArgs(Vector(leftList)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe leftList + " was sorted"
+        mr.negatedFailureMessage shouldBe leftList + " was not sorted"
+        mr.midSentenceFailureMessage shouldBe leftList + " was sorted"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " was not sorted"
+        mr.rawFailureMessage shouldBe "{0} was sorted"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not sorted"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was sorted"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not sorted"
+        mr.failureMessageArgs shouldBe Vector(leftList)
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (leftList + " was not sorted"),
-          'negatedFailureMessage (leftList + " was sorted"),
-          'midSentenceFailureMessage (leftList + " was not sorted"),
-          'midSentenceNegatedFailureMessage (leftList + " was sorted"),
-          'rawFailureMessage ("{0} was not sorted"),
-          'rawNegatedFailureMessage ("{0} was sorted"),
-          'rawMidSentenceFailureMessage ("{0} was not sorted"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was sorted"),
-          'failureMessageArgs(Vector(leftList)),
-          'negatedFailureMessageArgs(Vector(leftList)),
-          'midSentenceFailureMessageArgs(Vector(leftList)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe leftList + " was not sorted"
+        nmr.negatedFailureMessage shouldBe leftList + " was sorted"
+        nmr.midSentenceFailureMessage shouldBe leftList + " was not sorted"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " was sorted"
+        nmr.rawFailureMessage shouldBe "{0} was not sorted"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was sorted"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not sorted"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was sorted"
+        nmr.failureMessageArgs shouldBe Vector(leftList)
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList)
+
       }
     }
     
@@ -1548,41 +1502,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was readable"),
-          'negatedFailureMessage (myFile + " was not readable"),
-          'midSentenceFailureMessage (myFile + " was readable"),
-          'midSentenceNegatedFailureMessage (myFile + " was not readable"),
-          'rawFailureMessage ("{0} was readable"),
-          'rawNegatedFailureMessage ("{0} was not readable"),
-          'rawMidSentenceFailureMessage ("{0} was readable"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not readable"),
-          'failureMessageArgs(Vector(myFile)),
-          'negatedFailureMessageArgs(Vector(myFile)),
-          'midSentenceFailureMessageArgs(Vector(myFile)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was readable"
+        mr.negatedFailureMessage shouldBe myFile + " was not readable"
+        mr.midSentenceFailureMessage shouldBe myFile + " was readable"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not readable"
+        mr.rawFailureMessage shouldBe "{0} was readable"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not readable"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was readable"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not readable"
+        mr.failureMessageArgs shouldBe Vector(myFile)
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not readable"),
-          'negatedFailureMessage (myFile + " was readable"),
-          'midSentenceFailureMessage (myFile + " was not readable"),
-          'midSentenceNegatedFailureMessage (myFile + " was readable"),
-          'rawFailureMessage ("{0} was not readable"),
-          'rawNegatedFailureMessage ("{0} was readable"),
-          'rawMidSentenceFailureMessage ("{0} was not readable"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was readable"),
-          'failureMessageArgs(Vector(myFile)),
-          'negatedFailureMessageArgs(Vector(myFile)),
-          'midSentenceFailureMessageArgs(Vector(myFile)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not readable"
+        nmr.negatedFailureMessage shouldBe myFile + " was readable"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not readable"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was readable"
+        nmr.rawFailureMessage shouldBe "{0} was not readable"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was readable"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not readable"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was readable"
+        nmr.failureMessageArgs shouldBe Vector(myFile)
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile)
+
       }
     }
     
@@ -1604,41 +1556,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was writable"),
-          'negatedFailureMessage (myFile + " was not writable"),
-          'midSentenceFailureMessage (myFile + " was writable"),
-          'midSentenceNegatedFailureMessage (myFile + " was not writable"),
-          'rawFailureMessage ("{0} was writable"),
-          'rawNegatedFailureMessage ("{0} was not writable"),
-          'rawMidSentenceFailureMessage ("{0} was writable"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not writable"),
-          'failureMessageArgs(Vector(myFile)),
-          'negatedFailureMessageArgs(Vector(myFile)),
-          'midSentenceFailureMessageArgs(Vector(myFile)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was writable"
+        mr.negatedFailureMessage shouldBe myFile + " was not writable"
+        mr.midSentenceFailureMessage shouldBe myFile + " was writable"
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not writable"
+        mr.rawFailureMessage shouldBe "{0} was writable"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not writable"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was writable"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not writable"
+        mr.failureMessageArgs shouldBe Vector(myFile)
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not writable"),
-          'negatedFailureMessage (myFile + " was writable"),
-          'midSentenceFailureMessage (myFile + " was not writable"),
-          'midSentenceNegatedFailureMessage (myFile + " was writable"),
-          'rawFailureMessage ("{0} was not writable"),
-          'rawNegatedFailureMessage ("{0} was writable"),
-          'rawMidSentenceFailureMessage ("{0} was not writable"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was writable"),
-          'failureMessageArgs(Vector(myFile)),
-          'negatedFailureMessageArgs(Vector(myFile)),
-          'midSentenceFailureMessageArgs(Vector(myFile)),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not writable"
+        nmr.negatedFailureMessage shouldBe myFile + " was writable"
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not writable"
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was writable"
+        nmr.rawFailureMessage shouldBe "{0} was not writable"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was writable"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not writable"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was writable"
+        nmr.failureMessageArgs shouldBe Vector(myFile)
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile)
+
       }
     }
     
@@ -1656,41 +1606,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (leftList + " was empty"),
-          'negatedFailureMessage (leftList + " was not empty"),
-          'midSentenceFailureMessage (leftList + " was empty"),
-          'midSentenceNegatedFailureMessage (leftList + " was not empty"),
-          'rawFailureMessage ("{0} was empty"),
-          'rawNegatedFailureMessage ("{0} was not empty"),
-          'rawMidSentenceFailureMessage ("{0} was empty"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not empty"),
-          'failureMessageArgs(Vector(leftList)),
-          'negatedFailureMessageArgs(Vector(leftList)),
-          'midSentenceFailureMessageArgs(Vector(leftList)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe leftList + " was empty"
+        mr.negatedFailureMessage shouldBe leftList + " was not empty"
+        mr.midSentenceFailureMessage shouldBe leftList + " was empty"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " was not empty"
+        mr.rawFailureMessage shouldBe "{0} was empty"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not empty"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was empty"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not empty"
+        mr.failureMessageArgs shouldBe Vector(leftList)
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (leftList + " was not empty"),
-          'negatedFailureMessage (leftList + " was empty"),
-          'midSentenceFailureMessage (leftList + " was not empty"),
-          'midSentenceNegatedFailureMessage (leftList + " was empty"),
-          'rawFailureMessage ("{0} was not empty"),
-          'rawNegatedFailureMessage ("{0} was empty"),
-          'rawMidSentenceFailureMessage ("{0} was not empty"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was empty"),
-          'failureMessageArgs(Vector(leftList)),
-          'negatedFailureMessageArgs(Vector(leftList)),
-          'midSentenceFailureMessageArgs(Vector(leftList)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe leftList + " was not empty"
+        nmr.negatedFailureMessage shouldBe leftList + " was empty"
+        nmr.midSentenceFailureMessage shouldBe leftList + " was not empty"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " was empty"
+        nmr.rawFailureMessage shouldBe "{0} was not empty"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was empty"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not empty"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was empty"
+        nmr.failureMessageArgs shouldBe Vector(leftList)
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList)
+
       }
     }
     
@@ -1708,41 +1656,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(leftOption)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (leftOption + " was defined"),
-          'negatedFailureMessage (leftOption + " was not defined"),
-          'midSentenceFailureMessage (leftOption + " was defined"),
-          'midSentenceNegatedFailureMessage (leftOption + " was not defined"),
-          'rawFailureMessage ("{0} was defined"),
-          'rawNegatedFailureMessage ("{0} was not defined"),
-          'rawMidSentenceFailureMessage ("{0} was defined"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not defined"),
-          'failureMessageArgs(Vector(leftOption)),
-          'negatedFailureMessageArgs(Vector(leftOption)),
-          'midSentenceFailureMessageArgs(Vector(leftOption)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftOption))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe leftOption + " was defined"
+        mr.negatedFailureMessage shouldBe leftOption + " was not defined"
+        mr.midSentenceFailureMessage shouldBe leftOption + " was defined"
+        mr.midSentenceNegatedFailureMessage shouldBe leftOption + " was not defined"
+        mr.rawFailureMessage shouldBe "{0} was defined"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not defined"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was defined"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not defined"
+        mr.failureMessageArgs shouldBe Vector(leftOption)
+        mr.negatedFailureMessageArgs shouldBe Vector(leftOption)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftOption)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftOption)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (leftOption + " was not defined"),
-          'negatedFailureMessage (leftOption + " was defined"),
-          'midSentenceFailureMessage (leftOption + " was not defined"),
-          'midSentenceNegatedFailureMessage (leftOption + " was defined"),
-          'rawFailureMessage ("{0} was not defined"),
-          'rawNegatedFailureMessage ("{0} was defined"),
-          'rawMidSentenceFailureMessage ("{0} was not defined"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was defined"),
-          'failureMessageArgs(Vector(leftOption)),
-          'negatedFailureMessageArgs(Vector(leftOption)),
-          'midSentenceFailureMessageArgs(Vector(leftOption)),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftOption))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe leftOption + " was not defined"
+        nmr.negatedFailureMessage shouldBe leftOption + " was defined"
+        nmr.midSentenceFailureMessage shouldBe leftOption + " was not defined"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftOption + " was defined"
+        nmr.rawFailureMessage shouldBe "{0} was not defined"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was defined"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not defined"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was defined"
+        nmr.failureMessageArgs shouldBe Vector(leftOption)
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftOption)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftOption)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftOption)
+
       }
     }
     
@@ -1768,41 +1714,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was an instance of " + clazz.getName),
-          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'midSentenceFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'rawFailureMessage ("{0} was an instance of {1}"),
-          'rawNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawMidSentenceFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName)))
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        mr.negatedFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.midSentenceFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.rawFailureMessage shouldBe "{0} was an instance of {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was an instance of {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'negatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'rawFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawNegatedFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was an instance of {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.negatedFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        nmr.rawFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was an instance of {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was an instance of {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+
       }
     }
     
@@ -1828,41 +1772,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (myFile + " was an instance of " + clazz.getName),
-          'negatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'midSentenceFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'rawFailureMessage ("{0} was an instance of {1}"),
-          'rawNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawMidSentenceFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName)))
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        mr.negatedFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.midSentenceFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        mr.midSentenceNegatedFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.rawFailureMessage shouldBe "{0} was an instance of {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} was an instance of {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        mr.failureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        mr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'negatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'midSentenceFailureMessage (myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName),
-          'midSentenceNegatedFailureMessage (myFile + " was an instance of " + clazz.getName),
-          'rawFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawNegatedFailureMessage ("{0} was an instance of {1}"),
-          'rawMidSentenceFailureMessage ("{0} was not an instance of {1}, but an instance of {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} was an instance of {1}"),
-          'failureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'negatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName))),
-          'midSentenceFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))),
-          'midSentenceNegatedFailureMessageArgs(Vector(myFile, UnquotedString(clazz.getName)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.negatedFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        nmr.midSentenceFailureMessage shouldBe myFile + " was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.midSentenceNegatedFailureMessage shouldBe myFile + " was an instance of " + clazz.getName
+        nmr.rawFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} was an instance of {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} was an instance of {1}"
+        nmr.failureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        nmr.negatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName), UnquotedString(myFile.getClass.getName))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(myFile, UnquotedString(clazz.getName))
+
       }
     }
     
@@ -1878,41 +1820,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("2.7")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'rawFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7\" did not fully match the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7\" fully matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not fully match the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} fully matched the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"2.7\" did not fully match the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"2.7\" fully matched the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not fully match the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} fully matched the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7", UnquotedString(decimal))
+
       }
       
     }
@@ -1929,41 +1869,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("b2.7")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" included substring that matched regex " + decimal),
-          'negatedFailureMessage ("\"b2.7\" did not include substring that matched regex " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" included substring that matched regex " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not include substring that matched regex " + decimal),
-          'rawFailureMessage ("{0} included substring that matched regex {1}"),
-          'rawNegatedFailureMessage ("{0} did not include substring that matched regex {1}"),
-          'rawMidSentenceFailureMessage ("{0} included substring that matched regex {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not include substring that matched regex {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"b2.7\" included substring that matched regex " + decimal
+        mr.negatedFailureMessage shouldBe "\"b2.7\" did not include substring that matched regex " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" included substring that matched regex " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not include substring that matched regex " + decimal
+        mr.rawFailureMessage shouldBe "{0} included substring that matched regex {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not include substring that matched regex {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} included substring that matched regex {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not include substring that matched regex {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not include substring that matched regex " + decimal),
-          'negatedFailureMessage ("\"b2.7\" included substring that matched regex " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" did not include substring that matched regex " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" included substring that matched regex " + decimal),
-          'rawFailureMessage ("{0} did not include substring that matched regex {1}"),
-          'rawNegatedFailureMessage ("{0} included substring that matched regex {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not include substring that matched regex {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} included substring that matched regex {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"b2.7\" did not include substring that matched regex " + decimal
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" included substring that matched regex " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" did not include substring that matched regex " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" included substring that matched regex " + decimal
+        nmr.rawFailureMessage shouldBe "{0} did not include substring that matched regex {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} included substring that matched regex {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not include substring that matched regex {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} included substring that matched regex {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
     }
     
@@ -1979,41 +1917,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("b2.7")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" included substring \"2.7\""),
-          'negatedFailureMessage ("\"b2.7\" did not include substring \"2.7\""),
-          'midSentenceFailureMessage ("\"b2.7\" included substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not include substring \"2.7\""),
-          'rawFailureMessage ("{0} included substring {1}"),
-          'rawNegatedFailureMessage ("{0} did not include substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} included substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not include substring {1}"),
-          'failureMessageArgs(Vector("b2.7", "2.7")),
-          'negatedFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", "2.7"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"b2.7\" included substring \"2.7\""
+        mr.negatedFailureMessage shouldBe "\"b2.7\" did not include substring \"2.7\""
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" included substring \"2.7\""
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not include substring \"2.7\""
+        mr.rawFailureMessage shouldBe "{0} included substring {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not include substring {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} included substring {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not include substring {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not include substring \"2.7\""),
-          'negatedFailureMessage ("\"b2.7\" included substring \"2.7\""),
-          'midSentenceFailureMessage ("\"b2.7\" did not include substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" included substring \"2.7\""),
-          'rawFailureMessage ("{0} did not include substring {1}"),
-          'rawNegatedFailureMessage ("{0} included substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not include substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} included substring {1}"),
-          'failureMessageArgs(Vector("b2.7", "2.7")),
-          'negatedFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", "2.7"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"b2.7\" did not include substring \"2.7\""
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" included substring \"2.7\""
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" did not include substring \"2.7\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" included substring \"2.7\""
+        nmr.rawFailureMessage shouldBe "{0} did not include substring {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} included substring {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not include substring {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} included substring {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+
       }
     }
     
@@ -2029,41 +1965,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("2.7b")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"2.7b\" started with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7b\" did not start with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7b\" started with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7b\" did not start with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} started with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not start with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} started with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not start with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7b", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"2.7b\" started with a substring that matched the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"2.7b\" did not start with a substring that matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"2.7b\" started with a substring that matched the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"2.7b\" did not start with a substring that matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} started with a substring that matched the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not start with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} started with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not start with a substring that matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"2.7b\" did not start with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"2.7b\" started with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"2.7b\" did not start with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"2.7b\" started with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not start with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} started with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not start with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} started with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("2.7b", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7b", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"2.7b\" did not start with a substring that matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"2.7b\" started with a substring that matched the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"2.7b\" did not start with a substring that matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"2.7b\" started with a substring that matched the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} did not start with a substring that matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} started with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not start with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} started with a substring that matched the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7b", UnquotedString(decimal))
+
       }
     }
     
@@ -2078,41 +2012,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("2.7b")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"2.7b\" started with substring \"2.7\""),
-          'negatedFailureMessage ("\"2.7b\" did not start with substring \"2.7\""),
-          'midSentenceFailureMessage ("\"2.7b\" started with substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"2.7b\" did not start with substring \"2.7\""),
-          'rawFailureMessage ("{0} started with substring {1}"),
-          'rawNegatedFailureMessage ("{0} did not start with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} started with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not start with substring {1}"),
-          'failureMessageArgs(Vector("2.7b", "2.7")),
-          'negatedFailureMessageArgs(Vector("2.7b", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("2.7b", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7b", "2.7"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"2.7b\" started with substring \"2.7\""
+        mr.negatedFailureMessage shouldBe "\"2.7b\" did not start with substring \"2.7\""
+        mr.midSentenceFailureMessage shouldBe "\"2.7b\" started with substring \"2.7\""
+        mr.midSentenceNegatedFailureMessage shouldBe "\"2.7b\" did not start with substring \"2.7\""
+        mr.rawFailureMessage shouldBe "{0} started with substring {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not start with substring {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} started with substring {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not start with substring {1}"
+        mr.failureMessageArgs shouldBe Vector("2.7b", "2.7")
+        mr.negatedFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"2.7b\" did not start with substring \"2.7\""),
-          'negatedFailureMessage ("\"2.7b\" started with substring \"2.7\""),
-          'midSentenceFailureMessage ("\"2.7b\" did not start with substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"2.7b\" started with substring \"2.7\""),
-          'rawFailureMessage ("{0} did not start with substring {1}"),
-          'rawNegatedFailureMessage ("{0} started with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not start with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} started with substring {1}"),
-          'failureMessageArgs(Vector("2.7b", "2.7")),
-          'negatedFailureMessageArgs(Vector("2.7b", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("2.7b", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("2.7b", "2.7"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"2.7b\" did not start with substring \"2.7\""
+        nmr.negatedFailureMessage shouldBe "\"2.7b\" started with substring \"2.7\""
+        nmr.midSentenceFailureMessage shouldBe "\"2.7b\" did not start with substring \"2.7\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"2.7b\" started with substring \"2.7\""
+        nmr.rawFailureMessage shouldBe "{0} did not start with substring {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} started with substring {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not start with substring {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} started with substring {1}"
+        nmr.failureMessageArgs shouldBe Vector("2.7b", "2.7")
+        nmr.negatedFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("2.7b", "2.7")
+
       }
     }
     
@@ -2128,41 +2060,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("b2.7")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.negatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        mr.rawFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'rawFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" did not end with a substring that matched the regular expression " + decimal
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" ended with a substring that matched the regular expression " + decimal
+        nmr.rawFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not end with a substring that matched the regular expression {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with a substring that matched the regular expression {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", UnquotedString(decimal))
+
       }
     }
     
@@ -2177,41 +2107,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt("b2.7")
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"b2.7\" ended with substring \"2.7\""),
-          'negatedFailureMessage ("\"b2.7\" did not end with substring \"2.7\""),
-          'midSentenceFailureMessage ("\"b2.7\" ended with substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not end with substring \"2.7\""),
-          'rawFailureMessage ("{0} ended with substring {1}"),
-          'rawNegatedFailureMessage ("{0} did not end with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} ended with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not end with substring {1}"),
-          'failureMessageArgs(Vector("b2.7", "2.7")),
-          'negatedFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", "2.7"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "\"b2.7\" ended with substring \"2.7\""
+        mr.negatedFailureMessage shouldBe "\"b2.7\" did not end with substring \"2.7\""
+        mr.midSentenceFailureMessage shouldBe "\"b2.7\" ended with substring \"2.7\""
+        mr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" did not end with substring \"2.7\""
+        mr.rawFailureMessage shouldBe "{0} ended with substring {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not end with substring {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} ended with substring {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not end with substring {1}"
+        mr.failureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.negatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"b2.7\" did not end with substring \"2.7\""),
-          'negatedFailureMessage ("\"b2.7\" ended with substring \"2.7\""),
-          'midSentenceFailureMessage ("\"b2.7\" did not end with substring \"2.7\""),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" ended with substring \"2.7\""),
-          'rawFailureMessage ("{0} did not end with substring {1}"),
-          'rawNegatedFailureMessage ("{0} ended with substring {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not end with substring {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} ended with substring {1}"),
-          'failureMessageArgs(Vector("b2.7", "2.7")),
-          'negatedFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceFailureMessageArgs(Vector("b2.7", "2.7")),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", "2.7"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "\"b2.7\" did not end with substring \"2.7\""
+        nmr.negatedFailureMessage shouldBe "\"b2.7\" ended with substring \"2.7\""
+        nmr.midSentenceFailureMessage shouldBe "\"b2.7\" did not end with substring \"2.7\""
+        nmr.midSentenceNegatedFailureMessage shouldBe "\"b2.7\" ended with substring \"2.7\""
+        nmr.rawFailureMessage shouldBe "{0} did not end with substring {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} ended with substring {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not end with substring {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} ended with substring {1}"
+        nmr.failureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.negatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector("b2.7", "2.7")
+
       }
     }
     
@@ -2229,41 +2157,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) contained element 2"),
-          'negatedFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'rawFailureMessage ("{0} contained element {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain element {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained element {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain element {1}"),
-          'failureMessageArgs(Vector(lhs, 2)),
-          'negatedFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 2))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        mr.rawFailureMessage shouldBe "{0} contained element {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain element {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained element {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain element {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 2)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 2)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 2)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 2)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'negatedFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) did not contain element 2"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) contained element 2"),
-          'rawFailureMessage ("{0} did not contain element {1}"),
-          'rawNegatedFailureMessage ("{0} contained element {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain element {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained element {1}"),
-          'failureMessageArgs(Vector(lhs, 2)),
-          'negatedFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 2)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 2))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) did not contain element 2"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) contained element 2"
+        nmr.rawFailureMessage shouldBe "{0} did not contain element {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained element {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain element {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained element {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 2)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 2)
+
       }
     }
     
@@ -2281,41 +2207,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'rawFailureMessage (Resources.rawContainedOneOfElements),
-          'rawNegatedFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawMidSentenceFailureMessage (Resources.rawContainedOneOfElements),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'failureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.negatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.rawFailureMessage shouldBe Resources.rawContainedOneOfElements
+        mr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        mr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedOneOfElements
+        mr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessage (FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))),
-          'rawFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawNegatedFailureMessage (Resources.rawContainedOneOfElements),
-          'rawMidSentenceFailureMessage (Resources.rawDidNotContainOneOfElements),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawContainedOneOfElements),
-          'failureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("2, 8"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("2, 8")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.rawFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        nmr.rawNegatedFailureMessage shouldBe Resources.rawContainedOneOfElements
+        nmr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawContainedOneOfElements
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("2, 8"))
+
       }
     }
     
@@ -2333,41 +2257,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained at least one of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'rawFailureMessage ("{0} contained at least one of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained at least one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain at least one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} contained at least one of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained at least one of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain at least one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained at least one of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained at least one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain at least one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained at least one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained at least one of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at least one of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained at least one of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2385,41 +2307,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'rawFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawNegatedFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawMidSentenceFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.rawFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        mr.rawNegatedFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        mr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        mr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessage (FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessage (FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))),
-          'rawFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawNegatedFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'rawMidSentenceFailureMessage (Resources.rawContainedAtLeastOneOf),
-          'rawMidSentenceNegatedFailureMessage (Resources.rawDidNotContainAtLeastOneOf),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.rawFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        nmr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        nmr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2438,41 +2358,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained the same elements as " + rhs),
-          'negatedFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'midSentenceFailureMessage (lhs + " contained the same elements as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'rawFailureMessage ("{0} contained the same elements as {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained the same elements as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain the same elements as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained the same elements as " + rhs
+        mr.negatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        mr.midSentenceFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        mr.rawFailureMessage shouldBe "{0} contained the same elements as {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements as {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain the same elements as " + rhs),
-          'negatedFailureMessage (lhs + " contained the same elements as " + rhs),
-          'midSentenceFailureMessage (lhs + " did not contain the same elements as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " contained the same elements as " + rhs),
-          'rawFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawNegatedFailureMessage ("{0} contained the same elements as {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain the same elements as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained the same elements as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        nmr.negatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        nmr.rawFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained the same elements as {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements as {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained the same elements as {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
     }
     
@@ -2491,41 +2409,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'negatedFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'midSentenceFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'rawFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        mr.negatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        mr.rawFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'negatedFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'midSentenceFailureMessage (lhs + " did not contain the same elements in the same (iterated) order as " + rhs),
-          'midSentenceNegatedFailureMessage (lhs + " contained the same elements in the same (iterated) order as " + rhs),
-          'rawFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawNegatedFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain the same elements in the same (iterated) order as {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained the same elements in the same (iterated) order as {1}"),
-          'failureMessageArgs(Vector(lhs, rhs)),
-          'negatedFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceFailureMessageArgs(Vector(lhs, rhs)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, rhs))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.negatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        nmr.rawFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, rhs)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, rhs)
+
       }
     }
     
@@ -2543,41 +2459,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained only (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain only (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained only (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain only (1, 2)"),
-          'rawFailureMessage ("{0} contained only ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain only ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained only ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain only ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained only (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} contained only ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain only ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain only (1, 2)"),
-          'negatedFailureMessage (lhs + " contained only (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain only (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained only (1, 2)"),
-          'rawFailureMessage ("{0} did not contain only ({1})"),
-          'rawNegatedFailureMessage ("{0} contained only ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain only ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained only ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain only (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " contained only (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} did not contain only ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained only ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained only ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2595,41 +2509,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained only (1, 2) in order"),
-          'negatedFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " contained only (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'rawFailureMessage ("{0} contained only ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} contained only ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain only ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained only (1, 2) in order"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        mr.rawFailureMessage shouldBe "{0} contained only ({1}) in order"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1}) in order"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain only (1, 2) in order"),
-          'negatedFailureMessage (lhs + " contained only (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " did not contain only (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " contained only (1, 2) in order"),
-          'rawFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} contained only ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} did not contain only ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained only ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        nmr.rawFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained only ({1}) in order"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1}) in order"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained only ({1}) in order"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2647,41 +2559,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained all of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained all of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'rawFailureMessage ("{0} contained all of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain all of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained all of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained all of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} contained all of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain all of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain all of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained all of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain all of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained all of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain all of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained all of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain all of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained all of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} did not contain all of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained all of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2699,41 +2609,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained all of (1, 2) in order"),
-          'negatedFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'rawFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        mr.rawFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'negatedFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'midSentenceFailureMessage (lhs + " did not contain all of (1, 2) in order"),
-          'midSentenceNegatedFailureMessage (lhs + " contained all of (1, 2) in order"),
-          'rawFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawNegatedFailureMessage ("{0} contained all of ({1}) in order"),
-          'rawMidSentenceFailureMessage ("{0} did not contain all of ({1}) in order"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained all of ({1}) in order"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        nmr.rawFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained all of ({1}) in order"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2751,41 +2659,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (lhs + " contained at most one of (1, 2)"),
-          'negatedFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'rawFailureMessage ("{0} contained at most one of ({1})"),
-          'rawNegatedFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} contained at most one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain at most one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        mr.negatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        mr.rawFailureMessage shouldBe "{0} contained at most one of ({1})"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained at most one of ({1})"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        mr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'negatedFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'midSentenceFailureMessage (lhs + " did not contain at most one of (1, 2)"),
-          'midSentenceNegatedFailureMessage (lhs + " contained at most one of (1, 2)"),
-          'rawFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawNegatedFailureMessage ("{0} contained at most one of ({1})"),
-          'rawMidSentenceFailureMessage ("{0} did not contain at most one of ({1})"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained at most one of ({1})"),
-          'failureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'negatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceFailureMessageArgs(Vector(lhs, UnquotedString("1, 2"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, UnquotedString("1, 2")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        nmr.rawFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained at most one of ({1})"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at most one of ({1})"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained at most one of ({1})"
+        nmr.failureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, UnquotedString("1, 2"))
+
       }
     }
     
@@ -2802,41 +2708,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'rawFailureMessage ("{0} contained key {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain key {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained key {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain key {1}"),
-          'failureMessageArgs(Vector(lhs, "2")),
-          'negatedFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "2"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        mr.rawFailureMessage shouldBe "{0} contained key {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain key {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained key {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain key {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, "2")
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, "2")
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "2")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "2")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
-          'rawFailureMessage ("{0} did not contain key {1}"),
-          'rawNegatedFailureMessage ("{0} contained key {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain key {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained key {1}"),
-          'failureMessageArgs(Vector(lhs, "2")),
-          'negatedFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "2")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "2"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        nmr.rawFailureMessage shouldBe "{0} did not contain key {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained key {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain key {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained key {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "2")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "2")
+
       }
     }
     
@@ -2853,41 +2757,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'rawFailureMessage ("{0} contained value {1}"),
-          'rawNegatedFailureMessage ("{0} did not contain value {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained value {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain value {1}"),
-          'failureMessageArgs(Vector(lhs, "two")),
-          'negatedFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "two"))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        mr.rawFailureMessage shouldBe "{0} contained value {1}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain value {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained value {1}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain value {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, "two")
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, "two")
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "two")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "two")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'negatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
-          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
-          'rawFailureMessage ("{0} did not contain value {1}"),
-          'rawNegatedFailureMessage ("{0} contained value {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain value {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained value {1}"),
-          'failureMessageArgs(Vector(lhs, "two")),
-          'negatedFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "two")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "two"))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        nmr.rawFailureMessage shouldBe "{0} did not contain value {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained value {1}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain value {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained value {1}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "two")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "two")
+
       }
     }
     
@@ -2911,41 +2813,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'negatedFailureMessage (leftList + " did not contain a file"),
-          'midSentenceFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'midSentenceNegatedFailureMessage (leftList + " did not contain a file"),
-          'rawFailureMessage ("{0} contained a {1}: {2}"),
-          'rawNegatedFailureMessage ("{0} did not contain a {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained a {1}: {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain a {1}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        mr.negatedFailureMessage shouldBe leftList + " did not contain a file"
+        mr.midSentenceFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain a file"
+        mr.rawFailureMessage shouldBe "{0} contained a {1}: {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain a {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained a {1}: {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain a {1}"
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (leftList + " did not contain a file"),
-          'negatedFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'midSentenceFailureMessage (leftList + " did not contain a file"),
-          'midSentenceNegatedFailureMessage (leftList + " contained a file: " + myFile + " was a file"),
-          'rawFailureMessage ("{0} did not contain a {1}"),
-          'rawNegatedFailureMessage ("{0} contained a {1}: {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain a {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained a {1}: {2}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe leftList + " did not contain a file"
+        nmr.negatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        nmr.midSentenceFailureMessage shouldBe leftList + " did not contain a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        nmr.rawFailureMessage shouldBe "{0} did not contain a {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain a {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+
       }
     }
     
@@ -2969,41 +2869,39 @@ class NotWordSpec extends FunSpec with FileMocks {
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (false),
-          'failureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'negatedFailureMessage (leftList + " did not contain an file"),
-          'midSentenceFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'midSentenceNegatedFailureMessage (leftList + " did not contain an file"),
-          'rawFailureMessage ("{0} contained an {1}: {2}"),
-          'rawNegatedFailureMessage ("{0} did not contain an {1}"),
-          'rawMidSentenceFailureMessage ("{0} contained an {1}: {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not contain an {1}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file")))    
-        )
+        mr.matches shouldBe false
+        mr.failureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        mr.negatedFailureMessage shouldBe leftList + " did not contain an file"
+        mr.midSentenceFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain an file"
+        mr.rawFailureMessage shouldBe "{0} contained an {1}: {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} did not contain an {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} contained an {1}: {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain an {1}"
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (true),
-          'failureMessage (leftList + " did not contain an file"),
-          'negatedFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'midSentenceFailureMessage (leftList + " did not contain an file"),
-          'midSentenceNegatedFailureMessage (leftList + " contained an file: " + myFile + " was an file"),
-          'rawFailureMessage ("{0} did not contain an {1}"),
-          'rawNegatedFailureMessage ("{0} contained an {1}: {2}"),
-          'rawMidSentenceFailureMessage ("{0} did not contain an {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} contained an {1}: {2}"),
-          'failureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'negatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))),
-          'midSentenceFailureMessageArgs(Vector(leftList, UnquotedString("file"))),
-          'midSentenceNegatedFailureMessageArgs(Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file")))    
-        )
+        nmr.matches shouldBe true
+        nmr.failureMessage shouldBe leftList + " did not contain an file"
+        nmr.negatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        nmr.midSentenceFailureMessage shouldBe leftList + " did not contain an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        nmr.rawFailureMessage shouldBe "{0} did not contain an {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain an {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+
       }
     }
     

@@ -88,13 +88,13 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
     it("should throw NPE if passed nulls or Some(null)s") {
 
       forAll (invalidFunCombos) { (msgFun, cause, fcsdFun) =>
-        a [NullPointerException] should be thrownBy {
+        a [IllegalArgumentException] should be thrownBy {
           newFunSDE(msgFun, cause, fcsdFun)
         }
       }
 
       forAll (invalidNoFunCombos) { (msg, cause) =>
-        a [NullPointerException] should be thrownBy {
+        a [IllegalArgumentException] should be thrownBy {
           newSDE(msg, cause, 17)
         }
       }

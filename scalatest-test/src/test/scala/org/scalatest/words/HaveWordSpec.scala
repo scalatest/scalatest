@@ -40,41 +40,39 @@ class HaveWordSpec extends FunSpec with Matchers {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had length 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had length 3"),
-          'rawFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawNegatedFailureMessage ("{0} had length {1}"),
-          'rawMidSentenceFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had length {1}"),
-          'failureMessageArgs(Vector(lhs, 3, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        mr.rawFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} had length {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had length {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) had length 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had length 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'rawFailureMessage ("{0} had length {1}"),
-          'rawNegatedFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawMidSentenceFailureMessage ("{0} had length {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'failureMessageArgs(Vector(lhs, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3, 3))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "Array(1, 2, 3) had length 3"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        nmr.rawFailureMessage shouldBe "{0} had length {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} had length {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+
       }
     }
     
@@ -92,41 +90,39 @@ class HaveWordSpec extends FunSpec with Matchers {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had size 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had size 3"),
-          'rawFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawNegatedFailureMessage ("{0} had size {1}"),
-          'rawMidSentenceFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had size {1}"),
-          'failureMessageArgs(Vector(lhs, 3, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        mr.rawFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} had size {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had size {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) had size 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had size 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'rawFailureMessage ("{0} had size {1}"),
-          'rawNegatedFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawMidSentenceFailureMessage ("{0} had size {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'failureMessageArgs(Vector(lhs, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3, 3))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "Array(1, 2, 3) had size 3"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        nmr.rawFailureMessage shouldBe "{0} had size {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} had size {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+
       }
     }
     
@@ -144,41 +140,39 @@ class HaveWordSpec extends FunSpec with Matchers {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage (lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""),
-          'negatedFailureMessage (lhs + " had message \"Message from Mars!\""),
-          'midSentenceFailureMessage (lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""),
-          'midSentenceNegatedFailureMessage (lhs + " had message \"Message from Mars!\""),
-          'rawFailureMessage ("{0} had message {1} instead of expected message {2}"),
-          'rawNegatedFailureMessage ("{0} had message {1}"),
-          'rawMidSentenceFailureMessage ("{0} had message {1} instead of expected message {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had message {1}"),
-          'failureMessageArgs(Vector(lhs, "Message from Mars!", "Message from Mars!")),
-          'negatedFailureMessageArgs(Vector(lhs, "Message from Mars!")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "Message from Mars!", "Message from Mars!")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "Message from Mars!"))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
+        mr.negatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
+        mr.midSentenceFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
+        mr.midSentenceNegatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
+        mr.rawFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} had message {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had message {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, "Message from Mars!", "Message from Mars!")
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!")
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!", "Message from Mars!")
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!")
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage (lhs + " had message \"Message from Mars!\""),
-          'negatedFailureMessage (lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""),
-          'midSentenceFailureMessage (lhs + " had message \"Message from Mars!\""),
-          'midSentenceNegatedFailureMessage (lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""),
-          'rawFailureMessage ("{0} had message {1}"),
-          'rawNegatedFailureMessage ("{0} had message {1} instead of expected message {2}"),
-          'rawMidSentenceFailureMessage ("{0} had message {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had message {1} instead of expected message {2}"),
-          'failureMessageArgs(Vector(lhs, "Message from Mars!")),
-          'negatedFailureMessageArgs(Vector(lhs, "Message from Mars!", "Message from Mars!")),
-          'midSentenceFailureMessageArgs(Vector(lhs, "Message from Mars!")),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, "Message from Mars!", "Message from Mars!"))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe lhs + " had message \"Message from Mars!\""
+        nmr.negatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
+        nmr.midSentenceFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
+        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
+        nmr.rawFailureMessage shouldBe "{0} had message {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} had message {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, "Message from Mars!")
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!", "Message from Mars!")
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!")
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, "Message from Mars!", "Message from Mars!")
+
       }
     }
     
@@ -196,41 +190,39 @@ class HaveWordSpec extends FunSpec with Matchers {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had length 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had length 3"),
-          'rawFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawNegatedFailureMessage ("{0} had length {1}"),
-          'rawMidSentenceFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had length {1}"),
-          'failureMessageArgs(Vector(lhs, 3, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        mr.rawFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} had length {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had length {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) had length 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had length 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had length 3 instead of expected length 3"),
-          'rawFailureMessage ("{0} had length {1}"),
-          'rawNegatedFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'rawMidSentenceFailureMessage ("{0} had length {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had length {1} instead of expected length {2}"),
-          'failureMessageArgs(Vector(lhs, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3, 3))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "Array(1, 2, 3) had length 3"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had length 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had length 3 instead of expected length 3"
+        nmr.rawFailureMessage shouldBe "{0} had length {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} had length {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had length {1} instead of expected length {2}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+
       }
     }
     
@@ -248,41 +240,39 @@ class HaveWordSpec extends FunSpec with Matchers {
       val mr = mt(lhs)
       
       it("should have correct MatcherResult") {
-        mr should have (
-          'matches (true),
-          'failureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had size 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had size 3"),
-          'rawFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawNegatedFailureMessage ("{0} had size {1}"),
-          'rawMidSentenceFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had size {1}"),
-          'failureMessageArgs(Vector(lhs, 3, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3))    
-        )
+        mr.matches shouldBe true
+        mr.failureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        mr.negatedFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        mr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        mr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        mr.rawFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        mr.rawNegatedFailureMessage shouldBe "{0} had size {1}"
+        mr.rawMidSentenceFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had size {1}"
+        mr.failureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.negatedFailureMessageArgs shouldBe Vector(lhs, 3)
+        mr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3)
+
       }
       
       val nmr = mr.negated
       
       it("should have correct negated MatcherResult") {
-        nmr should have (
-          'matches (false),
-          'failureMessage ("Array(1, 2, 3) had size 3"),
-          'negatedFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'midSentenceFailureMessage ("Array(1, 2, 3) had size 3"),
-          'midSentenceNegatedFailureMessage ("Array(1, 2, 3) had size 3 instead of expected size 3"),
-          'rawFailureMessage ("{0} had size {1}"),
-          'rawNegatedFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'rawMidSentenceFailureMessage ("{0} had size {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} had size {1} instead of expected size {2}"),
-          'failureMessageArgs(Vector(lhs, 3)),
-          'negatedFailureMessageArgs(Vector(lhs, 3, 3)),
-          'midSentenceFailureMessageArgs(Vector(lhs, 3)),
-          'midSentenceNegatedFailureMessageArgs(Vector(lhs, 3, 3))    
-        )
+        nmr.matches shouldBe false
+        nmr.failureMessage shouldBe "Array(1, 2, 3) had size 3"
+        nmr.negatedFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        nmr.midSentenceFailureMessage shouldBe "Array(1, 2, 3) had size 3"
+        nmr.midSentenceNegatedFailureMessage shouldBe "Array(1, 2, 3) had size 3 instead of expected size 3"
+        nmr.rawFailureMessage shouldBe "{0} had size {1}"
+        nmr.rawNegatedFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        nmr.rawMidSentenceFailureMessage shouldBe "{0} had size {1}"
+        nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} had size {1} instead of expected size {2}"
+        nmr.failureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.negatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(lhs, 3)
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(lhs, 3, 3)
+
       }
     }
     
@@ -314,41 +304,39 @@ class HaveWordSpec extends FunSpec with Matchers {
         val mr = mt(lhs)
       
         it("should have correct MatcherResult") {
-          mr should have (
-            'matches (true),
-            'failureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
-            'negatedFailureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
-            'midSentenceFailureMessage ("the name property had its expected value \"Bob\", on object " + lhs),
-            'midSentenceNegatedFailureMessage ("the name property had its expected value \"Bob\", on object " + lhs),
-            'rawFailureMessage ("The {0} property had its expected value {1}, on object {2}"),
-            'rawNegatedFailureMessage ("The {0} property had its expected value {1}, on object {2}"),
-            'rawMidSentenceFailureMessage ("the {0} property had its expected value {1}, on object {2}"),
-            'rawMidSentenceNegatedFailureMessage ("the {0} property had its expected value {1}, on object {2}"),
-            'failureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'negatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'midSentenceFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'midSentenceNegatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs))    
-          )
+          mr.matches shouldBe true
+          mr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
+          mr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
+          mr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          mr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          mr.rawFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
+          mr.rawNegatedFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
+          mr.rawMidSentenceFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
+          mr.rawMidSentenceNegatedFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
+          mr.failureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          mr.negatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          mr.midSentenceFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+
         }
       
         val nmr = mr.negated
       
         it("should have correct negated MatcherResult") {
-          nmr should have (
-            'matches (false),
-            'failureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
-            'negatedFailureMessage ("The name property had its expected value \"Bob\", on object " + lhs),
-            'midSentenceFailureMessage ("the name property had its expected value \"Bob\", on object " + lhs),
-            'midSentenceNegatedFailureMessage ("the name property had its expected value \"Bob\", on object " + lhs),
-            'rawFailureMessage ("The {0} property had its expected value {1}, on object {2}"),
-            'rawNegatedFailureMessage ("The {0} property had its expected value {1}, on object {2}"),
-            'rawMidSentenceFailureMessage ("the {0} property had its expected value {1}, on object {2}"),
-            'rawMidSentenceNegatedFailureMessage ("the {0} property had its expected value {1}, on object {2}"),
-            'failureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'negatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'midSentenceFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs)),
-            'midSentenceNegatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", lhs))    
-          )
+          nmr.matches shouldBe false
+          nmr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
+          nmr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
+          nmr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          nmr.rawFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
+          nmr.rawNegatedFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
+          nmr.rawMidSentenceFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
+          nmr.failureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          nmr.negatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          nmr.midSentenceFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", lhs)
+
         }
         
       }
@@ -359,41 +347,39 @@ class HaveWordSpec extends FunSpec with Matchers {
         val mr = mt(lhs)
       
         it("should have correct MatcherResult") {
-          mr should have (
-            'matches (false),
-            'failureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'negatedFailureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'midSentenceFailureMessage ("the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'midSentenceNegatedFailureMessage ("the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'rawFailureMessage ("The {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawNegatedFailureMessage ("The {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawMidSentenceFailureMessage ("the {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawMidSentenceNegatedFailureMessage ("the {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'failureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'negatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'midSentenceFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'midSentenceNegatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs))    
-          )
+          mr.matches shouldBe false
+          mr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          mr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          mr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          mr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          mr.rawFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          mr.rawNegatedFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          mr.rawMidSentenceFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          mr.rawMidSentenceNegatedFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          mr.failureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          mr.negatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          mr.midSentenceFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+
         }
       
         val nmr = mr.negated
       
         it("should have correct negated MatcherResult") {
-          nmr should have (
-            'matches (true),
-            'failureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'negatedFailureMessage ("The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'midSentenceFailureMessage ("the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'midSentenceNegatedFailureMessage ("the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs),
-            'rawFailureMessage ("The {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawNegatedFailureMessage ("The {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawMidSentenceFailureMessage ("the {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'rawMidSentenceNegatedFailureMessage ("the {0} property had value {2}, instead of its expected value {1}, on object {3}"),
-            'failureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'negatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'midSentenceFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs)),
-            'midSentenceNegatedFailureMessageArgs(Vector(UnquotedString("name"), "Bob", "Alice", lhs))    
-          )
+          nmr.matches shouldBe true
+          nmr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          nmr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          nmr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          nmr.rawFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          nmr.rawNegatedFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          nmr.rawMidSentenceFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          nmr.rawMidSentenceNegatedFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"
+          nmr.failureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          nmr.negatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          nmr.midSentenceFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+          nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(UnquotedString("name"), "Bob", "Alice", lhs)
+
         }
         
       }

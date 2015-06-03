@@ -1161,14 +1161,14 @@ val generatorSuitePostamble = """
 
 val generatorSuiteTemplate = """
 
-  def `generator-driven property that takes $n$ args, which succeeds` {
+  it("generator-driven property that takes $n$ args, which succeeds") {
 
     forAll { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails` {
+  it("generator-driven property that takes $n$ args, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll { ($namesAndTypes$) =>
@@ -1177,14 +1177,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds` {
+  it("generator-driven property that takes $n$ named args, which succeeds") {
 
     forAll ($argNames$) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails` {
+  it("generator-driven property that takes $n$ named args, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($argNames$) { ($namesAndTypes$) =>
@@ -1193,14 +1193,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds") {
 
     forAll ($famousArgs$) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails` {
+  it("generator-driven property that takes $n$ args and generators, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -1209,14 +1209,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds") {
 
     forAll ($nameGenTuples$) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails` {
+  it("generator-driven property that takes $n$ named args and generators, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($nameGenTuples$) { ($namesAndTypes$) =>
@@ -1226,14 +1226,14 @@ val generatorSuiteTemplate = """
   }
 
   // Same thing, but with config params
-  def `generator-driven property that takes $n$ args, which succeeds, with config params` {
+  it("generator-driven property that takes $n$ args, which succeeds, with config params") {
 
     forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails, with config params` {
+  it("generator-driven property that takes $n$ args, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll (minSize(10), maxSize(20)) { ($namesAndTypes$) =>
@@ -1242,14 +1242,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds, with config params` {
+  it("generator-driven property that takes $n$ named args, which succeeds, with config params") {
 
     forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails, with config params` {
+  it("generator-driven property that takes $n$ named args, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($argNames$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
@@ -1258,14 +1258,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds, with config params` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with config params") {
 
     forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails, with config params` {
+  it("generator-driven property that takes $n$ args and generators, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($famousArgs$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
@@ -1274,14 +1274,14 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds, with config params` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with config params") {
 
     forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
       assert($sumOfArgLengths$ === (($sumOfArgs$).length))
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails, with config params` {
+  it("generator-driven property that takes $n$ named args and generators, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       forAll ($nameGenTuples$, minSize(10), maxSize(20)) { ($namesAndTypes$) =>
@@ -1291,7 +1291,7 @@ val generatorSuiteTemplate = """
   }
 
   // Same thing, but set minSuccessful to 5 with param, prop fails after 5
-  def `generator-driven property that takes $n$ args, which succeeds, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     forAll (minSuccessful(5)) { ($namesAndTypes$) =>
@@ -1300,7 +1300,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1311,7 +1311,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     forAll ($argNames$, minSuccessful(5)) { ($namesAndTypes$) =>
@@ -1320,7 +1320,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1331,7 +1331,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     forAll ($famousArgs$, minSuccessful(5)) { ($namesAndTypes$) =>
@@ -1340,7 +1340,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1351,7 +1351,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     forAll ($nameGenTuples$, minSuccessful(5)) { ($namesAndTypes$) =>
@@ -1360,7 +1360,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1372,7 +1372,7 @@ val generatorSuiteTemplate = """
   }
 
   // Same thing, but set default minSuccessful to 5, prop fails after 5
-  def `generator-driven property that takes $n$ args, which succeeds, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1384,7 +1384,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1398,7 +1398,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1410,7 +1410,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1424,7 +1424,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1436,7 +1436,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1450,7 +1450,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1462,7 +1462,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -1477,7 +1477,7 @@ val generatorSuiteTemplate = """
   }
 
   // Same thing, but set maxDiscarded to 5 with param, prop fails after 5
-  def `generator-driven property that takes $n$ args, which succeeds, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ args, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1486,7 +1486,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1497,7 +1497,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ named args, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1506,7 +1506,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ named args, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1517,7 +1517,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1526,7 +1526,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1537,7 +1537,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1546,7 +1546,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1558,7 +1558,7 @@ val generatorSuiteTemplate = """
   }
 
   // Same thing, but set default maxDiscarded to 5, prop fails after 5
-  def `generator-driven property that takes $n$ args, which succeeds, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ args, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1570,7 +1570,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args, which fails, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1584,7 +1584,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ named args, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1596,7 +1596,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which fails, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ named args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1610,7 +1610,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1622,7 +1622,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1636,7 +1636,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1648,7 +1648,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which fails, with default maxDiscarded set to 5` {
+  it("generator-driven property that takes $n$ named args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -1663,7 +1663,7 @@ val generatorSuiteTemplate = """
   }
 
   // set minSize > maxSize with (param, param) (intercept IAE)
-  def `generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       forAll (minSize(5), maxSize(4)) { ($namesAndTypes$) =>
@@ -1672,7 +1672,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       forAll ($argNames$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
@@ -1681,7 +1681,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       forAll ($famousArgs$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
@@ -1690,7 +1690,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       forAll ($nameGenTuples$, minSize(5), maxSize(4)) { ($namesAndTypes$) =>
@@ -1700,7 +1700,7 @@ val generatorSuiteTemplate = """
   }
 
   // set minSize > maxSize with (param, default) (intercept IAE)
-  def `generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -1712,7 +1712,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -1724,7 +1724,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -1736,7 +1736,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -1749,7 +1749,7 @@ val generatorSuiteTemplate = """
   }
 
   // set minSize > maxSize with (default, param) (intercept IAE)
-  def `generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1761,7 +1761,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ named args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1773,7 +1773,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1785,7 +1785,7 @@ val generatorSuiteTemplate = """
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ named args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1798,14 +1798,14 @@ val generatorSuiteTemplate = """
   }
 
   // set maxSize with param (ensure always passed with a size less than maxSize)
-  def `generator-driven property that takes $n$ args, with maxSize specified as param` {
+  it("generator-driven property that takes $n$ args, with maxSize specified as param") {
 
     forAll (maxSize(5)) { ($namesAndTypes$) =>
 $lengthAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args, with maxSize specified as param` {
+  it("generator-driven property that takes $n$ named args, with maxSize specified as param") {
 
     forAll ($argNames$, maxSize(5)) { ($namesAndTypes$) =>
 $lengthAssertions$
@@ -1813,7 +1813,7 @@ $lengthAssertions$
   }
 
   // set maxSize with default (ensure always passed with a size less than maxSize)
-  def `generator-driven property that takes $n$ args, with maxSize specified as default` {
+  it("generator-driven property that takes $n$ args, with maxSize specified as default") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -1823,7 +1823,7 @@ $lengthAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args, with maxSize specified as default` {
+  it("generator-driven property that takes $n$ named args, with maxSize specified as default") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -1834,14 +1834,14 @@ $lengthAssertions$
   }
  
   // set minSize == maxSize with (param, param) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
 
     forAll ($fiveFiveArgs$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
 $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, param)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, param)") {
 
     forAll ($fiveFiveNameGenTuples$, minSize(5), maxSize(5)) { ($namesAndTypes$) =>
 $okayAssertions$
@@ -1849,7 +1849,7 @@ $okayAssertions$
   }
 
   // set minSize == maxSize with (param, default) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -1859,7 +1859,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, default)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -1870,7 +1870,7 @@ $okayAssertions$
   }
 
   // set minSize == maxSize with (default, param) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1880,7 +1880,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, param)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -1891,7 +1891,7 @@ $okayAssertions$
   }
 
   // set minSize == maxSize with (default, default) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5, maxSize = 5)
@@ -1901,7 +1901,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, default)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize == maxSize, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5, maxSize = 5)
@@ -1912,14 +1912,14 @@ $okayAssertions$
   }
 
   // set minSize to 7 and maxSize to 11 with (param, param) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
 
     forAll ($sevenElevenArgs$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
 $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
 
     forAll ($sevenElevenNameGenTuples$, minSize(7), maxSize(11)) { ($namesAndTypes$) =>
 $okayAssertions$
@@ -1927,7 +1927,7 @@ $okayAssertions$
   }
 
   // set minSize to 7 and maxSize to 11 with (param, default) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 11)
@@ -1937,7 +1937,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 11)
@@ -1948,7 +1948,7 @@ $okayAssertions$
   }
 
   // set minSize to 7 and maxSize to 11 with (default, param) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7)
@@ -1958,7 +1958,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7)
@@ -1969,7 +1969,7 @@ $okayAssertions$
   }
 
   // set minSize to 7 and maxSize to 11 with (default, default) (ensure always passed with that size)
-  def `generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)` {
+  it("generator-driven property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7, maxSize = 11)
@@ -1979,7 +1979,7 @@ $okayAssertions$
     }
   }
 
-  def `generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)` {
+  it("generator-driven property that takes $n$ named args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7, maxSize = 11)
@@ -1992,14 +1992,14 @@ $okayAssertions$
 
 val checkersSuiteTemplate = """
 
-  def `ScalaCheck property that takes $n$ args, which succeeds` {
+  it("ScalaCheck property that takes $n$ args, which succeeds") {
 
     check { ($namesAndTypes$) =>
       $sumOfArgLengths$ == (($sumOfArgs$).length)
     }
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails` {
+  it("ScalaCheck property that takes $n$ args, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       check { ($namesAndTypes$) =>
@@ -2008,7 +2008,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
 
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
       $sumOfArgLengths$ == (($sumOfArgs$).length)
@@ -2016,7 +2016,7 @@ val checkersSuiteTemplate = """
     check(prop)
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -2027,7 +2027,7 @@ val checkersSuiteTemplate = """
   }
 
   // Same thing, but with config params
-  def `ScalaCheck property that takes $n$ args, which succeeds, with config params` {
+  it("ScalaCheck property that takes $n$ args, which succeeds, with config params") {
 
     check(
       ($namesAndTypes$) => $sumOfArgLengths$ == (($sumOfArgs$).length),
@@ -2036,7 +2036,7 @@ val checkersSuiteTemplate = """
     )
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails, with config params` {
+  it("ScalaCheck property that takes $n$ args, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       check(
@@ -2047,7 +2047,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds, with config params` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with config params") {
 
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
       $sumOfArgLengths$ == (($sumOfArgs$).length)
@@ -2055,7 +2055,7 @@ val checkersSuiteTemplate = """
     check(prop, minSize(10), maxSize(20))
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails, with config params` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails, with config params") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -2066,7 +2066,7 @@ val checkersSuiteTemplate = """
   }
 
   // Same thing, but set minSuccessful to 5 with param, prop fails after 5
-  def `ScalaCheck property that takes $n$ args, which succeeds, with minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     check(
@@ -2079,7 +2079,7 @@ val checkersSuiteTemplate = """
     )
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails, with minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2094,7 +2094,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with minSuccessful param set to 5") {
 
     var i = 0
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -2105,7 +2105,7 @@ val checkersSuiteTemplate = """
     check(prop, minSuccessful(5))
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails, with minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails, with minSuccessful param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2119,7 +2119,7 @@ val checkersSuiteTemplate = """
   }
 
   // Same thing, but set default minSuccessful to 5, prop fails after 5
-  def `ScalaCheck property that takes $n$ args, which succeeds, with default minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -2132,7 +2132,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails, with default minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -2147,7 +2147,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -2161,7 +2161,7 @@ val checkersSuiteTemplate = """
     check(prop)
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails, with default minSuccessful param set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 5)
@@ -2178,7 +2178,7 @@ val checkersSuiteTemplate = """
   }
 
   // Same thing, but set maxDiscarded to 5 with param, prop fails after 5
-  def `ScalaCheck property that takes $n$ args, which succeeds, with maxDiscarded param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     check(
@@ -2190,7 +2190,7 @@ val checkersSuiteTemplate = """
     )
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails, with maxDiscarded param set to 5` {
+  it("ScalaCheck property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2204,7 +2204,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with maxDiscarded param set to 5") {
 
     var i = 0
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -2214,7 +2214,7 @@ val checkersSuiteTemplate = """
     check(prop, maxDiscarded(5))
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2227,7 +2227,7 @@ val checkersSuiteTemplate = """
   }
 
   // Same thing, but set default maxDiscarded to 5, prop fails after 5
-  def `ScalaCheck property that takes $n$ args, which succeeds, with default maxDiscarded set to 5` {
+  it("ScalaCheck property that takes $n$ args, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -2239,7 +2239,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args, which fails, with default maxDiscarded set to 5` {
+  it("ScalaCheck property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -2253,7 +2253,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -2266,7 +2266,7 @@ val checkersSuiteTemplate = """
     check(prop)
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5` {
+  it("ScalaCheck property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 5)
@@ -2282,7 +2282,7 @@ val checkersSuiteTemplate = """
   }
 
   // set minSize > maxSize with (param, param) (intercept IAE)
-  def `ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       check(
@@ -2295,7 +2295,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, param)") {
 
     intercept[IllegalArgumentException] {
       val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
@@ -2306,7 +2306,7 @@ val checkersSuiteTemplate = """
   }
 
   // set minSize > maxSize with (param, default) (intercept IAE)
-  def `ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -2321,7 +2321,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)` {
+  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 4)
@@ -2335,7 +2335,7 @@ val checkersSuiteTemplate = """
   }
 
   // set minSize > maxSize with (default, param) (intercept IAE)
-  def `ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("ScalaCheck property that takes $n$ args, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -2350,7 +2350,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  def `ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, which should throw IAE because maxSize > maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -2364,7 +2364,7 @@ val checkersSuiteTemplate = """
   }
 
   // set maxSize with param (ensure always passed with a size less than maxSize)
-  def `ScalaCheck property that takes $n$ args, with maxSize specified as param` {
+  it("ScalaCheck property that takes $n$ args, with maxSize specified as param") {
 
     check(
       ($namesAndTypes$) => {
@@ -2375,7 +2375,7 @@ $lengthExpressions$
   }
 
   // set maxSize with default (ensure always passed with a size less than maxSize)
-  def `ScalaCheck property that takes $n$ args, with maxSize specified as default` {
+  it("ScalaCheck property that takes $n$ args, with maxSize specified as default") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -2386,7 +2386,7 @@ $lengthExpressions$
   }
 
   // set minSize == maxSize with (param, param) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, param)") {
 
     val prop = forAll ($fiveFiveArgs$) { ($namesAndTypes$) =>
 $okayExpressions$
@@ -2395,7 +2395,7 @@ $okayExpressions$
   }
 
   // set minSize == maxSize with (param, default) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 5)
@@ -2407,7 +2407,7 @@ $okayExpressions$
   }
 
   // set minSize == maxSize with (default, param) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5)
@@ -2419,7 +2419,7 @@ $okayExpressions$
   }
 
   // set minSize == maxSize with (default, default) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize == maxSize, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 5, maxSize = 5)
@@ -2431,7 +2431,7 @@ $okayExpressions$
   }
 
   // set minSize to 7 and maxSize to 11 with (param, param) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, param)") {
 
     val prop = forAll ($sevenElevenArgs$) { ($namesAndTypes$) =>
 $okayExpressions$
@@ -2440,7 +2440,7 @@ $okayExpressions$
   }
 
   // set minSize to 7 and maxSize to 11 with (param, default) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (param, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(maxSize = 11)
@@ -2452,7 +2452,7 @@ $okayExpressions$
   }
 
   // set minSize to 7 and maxSize to 11 with (default, param) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, param)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7)
@@ -2464,7 +2464,7 @@ $okayExpressions$
   }
 
   // set minSize to 7 and maxSize to 11 with (default, default) (ensure always passed with that size)
-  def `ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)` {
+  it("ScalaCheck property that takes $n$ args and generators, with minSize to 7 and maxSize to 11, specified as (default, default)") {
 
     // Hides the member
     implicit val generatorDrivenConfig = PropertyCheckConfig(minSize = 7, maxSize = 11)
@@ -2573,7 +2573,7 @@ $okayExpressions$
         bw.write("import " + traitOrObjectName + "._\n")
       bw.write("\n")
       bw.write(
-        "class " + suiteClassName + " extends Spec " +
+        "class " + suiteClassName + " extends FunSpec " +
         (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
       bw.write(generatorSuitePostamble)
       val alpha = "abcdefghijklmnopqrstuv"

@@ -574,11 +574,21 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     trait Functor[Context[_]] {
       def map[A, B](ca: Context[A])(f: A => B): Context[B]
     }
+/*
+    // One way:
     class OrFunctor[BAD] extends Functor[Or.B[BAD]#G] {
       override def map[G, H](ca: G Or BAD)(f: G => H): H Or BAD = ca.map(f)
     }
     class BadOrFunctor[GOOD] extends Functor[Or.G[GOOD]#B] {
       override def map[B, C](ca: GOOD Or B)(f: B => C): GOOD Or C = ca.badMap(f)
+    }
+*/
+    // Other way:
+    class OrFunctor[B] extends Functor[Or.BAD[B]#GOOD] {
+      override def map[G, H](ca: G Or B)(f: G => H): H Or B = ca.map(f)
+    }
+    class BadOrFunctor[G] extends Functor[Or.GOOD[G]#BAD] {
+      override def map[B, C](ca: G Or B)(f: B => C): G Or C = ca.badMap(f)
     }
   }
 }

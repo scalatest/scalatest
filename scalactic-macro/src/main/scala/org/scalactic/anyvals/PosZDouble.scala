@@ -406,15 +406,104 @@ final class PosZDouble private (val value: Double) extends AnyVal {
     value.to(end, step)
 }
 
+/**
+ * The companion object for <code>PosZDouble</code> that offers
+ * factory methods that produce <code>PosZDouble</code>s, implicit
+ * widening conversions from <code>PosZDouble</code> to other
+ * numeric types, and maximum and minimum constant values for
+ * <code>PosZDouble</code>.
+ */
 object PosZDouble {
+  /**
+   * The largest value representable as a non-negative <code>Double</code>,
+   * which is <code>PosZDouble(1.7976931348623157E308)</code>.
+   */
   final val MaxValue: PosZDouble = PosZDouble.from(Double.MaxValue).get
+
+  /**
+   * The smallest value representable as a non-negative <code>Double</code>,
+   * which is <code>PosZDouble(0.0)</code>.
+   */
   final val MinValue: PosZDouble = PosZDouble.from(0.0).get // Can't use the macro here
+
+  /**
+   * A factory method that produces an <code>Option[PosZDouble]</code> given a
+   * <code>Double</code> value.
+   *
+   * <p>
+   * This method will inspect the passed <code>Double</code> value
+   * and if it is a non-negative <code>Double</code>,
+   * <em>i.e.</em>, a value greater than or equal to 0, it will
+   * return a <code>PosZDouble</code> representing that value,
+   * wrapped in a <code>Some</code>. Otherwise, the passed
+   * <code>Double</code> value is negative, so this method
+   * will return <code>None</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code>
+   * factory method in that <code>apply</code> is implemented
+   * via a macro that inspects <code>Double</code> literals at
+   * compile time, whereas <code>from</code> inspects
+   * <code>Double</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> to inspect, and if
+   *     non-negative, return wrapped in a
+   *     <code>Some[PosZDouble]</code>.
+   * @return the specified <code>Double</code> value wrapped
+   *     in a <code>Some[PosZDouble]</code>, if it is positive, else
+   *     <code>None</code>.
+   */
   def from(value: Double): Option[PosZDouble] =
     if (value >= 0.0) Some(new PosZDouble(value)) else None
+
   import language.experimental.macros
   import scala.language.implicitConversions
+
+  /**
+   * A factory method, implemented via a macro, that produces a
+   * <code>PosZDouble</code> if passed a valid <code>Double</code>
+   * literal, otherwise a compile time error.
+   *
+   * <p>
+   * The macro that implements this method will inspect the
+   * specified <code>Double</code> expression at compile time. If
+   * the expression is a non-negative <code>Double</code> literal,
+   * <em>i.e.</em>, with a value greater than or equal to 0, it will return
+   * a <code>PosZDouble</code> representing that value.  Otherwise,
+   * the passed <code>Double</code> expression is either a literal
+   * that is negative, or is not a literal, so this method
+   * will give a compiler error.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>from</code>
+   * factory method in that this method is implemented via a
+   * macro that inspects <code>Double</code> literals at compile
+   * time, whereas <code>from</code> inspects <code>Double</code>
+   * values at run time.
+   * </p>
+   *
+   * @param value the <code>Double</code> literal expression to inspect at
+   *     compile time, and if non-negative, to return wrapped in a
+   *     <code>PosZDouble</code> at run time.
+   * @return the specified, valid <code>Double</code> literal
+   *     value wrapped in a <code>PosZDouble</code>. (If the
+   *     specified expression is not a valid <code>Double</code>
+   *     literal, the invocation of this method will not
+   *     compile.)
+   */
   implicit def apply(value: Double): PosZDouble = macro PosZDoubleMacro.apply
 
+  /**
+   * Implicit widening conversion from <code>PosZDouble</code> to
+   * <code>Double</code>.
+   *
+   * @param pos the <code>PosZDouble</code> to widen
+   * @return the <code>Double</code> value underlying the specified
+   *     <code>PosZDouble</code>.
+   */
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
 }
 
