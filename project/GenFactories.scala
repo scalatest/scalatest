@@ -77,6 +77,7 @@ import org.scalatest.words.ResultOfAllElementsOfApplication
 import org.scalatest.words.ResultOfInOrderOnlyApplication
 import org.scalatest.words.ResultOfInOrderApplication
 import org.scalatest.words.ResultOfAtMostOneOfApplication
+import org.scalatest.words.ResultOfAtMostOneElementOfApplication
 import org.scalatest.words.SortedWord
 import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
@@ -499,6 +500,17 @@ $endif$
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory and contain atMostOneOf (1, 2, 3)
+     *                             ^
+     * </pre>
+     */
+    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.contain.atMostOneElementOf(elements))
   }
 
   /**
@@ -1464,6 +1476,17 @@ $endif$
       thisMatcherFactory.and(MatcherWords.not.contain(right))
 
     /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory and not contain atMostOneElementOf (List(8, 1, 2))
+     *                         ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneElementOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.not.contain(right))
+
+    /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
@@ -1749,6 +1772,17 @@ $endif$
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or contain atMostOneOf (1, 2, 3)
+     *                            ^
+     * </pre>
+     */
+    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.contain.atMostOneElementOf(elements))
   }
 
   /**
@@ -2711,6 +2745,17 @@ $endif$
      * </pre>
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * aMatcherFactory or not contain atMostOneElementOf (List(8, 1, 2))
+     *                        ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneElementOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
 
     /**

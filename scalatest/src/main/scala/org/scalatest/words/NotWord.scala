@@ -1340,7 +1340,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[R](allElementsOf: ResultOfAllElementsOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain(allElementsOf: ResultOfAllElementsOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1419,6 +1419,36 @@ final class NotWord {
         }
       }
       override def toString: String = "not contain " + Prettifier.default(atMostOneOf)
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain atMostOneElementOf (List(5)) and not contain (3))
+   *                         ^
+   * </pre>
+   */
+  def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+
+            val right = atMostOneElementOf.right
+
+            MatchResult(
+              !aggregating.containsAtMostOneOf(left, right.distinct),
+              Resources.rawContainedAtMostOneElementOf,
+              Resources.rawDidNotContainAtMostOneElementOf,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "not contain " + Prettifier.default(atMostOneElementOf)
+        }
+      }
+      override def toString: String = "not contain " + Prettifier.default(atMostOneElementOf)
     }
   }
   

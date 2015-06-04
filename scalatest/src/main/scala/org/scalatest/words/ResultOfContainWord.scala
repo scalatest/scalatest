@@ -360,6 +360,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * xs should contain atMostOneElementOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]) {
+    val right = elements.toList
+    if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtMostOneElementOf(left, right)
+        else
+          FailureMessages.containedAtMostOneElementOf(left, right)
+      )
+  }
   
   override def toString: String = "ResultOfContainWord(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }

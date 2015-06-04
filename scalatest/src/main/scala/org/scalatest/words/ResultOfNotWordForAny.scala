@@ -922,6 +922,19 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = atMostOneElementOf.right
+
+    if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtMostOneElementOf(left, right)
+        else
+          FailureMessages.containedAtMostOneElementOf(left, right)
+      )
+  }
+
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
     val right = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue) {

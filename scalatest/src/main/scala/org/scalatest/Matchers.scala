@@ -2997,6 +2997,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneOf"))
     new ResultOfAtMostOneOfApplication(xs)
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atMostOneElementOf (List(1, 2)))
+   *                               ^
+   * </pre>
+   */
+  def atMostOneElementOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    new ResultOfAtMostOneElementOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -4109,6 +4122,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain atMostOneElementOf List("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication)(implicit evidence: Aggregating[T]) {
+
+      val right = atMostOneElementOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(e, right)
+            else
+              FailureMessages.containedAtMostOneElementOf(e, right),
+            None,
+            innerStackDepth
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all(colOfMap) should not contain key ("three")
      *                          ^
      * </pre>
@@ -4680,6 +4718,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             innerStackDepth
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should contain atMostOneElementOf (1, 2)
+     *                        ^
+     * </pre>
+     */
+    def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "atMostOneElementOf", 1) { e =>
+        if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(e, right)
+            else
+              FailureMessages.containedAtMostOneElementOf(e, right),
+            None,
+            innerStackDepth
+          )
       }
     }
 

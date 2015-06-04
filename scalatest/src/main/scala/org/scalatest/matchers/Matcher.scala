@@ -841,6 +841,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and contain atMostOneElementOf List(1, 2, 3)
+     *                      ^
+     * </pre>
+     */
+    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.contain.atMostOneElementOf(elements))
   }
   
   /**
@@ -1773,6 +1784,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain atMostOneOf (List(8, 1, 2))
+     *                          ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneElementOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.and(MatcherWords.not.contain(right))
+
 // TODO: Write tests and impl for contain ResultOfKey/ValueWordApplication
     /**
      * This method enables the following syntax given a <code>Matcher</code>:
@@ -2079,6 +2101,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher or contain atMostOneOf List(1, 2, 3)
+     *                     ^
+     * </pre>
+     */
+    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.contain.atMostOneElementOf(elements))
   }
 
   /**
@@ -3009,6 +3042,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T, Aggregating] =
+      outerInstance.or(MatcherWords.not.contain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher not contain atMostOneElementOf (List(8, 1, 2))
+     *              ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneElementOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.not.contain(right))
 
     /**
