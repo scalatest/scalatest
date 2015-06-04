@@ -2982,6 +2982,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("Matchers.scala", "inOrder"))
     new ResultOfInOrderApplication(xs)
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (inOrderElementsOf List(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def inOrderElementsOf[R](elements: GenTraversable[R]) = {
+    val xs = elements.toList
+    new ResultOfInOrderElementsOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -4092,6 +4105,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain inOrderElementsOf (List("one"))
+     *                     ^
+     * </pre>
+     */
+    def contain(inOrderElementsOf: ResultOfInOrderElementsOfApplication)(implicit evidence: Sequencing[T]) {
+
+      val right = inOrderElementsOf.right
+
+      doCollected(collected, xs, original, "contain", 1) { e =>
+        if (evidence.containsInOrder(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(e, right)
+            else
+              FailureMessages.containedAllElementsOfInOrder(e, right),
+            None,
+            innerStackDepth
+          )
+      }
+    }
     
     /**
      * This method enables the following syntax:
@@ -4693,6 +4731,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             None,
             innerStackDepth
         )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * option should contain inOrderElementsOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]) {
+      val right = elements.toList
+      doCollected(collected, xs, original, "inOrderElementsOf", 1) { e =>
+        if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(e, right)
+            else
+              FailureMessages.containedAllElementsOfInOrder(e, right),
+            None,
+            innerStackDepth
+          )
       }
     }
 

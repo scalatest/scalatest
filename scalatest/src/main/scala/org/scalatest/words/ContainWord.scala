@@ -474,6 +474,26 @@ final class ContainWord {
       override def toString: String = "contain inOrder (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+
+  def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+    val right = elements.toList
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              sequencing.containsInOrder(left, right.distinct),
+              Resources.rawDidNotContainAllElementsOfInOrder,
+              Resources.rawContainedAllElementsOfInOrder,
+              Vector(left, right)
+            )
+          }
+          override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
+        }
+      }
+      override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
+    }
+  }
   
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[Any, Aggregating] = {
     val right = firstEle :: secondEle :: remainingEles.toList

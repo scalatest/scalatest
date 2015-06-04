@@ -308,6 +308,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
+   * xs should contain inOrderElementsOf List(1, 2)
+   *                   ^
+   * </pre>
+   */
+  def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]) {
+    val right = elements.toList
+    if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
+      throw newTestFailedException(
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllElementsOfInOrder(left, right)
+        else
+          FailureMessages.containedAllElementsOfInOrder(left, right)
+      )
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
    * map should contain key ("one")
    *                    ^
    * </pre>
