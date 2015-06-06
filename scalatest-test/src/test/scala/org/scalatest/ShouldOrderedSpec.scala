@@ -22,8 +22,11 @@ import Prop._
 import Integer.{MAX_VALUE, MIN_VALUE}
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
+import org.scalactic.anyvals.PosInt
 
 class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 50.0)
 
   // Checking for a specific size
   describe("The 'be >/</>=/<= (x)' syntax") {

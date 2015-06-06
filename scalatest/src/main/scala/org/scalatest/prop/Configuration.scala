@@ -40,7 +40,7 @@ trait Configuration {
       (maxDiscardedRatio * minSuccessful) - 1
   }
 
-  case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(100),
+  case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                                         minSize: PosZInt = PosZInt(0),
                                         sizeRange: PosZInt = PosZInt(100),
