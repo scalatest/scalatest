@@ -32,16 +32,18 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   import GenDrivenPropertyChecks.prettyArgs
   def forAll[A](fun: (A) => Unit)
       (implicit 
-        config: PropertyCheckConfig,
+        config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A]
       ): Unit = {
+    val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+    val maxSize = config.minSize + config.sizeRange
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): Unit = {
       val (size, nextInitialSizes, nextRandomizer2) =
         initialSizes match {
           case head :: tail => (head, tail, nextRandomizer)
           case Nil =>
-            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, config.maxSize)
+            val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
       val (v, r) = genA.next(size, nextRandomizer2)
@@ -55,7 +57,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
             loop(nextSucceededCount, discardedCount, r, nextInitialSizes)
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
-          if (nextDiscardedCount < config.maxDiscarded)
+          if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, r, nextInitialSizes)
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => 
@@ -94,7 +96,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
       sizes match {
         case Nil => sizesLoop(List(config.minSize), 1, rnd)
         case szs if count < 10 =>
-          val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, config.maxSize)
+          val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, maxSize)
           sizesLoop(nextSize :: sizes, count + 1,  nextRandomizer)
         case _ => sizes.sorted
       }
@@ -104,10 +106,11 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   }
   def forAll[A, B](fun: (A, B) => Unit)
       (implicit 
-        config: PropertyCheckConfig,
+        config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A],
         genB: org.scalatest.prop.Generator[B]
       ): Unit = {
+    val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
       val (a, ar) = genA.next(10, nextRandomizer)
@@ -120,7 +123,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
             loop(nextSucceededCount, discardedCount, br)
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
-          if (nextDiscardedCount < config.maxDiscarded)
+          if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, br)
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => throw ex
@@ -130,11 +133,12 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   }
   def forAll[A, B, C](fun: (A, B, C) => Unit)
       (implicit 
-        config: PropertyCheckConfig,
+        config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A],
         genB: org.scalatest.prop.Generator[B],
         genC: org.scalatest.prop.Generator[C]
       ): Unit = {
+    val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     @tailrec
     def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
       val (a, ar) = genA.next(10, nextRandomizer)
@@ -148,7 +152,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
             loop(nextSucceededCount, discardedCount, cr)
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
-          if (nextDiscardedCount < config.maxDiscarded)
+          if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, cr)
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => throw ex

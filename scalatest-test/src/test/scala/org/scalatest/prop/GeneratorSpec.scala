@@ -247,16 +247,16 @@ class GeneratorSpec extends FunSpec with Matchers {
         count += 1
         i + i shouldEqual i * 2
       }
-      count shouldEqual generatorDrivenConfig.minSuccessful
+      count shouldEqual generatorDrivenConfig.minSuccessful.value
 
       {
-        implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 10)
+        implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 10)
         count = 0
         forAll { (i: Int) => 
           count += 1
           i + i shouldEqual i * 2
         }
-        count shouldEqual generatorDrivenConfig.minSuccessful
+        count shouldEqual generatorDrivenConfig.minSuccessful.value
       }
     }
     it("should be used at least maxDiscarded times in a forAll") {
@@ -270,10 +270,13 @@ class GeneratorSpec extends FunSpec with Matchers {
           }
         }
       }
-      count shouldEqual generatorDrivenConfig.maxDiscarded
+      val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(generatorDrivenConfig.maxDiscardedFactor, generatorDrivenConfig.minSuccessful)
+      count shouldEqual maxDiscarded
 
       {
-        implicit val generatorDrivenConfig = PropertyCheckConfig(maxDiscarded = 10)
+        val expectedTestDiscarded = 10
+        val minSuccessful = PosInt(100)
+        implicit val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = PosZDouble.from(PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessful, expectedTestDiscarded)).get)
         count = 0
         a [TestFailedException] should be thrownBy {
           forAll { (i: Int) => 
@@ -283,7 +286,7 @@ class GeneratorSpec extends FunSpec with Matchers {
             }
           }
         }
-        count shouldEqual generatorDrivenConfig.maxDiscarded
+        count shouldEqual expectedTestDiscarded
       }
     }
     it("should produce Byte edge values first in random order") {

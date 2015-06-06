@@ -24,10 +24,7 @@ import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.collection.mutable.WrappedArray
 import OptionValues._
-
 import scala.util.{Failure, Success, Try}
-
-//import org.scalactic.StrictCheckedEquality
 
 class PosDoubleSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
 

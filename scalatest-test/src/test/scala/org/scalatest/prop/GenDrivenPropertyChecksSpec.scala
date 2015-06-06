@@ -15,6 +15,7 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.anyvals.PosZDouble
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
@@ -44,7 +45,7 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
     it("should provide a forAll that takes one param that invokes the generator with increasing size") {
       val sizesBuf = Buffer.empty[Int]
       implicit val generatorDrivenConfig =
-        PropertyCheckConfig(minSuccessful = 10, maxDiscarded = 50, minSize = 0, maxSize = 99)
+        PropertyCheckConfiguration(minSuccessful = 10, maxDiscardedFactor = PosZDouble.from(PropertyCheckConfiguration.calculateMaxDiscardedFactor(10, 50)).get, minSize = 0, sizeRange = 99)
       implicit val intGen: Generator[Int] =
         new Generator[Int] {
           def next(size: Int, rnd: Randomizer): (Int, Randomizer) = {

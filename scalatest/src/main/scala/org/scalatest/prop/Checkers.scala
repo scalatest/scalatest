@@ -161,7 +161,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  * </table>
  *
  * <p>
- * The <code>check</code> methods of trait <code>Checkers</code> each take a <code>PropertyCheckConfig</code>
+ * The <code>check</code> methods of trait <code>Checkers</code> each take a <code>PropertyCheckConfiguration</code>
  * object as an implicit parameter. This object provides values for each of the five configuration parameters. Trait <code>Configuration</code>
  * provides an implicit <code>val</code> named <code>generatorDrivenConfig</code> with each configuration parameter set to its default value.
  * If you want to set one or more configuration parameters to a different value for all property checks in a suite you can override this
@@ -172,7 +172,7 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <pre class="stHighlight">
  * implicit override val generatorDrivenConfig =
- *   PropertyCheckConfig(minSize = 10, maxSize = 20)
+ *   PropertyCheckConfiguration(minSize = 10, sizeRange = 10)
  * </pre>
  *
  * <p>
@@ -181,13 +181,13 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <pre class="stHighlight">
  * implicit val generatorDrivenConfig =
- *   PropertyCheckConfig(minSize = 10, maxSize = 20)
+ *   PropertyCheckConfiguration(minSize = 10, sizeRange = 10)
  * </pre>
  *
  * <p>
- * In addition to taking a <code>PropertyCheckConfig</code> object as an implicit parameter, the <code>check</code> methods of trait
+ * In addition to taking a <code>PropertyCheckConfiguration</code> object as an implicit parameter, the <code>check</code> methods of trait
  * <code>Checkers</code> also take a variable length argument list of <code>PropertyCheckConfigParam</code>
- * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfig</code> for a single <code>check</code>
+ * objects that you can use to override the values provided by the implicit <code>PropertyCheckConfiguration</code> for a single <code>check</code>
  * invocation. You place these configuration settings after the property or property function, For example, if you want to
  * set <code>minSuccessful</code> to 500 for just one particular <code>check</code> invocation,
  * you can do so like this:
@@ -199,12 +199,12 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <p>
  * This invocation of <code>check</code> will use 500 for <code>minSuccessful</code> and whatever values are specified by the
- * implicitly passed <code>PropertyCheckConfig</code> object for the other configuration parameters.
+ * implicitly passed <code>PropertyCheckConfiguration</code> object for the other configuration parameters.
  * If you want to set multiple configuration parameters in this way, just list them separated by commas:
  * </p>
  *
  * <pre class="stHighlight">
- * check((n: Int) => n + 0 == n, minSuccessful(500), maxDiscarded(300))
+ * check((n: Int) => n + 0 == n, minSuccessful(500), maxDiscardedFactor(0.6))
  * </pre>
  *
  * <p>
@@ -238,7 +238,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,P](f: A1 => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty
     ) {
@@ -253,7 +253,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,P](f: (A1,A2) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty
@@ -270,7 +270,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,P](f: (A1,A2,A3) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -287,7 +287,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,P](f: (A1,A2,A3,A4) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -305,7 +305,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,A5,P](f: (A1,A2,A3,A4,A5) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -324,7 +324,7 @@ trait Checkers extends Configuration {
    */
   def check[A1,A2,A3,A4,A5,A6,P](f: (A1,A2,A3,A4,A5,A6) => P, configParams: PropertyCheckConfigParam*)
     (implicit
-      config: PropertyCheckConfig,
+      config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
@@ -353,7 +353,7 @@ trait Checkers extends Configuration {
    * @param p the property to check
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfig) {
+  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable) {
     val params = getParams(configParams, config)
     check(p, params)
   }
@@ -540,85 +540,6 @@ object Checkers extends Checkers {
       (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
     )
     strs.mkString("\n")
-  }
-
-  private[prop] def getParams(
-    configParams: Seq[Configuration#PropertyCheckConfigParam],
-    config: Configuration#PropertyCheckConfig
-  ): Parameters = {
-
-    var minSuccessful = -1
-    var maxDiscarded = -1
-    var pminSize = -1
-    var pmaxSize = -1
-    var pworkers = -1
-
-    var minSuccessfulTotalFound = 0
-    var maxDiscardedTotalFound = 0
-    var minSizeTotalFound = 0
-    var maxSizeTotalFound = 0
-    var workersTotalFound = 0
-
-    for (configParam <- configParams) {
-      configParam match {
-        case param: MinSuccessful =>
-          minSuccessful = param.value
-          minSuccessfulTotalFound += 1
-        case param: MaxDiscarded =>
-          maxDiscarded = param.value
-          maxDiscardedTotalFound += 1
-        case param: MinSize =>
-          pminSize = param.value
-          minSizeTotalFound += 1
-        case param: MaxSize =>
-          pmaxSize = param.value
-          maxSizeTotalFound += 1
-        case param: Workers =>
-          pworkers = param.value
-          workersTotalFound += 1
-      }
-    }
-  
-    if (minSuccessfulTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MinSuccessful config parameters, but " + minSuccessfulTotalFound + " were passed")
-    if (maxDiscardedTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MaxDiscarded config parameters, but " + maxDiscardedTotalFound + " were passed")
-    if (minSizeTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MinSize config parameters, but " + minSizeTotalFound + " were passed")
-    if (maxSizeTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one MaxSize config parameters, but " + maxSizeTotalFound + " were passed")
-    if (workersTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
-
-    // Adding one to maxDiscarded, because I think it is easier to understand that maxDiscarded means the maximum number of times
-    // allowed that discarding will occur and the property can still pass. One more discarded evaluation than this number and the property will fail
-    // because of it. ScalaCheck fails at exactly maxDiscardedTests.
-    new Parameters {
-      val minSuccessfulTests: Int = 
-        if (minSuccessful != -1) minSuccessful else config.minSuccessful
-
-      val minSize: Int = 
-        if (pminSize != -1) pminSize else config.minSize
-
-      val maxSize: Int = 
-        if (pmaxSize != -1) pmaxSize else config.maxSize
-
-      val rng: scala.util.Random = org.scalacheck.Gen.Parameters.default.rng
-
-      val workers: Int = 
-        if (pworkers != -1) pworkers else config.workers
-
-      val testCallback: TestCallback = new TestCallback {}
-
-      val maxDiscardRatio: Float = {
-        val maxDiscardedTests = (if (maxDiscarded != -1) maxDiscarded else config.maxDiscarded) + 1
-
-        if (maxDiscardedTests < 0) Parameters.default.maxDiscardRatio
-        else (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
-      }
-
-      val customClassLoader: Option[ClassLoader] = None
-    }
   }
 
 }
