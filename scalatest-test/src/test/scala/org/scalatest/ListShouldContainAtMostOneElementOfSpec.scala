@@ -22,6 +22,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
 
 class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
 
