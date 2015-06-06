@@ -308,7 +308,7 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
       }
     }
 
-    /*describe("when used with (contain atMostOneElementOf Seq(...)) syntax") {
+    describe("when used with (contain atMostOneElementOf Seq(...)) syntax") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         all (list1s) should (contain atMostOneElementOf Seq(1, 3, 4))
@@ -322,7 +322,7 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one of (2, 3, 4) (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain at most one element of List(2, 3, 4) (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -350,95 +350,80 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
         }
       }
 
-      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (contain atMostOneElementOf Seq(1, 2, 2, 3))
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
+      it("should do nothing when RHS contain duplicated value") {
+        all (list1s) should (contain atMostOneElementOf Seq(1, 3, 3, 8))
       }
     }
 
     describe("when used with not contain atMostOneElementOf Seq(...) syntax") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) should not contain atMostOneElementOf Seq("happy", "birthday", "to", "you")
+        all (toLists) should not contain atMostOneElementOf (Seq("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not contain atMostOneElementOf Seq("fee", "fie", "foe", "fum")
+          all (toLists) should not contain atMostOneElementOf (Seq("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of ("fee", "fie", "foe", "fum") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one element of List(\"fee\", \"fie\", \"foe\", \"fum\") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
+        all (toLists) should not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         intercept[TestFailedException] {
-          all (toLists) should not contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")
+          all (toLists) should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))
         }
       }
 
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        (all (toLists) should not contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) should not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          all (toLists) should not contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+          all (toLists) should not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
 
-      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) should not contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fum")
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
+      it("should do nothing when RHS contain duplicated value") {
+        all (toLists) should not contain atMostOneElementOf (Seq("happy", "birthday", "to", "to", "you"))
       }
     }
 
     describe("when used with (not contain atMostOneElementOf Seq(...)) syntax") {
 
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
-        all (toLists) should (not contain atMostOneElementOf Seq("happy", "birthday", "to", "you"))
+        all (toLists) should (not contain atMostOneElementOf (Seq("happy", "birthday", "to", "you")))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not contain atMostOneElementOf Seq("fee", "fie", "foe", "fum"))
+          all (toLists) should (not contain atMostOneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of ("fee", "fie", "foe", "fum") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one element of List(\"fee\", \"fie\", \"foe\", \"fum\") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should (not contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        all (toLists) should (not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         intercept[TestFailedException] {
-          all (toLists) should (not contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))
+          all (toLists) should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         }
-        (all (toLists) should (not contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) should (not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          all (toLists) should (not contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+          all (toLists) should (not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
       }
-      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) should (not contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
+      it("should do nothing when RHS contain duplicated value") {
+        all (toLists) should (not contain atMostOneElementOf (Seq("happy", "birthday", "to", "to", "you")))
       }
     }
 
@@ -452,7 +437,7 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of ("fee", "fie", "foe", "fum") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one element of List(\"fee\", \"fie\", \"foe\", \"fum\") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
@@ -474,13 +459,8 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
         }
       }
 
-      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) shouldNot contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fum")
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
+      it("should do nothing when RHS contain duplicated value") {
+        all (toLists) shouldNot contain atMostOneElementOf Seq("happy", "birthday", "to", "to", "you")
       }
     }
 
@@ -494,7 +474,7 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one of ("fee", "fie", "foe", "fum") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(toLists(0)) + " contained at most one element of List(\"fee\", \"fie\", \"foe\", \"fum\") (ListShouldContainAtMostOneElementOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
@@ -514,14 +494,9 @@ class ListShouldContainAtMostOneElementOfSpec extends FunSpec {
           all (toLists) shouldNot (contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
-      it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) shouldNot (contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneElementOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(FailureMessages.atMostOneElementOfDuplicate))
+      it("should do nothing when RHS contain duplicated value") {
+        all (toLists) shouldNot (contain atMostOneElementOf Seq("happy", "birthday", "to", "to", "you"))
       }
-    }*/
+    }
   }
 }
