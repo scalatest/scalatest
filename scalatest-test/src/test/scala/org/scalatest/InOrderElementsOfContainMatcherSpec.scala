@@ -20,9 +20,9 @@ import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
 
-class InOrderElementsOfContainMatcherSpec extends Spec {
+class InOrderElementsOfContainMatcherSpec extends FunSpec {
 
-  object `inOrderElementsOf ` {
+  describe("inOrderElementsOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -32,7 +32,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def `should succeeded when left List contains same elements in same order as right List` {
+    it("should succeeded when left List contains same elements in same order as right List") {
       List(1, 2, 3, 4, 5) should contain inOrderElementsOf Seq(1, 3, 5)
       Array(1, 2, 3, 4, 5) should contain inOrderElementsOf Seq(1, 3, 5)
       javaList(1, 2, 3, 4, 5) should contain inOrderElementsOf Seq(1, 3, 5)
@@ -41,7 +41,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain inOrderElementsOf Seq(1 -> "one", 3 -> "three", 5 -> "five")
     }
 
-    def `should succeeded when left List contains same elements in same order as right Set` {
+    it("should succeeded when left List contains same elements in same order as right Set") {
       List(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 3)
       Array(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 3)
       javaList(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 3)
@@ -50,7 +50,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain inOrderElementsOf Seq(1 -> "one", 2 -> "two", 3 -> "three")
     }
 
-    def `should failed with correct stack depth and message when left List contains same elements in different order as right List` {
+    it("should failed with correct stack depth and message when left List contains same elements in different order as right List") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderElementsOf Seq(2, 1, 3)
@@ -84,14 +84,14 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, Seq(2, 1, 3), thisLineNumber - 2)
     }
 
-    def `should do nothing when inOrder contains duplicate element` {
+    it("should do nothing when inOrder contains duplicate element") {
       List(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
       Array(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
 
       javaList(1, 2, 3) should contain inOrderElementsOf Seq(1, 2, 1)
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderElementsOf Seq(2, 5, 3)
@@ -125,7 +125,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, Seq(2, 5, 3), thisLineNumber - 2)
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left and right List contains same elements but in different order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contains same elements but in different order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderElementsOf Seq(2, 1, 3)
@@ -159,7 +159,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, Seq(2, 1, 3), thisLineNumber - 2)
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left List is shorter than right List` {
+    it("should throw TestFailedException with correct stack depth and message when left List is shorter than right List") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderElementsOf Seq(1, 2, 3, 4)
@@ -193,7 +193,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       checkStackDepth(e5, left5, Seq(1, 2, 3, 4), thisLineNumber - 2)
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left List is longer than right List and right List has different elements` {
+    it("should throw TestFailedException with correct stack depth and message when left List is longer than right List and right List has different elements") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should contain inOrderElementsOf Seq(1, 5)
@@ -228,7 +228,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
     }
   }
 
-  object `not inOrderElementsOf ` {
+  describe("not inOrderElementsOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.decorateToStringValue(left)
@@ -238,7 +238,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def `should succeeded when left List contains different elements as right List` {
+    it("should succeeded when left List contains different elements as right List") {
       List(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 2, 8))
       Array(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 2, 8))
       javaList(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 2, 8))
@@ -247,7 +247,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderElementsOf (Seq(1 -> "one", 2 -> "two", 8 -> "eight"))
     }
 
-    def `should succeeded when left List contains same elements as right List in different order` {
+    it("should succeeded when left List contains same elements as right List in different order") {
       List(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 3, 2))
       Array(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 3, 2))
       javaList(1, 2, 3) should not contain inOrderElementsOf (Seq(1, 3, 2))
@@ -256,7 +256,7 @@ class InOrderElementsOfContainMatcherSpec extends Spec {
       // javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain inOrderElementsOf (Seq(1 -> "one", 3 -> "three", 2 -> "two"))
     }
 
-    def `should throw TestFailedException with correct stack depth and message when left and right List contain same elements in same order` {
+    it("should throw TestFailedException with correct stack depth and message when left and right List contain same elements in same order") {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
         left1 should not contain inOrderElementsOf (Seq(1, 2, 3))

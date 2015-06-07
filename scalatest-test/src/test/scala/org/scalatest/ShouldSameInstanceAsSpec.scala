@@ -18,32 +18,32 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldSameInstanceAsSpec extends Spec {
+class ShouldSameInstanceAsSpec extends FunSpec {
 
-  object `The be a ('symbol) syntax` {
+  describe("The be a ('symbol) syntax") {
 
     val string = "Hi"
     val obj: AnyRef = string
     val otherString = new String("Hi")
 
-    def `should do nothing if the object is the same instance as another object` {
+    it("should do nothing if the object is the same instance as another object") {
       string should be theSameInstanceAs (string)
       obj should be theSameInstanceAs (string)
       string should be theSameInstanceAs (obj)
     }
 
-    def `should do nothing if the object is not the same instance as another object, when used with not` {
+    it("should do nothing if the object is not the same instance as another object, when used with not") {
       otherString should not { be theSameInstanceAs (string) }
       otherString should not be theSameInstanceAs (string)
     }
 
-    def `should do nothing if the object is the same instnace as another object, when used in a logical-and expression` {
+    it("should do nothing if the object is the same instnace as another object, when used in a logical-and expression") {
       obj should ((be theSameInstanceAs (string)) and (be theSameInstanceAs (string)))
       obj should (be theSameInstanceAs (string) and (be theSameInstanceAs (string)))
       obj should (be theSameInstanceAs (string) and be theSameInstanceAs (string))
     }
 
-    def `should do nothing if the object is the same instance as another object, when used in a logical-or expression` {
+    it("should do nothing if the object is the same instance as another object, when used in a logical-or expression") {
 
       obj should ((be theSameInstanceAs (otherString)) or (be theSameInstanceAs (string)))
       obj should (be theSameInstanceAs (otherString) or (be theSameInstanceAs (string)))
@@ -54,14 +54,14 @@ class ShouldSameInstanceAsSpec extends Spec {
       obj should (be theSameInstanceAs (string) or be theSameInstanceAs (otherString))
     }
 
-    def `should do nothing if the object is not the same instance as another object, when used in a logical-and expression with not` {
+    it("should do nothing if the object is not the same instance as another object, when used in a logical-and expression with not") {
 
       obj should (not (be theSameInstanceAs (otherString)) and not (be theSameInstanceAs (otherString)))
       obj should ((not be theSameInstanceAs (otherString)) and (not be theSameInstanceAs (otherString)))
       obj should (not be theSameInstanceAs (otherString) and not be theSameInstanceAs (otherString))
     }
 
-    def `should do nothing if the object is not the same instance as another object, when used in a logical-or expression with not` {
+    it("should do nothing if the object is not the same instance as another object, when used in a logical-or expression with not") {
 
       obj should (not (be theSameInstanceAs (string)) or not (be theSameInstanceAs (otherString)))
       obj should ((not be theSameInstanceAs (string)) or (not be theSameInstanceAs (otherString)))
@@ -72,14 +72,14 @@ class ShouldSameInstanceAsSpec extends Spec {
       obj should (not be theSameInstanceAs (otherString) or not be theSameInstanceAs (string))
     }
 
-    def `should throw TestFailedException if the object is not the same instance as another object` {
+    it("should throw TestFailedException if the object is not the same instance as another object") {
       val caught1 = intercept[TestFailedException] {
         otherString should be theSameInstanceAs (string)
       }
       assert(caught1.getMessage === "\"Hi\" was not the same instance as \"Hi\"")
     }
 
-    def `should throw TestFailedException if the object is the same instance as another object, when used with not` {
+    it("should throw TestFailedException if the object is the same instance as another object, when used with not") {
       val caught1 = intercept[TestFailedException] {
         obj should not { be theSameInstanceAs (string) }
       }
@@ -90,7 +90,7 @@ class ShouldSameInstanceAsSpec extends Spec {
       assert(caught2.getMessage === "\"Hi\" was the same instance as \"Hi\"")
     }
 
-    def `should throw TestFailedException if the object is not the same instance as another object, when used in a logical-and expression` {
+    it("should throw TestFailedException if the object is not the same instance as another object, when used in a logical-and expression") {
       val caught1 = intercept[TestFailedException] {
         obj should ((be theSameInstanceAs (string)) and (be theSameInstanceAs (otherString)))
       }
@@ -105,7 +105,7 @@ class ShouldSameInstanceAsSpec extends Spec {
       assert(caught3.getMessage === "\"Hi\" was the same instance as \"Hi\", but \"Hi\" was not the same instance as \"Hi\"")
     }
 
-    def `should throw TestFailedException if the object is not the same instance as another object, when used in a logical-or expression` {
+    it("should throw TestFailedException if the object is not the same instance as another object, when used in a logical-or expression") {
 
       val caught1 = intercept[TestFailedException] {
         obj should ((be theSameInstanceAs (otherString)) or (be theSameInstanceAs (otherString)))
@@ -121,7 +121,7 @@ class ShouldSameInstanceAsSpec extends Spec {
       assert(caught3.getMessage === "\"Hi\" was not the same instance as \"Hi\", and \"Hi\" was not the same instance as \"Hi\"")
     }
 
-    def `should throw TestFailedException if the object is the same instance as another object, when used in a logical-and expression with not` {
+    it("should throw TestFailedException if the object is the same instance as another object, when used in a logical-and expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         obj should (not (be theSameInstanceAs (otherString)) and not (be theSameInstanceAs (string)))
@@ -142,7 +142,7 @@ class ShouldSameInstanceAsSpec extends Spec {
       assert(caught7.getMessage === "\"Hi\" was the same instance as \"Hi\"")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         obj should (not (be theSameInstanceAs (string)) or not (be theSameInstanceAs (string)))

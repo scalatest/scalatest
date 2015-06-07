@@ -21,15 +21,15 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar with ReturnsNormallyThrowsAssertion {
+class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSugar with ReturnsNormallyThrowsAssertion {
 
   class Clown {
     def hasBigRedNose = true
   }
 
-  object `Matcher expressions to the right of and` {
-    object `(A plain-old matcher)` {
-      def `should not short-circuit if left matcher doesn't match` {
+  describe("Matcher expressions to the right of and") {
+    describe("(A plain-old matcher)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -41,8 +41,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(have length N syntax)` {
-      def `should not short-circuit if left matcher doesn't match` {
+    describe("(have length N syntax)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -60,8 +60,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(not have length N syntax)` {
-      def `should not short-circuit if left matcher doesn't match` {
+    describe("(not have length N syntax)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -85,8 +85,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(have size N syntax)` {
-      def `should not short-circuit if left matcher doesn't match` {
+    describe("(have size N syntax)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -104,8 +104,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(not have size N syntax)` {
-      def `should not short-circuit if left matcher doesn't match` {
+    describe("(not have size N syntax)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -129,8 +129,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(equal N syntax)` {
-      def `should not short-circuit if left matcher doesn't match` {
+    describe("(equal N syntax)") {
+      it("should not short-circuit if left matcher doesn't match") {
 
         val mockClown = mock[Clown]
 
@@ -149,8 +149,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
     }
   }
 
-  object `(not equal N syntax)` {
-    def `should not short-circuit if left matcher doesn't match` {
+  describe("(not equal N syntax)") {
+    it("should not short-circuit if left matcher doesn't match") {
 
       val mockClown = mock[Clown]
 
@@ -168,9 +168,9 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
     }
   }
 
-  object `Matcher expressions to the right of or` {
-    object `(A plain-old matcher)` {
-      def `should not short-circuit if left matcher does match` {
+  describe("Matcher expressions to the right of or") {
+    describe("(A plain-old matcher)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -180,8 +180,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(have length N syntax)` {
-      def `should not short-circuit if left matcher does match` {
+    describe("(have length N syntax)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -195,8 +195,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(not have length N syntax)` {
-      def `should not short-circuit if left matcher does match` {
+    describe("(not have length N syntax)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -214,8 +214,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(have size N syntax)` {
-      def `should not short-circuit if left matcher does match` {
+    describe("(have size N syntax)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -229,8 +229,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(not have size N syntax)` {
-      def `should not short-circuit if left matcher does match` {
+    describe("(not have size N syntax)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -248,8 +248,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(equal N syntax)` {
-      def `should not short-circuit if left matcher does match` {
+    describe("(equal N syntax)") {
+      it("should not short-circuit if left matcher does match") {
 
         val mockClown = mock[Clown]
 
@@ -263,8 +263,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(be >/</>=/<= syntax)` {
-      def `should not short-circuit if left matcher does match for <` {
+    describe("(be >/</>=/<= syntax)") {
+      it("should not short-circuit if left matcher does match for <") {
 
         val mockClown = mock[Clown]
 
@@ -276,7 +276,7 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
 
         verify(mockClown, times(2)).hasBigRedNose
       }
-      def `should not short-circuit if left matcher does match for >` {
+      it("should not short-circuit if left matcher does match for >") {
 
         val mockClown = mock[Clown]
 
@@ -290,8 +290,8 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
       }
     }
 
-    object `(not equal N syntax)` {
-      def `should not short-circuit if left matcher does match for <` {
+    describe("(not equal N syntax)") {
+      it("should not short-circuit if left matcher does match for <") {
 
         val mockClown = mock[Clown]
 
@@ -303,7 +303,7 @@ class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar 
 
         verify(mockClown, times(2)).hasBigRedNose
       }
-      def `should not short-circuit if left matcher does match for >` {
+      it("should not short-circuit if left matcher does match for >") {
 
         val mockClown = mock[Clown]
 

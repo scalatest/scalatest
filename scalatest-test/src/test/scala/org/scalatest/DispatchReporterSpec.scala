@@ -24,10 +24,10 @@ import time.SpanSugar._
 import Matchers._
 import OptionValues._
 import Inside._
-import tags.Retryable
+import tagobjects.Retryable
 import Retries._
 
-class DispatchReporterSpec extends Spec {
+class DispatchReporterSpec extends FunSpec {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))
@@ -40,8 +40,8 @@ class DispatchReporterSpec extends Spec {
   val SecondTestStartingOrdinal = TestStartingOrdinal.next
   val TestFinishedOrdinal = SecondTestStartingOrdinal.next
   val SecondTestFinishedOrdinal = TestFinishedOrdinal.next 
-  object `the DispatchReporter` {
-    object `when slowpoke detection is enabled` {
+  describe("the DispatchReporter") {
+    describe("when slowpoke detection is enabled") {
       def fireTestStarting(): (EventRecordingReporter, DispatchReporter) = {
         val erp = new EventRecordingReporter
         val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
@@ -57,7 +57,7 @@ class DispatchReporterSpec extends Spec {
         )
         (erp, dispatch)
       }
-      def `should send out AlertProvided events with useful message if a slowpoke is detected` {
+      it("should send out AlertProvided events with useful message if a slowpoke is detected") {
         val (erp, dispatch) = fireTestStarting()
         val alertProvidedEvent =
           eventually {
@@ -74,7 +74,7 @@ class DispatchReporterSpec extends Spec {
           indentationLevel should equal (0)
         }
       }
-      def `should send out AlertProvided events with a message that mentions all detected slowpokes` {
+      it("should send out AlertProvided events with a message that mentions all detected slowpokes") {
         val (erp, dispatch) = fireTestStarting()
         dispatch(
           TestStarting(
@@ -116,7 +116,7 @@ class DispatchReporterSpec extends Spec {
         }
         dispatch.doDispose()
       }
-      def `should stop sending out AlertProvided events after a detected slowpoke succeeds` {
+      it("should stop sending out AlertProvided events after a detected slowpoke succeeds") {
         doTestStartingAndFinishedEvents(
           TestSucceeded(
             ordinal = TestFinishedOrdinal,
@@ -129,7 +129,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out AlertProvided events after a detected slowpoke fails` {
+      it("should stop sending out AlertProvided events after a detected slowpoke fails") {
         doTestStartingAndFinishedEvents(
           TestFailed(
             ordinal = TestFinishedOrdinal,
@@ -143,7 +143,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out AlertProvided events after a detected slowpoke is canceled` {
+      it("should stop sending out AlertProvided events after a detected slowpoke is canceled") {
         doTestStartingAndFinishedEvents(
           TestCanceled(
             ordinal = TestFinishedOrdinal,
@@ -157,7 +157,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out AlertProvided events after a detected slowpoke is reported as pending` {
+      it("should stop sending out AlertProvided events after a detected slowpoke is reported as pending") {
         doTestStartingAndFinishedEvents(
           TestPending(
             ordinal = TestFinishedOrdinal,
@@ -171,7 +171,7 @@ class DispatchReporterSpec extends Spec {
         )
       }
 /* There is no TestOmitted event as yet!
-      def `should stop sending out AlertProvided events after a detected slowpoke is reported as omitted` {
+      it("should stop sending out AlertProvided events after a detected slowpoke is reported as omitted") {
         doTestStartingAndFinishedEvents(
           TestOmitted(
             ordinal = TestFinishedOrdinal,
@@ -185,7 +185,7 @@ class DispatchReporterSpec extends Spec {
         )
       }
 */
-      def `should send AlertProvided events if a slowpoke is detected with the only seen ordinal` {
+      it("should send AlertProvided events if a slowpoke is detected with the only seen ordinal") {
         val (erp, dispatch) = fireTestStarting()
         val initialAlertProvided =
           eventually {
@@ -196,7 +196,7 @@ class DispatchReporterSpec extends Spec {
         dispatch.doDispose()
         initialAlertProvided.ordinal should be (TestStartingOrdinal)
       }
-      @Retryable def `should send AlertProvided events if a slowpoke is detected with largest seen ordinal` {
+      it("should send AlertProvided events if a slowpoke is detected with largest seen ordinal", Retryable) {
         val (erp, dispatch) = fireTestStarting()
         dispatch(
           TestStarting(

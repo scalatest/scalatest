@@ -19,16 +19,16 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
+class ShouldBeAnSymbolSpec extends FunSpec with FruitMocks {
 
-  object `The be an ('symbol) syntax` {
+  describe("The be an ('symbol) syntax") {
 
-    def `should do nothing if the object has an appropriately named method, which returns true` {
+    it("should do nothing if the object has an appropriately named method, which returns true") {
       appleMock should be an ('apple)
       isAppleMock should be an ('apple)
     }
 
-    def `should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false` {
+    it("should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false") {
       val ex5 = intercept[TestFailedException] {
         List(1, 2) should be an ('empty)
       }
@@ -37,7 +37,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should throw TestFailedException if no <symbol> or is<Symbol> method exists` {
+    it("should throw TestFailedException if no <symbol> or is<Symbol> method exists") {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should be an ('apple)
       }
@@ -49,14 +49,14 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       ex2.getMessage should equal ("NoPredicateMock has neither a crabApple nor an isCrabApple method")
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false when used with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false when used with not") {
       notAppleMock should not { be an ('apple) }
       notAppleMock should not be an ('apple)
       isNotAppleMock should not { be an ('apple) }
       isNotAppleMock should not be an ('apple)
     }
 
-    def `should throw TestFailedException if no <symbol> or is<Symbol> method exists, when used with not` {
+    it("should throw TestFailedException if no <symbol> or is<Symbol> method exists, when used with not") {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should not { be an ('apple) }
       }
@@ -75,7 +75,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       ex4.getMessage should equal ("NoPredicateMock has neither an orange nor an isOrange method")
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns true, when used in a logical-and expression` {
+    it("should do nothing if the object has an appropriately named method, which returns true, when used in a logical-and expression") {
       appleMock should ((be an ('apple)) and (be an ('apple)))
       appleMock should (be an ('apple) and (be an ('apple)))
       appleMock should (be an ('apple) and be an ('apple))
@@ -84,7 +84,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       isAppleMock should (be an ('apple) and be an ('apple))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns true, when used in a logical-or expression` {
+    it("should do nothing if the object has an appropriately named method, which returns true, when used in a logical-or expression") {
 
       appleMock should ((be an ('orange)) or (be an ('apple)))
       appleMock should (be an ('orange) or (be an ('apple)))
@@ -101,7 +101,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       isAppleMock should (be an ('apple) or be an ('orange))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false, when used in a logical-and expression with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false, when used in a logical-and expression with not") {
 
       notAppleMock should (not (be an ('apple)) and not (be an ('apple)))
       notAppleMock should ((not be an ('apple)) and (not be an ('apple)))
@@ -112,7 +112,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       isNotAppleMock should (not be an ('apple) and not be an ('apple))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false, when used in a logical-or expression with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false, when used in a logical-or expression with not") {
 
       notAppleMock should (not (be an ('apple)) or not (be an ('apple)))
       notAppleMock should ((not be an ('apple)) or (not be an ('apple)))
@@ -131,7 +131,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       isNotAppleMock should (not be an ('orange) or not be an ('apple))
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false") {
       val caught1 = intercept[TestFailedException] {
         notAppleMock should be an ('apple)
       }
@@ -142,7 +142,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(caught2.getMessage === "IsNotAppleMock was not an apple")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true when used with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true when used with not") {
       val caught1 = intercept[TestFailedException] {
         appleMock should not { be an ('apple) }
       }
@@ -161,7 +161,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(caught4.getMessage === "IsAppleMock was an apple")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-and expression` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-and expression") {
       val caught1 = intercept[TestFailedException] {
         appleMock should ((be an ('apple)) and (be an ('orange)))
       }
@@ -188,7 +188,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(caught6.getMessage === "IsAppleMock was an apple, but IsAppleMock was not an orange")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-or expression` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-or expression") {
 
       val caught1 = intercept[TestFailedException] {
         notAppleMock should ((be an ('apple)) or (be an ('apple)))
@@ -216,7 +216,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(caught6.getMessage === "IsNotAppleMock was not an apple, and IsNotAppleMock was not an apple")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-and expression with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-and expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         appleMock should (not (be an ('orange)) and not (be an ('apple)))
@@ -249,7 +249,7 @@ class ShouldBeAnSymbolSpec extends Spec with FruitMocks {
       assert(caught7.getMessage === "AppleMock was an apple")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         appleMock should (not (be an ('apple)) or not (be an ('apple)))

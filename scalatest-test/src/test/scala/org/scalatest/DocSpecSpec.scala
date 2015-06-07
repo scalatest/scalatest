@@ -21,10 +21,10 @@ import Matchers._
 import prop.TableDrivenPropertyChecks._
 import org.scalatest.SharedHelpers.EventRecordingReporter
 
-class DocSpecSpec extends Spec {
+class DocSpecSpec extends FunSpec {
   
-  object `A DocSpec` {
-    object `with no suites inside` {
+  describe("A DocSpec") {
+    describe("with no suites inside") {
 
       // This one I'm putting flat against the margin on purpose.
       val flatAgainstMargin =
@@ -115,7 +115,7 @@ This is a paragraph later...
         shortLineFirst
       )
 
-      def `should send the markup unindented out the door` {
+      it("should send the markup unindented out the door") {
         forAll (examples) { docSpec =>
           val rep = new EventRecordingReporter
           docSpec.run(None, Args(rep))
@@ -133,21 +133,21 @@ This is a paragraph later...
           assert(event.text === expected)
         }
       }
-      def `should return an empty list from nestedSuites` {
+      it("should return an empty list from nestedSuites") {
         forAll (examples) { doc =>
           doc.nestedSuites should equal (Nil)
         }
       }
     }
-    object `with just suites` {
-      class NestedSpec extends Spec {
+    describe("with just suites") {
+      class NestedSpec extends FunSpec {
         var wasRun = false
-        def `a test` {
+        it("a test") {
           wasRun = true
         }
       }
         
-      def `should run the nested suite as well as outputing the markup text` {
+      it("should run the nested suite as well as outputing the markup text") {
 
         val nestedSpec = new NestedSpec
 
@@ -188,22 +188,22 @@ This is a paragraph later...
     }
   }
 
-  object `The trimMarkup method` {
-    def `should strip any blank lines off of the front` {
+  describe("The trimMarkup method") {
+    it("should strip any blank lines off of the front") {
      trimMarkup("\n\n  First line with stuff") should equal ("  First line with stuff")
       trimMarkup("\n  \n  First line with stuff") should equal ("  First line with stuff")
       trimMarkup("  \n  \t \n  First line with stuff") should equal ("  First line with stuff")
       trimMarkup("\n\n\n\n  \n  First line with stuff") should equal ("  First line with stuff")
       trimMarkup("  First line with stuff") should equal ("  First line with stuff")
     }
-    def `should strip any blank lines off the front and have no blank line or return at the end` {
+    it("should strip any blank lines off the front and have no blank line or return at the end") {
       trimMarkup("\n\n  First line with stuff\n") should equal ("  First line with stuff")
       trimMarkup("\n  \n  First line with stuff\n\n") should equal ("  First line with stuff")
       trimMarkup("  \n  \t \n  First line with stuff\n  \n") should equal ("  First line with stuff")
       trimMarkup("\n\n\n\n  \n  First line with stuff\n \t\t   \n   \n") should equal ("  First line with stuff")
       trimMarkup("  First line with stuff\n\n\n") should equal ("  First line with stuff")
     }
-    def `should have no blank line or return at the end` {
+    it("should have no blank line or return at the end") {
       trimMarkup("  First line with stuff\n") should equal ("  First line with stuff")
       trimMarkup("  First line with stuff\n\n") should equal ("  First line with stuff")
       trimMarkup("  First line with stuff\n  \n") should equal ("  First line with stuff")
@@ -212,14 +212,14 @@ This is a paragraph later...
     }
   }
 
-  object `The stripMargin method` {
-    def `should throw NPE if null passed` {
+  describe("The stripMargin method") {
+    it("should throw NPE if null passed") {
       a [NullPointerException] should be thrownBy { stripMargin(null) }
     }
-    def `should return an empty string as is` {
+    it("should return an empty string as is") {
       stripMargin("") should equal ("")
     }
-    def `when passed a string with leading space, should return the string with the leading space omitted` {
+    it("when passed a string with leading space, should return the string with the leading space omitted") {
       stripMargin(" Howdy") should equal ("Howdy")
       stripMargin("  Howdy") should equal ("Howdy")
       stripMargin("   Howdy") should equal ("Howdy")
@@ -227,7 +227,7 @@ This is a paragraph later...
       stripMargin("\t\tHowdy") should equal ("Howdy")
       stripMargin(" \t \tHowdy") should equal ("Howdy")
     }
-    def `when passed a string with leading space and two lines, should return the string with the leading space omitted from the first line, and the same amound omitted from the second line, with tabs converted to one space` {
+    it("when passed a string with leading space and two lines, should return the string with the leading space omitted from the first line, and the same amound omitted from the second line, with tabs converted to one space") {
       stripMargin(" Howdy\n123456789") should equal ("Howdy\n23456789")
       stripMargin("  Howdy\n123456789") should equal ("Howdy\n3456789")
       stripMargin("   Howdy\n123456789") should equal ("Howdy\n456789")
@@ -235,7 +235,7 @@ This is a paragraph later...
       stripMargin("\t\tHowdy\n123456789") should equal ("Howdy\n3456789")
       stripMargin(" \t \tHowdy\n123456789") should equal ("Howdy\n56789")
     }
-    def `when passed a string with one or more blank lines, a line with leading space and two lines, should return the string with the leading space omitted from the first line, and the same amound omitted from the second line, with tabs converted to one space` {
+    it("when passed a string with one or more blank lines, a line with leading space and two lines, should return the string with the leading space omitted from the first line, and the same amound omitted from the second line, with tabs converted to one space") {
       stripMargin("\n Howdy\n123456789") should equal ("\nHowdy\n23456789")
       stripMargin("\n  \n\n  Howdy\n123456789") should equal ("\n\n\nHowdy\n3456789")
       stripMargin("\n  \t\t\n   Howdy\n123456789") should equal ("\n\t\nHowdy\n456789")

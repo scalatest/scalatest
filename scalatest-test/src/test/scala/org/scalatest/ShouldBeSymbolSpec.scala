@@ -19,16 +19,16 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
 import Matchers._
 
-class ShouldBeSymbolSpec extends Spec with EmptyMocks {
+class ShouldBeSymbolSpec extends FunSpec with EmptyMocks {
 
-  object `The be ('symbol) syntax` {
+  describe("The be ('symbol) syntax") {
 
-    def `should do nothing if the object has an appropriately named method, which returns true` {
+    it("should do nothing if the object has an appropriately named method, which returns true") {
       emptyMock should be ('empty)
       isEmptyMock should be ('empty)
     }
 
-    def `should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false` {
+    it("should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false") {
       val ex5 = intercept[TestFailedException] {
         List(1, 2) should be ('empty)
       }
@@ -37,7 +37,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
-    def `should throw TestFailedException if no <symbol> or is<Symbol> method exists` {
+    it("should throw TestFailedException if no <symbol> or is<Symbol> method exists") {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should be ('empty)
       }
@@ -49,7 +49,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       ex2.getMessage should equal ("NoPredicateMock has neither a full nor an isFull method")
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns true, even if the method contains operator characters` {
+    it("should do nothing if the object has an appropriately named method, which returns true, even if the method contains operator characters") {
 
       val opNames = new OperatorNames
 
@@ -92,14 +92,14 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       opNames should be (Symbol("~~~"))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false when used with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false when used with not") {
       notEmptyMock should not { be ('empty) }
       notEmptyMock should not be ('empty)
       isNotEmptyMock should not { be ('empty) }
       isNotEmptyMock should not be ('empty)
     }
 
-    def `should throw TestFailedException if no <symbol> or is<Symbol> method exists, when used with not` {
+    it("should throw TestFailedException if no <symbol> or is<Symbol> method exists, when used with not") {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should not { be ('empty) }
       }
@@ -129,7 +129,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       ex4.failedCodeLineNumber should equal (Some(thisLineNumber - 4))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns true, when used in a logical-and expression` {
+    it("should do nothing if the object has an appropriately named method, which returns true, when used in a logical-and expression") {
       emptyMock should ((be ('empty)) and (be ('empty)))
       emptyMock should (be ('empty) and (be ('empty)))
       emptyMock should (be ('empty) and be ('empty))
@@ -138,7 +138,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       isEmptyMock should (be ('empty) and be ('empty))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns true, when used in a logical-or expression` {
+    it("should do nothing if the object has an appropriately named method, which returns true, when used in a logical-or expression") {
 
       emptyMock should ((be ('full)) or (be ('empty)))
       emptyMock should (be ('full) or (be ('empty)))
@@ -155,7 +155,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       isEmptyMock should (be ('empty) or be ('full))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false, when used in a logical-and expression with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false, when used in a logical-and expression with not") {
 
       notEmptyMock should (not (be ('empty)) and not (be ('empty)))
       notEmptyMock should ((not be ('empty)) and (not be ('empty)))
@@ -166,7 +166,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       isNotEmptyMock should (not be ('empty) and not be ('empty))
     }
 
-    def `should do nothing if the object has an appropriately named method, which returns false, when used in a logical-or expression with not` {
+    it("should do nothing if the object has an appropriately named method, which returns false, when used in a logical-or expression with not") {
 
       notEmptyMock should (not (be ('empty)) or not (be ('empty)))
       notEmptyMock should ((not be ('empty)) or (not be ('empty)))
@@ -185,7 +185,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       isNotEmptyMock should (not be ('full) or not be ('empty))
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false") {
       val caught1 = intercept[TestFailedException] {
         notEmptyMock should be ('empty)
       }
@@ -196,7 +196,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught2.getMessage === "IsNotEmptyMock was not empty")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true when used with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true when used with not") {
       val caught1 = intercept[TestFailedException] {
         emptyMock should not { be ('empty) }
       }
@@ -215,7 +215,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught4.getMessage === "IsEmptyMock was empty")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-and expression` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-and expression") {
       val caught1 = intercept[TestFailedException] {
         emptyMock should ((be ('empty)) and (be ('full)))
       }
@@ -242,7 +242,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught6.getMessage === "IsEmptyMock was empty, but IsEmptyMock was not full")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-or expression` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns false, when used in a logical-or expression") {
 
       val caught1 = intercept[TestFailedException] {
         notEmptyMock should ((be ('empty)) or (be ('empty)))
@@ -270,7 +270,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught6.getMessage === "IsNotEmptyMock was not empty, and IsNotEmptyMock was not empty")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-and expression with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-and expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         emptyMock should (not (be ('full)) and not (be ('empty)))
@@ -303,7 +303,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught7.getMessage === "EmptyMock was empty")
     }
 
-    def `should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not` {
+    it("should throw TestFailedException if the object has an appropriately named method, which returns true, when used in a logical-or expression with not") {
 
       val caught1 = intercept[TestFailedException] {
         emptyMock should (not (be ('empty)) or not (be ('empty)))
@@ -331,10 +331,10 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught6.getMessage === "IsEmptyMock was empty, and IsEmptyMock was empty")
     }
 
-    object `(for the different types that have implicit conversions for should methods)` {
+    describe("(for the different types that have implicit conversions for should methods)") {
 
       // FOR: implicit def convertToCollectionShouldWrapper[T](o: Collection[T])...
-      def `should work on a scala.Collection` {
+      it("should work on a scala.Collection") {
         val emptySet = Set[Int]()
         emptySet should be ('empty)
         val nonEmptySet = Set(1, 2, 3)
@@ -354,7 +354,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
       // FOR: implicit def convertToSeqShouldWrapper[T](o: Seq[T])...
-      def `should work on a scala.Seq` {
+      it("should work on a scala.Seq") {
         import scala.collection.mutable.ListBuffer
         val emptyListBuffer = new ListBuffer[Int]
         emptyListBuffer should be ('empty)
@@ -379,7 +379,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
 
       // implicit def convertToArrayShouldWrapper[T](o: Array[T]): ArrayShouldWrapper[T] = new ArrayShouldWrapper[T](o)
 /* This no longer works as of Scala 2.8
-      def `should work on a scala.Array` {
+      it("should work on a scala.Array") {
         val emptyArray = new Array[Int](0)
         emptyArray should be ('empty)
         val nonEmptyArray = Array(1, 2, 3)
@@ -400,7 +400,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
 */
 
       // FOR: implicit def convertToListShouldWrapper[T](o: List[T])...
-      def `should work on a scala.List` {
+      it("should work on a scala.List") {
         val emptyList = List[Int]()
         emptyList should be ('empty)
         val nonEmptyList = List(1, 2, 3)
@@ -420,7 +420,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
       // implicit def convertToMapShouldWrapper[K, V](o: scala.collection.Map[K, V])...
-      def `should work on a scala.Map` {
+      it("should work on a scala.Map") {
         val emptyMap = Map[Int, String]()
         emptyMap should be ('empty)
         val nonEmptyMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
@@ -440,7 +440,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
       // implicit def convertToStringShouldWrapper[K, V](o: String): StringShouldWrapper = new StringShouldWrapper(o)
-      def `should work on a String` {
+      it("should work on a String") {
         val caught3 = intercept[TestFailedException] {
           "howdy" should not be ('happy)
         }
@@ -448,7 +448,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
       // FOR: implicit def convertToJavaCollectionShouldWrapper[T](o: java.util.Collection[T])...
-      def `should work on a java.util.Collection` {
+      it("should work on a java.util.Collection") {
         val emptySet = new java.util.HashSet[Int]
         emptySet should be ('empty)
         val nonEmptySet = new java.util.HashSet[Int]
@@ -467,7 +467,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
       // FOR: implicit def convertToJavaListShouldWrapper[T](o: java.util.List[T])...
-      def `should work on a java.util.List` {
+      it("should work on a java.util.List") {
         val emptyList = new java.util.ArrayList[Int]
         emptyList should be ('empty)
         val nonEmptyList = new java.util.ArrayList[Int]
@@ -487,13 +487,13 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
     }
   }
 
-  object `The be matcher` {
+  describe("The be matcher") {
 
-    object `(for symbols)` {
+    describe("(for symbols)") {
 
       // TODO: Make sure to write a test for each conversion, because some are using ShouldMethodsForAny instead
       // of ShouldMethodsForAnyRef.
-      def `should be invokable from be a Symbol and be an Symbol` {
+      it("should be invokable from be a Symbol and be an Symbol") {
         val emptySet = Set()
         emptySet should be a ('empty)
         emptySet should be an ('empty)
@@ -502,7 +502,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
         nonEmptySet should not { be an ('empty) }
       }
 
-      def `should call empty when passed 'empty` {
+      it("should call empty when passed 'empty") {
         class EmptyMock {
           def empty: Boolean = true
         }
@@ -515,7 +515,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       }
 
 // STOLE FROM HERE
-      def `should call the Scala=style method if both an empty and an isEmpty method exist` {
+      it("should call the Scala=style method if both an empty and an isEmpty method exist") {
         class EmptyMock {
           def empty: Boolean = true
           def isEmpty: Boolean = false
@@ -530,7 +530,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
         (new NonEmptyMock) should not { be ('empty) }
       }
 
-      def `should access an 'empty' val when passed 'empty` {
+      it("should access an 'empty' val when passed 'empty") {
         class EmptyMock {
           val empty: Boolean = true
         }
@@ -543,16 +543,16 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
     }
   }
 
-  object `the be ('empty) syntax` {
+  describe("the be ('empty) syntax") {
 
-    def `should call isEmpty` {
+    it("should call isEmpty") {
       val emptySet = Set[Int]()
       emptySet should be ('empty)
       val nonEmptySet = Set(1, 2, 3)
       nonEmptySet should not { be ('empty) }
     }
 
-    def `should call empty when passed 'empty` {
+    it("should call empty when passed 'empty") {
       class EmptyMock {
         def empty: Boolean = true
       }
@@ -564,7 +564,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       // (new NonEmptyMock) shouldNot be ('empty)
     }
 
-    def `should throw TestFailedException if no empty or isEmpty method` {
+    it("should throw TestFailedException if no empty or isEmpty method") {
       class EmptyMock {
         override def toString = "EmptyMock"
       }
@@ -581,7 +581,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       ex2.getMessage should equal ("NonEmptyMock has neither an empty nor an isEmpty method")
     }
 
-    def `should call the Scala-style method if both an empty and an isEmpty method exist` {
+    it("should call the Scala-style method if both an empty and an isEmpty method exist") {
       class EmptyMock {
         def empty: Boolean = true
         def isEmpty: Boolean = false
@@ -596,7 +596,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       (new NonEmptyMock) should not { be ('empty) }
     }
 
-    def `should access an 'empty' val when passed 'empty` {
+    it("should access an 'empty' val when passed 'empty") {
       class EmptyMock {
         val empty: Boolean = true
       }
@@ -609,16 +609,16 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
     }
   }
 
-  object `The be 'defined syntax` {
+  describe("The be 'defined syntax") {
 
-    def `should do nothing when used with a Some` {
+    it("should do nothing when used with a Some") {
       val someString: Some[String] = Some("hi")
       someString should be ('defined)
       val optionString: Option[String] = Some("hi")
       optionString should be ('defined)
     }
 
-    def `should throw TestFailedException when used with a None` {
+    it("should throw TestFailedException when used with a None") {
       val none: None.type = None
       val caught1 = intercept[TestFailedException] {
         none should be ('defined)
@@ -631,7 +631,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       assert(caught2.getMessage === "None was not defined")
     }
 
-    def `should call defined` {
+    it("should call defined") {
       class DefinedMock {
         def defined: Boolean = true
       }
@@ -643,7 +643,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       // (new NonDefinedMock) shouldNot be ('defined)
     }
 
-    def `should throw TestFailedException if no defined or isDefined method` {
+    it("should throw TestFailedException if no defined or isDefined method") {
       class DefinedMock {
         override def toString = "DefinedMock"
       }
@@ -660,7 +660,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       ex2.getMessage should equal ("NonDefinedMock has neither a defined nor an isDefined method")
     }
 
-    def `should call the Scala-style method if both a defined and an isDefined method exist` {
+    it("should call the Scala-style method if both a defined and an isDefined method exist") {
       class DefinedMock {
         def defined: Boolean = true
         def isDefined: Boolean = false
@@ -675,7 +675,7 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
       (new NonDefinedMock) should not { be ('defined) }
     }
 
-    def `should access an 'defined' val` {
+    it("should access an 'defined' val") {
       class DefinedMock {
         val defined: Boolean = true
       }
@@ -688,8 +688,8 @@ class ShouldBeSymbolSpec extends Spec with EmptyMocks {
     }
   }
 /*
-  object `The "be symbol" syntax` {
-    def `should be usable on Any` {
+  describe("The "be symbol" syntax") {
+    it("should be usable on Any") {
       import scala.collection.GenTraversableOnce
       val travOnce: GenTraversableOnce[Int] = List(1, 2, 3)
       travOnce shouldBe 'traversableAgain
