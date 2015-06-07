@@ -24,8 +24,8 @@ import annotation.implicitNotFound
  * For more information on how this class is used, see the documentation of <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
  * </p>
  */
-@implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[${A},${B}]")
-abstract class Constraint[A, B] {
+@implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.CanEqual[${A},${B}]")
+abstract class CanEqual[A, B] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.

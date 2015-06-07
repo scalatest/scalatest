@@ -59,7 +59,7 @@ import TripleEqualsSupport._
  * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for
  * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
  * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalactic.Constraint[Int,Long]
+ * the missing implicit parameter is of type org.scalactic.CanEqual[Int,Long]
  *               1 === 1L
  *                 ^
  * </pre>
@@ -126,7 +126,7 @@ import TripleEqualsSupport._
  * Example.scala:9: error: types Int and Long do not adhere to the equality constraint selected for
  * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
  * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalactic.Constraint[Int,Long]
+ * the missing implicit parameter is of type org.scalactic.CanEqual[Int,Long]
  *     if (a === b) 0      // This line won't compile
  *           ^
  * one error found
@@ -191,7 +191,7 @@ import TripleEqualsSupport._
  * import ConversionCheckedTripleEquals._
  *
  * scala&gt; List(1, 2, 3) === Vector(1, 2, 3)
- * &lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.Constraint[List[Int],scala.collection.immutable.Vector[Int]]
+ * &lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.CanEqual[List[Int],scala.collection.immutable.Vector[Int]]
  *               List(1, 2, 3) === Vector(1, 2, 3)
  *                             ^
  * </pre>
@@ -235,15 +235,15 @@ trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstrai
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
 
-  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): A CanEqual B = new EqualityConstraint[A, B](equalityOfA)
 
-  override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-  override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
-  implicit override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
-  implicit override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  implicit override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
+  implicit override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 }
 
 /**

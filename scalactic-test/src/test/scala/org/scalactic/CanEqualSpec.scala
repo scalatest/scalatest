@@ -15,11 +15,18 @@
  */
 package org.scalactic
 
-import TripleEqualsSupport._
+import java.text._
+import org.scalatest._
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+import prop.TableDrivenPropertyChecks._
 
-private[scalactic] trait NumericEqualityConstraints {
-  implicit def numericEqualityConstraint[A, B](implicit equalityOfA: Equality[A], numA: Numeric[A], numB: Numeric[B]): A CanEqual B = new EqualityConstraint[A, B](equalityOfA)
-} 
+class CanEqualSpec extends UnitSpec {
 
-private[scalactic] object NumericEqualityConstraints extends NumericEqualityConstraints
+  "A CanEqual" can "be summoned via its old name, Constraint, during the deprecation cycle" in {
+    "implicitly[Int CanEqual Int]" should compile
+    "implicitly[Constraint[Int, Int]]" should compile
+  }
+}
 

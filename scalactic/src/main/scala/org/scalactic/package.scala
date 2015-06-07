@@ -59,5 +59,8 @@ package object scalactic {
    * @return the Scalactic version number.
    */
   val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
+
+  @deprecated("Constraint has been deprecated and will be removed in a future version of Scalactic. Please use its new name, CanEqual, instead.")
+  type Constraint[A, B] = A CanEqual B
 }
 
