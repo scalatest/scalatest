@@ -331,6 +331,8 @@ object GenScalaTestJS {
         "ResultOfNoneOfApplication.scala",
         "ResultOfAtLeastOneOfApplication.scala",
         "ResultOfOneOfApplication.scala",
+        "ResultOfAtMostOneElementOfApplication.scala",
+        "ResultOfInOrderElementsOfApplication.scala",
         "ResultOfDefinedAt.scala",
         "ResultOfRegexWordApplication.scala",
         "ResultOfAnWordToAnMatcherApplication.scala",
