@@ -26,7 +26,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
-trait GenDrivenPropertyChecks extends Configuration with Whenever {
+private[prop] trait GenDrivenPropertyChecks extends Configuration with Whenever {
   import GenDrivenPropertyChecks.stackDepthFileName
   import GenDrivenPropertyChecks.stackDepthMethodName
   import GenDrivenPropertyChecks.prettyArgs
@@ -162,7 +162,7 @@ trait GenDrivenPropertyChecks extends Configuration with Whenever {
   }
 }
 
-object GenDrivenPropertyChecks extends GenDrivenPropertyChecks {
+private[prop] object GenDrivenPropertyChecks extends GenDrivenPropertyChecks {
   private val stackDepthFileName = "GenDrivenPropertyChecks.scala"
   private val stackDepthMethodName = "apply"
   import FailureMessages.decorateToStringValue

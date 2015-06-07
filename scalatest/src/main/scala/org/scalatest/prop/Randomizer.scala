@@ -24,7 +24,7 @@ import org.scalactic.Requirements._
 // Maybe this should be a trait, so that people can, hmm. Could 
 // make subclasses with extra methods, like nextSmallInt or something,
 // and in a pattern match narrow the type and call that method.
-class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
+private[prop] class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
   def nextRandomizer: Randomizer = {
     val newSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
     new Randomizer(newSeed, edges)
@@ -289,7 +289,7 @@ class Randomizer(seed: Long, edges: Edges) { thisRandomizer =>
   }
 }
 
-object Randomizer {
+private[prop] object Randomizer {
   private val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
   private val charEdges = List(Char.MinValue, Char.MaxValue)

@@ -25,11 +25,11 @@ import Stream.empty
 // Maybe this should be a trait, so that people can, hmm. Could 
 // make subclasses with extra methods, like nextSmallInt or something,
 // and in a pattern match narrow the type and call that method.
-trait Shrinker[T] {
+private[prop] trait Shrinker[T] {
   def apply(init: T): Stream[T]
 }
 
-object Shrinker {
+private[prop] object Shrinker {
   def intShrinker: Shrinker[Int] =
     new Shrinker[Int] {
       def apply(init: Int): Stream[Int] = 0 #:: 1 #:: -1 #:: empty

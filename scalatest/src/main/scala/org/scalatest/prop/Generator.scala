@@ -18,7 +18,7 @@ package org.scalatest.prop
 import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
 
-trait Generator[T] { thisGeneratorOfT =>
+private[prop] trait Generator[T] { thisGeneratorOfT =>
   def next(size: Int = 100, rnd: Randomizer = Randomizer.default): (T, Randomizer)
   def map[U](f: T => U): Generator[U] =
     new Generator[U] {
@@ -38,7 +38,7 @@ trait Generator[T] { thisGeneratorOfT =>
   def shrink(init: T): Stream[T] = Stream.empty
 }
 
-object Generator {
+private[prop] object Generator {
 
   def chooseInt(from: Int, to: Int): Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
