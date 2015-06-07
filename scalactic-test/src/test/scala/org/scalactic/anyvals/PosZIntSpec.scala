@@ -15,10 +15,11 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Generator
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -26,7 +27,12 @@ import scala.util.{Failure, Success, Try}
 
 //import org.scalactic.StrictCheckedEquality
 
-class PosZIntSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+
+  val posZIntGen: Gen[PosZInt] =
+    for {i <- choose(0, Int.MaxValue)} yield PosZInt.from(i).get
+
+  implicit val arbPosZInt: Arbitrary[PosZInt] = Arbitrary(posZIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

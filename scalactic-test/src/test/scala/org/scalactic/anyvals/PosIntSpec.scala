@@ -15,15 +15,21 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Generator
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 
 import scala.util.{Failure, Success, Try}
 
-class PosIntSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+
+  val posIntGen: Gen[PosInt] =
+    for {i <- choose(1, Int.MaxValue)} yield PosInt.from(i).get
+
+  implicit val arbPosInt: Arbitrary[PosInt] = Arbitrary(posIntGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

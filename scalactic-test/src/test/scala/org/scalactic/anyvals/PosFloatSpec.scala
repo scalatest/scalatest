@@ -15,17 +15,23 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalactic._
 import org.scalatest._
-import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Generator
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
 import scala.util.{Failure, Success, Try}
 
-class PosFloatSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+
+  val posFloatGen: Gen[PosFloat] =
+    for {i <- choose(1, Float.MaxValue)} yield PosFloat.from(i).get
+
+  implicit val arbPosFloat: Arbitrary[PosFloat] = Arbitrary(posFloatGen)
 
   describe("A PosFloat") {
     describe("should offer a from factory method that") {

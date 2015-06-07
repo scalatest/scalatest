@@ -15,9 +15,10 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalatest._
-import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Generator
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
@@ -26,7 +27,12 @@ import OptionValues._
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
 
-class PosZFloatSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosZFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+
+  val posZFloatGen: Gen[PosZFloat] =
+    for {i <- choose(0, Float.MaxValue)} yield PosZFloat.from(i).get
+
+  implicit val arbPosZFloat: Arbitrary[PosZFloat] = Arbitrary(posZFloatGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {

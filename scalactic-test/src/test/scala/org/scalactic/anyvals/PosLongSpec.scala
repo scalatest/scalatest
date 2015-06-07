@@ -15,10 +15,11 @@
  */
 package org.scalactic.anyvals
 
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen._
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GenDrivenPropertyChecks
-import org.scalatest.prop.Generator
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
 
 // SKIP-SCALATESTJS-START
@@ -27,7 +28,12 @@ import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 
 
-class PosLongSpec extends FunSpec with Matchers with GenDrivenPropertyChecks {
+class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+
+  val posLongGen: Gen[PosLong] =
+    for {i <- choose(1, Long.MaxValue)} yield PosLong.from(i).get
+
+  implicit val arbPosLong: Arbitrary[PosLong] = Arbitrary(posLongGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
