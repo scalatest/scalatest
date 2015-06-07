@@ -26,7 +26,8 @@ import org.scalactic.anyvals.PosInt
 
 class ShouldOrderedSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
-  implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 50.0)
+  // TODO: Fix these tests. They are wasting a bunch of time with discarded values
+  implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 500.0)
 
   // Checking for a specific size
   describe("The 'be >/</>=/<= (x)' syntax") {
