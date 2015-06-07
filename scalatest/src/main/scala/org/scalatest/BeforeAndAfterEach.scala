@@ -183,7 +183,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
 
     var thrownException: Option[Throwable] = None
 
-    beforeEach()
+    if (!args.runTestInNewInstance) beforeEach()
     try {
       super.runTest(testName, args)
     }
@@ -194,7 +194,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
     }
     finally {
       try {
-        afterEach() // Make sure that afterEach is called even if runTest completes abruptly.
+        if (!args.runTestInNewInstance) afterEach() // Make sure that afterEach is called even if runTest completes abruptly.
         thrownException match {
           case Some(e) => throw e
           case None =>

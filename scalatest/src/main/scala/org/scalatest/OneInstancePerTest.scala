@@ -185,6 +185,34 @@ trait OneInstancePerTest extends SuiteMixin {
     }
   }
   
+/*
+Just read through the code again to refresh my memory of how the runTestInNewInstance flag works.
+The reason I was a bit confused is it kind of means the opposite thing in runTests as runTest. In
+runTests, it will initially be not set, i.e., the first time someone calls into run. OIPT.runTests
+will notice this and SET it, as a note to self, and call super.runTests. super.runTests will do
+its thing, including executing scopes where need be, and call runTest. That will end up back in this
+trait's runTest, which will look and see the flag is set. So that means DO run it in a new instance.
+This traits' runTest will create that new instance and call run, leaving the flag set. Reason is that
+in the test-specific instance, this same code will execute, but this time, the flag will be set already
+on entry into runTests. So this time, runTests, knows this is the test-specific instance, so it just
+direclty calls runTest, but sets the flag to false. In runTest, now the flag is false, so it just
+executes the test in this test-specific instance. So in short,
+
+This instance is the general instance iff:
+- In runTests, the runTestInNewInstance flag is false on entry
+- In runTest, if the runTestInNewInstance flag is true on entry
+
+This is the test-specific instance iff:
+- In runTests, the runTestInNewInstance flag is true on entry
+- In runTest, if the runTestInNewInstance flag is false on entry
+
+This is why in BeforeAndAfterAll, we only execute the beforeAll/afterAll code if the flag is false,
+  because we only want to do that from the general instance. This is done from run itself.
+
+In BeforeAndAfter and BeforeAndAfterEach, we want to only execute beforeEach/afterEach code in
+  the test-specific instance. This is done from runTest, so that means we should only
+  do it if the flag is false.
+*/
   /**
    * Construct a new instance of this <code>Suite</code>.
    *
