@@ -560,7 +560,8 @@ object ScalatestBuild extends Build {
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      }
+      },
+      unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "scalatest" / "src" / "main" / "resources" )
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -1068,7 +1069,7 @@ object ScalatestBuild extends Build {
       finally { writer.close }
     }
 
-    if (projectName == "scalatest") {
+    if (projectName.contains("scalatest")) {
       (htmlSrcDir * "*.gif").get.foreach { gif =>
         IO.copyFile(gif, docLibDir / gif.name)
       }
@@ -1111,11 +1112,6 @@ object ScalatestBuild extends Build {
         "-doc-source-url", docSourceUrl)
 
   val docTaskSetting =
-    doc in Compile := docTask((doc in Compile).value,
-                              (sourceDirectory in Compile).value,
-                              name.value)
-
-  val scalacticDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
                               name.value)
