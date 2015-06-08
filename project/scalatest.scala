@@ -289,8 +289,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals",
-        "org.scalautils"
+        "org.scalactic.anyvals"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -411,12 +410,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words",
-        "org.scalactic",
-        "org.scalactic.enablers",
-        "org.scalactic.anyvals",
-        "org.scalactic.algebra",
-        "org.scalautils"
+        "org.scalatest.words"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -506,12 +500,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words",
-        "org.scalactic",
-        "org.scalactic.enablers",
-        "org.scalactic.anyvals",
-        "org.scalactic.algebra",
-        "org.scalautils"
+        "org.scalatest.words"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -594,8 +583,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
-        "org.scalactic.anyvals",
-        "org.scalautils"
+        "org.scalactic.anyvals"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -652,8 +640,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
-        "org.scalactic.anyvals",
-        "org.scalautils"
+        "org.scalactic.anyvals"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
