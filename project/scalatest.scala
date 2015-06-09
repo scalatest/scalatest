@@ -316,6 +316,17 @@ object ScalatestBuild extends Build {
           GenScalacticJS.genResource((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalactic",
+        "org.scalactic.anyvals"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "Scalactic",
+        "Bundle-Description" -> "Scalactic.js is an open-source library for Scala-js projects.",
+        "Bundle-DocURL" -> "http://www.scalactic.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").aggregate(LocalProject("scalacticTestJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
@@ -440,6 +451,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
+      moduleName := "scalatest",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -453,6 +465,8 @@ object ScalatestBuild extends Build {
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
+          GenScalaTestJS.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
+
           GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenScalaTestJS.genJava((sourceManaged in Compile).value / "java", version.value, scalaVersion.value) ++
@@ -479,7 +493,8 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),*/
-      docTaskSetting
+      //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
+      scalatestJSDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -504,7 +519,7 @@ object ScalatestBuild extends Build {
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
-        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
@@ -601,7 +616,7 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaTest All",
       name := "scalatest-all",
       organization := "org.scalatest",
-      moduleName := "scalatest",
+      moduleName := "scalatest-all",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
@@ -1115,6 +1130,11 @@ object ScalatestBuild extends Build {
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
                               name.value)
+
+  val scalatestJSDocTaskSetting =
+    doc in Compile := docTask((doc in Compile).value,
+      (sourceManaged in Compile).value,
+      name.value)
 }
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"
 // set scalacOptions in (Compile, console) += "-Xlog-implicits"

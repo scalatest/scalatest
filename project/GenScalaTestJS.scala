@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+import sbt.IO
+
 import io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
@@ -73,6 +75,17 @@ object GenScalaTestJS {
     }
   }
 
+  def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      IO.copyFile(sourceFile, destFile)
+      destFile
+    }
+  }
+
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
             List(
@@ -82,6 +95,10 @@ object GenScalaTestJS {
               "DoNotDiscover.java",
               "Ignore.java"
             ), targetDir)
+  }
+
+  def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -521,12 +538,4 @@ object GenScalaTestJS {
       ), targetDir)
   }
 
-  def genResource(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    val sourceResourceFile = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
-    val destResourceDir = new File(targetDir, "resources/org/scalatest")
-    destResourceDir.mkdirs()
-    val destResourceFile = new File(destResourceDir, "ScalaTestBundle.properties")
-    copyFile(sourceResourceFile, destResourceFile)
-    List(destResourceFile)
-  }
 }
