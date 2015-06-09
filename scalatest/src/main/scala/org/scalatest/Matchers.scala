@@ -4118,7 +4118,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = inOrderElementsOf.right
 
-      doCollected(collected, xs, original, "contain", 1) { e =>
+      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
         if (evidence.containsInOrder(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4168,7 +4168,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = atMostOneElementOf.right
 
-      doCollected(collected, xs, original, "contain", 1) { e =>
+      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
         if (evidence.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4744,7 +4744,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]) {
       val right = elements.toList
-      doCollected(collected, xs, original, "inOrderElementsOf", 1) { e =>
+      doCollected(collected, xs, original, "inOrderElementsOf", outerStackDepth) { e =>
         if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4792,7 +4792,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]) {
       val right = elements.toList
-      doCollected(collected, xs, original, "atMostOneElementOf", 1) { e =>
+      doCollected(collected, xs, original, "atMostOneElementOf", outerStackDepth) { e =>
         if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
