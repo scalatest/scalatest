@@ -1488,6 +1488,8 @@ val generatorSuiteTemplate = """
 
   it("generator-driven property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
 
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1507,6 +1509,8 @@ val generatorSuiteTemplate = """
   }
 
   it("generator-driven property that takes $n$ named args, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1528,6 +1532,8 @@ val generatorSuiteTemplate = """
 
   it("generator-driven property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
 
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
@@ -1547,6 +1553,8 @@ val generatorSuiteTemplate = """
   }
 
   it("generator-driven property that takes $n$ named args and generators, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1573,7 +1581,7 @@ val generatorSuiteTemplate = """
   it("generator-driven property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1599,7 +1607,7 @@ val generatorSuiteTemplate = """
   it("generator-driven property that takes $n$ named args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1625,7 +1633,7 @@ val generatorSuiteTemplate = """
   it("generator-driven property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -1651,7 +1659,7 @@ val generatorSuiteTemplate = """
   it("generator-driven property that takes $n$ named args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2192,6 +2200,8 @@ val checkersSuiteTemplate = """
 
   it("ScalaCheck property that takes $n$ args, which fails, with maxDiscarded param set to 5") {
 
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
+
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
       check(
@@ -2215,6 +2225,8 @@ val checkersSuiteTemplate = """
   }
 
   it("ScalaCheck property that takes $n$ args and generators, which fails, with maxDiscarded param set to 5") {
+
+    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2242,7 +2254,7 @@ val checkersSuiteTemplate = """
   it("ScalaCheck property that takes $n$ args, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0
@@ -2269,7 +2281,7 @@ val checkersSuiteTemplate = """
   it("ScalaCheck property that takes $n$ args and generators, which fails, with default maxDiscarded set to 5") {
 
     // Hides the member
-    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(maxDiscarded = 5, minSuccessful = 5)
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       var i = 0

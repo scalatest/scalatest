@@ -118,7 +118,7 @@ trait Configuration {
    */
   @deprecated("Use PropertyCheckConfiguration instead")
   case class PropertyCheckConfig(
-    minSuccessful: Int = 100,
+    minSuccessful: Int = 10,
     maxDiscarded: Int = 500,
     minSize: Int = 0,
     maxSize: Int = 100,
