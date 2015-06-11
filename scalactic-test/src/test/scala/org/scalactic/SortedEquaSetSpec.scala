@@ -25,6 +25,7 @@ import scala.collection.{SortedSet => StandardSortedSet}
 import scala.collection.parallel.mutable.ParArray
 import org.scalactic.iterators.Iterator
 import scala.collection.{Iterator => StdIterator}
+import views.TreeSetView
 
 class SortedSetSpec extends UnitSpec {
   implicit class HasExactType[T](o: T) {
@@ -887,9 +888,31 @@ class SortedSetSpec extends UnitSpec {
     number.immutable.SortedSet(1, 2, 3).find(_ == 5) shouldBe None
     number.immutable.SortedSet(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }
-  it should "have an into.flatMap method" is pending
-  it should "have a flatMap method" is pending
-  it should "have an into.flatten method that works on nested Set" is pending
+  it should "have a flatMap method" in {
+    val set = trimmed.immutable.SortedSet("1", "2", "01", "3")
+    val flatMapped = set.flatMap { (digit: String) =>
+      TreeSetView(digit.toInt)
+    }
+    val strictSet = flatMapped.toSet(number)
+    strictSet should equal (number.immutable.SortedSet(1, 2, 3))
+  }
+  it should "offer a flatMap method on its view" in {
+    val lazySet = trimmed.immutable.SortedSet("1", "2", "01", "3").view
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      TreeSetView(digit.toInt)
+    }
+    val strictSet = flatMapped.toSet(number)
+    strictSet should equal (number.immutable.SortedSet(1, 2, 3))
+  }
+  it should "allow chaining of maps and flatMaps on its view" in {
+    val lazySet = trimmed.immutable.SortedSet("1", "2", "01", "3").view
+    val flatMapped = lazySet.flatMap { (digit: String) =>
+      TreeSetView(digit.toInt)
+    }
+    val mapped = flatMapped.map(_ + 1)
+    val strictSet = mapped.toSet(number)
+    strictSet should equal (number.immutable.SortedSet(2, 3, 4))
+  }
 /*
   it can "be flattened when in a GenTraversableOnce" in {
     // need to keep this commented out until finish implementing all methods

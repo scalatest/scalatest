@@ -623,6 +623,8 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        */
       def lastOption: Option[T]
   
+      def map[U](f: T => U): SetView[U]
+
       /**
        * Finds the largest element.
         *
@@ -1524,6 +1526,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
           case Some(last) => Some(last.value)
           case None => None
         }
+      def map[U](f: T => U): FastSetView[U] = view.map(f)
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
       def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisFastSet.toStandardList.exists(ele => equality.areEqual(ele, a)))

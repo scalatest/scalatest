@@ -2036,6 +2036,13 @@ def zipWithIndex: Set[(A, Int)]
     val strictSet = flatMapped.toSet(number)
     strictSet should equal (number.immutable.Set(1, 2, 3))
   }
+  it should "offer a map method" in {
+    val set = trimmed.immutable.Set("1", "2", "01", "3")
+    val mapped = set.map(_.toInt)
+    val mappedAgain = mapped.map(_ + 1)
+    val strictSet = mappedAgain.toSet(number)
+    strictSet should equal (number.immutable.Set(2, 3, 4))
+  }
   it should "offer a flatMap method on its view" in {
     val lazySet = trimmed.immutable.Set("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>

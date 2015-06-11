@@ -273,6 +273,8 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        */
       def iterator: org.scalactic.iterators.Iterator[T]
   
+      def map[U](f: T => U): SortedSetView[U]
+
       /**
        * Partitions this `SortedSet` in two `SortedSet`s according to a predicate.
        *
@@ -625,6 +627,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case Some(last) => Some(last.value)
           case None => None
         }
+      def map[U](f: T => U): TreeSetView[U] = view.map(f)
       def max[T1 >: T](implicit ord: Ordering[T1]): T = underlying.toList.map(_.value).max(ord)
       def membership[U >: T <: E]: Membership[U] = new Membership[U]((a: U) => thisTreeSet.toStandardList.exists(ele => equality.areEqual(ele, a)))
       def maxBy[B](f: T => B)(implicit cmp: Ordering[B]): T = underlying.toList.map(_.value).maxBy(f)
