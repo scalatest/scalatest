@@ -254,36 +254,44 @@ class SortedSetSpec extends UnitSpec {
   it should "have a + method that takes one argument" in {
     val result1 = lower.immutable.SortedSet("hi", "ho") + "ha"
     result1 shouldBe lower.immutable.SortedSet("hi", "ho", "ha")
-    result1.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result2 = lower.immutable.SortedSet("hi", "ho") + "HO"
     result2 shouldBe lower.immutable.SortedSet("hi", "ho")
-    result2.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result3 = lower.immutable.TreeSet("hi", "ho") + "ha"
     result3 shouldBe lower.immutable.TreeSet("hi", "ho", "ha")
-    result3.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result3.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
 
     val result4 = lower.immutable.TreeSet("hi", "ho") + "HO"
     result4 shouldBe lower.immutable.TreeSet("hi", "ho")
-    result4.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result4.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
+
+    val result5 = lower.immutable.TreeSet.empty[String] + "HO"
+    result5 shouldBe lower.immutable.TreeSet("HO")
+    result5.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
   }
   it should "have a + method that takes two or more arguments" in {
     val result1 = lower.immutable.SortedSet("hi", "ho") + ("ha", "hey!")
     result1 shouldBe lower.immutable.SortedSet("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result2 = lower.immutable.SortedSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result2 shouldBe lower.immutable.SortedSet("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result3 = lower.immutable.TreeSet("hi", "ho") + ("ha", "hey!")
     result3 shouldBe lower.immutable.TreeSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result3.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
 
     val result4 = lower.immutable.TreeSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result4 shouldBe lower.immutable.TreeSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result4.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
+
+    val result5 = lower.immutable.TreeSet.empty[String] + ("HI", "HO")
+    result5 shouldBe lower.immutable.TreeSet("HI", "HO")
+    result5.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
   }
   it should "have a - method that takes one argument" in {
     val result1 = lower.immutable.SortedSet("hi", "ho", "ha") - "ha"

@@ -83,7 +83,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @return a new `Set` that contains all elements of this `Set` and that also
        * contains `elem`.
        */
-      def +[U >: T <: E](elem: U): thisCollections.immutable.Set[U]
+      def +[U >: T <: E](elem: U): thisCollections.immutable.inhabited.Set[U]
   
       /**
        * Creates a new `Set` with additional elements.
@@ -96,7 +96,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
        * @param elems the remaining elements to add.
        * @return a new `Set` with the given elements added.
        */
-      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.Set[U]
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.inhabited.Set[U]
   
       /** Creates a new `Set` by adding all elements contained in another collection to this `Set`.
         *
@@ -1436,9 +1436,9 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
   */
 
     sealed class FastSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.Set[Box[T@uV]]) extends Set[T] { thisFastSet =>
-      def +[U >: T <: E](elem: U): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + Box[U](elem))
-      def +[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastSet[U] =
-        new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elem3.map(Box[U](_)): _*))
+      def +[U >: T <: E](elem: U): thisCollections.immutable.inhabited.FastSet[U] = new immutable.inhabited.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + Box[U](elem))
+      def +[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.inhabited.FastSet[U] =
+        new immutable.inhabited.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elem3.map(Box[U](_)): _*))
       def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.FastSet[U] =
         new immutable.FastSet[U](underlying ++ elems.toList.map(Box[U](_)))
       def ++[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying ++ that.toBoxStandardSet)

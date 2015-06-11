@@ -207,36 +207,44 @@ class SetSpec extends UnitSpec {
   it should "have a + method that takes one argument" in {
     val result1 = lower.immutable.Set("hi", "ho") + "ha"
     result1 shouldBe lower.immutable.Set("hi", "ho", "ha")
-    result1.shouldHaveExactType[lower.immutable.Set[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.Set[String]]
 
     val result2 = lower.immutable.Set("hi", "ho") + "HO"
     result2 shouldBe lower.immutable.Set("hi", "ho")
-    result2.shouldHaveExactType[lower.immutable.Set[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.Set[String]]
 
     val result3 = lower.immutable.FastSet("hi", "ho") + "ha"
     result3 shouldBe lower.immutable.FastSet("hi", "ho", "ha")
-    result3.shouldHaveExactType[lower.immutable.FastSet[String]]
+    result3.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
 
     val result4 = lower.immutable.FastSet("hi", "ho") + "HO"
     result4 shouldBe lower.immutable.FastSet("hi", "ho")
-    result4.shouldHaveExactType[lower.immutable.FastSet[String]]
+    result4.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
+
+    val result5 = lower.immutable.FastSet.empty[String] + "HO"
+    result5 shouldBe lower.immutable.FastSet("HO")
+    result5.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
   }
   it should "have a + method that takes two or more arguments" in {
     val result1 = lower.immutable.Set("hi", "ho") + ("ha", "hey!")
     result1 shouldBe lower.immutable.Set("hi", "ho", "ha", "hey!")
-    result1.shouldHaveExactType[lower.immutable.Set[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.Set[String]]
 
     val result2 = lower.immutable.Set("hi", "ho") + ("HO", "hoe", "Ho!")
     result2 shouldBe lower.immutable.Set("hi", "ho", "hoe", "Ho!")
-    result2.shouldHaveExactType[lower.immutable.Set[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.Set[String]]
 
     val result3 = lower.immutable.FastSet("hi", "ho") + ("ha", "hey!")
     result3 shouldBe lower.immutable.FastSet("hi", "ho", "ha", "hey!")
-    result3.shouldHaveExactType[lower.immutable.FastSet[String]]
+    result3.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
 
     val result4 = lower.immutable.FastSet("hi", "ho") + ("HO", "hoe", "Ho!")
     result4 shouldBe lower.immutable.FastSet("hi", "ho", "hoe", "Ho!")
-    result4.shouldHaveExactType[lower.immutable.FastSet[String]]
+    result4.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
+
+    val result5 = lower.immutable.FastSet.empty[String] + ("HI", "HO")
+    result5 shouldBe lower.immutable.FastSet("HI", "HO")
+    result5.shouldHaveExactType[lower.immutable.inhabited.FastSet[String]]
   }
   it should "have a - method that takes one argument" in {
     val result1 = lower.immutable.Set("hi", "ho", "ha") - "ha"

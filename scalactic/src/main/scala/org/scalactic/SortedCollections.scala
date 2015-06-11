@@ -50,7 +50,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @return a new `SortedSet` that contains all elements of this `SortedSet` and that also
        * contains `elem`.
        */
-      def +[U >: T <: E](elem: U): thisCollections.immutable.SortedSet[U]
+      def +[U >: T <: E](elem: U): thisCollections.immutable.inhabited.SortedSet[U]
   
       /**
        * Creates a new `SortedSet` with additional elements.
@@ -63,7 +63,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        * @param elems the remaining elements to add.
        * @return a new `SortedSet` with the given elements added.
        */
-      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.SortedSet[U]
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.inhabited.SortedSet[U]
   
       /** Creates a new `SortedSet` by adding all elements contained in another collection to this `SortedSet`.
         *
@@ -509,14 +509,14 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
 
     class TreeSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.TreeSet[Box[T@uV]]) extends SortedSet[T] { thisTreeSet =>
 
-      def +[U >: T <: E](elem: U): thisCollections.immutable.TreeSet[U] = {
+      def +[U >: T <: E](elem: U): thisCollections.immutable.inhabited.TreeSet[U] = {
         val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] = underlying.map(ebt => (ebt: Box[U])) + Box[U](elem)
-        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
+        new immutable.inhabited.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
-      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.TreeSet[U] = {
+      def +[U >: T <: E](elem1: U, elem2: U, elems: U*): thisCollections.immutable.inhabited.TreeSet[U] = {
         val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
           underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elems.map(Box[U](_)): _*)
-        new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
+        new immutable.inhabited.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]](setOfBoxOfU.toList: _*)(ordering[U]))
       }
       def ++[U >: T <: E](elems: GenTraversableOnce[U]): thisCollections.immutable.TreeSet[U] = {
         val setOfBoxOfU: scala.collection.immutable.Set[SortedCollections.this.Box[U]] =
@@ -893,9 +893,9 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
     }
   
     class TreeEquaMap[V] private[scalactic] (private val underlying: TreeMap[Box, V]) extends SortedEquaMap[V] { thisTreeSet =>
-      def +[V1 >: V](kv: (T, V1)): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying + (Box(kv._1) -> kv._2))
+      def +[V1 >: V](kv: (T, V1)): TreeEquaMap[V1] = new immutable.inhabited.TreeEquaMap(underlying + (Box(kv._1) -> kv._2))
       def +[V1 >: V](entry1: (T, V1), entry2: (T, V1), entries: (T, V1)*): TreeEquaMap[V1] =
-        new immutable.TreeEquaMap(underlying + (Box(entry1._1) -> entry1._2, Box(entry2._1) -> entry2._2, entries.map(e => Box(e._1) -> e._2): _*))
+        new immutable.inhabited.TreeEquaMap(underlying + (Box(entry1._1) -> entry1._2, Box(entry2._1) -> entry2._2, entries.map(e => Box(e._1) -> e._2): _*))
       def ++[V1 >: V](entries: GenTraversableOnce[(T, V1)]): TreeEquaMap[V1] =
         new immutable.TreeEquaMap(underlying ++ entries.toSeq.map(e => (Box(e._1) -> e._2)))
       def ++[V1 >: V](that: EquaMap[V1]): TreeEquaMap[V1] = new immutable.TreeEquaMap(underlying ++ that.toBoxMap)
@@ -942,7 +942,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
     }
   */
     class SortedInhabited extends Inhabited {
-      trait SortedSet[+T <: E] extends thisSortedImmutable.SortedSet[T] { // TODO Make this extend thisImmutable.inhabited.Set also
+      trait SortedSet[+T <: E] extends thisSortedImmutable.SortedSet[T] with thisSortedImmutable.inhabited.Set[T] {
         /** Selects the first element of this `Set`.
           *
           * @return the first element of this `Set`.
